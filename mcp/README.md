@@ -11,12 +11,12 @@ MCP server exposing the cybergraph to AI assistants (Claude, GPT, etc.).
 
 | tool | input | output | layer |
 |------|-------|--------|-------|
-| `particle` | bytes or text | CID (hemera hash) | hemera |
+| `particle` | bytes or text | particle (hemera hash) | hemera |
 | `cyberlink` | from, to, neuron | signal receipt | cybergraph |
 | `search` | query string | ranked particles + scores | tru / rank |
-| `query_particle` | CID | energy, rank, axon count + proof | bbg |
-| `query_neuron` | CID | focus, karma, stake + proof | bbg |
-| `query_axons` | CID, direction | axon list + proof | bbg |
+| `query_particle` | particle | energy, rank, axon count + proof | bbg |
+| `query_neuron` | particle | focus, karma, stake + proof | bbg |
+| `query_axons` | particle, direction | axon list + proof | bbg |
 | `verify_proof` | BBG_root, proof | valid/invalid | bbg / lens |
 | `get_focus` | — | φ* distribution (top-N) | tru |
 

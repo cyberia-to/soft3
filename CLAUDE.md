@@ -18,7 +18,7 @@ not the stack itself — a client layer on top of it.
 
 ## dependency chain
 
-soft3 SDK depends on: hemera (CID), bbg (state + proofs), lens (verification), cybergraph (signal submission), radio (transport)
+soft3 SDK depends on: hemera (particle), bbg (state + proofs), lens (verification), cybergraph (signal submission), radio (transport)
 
 do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation.
 
@@ -33,7 +33,7 @@ do NOT implement stack logic here. call into the stack repos via FFI, WASM, or R
 |------|------|
 | `cybergraph` | signal submission, local sync, query protocol |
 | `bbg` | state machine, polynomial commitments, query proofs |
-| `hemera` | CID computation (Poseidon2 hash) |
+| `hemera` | particle computation (Poseidon2 hash) |
 | `lens` | polynomial commitment backends |
 | `radio` | P2P transport |
 | `foculus` | consensus |

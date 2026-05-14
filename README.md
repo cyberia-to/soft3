@@ -32,9 +32,9 @@ cybergraph ─── bbg ─── tru ─── glia ─── mir
 every SDK exposes the same five operations regardless of language:
 
 ```
-particle(content)              → CID          hemera hash of bytes
+particle(content)              → particle     hemera hash of bytes
 cyberlink(from, to, neuron)    → signal       construct + sign a cyberlink
-query(cid, dimension)          → value+proof  BBG Lens opening
+query(particle, dimension)     → value+proof  BBG Lens opening
 verify(root, proof)            → bool         proof verification
 submit(signal)                 → receipt      send signal to network
 ```
