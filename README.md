@@ -1,4 +1,5 @@
 ---
+title: soft3
 tags: cyber, soft3, sdk
 crystal-type: spec
 crystal-domain: cyber
