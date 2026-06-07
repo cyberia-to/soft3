@@ -8,34 +8,61 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
 # soft3
 
-developer experience layer for the [[soft3]] stack. makes the 14-repo stack accessible without understanding every repo.
+developer experience layer for the [[soft3]] stack. makes the 20-repo stack accessible without understanding every repo.
+
+every edge is labelled with the artifact that crosses it — the language each pair speaks. three planes: the [[soma]] mind on top, the [[cybergraph]] spine in the middle, the proof floor below.
 
 ```svgbob
-  neurons / apps
-        |
-        v
-   soft3 SDK  <-- this repo
-        |
-        v
-      soma (think)
-        |
-        v
-  ONE API: declare / submit / subscribe / query
-        |
-        v
-   cybergraph (link)
-        |
-  .-----+------.
-  |     |      |
-  v     v      v
- bbg  sync  radio
-(store)(sync)(transmit)
-              |
-              v
-            tape
-           (frame)
+                        neurons    apps    agents    sensors
+                                      |
+                                      v   goal / task / event / sensor
+                             +------------------+
+                             |   soma : think   |
+                             +--------+---------+
+                                      |
+                                      v   intend . seal . link . subscribe . query
+    +-------------+          +------------------+          +-------------+
+    |    mudra    |   keys   |    cybergraph    |   patch  |     fs      |
+    |  : encrypt  +--------->|      : link      |<---------+   : mount   |
+    +-------------+          |    the  spine    |          +-------------+
+    +-------------+  value   |                  |
+    |    plumb    +--------->|                  |
+    |    : pay    |          +--+-----+------+--+
+    +-------------+             |     |      |
+                         store |     | sync | transmit
+                               v     v      v
+                         +-------+ +-------+ +--------+
+                         |  bbg  | | sync  | |  tape  |
+                         | :store| | :sync | | :frame |
+                         +---+---+ +---+---+ +---+----+
+                             |         |         | frames
+                      verify |   agree |         v
+                             |         v     +--------+
+                             |     +-------+  | radio  |
+                             |     |foculus|  | :trans |
+                             |     |:agree |  +--------+
+                             |     +-------+
+                             v
+    +-----------------------------------------------------------+
+    |  PROOF  FLOOR                                              |
+    |                                                           |
+    |   trident --.nox--+                                       |
+    |   :compile        |                                       |
+    |                   v                                       |
+    |   rune ---noun--> nox --trace--> zheng <--open-- lens     |
+    |   :eval           :run           :prove         :commit   |
+    |                                                           |
+    |          strata : math      +      hemera : hash          |
+    |          every proof and identity reduces here            |
+    +-----------------------------------------------------------+
 
-  (tru, glia, mir, foculus, mudra wire in around this core)
+   conformance : snapshot  --  one hemera fingerprint per encoding & mechanism
+
+   read side, recomputed every block:
+
+   cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0
+                           |                                   ^
+                           '---- phi* . positions . rank ------'
 ```
 
 ## what it provides
