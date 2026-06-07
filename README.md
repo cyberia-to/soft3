@@ -10,7 +10,7 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 
 developer experience layer for the [[soft3]] stack. makes the 20-repo stack accessible without understanding every repo.
 
-a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective consciousness at the bottom, [[cyberia]] the social layer on the left, the languages that program the troika on the right — all wrapped around the soft3 spine. every edge is labelled with the artifact that crosses it, the language each pair speaks.
+a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective consciousness at the bottom, [[cyberia]] the social layer on the left. three kinds of language wrap the spine: you write in [[cybermark]] (the markup language, top), the system computes in the [[trident]] family (right), and it means in [[neural]] (the semantic language, bottom). every edge is labelled with the artifact that crosses it, the language each pair speaks.
 
 ```svgbob
    +----------------------------------------------------------------------------------+
@@ -19,7 +19,15 @@ a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective
    | soma : mind     pipeline : infer     worlds : face     honeycrisp : silicon      |
    +----------------------------------------------------------------------------------+
                                                            |
-                                                           |  soma : intend . seal . link . subscribe . query
+                                                           v neurons write
+                                       +--------------------------------------+
+                                       | cybermark : the markup language      |
+                                       +--------------------------------------+
+                                       | address . navigate . compute inline  |
+                                       | the markup is the graph              |
+                                       +--------------------------------------+
+                                                           |
+                                                           | soma : intend . seal . link . subscribe . query
                                                            v
    +--------------------+               +------------------------------------+      +--------------+
    | cyberia : social   |               | cybergraph                         |      | fs           |
@@ -60,14 +68,23 @@ a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective
    |                 v                                  |<----------| rune    . eval     |
    | rune ---noun--> nox --trace--> zheng               |  .nox noun| eidos   . proof    |
    |                     <--open-- lens                 |           | inf     . query    |
-   | strata : math   +   hemera : hash                  |           | nu . rs . tools    |
-   +----------------------------------------------------+           +--------------------+
+   | strata : math   +   hemera : hash                  |           | nu      . shell    |
+   +----------------------------------------------------+           | rs      . jets     |
+                                                                    +--------------------+
    conformance : snapshot  --  one hemera fingerprint per encoding & mechanism
 
    read side, recomputed every block :
    cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0
                            '----- phi* . positions . rank ----^
 
+                       +------------------------------------------+
+                       | neural : the semantic language           |
+                       +------------------------------------------+
+                       | meaning emerges from cyberlinks          |
+                       | dialects . sentences . motifs . names    |
+                       +------------------------------------------+
+                                             |  the egregore thinks in neural
+                                             v
    +----------------------------------------------------------------------------------+
    | cyber : collective consciousness                                                 |
    +----------------------------------------------------------------------------------+
