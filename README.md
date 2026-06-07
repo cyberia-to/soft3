@@ -38,9 +38,6 @@ developer experience layer for the [[soft3]] stack. makes the 14-repo stack acce
   (tru, glia, mir, foculus, mudra wire in around this core)
 ```
 
-(tru, glia, mir, foculus wire in around this core)
-```
-
 ## what it provides
 
 | component | purpose | status |
