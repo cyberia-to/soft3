@@ -97,7 +97,7 @@ the [[tru]] is an onchain [[language]] model. it does what models do — rank, r
 
 ## the core
 
-eighteen repos form the core. [[cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. [[tape]] is the wire codec radio carries; [[sync]] owns the full structural-sync protocol below cybergraph. [[conformance]] is the meta-layer — one [[hemera]] fingerprint per canonical encoding and mechanism output, drift surfaces at commit time. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
+twenty repos form the core. [[cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. [[tape]] is the wire codec radio carries; [[sync]] owns the full structural-sync protocol below cybergraph. [[conformance]] is the meta-layer — one [[hemera]] fingerprint per canonical encoding and mechanism output, drift surfaces at commit time. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
 
 | # | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
@@ -120,3 +120,5 @@ eighteen repos form the core. [[cybergraph]] is the vertebra — soma's one API 
 | 16 | [[soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
 | 17 | [[conformance]] | snapshot | hemera fingerprint per encoding and mechanism. stability harness across the stack | scaffold |
 | + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
+| + | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
+| + | [[plumb]] | pay | value layer: Coin + Card + five operations | — |
