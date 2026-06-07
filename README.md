@@ -76,7 +76,7 @@ the [[tru]] is an onchain [[language]] model. it does what models do — rank, r
 
 ## the core
 
-fourteen repos form the core. [[cybergraph]] is the vertebra — everything attaches to it. [[strata]] is the floor — every proof reduces to operations in its five algebras. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
+fifteen repos form the core. [[cybergraph]] is the vertebra — everything attaches to it. [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
 
 | # | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
@@ -94,4 +94,5 @@ fourteen repos form the core. [[cybergraph]] is the vertebra — everything atta
 | 11 | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
 | 12 | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
 | 13 | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
+| 14 | [[soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
 | + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
