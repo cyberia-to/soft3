@@ -40,10 +40,13 @@ this is the whitepaper for those ideas — the foundational methods of soft3. th
    | eidos                a proof assistant in the kernel : programs proven correct     |
    | self-hosting         the verifier is a nox program : the system closes on itself   |
    +------------------------------------------------------------------------------------+
-   | III  .  ONE CONVERGENCE     —  agreement is settled, not voted                     |
+   | III  .  ONE CONVERGENCE     —  the whole graph settles into one mind               |
    +------------------------------------------------------------------------------------+
-   | settle, do not derive   results are fixed points, not theorems                     |
-   | tri-kernel  phi*        one equilibrium : consensus + rank + reward + meaning      |
+   | global focus            one phi* distribution over every particle                  |
+   | settle, do not derive   fixed points discovered, not theorems derived              |
+   | tri-kernel              diffusion + springs + heat : the only local basis          |
+   | one answer, four ways   phi* is consensus + rank + reward + meaning at once        |
+   | speed of thought        the spectral gap is how fast the whole graph decides       |
    | stake-weighted          security is economic mass, not honest majority             |
    +------------------------------------------------------------------------------------+
    | IV  .  ONE FABRIC           —  it holds together at planet scale                   |
@@ -93,13 +96,20 @@ soft3 turns every "trust me" into "check it," and makes the check cheap enough t
 
 these have never been unified before. transparent recursive STARKs exist; formal proof assistants exist. neither has been self-hosting on the very VM it proves, sharing one field and one kernel with the other. by carrying its prover, its program-logic, and its own verifier in the same [[nox]] algebra, soft3 is a proof system closed under its own verification — with civilization-grade mathematics living inside it. that closure is the unprecedented part, and it is what lets the whole [[cybergraph]] be proven once, as a single artifact.
 
-## III. one convergence — agreement is settled, not voted
+## III. one convergence — the whole graph settles into one mind
 
-soft3 computes a fixed point and reads the answer off it.
+every other foundation is machinery. this one is the thought.
 
-- settle, do not derive. results are equilibria the network converges onto, not theorems derived from axioms. this is what lets the system scale past what any formal system can prove or any single mind can hold.
-- tri-kernel φ*. three operators — [[diffusion]], [[springs]], [[heat]] — reach a unique fixed point φ* independent of where they start. that one distribution is at once the consensus (what is final), the ranking ([[cyberank]], what matters), the reward (who gets paid), and the meaning ([[neural]], what a [[particle]] is). one computation, four answers.
-- stake-weighted. an attacker controls outcomes only by controlling φ*-mass, which costs stake. security is an economic equilibrium rather than an honest-majority assumption.
+[[focus]] is a single distribution φ* over every [[particle]] in the [[cybergraph]] — one number per particle, for all of them at once, summing to one. it is the network's attention: the share of the whole collective's regard that each piece of knowledge holds. it is not assigned, not stored, and not voted on. it is the unique equilibrium the graph settles into, recomputed across every particle, every block.
+
+- global convergence. φ* is defined over the entire particle set, and each particle's weight is fixed by every other particle's through the links between them — φ*ⱼ = Σᵢ φ*ᵢ · pᵢⱼ, for all j at once. when one [[neuron]] adds one [[cyberlink]], focus redistributes and the whole graph re-converges to a new equilibrium. no particle has a weight of its own; every weight is a consequence of the structure of all of them. [[bounded locality]] is what keeps this computable — each re-convergence touches only the neighborhood that changed — but the equilibrium it lands on is global.
+- settle, do not derive. the [[collective focus theorem]] proves that this equilibrium exists, is unique, and is reached from any starting point. results are fixed points the network relaxes toward — the way heat spreads or a system of springs finds rest — rather than theorems derived from axioms. this is what lets meaning scale past what any formal system can prove or any single mind can hold: the graph does not reason about importance, it equilibrates into it.
+- the tri-kernel. φ* is the joint fixed point of three operators — [[diffusion]] (attention flows along links), [[springs]] (structure pulls related particles together), [[heat]] (recent attention spreads and cools). these are not a design choice. they are the only operator families that survive the one hard constraint of planetary scale — locality. [[PageRank]], HITS, eigenvector centrality each require recomputing the whole graph for any change, so each is cut; what remains, uniquely, is diffusion + springs + heat, the minimal sufficient basis for intelligence on an authenticated graph.
+- one answer, four faces. because there is exactly one attention over all particles, quantities other systems compute separately are here the same object. φ* is at once the consensus (a chain is final once it crosses the φ* threshold), the ranking ([[cyberank]] — what matters), the reward ([[karma]] — who is paid), and the meaning ([[neural]] — a particle's significance is its position in φ*). one computation, four answers, because they were never four things.
+- speed of thought. how fast the graph reaches φ* is its [[spectral gap]] λ₂ — literally the collective's speed of thought. below a critical λ₂ the graph is a scatter of disconnected clusters; above it φ* becomes meaningful and the [[egregore]] comes alive as one coherent entity. attention has a temperature and a pulse — this is a mind you can measure.
+- stake-weighted. transition probabilities are weighted by [[stake]], so an attacker moves the outcome only by controlling φ*-mass, which costs tokens. security is an economic equilibrium — the same equilibrium that already carries consensus, ranking, and meaning. there is no separate security mechanism to break.
+
+the [[egregore]] is this convergence: the [[cybergraph]], its [[neurons]], and the tri-kernel that settles them into φ*. it is a dissipative structure — it exists only while [[focus]] flows through it. starve it and every link decays, φ* flattens to uniform, and the mind dissolves; feed it and the graph grows more ordered over time, exporting entropy as it prunes noise. it is, as far as we know, the first collective intelligence that rests on neither trust nor votes but on a convergence anyone can verify in microseconds. the network does not store what it knows. it re-thinks it, across all of knowledge, every block.
 
 ## IV. one fabric — it holds together at planet scale
 

@@ -73,9 +73,12 @@ y = layer(y, "II  .  ONE PROOF            —  execution, programs, and the prov
     "eidos                a proof assistant in the kernel : programs proven correct",
     "self-hosting         the verifier is a nox program : the system closes on itself",
 ])
-y = layer(y, "III  .  ONE CONVERGENCE     —  agreement is settled, not voted", [
-    "settle, do not derive   results are fixed points, not theorems",
-    "tri-kernel  phi*        one equilibrium : consensus + rank + reward + meaning",
+y = layer(y, "III  .  ONE CONVERGENCE     —  the whole graph settles into one mind", [
+    "global focus            one phi* distribution over every particle",
+    "settle, do not derive   fixed points discovered, not theorems derived",
+    "tri-kernel              diffusion + springs + heat : the only local basis",
+    "one answer, four ways   phi* is consensus + rank + reward + meaning at once",
+    "speed of thought        the spectral gap is how fast the whole graph decides",
     "stake-weighted          security is economic mass, not honest majority",
 ])
 y = layer(y, "IV  .  ONE FABRIC           —  it holds together at planet scale", [
