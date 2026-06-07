@@ -19,45 +19,47 @@ a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective
    +------------------------------------+------------------------------------+
                                         |  soma : intend . seal . link . subscribe . query
                                         v
-   +-------------------+        +------------------+        +-------------+
-   | cyberia : social  |  links |    cybergraph    |  patch |     fs      |
-   |   . contract      +------->|      : link      |<-------+   : mount   |
-   |   . service       | focus  |    the  spine    |        +-------------+
-   |  mimi midao my    | karma  |                  |
-   +-------------------+ stake  |                  |
-    mudra  (keys)  ----------->|                  |
-    plumb  (value) ----------->+--+-----+------+--+
-                                  |     |      |
-                            store |  sync |     | transmit
-                                  v     v      v
-                              +-------+ +------+ +--------+
-                              |  bbg  | | sync | |  tape  |
-                              | :store| | :sync| | :frame |
-                              +---+---+ +--+---+ +---+----+
-                                  |        |         | frames
-                           verify |  agree |         v
-                                  |        v     +--------+
-                                  |    +-------+  | radio  |
-                                  |    |foculus|  | :trans |
-                                  |    |:agree |  +--------+
-                                  |    +-------+
-                                  v
-   +--------------------------------------------+       +-----------------+
-   |  PROOF  FLOOR                              |       |    languages    |
-   |                                            | lower | program the apps|
-   |   trident --.nox--.                        |<------+ of the  troika  |
-   |                   v                        | .nox  +-----------------+
-   |   rune ---noun--> nox --trace--> zheng     | noun  | trident . prove |
-   |                       <--open-- lens       |       | rune    . eval  |
-   |                                            |       | eidos   . proof |
-   |   strata : math    +    hemera : hash      |       | inf     . query |
-   +--------------------------------------------+       | nu . rs . tools |
-   conformance : snapshot -- one hemera                 +-----------------+
-   fingerprint per encoding & mechanism
+   +-------------------+         +----------------------+         +-------------+
+   | cyberia : social  |  links  |      cybergraph      |  patch  |     fs      |
+   |   . contract      +-------->|        : link        |<--------+   : mount   |
+   |   . service       | focus   |      the  spine      |         +-------------+
+   |  mimi midao my    | karma   |                      |
+   +-------------------+ stake   |                      |
+                                 |                      |
+    mudra ---- keys ----------->|                      |
+    plumb ---- value ---------->|                      |
+                                 +----+------+------+---+
+                                      |      |      |
+                                store |      | sync | transmit
+                                      v      v      v
+                                  +-------+ +------+ +-------+
+                                  |  bbg  | | sync | | tape  |
+                                  | :store| | :sync| | :frame|
+                                  +---+---+ +--+---+ +---+---+
+                                      |        |        |
+                               verify |  agree |        | frames
+                                      |        v        v
+                                      |    +-------+ +-------+
+                                      |    |foculus| | radio |
+                                      |    |:agree | | :trans|
+                                      |    +-------+ +-------+
+                                      v
+   +--------------------------------------------+        +-----------------+
+   |  PROOF  FLOOR                              |        |    languages    |
+   |                                            |  lower | program the apps|
+   |   trident ---.nox---.                      |<-------+ of the  troika  |
+   |                     v                      |  .nox  +-----------------+
+   |   rune ----noun---> nox ---trace---> zheng |  noun  | trident . prove |
+   |                         <---open--- lens   |        | rune    . eval  |
+   |                                            |        | eidos   . proof |
+   |   strata : math     +     hemera : hash    |        | inf     . query |
+   +--------------------------------------------+        | nu . rs . tools |
+                                                         +-----------------+
+   conformance : snapshot  --  one hemera fingerprint per encoding & mechanism
 
-   read side, recomputed every block:
-   cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0
-                           '----- phi* . positions . rank --------^
+   read side, recomputed every block :
+   cybergraph ---.graph---> tru ---.model---> glia ---features---> mir ---> R-1.0
+                             '------ phi* . positions . rank --------^
 
    +-------------------------------------------------------------------------+
    |  cyber : collective consciousness                                       |
