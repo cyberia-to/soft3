@@ -31,12 +31,14 @@ this is the whitepaper for those ideas — the foundational methods of soft3. th
    | five algebras        all computation reduces to five algebraic regimes             |
    | polynomial state     all state and proofs are one committed polynomial             |
    +------------------------------------------------------------------------------------+
-   | II  .  ONE PROOF            —  trust is computed, never granted                    |
+   | II  .  ONE PROOF            —  execution, programs, and the prover itself          |
    +------------------------------------------------------------------------------------+
    | proof-native         running a program and proving it are one act                  |
    | recursive closure    proofs verify proofs : all history folds to one               |
    | transparent          hash-based, post-quantum, no trusted setup                    |
    | conformance          every output fingerprinted : drift caught at commit           |
+   | eidos                a proof assistant in the kernel : programs proven correct     |
+   | self-hosting         the verifier is a nox program : the system closes on itself   |
    +------------------------------------------------------------------------------------+
    | III  .  ONE CONVERGENCE     —  agreement is settled, not voted                     |
    +------------------------------------------------------------------------------------+
@@ -78,14 +80,18 @@ before anything computes, everything must be a thing. soft3 fixes what a thing i
 - five algebras. all computation reduces to five algebraic regimes ([[strata]]). a type chooses its algebra, the algebra chooses its proof system. truth, efficiency, encryption, optimization, and privacy each get the regime built for them, and the five span the whole surface.
 - polynomial state. all state, all data, all proofs are one multilinear polynomial, committed once. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree. cross-index consistency is structural.
 
-## II. one proof — trust is computed, never granted
+## II. one proof — execution, programs, and the prover itself
 
-soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run.
+soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run. it is, as far as we know, the first proof system that proves at three levels at once — that a computation ran, that a program is correct, and that the prover is correct — all in one field, one kernel, with no trusted setup.
 
 - proof-native execution. running a program and proving it ran correctly are the same act. the [[nox]] execution trace is the constraint system, with no separate arithmetization step; every computation emits its witness as a byproduct.
 - recursive closure. proofs verify proofs. each step folds into an accumulator at ~30 field ops, and the entire history collapses to one constant-size proof behind a single final check. a light client validates all of history in roughly 100 nanoseconds.
 - transparent. trust bottoms out on hash collision resistance alone — no trusted setup, no elliptic curves, no pairings. the proofs are post-quantum and verification stays stable for decades.
 - conformance. every canonical mechanism output is fingerprinted with [[hemera]] ([[conformance]]). drift surfaces at commit time, so the protocol cannot shift underneath you silently.
+- eidos. [[eidos]] is a proof assistant — full CIC type theory, [[Curry-Howard]] scaled to all of mathematics — whose type checker is itself a [[nox]] program that emits a [[zheng]] certificate. [[zheng]] proves that a computation ran; eidos proves that a program is correct. every proved theorem becomes a [[cyberlink]] in the graph.
+- self-hosting. the [[zheng]] verifier is itself a [[nox]] program, so the system proves its own verification — recursively, to arbitrary depth, at constant proof size. the prover proves the prover. the system closes on itself.
+
+these have never been unified before. transparent recursive STARKs exist; formal proof assistants exist. neither has been self-hosting on the very VM it proves, sharing one field and one kernel with the other. by carrying its prover, its program-logic, and its own verifier in the same [[nox]] algebra, soft3 is a proof system closed under its own verification — with civilization-grade mathematics living inside it. that closure is the unprecedented part, and it is what lets the whole [[cybergraph]] be proven once, as a single artifact.
 
 ## III. one convergence — agreement is settled, not voted
 

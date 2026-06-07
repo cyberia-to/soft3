@@ -65,11 +65,13 @@ y = layer(y, "I  .  ONE REPRESENTATION    —  everything is encoded one way", [
     "five algebras        all computation reduces to five algebraic regimes",
     "polynomial state     all state and proofs are one committed polynomial",
 ])
-y = layer(y, "II  .  ONE PROOF            —  trust is computed, never granted", [
+y = layer(y, "II  .  ONE PROOF            —  execution, programs, and the prover itself", [
     "proof-native         running a program and proving it are one act",
     "recursive closure    proofs verify proofs : all history folds to one",
     "transparent          hash-based, post-quantum, no trusted setup",
     "conformance          every output fingerprinted : drift caught at commit",
+    "eidos                a proof assistant in the kernel : programs proven correct",
+    "self-hosting         the verifier is a nox program : the system closes on itself",
 ])
 y = layer(y, "III  .  ONE CONVERGENCE     —  agreement is settled, not voted", [
     "settle, do not derive   results are fixed points, not theorems",
