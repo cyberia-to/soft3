@@ -15,9 +15,21 @@ neurons / apps
       ↓
  soft3 SDK          ← this repo
       ↓
-cybergraph ─── bbg ─── tru ─── glia ─── mir
-      ↓           ↓
-   radio         lens / strata
+              soma (think)
+                │
+                ▼ ── ONE API: declare / submit / subscribe / query
+            cybergraph (link)
+                │
+   ┌────────────┼────────────┐
+   ▼            ▼            ▼
+  bbg         sync         radio
+(store)      (sync)      (transmit)
+                              │
+                              ▼
+                            tape
+                           (frame)
+
+(tru, glia, mir, foculus wire in around this core)
 ```
 
 ## what it provides
@@ -76,7 +88,7 @@ the [[tru]] is an onchain [[language]] model. it does what models do — rank, r
 
 ## the core
 
-fifteen repos form the core. [[cybergraph]] is the vertebra — everything attaches to it. [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
+seventeen repos form the core. [[cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. [[tape]] is the wire codec radio carries; [[sync]] owns the full structural-sync protocol below cybergraph. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
 
 | # | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
@@ -93,6 +105,8 @@ fifteen repos form the core. [[cybergraph]] is the vertebra — everything attac
 | 10 | [[mir]] | render | positions + features → [[R-1.0]] world | — |
 | 11 | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
 | 12 | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
-| 13 | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
-| 14 | [[soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
+| 13 | [[tape]] | frame | typed atomic particle framing over any byte stream | — |
+| 14 | [[sync]] | sync | structural sync: chain, VDF, equivocation, DAS, erasure, CRDT | — |
+| 15 | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
+| 16 | [[soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
 | + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
