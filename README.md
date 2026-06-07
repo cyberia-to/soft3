@@ -10,24 +10,33 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 
 developer experience layer for the [[soft3]] stack. makes the 14-repo stack accessible without understanding every repo.
 
+```svgbob
+  neurons / apps
+        |
+        v
+   soft3 SDK  <-- this repo
+        |
+        v
+      soma (think)
+        |
+        v
+  ONE API: declare / submit / subscribe / query
+        |
+        v
+   cybergraph (link)
+        |
+  .-----+------.
+  |     |      |
+  v     v      v
+ bbg  sync  radio
+(store)(sync)(transmit)
+              |
+              v
+            tape
+           (frame)
+
+  (tru, glia, mir, foculus, mudra wire in around this core)
 ```
-neurons / apps
-      ↓
- soft3 SDK          ← this repo
-      ↓
-              soma (think)
-                │
-                ▼ ── ONE API: declare / submit / subscribe / query
-            cybergraph (link)
-                │
-   ┌────────────┼────────────┐
-   ▼            ▼            ▼
-  bbg         sync         radio
-(store)      (sync)      (transmit)
-                              │
-                              ▼
-                            tape
-                           (frame)
 
 (tru, glia, mir, foculus wire in around this core)
 ```
