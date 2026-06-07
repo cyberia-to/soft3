@@ -2,7 +2,7 @@
 tags: cyber, soft3, architecture, proposal
 crystal-type: process
 crystal-domain: cyber
-status: draft
+status: implemented
 date: 2026-06-07
 ---
 # Architecture upgrade: cybergraph + sync + tape
