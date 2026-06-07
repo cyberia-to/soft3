@@ -13,59 +13,67 @@ developer experience layer for the [[soft3]] stack. makes the 20-repo stack acce
 a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective consciousness at the bottom, [[cyberia]] the social layer on the left, the languages that program the troika on the right — all wrapped around the soft3 spine. every edge is labelled with the artifact that crosses it, the language each pair speaks.
 
 ```svgbob
-   +-------------------------------------------------------------------------+
-   |  cyb : the robot                                                        |
-   |  soma : mind  .  pipeline : infer  .  worlds : face  .  honeycrisp : si |
-   +------------------------------------+------------------------------------+
-                                        |  soma : intend . seal . link . subscribe . query
-                                        v
-   +-------------------+         +----------------------+         +-------------+
-   | cyberia : social  |  links  |      cybergraph      |  patch  |     fs      |
-   |   . contract      +-------->|        : link        |<--------+   : mount   |
-   |   . service       | focus   |      the  spine      |         +-------------+
-   |  mimi midao my    | karma   |                      |
-   +-------------------+ stake   |                      |
-                                 |                      |
-    mudra ---- keys ----------->|                      |
-    plumb ---- value ---------->|                      |
-                                 +----+------+------+---+
-                                      |      |      |
-                                store |      | sync | transmit
-                                      v      v      v
-                                  +-------+ +------+ +-------+
-                                  |  bbg  | | sync | | tape  |
-                                  | :store| | :sync| | :frame|
-                                  +---+---+ +--+---+ +---+---+
-                                      |        |        |
-                               verify |  agree |        | frames
-                                      |        v        v
-                                      |    +-------+ +-------+
-                                      |    |foculus| | radio |
-                                      |    |:agree | | :trans|
-                                      |    +-------+ +-------+
-                                      v
-   +--------------------------------------------+        +-----------------+
-   |  PROOF  FLOOR                              |        |    languages    |
-   |                                            |  lower | program the apps|
-   |   trident ---.nox---.                      |<-------+ of the  troika  |
-   |                     v                      |  .nox  +-----------------+
-   |   rune ----noun---> nox ---trace---> zheng |  noun  | trident . prove |
-   |                         <---open--- lens   |        | rune    . eval  |
-   |                                            |        | eidos   . proof |
-   |   strata : math     +     hemera : hash    |        | inf     . query |
-   +--------------------------------------------+        | nu . rs . tools |
-                                                         +-----------------+
+   +----------------------------------------------------------------------------------+
+   | cyb : the robot                                                                  |
+   +----------------------------------------------------------------------------------+
+   | soma : mind     pipeline : infer     worlds : face     honeycrisp : silicon      |
+   +----------------------------------------------------------------------------------+
+                                                           |
+                                                           |  soma : intend . seal . link . subscribe . query
+                                                           v
+   +--------------------+               +------------------------------------+      +--------------+
+   | cyberia : social   |               | cybergraph                         |      | fs           |
+   +--------------------+               +------------------------------------+ patch+--------------+
+   | . contract         |  cyberlinks   | :  link                            |<-----| :  mount     |
+   | . service          |-------------->| the  spine                         |      +--------------+
+   | mimi  midao  my    |  focus . karma|                                    |
+   +--------------------+               |                                    |
+    mudra -----keys ------------------->|                                    |
+    plumb -----value ------------------>|                                    |
+                                        +-------+-----------+-----------+----+
+                                                |           |           |
+                                                |store      |sync       |transmit
+                                                v           v           v
+                                            +-------+   +-------+   +-------+
+                                            |  bbg  |   | sync  |   | tape  |
+                                            +-------+   +-------+   +-------+
+                                            |:store |   | :sync |   |:frame |
+                                            +-------+   +-------+   +-------+
+                                                |           |           |
+                                                |verify     |agree      |frames
+                                                |           |           |
+                                                |           |           |
+                                                |           v           v
+                                                |       +-------+   +-------+
+                                                |       |foculus|   | radio |
+                                                |       +-------+   +-------+
+                                                |       |:agree |   |:trans |
+                                                |       +-------+   +-------+
+                                                |
+                                                |
+                                                |
+                                                v
+   +----------------------------------------------------+           +--------------------+
+   | PROOF FLOOR                                        |           | languages          |
+   +----------------------------------------------------+           +--------------------+
+   | trident --.nox--.                                  |  lower    | trident . prove    |
+   |                 v                                  |<----------| rune    . eval     |
+   | rune ---noun--> nox --trace--> zheng               |  .nox noun| eidos   . proof    |
+   |                     <--open-- lens                 |           | inf     . query    |
+   | strata : math   +   hemera : hash                  |           | nu . rs . tools    |
+   +----------------------------------------------------+           +--------------------+
    conformance : snapshot  --  one hemera fingerprint per encoding & mechanism
 
    read side, recomputed every block :
-   cybergraph ---.graph---> tru ---.model---> glia ---features---> mir ---> R-1.0
-                             '------ phi* . positions . rank --------^
+   cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0
+                           '----- phi* . positions . rank ----^
 
-   +-------------------------------------------------------------------------+
-   |  cyber : collective consciousness                                       |
-   |  the whole graph converges to one mind :                                |
-   |  tru --> phi* --> foculus  ==>  cyberank . syntropy . CT-0 model         |
-   +-------------------------------------------------------------------------+
+   +----------------------------------------------------------------------------------+
+   | cyber : collective consciousness                                                 |
+   +----------------------------------------------------------------------------------+
+   | the whole graph converges to one mind                                            |
+   | tru --> phi* --> foculus  ==>  cyberank . syntropy . CT-0 model                  |
+   +----------------------------------------------------------------------------------+
 ```
 
 ## what it provides
