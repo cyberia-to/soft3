@@ -24,7 +24,7 @@ this is the whitepaper for those ideas — the foundational methods of soft3. th
                                               | every component obeys the same four substrates
                                               v
    +------------------------------------------------------------------------------------+
-   | I  .  ONE REPRESENTATION    —  everything is one polynomial over one field         |
+   | I  .  ONE FORM              —  everything is one polynomial over one field         |
    +------------------------------------------------------------------------------------+
    | one field            every value is one goldilocks field element                   |
    | one object           state, data and proofs are one committed polynomial           |
@@ -74,9 +74,9 @@ the collapse is why soft3 is a stack and not a pile. when [[bbg]] needs authenti
 
 four families of these collapses hold the stack up.
 
-## I. one representation — everything is one polynomial over one field
+## I. one form — everything is one polynomial over one field
 
-representation sounds like bookkeeping, but it is the deepest unification in the stack. soft3 has exactly one mathematical object — the multilinear polynomial over the [[Goldilocks field]] — and identity, value, state, computation, and proof are not separate things that happen to agree on a format. they are that one object, seen from different sides.
+this looks like bookkeeping; it is the deepest unification in the stack. soft3 has exactly one mathematical object — the multilinear polynomial over the [[Goldilocks field]], a single algebraic form — and identity, value, state, computation, and proof are not separate things that happen to agree on a format. they all take that one form, seen from different sides.
 
 - one field. every value is an element of the [[Goldilocks field]]. the field is the alphabet, chosen so that proofs, [[FHE]], and secret-sharing all operate inside it — cryptography is intrinsic, and there is no boundary between running a computation and proving it.
 - one object. all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree, and cross-index consistency is structural, not proven.

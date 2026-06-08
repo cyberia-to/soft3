@@ -59,7 +59,7 @@ def layer(y, title, rows):
     b = G.box(X, y, W, title=title, body=rows)
     return b[1] + b[3] - 1   # bottom row (next layer starts here, flush)
 
-y = layer(y, "I  .  ONE REPRESENTATION    —  everything is one polynomial over one field", [
+y = layer(y, "I  .  ONE FORM              —  everything is one polynomial over one field", [
     "one field            every value is one goldilocks field element",
     "one object           state, data and proofs are one committed polynomial",
     "five algebras        the field hosts five regimes of computation",
