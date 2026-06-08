@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-# Foundations diagram: the components rest on four stack-wide substrates.
+# Foundations diagram: the twenty components rest on one substrate —
+# one mind, reachable in many languages, growing into an open world.
+# Kept narrow (box width 74) so it fits the reading column without clipping.
 
 class Grid:
     def __init__(self, w, h):
@@ -38,10 +40,10 @@ class Grid:
         return '\n'.join(''.join(r).rstrip() for r in self.g)
 
 
-G = Grid(100, 58)
-X, W = 3, 86
+G = Grid(80, 42)
+X, W = 3, 74
 
-# ---- the components rest on top ----------------------------------------
+# ---- the twenty components rest on top ---------------------------------
 comp = G.box(X, 0, W, title="the 20 components  —  each a specialization of the substrate below",
              body=[
                "strata . hemera . lens . trident . nox . zheng . cybergraph . bbg",
@@ -51,49 +53,28 @@ comp = G.box(X, 0, W, title="the 20 components  —  each a specialization of th
 comp_b = comp[1] + comp[3] - 1
 cx = X + W // 2
 G.a_down(cx, comp_b + 1, comp_b + 4)
-G.put(cx + 2, comp_b + 2, "every component obeys the same four substrates")
+G.put(cx + 2, comp_b + 2, "each component, the same mind")
 
-# ---- four flush-stacked foundation layers (bedrock) --------------------
+# ---- three principles, flush-stacked (the bedrock) ---------------------
 y = comp_b + 4
 def layer(y, title, rows):
     b = G.box(X, y, W, title=title, body=rows)
     return b[1] + b[3] - 1   # bottom row (next layer starts here, flush)
 
-y = layer(y, "I  .  ONE FORM              —  everything is one polynomial over one field", [
-    "one field            every value is one goldilocks field element",
-    "one object           state, data and proofs are one committed polynomial",
-    "five algebras        the field hosts five regimes of computation",
-    "particle identity    a name is its content hash : a polynomial commitment",
+y = layer(y, "ONE MIND   —  one polynomial, proven, converged", [
+    "one form    one polynomial over one field . five algebras",
+    "one proof   proof-native . recursive . the prover proves the prover",
+    "one focus   one phi* over all particles . tri-kernel . spectral gap",
 ])
-y = layer(y, "II  .  ONE PROOF            —  execution, programs, and the prover itself", [
-    "proof-native         running a program and proving it are one act",
-    "recursive closure    proofs verify proofs : all history folds to one",
-    "transparent          hash-based, post-quantum, no trusted setup",
-    "conformance          every output fingerprinted : drift caught at commit",
-    "eidos                a proof assistant in the kernel : programs proven correct",
-    "self-hosting         the verifier is a nox program : the system closes on itself",
+y = layer(y, "MANY LANGUAGES   —  one substrate, three ways to touch it", [
+    "write       cybermark . the markup is the graph",
+    "compute     the trident family . all lower to nox",
+    "mean        neural . meaning is an eigenvector of the graph",
 ])
-y = layer(y, "III  .  ONE CONVERGENCE     —  the whole graph settles into one mind", [
-    "global focus            one phi* distribution over every particle",
-    "settle, do not derive   fixed points discovered, not theorems derived",
-    "tri-kernel              diffusion + springs + heat : the only local basis",
-    "one answer, four ways   phi* is consensus + rank + reward + meaning at once",
-    "speed of thought        the spectral gap is how fast the whole graph decides",
-    "stake-weighted          security is economic mass, not honest majority",
+y = layer(y, "OPEN WORLD   —  it holds, composes, admits", [
+    "it holds    five-layer sync . bounded locality . planet scale",
+    "it composes add a cyberlink, not an API . nothing to translate",
+    "it admits   no schema . no gatekeeper . ZK+FHE+MPC over one field",
 ])
-y = layer(y, "IV  .  ONE FABRIC           —  it holds together at planet scale", [
-    "five-layer sync      validity . ordering . completeness . availability . merge",
-    "bounded locality     every change is local to a log-n neighborhood",
-    "privacy trilateral   ZK + FHE + MPC compose over the shared field",
-])
-
-# ---- the language trinity : how you interface --------------------------
-ty = y + 2
-G.put(X, ty, "you interface the whole stack in three languages :")
-tw = 24
-gap = 4
-b1 = G.box(X, ty + 1, tw, title="write", body=["cybermark"], center=True)
-b2 = G.box(X + tw + gap, ty + 1, tw, title="compute", body=["the trident family"], center=True)
-b3 = G.box(X + 2*(tw + gap), ty + 1, tw, title="mean", body=["neural"], center=True)
 
 print(G.text())

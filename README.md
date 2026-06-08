@@ -8,148 +8,34 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
 # soft3
 
-developer experience layer for the [[soft3]] stack. makes the 20-repo stack accessible without understanding every repo.
+> one mind, many languages, open world
 
-a compass over one machinery. the [[cyb]] robot on top, the [[cyber]] collective consciousness at the bottom, [[cyberia]] the social layer on the left. three kinds of language wrap the spine: you write in [[cybermark]] (the markup language, top), the system computes in the [[trident]] family (right), and it means in [[neural]] (the semantic language, bottom). every edge is labelled with the artifact that crosses it, the language each pair speaks.
+the stack for a shared, provable, self-improving [[knowledge]] system. every web had one — web1 ran on LAMP, web2 on React + Node + Postgres, web3 on Solidity + EVM + RPC. soft3 is the next: every computation leaves a [[cryptographic proof]], every piece of meaning carries a measurable weight, and the whole graph converges to one mind.
 
-```svgbob
-   +----------------------------------------------------------------------------------+
-   | cyb : the robot                                                                  |
-   +----------------------------------------------------------------------------------+
-   | soma : mind     pipeline : infer     worlds : face     honeycrisp : silicon      |
-   +----------------------------------------------------------------------------------+
-                                                           |
-                                                           v neurons write
-                                       +--------------------------------------+
-                                       | cybermark : the markup language      |
-                                       +--------------------------------------+
-                                       | address . navigate . compute inline  |
-                                       | the markup is the graph              |
-                                       +--------------------------------------+
-                                                           |
-                                                           | soma : intend . seal . link . subscribe . query
-                                                           v
-   +--------------------+               +------------------------------------+      +--------------+
-   | cyberia : social   |               | cybergraph                         |      | fs           |
-   +--------------------+               +------------------------------------+ patch+--------------+
-   | . contract         |  cyberlinks   | :  link                            |<-----| :  mount     |
-   | . service          |-------------->| the  spine                         |      +--------------+
-   | mimi  midao  my    |  focus . karma|                                    |
-   +--------------------+               |                                    |
-    mudra -----keys ------------------->|                                    |
-    plumb -----value ------------------>|                                    |
-                                        +-------+-----------+-----------+----+
-                                                |           |           |
-                                                |store      |sync       |transmit
-                                                v           v           v
-                                            +-------+   +-------+   +-------+
-                                            |  bbg  |   | sync  |   | tape  |
-                                            +-------+   +-------+   +-------+
-                                            |:store |   | :sync |   |:frame |
-                                            +-------+   +-------+   +-------+
-                                                |           |           |
-                                                |verify     |agree      |frames
-                                                |           |           |
-                                                |           |           |
-                                                |           v           v
-                                                |       +-------+   +-------+
-                                                |       |foculus|   | radio |
-                                                |       +-------+   +-------+
-                                                |       |:agree |   |:trans |
-                                                |       +-------+   +-------+
-                                                |
-                                                |
-                                                |
-                                                v
-   +----------------------------------------------------+           +--------------------+
-   | PROOF FLOOR                                        |           | languages          |
-   +----------------------------------------------------+           +--------------------+
-   | trident --.nox--.                                  |  lower    | trident . prove    |
-   |                 v                                  |<----------| rune    . eval     |
-   | rune ---noun--> nox --trace--> zheng               |  .nox noun| eidos   . proof    |
-   |                     <--open-- lens                 |           | inf     . query    |
-   | strata : math   +   hemera : hash                  |           | nu      . shell    |
-   +----------------------------------------------------+           | rs      . jets     |
-                                                                    +--------------------+
-   conformance : snapshot  --  one hemera fingerprint per encoding & mechanism
+```text
+one mind
+   one form     —  one multilinear form over one field
+   one proof    —  the prover proves the prover
+   one focus    —  the graph settles into one φ*
 
-   read side, recomputed every block :
-   cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0
-                           '----- phi* . positions . rank ----^
+many languages
+   write        —  cybermark
+   compute      —  the trident family
+   mean         —  neural
 
-                       +------------------------------------------+
-                       | neural : the semantic language           |
-                       +------------------------------------------+
-                       | meaning emerges from cyberlinks          |
-                       | dialects . sentences . motifs . names    |
-                       +------------------------------------------+
-                                             |  the egregore thinks in neural
-                                             v
-   +----------------------------------------------------------------------------------+
-   | cyber : collective consciousness                                                 |
-   +----------------------------------------------------------------------------------+
-   | the whole graph converges to one mind                                            |
-   | tru --> phi* --> foculus  ==>  cyberank . syntropy . CT-0 model                  |
-   +----------------------------------------------------------------------------------+
+open world
+   it holds     —  one fabric, planet scale
+   it composes  —  add a cyberlink, not an API
+   it admits    —  no schema, no gatekeeper, no closed set
 ```
 
-## what it provides
+soft3 is **one mind** where other stacks sprawl, **many languages** where they lock you in, and an **open world** where they build walls. inside, identity, state, data and proof are one polynomial over one field — one object seen from different sides, so composition is free: there is nothing to translate between. you touch it three ways — you *write* in [[cybermark]], the system *computes* in the [[trident]] family, and it *means* in [[neural]]. and it stays open: it holds at planet scale, composes without glue, and admits anything that lowers to [[nox]].
 
-| component | purpose | status |
-|-----------|---------|--------|
-| [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
-| [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` command-line tool | scaffold |
-| [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
-| [py/](py/) | Python SDK | scaffold |
-
-## core operations
-
-every SDK exposes the same five operations regardless of language:
-
-```
-particle(content)              → particle     hemera hash of bytes
-cyberlink(from, to, neuron)    → signal       construct + sign a cyberlink
-query(particle, dimension)     → value+proof  BBG Lens opening
-verify(root, proof)            → bool         proof verification
-submit(signal)                 → receipt      send signal to network
-```
-
-## quick start (JS)
-
-```ts
-import { CyberClient } from '@cybercongress/cyber-js'
-
-const client = await CyberClient.connect('https://rpc.bostrom.cybernode.ai')
-const result = await client.rank.search('cyber')
-```
-
-## status
-
-dependencies not yet stabilised — full implementation blocked on:
-- wire format finalisation (`schema/`)
-- BBG proof serialisation (lens `Commitment`/`Opening` serde)
-- query RPC protocol definition
-
-scaffold is in place. implementations land per component as deps stabilise.
-
-see [[soft3]] for the full stack description.
-
----
-
-every generation of the web had its stack. web1 had LAMP. web2 had React + Node + Postgres. web3 had Solidity + EVM + RPC. each defined what developers could build and what users could experience
-
-soft3 is the stack for a shared, provable, self-improving [[knowledge]] system where every computation leaves a [[cryptographic proof]] and every piece of meaning has a measurable weight
-
-[[neurons]] — humans, AIs, sensors, agents — link [[knowledge]] into the [[cybergraph]]. the [[tru]] reads this graph every block and computes what matters: [[cyberank]] per [[particle]], [[karma]] per [[neuron]], [[syntropy]] of the whole. every result is deterministic, on chain, verifiable by anyone. [[trident]] compiles any logic into [[zheng]] proofs — hash-based, post-quantum, no trusted setup. [[neural]] structures meaning through [[dialects]] so the graph speaks a [[language]] both humans and machines understand. [[cyb]] makes all of it accessible — a personal [[cyb/robot]] that queries, scripts, and navigates the graph
-
-the [[tru]] is an onchain [[language]] model. it does what models do — rank, retrieve, infer — except the weights are public [[tokens]], the training data is an open [[cybergraph]], and the inference runs in [[consensus]] with proofs. no API keys, no corporate weights, no black boxes. the model improves when anyone links useful [[knowledge]], and the improvement is measurable as rising [[syntropy]]
-
-[[trident]] closes the provability gap. in existing stacks, smart contracts can move [[tokens]] but cannot prove that a computation happened correctly without re-executing it. [[trident]] programs produce [[zheng]] proofs: verify once, trust forever. this makes the stack suitable for [[AI alignment]] — you can prove that a model followed a policy, not just trust that it did
+the foundations behind these three lines are the [soft3 whitepaper](docs/). this repo is the developer experience layer on top — the SDKs, CLI, MCP server and wire schema that make a twenty-repo stack usable without learning all twenty repos.
 
 ## the core
 
-twenty repos form the core. [[cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. [[tape]] is the wire codec radio carries; [[sync]] owns the full structural-sync protocol below cybergraph. [[conformance]] is the meta-layer — one [[hemera]] fingerprint per canonical encoding and mechanism output, drift surfaces at commit time. the boundary is sharp: below it, Rust bootstrap required. above it, everything is pure [[trident]].
+twenty repos form the stack. [[cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soma]] is the ceiling — the avatar's mind that thinks over the whole stack. the boundary is sharp: below it, Rust bootstrap required; above it, everything is pure [[trident]].
 
 | # | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
@@ -174,3 +60,34 @@ twenty repos form the core. [[cybergraph]] is the vertebra — soma's one API fu
 | + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
 | + | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
 | + | [[plumb]] | pay | value layer: Coin + Card + five operations | — |
+
+## the SDK
+
+| dir | what | status |
+|-----|------|--------|
+| [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
+| [schema/](schema/) | canonical wire format definitions | draft |
+| [cli/](cli/) | `soft3` command-line tool | scaffold |
+| [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
+| [py/](py/) | Python SDK | scaffold |
+
+every SDK exposes the same five operations regardless of language:
+
+```text
+particle(content)              → particle     hemera hash of bytes
+cyberlink(from, to, neuron)    → signal       construct + sign a cyberlink
+query(particle, dimension)     → value+proof  BBG Lens opening
+verify(root, proof)            → bool         proof verification
+submit(signal)                 → receipt      send signal to network
+```
+
+```ts
+import { CyberClient } from '@cybercongress/cyber-js'
+
+const client = await CyberClient.connect('https://rpc.bostrom.cybernode.ai')
+const result = await client.rank.search('cyber')
+```
+
+dependencies not yet stabilised — full implementation is blocked on wire format finalisation (`schema/`), BBG proof serialisation (lens `Commitment`/`Opening` serde), and the query RPC protocol. the scaffold is in place; implementations land per component as deps stabilise.
+
+see [soft3/docs](docs/) for the foundations whitepaper — the methods behind one mind, many languages, open world.

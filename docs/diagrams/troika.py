@@ -186,7 +186,7 @@ G.put(3, CONTENT_BOT + 1, "conformance : snapshot  --  one hemera fingerprint pe
 
 # ===== read side ========================================================
 RY = CONTENT_BOT + 3
-G.put(3, RY, "read side, recomputed every block :")
+G.put(3, RY, "read side, recomputed every step :")
 G.put(3, RY + 1, "cybergraph --.graph--> tru --.model--> glia --features--> mir --> R-1.0")
 G.put(27, RY + 2, "'----- phi* . positions . rank ----^")
 
