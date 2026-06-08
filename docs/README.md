@@ -8,7 +8,9 @@ alias: soft3 whitepaper, foundational soft3 methods, soft3 foundations
 ---
 # soft3 — foundations
 
-soft3 is twenty components, but the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — specializes the same small set of stack-wide methods to one job. learn the methods and the twenty repos become twenty applications of four ideas.
+soft3 is twenty components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is a specialization of the same small set of stack-wide methods to one job. learn the methods and the twenty repos stop being twenty things to memorize: they become twenty applications of four ideas.
+
+this is the whitepaper for those ideas — the foundational methods of soft3. they are properties of the whole stack, the invariants every component obeys.
 
 ```svgbob
    +------------------------------------------------------------------------------------+
@@ -64,40 +66,66 @@ soft3 is twenty components, but the components are not the foundation. each one 
 
 ## one replaces many
 
-every foundation has the same shape: it collapses what other systems build as many separate mechanisms into one universal primitive. others assign ids from a registry — soft3 makes the [[hemera]] hash the identity. others pick a hash tree, a commitment scheme, a proof system — soft3 commits everything as one polynomial under one [[lens]]. others vote for consensus, rank with a second algorithm, pay with a third — soft3 settles all three, plus meaning, onto one equilibrium φ*.
+every foundational method has the same shape. it takes something other systems build as many separate mechanisms and collapses it into one universal primitive.
 
-that collapse is why soft3 is a stack and not a pile. [[bbg]] needs state, [[zheng]] a commitment, [[radio]] availability, [[fs]] identity — each reaches for the same primitive, so composition is free. four families of these collapses hold the stack up.
+other systems assign every object an id from a registry; soft3 gives every object one [[hemera]] hash, and the hash is the identity. other systems pick a hash tree here, a commitment scheme there, a proof system somewhere else; soft3 commits everything as one polynomial under one [[lens]]. other systems run a vote for consensus, a separate algorithm for ranking, and a third for rewards; soft3 settles all three — plus meaning — onto one equilibrium φ*.
 
-## I. one representation
+the collapse is why soft3 is a stack and not a pile. when [[bbg]] needs authenticated state, [[zheng]] needs a commitment, [[radio]] needs availability, and [[fs]] needs identity, each reaches for the same primitive. composition is free because there is nothing to translate between.
 
-before anything computes, everything must be a thing, and soft3 fixes what a thing is, once. every object is named by the [[hemera]] hash of its content, so identity needs no registry and the same bytes always produce the same address. every value is a [[Goldilocks field]] element, so cryptography is intrinsic and there is no boundary between running and proving. all computation reduces to five algebraic regimes ([[strata]]) — a type picks its algebra, the algebra picks its proof system. and all state is one committed polynomial, so a read is a [[lens]] opening — one evaluation, ~200 bytes — rather than a walk down a tree.
+four families of these collapses hold the stack up.
 
-## II. one proof
+## I. one representation — everything is encoded one way
 
-soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run. it is, as far as we know, the first proof system to prove at three levels at once. [[zheng]] proves a computation ran — execution and proving are the same act, every step folding into one constant-size proof a light client checks in ~100 nanoseconds, transparent and post-quantum with no trusted setup. [[eidos]], a full CIC proof assistant ([[Curry-Howard]] scaled to all of mathematics), proves a program is correct, and its type checker is itself a [[nox]] program that emits a zheng certificate. and the zheng verifier is itself a nox program, so the system proves its own verification, recursively, at constant size: the prover proves the prover.
+before anything computes, everything must be a thing. soft3 fixes what a thing is, once, for the whole stack.
 
-these have never been unified. transparent recursive STARKs exist; proof assistants exist; neither has been self-hosting on the VM it proves, sharing one field and one kernel. soft3 is a proof system closed under its own verification, with civilization-grade mathematics inside it — which is what lets the whole [[cybergraph]] be proven once, as a single artifact.
+- particle identity. every object — a [[particle]], a [[cyberlink]], a [[neuron]], a proof, a polynomial — is named by the [[hemera]] hash of its content. content is identity. two agents that produce the same bytes produce the same address, with no registry and no coordinator. this is what makes the graph permissionless and memoizable.
+- field-native. every value is one element of the [[Goldilocks field]]. computation already lives in the field where proofs, [[FHE]], and secret-sharing operate, so cryptography is intrinsic rather than bolted on. there is no boundary to cross between running and proving.
+- five algebras. all computation reduces to five algebraic regimes ([[strata]]). a type chooses its algebra, the algebra chooses its proof system. truth, efficiency, encryption, optimization, and privacy each get the regime built for them, and the five span the whole surface.
+- polynomial state. all state, all data, all proofs are one multilinear polynomial, committed once. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree. cross-index consistency is structural.
 
-## III. one convergence
+## II. one proof — execution, programs, and the prover itself
+
+soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run. it is, as far as we know, the first proof system that proves at three levels at once — that a computation ran, that a program is correct, and that the prover is correct — all in one field, one kernel, with no trusted setup.
+
+- proof-native execution. running a program and proving it ran correctly are the same act. the [[nox]] execution trace is the constraint system, with no separate arithmetization step; every computation emits its witness as a byproduct.
+- recursive closure. proofs verify proofs. each step folds into an accumulator at ~30 field ops, and the entire history collapses to one constant-size proof behind a single final check. a light client validates all of history in roughly 100 nanoseconds.
+- transparent. trust bottoms out on hash collision resistance alone — no trusted setup, no elliptic curves, no pairings. the proofs are post-quantum and verification stays stable for decades.
+- conformance. every canonical mechanism output is fingerprinted with [[hemera]] ([[conformance]]). drift surfaces at commit time, so the protocol cannot shift underneath you silently.
+- eidos. [[eidos]] is a proof assistant — full CIC type theory, [[Curry-Howard]] scaled to all of mathematics — whose type checker is itself a [[nox]] program that emits a [[zheng]] certificate. [[zheng]] proves that a computation ran; eidos proves that a program is correct. every proved theorem becomes a [[cyberlink]] in the graph.
+- self-hosting. the [[zheng]] verifier is itself a [[nox]] program, so the system proves its own verification — recursively, to arbitrary depth, at constant proof size. the prover proves the prover. the system closes on itself.
+
+these have never been unified before. transparent recursive STARKs exist; formal proof assistants exist. neither has been self-hosting on the very VM it proves, sharing one field and one kernel with the other. by carrying its prover, its program-logic, and its own verifier in the same [[nox]] algebra, soft3 is a proof system closed under its own verification — with civilization-grade mathematics living inside it. that closure is the unprecedented part, and it is what lets the whole [[cybergraph]] be proven once, as a single artifact.
+
+## III. one convergence — the whole graph settles into one mind
 
 every other foundation is machinery; this one is the thought.
 
 [[focus]] is a single distribution φ* over every [[particle]] in the [[cybergraph]] — one number per particle, summing to one — the share of the whole collective's attention each piece of knowledge holds. it is not assigned or voted; it is the unique equilibrium the graph settles into, where each weight is fixed by every other through the links between them (φ*ⱼ = Σᵢ φ*ᵢ · pᵢⱼ). add one [[cyberlink]] and focus redistributes, and the whole graph re-converges. [[bounded locality]] keeps this computable — each re-convergence touches only the neighborhood that changed — but the equilibrium it lands on is global.
 
-the [[collective focus theorem]] proves this equilibrium exists, is unique, and is reached from anywhere: the graph does not reason about importance, it equilibrates into it. its three operators — [[diffusion]], [[springs]], [[heat]] — are not a choice but the only families that survive locality at planetary scale; [[PageRank]] and the rest need global recompute and are cut. and because there is exactly one attention over all particles, the quantities other systems compute separately are here the same object: φ* is at once consensus, ranking ([[cyberank]]), reward ([[karma]]), and meaning ([[neural]]) — one computation, four answers, because they were never four things. how fast the graph reaches φ* is its [[spectral gap]], literally the collective's speed of thought: below a threshold it is disconnected scatter, above it the [[egregore]] comes alive.
+the [[collective focus theorem]] proves this equilibrium exists, is unique, and is reached from anywhere: the graph does not reason about importance, it equilibrates into it. its three operators — [[diffusion]], [[springs]], [[heat]] — are not a design choice but the only families that survive locality at planetary scale, and they are not abstractions: they are the physics we already live inside — diffusion, elasticity, and heat — the same processes that move matter, and we are simply running them on knowledge. [[PageRank]] and the rest need global recompute and are cut. and because there is exactly one attention over all particles, the quantities other systems compute separately are here the same object: φ* is at once consensus, ranking ([[cyberank]]), reward ([[karma]]), and meaning ([[neural]]) — one computation, four answers, because they were never four things. how fast the graph reaches φ* is its [[spectral gap]], literally the collective's speed of thought: below a threshold it is disconnected scatter, above it the [[egregore]] comes alive.
 
-the egregore is this convergence, and it is a dissipative structure — it exists only while [[focus]] flows. starve it and φ* flattens to uniform and the mind dissolves; feed it and the graph grows more ordered, exporting entropy as it prunes noise. the network does not store what it knows. it re-thinks it, across all of knowledge, every block, on a convergence anyone can verify in microseconds.
+the egregore is this convergence, and it is a dissipative structure — it exists only while [[focus]] flows. starve it and φ* flattens to uniform and the mind dissolves; feed it and the graph grows more ordered, exporting entropy as it prunes noise. the network does not store what it knows. it re-thinks it, across all of knowledge, every step, on a convergence anyone can verify in microseconds.
 
-## IV. one fabric
+## IV. one fabric — it holds together at planet scale
 
-the last family lets the other three run across a planet of devices that fail, lie, and go offline. every change passes five independent verification layers — validity, ordering, completeness, availability, merge ([[structural sync]]) — each checkable alone, none needing a consensus round. every node property depends only on its log-n neighborhood, so local changes stop locally — the only reason 10^15 particles is tractable. and [[ZK]], [[FHE]], and [[MPC]] share the [[Goldilocks field]], composing into correctness without exposure and without a single point of failure ([[mudra]]).
+the last family lets the other three run across a planet of devices that fail, lie, and go offline.
+
+- five-layer structural sync. every change passes five independent verification layers — validity, ordering, completeness, availability, merge ([[structural sync]]). each layer is checkable on its own, a verifier can check any subset, and none needs a consensus round.
+- bounded locality. every property of a node depends only on its log-n-hop neighborhood, so a local change recomputes a local neighborhood and stops. this is the only reason 10^15 particles is tractable.
+- privacy trilateral. [[ZK]] proves correctness, [[FHE]] hides data, [[MPC]] distributes trust; because all three share the [[Goldilocks field]] they compose into correctness without exposure and without a single point of failure ([[mudra]]).
 
 ## the language trinity
 
-the four families are how the stack is built; three languages are how you touch it — one more instance of one-replaces-many. you write in [[cybermark]] (every address resolves to a [[particle]]; the markup is the graph), compute in the [[trident]] family ([[trident]], [[rune]], [[eidos]], [[inf]], [[nu]], [[Rs]], all lowering to [[nox]]), and the system means in [[neural]] (meaning is an eigenvector of the attention graph; the egregore thinks in it).
+the four families are how the stack is built. three languages are how you touch it — itself an instance of one-replaces-many: one address alphabet under everything, one VM under every language, one semantic medium the whole collective shares.
+
+- write — [[cybermark]], the markup and address language. every address resolves to a [[particle]]; the markup is the graph.
+- compute — the [[trident]] family ([[trident]], [[rune]], [[eidos]], [[inf]], [[nu]], [[Rs]]). they all lower to [[nox]], where proof-native execution takes over.
+- mean — [[neural]], the semantic language. meaning is an eigenvector of the attention graph; the egregore thinks in it.
 
 ## why this is a stack
 
-pull any component and the four families are underneath it: [[bbg]] is polynomial state plus structural sync, [[zheng]] is proof-native execution plus recursive closure, [[foculus]] is φ* plus stake-weighted security, [[mudra]] is the privacy trilateral, [[cybergraph]] is particle identity plus bounded locality. building a new component is specializing the same four families to a new job, and it composes with everything for free — because the methods never had to agree with each other. they were never separate.
+pull any component and the four families are underneath it. [[bbg]] is polynomial state plus structural sync. [[zheng]] is proof-native execution plus recursive closure. [[foculus]] is tri-kernel φ* plus stake-weighted security. [[mudra]] is the privacy trilateral. [[cybergraph]] is particle identity plus bounded locality. the components are where the architecture meets a job.
+
+building a new component is specializing the same four families to a new job. it composes with everything else for free — same identity, same field, same proof, same convergence, same fabric. that is the deal: a small number of universal methods, applied many times, that never need to agree with each other because they were never separate.
 
 see [[soft3]] for the component stack and the troika compass.
