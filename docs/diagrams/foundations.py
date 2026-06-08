@@ -59,11 +59,11 @@ def layer(y, title, rows):
     b = G.box(X, y, W, title=title, body=rows)
     return b[1] + b[3] - 1   # bottom row (next layer starts here, flush)
 
-y = layer(y, "I  .  ONE REPRESENTATION    —  everything is encoded one way", [
-    "particle identity    content is identity : one hemera hash, no registry",
-    "field-native         one goldilocks field element per value",
-    "five algebras        all computation reduces to five algebraic regimes",
-    "polynomial state     all state and proofs are one committed polynomial",
+y = layer(y, "I  .  ONE REPRESENTATION    —  everything is one polynomial over one field", [
+    "one field            every value is one goldilocks field element",
+    "one object           state, data and proofs are one committed polynomial",
+    "five algebras        the field hosts five regimes of computation",
+    "particle identity    a name is its content hash : a polynomial commitment",
 ])
 y = layer(y, "II  .  ONE PROOF            —  execution, programs, and the prover itself", [
     "proof-native         running a program and proving it are one act",

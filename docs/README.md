@@ -24,12 +24,12 @@ this is the whitepaper for those ideas — the foundational methods of soft3. th
                                               | every component obeys the same four substrates
                                               v
    +------------------------------------------------------------------------------------+
-   | I  .  ONE REPRESENTATION    —  everything is encoded one way                       |
+   | I  .  ONE REPRESENTATION    —  everything is one polynomial over one field         |
    +------------------------------------------------------------------------------------+
-   | particle identity    content is identity : one hemera hash, no registry            |
-   | field-native         one goldilocks field element per value                        |
-   | five algebras        all computation reduces to five algebraic regimes             |
-   | polynomial state     all state and proofs are one committed polynomial             |
+   | one field            every value is one goldilocks field element                   |
+   | one object           state, data and proofs are one committed polynomial           |
+   | five algebras        the field hosts five regimes of computation                   |
+   | particle identity    a name is its content hash : a polynomial commitment          |
    +------------------------------------------------------------------------------------+
    | II  .  ONE PROOF            —  execution, programs, and the prover itself          |
    +------------------------------------------------------------------------------------+
@@ -74,14 +74,16 @@ the collapse is why soft3 is a stack and not a pile. when [[bbg]] needs authenti
 
 four families of these collapses hold the stack up.
 
-## I. one representation — everything is encoded one way
+## I. one representation — everything is one polynomial over one field
 
-before anything computes, everything must be a thing. soft3 fixes what a thing is, once, for the whole stack.
+representation sounds like bookkeeping, but it is the deepest unification in the stack. soft3 has exactly one mathematical object — the multilinear polynomial over the [[Goldilocks field]] — and identity, value, state, computation, and proof are not separate things that happen to agree on a format. they are that one object, seen from different sides.
 
-- particle identity. every object — a [[particle]], a [[cyberlink]], a [[neuron]], a proof, a polynomial — is named by the [[hemera]] hash of its content. content is identity. two agents that produce the same bytes produce the same address, with no registry and no coordinator. this is what makes the graph permissionless and memoizable.
-- field-native. every value is one element of the [[Goldilocks field]]. computation already lives in the field where proofs, [[FHE]], and secret-sharing operate, so cryptography is intrinsic rather than bolted on. there is no boundary to cross between running and proving.
-- five algebras. all computation reduces to five algebraic regimes ([[strata]]). a type chooses its algebra, the algebra chooses its proof system. truth, efficiency, encryption, optimization, and privacy each get the regime built for them, and the five span the whole surface.
-- polynomial state. all state, all data, all proofs are one multilinear polynomial, committed once. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree. cross-index consistency is structural.
+- one field. every value is an element of the [[Goldilocks field]]. the field is the alphabet, chosen so that proofs, [[FHE]], and secret-sharing all operate inside it — cryptography is intrinsic, and there is no boundary between running a computation and proving it.
+- one object. all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree, and cross-index consistency is structural, not proven.
+- five algebras. the one field hosts five algebraic regimes ([[strata]]) — truth, efficiency, encryption, optimization, privacy. a type picks its regime; the substance is the same in all of them.
+- particle identity. a particle's name is the [[hemera]] hash of its content, which is itself a polynomial commitment — so content is identity, the same bytes always produce the same address, and the graph needs no registry.
+
+this is why composition is free: when [[zheng]] hands [[bbg]] a commitment, or [[cybergraph]] hands [[hemera]] some content, they pass the same kind of object. there is nothing to serialize, because there is nothing to translate between. one field, one polynomial; everything else is a view of it.
 
 ## II. one proof — execution, programs, and the prover itself
 
