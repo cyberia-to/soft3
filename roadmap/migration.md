@@ -28,11 +28,17 @@ particle identities — so it must be sequenced, not done piecemeal.
 |---|---|---|
 | `noun` | `data` | nox specs + code, all consumers |
 | `cell` | `pair` | nox specs + code |
-| `NounId` / `ContentId` | `particle` | nox + bbg + consumers |
+| `NounId` (arena index, u32) | `OrderId` | nox + consumers |
+| `ContentId` (content identity) | `particle` | nox + bbg + consumers |
 | `Cid` | `particle` | inf (done), any stragglers |
 | `digest` (core) | `particle` | core only; stays `Digest` at trident target |
-| `U32` (surface) | `Word` | trident surface + inf |
+| `U32` (surface value) | `Word` | trident surface + inf |
 | `Tag` (field/word atom tags) | removed | nox |
+
+`OrderId` and `Word` are DISTINCT and must not be conflated: `OrderId = u32`
+is the order-local arena index (a slot in the `order`); `Word` is the value
+refinement — a `field` proven in `[0, 2³²)` (terms.md). nox's data node index
+is an `OrderId`, never a `Word`.
 
 plus structural changes: tag-free leaf encoding (Model B); drop the
 `data[8]` framing byte; hemera drops keyed/derive modes.
@@ -127,49 +133,84 @@ Sign off the renames table and the two open names already chosen
 (`data`, `pair`). Nothing builds until this is fixed — every later phase
 depends on it. Gate: author approval of `terms.md`.
 
-### Phase 1 — spec sweep (docs only, no build risk)
+### Phase 1 — spec sweep (docs only, no build risk) ✓ nox DONE
 
 Update every `.md` spec to the new vocabulary, spec-before-code. Per repo,
 independent, parallelisable by directory:
 
-- nox: `specs/noun/` (→ rename concept; the dir name too), `encoding.md`,
-  `reduction.md`, `vm.md`, `trace.md`, `object.md`. resolve the Model A/B
-  duality in favour of B; fix the `capacity[14]` drift in `noun/hash.md`.
+- nox ✓: `specs/noun/` renamed to `specs/data/` (dir + content); `encoding.md`,
+  `reduction.md`, `vm.md`, `trace.md`, `object.md`, all `patterns/`, `jets*`,
+  `README` swept. Model B adopted; `capacity[14]` drift fixed in `data/hash.md`;
+  `tag.md` deleted. `NounId → particle` where it meant content identity (trace),
+  `→ OrderId` where it meant the arena index (order.md). no `noun`/`cell`/`NounId`
+  left except the `order.hash_noun` code-method ref (trace.md:500) and the
+  Field/Word atom *typing* language (Phase 6).
 - hemera: `noun/hash.md` callers, capacity docs; land
-  `one-pure-hash.md`’s lane layout into the reference.
-- inf, trident `reference/`, cybergraph `specs/`: vocabulary only.
+  `one-pure-hash.md`’s lane layout into the reference. (pending)
+- inf, trident `reference/`, cybergraph `specs/`: vocabulary only. (pending)
 
 Verify: each repo’s docs read consistently; no `noun`/`cell`/`Cid`/`NounId`
 left except where quoting history.
 
-### Phase 2 — code rename sweep (mechanical, compile-checked)
+### Phase 2 — code rename sweep (mechanical, compile-checked) ✓ nox DONE
 
 In dependency order, rebuild downstream after each:
 
-1. nox: `Noun → Data`, `NounId/ContentId → Particle`, `cell → pair`,
-   remove `Tag` (collapse field/word). `cargo check` + tests.
+1. nox ✓: `Noun → Data`, `NounId → OrderId` (arena index), `ContentId → Particle`
+   (content identity), `cell → pair`, removed `Tag` (collapsed field/word).
+   161/161 tests green; `brakedown` + `honeycrisp` feature builds green.
+   Remaining polish (NOT gated — compiles + tests pass): lowercase helper
+   identifiers still carrying `noun` (`hash_noun`, `read_hash_noun`, `noun_id`,
+   `parse_noun`, `print_noun`, `WireEntry.noun` field) and the `rs/noun/`
+   module dir → `rs/data/` (+ `crate::noun::` → `crate::data::`).
 2. consumers of nox types — bbg, cybergraph, zheng, tape, soft3 sdk —
-   absorb the renamed types, rebuild.
+   absorb the renamed types, rebuild. (pending)
 3. trident: `U32 → Word` surface (`ast/mod.rs:193`, `typecheck/types.rs:13`
    + ~60 `Ty::U32`; leave `cost/scorer.rs const U32`; `Digest` untouched).
    add the lowering note. keep the builtin-sync rule (reference + typecheck
-   + tir + cost in one commit).
-4. inf: one site.
+   + tir + cost in one commit). (pending)
+4. inf: one site. (pending)
 
 No hashes change in this phase. Verify: full-stack `cargo check` + tests
 green; conformance fingerprints unchanged (proof that Phase 2 is
 identity-neutral).
 
-### Phase 3 — encoding + identity (the identity epoch begins)
+### Phase 3 — encoding + identity (the identity epoch begins) ✓ DONE
 
 nox only, contained:
 
-- `nox/rs/encode.rs` — leaf-based, tag-free; sizes `8·N`; drop the tag
-  byte; reference-by-particle. (bbg/tape decoupled — no change.)
-- `nox/rs/noun/hash.rs:26-27` — drop `data[8] = tag` and the tag arg.
+- `nox/rs/noun/inner.rs` — `Data::Atom { value }` (no `tag` field). ✓
+- `nox/rs/noun/tag.rs` — deleted. ✓
+- `nox/rs/noun/hash.rs` — `hash_atom(value)`, 8-byte payload, domain=0. ✓
+- `nox/rs/reduce.rs` — word arithmetic uses range check `v < 2^32`. ✓
+- `nox/rs/encode.rs` — **Model B, leaf-based, tag-free** (M2, see below). ✓
 
-This changes particle identities. Verify: tests green; expect conformance
-drift (do not re-baseline yet — batch with Phase 4).
+**M2 — encoding to Model B (was the missing half of this phase).** The first
+pass dropped the tag from `hash.rs` but left `encode.rs` in Model A: it still
+prepended a tag byte (`0x00` field / `0x01` word / `0x02` hash / `0x03` pair),
+sized nodes `9/33/65`, and derived the wire `particle` from a **sponge of the
+tagged bytes** (`hemera::hash(encoded)`). That is a *second* identity scheme — it
+disagreed with the in-order hash-cons key (`DataEntry.hash`, the hemera *tree*
+hash) for every node. Two particles for one datum.
+
+Fixed — collapsed onto the one tree-hash scheme:
+
+- atom = **8 bytes** (field LE); pair = **64 bytes** (two child particles). no
+  tag byte; node type read from length. the `9/33/65` sizes are gone.
+- `particle = the tree hash` — `particle_id(order,id)` returns the node's stored
+  `DataEntry.hash`; `particle_of(bytes)` recomputes the *same* tree hash. the
+  sponge-of-tagged-bytes path (`noun_id`) is deleted.
+- `encode_field/encode_word/encode_hash` → `encode_atom`/`encode_pair`;
+  `DecodedData::{Field,Word,Hash}` → `Atom`/`Pair`; `WireEntry.noun` → `.data`.
+- enforced by tests `particle_id_matches_order_hash` + `content_id_pair_matches_recompute`
+  (in-order key == wire particle). 160 tests green; brakedown 166; honeycrisp builds.
+- `specs/encoding.md` rewritten to Model B (v0.5); `15-hash.md` "wire tag 0x02"
+  removed.
+
+This changes every **wire/stored** particle (the old sponge identity is retired;
+atoms and pairs now both hash via the tree). The in-order hash-cons identity was
+already the tree hash and is unchanged. Conformance re-baseline batched with Phase 4.
+Breaking for downstream consumers of the old `encode` API (Phase 2, pending).
 
 ### Phase 4 — hemera one pure hash (identity epoch)
 
@@ -195,8 +236,8 @@ independent and the riskiest.
   `constraints.md:310-321`); specify `lt` 64-bit canonical form.
 - zheng: add the decomposition-binding + booleanity constraints
   (`ccs/patterns.rs`), via a running-accumulator column (`ccs/mod.rs`).
-- nox: retire the `Tag::Word` runtime gate (`reduce.rs:366-411`); `word`
-  becomes a typing-only refinement.
+- nox: `Tag::Word` runtime gate already removed in Phase 3; word range
+  check (`v.as_u64() < 2^32`) is the bridge until zheng carries it.
 
 Verify: word-gated ops sound in-circuit (the binding *is* the range
 proof); bench no regression.

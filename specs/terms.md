@@ -14,12 +14,15 @@ the canonical vocabulary of the [[soft3]] stack. one name per concept, grouped b
 
 the value layer every language lowers to. one leaf, one join; everything else is recursion.
 
-- `field` — one Goldilocks element, `[0, p)`, `p = 2⁶⁴ − 2³² + 1`. the scalar substance.
-- `atom` — a leaf: one `field`. the indivisible unit.
-- `pair` — two children joined, each an `atom` or a `pair`. the structural constructor.
-- `data` — an `atom` or a `pair`. any structure, `8·N` bytes. the value. homoiconic: a program, its input, and its result are all data.
-- `particle` — the identity of data: its 32-byte [[hemera]] hash (itself 4-atom data). content-derived and immutable — the same data always has the same particle, distinct data distinct particles.
+- `field` — one Goldilocks element, `[0, p)`, `p = 2⁶⁴ − 2³² + 1`. the scalar substance. **8 bytes.**
+- `atom` — a leaf: one `field`. the indivisible unit. **8 bytes.**
+- `pair` — two children joined, each an `atom` or a `pair`. the structural constructor. its size is its children's; the smallest pair, two atoms, is **16 bytes**.
+- `data` — an `atom` or a `pair`. any structure, **`8·N` bytes** for `N` leaves. the value. homoiconic: a program, its input, and its result are all data.
+- `particle` — the *global* identity of data: its **32-byte** [[hemera]] hash (itself 4-atom data). content-derived and immutable — the same data always has the same particle, distinct data distinct particles. (within one execution a node also has a *local* identity, its `order` — see *computation*.)
+- `link` — two `particles` joined, a `from → to` pair: **64 bytes**. the structural skeleton of a relation (a [[cyberlink]] is built on it — full definition under *graph — tokens and links* below).
 - `file` — a piece of `data` identified by its `particle` and reachable by a `name`. the [[fs]] unit. data carries no label inside it: its identity is its particle (computed from content), its name is assigned separately.
+
+the size ladder, counted in 8-byte `field`s — `atom` 8 · `pair` 16 · `particle` 32 · `link` 64. the encoding is **length-discriminated and tag-free**: structure is read from length, and the leaf/node distinction lives in [[hemera]] capacity (a substrate invariant), never in a tag byte inside the data.
 
 note: data is the thing; its `particle` is its identity; a `name` is a separate, mutable label that points to it. every particle is data (a 4-atom one); not all data is a particle.
 
@@ -85,8 +88,8 @@ the cybergraph ontology: two objects, one primitive (see [[cybergraph]]/specs/mo
 
 - `object` — the data environment of a reduction (the input). Nock's "subject," renamed.
 - `formula` — the program applied to an object. itself data (homoiconic).
-- `order` — one execution: a neuron applies a formula to an object under a budget, producing a result.
-- `reduction` — the execution model: apply a formula to an object; the trace is the proof.
+- `reduction` — one execution: a neuron applies a formula to an object under a budget, producing a result. it holds every `data` node it builds; the trace is the proof.
+- `order` — a `data` node's *local* identity inside a `reduction`: its slot. the local twin of `particle` — `particle` is global (content-derived, identical in every reduction), `order` is local (a position, valid only inside its own reduction).
 - `pattern` — one of nox's 18 reduction rules (16 compute + `call` + `look`).
 - `jet` — an accelerated implementation of a hot formula (hash, ntt, merkle, …).
 - `look` — the pattern that reads committed [[bbg]] state.
