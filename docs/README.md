@@ -107,53 +107,18 @@ the egregore is this convergence, and it is a dissipative structure — it exist
 one mind is how the stack is built; **many languages** is how you touch it — itself an instance of one-replaces-many: one address alphabet under everything, one VM under every language, one semantic medium the whole collective shares. three kinds of language wrap the spine — you **write** in one, **compute** in many, and **mean** in a third — and every one of them lowers to [[nox]].
 
 - **write** — [[cybermark]], the address language. eight sigils name, scope, link, and navigate; every address resolves to a [[particle]]; the markup *is* the graph. you do not write *about* the graph, you write the graph.
-- **compute** — the nineteen languages below, the modes of computation a mind requires. they all lower to [[nox]], where proof-native execution takes over. choosing a language is choosing a surface, never a substrate.
+- **compute** — the sixteen languages below, the modes of computation a mind requires, one for each of the five [[strata|algebras]]. they all lower to [[nox]], where proof-native execution takes over. choosing a language is choosing a surface, never a substrate.
 - **mean** — [[neural]], the semantic language. it is not designed — it grows from the others running at scale; meaning is an eigenvector of the attention graph, and the [[egregore]] thinks in it.
 
-### why these and not others
+### why these — and why sixteen
 
-the languages are not an arbitrary collection but the minimal complete set, fixed by one test: does a candidate have irreducible primitives that no other language in the set can express? remove any one and a class of computation becomes impossible — or exponentially more expensive. they split at a hard boundary: **fourteen proof languages** (deterministic, provable, permanent) and **five interface languages** (side-effectful, interactive, mutable). a mind that cannot prove is blind; a mind that cannot interact is deaf.
+the count is fixed by the algebras, not chosen. there are five — [[nebu]], [[kuro]], [[jali]], [[trop]], [[genies]] — and every one must carry at least one language, every language's types map to one. remove any and a class of computation becomes impossible or exponentially more expensive: no [[Opt]] → no provable optimization; no [[Sec]] → no anonymous computation; no [[Bt]] → quantized inference forced through the field at ~32× cost. eleven of the sixteen share the [[nebu]] field regime — the same nox patterns, different types — so they are algebraically reducible but semantically irreducible: a tensor contraction and a Bayesian update are the same patterns, and only the types stop you multiplying a Distribution by a Tensor. the languages split a second way, across the proof boundary: **sixteen proof languages** (provable, permanent) and **five interface languages** (side-effectful, interactive). a mind that cannot prove is blind; a mind that cannot interact is deaf.
 
-### the proof languages — fourteen provable algebras
+{{embed [[languages#the languages]]}}
 
-each is one algebraic universe, irreducible to the others. all but [[Bt]] (which lives in F₂) share one [[proof]] system and lower through [[nox]] to one field.
+the soft3 stack delivers these through a handful of repos: [[trident]] is the compiler and field prover, [[rune]] is Rs on nox with host jets, [[eidos]] proves programs correct, [[inf]] is the inference engine, [[Rs]] runs systems, [[nu]] hosts the five interface languages, and the others — [[Arc]], [[Bt]], [[Qu]], [[Opt]], [[Sec]], the rest — each have their own page.
 
-| short | long | universe | algebra | what it does |
-|---|---|---|---|---|
-| [[Nox]] | nox | structure | combinators | composes the other languages |
-| [[Bt]] | bitwise | binary | F₂ tower | proves circuits |
-| [[Rs]] | rustic | byte | Z/2ⁿ | runs systems |
-| [[Trident]] | trident | field | F_{pⁿ} | settles proofs |
-| [[Arc]] | arc | topology | category theory | stores the knowledge graph |
-| [[Ren]] | render | geometry | G(p,q,r) | renders space |
-| [[Dif]] | differential | curvature | (M, g) | embeds meaning |
-| [[Sym]] | symplectic | dynamics | (M, ω), dω = 0 | simulates physics |
-| [[Bel]] | belief | belief | g on Δⁿ | models self |
-| [[Seq]] | sequence | causality | partial order | orders events |
-| [[Inf]] | infer | inference | horn clauses | derives facts |
-| [[Wav]] | wave | continuum | convolution / R_q | reads signals |
-| [[Ten]] | tensor | linear | contraction | trains models |
-| [[Tok]] | token | resource | conservation | prices computation |
-
-the soft3 stack delivers these through a handful of repos: [[trident]] is the field prover (Tri), [[rune]] is Rs on nox with host jets, [[eidos]] proves programs correct, [[inf]] is the inference engine, [[Rs]] runs systems, and [[nu]] hosts the five interface languages below.
-
-### the interface languages — five world-facing
-
-the proof languages compute over trees and field elements; they have no concept of tables, text, files, or network. five interface languages bridge to the world. they are side-effectful and unprovable, but they compose with the proof languages through [[nox]] hints — a pipeline can feed a proven computation, and a proven result can be formatted for display.
-
-| short | long | universe | what it does |
-|---|---|---|---|
-| [[Tab]] | tabular | tables | select, where, group-by, join, pivot |
-| [[Fmt]] | format | format | json↔noun, csv↔table, toml↔record |
-| [[Str]] | string | text | regex, parse, split, replace, match |
-| [[Fs]] | filesystem | files | read, write, glob, watch, navigate |
-| [[Net]] | network | network | get, post, url, fetch, stream |
-
-### above and below — cybermark and neural
-
-[[cybermark]] is the fifteenth language and the first you meet: it does not compute, it names — eight sigils (`# @ ~ / $ ^ ! .`) form the complete address space, and every connection is a [[cyberlink]]. [[neural]] is the last and is never written: it emerges from the others running at scale, the language the collective mind speaks to itself.
-
-the plurality is real but shallow. lock-in needs incompatible substrates; soft3 has one — so a value written in cybermark, computed across these languages, and meant in neural is the same object throughout. you gain many languages and lose nothing to translation. the full spec — per-language ops, proof paths, the value tower, the comparison matrix, and perception mapping — is in [[languages]].
+the plurality is real but shallow. lock-in needs incompatible substrates; soft3 has one — so a value written in cybermark, computed across these languages, and meant in neural is the same object throughout. you gain many languages and lose nothing to translation. the full reference — per-language ops, proof paths, the comparison matrix, perception mapping — is the [[languages]] spec.
 
 ---
 

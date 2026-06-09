@@ -59,7 +59,7 @@ twenty repos form the stack. [[cybergraph]] is the vertebra — soma's one API f
 | 17 | [[conformance]] | snapshot | hemera fingerprint per encoding and mechanism. stability harness across the stack | scaffold |
 | + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
 | + | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
-| + | [[plumb]] | pay | value layer: Coin + Card + five operations | — |
+| + | [[tok]] | pay | the token language + value layer: Coin + Card + conservation | — |
 
 ## the SDK
 

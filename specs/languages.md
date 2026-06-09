@@ -3,161 +3,150 @@ title: languages
 tags: soft3, cyb, cyber, stark, architecture, core
 crystal-type: spec
 crystal-domain: cyber
-alias: computation languages, language set, nineteen languages, languages of superintelligence
+alias: computation languages, language set, sixteen languages, languages of superintelligence
 ---
 
 # Languages of [[superintelligence]]
 
-> This is the full languages spec, part of [[soft3]]. the foundational summary — the write/compute/mean framing and the headline tables — lives in the [[soft3]] foundations whitepaper (`soft3/docs`) under **many languages**. this spec is the exhaustive reference: the completeness argument, the value tower, compilation through [[Nox]], algebra coverage, the comparison matrix, perception mapping, the [[rune]] runtime, and the Typst rendering engine.
+> This is the full languages spec, part of [[soft3]]. the canonical roster — the sixteen, their algebras, and the interface layer — is the *the languages* section below, authored once here and section-embedded wherever it is needed (the [[soft3|whitepaper]] and the research notes). the rest of this document is the exhaustive reference: why sixteen, what a language is, cross-language composition, compilation through [[Nox]], algebra coverage, the comparison matrix, perception mapping, the [[rune]] runtime, and the Typst engine.
 
-## The Completeness Argument
+## why sixteen
 
-The 19 languages are not an arbitrary collection. They are the minimal complete set derivable from asking what modes of computation a mind requires — and applying one test to each candidate: *does this have irreducible primitives that no other language in the set can express?*
+The 16 languages are not an arbitrary collection — the count is fixed by the algebras, not chosen. there are five [[strata|algebras]] ([[nebu]] · [[kuro]] · [[jali]] · [[trop]] · [[genies]]), and the completeness criterion is exact: every algebra must carry at least one language, and every language's types must map to one algebra. no orphan algebras, no orphan types.
 
-The languages split into two groups by a fundamental boundary: 14 proof languages (deterministic, provable, permanent) and 5 interface languages (side-effectful, interactive, mutable). Both groups are necessary — a mind that cannot prove is blind. A mind that cannot interact is deaf
+one test settles each candidate: *does it have irreducible primitives no other language in the set can express?* remove any one and a class of computation becomes impossible — or exponentially more expensive:
 
-```
-Boolean reasoning:   AND, OR, NOT over {0,1}      → no other algebra has this
-Integer arithmetic:  overflow, wrapping, bitwise   → not field arithmetic
-Field arithmetic:    inversion, polynomial roots   → not integer arithmetic
-Categorical struct:  morphisms, functors, limits   → not graph traversal
-Clifford geometry:   rotors, bivectors, versors    → not tensors
-Riemannian geom:     geodesics, metric tensor      → not Clifford
-Symplectic geom:     conservation laws, dω=0       → not Riemannian
-Information geom:    Fisher metric on Δⁿ           → not any other geometry
-Causal ordering:     partial order, happened-before → not logic
-Horn clause logic:   unification, backtracking     → not relational algebra
-Convolution/R_q:     negacyclic polynomial mult    → not tensor contraction
-Tensor contraction:  einsum, SpMV, matmul          → not field arithmetic
-Resource conserv.:   mint, burn, Σin=Σout, UTXO    → not any computation algebra
-Combinators:         composition of the above      → not any computation
-```
+- remove [[Opt]] → no provable optimization; tropical (min,+) is not a ring, no field language can express it
+- remove [[Sec]] → no anonymous computation; curve secrets and stealth addresses have no field encoding
+- remove [[Wav]] → no FHE; the R_q ring is its own algebra
+- remove [[Bt]] → quantized inference forced through Fₚ at ~32× the cost
+- remove [[Tok]] → everything still computes, but nothing costs anything: spam is free, [[focus]] has no scarcity, [[karma]] no meaning
 
-Each row passes the test. Remove any one language and there is a class of computation that becomes either impossible or exponentially more expensive to express. Remove Tok and the remaining thirteen can compute anything — but nothing costs anything, spam is free, [[focus]] has no scarcity, [[karma]] has no meaning. Add any plausible new language — say, a concurrent process calculus or an optimization language — and it turns out to reduce to a composition of existing ones via [[Nox]] (see [[cyber/channel]] for how concurrency reduces to [[Arc]] + [[Seq]] + [[Nox]]).
+11 of the 16 share the [[nebu]] (Fₚ) regime. they are algebraically reducible — identical nox patterns — but semantically irreducible: each carries a type system that prevents cross-domain errors. a tensor contraction and a Bayesian update are the same patterns; the types give them meaning, so you cannot multiply a Distribution by a Tensor. that is why the count is 16 and not 5: the algebras set the floor, the type systems fill it.
 
-The 14 are the minimal set that covers all computation a mind requires, where each element is algebraically irreducible with respect to the others.
+the languages split a second way, across the [[proof]] boundary — 16 proof languages (deterministic, provable, permanent) and 5 interface languages (side-effectful, interactive). a mind that cannot prove is blind; a mind that cannot interact is deaf.
 
----
+## the languages
 
-## Naming Convention
+16 proof languages over 5 algebras — every algebra carries at least one, every language's types map to one. [[Trident]] compiles all of them to [[nox]] patterns; the type picks the algebra, the algebra picks the [[lens]]. [[Nox]] itself is the substrate they compile to (`nox<F, W, H>`, the same 18 patterns over Goldilocks, F₂, F_{p²}), not one of the sixteen.
 
-Every language has a short name (2-3 letters, used in code and diagrams) and a long name (used in prose). The universe names the algebraic domain.
+| # | language | algebra · regime | types | domain |
+|---|----------|------------------|-------|--------|
+| 1 | [[Tri]] | field · [[nebu]] (Fₚ tower) | Fp2, Fp3, Fp4 | general purpose: dialects, progs, kernel, proofs |
+| 2 | [[Tok]] | field · [[nebu]] | UTXO, Balance, Conservation | tokenomics: conservation, staking, the four tokens |
+| 3 | [[Arc]] | category · [[nebu]] | Object, Morphism, Functor | graph + state machines: schema, BBG transitions, consensus |
+| 4 | [[Seq]] | causality · [[nebu]] | Order, Timestamp, Causality | sequence, ordering: time series |
+| 5 | [[Inf]] | logic · [[nebu]] | Term, Clause, Substitution | inference: Horn-clause unification, NN forward pass |
+| 6 | [[Bel]] | belief · [[nebu]] | Distribution, Probability | self-model: Bayesian update |
+| 7 | [[Ren]] | geometry · [[nebu]] | Multivector, Rotor, Blade | rendering: geometry, UI layout, visualization |
+| 8 | [[Dif]] | curvature · [[nebu]] | DualNumber, Manifold | continuous dynamics: autodiff, gradients |
+| 9 | [[Sym]] | dynamics · [[nebu]] | PhaseSpace, Hamiltonian | physics simulation: conservation laws |
+| 10 | [[Ten]] | linear · [[nebu]] | Matrix, Tensor | neural networks: matrix ops, ML training |
+| 11 | [[Rs]] | byte · [[nebu]] | u32, u64, bool, BoundedVec | systems: low-level, hardware interaction |
+| 12 | [[Wav]] | ring · [[jali]] (R_q) | RingElement, NTTForm | signal + FHE: wavelets, compression, encrypted compute |
+| 13 | [[Bt]] | binary · [[kuro]] (F₂) | BitVec, BitMatrix, Packed128 | binary: quantized inference, 32× cheaper bits |
+| 14 | [[Qu]] | field² · [[nebu]] (F_{p²}) | Qubit, Gate, Phase | quantum circuits: hardware co-processor (Grover, Shor, QFT) |
+| 15 | [[Opt]] | tropical · [[trop]] (min,+) | Tropical, Graph, CostMatrix | optimization: shortest path, assignment, Viterbi, transport |
+| 16 | [[Sec]] | curve · [[genies]] (F_q isogeny) | Curve, Secret, StealthAddress | privacy: isogeny key exchange, stealth, ring sigs, VRF |
 
-| Short | Long | Universe | Type | [[algebra]] | Purpose |
-|---|---|---|---|---|---|
-| [[Nox]] | Nox | Structure | Tree | Combinators | Composes [[languages]] |
-| [[Bt]] | Bitwise | Binary | Bit | F₂ tower | Proves circuits |
-| [[Rs]] | Rustic | Byte | Word | Z/2ⁿ | Runs systems |
-| [[Tri]] | [[Trident]] | [[field]] | Field tower | F_{pⁿ} | Settles [[proof]]s |
-| [[Arc]] | Arc | [[topology]] | [[graph]] | [[category theory]] | Stores [[knowledge graph]] |
-| [[Ren]] | Render | [[geometry]] | Shape | G(p,q,r) | Renders space |
-| [[Dif]] | Differential | Curvature | Manifold | (M, g) | Embeds meaning |
-| [[Sym]] | Symplectic | Dynamics | Phase | (M, ω), dω = 0 | Simulates physics |
-| [[Bel]] | Belief | [[belief]] | Distribution | g on Δⁿ | Models self |
-| [[Seq]] | Sequence | Causality | Event | Partial order | Orders events |
-| [[Inf]] | Infer | [[inference]] | Relation | Horn clauses | Derives facts |
-| [[Wav]] | Wave | Continuum | Poly | Convolution / R_q | Reads [[signal]]s |
-| [[Ten]] | Tensor | Linear | Tensor | Contraction | Trains models |
-| [[Tok]] | Token | Resource | [[UTXO]] | Conservation | Prices computation |
+the five algebras, each with its own [[lens]]:
 
-Plus two layers above the fourteen:
+| algebra | field | lens | languages |
+|---------|-------|------|-----------|
+| [[nebu]] | Fₚ (Goldilocks) | Brakedown | Tri, Tok, Arc, Seq, Inf, Bel, Ren, Dif, Sym, Ten, Rs, Qu (over F_{p²}) |
+| [[kuro]] | F₂ | Binius | Bt |
+| [[jali]] | R_q | Ikat | Wav |
+| [[trop]] | (min,+) | Tropical (dual cert) | Opt |
+| [[genies]] | F_q isogeny | Isogeny | Sec |
 
-| Layer | Name | What it is |
-|---|---|---|
-| Address | [[markup|Cybermark]] | Naming, scoping, and navigating [[particles]] — the address language |
-| Semantic | Neural | Meaning as eigenvector of the [[cybergraph]] |
+five interface languages cross to the world — side-effectful, in [[nu]], composing with the proof languages through [[nox]] hints:
 
-[[markup|Cybermark]] is the fifteenth language — it does not compute, it names, links, and navigates. eight sigils (`# @ ~ / $ ^ ! .`) form the complete address space. every address resolves to a [[particle]]. every connection is a [[cyberlink]]. the markup is the graph
+| # | language | primitive | what it does |
+|---|----------|-----------|--------------|
+| 17 | Tab | Record | select, where, group-by, join, pivot |
+| 18 | Fmt | Encoding | json↔noun, csv↔table, toml↔record |
+| 19 | Str | Pattern | regex, parse, split, replace, match |
+| 20 | [[fs]] | Path | read, write, glob, watch, navigate |
+| 21 | Net | Request | get, post, url, fetch, stream |
 
-Neural is not designed — it grows from the interaction of the fifteen languages at scale.
-
----
-
-## The Value Tower — Three Modes of Reference
-
-Byte (Rs) and Field (Tri) share the same mathematical substrate — the [[Goldilocks field processor]] F_p where p = 2⁶⁴ − 2³² + 1. this substrate provides three atom types sufficient for twelve of the fourteen universes.
-
-| Tag | Name | Representation | Valid Range | Use |
-|---|---|---|---|---|
-| 0x00 | `field` | Single F_p element | [0, p) | Arithmetic |
-| 0x01 | `word` | Single F_p element | [0, 2⁶⁴) | Bitwise |
-| 0x02 | `hash` | 4 × F_p elements | 256-bit digest | Identity |
-
-three fundamentally different ways to refer to a value — and there are only three:
-
-```
-field = the value IS the reference     (by content — immediate)
-word  = position IS the reference      (by location — index)
-hash  = name IS the reference          (by commitment — identity)
-```
-
-by what it is. by where it is. by what it is called. every reference in any system reduces to one of these three modes.
-
-every higher type decomposes into structure ([[Nox]] trees) over these three atoms:
-
-```
-Edge    = cons(source_hash, cons(target_hash, weight_field))
-Event   = cons(event_hash, sequence_word)
-Fact    = cons(relation_hash, cons(subject_hash, object_hash))
-Sample  = field (amplitude value)
-Tensor  = [field; N] (array of values with shape metadata)
-Shape   = cons(grade_word, [field; 2^n]) (multivector components)
-Chart   = cons(dim_word, [field; N]) (coordinate patch)
-Phase   = cons(position_field, momentum_field)
-Dist    = [field; N] (probability vector on simplex)
-```
-
-three atoms are complete — for one characteristic. the single exception is Bt (Bitwise): a bit is genuinely not an element of F_p. it lives in F₂ — different characteristic, different [[algebra]]. that is exactly why Bt has a separate [[proof]] system, not just a new type tag.
-
-```
-Nox value tower (3 atoms: field, word, hash)
-  sufficient for: Rs, Tri, Arc, Ren, Dif, Sym, Bel, Seq, Inf, Wav, Ten, Tok
-  NOT sufficient for: Bt
-
-Bt value tower (separate, F₂)
-  sufficient for: Bt only
-```
+above all of them, two layers: [[cybermark]] (the address language — eight sigils, every address a [[particle]]) and [[neural]] (the semantic language — meaning as an eigenvector of the [[cybergraph]], grown rather than written).
 
 ---
 
-## The Nineteen Languages
+## what a language is
 
-each language has its own page with ops tables, use cases, and [[proof]] paths:
+a language is not a separate compiler. [[Trident]] is the one compiler; a language is three things: types (domain-specific structs in `trident/std/<lang>/`), functions (operations on those types that lower to [[nox]] patterns), and jets (recognized formula compositions that accelerate execution). each `trident/std/<lang>/` is ~500–2000 LOC; the whole frontend, IR, and type inference is ~57,736 LOC. one Trident, sixteen libraries.
 
-### proof languages (14) — provable computation
+types are the dispatch. the type of an expression determines its algebra; the algebra determines its [[lens]]. there is no `#[algebra(...)]` annotation, no backend selection, no prover hint — `nox<F, W, H>` is parameterized over field, word, and hash, so the same 18 patterns run over Goldilocks, F₂, and F_{p²}, and the types choose which:
 
-| # | Universe | Short | Long | Algebra | Page |
-|---|---|---|---|---|---|
-| 0 | Structure | Nox | Nox | Combinators | [[Nox]] |
-| 1 | Binary | Bt | Bitwise | F₂ tower | [[Bt]] |
-| 2 | Byte | Rs | Rustic | Z/2ⁿ | [[Rs]] |
-| 3 | Field | Tri | [[Trident]] | F_{pⁿ} | [[Trident]] |
-| 4 | Topology | Arc | Arc | [[category theory]] | [[Arc]] |
-| 5 | Geometry | Ren | Render | G(p,q,r) | [[Ren]] |
-| 6 | Curvature | Dif | Differential | (M, g) | [[Dif]] |
-| 7 | Dynamics | Sym | Symplectic | (M, ω), dω = 0 | [[Sym]] |
-| 8 | Belief | Bel | Belief | g on Δⁿ | [[Bel]] |
-| 9 | Causality | Seq | Sequence | Partial order | [[Seq]] |
-| 10 | Inference | Inf | Infer | Horn clauses | [[Inf]] |
-| 11 | Continuum | Wav | Wave | Convolution / R_q | [[Wav]] |
-| 12 | Linear | Ten | Tensor | Contraction | [[Ten]] |
-| 13 | Resource | Tok | Token | Conservation | [[Tok]] |
+```
+Field       → nebu   → Brakedown    1 constraint per mul
+BitVec      → kuro   → Binius       1 constraint per op
+RingElement → jali   → Ikat         batched
+Tropical    → trop   → Assayer      witness-proportional
+Curve       → genies → Porphyry     1 F_q per op
+```
 
-### interface languages (5) — human ↔ machine boundary
+the sixteen libraries live side by side, each ~500–2000 LOC of types + functions:
 
-the proof languages compute over binary trees and field elements. they have no concept of tables, text, files, or network. five interface languages bridge the gap — they handle what the robot needs to interact with humans and external systems. all five run inside [[nushell]] (embedded in [[cyb]]):
+```
+trident/std/
+├── tri/   Fp2, Fp3, Fp4 + tower arithmetic   ├── wav/  RingElement + NTT multiply
+├── tok/   UTXO + conservation constraints     ├── bt/   BitVec, BitMatrix + binary ops
+├── arc/   Object, Morphism + category ops     ├── qu/   Qubit, Gate + quantum circuit
+├── seq/   Order + causality                   ├── opt/  Tropical + optimization
+├── inf/   Term, Clause + unification          ├── sec/  Curve + privacy protocols
+├── bel/   Distribution + Bayesian update      ├── ren/  Multivector + geometric product
+├── dif/   DualNumber + autodiff               ├── sym/  PhaseSpace + Hamiltonian evolution
+├── ten/   Matrix, Tensor + contraction        └── rs/   u32, u64, BoundedVec + systems ops
+```
 
-| # | Universe | Short | Long | Primitive | Purpose |
-|---|---|---|---|---|---|
-| 14 | Tables | Tab | Tabular | Record | Relational operations: select, where, group-by, join, pivot |
-| 15 | Format | Fmt | Format | Encoding | Serialization: json↔noun, csv↔table, toml↔record |
-| 16 | Text | Str | String | Pattern | Text processing: regex, parse, split, replace, match |
-| 17 | Files | Fs | Filesystem | Path | File operations: read, write, glob, watch, navigate |
-| 18 | Network | Net | Network | Request | HTTP client: get, post, url, fetch, stream |
+this is why 11 languages share [[nebu]] and stay distinct: same patterns, different types, different meaning. Arc uses cons/compose for category composition, Ten uses mul/add for tensor contraction, Bel uses mul/add/inv for Bayesian update — identical nox patterns, and only the type system stops you multiplying a Distribution by a Tensor.
 
-the five interface languages have different properties from the fourteen proof languages:
+## cross-language composition
 
-| Property | proof languages (0-13) | interface languages (14-18) |
+a single Trident program freely mixes types from different languages — a binary [[Bt]] weight matrix, a field-valued [[Ten]] input, a tropical [[Opt]] routing cost — inside one function. the compiler sees the type transitions and inserts [[hemera]] commitments at the algebra boundaries automatically; the programmer never names a regime or a lens. every execution step becomes a hemera commitment, a [[particle]] in the [[cybergraph]] — so the graph accumulates verified computation from all sixteen algebras, and a result in one language is referenceable from any other, the way one cortical area's output reaches the rest through a shared workspace.
+
+```trident
+use std::ten::Matrix;       // nebu regime
+use std::bt::BitMatrix;     // kuro regime
+use std::opt::Tropical;     // trop regime
+
+fn inference_with_optimization(
+    weights: &BitMatrix,     // kuro: binary quantized weights
+    input: &Matrix,          // nebu: field-valued input
+    costs: &[Tropical],      // trop: routing costs
+) -> Matrix {
+    let quantized = bt::quantize(input);                 // nebu → kuro boundary
+    let hidden = bt::binary_matvec(weights, &quantized); // kuro regime
+    let output = bt::dequantize(&hidden);                // kuro → nebu boundary
+    let route = opt::shortest_path(costs);               // nebu → trop boundary
+    ten::gather(&output, &route)                         // back to nebu
+}
+```
+
+at proof time [[zheng]] partitions the trace by type, proves each partition under its native [[lens]], and folds them — one accumulator, one decider, one proof, whatever mix of languages produced it:
+
+```
+source (typed)
+  ↓ Trident frontend (typecheck)        programmer sees: types
+typed AST (expression → algebra)         compiler sees:   types → algebra
+  ↓ NounBuilder (type-aware lowering)
+nox noun (sub-trees per algebra)         nox VM sees:     patterns (uniform, 18)
+  ↓ nox VM → trace (rows carry types)
+  ↓ zheng partitions trace by type       zheng sees:      trace rows → lens per partition
+prove each partition via native lens
+  ↓ HyperNova folds all partitions
+one accumulator → one decider → one proof   verifier sees: one proof
+```
+
+---
+
+## interface languages
+
+the five interface languages (in the roster above) are side-effectful, run in [[nu]] ([[nushell]], embedded in [[cyb]]), and cross the [[proof]] boundary to talk to humans and external systems. they compose back with the proof languages through [[Nox]] hints: a nushell pipeline feeds data into a proven computation, and a proven result is formatted by nushell for display. they differ from the sixteen:
+
+| Property | the 16 proof languages | the 5 interface languages |
 |---|---|---|
 | execution | [[Nox]] tree rewriting | [[nushell]] pipeline |
 | provable | yes (STARK) | no (side effects) |
@@ -165,70 +154,40 @@ the five interface languages have different properties from the fourteen proof l
 | data model | binary trees + field elements | structured records + streams |
 | persistence | [[cybergraph]] (permanent) | filesystem (mutable) |
 
-the interface languages cross the [[proof]] boundary — they interact with the external world. but they compose with the proof languages through [[Nox]] hints: a nushell pipeline can feed data into a proven computation, and a proven result can be formatted by nushell for display
+---
+
+## nu — the interface shell
+
+the five interface languages are not five binaries — they are one shell. [[nu]] ([[nushell]], forked into the [[cyb]] terminal) is where Tab, Fmt, Str, Fs, and Net live: a structured-data shell whose pipelines carry typed tables, records, and streams rather than untyped text. a `select … where … group-by` is Tab, a `to json` is Fmt, a `parse`/regex is Str, a `glob`/`open` is Fs, an `http get` is Net — the same pipeline, all side-effectful, all outside the [[proof]] boundary.
+
+nu is the robot's hands: it reads files, hits the network, parses formats, and shapes data for display. it bridges back to the proven core through [[Nox]] hints — a nu pipeline can feed a value into a proof, and [[rune]] can call a nu command and fold the structured result back into a [[nox]] computation. one shell crosses the boundary in both directions; the sixteen stay pure behind it.
 
 ---
 
-## Compilation Architecture
+## compilation
 
-all nineteen languages share one toolchain. each programmer face has its own syntax and type rules. all compile through [[Nox]] — the structural IR — then to [[proof]] backends or native execution.
+all sixteen share one toolchain. one frontend — parsing, type checking, borrow and bound checking — lowers every language to the [[Nox]] structural IR (`axis, quote, compose, cons, branch` plus typed compute ops and Merkle authentication), and the expression's type picks the [[lens]] (the dispatch is in the table above). every language is dual: it settles through a proof path, or runs native with no proof.
 
-```
-                    ┌──────────────────────────────────────────────┐
-                    │              Programmer Faces                 │
-                    │                                               │
-                    │  Bt  Rs  Tri  Arc  Ren  Dif  Sym  Bel        │
-                    │  Seq  Inf  Wav  Ten  Tok                      │
-                    │  .bt .rs .tri .arc .geo .dif .sym .bel        │
-                    │  .seq .inf .wav .ten .tok                     │
-                    └──────────────────┬───────────────────────────┘
-                                       │
-                    ┌──────────────────▼───────────────────────────┐
-                    │             Shared Frontend                   │
-                    │   Parsing, type checking,                     │
-                    │   borrow checking, bound checking             │
-                    └──────────────────┬───────────────────────────┘
-                                       │
-                    ┌──────────────────▼───────────────────────────┐
-                    │         Nox Structural IR                     │
-                    │   axis, quote, compose, cons, branch          │
-                    │   + typed computational ops                   │
-                    │   + Merkle authentication                     │
-                    └──────────────────┬───────────────────────────┘
-                                       │
-              ┌────────────────────────┼────────────────────┐
-              │                        │                    │
-     ┌────────▼──────┐ ┌──────────────▼──────┐ ┌───────────▼────────┐
-     │  Binius/FRI   │ │     Goldilocks      │ │      Native        │
-     │  Backend      │ │     TASM/FRI        │ │      Backend       │
-     │  (Binary)     │ │    (Byte+Field)     │ │    (no proof)      │
-     └───────────────┘ └─────────────────────┘ └────────────────────┘
-          Bt              Rs, Tri, Ren            Arc, Seq, Inf,
-                                                  Wav, Ten, Tok,
-                                                  Dif*, Sym*, Bel*
-```
-
-\* Dif, Sym, Bel are research horizon — [[proof]] paths are open mathematical problems.
-
-| Source | When [[proof]] needed | When [[proof]] absent |
+| language | prove path | run native |
 |---|---|---|
 | Bt | Binius FRI circuit | always proving |
 | Rs | TASM → stark (word→field lift) | native binary (Nox) |
-| Tri | TASM → stark (field native) | WASM/EVM (Layer 0) |
+| Tri | TASM → stark (field native) | WASM / EVM |
 | Arc | decomposes into Tri + Bt | optimized [[graph]] engine |
 | Ren | geometric product → Tri | native Clifford engine |
-| Dif | research | native manifold solver |
-| Sym | research | native Hamiltonian integrator |
-| Bel | research | native statistical engine |
 | Seq | temporal constraints → stark | scheduler / runtime |
 | Inf | derivation trace → stark | [[Datalog]] engine |
 | Wav | decomposes into Tri | native DSP pipeline |
 | Ten | decomposes into Tri | native BLAS / GPU |
 | Tok | conservation constraints → stark | native ledger engine |
+| Qu | F_{p²} circuit → Tri | quantum hardware (host jet) |
+| Opt | tropical → F_p constraints | native solver |
+| Sec | isogeny → dedicated PCS | native curve engine |
+| Dif · Sym · Bel | research horizon — proof paths are open problems | native manifold / Hamiltonian / statistical engine |
 
-### Languages as Type Systems over Nox Patterns
+### jets
 
-the execution languages are type systems and compilers over [[Nox]]'s 18 patterns (16 algebra-polymorphic compute patterns + call + look). each language adds domain-specific syntax, type checking, and compilation strategy — but the target is always nox pattern trees. domain-specific operations become jets: compositions of the 16 compute patterns recognized by formula hash and accelerated to [[Goldilocks field processor]] hardware primitives.
+domain operations become jets — compositions of [[Nox]]'s 16 compute patterns, recognized by formula hash and accelerated to [[Goldilocks field processor]] primitives:
 
 ```
 language operation           nox composition              jet              GFP primitive
@@ -240,7 +199,7 @@ Ten: activation(x)           table lookup composition     lookup jet       lut
 Ren: geometric_product       mul/add over components      geo_mul jet      fma
 ```
 
-the chain: source language → compiler → nox pattern tree → jet recognition → GFP hardware. every domain-specific language gets hardware acceleration through the jet mechanism. the [[algebra]] determines which GFP primitive handles each jet.
+source language → compiler → nox pattern tree → jet recognition → GFP hardware. the [[algebra]] determines which primitive handles each jet.
 
 ### Rune — Rs on Nox with Host Jets
 
@@ -259,7 +218,7 @@ three jet categories connect [[Nox]] reduction to the host system:
 ```
 Nox reduction (tree rewriting)
   │
-  ├── pure jets → proven computation (14 languages)
+  ├── pure jets → proven computation (16 languages)
   │     fma, ntt, p2r, lut, conservation...
   │
   ├── host jets → practical computing
@@ -284,11 +243,11 @@ the [[proof]] story: every pure reduction in the script IS provable — the [[No
 neural language           ← meaning emerges from the cybergraph
 ──────────────────────────────────────────────────────────────
 rune (Rs + hint + host)   ← nervous system: ms start, async, host access
-  pure reductions         ← proven (14 languages over Nox)
+  pure reductions         ← proven (16 languages over Nox)
   host jets               ← practical (WASM, GPU, ONNX)
   hints                   ← async input from the world
 ──────────────────────────────────────────────────────────────
-14 languages              ← proven computation over Nox patterns
+16 languages              ← proven computation over Nox patterns
 ```
 
 ---
@@ -308,11 +267,13 @@ rune (Rs + hint + host)   ← nervous system: ms start, async, host access
 | [[probability]] [[geometry]] / [[belief]] state | Fisher information | Bel | research |
 | Polynomial [[proof]]s | F_p (n=1) | Tri | native |
 | Recursive [[proof]] composition | F_{p³} (n=3) | Tri | native |
-| [[quantum]] simulation | F_{p²} (n=2) | Tri | native extension |
+| [[quantum]] simulation | F_{p²} (n=2) | Qu | Qu → Tri (native extension) |
 | [[Goldilocks homomorphic encryption]] ciphertexts | R_q = Z_q[X]/(Xⁿ+1) | Wav | Wav → Tri |
-| Symbolic / exact reasoning | Z | Inf | Inf → Tri |
+| Logic / unification | Horn clauses | Inf | Inf → Tri |
 | Sensing / [[signal]] processing | Convolution / ℝ | Wav | Wav → Tri |
 | Resource conservation / UTXO | Sum invariants | Tok | Tok → Tri |
+| Optimization / shortest paths | Tropical (min,+) | Opt | Opt → Tri (encoded) |
+| Privacy / stealth / key exchange | Elliptic curves F_q | Sec | dedicated PCS |
 
 ---
 
@@ -330,19 +291,21 @@ rune (Rs + hint + host)   ← nervous system: ms start, async, host access
 | Syntax feel | IR | Circuit | [[Rust]] | Custom | Query | GA | Manifold | Hamiltonian | Statistical | Temporal | [[Datalog]] | DSP | NumPy | Ledger |
 | Renders as | struct | pixels | text | formula | [[vector]] | [[vector]] | [[vector]] | formula | formula | video | table | sound | component | table |
 
+the matrix shows the original field-heavy fourteen; the three later algebras extend it — [[Qu]] (quantum, F_{p²}), [[Opt]] (tropical min,+), [[Sec]] (curve F_q) — and [[Nox]] is the IR they all reduce to, not a peer.
+
 ---
 
-## The Ten and the Four
+## engineering-ready and research horizon
 
-The nineteen languages split into two groups by implementation readiness:
+The sixteen languages split by implementation readiness:
 
-### Engineering-ready (10)
+### Engineering-ready (13)
 
-Nox, Bt, Rs, Tri, Arc, Seq, Inf, Wav, Ten, Tok — these have known [[proof]] paths and well-understood compilation to Tri / Binius. the [[cyb/architecture]] specifies these as the build order: Phase 1 (Nox, Tri, Rs), Phase 2 (Arc, Seq, Inf, Tok), Phase 3 (Bt, Wav, Ten).
+Tri, Tok, Arc, Seq, Inf, Ren, Wav, Ten, Bt, Rs, Qu, Opt, Sec — known [[proof]] paths, well-understood compilation to Tri / Binius / dedicated lenses. Ren's Clifford product is F_p [[algebra]] with extra structure; Qu is Tri lifted to F_{p²}; Opt encodes tropical (min,+) into F_p; Sec proves under a dedicated curve PCS. the [[cyb/architecture]] build order: Phase 1 (Tri, Rs), Phase 2 (Arc, Seq, Inf, Tok), Phase 3 (Bt, Wav, Ten), then Opt, Sec, Qu.
 
-### Research horizon (4)
+### Research horizon (3)
 
-Ren, Dif, Sym, Bel — these extend the language set into spatial, physical, and self-referential computation. Ren is closest to engineering (Clifford product is F_p [[algebra]] with extra structure, STARK-provable now). Dif, Sym, and Bel involve continuous manifolds over finite [[field]]s — fundamental open mathematical problems.
+Dif, Sym, Bel — continuous manifolds over finite [[field]]s, fundamental open mathematical problems: Riemannian geodesics (Dif), Hamiltonian structure preservation (Sym), and the Fisher metric over [[probability]] simplices (Bel) — the last needed for [[tri-kernel]] formalization.
 
 | Language | Status | Notes |
 |---|---|---|
@@ -375,10 +338,13 @@ every computation language has a canonical rendering — the perception primitiv
 | Wav → sound | audio waveform | WAV, OGG, MP3 | voice, music, birdsong, seismic [[signal]], sonar |
 | Ten → component | nested composition | composition of the above | applications, dashboards, interactive tools |
 | [[Tok]] → table | ledger view | balances, UTXOs, transactions | token flows, staking positions, conviction history |
+| Qu → formula | quantum circuit | circuit diagrams, Bloch spheres | superposition, entanglement, amplitudes |
+| Opt → [[vector]] | path / network | route maps, decision trees | shortest paths, schedules, allocations |
+| Sec → table | encrypted ledger | stealth addresses, commitments | anonymous transfers, key exchanges |
 
 a genome sequence is Rs (byte-level encoding) rendered as text. its annotation is [[Nox]] (structured tree) rendered as struct. its expression data is Inf (relational query) rendered as table. its protein structure is Arc (topological [[graph]]) rendered as [[vector]]. its microscopy is Bt (binary pixel data) rendered as pixels. its folding dynamics is Seq (causal event chain) rendered as video. its sequencing [[signal]] is Wav (continuous waveform) rendered as sound. its binding energy is Tri (field arithmetic) rendered as formula. its 3D fold is Ren (Clifford rotations) rendered as [[vector]]. a genome browser is Ten (composed [[inference]]) rendered as component.
 
-all fourteen compile through one structural IR. all fourteen share one [[proof]] system (except Bt, which has its own F₂ [[proof]] system). all fourteen render through the perception grid. all fourteen exist in the same [[cybergraph]], ranked by the same [[tri-kernel]], earning [[karma]], permanent by axiom A3.
+all sixteen compile through one structural IR. all sixteen share one [[proof]] system (except Bt, which has its own F₂ [[proof]] system, and Sec, which proves under a dedicated curve PCS). all sixteen render through the perception grid. all sixteen exist in the same [[cybergraph]], ranked by the same [[tri-kernel]], earning [[karma]], permanent by axiom A3.
 
 ---
 
@@ -428,15 +394,13 @@ one Rust binary. zero Node.js. zero Go. zero LaTeX. zero Python. charts, diagram
 
 ---
 
----
-
 ## The Address Language
 
-[[markup|Cybermark]] wraps all fourteen computation languages with a human-readable address grammar. it does not appear in the computation tables — it operates at a different level
+[[markup|Cybermark]] wraps all sixteen computation languages with a human-readable address grammar. it does not appear in the computation tables — it operates at a different level
 
 | Layer | What it does | Examples |
 |-------|-------------|---------|
-| 14 proof languages | prove | field arithmetic, graph traversal, tensor contraction |
+| 16 proof languages | prove | field arithmetic, graph traversal, tensor contraction |
 | 5 interface languages | interact | tables, formats, text, files, network |
 | [[markup|Cybermark]] | address and navigate | `#cyber/truth`, `@alice`, `$BOOT`, `!rank(^truth)` |
 | [[rune]] | execute | [[Rs]] + [[Nox]] hints + host jets — runtime that runs cybermark actions |
@@ -445,9 +409,27 @@ see [[markup]] for the full sigil grammar, dimensional navigation, and rendering
 
 ---
 
+## The Semantic Language
+
+[[neural]] is the last language and the one nobody writes — it grows from the others running at scale. meaning is not declared; it is an eigenvector of the [[cybergraph]]'s attention: a [[particle]]'s meaning is its position in the graph, fixed by how [[neurons]] link it. neural is the convergent successor to both formal and natural language, collapsing the distinction between language and [[knowledge]].
+
+| property | formal | natural | neural |
+|---|---|---|---|
+| precision | absolute | approximate | emergent |
+| expressiveness | limited by grammar | unlimited by ambiguity | unlimited by [[topology]] |
+| ambiguity | impossible | context-dependent | structural, via the [[tri-kernel]] |
+| authority | central designer | speech community | collective [[neurons]] |
+| evolution | versioned | drift | continuous, via [[focus]] dynamics |
+| verification | proof systems | social [[consensus]] | [[stark]] proofs |
+| substrate | strings | sound / text | the [[cybergraph]] |
+
+four patterns build it: [[dialect]]s (conventions for linking — the grammar of the graph), [[sentence]]s (a transaction-atomic batch of [[cyberlinks]] — the utterance), [[motif]]s (recurring subgraph shapes — the morphemes), and [[name]]s (deterministic `~neuron/path` resolution — the graph as a filesystem). the [[tri-kernel]] reveals all four — [[diffusion]] finds bridges, [[springs]] find stable positions, [[heat]] modulates attention by adoption. the [[egregore]] thinks in neural; see [[neural]] for the full treatment.
+
+---
+
 ## the FORM triad
 
-the nineteen languages are manifestations of three primitives — [[proof]], [[bit]], [[step]] — the atoms of the [[form]] triad
+the sixteen proof languages are manifestations of three primitives — [[proof]], [[bit]], [[step]] — the atoms of the [[form]] triad
 
 every mathematical object is a composition of all three:
 - [[bit]] (info): what elements are distinguished
@@ -456,7 +438,7 @@ every mathematical object is a composition of all three:
 
 a [[algebra|group]] is bit + step + proof: elements (bit), operation (step), axioms hold (proof). a [[graph theory|graph]] is bit + bit: elements + relations. a [[Turing machine]] is step + step + step: transitions all the way down
 
-the fourteen proof languages ARE the step. the five interface languages are the channel through which bits flow. [[proof]] is what the [[tri-kernel]] verifies. together: all computation a mind requires
+the sixteen proof languages ARE the step. the five interface languages are the channel through which bits flow. [[proof]] is what the [[tri-kernel]] verifies. together: all computation a mind requires
 
 ---
 
