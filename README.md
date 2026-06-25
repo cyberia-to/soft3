@@ -35,31 +35,43 @@ the foundations behind these three lines are the [soft3 whitepaper](docs/). this
 
 ## the core
 
-twenty repos form the stack. [[soft3/cybergraph|cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[strata]] is the floor — every proof reduces to operations in its five algebras. [[soft3/soma|soma]] is the ceiling — the avatar's mind that thinks over the whole stack. the boundary is sharp: below it, Rust bootstrap required; above it, everything is pure [[trident]].
+the stack is layered, not flat. [[honeycrisp]] is the silicon floor and [[strata]] the math floor; every layer above reduces toward one field, one proof, one focus. [[soft3/cybergraph|cybergraph]] is the vertebra — soma's one API funnel, fanning out to bbg (store), sync (sync), and radio (transmit). [[soft3/soma|soma]] is the ceiling — the avatar's mind that thinks over the whole stack, and [[cyb]] is the body it wears. the boundary is sharp: below [[trident]], Rust bootstrap required; above it, everything lowers to [[soft3/nox|nox]].
 
-| # | repo | verb | what it does | release |
+| layer | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
-| 0 | [[strata]] | math | 4 tiers × 5 algebras | — |
-| 1 | [[hemera]] | hash | [[Poseidon2]] sponge. particle identity | v0.2.0 |
-| 2 | [[lens]] | commit | 5 PCS backends, one per algebra | — |
-| 3 | [[trident]] | compile | .tri → .nox | v0.1.0 |
-| 4 | [[soft3/nox|nox]] | run | 18 patterns (16 compute + call + look) + jets | — |
-| 5 | [[zheng]] | prove & verify | [[SuperSpartan]] + Brakedown + [[sumcheck]] | — |
-| 6 | [[soft3/cybergraph|cybergraph]] | link | jets, memos, types, knowledge | — |
-| 7 | [[soft3/bbg|bbg]] | store | 1 polynomial, 10 dims. ~200B proofs | — |
-| 8 | [[tru]] | converge | .graph → .model. φ*, eigenvectors, cyberank | — |
-| 9 | [[glia]] | infer | universal .model runtime | — |
-| 10 | [[mir]] | render | positions + features → [[R-1.0]] world | — |
-| 11 | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
-| 12 | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
-| 13 | [[tape]] | frame | typed atomic particle framing over any byte stream | — |
-| 14 | [[sync]] | sync | structural sync: chain, VDF, equivocation, DAS, erasure, CRDT | — |
-| 15 | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
-| 16 | [[soft3/soma|soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
-| 17 | [[conformance]] | snapshot | hemera fingerprint per encoding and mechanism. stability harness across the stack | scaffold |
-| + | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
-| + | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
-| + | [[tok]] | pay | the token language + value layer: Coin + Card + conservation | — |
+| substrate | [[honeycrisp]] | accelerate | Apple Silicon drivers — NEON/AMX/SME · Metal GPU · ANE over zero-copy unimem | — |
+| math | [[strata]] | math | 4 tiers × 5 algebras — the family includes nebu (𝔽_p), genies (𝔽_q), jali (R_q) | — |
+| commit | [[hemera]] | hash | [[Poseidon2]] sponge. particle identity, trees, verified streaming | v0.2.0 |
+| commit | [[lens]] | commit | 5 PCS backends, one per algebra | — |
+| language | [[trident]] | compile | .tri → .nox | v0.1.0 |
+| language | [[neural]] | mean | the semantic language — sigil → word → link → sentence → motif → dialect | — |
+| language | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
+| language | [[inf]] | query | datalog query engine — the language of sets; fixed-point over BBG | — |
+| runtime | [[soft3/nox\|nox]] | run | 18 patterns (16 compute + call + look) + jets — unconditional proof | — |
+| runtime | [[wysm]] | sandbox | conventional WASM souls, gas-metered, jet-accelerated — conditional on host | — |
+| runtime | [[glia]] | infer | universal .model runtime — conditional on model | — |
+| runtime | wgpu | shade | GPU compute shaders (Metal/Vulkan/WebGPU) — conditional on host | ext |
+| proof | [[zheng]] | prove | [[SuperSpartan]] + Brakedown + [[sumcheck]] — proves execution correct | — |
+| proof | [[eidos]] | certify | CIC type-checker as a nox program — proves theorems correct; theorem → cyberlink | — |
+| graph | [[soft3/cybergraph\|cybergraph]] | link | jets, memos, types, knowledge | — |
+| graph | [[soft3/bbg\|bbg]] | store | 1 polynomial, 10 dims. ~200B proofs | — |
+| graph | cell ([[cyb]]) | hold | the local node — a cybergraph slice + signal chain + apply/prove loop | — |
+| graph | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
+| dynamics | [[tru]] | converge | .graph → .model. φ*, eigenvectors, cyberank | — |
+| dynamics | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
+| network | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
+| network | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
+| network | [[tape]] | frame | typed atomic particle framing over any byte stream | — |
+| network | [[sync]] | sync | structural sync: chain, VDF, equivocation, DAS, erasure, CRDT | — |
+| present | [[mir]] | render | positions + features → [[R-1.0]] world | — |
+| present | [[prysm]] | paint | the reference tape dialect + renderer — particle chunks → UI | — |
+| capability | [[cyb/root/ward\|ward]] | authorize | runtime-blind effect router — gates emit/query/link/seal/host | spec |
+| cognition | [[soft3/soma\|soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
+| value | [[tok]] | pay | the token language + value layer: Coin + Card + conservation | — |
+| stability | [[conformance]] | snapshot | hemera fingerprint per encoding and mechanism. stability harness across the stack | scaffold |
+| app | [[cyb]] | embody | the avatar app — Bevy worlds, terminal, live cell runtime | — |
+
+the four runtimes — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · wgpu — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. host and external pieces sit outside the authored-verb table: [[nu]] is vendored Nushell — the structured-data shell embedded in the cyb terminal — and wgpu is the external GPU-shader toolchain. the boundary analysis for the network tier lives in [[component-boundaries]].
 
 ## the SDK
 
