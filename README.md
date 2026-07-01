@@ -35,43 +35,43 @@ the foundations behind these three lines are the [soft3 whitepaper](docs/). this
 
 ## the core
 
-the stack is a cycle, not a tower. a particle is born in field — one Goldilocks polynomial carrying identity, state, data and proof as four readings of one object. machine computes over it and seals a proof. graph accumulates the proofs into a shared knowledge structure and converges it to one focus distribution φ\*. fabric carries the graph across machines at planetary scale. avatar reads the graph, expresses meaning, acts — and creates new particles that return to field. remove any one group and the cycle breaks.
+soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally it unfolds the same seven-triad spiral that [[cybics]] uses for all knowledge. form defines the primitive rules. mass is what knowledge is literally made of. space is where it exists at scale. life is where it becomes intelligent. word is what it means. work is how it runs. play is where we act together. each group earns its place: remove any one and a class of reasoning becomes impossible.
 
 | group | repo | verb | what it does | release |
 |---|------|------|-------------|---------|
-| field | [[honeycrisp]] | accelerate | Apple Silicon drivers — NEON/AMX/SME · Metal GPU · ANE over zero-copy unimem | — |
-| field | [[strata]] | math | 4 tiers × 5 algebras — the family includes nebu (𝔽_p), genies (𝔽_q), jali (R_q) | — |
-| field | [[hemera]] | hash | [[Poseidon2]] sponge. particle identity, trees, verified streaming | v0.2.0 |
-| field | [[lens]] | commit | 5 PCS backends, one per algebra | — |
-| machine | [[trident]] | compile | .tri → .nox | v0.1.0 |
-| machine | [[soft3/nox\|nox]] | run | 18 patterns (16 compute + call + look) + jets — unconditional proof | — |
-| machine | [[wysm]] | sandbox | conventional WASM souls, gas-metered — conditional on host | — |
-| machine | [[glia]] | infer | universal .model runtime — conditional on model | — |
-| machine | wgpu | shade | GPU compute shaders (Metal/Vulkan/WebGPU) — conditional on host | ext |
-| machine | [[zheng]] | prove | [[SuperSpartan]] + Brakedown + [[sumcheck]] — proves execution correct | — |
-| machine | [[eidos]] | certify | CIC type-checker as a nox program — proves theorems correct; theorem → cyberlink | — |
-| graph | [[soft3/cybergraph\|cybergraph]] | link | jets, memos, types, knowledge | — |
-| graph | [[soft3/bbg\|bbg]] | store | 1 polynomial, 10 dims. ~200B proofs | — |
-| graph | cell ([[cyb]]) | hold | the local node — a cybergraph slice + signal chain + apply/prove loop | — |
-| graph | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
-| graph | [[tru]] | converge | .graph → .model. φ*, eigenvectors, cyberank | — |
-| graph | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
-| fabric | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
-| fabric | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
-| fabric | [[tape]] | frame | typed atomic particle framing over any byte stream | — |
-| fabric | [[sync]] | sync | structural sync: chain, VDF, equivocation, DAS, erasure, CRDT | — |
-| avatar | [[neural]] | mean | the semantic language — sigil → word → link → sentence → motif → dialect | — |
-| avatar | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
-| avatar | [[inf]] | query | datalog query engine — the language of sets; fixed-point over BBG | — |
-| avatar | [[mir]] | render | positions + features → [[R-1.0]] world | — |
-| avatar | [[prysm]] | paint | the reference tape dialect + renderer — particle chunks → UI | — |
-| avatar | [[soft3/soma\|soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
-| avatar | [[tok]] | pay | the token language + value layer: Coin + Card + conservation | — |
-| avatar | [[cyb/root/ward\|ward]] | authorize | runtime-blind effect router — gates emit/query/link/seal/host | spec |
-| avatar | [[cyb]] | embody | the avatar app — Bevy worlds, terminal, live cell runtime | — |
+| form | [[honeycrisp]] | accelerate | Apple Silicon drivers — NEON/AMX/SME · Metal GPU · ANE over zero-copy unimem | — |
+| form | [[strata]] | math | 4 tiers × 5 algebras — the family includes nebu (𝔽_p), genies (𝔽_q), jali (R_q) | — |
+| form | [[hemera]] | hash | [[Poseidon2]] sponge. particle identity, trees, verified streaming | v0.2.0 |
+| form | [[lens]] | commit | 5 PCS backends, one per algebra | — |
+| mass | [[soft3/cybergraph\|cybergraph]] | link | jets, memos, types, knowledge | — |
+| mass | [[soft3/bbg\|bbg]] | store | 1 polynomial, 10 dims. ~200B proofs | — |
+| mass | cell ([[cyb]]) | hold | the local node — a cybergraph slice + signal chain + apply/prove loop | — |
+| mass | [[fs]] | mount | sovereign filesystem: particles, patches, sync | — |
+| space | [[mudra]] | encrypt | KEM, dCTIDH, AEAD, TFHE, threshold | — |
+| space | [[radio]] | transmit | QUIC + BAO streaming + gossip | — |
+| space | [[tape]] | frame | typed atomic particle framing over any byte stream | — |
+| space | [[sync]] | sync | structural sync: chain, VDF, equivocation, DAS, erasure, CRDT | — |
+| life | [[tru]] | converge | .graph → .model. φ*, eigenvectors, cyberank | — |
+| life | [[foculus]] | agree | [[collective focus theorem]] → finality | — |
+| life | [[soft3/soma\|soma]] | think | avatar cognitive architecture. four concurrent loops over a tiered model stack | — |
+| word | [[neural]] | mean | the semantic language — sigil → word → link → sentence → motif → dialect | — |
+| word | [[rune]] | eval | Rs + hint + host + eval. dynamic async layer | — |
+| word | [[inf]] | query | datalog query engine — the language of sets; fixed-point over BBG | — |
+| work | [[trident]] | compile | .tri → .nox | v0.1.0 |
+| work | [[soft3/nox\|nox]] | run | 18 patterns (16 compute + call + look) + jets — unconditional proof | — |
+| work | [[wysm]] | sandbox | conventional WASM souls, gas-metered — conditional on host | — |
+| work | [[glia]] | infer | universal .model runtime — conditional on model | — |
+| work | wgpu | shade | GPU compute shaders (Metal/Vulkan/WebGPU) — conditional on host | ext |
+| work | [[zheng]] | prove | [[SuperSpartan]] + Brakedown + [[sumcheck]] — proves execution correct | — |
+| work | [[eidos]] | certify | CIC type-checker as a nox program — proves theorems correct; theorem → cyberlink | — |
+| play | [[mir]] | render | positions + features → [[R-1.0]] world | — |
+| play | [[prysm]] | paint | the reference tape dialect + renderer — particle chunks → UI | — |
+| play | [[tok]] | pay | the token language + value layer: Coin + Card + conservation | — |
+| play | [[cyb/root/ward\|ward]] | authorize | runtime-blind effect router — gates emit/query/link/seal/host | spec |
+| play | [[cyb]] | embody | the avatar app — Bevy worlds, terminal, live cell runtime | — |
 | — | [[conformance]] | snapshot | hemera fingerprint per encoding and mechanism. stability harness across the stack | scaffold |
 
-the four runtimes in machine — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · wgpu — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[nu]] (vendored Nushell) and wgpu are external pieces outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
+the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · wgpu — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[nu]] (vendored Nushell) and wgpu are external pieces outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
 
 ## the SDK
 
