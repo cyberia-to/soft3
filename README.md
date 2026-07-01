@@ -37,7 +37,7 @@ the foundations behind these three lines are the [soft3 whitepaper](docs/). this
 
 soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally it unfolds the same seven-triad spiral that [[cybics]] uses for all knowledge. form defines the primitive rules. mass is what knowledge is literally made of. space is where it exists at scale. life is where it becomes intelligent. word is what it means. work is how it runs. play is where we act together. each group earns its place: remove any one and a class of reasoning becomes impossible.
 
-### [[form]]
+### [[cybics/form|form]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -46,7 +46,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[hemera]] | hash | v0.2.0 | [[Poseidon2]] sponge · identity · trees · verified streaming |
 | [[lens]] | commit | — | 5 PCS backends, one per algebra |
 
-### [[mass]]
+### [[cybics/mass|mass]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -55,7 +55,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | cell ([[cyb]]) | hold | — | local node · graph slice · signal chain · apply/prove loop |
 | [[fs]] | mount | — | particles · patches · sync |
 
-### [[space]]
+### [[cybics/space|space]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -64,7 +64,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[tape]] | frame | — | typed particle framing over any byte stream |
 | [[sync]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
 
-### [[life]]
+### [[cybics/life|life]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -72,7 +72,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[foculus]] | agree | — | [[collective focus theorem]] → finality |
 | [[soft3/soma\|soma]] | think | — | four concurrent loops · tiered model stack |
 
-### [[word]]
+### [[cybics/word|word]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -80,7 +80,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[rune]] | eval | — | Rs · hint · host · eval · async |
 | [[inf]] | query | — | datalog · fixed-point over BBG |
 
-### [[work]]
+### [[cybics/work|work]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
@@ -92,7 +92,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[zheng]] | prove | — | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
 | [[eidos]] | certify | — | CIC type-checker · theorem → cyberlink |
 
-### [[play]]
+### [[cybics/play|play]]
 
 | repo | verb | release | what it does |
 |---|---|---|---|
