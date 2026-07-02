@@ -7,15 +7,17 @@ date: 2026-06-07
 ---
 # Architecture upgrade: cybergraph + sync + tape
 
-Reshape the network layer of the soft3 stack so that cybergraph is a unified link processor with one API, sync owns the full structural-sync protocol, tape becomes a first-class stack member for wire framing, and intent is promoted to a first-class verb alongside signal.
+> Superseded in part: the `sync` repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate. Everywhere below, "sync" (the component) is now the [[foculus]] crate. The architecture this proposal describes still holds; only the component name changed. This document is kept as the implemented record.
+
+Reshape the network layer of the soft3 stack so that cybergraph is a unified link processor with one API, [[foculus]] owns the full structural-sync protocol, tape becomes a first-class stack member for wire framing, and intent is promoted to a first-class verb alongside signal.
 
 ## Goals
 
 1. One API surface for soma — `declare / submit / subscribe / query` all through cybergraph.
 2. No read/write split across repos.
-3. sync owns *all* structural-sync mechanics (validity, ordering, availability, local merge) — not just availability.
-4. tape becomes the wire substrate; radio carries tape frames; sync and cybergraph mint frames in their dialect.
-5. intent is recognised everywhere — bbg persists it, sync validates it, cybergraph exposes `declare()` for it.
+3. foculus owns *all* structural-sync mechanics (validity, ordering, availability, local merge) — not just availability.
+4. tape becomes the wire substrate; radio carries tape frames; foculus and cybergraph mint frames in their dialect.
+5. intent is recognised everywhere — bbg persists it, foculus validates it, cybergraph exposes `declare()` for it.
 
 ## Final architecture
 
@@ -27,7 +29,7 @@ Reshape the network layer of the soft3 stack so that cybergraph is a unified lin
                        │
        ┌───────────────┼───────────────┐
        ▼               ▼               ▼
-     bbg            sync             radio
+     bbg          foculus            radio
    (store)         (sync)         (transmit)
                        │               │
                        └──── uses ─────┤
@@ -38,8 +40,8 @@ Reshape the network layer of the soft3 stack so that cybergraph is a unified lin
 
 Backend ↔ backend connections (no funnel through cybergraph):
 
-- `sync ↔ bbg` — sync reads `BBG_root` and requests Lens openings for completeness verification.
-- `sync ↔ radio` — sync chunks signals/intents, hands frames to radio for gossip; radio delivers peer frames to sync.
+- `foculus ↔ bbg` — foculus reads `BBG_root` and requests Lens openings for completeness verification.
+- `foculus ↔ radio` — foculus chunks signals/intents, hands frames to radio for gossip; radio delivers peer frames to foculus.
 - `radio ↔ tape` — radio carries tape-framed bytes; tape is the codec.
 
 Forbidden: `bbg ↔ radio` direct (bbg is pure state, never network), `cybergraph ↔ radio` direct (cybergraph only sees validated objects, never raw frames).

@@ -20,7 +20,7 @@ value        tok (pay)
 cognition    soma (think)
 capability   ward (authorize)
 present      mir (render world)        prysm (paint UI)
-network      mudra · radio · tape · sync
+network      mudra · radio · tape · foculus
 dynamics     tru (converge φ*)         foculus (agree)
 graph        cybergraph · bbg · cell · fs
 proof        zheng (execution)         eidos (theorem)
@@ -77,7 +77,7 @@ these are places where two components touch the same noun. each is either a clea
 | two render verbs — mir (3D world from the graph) / prysm (UI from a particle dialect) | different input and output: spatial graph viz vs symbolic chunk stream | complement — distinct, name the border so neither grows into the other |
 | three terminal surfaces — rune (provable eval → nox) / neu (neural command-as-sentence) / nu (host OS shell) | provable vs semantic vs host; neu may displace nu over time | clarify — three languages, one prompt; document which is which |
 | the field stack — strata (algebra API) / nebu (portable 𝔽_p, NTT) / acpu (accelerated) | one API, one portable impl, one silicon impl | clean once nebu is named; acpu is the fast path nebu dispatches to |
-| local-state assembly — cell / cyb-core / sync (local) / cybergraph write-path | several places build and hold signals | converge cell + cyb-core; sync owns availability, cybergraph the write-path |
+| local-state assembly — cell / cyb-core / foculus (local) / cybergraph write-path | several places build and hold signals | converge cell + cyb-core; foculus owns availability, cybergraph the write-path |
 | ward vs rune caps | rune carries `~caps`; ward owns the verbs, policy, and enforcement | clarify — rune transports capability, ward is the gate |
 
 ## closing the gaps
