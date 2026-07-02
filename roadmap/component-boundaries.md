@@ -69,7 +69,7 @@ each row is one mechanism implemented twice. the move makes it one.
 | VDF | `sync/src/vdf.rs` (impl) | `mudra::delay` (primitive) | sync consumes mudra's `vdf_prove` / `vdf_verify` |
 | erasure / DAS | `hemera/roadmap/erasure-coding.md` (claim) | `sync/src/{erasure,das}.rs` | retire the hemera roadmap; sync owns it |
 | CRDT reconciliation | `radio` iroh-docs / iroh-willow | `sync` reconciliation | move the engines to sync; radio transmits |
-| φ\* / tri-kernel | `foculus/reference/provable-consensus.md` (re-derived) | [[tru]] | foculus references φ\*, never derives the kernel |
+| φ\* / tri-kernel | `foculus/specs/provable-consensus.md` (re-derived) | [[tru]] | foculus references φ\*, never derives the kernel |
 | classical transport crypto | radio rustls / ed25519 | [[mudra]] seal / stealth | aspirational: route the QUIC handshake through mudra |
 
 ## ownership decisions to settle
