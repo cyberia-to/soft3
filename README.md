@@ -62,7 +62,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[mudra]] | encrypt | — | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | — | QUIC · BAO streaming · gossip |
 | [[tape]] | frame | — | typed particle framing over any byte stream |
-| [[sync]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
+| [[foculus]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
 
 ### [[cybics/life|life]]
 
