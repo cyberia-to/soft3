@@ -15,7 +15,7 @@ a map of the whole [[soft3]] stack as layers, a verdict on what it covers end to
 the stack is layered, not a flat list of repos. each layer reduces toward the one below it, and the three through-lines (one field, one proof, one focus) run vertically through all of them.
 
 ```text
-app          cyb (embody)
+app          cyb (embody)             lytics (measure)
 value        tok (pay)
 cognition    soma (think)
 capability   ward (authorize)
@@ -31,7 +31,7 @@ math         strata — nebu 𝔽_p · genies 𝔽_q · jali R_q
 substrate    honeycrisp (accelerate)
 ```
 
-two verbs share a layer when they are orthogonal readings of it, not duplicates: zheng proves execution while eidos certifies theorems; mir paints the spatial world while prysm paints the symbolic surface; tru converges the field while foculus decides finality on it.
+two verbs share a layer when they are orthogonal readings of it, not duplicates: zheng proves execution while eidos certifies theorems; mir paints the spatial world while prysm paints the symbolic surface; tru converges the field while foculus decides finality on it; cyb is the general graph — any particle, any cyberlink, the whole protocol's neuron namespace — while lytics is one domain-scoped subgraph — every visitor a neuron under its own derivation path, every link a page view, nothing else. [[lytics]] runs in production today (cybergraph + bbg + hemera direct, mudra for domain-scoped identity, inf for reports) — the stack's first live proof that the graph + state + identity layers hold real, adversarial-facing traffic, not just tests.
 
 ## the proof-contract ladder
 
