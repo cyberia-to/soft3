@@ -11,20 +11,21 @@
             name="description"
             content="Shared mind. Proof in every breath. Link everything."
         />
-        <meta name="theme-color" content="#1a0a14" />
+        <meta name="theme-color" content="#0c1a10" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Syne:wght@500;700;800&display=swap"
+            rel="stylesheet"
+        />
         <link
             rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>◎</text></svg>"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>❀</text></svg>"
         />
         <style>
             :root {
-                --ink: #1a0f18;
-                --cream: #fff4e8;
-                --mist: rgba(255, 244, 232, 0.72);
-                --hot: #ff4d8d;
-                --sap: #7dffb3;
-                --sun: #ffd36a;
-                --void-violet: #6b3fa0;
+                --cream: #fff8ef;
+                --mist: rgba(255, 248, 239, 0.88);
             }
 
             * {
@@ -37,11 +38,9 @@
             body {
                 height: 100%;
                 overflow: hidden;
-                background: #120810;
+                background: #0a120c;
                 color: var(--cream);
-                font-family:
-                    "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
-                    "Times New Roman", serif;
+                font-family: "Cormorant Garamond", Georgia, serif;
                 -webkit-font-smoothing: antialiased;
             }
 
@@ -54,30 +53,72 @@
                 z-index: 0;
             }
 
-            /* soft film so text stays readable without killing the trip */
             .film {
                 position: fixed;
                 inset: 0;
                 z-index: 1;
                 pointer-events: none;
                 background: radial-gradient(
-                    ellipse 90% 80% at 50% 45%,
-                    transparent 0%,
-                    rgba(10, 4, 12, 0.15) 55%,
-                    rgba(8, 2, 10, 0.55) 100%
+                    ellipse 100% 90% at 50% 40%,
+                    transparent 10%,
+                    rgba(5, 12, 8, 0.25) 55%,
+                    rgba(4, 8, 6, 0.62) 100%
                 );
-                mix-blend-mode: multiply;
-                opacity: 0.85;
-                animation: film-breathe 7s ease-in-out infinite;
+                animation: film 9s ease-in-out infinite;
             }
-
-            @keyframes film-breathe {
+            @keyframes film {
                 0%,
                 100% {
-                    opacity: 0.75;
+                    opacity: 0.85;
                 }
                 50% {
-                    opacity: 0.92;
+                    opacity: 1;
+                }
+            }
+
+            /* floating pollen / dust overlay via CSS */
+            .pollen {
+                position: fixed;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background-image:
+                    radial-gradient(
+                        1.5px 1.5px at 10% 20%,
+                        rgba(255, 230, 120, 0.7),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 30% 70%,
+                        rgba(255, 120, 200, 0.6),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1.5px 1.5px at 70% 30%,
+                        rgba(120, 255, 200, 0.65),
+                        transparent
+                    ),
+                    radial-gradient(
+                        1px 1px at 85% 60%,
+                        rgba(255, 255, 255, 0.5),
+                        transparent
+                    ),
+                    radial-gradient(
+                        2px 2px at 50% 50%,
+                        rgba(255, 180, 80, 0.45),
+                        transparent
+                    );
+                background-size: 100% 100%;
+                animation: pollen-drift 18s linear infinite;
+                opacity: 0.55;
+                mix-blend-mode: screen;
+            }
+            @keyframes pollen-drift {
+                from {
+                    transform: translateY(0) rotate(0deg);
+                }
+                to {
+                    transform: translateY(-4%) rotate(2deg);
                 }
             }
 
@@ -88,132 +129,157 @@
                 height: 100vh;
                 display: grid;
                 grid-template-rows: auto 1fr auto;
-                padding: clamp(0.9rem, 2vh, 1.35rem) clamp(1rem, 3vw, 2rem);
-                max-width: 1080px;
+                padding: clamp(1rem, 2.2vh, 1.5rem) clamp(1.1rem, 3.2vw, 2.2rem);
+                max-width: 1180px;
                 margin: 0 auto;
-                gap: clamp(0.4rem, 1.2vh, 0.9rem);
+                gap: clamp(0.5rem, 1.4vh, 1rem);
             }
 
             .top {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-family:
-                    system-ui,
-                    -apple-system,
-                    sans-serif;
-                font-size: 0.78rem;
-                letter-spacing: 0.18em;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.85rem, 1.4vw, 1rem);
+                font-weight: 700;
+                letter-spacing: 0.22em;
                 text-transform: uppercase;
-                color: rgba(255, 244, 232, 0.7);
-                text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+                color: rgba(255, 248, 239, 0.85);
+                text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
             }
             .top a {
                 color: inherit;
                 text-decoration: none;
-                transition: color 0.2s;
+                letter-spacing: 0.14em;
+                transition:
+                    color 0.2s,
+                    text-shadow 0.2s;
             }
             .top a:hover {
                 color: #fff;
+                text-shadow: 0 0 20px rgba(255, 200, 100, 0.8);
             }
-
             .logo {
-                font-weight: 600;
-                letter-spacing: 0.28em;
+                letter-spacing: 0.32em;
                 color: #fff;
+                text-shadow: 0 0 30px rgba(120, 255, 180, 0.5);
             }
 
             .stage {
                 display: grid;
-                grid-template-columns: 1.05fr 0.95fr;
-                gap: clamp(1rem, 3vw, 2.2rem);
+                grid-template-columns: 1.08fr 0.92fr;
+                gap: clamp(1.1rem, 3.5vw, 2.6rem);
                 min-height: 0;
                 align-items: center;
             }
 
-            @media (max-width: 800px) {
+            @media (max-width: 860px) {
                 .stage {
                     grid-template-columns: 1fr;
                     grid-template-rows: auto minmax(0, 1fr);
                     align-items: start;
+                }
+                .panel {
+                    max-height: min(46vh, 380px) !important;
                 }
             }
 
             .manifesto {
                 display: flex;
                 flex-direction: column;
-                gap: 0.75rem;
+                gap: clamp(0.65rem, 1.5vh, 1rem);
                 min-height: 0;
             }
 
             .eyebrow {
-                font-family: system-ui, sans-serif;
-                font-size: 0.68rem;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.78rem, 1.3vw, 0.92rem);
+                font-weight: 700;
                 letter-spacing: 0.28em;
                 text-transform: uppercase;
-                color: rgba(255, 211, 106, 0.9);
-                text-shadow: 0 0 24px rgba(255, 77, 141, 0.5);
+                color: #ffe08a;
+                text-shadow: 0 0 28px rgba(255, 100, 160, 0.55);
             }
 
             h1 {
-                font-size: clamp(2.5rem, 7vw, 4rem);
+                font-size: clamp(3.2rem, 9vw, 5.4rem);
                 font-weight: 400;
-                line-height: 1.02;
+                line-height: 0.98;
                 letter-spacing: -0.03em;
                 color: #fff;
                 text-shadow:
-                    0 0 40px rgba(255, 77, 141, 0.45),
-                    0 0 80px rgba(125, 255, 179, 0.25),
-                    0 4px 30px rgba(0, 0, 0, 0.45);
-                animation: title-swell 6s ease-in-out infinite;
+                    0 0 50px rgba(255, 90, 160, 0.55),
+                    0 0 100px rgba(100, 255, 180, 0.35),
+                    0 6px 40px rgba(0, 0, 0, 0.5);
+                animation: title-trip 7s ease-in-out infinite;
+            }
+            h1 em {
+                font-style: italic;
+                background: linear-gradient(
+                    110deg,
+                    #fff,
+                    #ff9ed0 30%,
+                    #9dffe0 60%,
+                    #ffe08a 100%
+                );
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: title-trip 7s ease-in-out infinite reverse;
             }
 
-            @keyframes title-swell {
+            @keyframes title-trip {
                 0%,
                 100% {
+                    filter: hue-rotate(0deg) saturate(1);
                     transform: scale(1);
-                    filter: hue-rotate(0deg);
                 }
-                50% {
-                    transform: scale(1.015);
-                    filter: hue-rotate(18deg);
+                40% {
+                    filter: hue-rotate(25deg) saturate(1.25);
+                    transform: scale(1.012);
+                }
+                70% {
+                    filter: hue-rotate(-15deg) saturate(1.15);
+                    transform: scale(1.006);
                 }
             }
 
             .lede {
-                font-size: clamp(1rem, 1.8vw, 1.15rem);
-                line-height: 1.45;
+                font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+                line-height: 1.4;
                 color: var(--mist);
-                max-width: 26em;
-                text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+                max-width: 22em;
+                text-shadow: 0 3px 22px rgba(0, 0, 0, 0.6);
             }
 
             .action {
-                margin-top: 0.55rem;
+                margin-top: 0.4rem;
                 display: flex;
                 flex-direction: column;
-                gap: 0.5rem;
-                max-width: 30rem;
+                gap: 0.55rem;
+                max-width: 34rem;
             }
 
             .install {
                 display: flex;
                 border-radius: 999px;
                 overflow: hidden;
-                background: rgba(20, 8, 18, 0.55);
-                border: 1px solid rgba(255, 255, 255, 0.22);
-                backdrop-filter: blur(16px) saturate(1.4);
+                background: rgba(8, 18, 12, 0.52);
+                border: 1px solid rgba(255, 255, 255, 0.28);
+                backdrop-filter: blur(18px) saturate(1.5);
                 box-shadow:
-                    0 10px 40px rgba(0, 0, 0, 0.35),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-                font-family: "SF Mono", ui-monospace, Menlo, monospace;
+                    0 14px 50px rgba(0, 0, 0, 0.4),
+                    0 0 40px rgba(255, 120, 180, 0.12),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                font-family: ui-monospace, "SF Mono", Menlo, monospace;
             }
 
             .install code {
                 flex: 1;
-                padding: 0.9rem 1.2rem;
-                font-size: clamp(0.68rem, 1.4vw, 0.82rem);
-                color: #c8ffe0;
+                padding: 1.05rem 1.3rem;
+                font-size: clamp(0.82rem, 1.5vw, 0.98rem);
+                color: #c8ffe8;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -223,31 +289,32 @@
             .install button {
                 border: none;
                 background: linear-gradient(
-                    135deg,
-                    #ff4d8d,
-                    #c44dff 55%,
-                    #5ce1ff
+                    125deg,
+                    #ff6bab,
+                    #c86bff 40%,
+                    #5dffc0 80%,
+                    #ffe08a
                 );
-                background-size: 200% 200%;
-                animation: cta-flow 5s ease infinite;
-                color: #1a0a14;
-                font-weight: 700;
-                font-size: 0.7rem;
+                background-size: 250% 250%;
+                animation: flow 5s ease infinite;
+                color: #0c120e;
+                font-family: Syne, system-ui, sans-serif;
+                font-weight: 800;
+                font-size: clamp(0.78rem, 1.2vw, 0.88rem);
                 letter-spacing: 0.14em;
                 text-transform: uppercase;
-                padding: 0 1.25rem;
+                padding: 0 1.4rem;
                 cursor: pointer;
-                font-family: system-ui, sans-serif;
                 transition: filter 0.2s;
             }
             .install button:hover {
-                filter: brightness(1.1);
+                filter: brightness(1.12);
             }
             .install button.ok {
-                filter: saturate(1.4);
+                filter: saturate(1.5) brightness(1.1);
             }
 
-            @keyframes cta-flow {
+            @keyframes flow {
                 0%,
                 100% {
                     background-position: 0% 50%;
@@ -258,52 +325,44 @@
             }
 
             .hint {
-                font-family: system-ui, sans-serif;
-                font-size: 0.68rem;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.78rem, 1.2vw, 0.88rem);
                 letter-spacing: 0.04em;
-                color: rgba(255, 244, 232, 0.45);
+                color: rgba(255, 248, 239, 0.55);
             }
             .hint a {
-                color: #ffd36a;
+                color: #ffe08a;
                 text-decoration: none;
             }
             .hint a:hover {
                 text-decoration: underline;
             }
 
-            /* glass organ panel */
             .panel {
                 min-height: 0;
                 height: 100%;
-                max-height: min(52vh, 420px);
+                max-height: min(58vh, 480px);
                 display: flex;
                 flex-direction: column;
-                border-radius: 28px;
-                background: rgba(18, 6, 16, 0.38);
-                border: 1px solid rgba(255, 255, 255, 0.16);
+                border-radius: 32px;
+                background: rgba(10, 18, 12, 0.42);
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 box-shadow:
-                    0 20px 60px rgba(0, 0, 0, 0.35),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-                    0 0 60px rgba(255, 77, 141, 0.08);
-                backdrop-filter: blur(22px) saturate(1.6);
+                    0 24px 70px rgba(0, 0, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                    0 0 80px rgba(100, 255, 160, 0.08);
+                backdrop-filter: blur(24px) saturate(1.7);
                 overflow: hidden;
-            }
-
-            @media (max-width: 800px) {
-                .panel {
-                    max-height: none;
-                    min-height: 0;
-                }
             }
 
             .tabs {
                 display: flex;
-                gap: 0.2rem;
-                padding: 0.5rem;
+                gap: 0.25rem;
+                padding: 0.55rem;
                 overflow-x: auto;
                 scrollbar-width: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                background: rgba(0, 0, 0, 0.15);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.18);
             }
             .tabs::-webkit-scrollbar {
                 display: none;
@@ -313,36 +372,36 @@
                 flex: 0 0 auto;
                 border: none;
                 background: transparent;
-                color: rgba(255, 244, 232, 0.45);
-                font-family: system-ui, sans-serif;
-                font-size: 0.7rem;
-                font-weight: 650;
+                color: rgba(255, 248, 239, 0.5);
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.78rem, 1.2vw, 0.88rem);
+                font-weight: 700;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                padding: 0.55rem 0.8rem;
+                padding: 0.65rem 0.95rem;
                 border-radius: 999px;
                 cursor: pointer;
                 transition: 0.25s ease;
             }
             .tab:hover {
                 color: #fff;
-                background: rgba(255, 255, 255, 0.06);
+                background: rgba(255, 255, 255, 0.07);
             }
             .tab[aria-selected="true"] {
-                color: #1a0a14;
-                background: linear-gradient(120deg, #ffd36a, #ff4d8d, #7dffb3);
+                color: #0c120e;
+                background: linear-gradient(120deg, #ffe08a, #ff6bab, #7dffc0);
                 background-size: 200% 200%;
-                animation: cta-flow 4s ease infinite;
-                box-shadow: 0 0 24px rgba(255, 77, 141, 0.45);
+                animation: flow 4s ease infinite;
+                box-shadow: 0 0 28px rgba(255, 107, 171, 0.5);
             }
 
             .body {
                 flex: 1;
                 min-height: 0;
-                padding: 1.1rem 1.2rem 1.2rem;
+                padding: 1.25rem 1.4rem 1.35rem;
                 display: flex;
                 flex-direction: column;
-                gap: 0.55rem;
+                gap: 0.65rem;
                 overflow: hidden;
             }
             .body[hidden] {
@@ -351,57 +410,57 @@
 
             .chip {
                 align-self: flex-start;
-                font-family: system-ui, sans-serif;
-                font-size: 0.62rem;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.72rem, 1.1vw, 0.8rem);
+                font-weight: 700;
                 letter-spacing: 0.16em;
                 text-transform: uppercase;
-                color: #ffd36a;
-                opacity: 0.9;
+                color: #ffe08a;
             }
 
             .body h2 {
-                font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+                font-size: clamp(1.75rem, 3.2vw, 2.25rem);
                 font-weight: 400;
                 letter-spacing: -0.02em;
-                line-height: 1.15;
-                text-shadow: 0 0 30px rgba(255, 77, 141, 0.35);
+                line-height: 1.1;
+                text-shadow: 0 0 36px rgba(255, 100, 160, 0.4);
             }
 
             .why {
-                color: rgba(255, 244, 232, 0.78);
-                font-size: 0.95rem;
-                line-height: 1.45;
+                color: rgba(255, 248, 239, 0.88);
+                font-size: clamp(1.1rem, 1.9vw, 1.28rem);
+                line-height: 1.4;
             }
 
             .props {
                 display: grid;
-                gap: 0.4rem;
-                margin-top: 0.2rem;
+                gap: 0.45rem;
+                margin-top: 0.15rem;
             }
 
             .prop {
                 display: grid;
-                grid-template-columns: 5.2rem 1fr;
-                gap: 0.5rem;
-                padding: 0.5rem 0.65rem;
-                border-radius: 14px;
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.06);
+                grid-template-columns: 6rem 1fr;
+                gap: 0.65rem;
+                padding: 0.65rem 0.8rem;
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.08);
             }
 
             .prop b {
-                font-family: system-ui, sans-serif;
-                font-size: 0.65rem;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.72rem, 1.1vw, 0.8rem);
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
-                color: #7dffb3;
-                font-weight: 700;
-                padding-top: 0.15rem;
+                color: #8dffc8;
+                font-weight: 800;
+                padding-top: 0.2rem;
             }
 
             .prop span {
-                font-size: 0.86rem;
-                color: rgba(255, 244, 232, 0.82);
+                font-size: clamp(1.02rem, 1.7vw, 1.15rem);
+                color: rgba(255, 248, 239, 0.9);
                 line-height: 1.35;
             }
 
@@ -411,18 +470,19 @@
                 align-items: center;
                 gap: 0.75rem;
                 flex-wrap: wrap;
-                font-family: system-ui, sans-serif;
-                font-size: 0.65rem;
-                letter-spacing: 0.12em;
+                font-family: Syne, system-ui, sans-serif;
+                font-size: clamp(0.75rem, 1.2vw, 0.88rem);
+                font-weight: 600;
+                letter-spacing: 0.14em;
                 text-transform: uppercase;
-                color: rgba(255, 244, 232, 0.4);
-                text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+                color: rgba(255, 248, 239, 0.5);
+                text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
             }
 
             .organs {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 0.35rem 0.85rem;
+                gap: 0.4rem 1rem;
             }
             .organs button {
                 border: none;
@@ -439,20 +499,24 @@
             }
             .organs button:hover,
             .organs button.on {
-                color: #ffd36a;
-                text-shadow: 0 0 16px rgba(255, 77, 141, 0.7);
+                color: #ffe08a;
+                text-shadow: 0 0 18px rgba(255, 120, 180, 0.75);
             }
 
             @media (max-width: 520px) {
                 .prop {
                     grid-template-columns: 1fr;
-                    gap: 0.15rem;
+                    gap: 0.2rem;
+                }
+                h1 {
+                    font-size: clamp(2.6rem, 12vw, 3.4rem);
                 }
             }
 
             @media (prefers-reduced-motion: reduce) {
                 h1,
                 .film,
+                .pollen,
                 .install button,
                 .tab[aria-selected="true"] {
                     animation: none !important;
@@ -463,6 +527,7 @@
     <body>
         <canvas id="world" aria-hidden="true"></canvas>
         <div class="film" aria-hidden="true"></div>
+        <div class="pollen" aria-hidden="true"></div>
 
         <div class="shell">
             <header class="top">
@@ -478,7 +543,7 @@
             <main class="stage">
                 <section class="manifesto">
                     <p class="eyebrow">type 2 civilization software</p>
-                    <h1>one mind.<br />still growing.</h1>
+                    <h1>one mind.<br /><em>still growing.</em></h1>
                     <p class="lede">
                         Shared knowledge that breathes: every link has weight,
                         every computation leaves a proof, the whole graph
@@ -494,7 +559,7 @@
                             <button type="button" id="copy">copy</button>
                         </div>
                         <p class="hint">
-                            install · then read the map on
+                            install · map on
                             <a
                                 href="https://github.com/cyberia-to/soft3#readme"
                                 target="_blank"
@@ -595,8 +660,7 @@
                         <h2>Proof in the marrow</h2>
                         <p class="why">
                             Trust without a priest. Every step can be checked;
-                            the prover proves the prover. You need this when
-                            “just trust me” is not an architecture.
+                            the prover proves the prover.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -617,7 +681,7 @@
                                 <b>run</b
                                 ><span
                                     >nox jets + zheng sumcheck — compute that
-                                    can stand in court</span
+                                    stands</span
                                 >
                             </div>
                         </div>
@@ -627,9 +691,8 @@
                         <span class="chip">cybergraph · bbg · cell</span>
                         <h2>Knowledge as life</h2>
                         <p class="why">
-                            APIs rot. Links compound. You need a graph that
-                            stores meaning as mass — not rows in a silo someone
-                            else can unplug.
+                            APIs rot. Links compound. Meaning stored as mass —
+                            not rows someone can unplug.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -648,10 +711,7 @@
                             </div>
                             <div class="prop">
                                 <b>cell</b
-                                ><span
-                                    >local slice of the organism — apply, prove,
-                                    sync</span
-                                >
+                                ><span>local slice — apply, prove, sync</span>
                             </div>
                         </div>
                     </div>
@@ -661,14 +721,13 @@
                         <h2>Nerves across space</h2>
                         <p class="why">
                             A mind that cannot reach itself is not alive.
-                            Encrypted transport, typed frames, sync that
-                            forgives partitions.
+                            Transport, frames, forgiveness for partitions.
                         </p>
                         <div class="props">
                             <div class="prop">
                                 <b>wave</b
                                 ><span
-                                    >QUIC + BAO streaming — gossip that carries
+                                    >QUIC + BAO — gossip that carries
                                     substance</span
                                 >
                             </div>
@@ -681,8 +740,7 @@
                             <div class="prop">
                                 <b>veil</b
                                 ><span
-                                    >mudra: KEM, AEAD, threshold — skin that
-                                    chooses who enters</span
+                                    >mudra: skin that chooses who enters</span
                                 >
                             </div>
                         </div>
@@ -693,29 +751,26 @@
                         <h2>Value that conserves</h2>
                         <p class="why">
                             Attention is energy. Rewards follow real
-                            contribution — Δφ⁺, proofs, tickets — not
-                            advertising myths.
+                            contribution — Δφ⁺, proofs, tickets.
                         </p>
                         <div class="props">
                             <div class="prop">
                                 <b>rank</b
                                 ><span
-                                    >tru converges φ* — who actually moved the
-                                    mind</span
+                                    >tru converges φ* — who moved the mind</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>agree</b
                                 ><span
-                                    >foculus finality — collective focus as
-                                    consensus</span
+                                    >foculus finality — focus as consensus</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>mint</b
                                 ><span
-                                    >tok conservation ledger — coins that cannot
-                                    fantasize supply</span
+                                    >tok conservation — supply cannot
+                                    fantasize</span
                                 >
                             </div>
                         </div>
@@ -725,31 +780,26 @@
                         <span class="chip">cyb · mir · prysm · rune</span>
                         <h2>Flesh you can inhabit</h2>
                         <p class="why">
-                            A stack without a body is a lab note. A cell you can
-                            run — terminal, world, language — so the organism
-                            has hands.
+                            A stack without a body is a lab note. Terminal,
+                            world, language — hands for the organism.
                         </p>
                         <div class="props">
                             <div class="prop">
                                 <b>cyb</b
                                 ><span
-                                    >immortal robot shell — Bevy world + live
-                                    cell</span
+                                    >robot shell — Bevy world + live cell</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>see</b
                                 ><span
-                                    >mir + prysm — positions become places,
-                                    chunks become UI</span
+                                    >mir + prysm — places and UI from the
+                                    tape</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>speak</b
-                                ><span
-                                    >rune / neural — write, eval, mean without
-                                    translation tax</span
-                                >
+                                ><span>rune / neural — write, eval, mean</span>
                             </div>
                         </div>
                     </div>
@@ -772,21 +822,20 @@
         </div>
 
         <script>
-            /* ——— UI ——— */
+            /* UI */
             const tabs = [...document.querySelectorAll(".tab")];
             const panels = [...document.querySelectorAll(".body")];
             const quick = [...document.querySelectorAll("#quick button")];
             const order = ["mind", "proof", "graph", "radio", "pay", "body"];
             let organ = "mind";
             let organHue = 0;
-
             const hues = {
                 mind: 0,
-                proof: 35,
-                graph: -25,
-                radio: 90,
-                pay: 20,
-                body: -50,
+                proof: 40,
+                graph: -30,
+                radio: 100,
+                pay: 25,
+                body: -55,
             };
 
             function select(name) {
@@ -805,25 +854,23 @@
                     b.classList.toggle("on", b.dataset.tab === name),
                 );
             }
-
             tabs.forEach((t) =>
                 t.addEventListener("click", () => select(t.dataset.tab)),
             );
             quick.forEach((b) =>
                 b.addEventListener("click", () => select(b.dataset.tab)),
             );
-
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
                 const i = order.indexOf(organ);
                 if (e.key >= "1" && e.key <= "6") select(order[+e.key - 1]);
                 if (e.key === "ArrowRight" || e.key === "ArrowDown") {
                     e.preventDefault();
-                    select(order[(i + 1) % order.length]);
+                    select(order[(i + 1) % 6]);
                 }
                 if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
                     e.preventDefault();
-                    select(order[(i - 1 + order.length) % order.length]);
+                    select(order[(i + 5) % 6]);
                 }
             });
 
@@ -847,7 +894,7 @@
                 }, 1400);
             });
 
-            /* ——— LIVING WORLD: fluid flesh / hills / orbs of life ——— */
+            /* ========== NATURE TRIP ========== */
             const canvas = document.getElementById("world");
             const ctx = canvas.getContext("2d", { alpha: false });
             let W,
@@ -859,125 +906,91 @@
                 mxt = 0.5,
                 myt = 0.5;
 
-            // soft bodies: each is an organic mass (breast-like orbs, hills, petals)
-            const bodies = [];
+            const flowers = [];
+            const mushrooms = [];
+            const trees = [];
+            const butterflies = [];
 
-            function seedBodies() {
-                bodies.length = 0;
-                const specs = [
-                    // large breathing hills / soft forms
-                    {
-                        x: 0.22,
-                        y: 0.72,
-                        rx: 0.38,
-                        ry: 0.42,
-                        hue: 330,
-                        kind: "mound",
-                    },
-                    {
-                        x: 0.78,
-                        y: 0.7,
-                        rx: 0.36,
-                        ry: 0.4,
-                        hue: 300,
-                        kind: "mound",
-                    },
-                    {
-                        x: 0.5,
-                        y: 0.85,
-                        rx: 0.55,
-                        ry: 0.35,
-                        hue: 280,
-                        kind: "hill",
-                    },
-                    // pair of soft orbs (yes)
-                    {
-                        x: 0.35,
-                        y: 0.48,
-                        rx: 0.2,
-                        ry: 0.22,
-                        hue: 345,
-                        kind: "orb",
-                    },
-                    {
-                        x: 0.65,
-                        y: 0.48,
-                        rx: 0.2,
-                        ry: 0.22,
-                        hue: 350,
-                        kind: "orb",
-                    },
-                    // sky blossom / lung
-                    {
-                        x: 0.5,
-                        y: 0.28,
-                        rx: 0.32,
-                        ry: 0.26,
-                        hue: 160,
-                        kind: "bloom",
-                    },
-                    {
-                        x: 0.15,
-                        y: 0.3,
-                        rx: 0.22,
-                        ry: 0.28,
-                        hue: 200,
-                        kind: "bloom",
-                    },
-                    {
-                        x: 0.88,
-                        y: 0.32,
-                        rx: 0.24,
-                        ry: 0.26,
-                        hue: 40,
-                        kind: "bloom",
-                    },
-                    // smaller life-pulses
-                    {
-                        x: 0.5,
-                        y: 0.55,
-                        rx: 0.14,
-                        ry: 0.12,
-                        hue: 120,
-                        kind: "pulse",
-                    },
-                    {
-                        x: 0.25,
-                        y: 0.55,
-                        rx: 0.12,
-                        ry: 0.14,
-                        hue: 50,
-                        kind: "pulse",
-                    },
-                    {
-                        x: 0.75,
-                        y: 0.58,
-                        rx: 0.13,
-                        ry: 0.12,
-                        hue: 20,
-                        kind: "pulse",
-                    },
-                ];
-                for (const s of specs) {
-                    bodies.push({
-                        ...s,
-                        phase: Math.random() * Math.PI * 2,
-                        speed: 0.35 + Math.random() * 0.45,
-                        wobble: 0.6 + Math.random() * 0.8,
-                    });
-                }
+            function hsl(h, s, l, a = 1) {
+                return `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
             }
 
             function resize() {
                 dpr = Math.min(window.devicePixelRatio || 1, 2);
-                W = window.innerWidth;
-                H = window.innerHeight;
+                W = innerWidth;
+                H = innerHeight;
                 canvas.width = W * dpr;
                 canvas.height = H * dpr;
                 canvas.style.width = W + "px";
                 canvas.style.height = H + "px";
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                seedBodies();
+                seedLife();
+            }
+
+            function seedLife() {
+                flowers.length = 0;
+                mushrooms.length = 0;
+                trees.length = 0;
+                butterflies.length = 0;
+
+                // forest line of trees (background)
+                const nTrees = Math.floor(W / 90) + 4;
+                for (let i = 0; i < nTrees; i++) {
+                    trees.push({
+                        x: (i + 0.3 + Math.random() * 0.4) / nTrees,
+                        h: 0.28 + Math.random() * 0.35,
+                        w: 0.04 + Math.random() * 0.03,
+                        phase: Math.random() * 6,
+                        lean: (Math.random() - 0.5) * 0.08,
+                        hue: 130 + Math.random() * 40,
+                    });
+                }
+
+                // meadow flowers
+                const nF = Math.floor((W * H) / 22000) + 18;
+                for (let i = 0; i < nF; i++) {
+                    flowers.push({
+                        x: Math.random(),
+                        y: 0.52 + Math.random() * 0.42,
+                        s: 0.35 + Math.random() * 0.9,
+                        petals: 5 + ((Math.random() * 4) | 0),
+                        hue: Math.random() * 360,
+                        phase: Math.random() * 6,
+                        type:
+                            Math.random() < 0.25
+                                ? "sun"
+                                : Math.random() < 0.5
+                                  ? "daisy"
+                                  : "poppy",
+                    });
+                }
+
+                // mushrooms
+                for (let i = 0; i < 9; i++) {
+                    mushrooms.push({
+                        x: 0.08 + Math.random() * 0.84,
+                        y: 0.68 + Math.random() * 0.25,
+                        s: 0.5 + Math.random() * 0.9,
+                        hue:
+                            Math.random() < 0.5
+                                ? 0 + Math.random() * 20
+                                : 280 + Math.random() * 40,
+                        phase: Math.random() * 6,
+                        spots: 3 + ((Math.random() * 5) | 0),
+                    });
+                }
+
+                // butterflies / moths
+                for (let i = 0; i < 8; i++) {
+                    butterflies.push({
+                        x: Math.random(),
+                        y: 0.2 + Math.random() * 0.45,
+                        s: 0.6 + Math.random() * 0.8,
+                        hue: Math.random() * 360,
+                        phase: Math.random() * 6,
+                        speed: 0.3 + Math.random() * 0.5,
+                    });
+                }
             }
 
             window.addEventListener("resize", resize);
@@ -986,303 +999,647 @@
                 myt = e.clientY / H;
             });
 
-            // hsl helper
-            function hsl(h, s, l, a = 1) {
-                return `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
-            }
-
-            function drawBody(b, t, breath) {
-                const px =
-                    b.x * W + (mx - 0.5) * 40 * (b.kind === "orb" ? 1.4 : 0.8);
-                const py = b.y * H + (my - 0.5) * 30;
-
-                // multi-lobe organic silhouette
-                const br =
-                    breath * (0.08 + 0.04 * Math.sin(t * b.speed + b.phase));
-                const rx = b.rx * W * (1 + br);
-                const ry = b.ry * H * (1 + br * 1.15);
-
-                const hue =
-                    b.hue + organHue * 0.35 + Math.sin(t * 0.2 + b.phase) * 18;
-
-                ctx.save();
-                ctx.translate(px, py);
-                ctx.rotate(Math.sin(t * 0.15 + b.phase) * 0.08 * b.wobble);
-
-                // outer glow (living aura)
-                const glow = ctx.createRadialGradient(
-                    0,
-                    -ry * 0.1,
-                    0,
-                    0,
-                    0,
-                    Math.max(rx, ry) * 1.35,
+            function drawSky(t, breath) {
+                const shift = organHue + t * 6;
+                // psychedelic dawn-dusk blend
+                const g = ctx.createLinearGradient(0, 0, 0, H);
+                g.addColorStop(0, hsl(260 + shift * 0.3, 70, 18 + breath * 4));
+                g.addColorStop(
+                    0.25,
+                    hsl(320 + shift * 0.4, 75, 28 + breath * 3),
                 );
-                glow.addColorStop(0, hsl(hue, 85, 62, 0.55));
-                glow.addColorStop(0.35, hsl(hue + 30, 70, 48, 0.28));
-                glow.addColorStop(0.7, hsl(hue + 60, 60, 30, 0.1));
-                glow.addColorStop(1, hsl(hue, 50, 20, 0));
-                ctx.fillStyle = glow;
-                ctx.beginPath();
-                ctx.ellipse(0, 0, rx * 1.25, ry * 1.25, 0, 0, Math.PI * 2);
-                ctx.fill();
+                g.addColorStop(0.45, hsl(30 + shift * 0.2, 80, 42));
+                g.addColorStop(0.62, hsl(160 + shift * 0.15, 55, 32));
+                g.addColorStop(1, hsl(140 + shift * 0.1, 50, 14));
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, W, H);
 
-                // flesh body with layered lobes
-                ctx.beginPath();
-                const lobes = b.kind === "orb" ? 2 : b.kind === "mound" ? 3 : 4;
-                const steps = 72;
-                for (let i = 0; i <= steps; i++) {
-                    const a = (i / steps) * Math.PI * 2;
-                    // organic deformation — not a circle
-                    let deform = 1;
-                    deform +=
-                        0.12 * Math.sin(a * lobes + t * b.speed + b.phase);
-                    deform +=
-                        0.07 * Math.sin(a * (lobes + 2) - t * 0.4 + b.phase);
-                    deform += 0.05 * Math.cos(a * 2 + breath * 3);
-                    // soft top-heavy for orb/mound (breast-like gravity)
-                    if (b.kind === "orb" || b.kind === "mound") {
-                        deform *=
-                            1 +
-                            0.08 * Math.cos(a) * Math.sin(a + Math.PI * 0.5);
-                        deform *=
-                            1 + 0.1 * Math.max(0, Math.sin(a + Math.PI * 0.5));
-                    }
-                    if (b.kind === "hill") {
-                        deform *= 1 + 0.2 * Math.max(0, Math.cos(a)); // flatter bottom
-                    }
-                    const x = Math.cos(a) * rx * deform;
-                    const y = Math.sin(a) * ry * deform;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.closePath();
-
-                const flesh = ctx.createRadialGradient(
-                    -rx * 0.2,
-                    -ry * 0.25,
-                    0,
-                    0,
-                    ry * 0.1,
-                    Math.max(rx, ry),
-                );
-                flesh.addColorStop(0, hsl(hue + 10, 90, 78, 0.95));
-                flesh.addColorStop(0.25, hsl(hue, 80, 62, 0.9));
-                flesh.addColorStop(0.55, hsl(hue - 15, 70, 42, 0.88));
-                flesh.addColorStop(0.85, hsl(hue - 40, 55, 28, 0.85));
-                flesh.addColorStop(1, hsl(hue - 60, 40, 12, 0.5));
-                ctx.fillStyle = flesh;
-                ctx.fill();
-
-                // specular wetness / dew
-                ctx.beginPath();
-                ctx.ellipse(
-                    -rx * 0.22,
-                    -ry * 0.28,
-                    rx * 0.28,
-                    ry * 0.18,
-                    -0.4,
-                    0,
-                    Math.PI * 2,
-                );
-                const spec = ctx.createRadialGradient(
-                    -rx * 0.22,
-                    -ry * 0.28,
-                    0,
-                    -rx * 0.22,
-                    -ry * 0.28,
-                    rx * 0.3,
-                );
-                spec.addColorStop(0, "rgba(255,255,255,0.55)");
-                spec.addColorStop(0.4, "rgba(255,255,255,0.15)");
-                spec.addColorStop(1, "rgba(255,255,255,0)");
-                ctx.fillStyle = spec;
-                ctx.fill();
-
-                // secondary glint
-                ctx.beginPath();
-                ctx.ellipse(
-                    rx * 0.15,
-                    -ry * 0.05,
-                    rx * 0.12,
-                    ry * 0.08,
-                    0.3,
-                    0,
-                    Math.PI * 2,
-                );
-                ctx.fillStyle = hsl(
-                    hue + 80,
-                    100,
-                    90,
-                    0.2 + 0.1 * Math.sin(t + b.phase),
-                );
-                ctx.fill();
-
-                // pore / freckle life
-                if (b.kind === "orb" || b.kind === "bloom") {
-                    for (let k = 0; k < 6; k++) {
-                        const aa = b.phase + k * 1.1 + t * 0.1;
-                        const pr = 0.35 + 0.2 * Math.sin(aa);
-                        const px2 = Math.cos(aa) * rx * pr * 0.55;
-                        const py2 = Math.sin(aa * 1.3) * ry * pr * 0.45;
-                        ctx.beginPath();
-                        ctx.arc(
-                            px2,
-                            py2,
-                            2 + Math.sin(t + k) * 1.2,
-                            0,
-                            Math.PI * 2,
-                        );
-                        ctx.fillStyle = hsl(hue + 40, 80, 70, 0.25);
-                        ctx.fill();
-                    }
-                }
-
-                ctx.restore();
-            }
-
-            function drawVines(t, breath) {
+                // second wash — aurora / acid sky
                 ctx.save();
                 ctx.globalCompositeOperation = "screen";
-                ctx.lineWidth = 1.5;
-                for (let v = 0; v < 7; v++) {
-                    const base = (v / 7) * W;
+                for (let i = 0; i < 4; i++) {
+                    const cx =
+                        W * (0.2 + i * 0.2 + 0.05 * Math.sin(t * 0.25 + i));
+                    const cy = H * (0.15 + 0.08 * Math.cos(t * 0.2 + i * 1.4));
+                    const r =
+                        Math.min(W, H) * (0.25 + 0.08 * Math.sin(t * 0.4 + i));
+                    const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    const hue = 40 + i * 70 + shift + organHue;
+                    rg.addColorStop(0, hsl(hue, 100, 65, 0.35));
+                    rg.addColorStop(0.45, hsl(hue + 50, 90, 50, 0.12));
+                    rg.addColorStop(1, hsl(hue, 80, 40, 0));
+                    ctx.fillStyle = rg;
                     ctx.beginPath();
-                    for (let y = 0; y <= H; y += 8) {
-                        const sway =
-                            Math.sin(y * 0.008 + t * 0.6 + v) *
-                                (28 + breath * 20) +
-                            Math.sin(y * 0.02 - t * 0.4 + v * 2) * 12 +
-                            (mx - 0.5) * 40;
-                        const x = base + sway + Math.sin(t * 0.2 + v) * 30;
-                        if (y === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    const hue =
-                        140 +
-                        v * 25 +
-                        organHue * 0.3 +
-                        Math.sin(t * 0.3 + v) * 30;
-                    ctx.strokeStyle = hsl(
-                        hue,
-                        80,
-                        60,
-                        0.12 + 0.06 * Math.sin(t + v),
-                    );
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+
+                // sun / moon orb
+                const sx = W * (0.72 + (mx - 0.5) * 0.04);
+                const sy = H * (0.18 + (my - 0.5) * 0.03);
+                const sr = Math.min(W, H) * (0.1 + breath * 0.015);
+                const sun = ctx.createRadialGradient(
+                    sx,
+                    sy,
+                    0,
+                    sx,
+                    sy,
+                    sr * 2.2,
+                );
+                sun.addColorStop(0, hsl(50 + shift * 0.2, 100, 92, 0.95));
+                sun.addColorStop(0.25, hsl(40, 100, 70, 0.7));
+                sun.addColorStop(0.5, hsl(20 + organHue * 0.2, 100, 55, 0.25));
+                sun.addColorStop(1, hsl(320, 80, 40, 0));
+                ctx.fillStyle = sun;
+                ctx.beginPath();
+                ctx.arc(sx, sy, sr * 2.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // sun rays
+                ctx.save();
+                ctx.translate(sx, sy);
+                ctx.rotate(t * 0.08);
+                ctx.globalCompositeOperation = "screen";
+                for (let i = 0; i < 16; i++) {
+                    const a = (i / 16) * Math.PI * 2;
+                    const len = sr * (2.5 + Math.sin(t + i) * 0.6 + breath);
+                    ctx.strokeStyle = hsl(45 + i * 8 + shift, 100, 70, 0.12);
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(a) * sr * 0.9, Math.sin(a) * sr * 0.9);
+                    ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len);
                     ctx.stroke();
                 }
                 ctx.restore();
             }
 
-            function drawSkyPlasma(t) {
-                // slow color wash background
-                const g = ctx.createLinearGradient(0, 0, W, H);
-                const shift = organHue + Math.sin(t * 0.15) * 40;
-                g.addColorStop(0, hsl(280 + shift, 55, 12));
-                g.addColorStop(0.35, hsl(330 + shift * 0.5, 60, 16));
-                g.addColorStop(0.6, hsl(200 + shift * 0.3, 50, 14));
-                g.addColorStop(1, hsl(160 + shift * 0.2, 45, 10));
-                ctx.fillStyle = g;
-                ctx.fillRect(0, 0, W, H);
-
-                // second diagonal wash, breathing
-                const g2 = ctx.createRadialGradient(
-                    W * (0.3 + 0.1 * Math.sin(t * 0.2)),
-                    H * (0.25 + 0.08 * Math.cos(t * 0.17)),
-                    0,
-                    W * 0.5,
-                    H * 0.5,
-                    Math.max(W, H) * 0.75,
-                );
-                g2.addColorStop(0, hsl(340 + shift, 90, 45, 0.35));
-                g2.addColorStop(0.4, hsl(160 + shift, 70, 40, 0.18));
-                g2.addColorStop(0.7, hsl(40 + shift, 80, 40, 0.12));
-                g2.addColorStop(1, hsl(260, 40, 10, 0));
-                ctx.fillStyle = g2;
-                ctx.fillRect(0, 0, W, H);
+            function drawHills(t, breath) {
+                const layers = [
+                    {
+                        y: 0.48,
+                        amp: 0.06,
+                        hue: 150,
+                        sat: 45,
+                        lit: 22,
+                        speed: 0.15,
+                        z: 0.3,
+                    },
+                    {
+                        y: 0.55,
+                        amp: 0.08,
+                        hue: 140,
+                        sat: 50,
+                        lit: 26,
+                        speed: 0.22,
+                        z: 0.5,
+                    },
+                    {
+                        y: 0.62,
+                        amp: 0.07,
+                        hue: 130,
+                        sat: 55,
+                        lit: 30,
+                        speed: 0.3,
+                        z: 0.7,
+                    },
+                    {
+                        y: 0.72,
+                        amp: 0.05,
+                        hue: 120,
+                        sat: 48,
+                        lit: 28,
+                        speed: 0.18,
+                        z: 1,
+                    },
+                ];
+                for (const L of layers) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, H);
+                    const steps = 48;
+                    for (let i = 0; i <= steps; i++) {
+                        const u = i / steps;
+                        const x = u * W;
+                        const wave =
+                            Math.sin(u * 4 + t * L.speed + L.y * 3) * L.amp +
+                            Math.sin(u * 9 - t * L.speed * 1.3) * L.amp * 0.4 +
+                            Math.sin(u * 2 + breath) * L.amp * 0.3 +
+                            (mx - 0.5) * 0.02 * L.z;
+                        const y = H * (L.y + wave + breath * 0.012 * L.z);
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(W, H);
+                    ctx.closePath();
+                    const hue =
+                        L.hue + organHue * 0.25 + Math.sin(t * 0.2 + L.y) * 15;
+                    const g = ctx.createLinearGradient(0, H * L.y - 40, 0, H);
+                    g.addColorStop(
+                        0,
+                        hsl(hue + 30, L.sat + 20, L.lit + 18, 0.95),
+                    );
+                    g.addColorStop(0.5, hsl(hue, L.sat, L.lit, 0.98));
+                    g.addColorStop(1, hsl(hue - 20, L.sat - 5, L.lit - 8, 1));
+                    ctx.fillStyle = g;
+                    ctx.fill();
+                }
             }
 
-            function drawLightLeaks(t, breath) {
+            function drawTree(tr, t, breath) {
+                const x = tr.x * W + (mx - 0.5) * 20;
+                const ground = H * 0.58;
+                const th = tr.h * H * (1 + breath * 0.03);
+                const tw = tr.w * W;
+                const lean = tr.lean + Math.sin(t * 0.4 + tr.phase) * 0.03;
+
                 ctx.save();
-                ctx.globalCompositeOperation = "screen";
-                for (let i = 0; i < 5; i++) {
-                    const x =
-                        W * (0.2 + 0.15 * i + 0.05 * Math.sin(t * 0.3 + i));
-                    const y = H * (0.2 + 0.12 * Math.cos(t * 0.25 + i * 1.3));
+                ctx.translate(x, ground);
+                ctx.rotate(lean);
+
+                // trunk
+                const trunk = ctx.createLinearGradient(
+                    -tw * 0.3,
+                    0,
+                    tw * 0.3,
+                    -th,
+                );
+                trunk.addColorStop(0, hsl(25, 40, 22));
+                trunk.addColorStop(1, hsl(30, 35, 35));
+                ctx.fillStyle = trunk;
+                ctx.beginPath();
+                ctx.moveTo(-tw * 0.25, 0);
+                ctx.quadraticCurveTo(
+                    -tw * 0.1,
+                    -th * 0.5,
+                    -tw * 0.08,
+                    -th * 0.75,
+                );
+                ctx.lineTo(tw * 0.08, -th * 0.75);
+                ctx.quadraticCurveTo(tw * 0.1, -th * 0.5, tw * 0.25, 0);
+                ctx.closePath();
+                ctx.fill();
+
+                // canopy — layered organic blobs
+                const canopyY = -th * 0.7;
+                for (let k = 0; k < 5; k++) {
+                    const ang = tr.phase + k * 1.2 + t * 0.15;
+                    const cx = Math.cos(ang) * tw * (1.2 + k * 0.3);
+                    const cy =
+                        canopyY -
+                        Math.sin(k + t * 0.2) * tw * 0.5 -
+                        k * tw * 0.4;
                     const r =
-                        (0.15 + 0.08 * Math.sin(t * 0.5 + i) + breath * 0.05) *
-                        Math.min(W, H);
-                    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-                    const hue = 20 + i * 50 + organHue + t * 8;
-                    g.addColorStop(0, hsl(hue, 100, 70, 0.22));
-                    g.addColorStop(0.5, hsl(hue + 40, 90, 55, 0.08));
-                    g.addColorStop(1, hsl(hue, 80, 40, 0));
+                        tw *
+                        (2.2 + k * 0.4) *
+                        (1 + 0.06 * Math.sin(t + k + tr.phase));
+                    const hue =
+                        tr.hue +
+                        organHue * 0.3 +
+                        k * 8 +
+                        Math.sin(t * 0.3 + k) * 20;
+                    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    g.addColorStop(0, hsl(hue + 20, 70, 48, 0.85));
+                    g.addColorStop(0.55, hsl(hue, 60, 32, 0.8));
+                    g.addColorStop(1, hsl(hue - 20, 50, 18, 0));
                     ctx.fillStyle = g;
                     ctx.beginPath();
-                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    // organic canopy ellipse
+                    ctx.ellipse(
+                        cx,
+                        cy,
+                        r * (1.1 + 0.1 * Math.sin(t + k)),
+                        r * 0.85,
+                        ang * 0.2,
+                        0,
+                        Math.PI * 2,
+                    );
                     ctx.fill();
                 }
                 ctx.restore();
             }
 
+            function drawFlower(f, t, breath) {
+                const x =
+                    f.x * W + Math.sin(t * 0.5 + f.phase) * 6 + (mx - 0.5) * 12;
+                const y =
+                    f.y * H +
+                    Math.sin(t * 0.7 + f.phase * 1.3) * 4 +
+                    breath * 6;
+                const s = f.s * Math.min(W, H) * 0.028 * (1 + breath * 0.08);
+
+                ctx.save();
+                ctx.translate(x, y);
+
+                // stem
+                ctx.strokeStyle = hsl(130 + organHue * 0.1, 55, 35, 0.85);
+                ctx.lineWidth = 1.5 * f.s;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(
+                    Math.sin(t + f.phase) * s * 0.8,
+                    s * 2,
+                    Math.sin(t * 0.5 + f.phase) * s * 0.3,
+                    s * 4.5,
+                );
+                ctx.stroke();
+
+                // leaf
+                ctx.fillStyle = hsl(140, 60, 40, 0.7);
+                ctx.beginPath();
+                ctx.ellipse(
+                    -s * 0.8,
+                    s * 2.2,
+                    s * 0.7,
+                    s * 0.35,
+                    -0.6,
+                    0,
+                    Math.PI * 2,
+                );
+                ctx.fill();
+
+                const hue =
+                    f.hue +
+                    organHue * 0.4 +
+                    t * 12 +
+                    Math.sin(t + f.phase) * 25;
+                const open =
+                    0.85 + 0.15 * Math.sin(t * 0.8 + f.phase) + breath * 0.1;
+
+                if (f.type === "sun") {
+                    // sunflower-ish
+                    for (let i = 0; i < 16; i++) {
+                        const a = (i / 16) * Math.PI * 2 + t * 0.1;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            Math.cos(a) * s * 0.9 * open,
+                            Math.sin(a) * s * 0.9 * open,
+                            s * 0.55,
+                            s * 0.28,
+                            a,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.fillStyle = hsl(hue + i * 3, 90, 60, 0.9);
+                        ctx.fill();
+                    }
+                    ctx.beginPath();
+                    ctx.arc(0, 0, s * 0.55, 0, Math.PI * 2);
+                    ctx.fillStyle = hsl(35, 80, 30);
+                    ctx.fill();
+                } else if (f.type === "daisy") {
+                    for (let i = 0; i < f.petals; i++) {
+                        const a = (i / f.petals) * Math.PI * 2 + t * 0.05;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            Math.cos(a) * s * 0.7 * open,
+                            Math.sin(a) * s * 0.7 * open,
+                            s * 0.45,
+                            s * 0.22,
+                            a,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.fillStyle = hsl(hue, 30, 95, 0.92);
+                        ctx.fill();
+                    }
+                    ctx.beginPath();
+                    ctx.arc(0, 0, s * 0.35, 0, Math.PI * 2);
+                    ctx.fillStyle = hsl(50 + hue * 0.1, 95, 55);
+                    ctx.fill();
+                } else {
+                    // poppy / soft flesh bloom
+                    for (let i = 0; i < f.petals; i++) {
+                        const a =
+                            (i / f.petals) * Math.PI * 2 +
+                            Math.sin(t * 0.3 + f.phase) * 0.1;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            Math.cos(a) * s * 0.55 * open,
+                            Math.sin(a) * s * 0.5 * open,
+                            s * 0.65,
+                            s * 0.4,
+                            a,
+                            0,
+                            Math.PI * 2,
+                        );
+                        const g = ctx.createRadialGradient(
+                            Math.cos(a) * s * 0.3,
+                            Math.sin(a) * s * 0.3,
+                            0,
+                            0,
+                            0,
+                            s,
+                        );
+                        g.addColorStop(0, hsl(hue + 20, 90, 75, 0.95));
+                        g.addColorStop(0.6, hsl(hue, 85, 55, 0.9));
+                        g.addColorStop(1, hsl(hue - 20, 70, 40, 0.5));
+                        ctx.fillStyle = g;
+                        ctx.fill();
+                    }
+                    ctx.beginPath();
+                    ctx.arc(0, 0, s * 0.22, 0, Math.PI * 2);
+                    ctx.fillStyle = hsl(hue + 40, 40, 15, 0.9);
+                    ctx.fill();
+                }
+
+                // glow
+                ctx.globalCompositeOperation = "screen";
+                const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 2.5);
+                glow.addColorStop(0, hsl(hue, 100, 70, 0.25));
+                glow.addColorStop(1, hsl(hue, 80, 50, 0));
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(0, 0, s * 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function drawMushroom(m, t, breath) {
+                const x = m.x * W + (mx - 0.5) * 10;
+                const y = m.y * H;
+                const s = m.s * Math.min(W, H) * 0.035 * (1 + breath * 0.06);
+
+                ctx.save();
+                ctx.translate(x, y);
+
+                // stem
+                const stem = ctx.createLinearGradient(
+                    -s * 0.2,
+                    0,
+                    s * 0.2,
+                    -s * 1.4,
+                );
+                stem.addColorStop(0, hsl(40, 30, 75));
+                stem.addColorStop(1, hsl(35, 25, 90));
+                ctx.fillStyle = stem;
+                ctx.beginPath();
+                ctx.moveTo(-s * 0.22, 0);
+                ctx.quadraticCurveTo(-s * 0.18, -s * 0.8, -s * 0.15, -s * 1.35);
+                ctx.lineTo(s * 0.15, -s * 1.35);
+                ctx.quadraticCurveTo(s * 0.18, -s * 0.8, s * 0.28, 0);
+                ctx.closePath();
+                ctx.fill();
+
+                // cap — soft dome (yes, can read as soft form)
+                const capY = -s * 1.4;
+                const capR = s * (1.3 + 0.1 * Math.sin(t * 0.6 + m.phase));
+                const hue =
+                    m.hue + organHue * 0.3 + Math.sin(t * 0.25 + m.phase) * 15;
+                const cap = ctx.createRadialGradient(
+                    -capR * 0.2,
+                    capY - capR * 0.3,
+                    0,
+                    0,
+                    capY,
+                    capR * 1.2,
+                );
+                cap.addColorStop(0, hsl(hue + 15, 85, 68));
+                cap.addColorStop(0.45, hsl(hue, 80, 48));
+                cap.addColorStop(1, hsl(hue - 20, 70, 28));
+                ctx.fillStyle = cap;
+                ctx.beginPath();
+                ctx.ellipse(0, capY, capR, capR * 0.72, 0, Math.PI, 0, true);
+                ctx.ellipse(0, capY, capR, capR * 0.25, 0, 0, Math.PI, false);
+                ctx.fill();
+
+                // spots
+                for (let i = 0; i < m.spots; i++) {
+                    const a = m.phase + i * 1.4;
+                    const pr = 0.25 + (i % 3) * 0.15;
+                    const px = Math.cos(a) * capR * pr;
+                    const py =
+                        capY -
+                        Math.sin(a * 0.8) * capR * 0.35 * pr -
+                        capR * 0.15;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, s * 0.14, s * 0.1, a, 0, Math.PI * 2);
+                    ctx.fillStyle = hsl(0, 0, 98, 0.85);
+                    ctx.fill();
+                }
+
+                // aura
+                ctx.globalCompositeOperation = "screen";
+                const g = ctx.createRadialGradient(
+                    0,
+                    capY,
+                    0,
+                    0,
+                    capY,
+                    capR * 2,
+                );
+                g.addColorStop(0, hsl(hue, 100, 60, 0.2));
+                g.addColorStop(1, hsl(hue, 80, 40, 0));
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(0, capY, capR * 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function drawButterfly(b, t) {
+                const x =
+                    (b.x +
+                        Math.sin(t * b.speed + b.phase) * 0.12 +
+                        (mx - 0.5) * 0.03) *
+                    W;
+                const y =
+                    (b.y +
+                        Math.cos(t * b.speed * 0.8 + b.phase) * 0.08 +
+                        Math.sin(t * 1.5 + b.phase) * 0.02) *
+                    H;
+                const s = b.s * 8;
+                const flap = 0.5 + 0.5 * Math.sin(t * 8 * b.speed + b.phase);
+                const hue = b.hue + organHue * 0.5 + t * 20;
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(Math.sin(t * b.speed + b.phase) * 0.4);
+
+                // wings
+                for (const side of [-1, 1]) {
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        side * s * 0.55 * flap,
+                        0,
+                        s * 0.7 * flap,
+                        s * 0.95,
+                        side * 0.3,
+                        0,
+                        Math.PI * 2,
+                    );
+                    const g = ctx.createRadialGradient(
+                        side * s * 0.3,
+                        0,
+                        0,
+                        0,
+                        0,
+                        s * 1.2,
+                    );
+                    g.addColorStop(0, hsl(hue, 90, 75, 0.9));
+                    g.addColorStop(0.5, hsl(hue + 40, 85, 55, 0.75));
+                    g.addColorStop(1, hsl(hue + 80, 70, 40, 0.2));
+                    ctx.fillStyle = g;
+                    ctx.fill();
+                }
+                // body
+                ctx.fillStyle = hsl(hue + 20, 40, 20);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, s * 0.12, s * 0.55, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function drawRiver(t, breath) {
+                const y0 = H * 0.78;
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(0, H);
+                for (let x = 0; x <= W; x += 6) {
+                    const y =
+                        y0 +
+                        Math.sin(x * 0.01 + t * 0.8) * 18 +
+                        Math.sin(x * 0.025 - t * 1.2) * 10 +
+                        breath * 8 +
+                        (my - 0.5) * 15;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(W, H);
+                ctx.closePath();
+                const g = ctx.createLinearGradient(0, y0 - 20, 0, H);
+                g.addColorStop(
+                    0,
+                    hsl(190 + organHue * 0.2 + t * 5, 70, 55, 0.55),
+                );
+                g.addColorStop(0.4, hsl(210 + t * 3, 65, 40, 0.7));
+                g.addColorStop(1, hsl(230, 50, 20, 0.9));
+                ctx.fillStyle = g;
+                ctx.fill();
+
+                // water sparkles
+                ctx.globalCompositeOperation = "screen";
+                for (let i = 0; i < 20; i++) {
+                    const x = (t * 30 + i * 97) % W;
+                    const y = y0 + 20 + Math.sin(t * 2 + i) * 15 + (i % 5) * 12;
+                    ctx.fillStyle = hsl(
+                        50 + i * 10,
+                        100,
+                        90,
+                        0.15 + 0.1 * Math.sin(t * 3 + i),
+                    );
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, 8, 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            function drawSoftOrbs(t, breath) {
+                // two soft living forms mid-scene — nature + flesh poetry
+                const forms = [
+                    { x: 0.32, y: 0.42, r: 0.11, hue: 340 },
+                    { x: 0.68, y: 0.42, r: 0.11, hue: 350 },
+                ];
+                for (const f of forms) {
+                    const x = f.x * W + (mx - 0.5) * 35;
+                    const y = f.y * H + Math.sin(t * 0.5) * 10 + breath * 12;
+                    const r = f.r * Math.min(W, H) * (1 + breath * 0.08);
+                    const hue = f.hue + organHue * 0.4 + Math.sin(t * 0.3) * 12;
+
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.beginPath();
+                    const steps = 48;
+                    for (let i = 0; i <= steps; i++) {
+                        const a = (i / steps) * Math.PI * 2;
+                        let d =
+                            1 +
+                            0.1 * Math.sin(a * 2 + t * 0.6) +
+                            0.06 * Math.cos(a * 3 - t * 0.4) +
+                            0.08 * Math.max(0, Math.sin(a + Math.PI * 0.5));
+                        const px = Math.cos(a) * r * d;
+                        const py = Math.sin(a) * r * d * 1.05;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    const g = ctx.createRadialGradient(
+                        -r * 0.25,
+                        -r * 0.3,
+                        0,
+                        0,
+                        0,
+                        r * 1.2,
+                    );
+                    g.addColorStop(0, hsl(hue + 10, 85, 82, 0.75));
+                    g.addColorStop(0.4, hsl(hue, 75, 62, 0.55));
+                    g.addColorStop(0.75, hsl(hue - 20, 60, 40, 0.25));
+                    g.addColorStop(1, hsl(hue, 50, 30, 0));
+                    ctx.fillStyle = g;
+                    ctx.fill();
+                    // highlight
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        -r * 0.25,
+                        -r * 0.3,
+                        r * 0.25,
+                        r * 0.15,
+                        -0.4,
+                        0,
+                        Math.PI * 2,
+                    );
+                    ctx.fillStyle = "rgba(255,255,255,0.35)";
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
             function frame(now) {
                 if (!t0) t0 = now;
                 const t = (now - t0) / 1000;
+                mx += (mxt - mx) * 0.045;
+                my += (myt - my) * 0.045;
+                const breath = 0.5 + 0.5 * Math.sin(t * 0.5);
 
-                // smooth pointer
-                mx += (mxt - mx) * 0.04;
-                my += (myt - my) * 0.04;
+                drawSky(t, breath);
+                // far trees
+                for (const tr of trees) drawTree(tr, t, breath);
+                drawHills(t, breath);
+                drawSoftOrbs(t, breath);
+                drawRiver(t, breath);
 
-                // global breath — like the whole world inhales
-                const breath = 0.5 + 0.5 * Math.sin(t * 0.55);
+                // sort flowers by y for depth
+                const fs = [...flowers].sort((a, b) => a.y - b.y);
+                for (const f of fs) drawFlower(f, t, breath);
+                for (const m of mushrooms) drawMushroom(m, t, breath);
+                for (const b of butterflies) drawButterfly(b, t);
 
-                drawSkyPlasma(t);
-                drawLightLeaks(t, breath);
-
-                // draw large soft forms back-to-front by y
-                const sorted = [...bodies].sort((a, b) => a.y - b.y);
-                ctx.globalCompositeOperation = "source-over";
-                for (const b of sorted) {
-                    if (b.kind === "hill" || b.kind === "mound")
-                        drawBody(b, t, breath);
-                }
-                for (const b of sorted) {
-                    if (b.kind === "bloom") drawBody(b, t, breath);
-                }
-                for (const b of sorted) {
-                    if (b.kind === "orb" || b.kind === "pulse")
-                        drawBody(b, t, breath);
-                }
-
-                drawVines(t, breath);
-
-                // film grain shimmer (subtle)
-                if ((now | 0) % 2 === 0) {
-                    ctx.save();
-                    ctx.globalAlpha = 0.03;
-                    for (let i = 0; i < 40; i++) {
-                        ctx.fillStyle = Math.random() > 0.5 ? "#fff" : "#000";
-                        ctx.fillRect(
-                            Math.random() * W,
-                            Math.random() * H,
-                            2,
-                            2,
-                        );
-                    }
-                    ctx.restore();
-                }
-
-                // chromatic edge pulse
+                // color grade pulse
                 ctx.save();
-                ctx.globalCompositeOperation = "overlay";
+                ctx.globalCompositeOperation = "soft-light";
                 ctx.fillStyle = hsl(
-                    320 + organHue + t * 5,
-                    80,
+                    300 + organHue + t * 8,
+                    70,
                     50,
-                    0.06 + breath * 0.04,
+                    0.12 + breath * 0.06,
                 );
                 ctx.fillRect(0, 0, W, H);
                 ctx.restore();
+
+                // vignette breath
+                const vig = ctx.createRadialGradient(
+                    W / 2,
+                    H / 2,
+                    H * 0.2,
+                    W / 2,
+                    H / 2,
+                    H * 0.85,
+                );
+                vig.addColorStop(0, "rgba(0,0,0,0)");
+                vig.addColorStop(1, `rgba(5,10,8,${0.25 + breath * 0.1})`);
+                ctx.fillStyle = vig;
+                ctx.fillRect(0, 0, W, H);
 
                 requestAnimationFrame(frame);
             }
