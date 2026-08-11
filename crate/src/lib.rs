@@ -16,6 +16,8 @@ pub fn manifesto() -> &'static [&'static str] {
         "one mind — shared, provable, self-improving",
         "many languages — write, compute, mean",
         "open world — no schema, no gatekeeper",
+        "light client validates all of history in roughly ~100 ns",
+        "interplanetary consensus — no vote; sync in cyberspace",
     ]
 }
 
