@@ -24,9 +24,8 @@
         />
         <style>
             :root {
-                --cream: #fff6ec;
-                --mist: rgba(255, 246, 236, 0.86);
-                --panel: rgba(6, 16, 12, 0.48);
+                --cream: #fff8f0;
+                --ink-glass: rgba(8, 16, 12, 0.62);
             }
 
             * {
@@ -43,7 +42,6 @@
                 color: var(--cream);
                 font-family: Play, system-ui, sans-serif;
                 -webkit-font-smoothing: antialiased;
-                text-rendering: optimizeLegibility;
             }
 
             #world {
@@ -55,78 +53,50 @@
                 z-index: 0;
             }
 
-            .film {
-                position: fixed;
-                inset: 0;
-                z-index: 1;
-                pointer-events: none;
-                background: radial-gradient(
-                    ellipse 95% 85% at 50% 42%,
-                    transparent 5%,
-                    rgba(4, 10, 8, 0.2) 50%,
-                    rgba(3, 8, 6, 0.58) 100%
-                );
-                animation: film 8s ease-in-out infinite;
-            }
-            @keyframes film {
-                0%,
-                100% {
-                    opacity: 0.88;
-                }
-                50% {
-                    opacity: 1;
-                }
-            }
-
             .shell {
                 position: relative;
                 z-index: 2;
                 height: 100dvh;
                 height: 100vh;
                 width: 100%;
-                max-width: 1200px;
+                max-width: 1180px;
                 margin: 0 auto;
-                padding: max(0.75rem, env(safe-area-inset-top))
+                padding: max(0.7rem, env(safe-area-inset-top))
                     max(1rem, env(safe-area-inset-right))
-                    max(0.65rem, env(safe-area-inset-bottom))
+                    max(0.55rem, env(safe-area-inset-bottom))
                     max(1rem, env(safe-area-inset-left));
                 display: grid;
                 grid-template-rows: auto minmax(0, 1fr) auto;
-                gap: 0.55rem;
+                gap: 0.5rem;
                 min-height: 0;
             }
 
-            /* ——— top ——— */
             .top {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 gap: 0.75rem;
-                min-width: 0;
-                font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+                font-size: clamp(0.78rem, 1.4vw, 0.92rem);
                 font-weight: 700;
                 letter-spacing: 0.16em;
                 text-transform: uppercase;
-                color: rgba(255, 246, 236, 0.88);
-                text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+                color: rgba(255, 248, 240, 0.9);
+                text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
             }
             .logo {
                 letter-spacing: 0.28em;
                 color: #fff;
-                text-shadow: 0 0 28px rgba(120, 255, 180, 0.55);
-                flex-shrink: 0;
+                text-shadow: 0 0 24px rgba(120, 255, 180, 0.55);
             }
             .nav-links {
                 display: flex;
-                gap: clamp(0.75rem, 2.5vw, 1.4rem);
-                min-width: 0;
+                gap: clamp(0.8rem, 2.5vw, 1.4rem);
                 flex-wrap: wrap;
                 justify-content: flex-end;
             }
             .top a {
                 color: inherit;
                 text-decoration: none;
-                letter-spacing: 0.12em;
                 white-space: nowrap;
                 transition:
                     color 0.2s,
@@ -134,48 +104,57 @@
             }
             .top a:hover {
                 color: #fff;
-                text-shadow: 0 0 18px rgba(255, 200, 120, 0.85);
+                text-shadow: 0 0 16px rgba(255, 210, 120, 0.9);
             }
 
-            /* ——— stage ——— */
+            /* center band: message + panel side by side, both content-sized */
             .stage {
-                display: grid;
-                grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-                gap: clamp(0.75rem, 2.5vw, 1.75rem);
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                gap: clamp(0.85rem, 2.5vw, 1.5rem);
                 min-height: 0;
-                align-items: stretch;
                 overflow: hidden;
             }
 
+            .glass {
+                background: var(--ink-glass);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 22px;
+                box-shadow:
+                    0 16px 50px rgba(0, 0, 0, 0.45),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+                backdrop-filter: blur(22px) saturate(1.35);
+                -webkit-backdrop-filter: blur(22px) saturate(1.35);
+            }
+
             .manifesto {
+                flex: 1 1 280px;
+                max-width: 34rem;
+                min-width: min(100%, 260px);
+                padding: clamp(1rem, 2.2vh, 1.45rem)
+                    clamp(1.1rem, 2.2vw, 1.55rem);
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
-                gap: clamp(0.45rem, 1.2vh, 0.85rem);
-                min-width: 0;
-                min-height: 0;
+                gap: 0.55rem;
             }
 
             .eyebrow {
-                font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+                font-size: clamp(0.68rem, 1.15vw, 0.8rem);
                 font-weight: 700;
-                letter-spacing: 0.2em;
+                letter-spacing: 0.18em;
                 text-transform: uppercase;
                 color: #ffe28a;
-                text-shadow: 0 0 22px rgba(255, 90, 160, 0.5);
             }
 
             h1 {
-                font-size: clamp(2.1rem, 5.8vw, 3.85rem);
+                font-size: clamp(1.95rem, 5.2vw, 3.35rem);
                 font-weight: 700;
-                line-height: 1.02;
+                line-height: 1.05;
                 letter-spacing: -0.02em;
                 color: #fff;
-                text-shadow:
-                    0 0 40px rgba(255, 80, 160, 0.5),
-                    0 0 80px rgba(80, 255, 180, 0.28),
-                    0 4px 28px rgba(0, 0, 0, 0.5);
-                max-width: 12ch;
+                text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
             }
             h1 em {
                 font-style: normal;
@@ -183,12 +162,12 @@
                 display: block;
                 background: linear-gradient(
                     110deg,
-                    #fff 0%,
-                    #ff9ed0 28%,
-                    #8dffe0 58%,
-                    #ffe28a 100%
+                    #fff,
+                    #ff9ed0 30%,
+                    #8dffe0 60%,
+                    #ffe28a
                 );
-                background-size: 220% auto;
+                background-size: 200% auto;
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
@@ -198,30 +177,25 @@
                 0%,
                 100% {
                     background-position: 0% 50%;
-                    filter: hue-rotate(0deg);
                 }
                 50% {
                     background-position: 100% 50%;
-                    filter: hue-rotate(28deg);
                 }
             }
 
             .lede {
-                font-size: clamp(0.95rem, 1.65vw, 1.15rem);
-                line-height: 1.4;
-                font-weight: 400;
-                color: var(--mist);
-                max-width: 34em;
-                text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+                font-size: clamp(0.95rem, 1.55vw, 1.12rem);
+                line-height: 1.42;
+                color: rgba(255, 248, 240, 0.92);
+                max-width: 32em;
             }
 
             .action {
                 display: flex;
                 flex-direction: column;
                 gap: 0.4rem;
-                max-width: min(100%, 36rem);
+                margin-top: 0.2rem;
                 min-width: 0;
-                margin-top: 0.15rem;
             }
 
             .install {
@@ -229,32 +203,23 @@
                 grid-template-columns: minmax(0, 1fr) auto;
                 border-radius: 999px;
                 overflow: hidden;
-                background: rgba(6, 18, 12, 0.55);
-                border: 1px solid rgba(255, 255, 255, 0.26);
-                backdrop-filter: blur(16px) saturate(1.5);
-                box-shadow:
-                    0 12px 40px rgba(0, 0, 0, 0.4),
-                    0 0 36px rgba(255, 100, 180, 0.1),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                background: rgba(4, 14, 10, 0.65);
+                border: 1px solid rgba(255, 255, 255, 0.22);
                 min-width: 0;
             }
-
             .install code {
                 min-width: 0;
-                padding: 0.85rem 1rem;
-                font-family:
-                    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-                font-size: clamp(0.68rem, 1.25vw, 0.86rem);
+                padding: 0.8rem 0.95rem;
+                font-family: ui-monospace, "SF Mono", Menlo, monospace;
+                font-size: clamp(0.66rem, 1.2vw, 0.82rem);
                 color: #c4ffe8;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 user-select: all;
             }
-
             .install button {
                 border: none;
-                flex-shrink: 0;
                 background: linear-gradient(
                     125deg,
                     #ff6bab,
@@ -267,14 +232,11 @@
                 color: #0a120e;
                 font-family: Play, system-ui, sans-serif;
                 font-weight: 700;
-                font-size: clamp(0.72rem, 1.1vw, 0.82rem);
-                letter-spacing: 0.12em;
+                font-size: 0.75rem;
+                letter-spacing: 0.1em;
                 text-transform: uppercase;
-                padding: 0 1.15rem;
+                padding: 0 1.05rem;
                 cursor: pointer;
-            }
-            .install button:hover {
-                filter: brightness(1.1);
             }
             .install button.ok {
                 filter: saturate(1.4);
@@ -290,9 +252,8 @@
             }
 
             .hint {
-                font-size: clamp(0.72rem, 1.15vw, 0.84rem);
-                letter-spacing: 0.03em;
-                color: rgba(255, 246, 236, 0.55);
+                font-size: 0.78rem;
+                color: rgba(255, 248, 240, 0.55);
             }
             .hint a {
                 color: #ffe28a;
@@ -302,31 +263,25 @@
                 text-decoration: underline;
             }
 
-            /* ——— panel ——— */
+            /* panel sits beside manifesto — height from content, not full stage */
             .panel {
-                min-width: 0;
-                min-height: 0;
+                flex: 0 1 22rem;
+                width: min(100%, 22rem);
+                max-height: min(52vh, 380px);
                 display: flex;
                 flex-direction: column;
-                border-radius: 24px;
-                background: var(--panel);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                box-shadow:
-                    0 18px 55px rgba(0, 0, 0, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-                    0 0 60px rgba(80, 255, 160, 0.07);
-                backdrop-filter: blur(20px) saturate(1.6);
                 overflow: hidden;
+                align-self: center;
             }
 
             .tabs {
                 display: flex;
-                gap: 0.2rem;
-                padding: 0.45rem;
+                gap: 0.15rem;
+                padding: 0.4rem;
                 overflow-x: auto;
                 scrollbar-width: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                background: rgba(0, 0, 0, 0.16);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(0, 0, 0, 0.18);
                 flex-shrink: 0;
             }
             .tabs::-webkit-scrollbar {
@@ -337,16 +292,15 @@
                 flex: 0 0 auto;
                 border: none;
                 background: transparent;
-                color: rgba(255, 246, 236, 0.48);
+                color: rgba(255, 248, 240, 0.5);
                 font-family: Play, system-ui, sans-serif;
-                font-size: clamp(0.72rem, 1.15vw, 0.84rem);
+                font-size: 0.72rem;
                 font-weight: 700;
                 letter-spacing: 0.06em;
                 text-transform: uppercase;
-                padding: 0.55rem 0.8rem;
+                padding: 0.48rem 0.7rem;
                 border-radius: 999px;
                 cursor: pointer;
-                transition: 0.2s ease;
             }
             .tab:hover {
                 color: #fff;
@@ -357,79 +311,63 @@
                 background: linear-gradient(120deg, #ffe28a, #ff6bab, #6dffc4);
                 background-size: 200% 200%;
                 animation: flow 4s ease infinite;
-                box-shadow: 0 0 22px rgba(255, 100, 170, 0.45);
             }
 
             .body {
-                flex: 1;
-                min-height: 0;
-                padding: clamp(0.85rem, 1.8vh, 1.15rem)
-                    clamp(0.9rem, 1.8vw, 1.2rem);
+                padding: 0.85rem 1rem 1rem;
                 display: flex;
                 flex-direction: column;
-                gap: 0.45rem;
+                gap: 0.4rem;
                 overflow: auto;
-                scrollbar-width: thin;
+                min-height: 0;
             }
             .body[hidden] {
                 display: none;
             }
 
             .chip {
-                align-self: flex-start;
-                font-size: clamp(0.65rem, 1.05vw, 0.75rem);
+                font-size: 0.65rem;
                 font-weight: 700;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
                 color: #ffe28a;
             }
-
             .body h2 {
-                font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+                font-size: clamp(1.15rem, 2.2vw, 1.45rem);
                 font-weight: 700;
-                letter-spacing: -0.015em;
                 line-height: 1.15;
-                text-shadow: 0 0 28px rgba(255, 90, 160, 0.35);
             }
-
             .why {
-                color: rgba(255, 246, 236, 0.88);
-                font-size: clamp(0.92rem, 1.5vw, 1.08rem);
+                font-size: 0.95rem;
                 line-height: 1.4;
-                font-weight: 400;
+                color: rgba(255, 248, 240, 0.9);
             }
-
             .props {
                 display: grid;
-                gap: 0.35rem;
-                margin-top: 0.15rem;
+                gap: 0.3rem;
+                margin-top: 0.1rem;
             }
-
             .prop {
                 display: grid;
-                grid-template-columns: 4.6rem minmax(0, 1fr);
-                gap: 0.5rem;
-                padding: 0.5rem 0.65rem;
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.055);
-                border: 1px solid rgba(255, 255, 255, 0.07);
-                min-width: 0;
+                grid-template-columns: 4.2rem minmax(0, 1fr);
+                gap: 0.4rem;
+                padding: 0.42rem 0.55rem;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.06);
             }
-
             .prop b {
-                font-size: clamp(0.65rem, 1.05vw, 0.74rem);
-                letter-spacing: 0.1em;
+                font-size: 0.65rem;
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
                 color: #7dffc4;
                 font-weight: 700;
-                padding-top: 0.15rem;
+                padding-top: 0.12rem;
             }
-
             .prop span {
-                font-size: clamp(0.88rem, 1.4vw, 1.02rem);
-                color: rgba(255, 246, 236, 0.9);
-                line-height: 1.35;
-                min-width: 0;
+                font-size: 0.88rem;
+                line-height: 1.32;
+                color: rgba(255, 248, 240, 0.9);
                 overflow-wrap: anywhere;
             }
 
@@ -439,20 +377,17 @@
                 align-items: center;
                 gap: 0.5rem 1rem;
                 flex-wrap: wrap;
-                font-size: clamp(0.68rem, 1.15vw, 0.8rem);
+                font-size: 0.72rem;
                 font-weight: 700;
                 letter-spacing: 0.1em;
                 text-transform: uppercase;
-                color: rgba(255, 246, 236, 0.48);
-                text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-                min-width: 0;
+                color: rgba(255, 248, 240, 0.5);
+                text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
             }
-
             .organs {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 0.3rem 0.75rem;
-                min-width: 0;
+                gap: 0.3rem 0.7rem;
             }
             .organs button {
                 border: none;
@@ -463,57 +398,38 @@
                 text-transform: inherit;
                 cursor: pointer;
                 padding: 0;
-                transition:
-                    color 0.2s,
-                    text-shadow 0.2s;
             }
             .organs button:hover,
             .organs button.on {
                 color: #ffe28a;
-                text-shadow: 0 0 16px rgba(255, 110, 180, 0.75);
+                text-shadow: 0 0 14px rgba(255, 110, 180, 0.75);
             }
 
-            /* mobile / short */
-            @media (max-width: 820px) {
+            @media (max-width: 720px) {
                 .stage {
-                    grid-template-columns: 1fr;
-                    grid-template-rows: auto minmax(0, 1fr);
+                    flex-direction: column;
+                    align-items: stretch;
+                    justify-content: center;
                 }
-                h1 {
+                .manifesto,
+                .panel {
                     max-width: none;
-                    font-size: clamp(1.9rem, 9vw, 2.8rem);
+                    width: 100%;
+                    flex: 0 1 auto;
                 }
                 .panel {
-                    max-height: min(48vh, 360px);
+                    max-height: min(38vh, 300px);
                 }
             }
 
-            @media (max-width: 480px) {
+            @media (max-width: 420px) {
                 .prop {
                     grid-template-columns: 1fr;
-                    gap: 0.15rem;
-                }
-                .install {
-                    border-radius: 16px;
-                }
-            }
-
-            @media (max-height: 700px) {
-                h1 {
-                    font-size: clamp(1.7rem, 5vw, 2.6rem);
-                }
-                .lede {
-                    font-size: 0.92rem;
-                }
-                .body {
-                    padding: 0.7rem 0.85rem;
-                    gap: 0.35rem;
                 }
             }
 
             @media (prefers-reduced-motion: reduce) {
                 h1 em,
-                .film,
                 .install button,
                 .tab[aria-selected="true"] {
                     animation: none !important;
@@ -523,12 +439,11 @@
     </head>
     <body>
         <canvas id="world" aria-hidden="true"></canvas>
-        <div class="film" aria-hidden="true"></div>
 
         <div class="shell">
             <header class="top">
                 <span class="logo">soft3</span>
-                <nav class="nav-links" aria-label="links">
+                <nav class="nav-links">
                     <a
                         href="https://cyber.page/soft3/"
                         target="_blank"
@@ -545,7 +460,7 @@
             </header>
 
             <main class="stage">
-                <section class="manifesto">
+                <section class="manifesto glass">
                     <p class="eyebrow">type 2 civilization software</p>
                     <h1>one mind.<em>still growing.</em></h1>
                     <p class="lede">
@@ -554,7 +469,7 @@
                         settles into one focus.
                     </p>
                     <div class="action">
-                        <div class="install" role="group" aria-label="install">
+                        <div class="install">
                             <code id="cmd"
                                 >cargo install soft3 --git
                                 https://github.com/cyberia-to/soft3</code
@@ -580,7 +495,7 @@
                     </div>
                 </section>
 
-                <aside class="panel">
+                <aside class="panel glass">
                     <div class="tabs" role="tablist">
                         <button
                             class="tab"
@@ -631,7 +546,6 @@
                             body
                         </button>
                     </div>
-
                     <div class="body" data-panel="mind">
                         <span class="chip">why you need it</span>
                         <h2>One shared mind</h2>
@@ -644,23 +558,19 @@
                             <div class="prop">
                                 <b>form</b
                                 ><span
-                                    >one multilinear form over one field —
-                                    composition is free</span
+                                    >one multilinear form over one field</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>focus</b
                                 ><span
-                                    >the graph settles to φ* — collective
-                                    attention, not a vote count</span
+                                    >graph settles to φ* — collective
+                                    attention</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>feel</b
-                                ><span
-                                    >write · compute · mean — three nerves, one
-                                    body</span
-                                >
+                                ><span>write · compute · mean — one body</span>
                             </div>
                         </div>
                     </div>
@@ -675,23 +585,14 @@
                             <div class="prop">
                                 <b>hash</b
                                 ><span
-                                    >Poseidon2 sponge — identity, trees,
-                                    verified streams</span
+                                    >Poseidon2 — identity, trees, streams</span
                                 >
                             </div>
                             <div class="prop">
-                                <b>commit</b
-                                ><span
-                                    >PCS as one lens — pick algebra, keep the
-                                    API</span
-                                >
+                                <b>commit</b><span>PCS as one lens</span>
                             </div>
                             <div class="prop">
-                                <b>run</b
-                                ><span
-                                    >nox jets + zheng sumcheck — compute that
-                                    stands</span
-                                >
+                                <b>run</b><span>nox + zheng sumcheck</span>
                             </div>
                         </div>
                     </div>
@@ -704,18 +605,10 @@
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>link</b
-                                ><span
-                                    >cyberlinks — typed edges between particles
-                                    of sense</span
-                                >
+                                <b>link</b><span>cyberlinks between sense</span>
                             </div>
                             <div class="prop">
-                                <b>mass</b
-                                ><span
-                                    >BBG: one polynomial, ten dims, ~200B
-                                    proofs</span
-                                >
+                                <b>mass</b><span>BBG polynomial + proofs</span>
                             </div>
                             <div class="prop">
                                 <b>cell</b
@@ -728,27 +621,17 @@
                         <h2>Nerves across space</h2>
                         <p class="why">
                             A mind that cannot reach itself is not alive.
-                            Transport, frames, forgiveness for partitions.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>wave</b
-                                ><span
-                                    >QUIC + BAO — gossip that carries
-                                    substance</span
-                                >
+                                <b>wave</b><span>QUIC + BAO streaming</span>
                             </div>
                             <div class="prop">
                                 <b>frame</b
-                                ><span
-                                    >tape: particles over any byte stream</span
-                                >
+                                ><span>tape over any byte stream</span>
                             </div>
                             <div class="prop">
-                                <b>veil</b
-                                ><span
-                                    >mudra: skin that chooses who enters</span
-                                >
+                                <b>veil</b><span>mudra chooses who enters</span>
                             </div>
                         </div>
                     </div>
@@ -757,27 +640,17 @@
                         <h2>Value that conserves</h2>
                         <p class="why">
                             Attention is energy. Rewards follow real
-                            contribution — Δφ⁺, proofs, tickets.
+                            contribution.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>rank</b
-                                ><span
-                                    >tru converges φ* — who moved the mind</span
-                                >
+                                <b>rank</b><span>tru → φ*</span>
                             </div>
                             <div class="prop">
-                                <b>agree</b
-                                ><span
-                                    >foculus finality — focus as consensus</span
-                                >
+                                <b>agree</b><span>foculus finality</span>
                             </div>
                             <div class="prop">
-                                <b>mint</b
-                                ><span
-                                    >tok conservation — supply cannot
-                                    fantasize</span
-                                >
+                                <b>mint</b><span>tok conservation</span>
                             </div>
                         </div>
                     </div>
@@ -785,26 +658,17 @@
                         <span class="chip">cyb · mir · prysm · rune</span>
                         <h2>Flesh you can inhabit</h2>
                         <p class="why">
-                            A stack without a body is a lab note. Terminal,
-                            world, language — hands for the organism.
+                            Terminal, world, language — hands for the organism.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>cyb</b
-                                ><span
-                                    >robot shell — Bevy world + live cell</span
-                                >
+                                <b>cyb</b><span>Bevy world + live cell</span>
                             </div>
                             <div class="prop">
-                                <b>see</b
-                                ><span
-                                    >mir + prysm — places and UI from the
-                                    tape</span
-                                >
+                                <b>see</b><span>mir + prysm</span>
                             </div>
                             <div class="prop">
-                                <b>speak</b
-                                ><span>rune / neural — write, eval, mean</span>
+                                <b>speak</b><span>rune / neural</span>
                             </div>
                         </div>
                     </div>
@@ -827,8 +691,6 @@
         </div>
 
         <script>
-            /* UI */
-            const tabs = [...document.querySelectorAll(".tab[data-tab]")];
             const panels = [...document.querySelectorAll(".body")];
             const quick = [...document.querySelectorAll("#quick button")];
             const order = ["mind", "proof", "graph", "radio", "pay", "body"];
@@ -836,11 +698,11 @@
                 organHue = 0;
             const hues = {
                 mind: 0,
-                proof: 45,
-                graph: -35,
-                radio: 110,
-                pay: 28,
-                body: -60,
+                proof: 40,
+                graph: -30,
+                radio: 100,
+                pay: 25,
+                body: -55,
             };
 
             function select(name) {
@@ -905,7 +767,7 @@
                 }, 1400);
             });
 
-            /* ========== HYPER-NATURE ========== */
+            /* ========== WORLD ========== */
             const canvas = document.getElementById("world");
             const ctx = canvas.getContext("2d", {
                 alpha: false,
@@ -920,25 +782,25 @@
                 mxt = 0.5,
                 myt = 0.5;
 
-            const ferns = [],
-                flowers = [],
+            const trees = [],
                 mushrooms = [],
-                trees = [];
-            const butterflies = [],
+                flowers = [],
+                ferns = [];
+            const birds = [],
+                fish = [],
+                butterflies = [],
                 spores = [],
-                vines = [],
-                dragonflies = [];
+                planets = [];
 
             const hsl = (h, s, l, a = 1) =>
                 `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
 
             function resize() {
-                // higher res — up to 2.5x for retina clarity
-                dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+                dpr = Math.min(devicePixelRatio || 1, 2.5);
                 W = innerWidth;
                 H = innerHeight;
-                canvas.width = Math.floor(W * dpr);
-                canvas.height = Math.floor(H * dpr);
+                canvas.width = (W * dpr) | 0;
+                canvas.height = (H * dpr) | 0;
                 canvas.style.width = W + "px";
                 canvas.style.height = H + "px";
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -948,61 +810,97 @@
             }
 
             function seed() {
-                ferns.length =
-                    flowers.length =
+                trees.length =
                     mushrooms.length =
-                    trees.length =
+                    flowers.length =
+                    ferns.length =
                         0;
-                butterflies.length =
+                birds.length =
+                    fish.length =
+                    butterflies.length =
                     spores.length =
-                    vines.length =
-                    dragonflies.length =
+                    planets.length =
                         0;
 
-                const nT = Math.floor(W / 70) + 5;
+                // planets in the sky
+                planets.push(
+                    {
+                        x: 0.12,
+                        y: 0.14,
+                        r: 0.035,
+                        hue: 25,
+                        rings: true,
+                        phase: 0.2,
+                    },
+                    {
+                        x: 0.28,
+                        y: 0.1,
+                        r: 0.018,
+                        hue: 200,
+                        rings: false,
+                        phase: 1.1,
+                    },
+                    {
+                        x: 0.88,
+                        y: 0.12,
+                        r: 0.028,
+                        hue: 320,
+                        rings: false,
+                        phase: 2.4,
+                    },
+                    {
+                        x: 0.72,
+                        y: 0.08,
+                        r: 0.012,
+                        hue: 140,
+                        rings: false,
+                        phase: 3.5,
+                    },
+                    {
+                        x: 0.42,
+                        y: 0.16,
+                        r: 0.01,
+                        hue: 50,
+                        rings: false,
+                        phase: 4.2,
+                    },
+                );
+
+                const nT = Math.floor(W / 55) + 8;
                 for (let i = 0; i < nT; i++) {
                     trees.push({
-                        x: (i + 0.15 + Math.random() * 0.7) / nT,
-                        h: 0.32 + Math.random() * 0.4,
-                        w: 0.035 + Math.random() * 0.035,
+                        x: (i + Math.random() * 0.85) / nT,
+                        h: 0.28 + Math.random() * 0.42,
+                        w: 0.03 + Math.random() * 0.04,
                         phase: Math.random() * 6.28,
-                        lean: (Math.random() - 0.5) * 0.1,
-                        hue: 115 + Math.random() * 55,
-                        layers: 4 + ((Math.random() * 4) | 0),
+                        lean: (Math.random() - 0.5) * 0.12,
+                        hue: 110 + Math.random() * 60,
+                        layers: 5 + ((Math.random() * 4) | 0),
+                        kind: Math.random() < 0.35 ? "pine" : "broad",
                     });
                 }
 
-                // dense mushroom colony — main character
-                const nM = Math.floor(18 + W / 55);
-                for (let i = 0; i < nM; i++) {
+                for (let i = 0; i < Math.floor(22 + W / 50); i++) {
                     mushrooms.push({
                         x: Math.random(),
-                        y: 0.58 + Math.random() * 0.38,
-                        s: 0.35 + Math.random() * 1.35,
+                        y: 0.55 + Math.random() * 0.38,
+                        s: 0.4 + Math.random() * 1.3,
                         hue:
-                            [0, 10, 340, 280, 200, 50, 160][i % 7] +
-                            Math.random() * 25,
+                            [0, 8, 340, 280, 200, 45, 160][i % 7] +
+                            Math.random() * 20,
                         phase: Math.random() * 6.28,
-                        spots: 4 + ((Math.random() * 10) | 0),
-                        kind:
-                            Math.random() < 0.2
-                                ? "morel"
-                                : Math.random() < 0.45
-                                  ? "fly"
-                                  : Math.random() < 0.7
-                                    ? "bolete"
-                                    : "ink",
-                        tilt: (Math.random() - 0.5) * 0.25,
+                        spots: 5 + ((Math.random() * 9) | 0),
+                        kind: ["fly", "bolete", "morel", "ink"][i % 4],
+                        tilt: (Math.random() - 0.5) * 0.2,
                     });
                 }
 
-                const nF = Math.floor(28 + (W * H) / 14000);
-                for (let i = 0; i < nF; i++) {
+                for (let i = 0; i < Math.floor(32 + (W * H) / 12000); i++) {
                     flowers.push({
                         x: Math.random(),
-                        y: 0.48 + Math.random() * 0.48,
-                        s: 0.3 + Math.random() * 1.1,
-                        petals: 5 + ((Math.random() * 7) | 0),
+                        y: 0.5 + Math.random() * 0.42,
+                        s: 0.35 + Math.random() * 1,
+                        petals: 5 + ((Math.random() * 6) | 0),
                         hue: Math.random() * 360,
                         phase: Math.random() * 6.28,
                         type: ["daisy", "poppy", "sun", "orchid", "tulip"][
@@ -1011,100 +909,92 @@
                     });
                 }
 
-                // fractal-ish ferns
-                for (let i = 0; i < 14; i++) {
+                for (let i = 0; i < 12; i++) {
                     ferns.push({
                         x: Math.random(),
-                        y: 0.55 + Math.random() * 0.4,
-                        s: 0.5 + Math.random() * 1.2,
+                        y: 0.58 + Math.random() * 0.35,
+                        s: 0.5 + Math.random() * 1.1,
                         phase: Math.random() * 6.28,
                         side: Math.random() < 0.5 ? -1 : 1,
-                        hue: 130 + Math.random() * 40,
+                        hue: 130 + Math.random() * 35,
+                    });
+                }
+
+                for (let i = 0; i < 14; i++) {
+                    butterflies.push({
+                        x: Math.random(),
+                        y: 0.15 + Math.random() * 0.45,
+                        s: 0.5 + Math.random() * 0.9,
+                        hue: Math.random() * 360,
+                        phase: Math.random() * 6.28,
+                        speed: 0.3 + Math.random() * 0.5,
                     });
                 }
 
                 for (let i = 0; i < 10; i++) {
-                    vines.push({
+                    birds.push({
                         x: Math.random(),
-                        amp: 20 + Math.random() * 40,
+                        y: 0.08 + Math.random() * 0.28,
+                        s: 0.6 + Math.random() * 0.8,
                         phase: Math.random() * 6.28,
-                        hue: 140 + Math.random() * 50,
-                        thick: 1 + Math.random() * 2,
+                        speed: 0.15 + Math.random() * 0.25,
+                        hue: 20 + Math.random() * 40,
                     });
                 }
 
-                for (let i = 0; i < 12; i++) {
-                    butterflies.push({
+                for (let i = 0; i < 18; i++) {
+                    fish.push({
                         x: Math.random(),
-                        y: 0.12 + Math.random() * 0.5,
-                        s: 0.5 + Math.random() * 1,
-                        hue: Math.random() * 360,
+                        y: 0.82 + Math.random() * 0.14,
+                        s: 0.4 + Math.random() * 0.8,
                         phase: Math.random() * 6.28,
-                        speed: 0.25 + Math.random() * 0.55,
+                        speed: 0.2 + Math.random() * 0.35,
+                        hue: 180 + Math.random() * 80,
                     });
                 }
 
-                for (let i = 0; i < 5; i++) {
-                    dragonflies.push({
-                        x: Math.random(),
-                        y: 0.2 + Math.random() * 0.35,
-                        s: 0.7 + Math.random() * 0.6,
-                        phase: Math.random() * 6.28,
-                        speed: 0.4 + Math.random() * 0.4,
-                        hue: 180 + Math.random() * 40,
-                    });
-                }
-
-                // glowing spores / pollen
-                for (let i = 0; i < 80; i++) {
+                for (let i = 0; i < 70; i++) {
                     spores.push({
                         x: Math.random(),
                         y: Math.random(),
                         z: 0.3 + Math.random() * 0.7,
-                        r: 0.6 + Math.random() * 2.2,
+                        r: 0.5 + Math.random() * 2,
                         hue: Math.random() * 360,
                         phase: Math.random() * 6.28,
-                        sp: 0.08 + Math.random() * 0.2,
+                        sp: 0.06 + Math.random() * 0.18,
                     });
                 }
             }
 
-            window.addEventListener("resize", resize);
-            window.addEventListener("pointermove", (e) => {
+            addEventListener("resize", resize);
+            addEventListener("pointermove", (e) => {
                 mxt = e.clientX / W;
                 myt = e.clientY / H;
             });
 
             function drawSky(t, breath) {
-                const shift = organHue + t * 10;
-                const g = ctx.createLinearGradient(0, 0, W * 0.2, H);
-                g.addColorStop(0, hsl(270 + shift * 0.35, 75, 14 + breath * 5));
-                g.addColorStop(
-                    0.2,
-                    hsl(310 + shift * 0.4, 80, 26 + breath * 4),
-                );
-                g.addColorStop(0.4, hsl(25 + shift * 0.25, 85, 48));
-                g.addColorStop(0.55, hsl(50 + shift * 0.15, 80, 52));
-                g.addColorStop(0.7, hsl(160 + shift * 0.2, 55, 36));
-                g.addColorStop(1, hsl(145, 50, 12));
+                const shift = organHue + t * 8;
+                const g = ctx.createLinearGradient(0, 0, 0, H * 0.7);
+                g.addColorStop(0, hsl(250 + shift * 0.2, 70, 12 + breath * 3));
+                g.addColorStop(0.25, hsl(300 + shift * 0.3, 65, 22));
+                g.addColorStop(0.45, hsl(35 + shift * 0.15, 80, 48));
+                g.addColorStop(0.65, hsl(55, 75, 50));
+                g.addColorStop(1, hsl(160, 45, 30));
                 ctx.fillStyle = g;
                 ctx.fillRect(0, 0, W, H);
 
-                // multi-blob aurora plasma
+                // aurora blobs
                 ctx.save();
                 ctx.globalCompositeOperation = "screen";
-                for (let i = 0; i < 7; i++) {
+                for (let i = 0; i < 5; i++) {
                     const cx =
-                        W *
-                        (0.1 + i * 0.13 + 0.04 * Math.sin(t * 0.3 + i * 1.7));
-                    const cy = H * (0.12 + 0.1 * Math.cos(t * 0.22 + i * 1.1));
+                        W * (0.15 + i * 0.18 + 0.03 * Math.sin(t * 0.25 + i));
+                    const cy = H * (0.12 + 0.06 * Math.cos(t * 0.2 + i));
                     const r =
-                        Math.min(W, H) *
-                        (0.18 + 0.1 * Math.sin(t * 0.45 + i) + breath * 0.04);
+                        Math.min(W, H) * (0.16 + 0.06 * Math.sin(t * 0.4 + i));
                     const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-                    const hue = i * 48 + shift + organHue;
-                    rg.addColorStop(0, hsl(hue, 100, 68, 0.42));
-                    rg.addColorStop(0.4, hsl(hue + 40, 95, 52, 0.16));
+                    const hue = i * 55 + shift;
+                    rg.addColorStop(0, hsl(hue, 100, 65, 0.28));
                     rg.addColorStop(1, hsl(hue, 80, 40, 0));
                     ctx.fillStyle = rg;
                     ctx.beginPath();
@@ -1113,479 +1003,622 @@
                 }
                 ctx.restore();
 
-                // sun with detailed corona
-                const sx = W * (0.78 + (mx - 0.5) * 0.05);
-                const sy = H * (0.16 + (my - 0.5) * 0.03);
-                const sr = Math.min(W, H) * (0.09 + breath * 0.012);
-                const sun = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 3);
-                sun.addColorStop(0, hsl(50 + shift * 0.15, 100, 96, 1));
-                sun.addColorStop(0.15, hsl(42, 100, 72, 0.85));
-                sun.addColorStop(
-                    0.35,
-                    hsl(20 + organHue * 0.15, 100, 58, 0.35),
+                // stars
+                for (let i = 0; i < 60; i++) {
+                    const x = (((i * 97.3) % 100) / 100) * W;
+                    const y = (((i * 53.1) % 100) / 100) * H * 0.35;
+                    const tw = 0.3 + 0.7 * Math.sin(t * 2 + i);
+                    ctx.fillStyle = hsl(50, 30, 95, 0.15 + tw * 0.45);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 0.6 + (i % 3) * 0.4 * tw, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function drawPlanets(t) {
+                for (const p of planets) {
+                    const x =
+                        (p.x + Math.sin(t * 0.08 + p.phase) * 0.008) * W +
+                        (mx - 0.5) * 12;
+                    const y = (p.y + Math.cos(t * 0.06 + p.phase) * 0.006) * H;
+                    const r =
+                        p.r *
+                        Math.min(W, H) *
+                        (1 + 0.03 * Math.sin(t * 0.5 + p.phase));
+                    const hue = p.hue + organHue * 0.3 + t * 3;
+
+                    // glow
+                    const glow = ctx.createRadialGradient(
+                        x,
+                        y,
+                        0,
+                        x,
+                        y,
+                        r * 2.5,
+                    );
+                    glow.addColorStop(0, hsl(hue, 80, 60, 0.35));
+                    glow.addColorStop(1, hsl(hue, 60, 40, 0));
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r * 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // body
+                    const body = ctx.createRadialGradient(
+                        x - r * 0.3,
+                        y - r * 0.3,
+                        0,
+                        x,
+                        y,
+                        r,
+                    );
+                    body.addColorStop(0, hsl(hue + 20, 70, 72));
+                    body.addColorStop(0.5, hsl(hue, 65, 45));
+                    body.addColorStop(1, hsl(hue - 20, 55, 22));
+                    ctx.fillStyle = body;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // bands
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.strokeStyle = hsl(hue + 30, 40, 60, 0.25);
+                    ctx.lineWidth = r * 0.12;
+                    for (let b = -2; b <= 2; b++) {
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            x,
+                            y + b * r * 0.25,
+                            r * 0.95,
+                            r * 0.18,
+                            0.1,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+
+                    if (p.rings) {
+                        ctx.save();
+                        ctx.strokeStyle = hsl(hue + 40, 50, 70, 0.45);
+                        ctx.lineWidth = r * 0.15;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            x,
+                            y,
+                            r * 1.7,
+                            r * 0.45,
+                            -0.25,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.stroke();
+                        ctx.strokeStyle = hsl(hue + 60, 40, 80, 0.25);
+                        ctx.lineWidth = r * 0.08;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            x,
+                            y,
+                            r * 1.95,
+                            r * 0.52,
+                            -0.25,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+
+            function drawSun(t, breath) {
+                const sx = W * (0.78 + (mx - 0.5) * 0.03);
+                const sy = H * (0.18 + (my - 0.5) * 0.02);
+                const sr = Math.min(W, H) * (0.12 + breath * 0.015);
+
+                // big corona
+                const corona = ctx.createRadialGradient(
+                    sx,
+                    sy,
+                    0,
+                    sx,
+                    sy,
+                    sr * 3.5,
                 );
-                sun.addColorStop(0.6, hsl(320, 90, 50, 0.12));
-                sun.addColorStop(1, hsl(280, 70, 40, 0));
-                ctx.fillStyle = sun;
+                corona.addColorStop(0, hsl(50 + organHue * 0.1, 100, 96, 1));
+                corona.addColorStop(0.12, hsl(45, 100, 78, 0.95));
+                corona.addColorStop(0.28, hsl(35, 100, 60, 0.55));
+                corona.addColorStop(0.5, hsl(20, 100, 50, 0.2));
+                corona.addColorStop(
+                    0.75,
+                    hsl(320 + organHue * 0.2, 90, 50, 0.08),
+                );
+                corona.addColorStop(1, hsl(280, 70, 40, 0));
+                ctx.fillStyle = corona;
                 ctx.beginPath();
-                ctx.arc(sx, sy, sr * 3, 0, Math.PI * 2);
+                ctx.arc(sx, sy, sr * 3.5, 0, Math.PI * 2);
                 ctx.fill();
 
+                // core
+                const core = ctx.createRadialGradient(
+                    sx - sr * 0.15,
+                    sy - sr * 0.15,
+                    0,
+                    sx,
+                    sy,
+                    sr,
+                );
+                core.addColorStop(0, "#fffef5");
+                core.addColorStop(0.4, hsl(48, 100, 75));
+                core.addColorStop(1, hsl(30, 100, 55));
+                ctx.fillStyle = core;
+                ctx.beginPath();
+                ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+                ctx.fill();
+
+                // rays
                 ctx.save();
                 ctx.translate(sx, sy);
-                ctx.rotate(t * 0.12);
+                ctx.rotate(t * 0.1);
                 ctx.globalCompositeOperation = "screen";
-                for (let i = 0; i < 28; i++) {
-                    const a = (i / 28) * Math.PI * 2;
+                for (let i = 0; i < 36; i++) {
+                    const a = (i / 36) * Math.PI * 2;
                     const len =
-                        sr * (2.2 + Math.sin(t * 1.5 + i) * 0.9 + breath * 0.5);
-                    const w = 1.2 + Math.sin(t + i) * 0.6;
+                        sr * (2.4 + Math.sin(t * 1.2 + i) * 0.8 + breath * 0.4);
                     ctx.strokeStyle = hsl(
-                        40 + i * 6 + shift,
+                        42 + i * 4,
                         100,
-                        72,
-                        0.14 + 0.06 * Math.sin(t + i),
+                        70,
+                        0.16 + 0.08 * Math.sin(t + i),
                     );
-                    ctx.lineWidth = w;
+                    ctx.lineWidth = 1.5 + Math.sin(t + i) * 0.8;
                     ctx.beginPath();
                     ctx.moveTo(
-                        Math.cos(a) * sr * 0.85,
-                        Math.sin(a) * sr * 0.85,
+                        Math.cos(a) * sr * 1.05,
+                        Math.sin(a) * sr * 1.05,
                     );
-                    ctx.quadraticCurveTo(
-                        Math.cos(a + 0.1) * len * 0.6,
-                        Math.sin(a + 0.1) * len * 0.6,
-                        Math.cos(a) * len,
-                        Math.sin(a) * len,
-                    );
+                    ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len);
                     ctx.stroke();
                 }
                 ctx.restore();
             }
 
             function drawTree(tr, t, breath) {
-                const x = tr.x * W + (mx - 0.5) * 18;
-                const ground = H * 0.56;
-                const th = tr.h * H * (1 + breath * 0.025);
+                const x = tr.x * W + (mx - 0.5) * 16;
+                const ground = H * 0.52;
+                const th = tr.h * H * (1 + breath * 0.02);
                 const tw = tr.w * W;
                 ctx.save();
                 ctx.translate(x, ground);
-                ctx.rotate(tr.lean + Math.sin(t * 0.35 + tr.phase) * 0.035);
+                ctx.rotate(tr.lean + Math.sin(t * 0.3 + tr.phase) * 0.03);
 
-                // bark
                 const trunk = ctx.createLinearGradient(-tw, 0, tw, -th);
-                trunk.addColorStop(0, hsl(22, 42, 18));
-                trunk.addColorStop(0.5, hsl(28, 38, 28));
-                trunk.addColorStop(1, hsl(32, 35, 38));
+                trunk.addColorStop(0, hsl(25, 45, 16));
+                trunk.addColorStop(1, hsl(30, 40, 32));
                 ctx.fillStyle = trunk;
                 ctx.beginPath();
-                ctx.moveTo(-tw * 0.28, 0);
+                ctx.moveTo(-tw * 0.3, 0);
                 ctx.bezierCurveTo(
-                    -tw * 0.2,
-                    -th * 0.4,
-                    -tw * 0.12,
-                    -th * 0.65,
-                    -tw * 0.07,
-                    -th * 0.82,
+                    -tw * 0.18,
+                    -th * 0.45,
+                    -tw * 0.1,
+                    -th * 0.7,
+                    -tw * 0.06,
+                    -th * 0.85,
                 );
-                ctx.lineTo(tw * 0.07, -th * 0.82);
+                ctx.lineTo(tw * 0.06, -th * 0.85);
                 ctx.bezierCurveTo(
-                    tw * 0.12,
-                    -th * 0.65,
-                    tw * 0.2,
-                    -th * 0.4,
-                    tw * 0.28,
+                    tw * 0.1,
+                    -th * 0.7,
+                    tw * 0.18,
+                    -th * 0.45,
+                    tw * 0.3,
                     0,
                 );
                 ctx.closePath();
                 ctx.fill();
 
-                // bark lines
-                ctx.strokeStyle = hsl(20, 30, 15, 0.35);
-                ctx.lineWidth = 0.8;
-                for (let i = 0; i < 4; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(-tw * 0.1 + i * tw * 0.08, -th * 0.1);
-                    ctx.quadraticCurveTo(
-                        0,
-                        -th * 0.45,
-                        -tw * 0.05 + i * 0.04 * tw,
-                        -th * 0.75,
-                    );
-                    ctx.stroke();
-                }
-
-                for (let k = 0; k < tr.layers; k++) {
-                    const ang = tr.phase + k * 0.9 + t * 0.12;
-                    const cx = Math.sin(ang) * tw * (1.5 + k * 0.35);
-                    const cy =
-                        -th * 0.72 -
-                        k * tw * 0.55 +
-                        Math.sin(t * 0.25 + k) * tw * 0.2;
-                    const r =
-                        tw *
-                        (2.4 + k * 0.55) *
-                        (1 + 0.05 * Math.sin(t + k + tr.phase));
-                    const hue =
-                        tr.hue +
-                        organHue * 0.35 +
-                        k * 10 +
-                        Math.sin(t * 0.35 + k) * 22;
-                    const g = ctx.createRadialGradient(
-                        cx - r * 0.2,
-                        cy - r * 0.2,
-                        0,
-                        cx,
-                        cy,
-                        r,
-                    );
-                    g.addColorStop(0, hsl(hue + 25, 72, 52, 0.88));
-                    g.addColorStop(0.4, hsl(hue, 62, 36, 0.82));
-                    g.addColorStop(0.75, hsl(hue - 15, 55, 22, 0.55));
-                    g.addColorStop(1, hsl(hue - 30, 45, 12, 0));
-                    ctx.fillStyle = g;
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        cx,
-                        cy,
-                        r * (1.15 + 0.08 * Math.sin(t + k)),
-                        r * 0.88,
-                        ang * 0.15,
-                        0,
-                        Math.PI * 2,
-                    );
-                    ctx.fill();
+                if (tr.kind === "pine") {
+                    for (let k = 0; k < tr.layers; k++) {
+                        const u = k / tr.layers;
+                        const cy = -th * (0.35 + u * 0.55);
+                        const cw =
+                            tw * (4.5 - u * 2.5) * (1 + 0.04 * Math.sin(t + k));
+                        const ch = tw * (2.2 - u * 0.5);
+                        const hue = tr.hue + organHue * 0.25 + k * 6;
+                        ctx.beginPath();
+                        ctx.moveTo(0, cy - ch);
+                        ctx.lineTo(-cw, cy + ch * 0.4);
+                        ctx.lineTo(cw, cy + ch * 0.4);
+                        ctx.closePath();
+                        const g = ctx.createLinearGradient(
+                            0,
+                            cy - ch,
+                            0,
+                            cy + ch,
+                        );
+                        g.addColorStop(0, hsl(hue + 20, 60, 42));
+                        g.addColorStop(1, hsl(hue - 10, 55, 22));
+                        ctx.fillStyle = g;
+                        ctx.fill();
+                    }
+                } else {
+                    for (let k = 0; k < tr.layers; k++) {
+                        const ang = tr.phase + k * 0.85 + t * 0.1;
+                        const cx = Math.sin(ang) * tw * (1.4 + k * 0.3);
+                        const cy = -th * 0.7 - k * tw * 0.5;
+                        const r =
+                            tw * (2.5 + k * 0.5) * (1 + 0.04 * Math.sin(t + k));
+                        const hue =
+                            tr.hue +
+                            organHue * 0.3 +
+                            k * 8 +
+                            Math.sin(t * 0.3 + k) * 15;
+                        const g = ctx.createRadialGradient(
+                            cx - r * 0.2,
+                            cy - r * 0.2,
+                            0,
+                            cx,
+                            cy,
+                            r,
+                        );
+                        g.addColorStop(0, hsl(hue + 25, 70, 50, 0.9));
+                        g.addColorStop(0.5, hsl(hue, 60, 34, 0.85));
+                        g.addColorStop(1, hsl(hue - 20, 50, 16, 0));
+                        ctx.fillStyle = g;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            cx,
+                            cy,
+                            r * 1.15,
+                            r * 0.9,
+                            ang * 0.1,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.fill();
+                    }
                 }
                 ctx.restore();
             }
 
             function drawHills(t, breath) {
                 const layers = [
+                    { y: 0.42, amp: 0.05, hue: 150, lit: 22, sp: 0.12, z: 0.3 },
+                    { y: 0.5, amp: 0.06, hue: 140, lit: 26, sp: 0.2, z: 0.5 },
                     {
-                        y: 0.46,
+                        y: 0.58,
                         amp: 0.055,
-                        hue: 155,
-                        sat: 48,
-                        lit: 20,
-                        sp: 0.12,
-                        z: 0.25,
-                    },
-                    {
-                        y: 0.53,
-                        amp: 0.07,
-                        hue: 142,
-                        sat: 52,
-                        lit: 25,
-                        sp: 0.2,
-                        z: 0.45,
-                    },
-                    {
-                        y: 0.6,
-                        amp: 0.065,
-                        hue: 132,
-                        sat: 55,
+                        hue: 130,
                         lit: 28,
                         sp: 0.28,
-                        z: 0.65,
-                    },
-                    {
-                        y: 0.7,
-                        amp: 0.045,
-                        hue: 122,
-                        sat: 50,
-                        lit: 26,
-                        sp: 0.16,
-                        z: 0.9,
+                        z: 0.7,
                     },
                 ];
                 for (const L of layers) {
                     ctx.beginPath();
                     ctx.moveTo(0, H);
-                    const steps = 64;
-                    for (let i = 0; i <= steps; i++) {
-                        const u = i / steps;
+                    for (let i = 0; i <= 56; i++) {
+                        const u = i / 56;
                         const wave =
-                            Math.sin(u * 5 + t * L.sp + L.y * 4) * L.amp +
-                            Math.sin(u * 11 - t * L.sp * 1.4) * L.amp * 0.38 +
-                            Math.sin(u * 2.2 + breath * 2) * L.amp * 0.28 +
-                            (mx - 0.5) * 0.018 * L.z;
-                        ctx.lineTo(
-                            u * W,
-                            H * (L.y + wave + breath * 0.01 * L.z),
-                        );
+                            Math.sin(u * 4.5 + t * L.sp) * L.amp +
+                            Math.sin(u * 10 - t * L.sp * 1.3) * L.amp * 0.35 +
+                            breath * 0.01 * L.z +
+                            (mx - 0.5) * 0.015 * L.z;
+                        ctx.lineTo(u * W, H * (L.y + wave));
                     }
                     ctx.lineTo(W, H);
                     ctx.closePath();
                     const hue =
-                        L.hue + organHue * 0.3 + Math.sin(t * 0.22 + L.y) * 18;
-                    const g = ctx.createLinearGradient(0, H * L.y - 50, 0, H);
-                    g.addColorStop(
-                        0,
-                        hsl(hue + 35, L.sat + 22, L.lit + 20, 0.96),
-                    );
-                    g.addColorStop(0.45, hsl(hue, L.sat, L.lit, 0.98));
-                    g.addColorStop(1, hsl(hue - 25, L.sat - 5, L.lit - 10, 1));
+                        L.hue + organHue * 0.25 + Math.sin(t * 0.2) * 12;
+                    const g = ctx.createLinearGradient(0, H * L.y - 40, 0, H);
+                    g.addColorStop(0, hsl(hue + 25, 50, L.lit + 14));
+                    g.addColorStop(1, hsl(hue - 15, 45, L.lit - 6));
                     ctx.fillStyle = g;
                     ctx.fill();
                 }
             }
 
-            function drawFern(f, t, breath) {
-                const x = f.x * W + (mx - 0.5) * 12;
-                const y = f.y * H;
-                const s = f.s * Math.min(W, H) * 0.04 * (1 + breath * 0.05);
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(f.side * 0.15 + Math.sin(t * 0.4 + f.phase) * 0.08);
-                const hue =
-                    f.hue + organHue * 0.2 + Math.sin(t * 0.3 + f.phase) * 15;
-                // main rachis
-                ctx.strokeStyle = hsl(hue - 20, 45, 28, 0.9);
-                ctx.lineWidth = 1.5 * f.s;
+            function drawWater(t, breath) {
+                // wide lake + river tongue
+                const y0 = H * 0.68;
                 ctx.beginPath();
-                ctx.moveTo(0, 0);
-                for (let i = 0; i <= 20; i++) {
-                    const u = i / 20;
-                    ctx.lineTo(
-                        Math.sin(u * 3 + t * 0.3 + f.phase) * s * 0.3 * f.side,
-                        -u * s * 5,
+                ctx.moveTo(0, H);
+                for (let x = 0; x <= W; x += 3) {
+                    const shore =
+                        y0 +
+                        Math.sin(x * 0.008 + t * 0.5) * 22 +
+                        Math.sin(x * 0.02 - t * 0.8) * 12 +
+                        Math.sin(x * 0.002 + t * 0.2) * 30 +
+                        breath * 8 +
+                        (my - 0.5) * 18;
+                    // deeper bay in middle
+                    const bay =
+                        Math.exp(-Math.pow((x / W - 0.45) / 0.35, 2)) *
+                        H *
+                        0.08;
+                    ctx.lineTo(x, shore - bay);
+                }
+                ctx.lineTo(W, H);
+                ctx.closePath();
+
+                const g = ctx.createLinearGradient(0, y0 - 80, 0, H);
+                g.addColorStop(
+                    0,
+                    hsl(185 + organHue * 0.2 + t * 4, 70, 58, 0.7),
+                );
+                g.addColorStop(0.25, hsl(200, 75, 45, 0.8));
+                g.addColorStop(0.55, hsl(215, 65, 32, 0.88));
+                g.addColorStop(1, hsl(230, 55, 14, 0.95));
+                ctx.fillStyle = g;
+                ctx.fill();
+
+                // reflections of sun
+                ctx.save();
+                ctx.globalCompositeOperation = "screen";
+                const sx = W * 0.78;
+                for (let i = 0; i < 12; i++) {
+                    const yy = y0 + 20 + i * 12 + Math.sin(t + i) * 4;
+                    const ww = 40 + i * 18 + Math.sin(t * 2 + i) * 10;
+                    ctx.fillStyle = hsl(
+                        45,
+                        100,
+                        80,
+                        0.08 + 0.04 * Math.sin(t * 2 + i),
                     );
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        sx + Math.sin(t + i) * 20,
+                        yy,
+                        ww,
+                        3 + i * 0.3,
+                        0,
+                        0,
+                        Math.PI * 2,
+                    );
+                    ctx.fill();
+                }
+                // wave sparkles
+                for (let i = 0; i < 40; i++) {
+                    const x =
+                        ((t * 35 * (0.4 + (i % 4) * 0.15) + i * 61) %
+                            (W + 30)) -
+                        15;
+                    const y =
+                        y0 + 25 + Math.sin(t * 1.8 + i) * 18 + (i % 7) * 14;
+                    if (y > H) continue;
+                    ctx.fillStyle = hsl(
+                        50 + i * 5,
+                        100,
+                        92,
+                        0.12 + 0.1 * Math.sin(t * 3 + i),
+                    );
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, 8 + (i % 3) * 3, 1.8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+
+                // foam line
+                ctx.strokeStyle = hsl(0, 0, 100, 0.15);
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                for (let x = 0; x <= W; x += 6) {
+                    const shore =
+                        y0 +
+                        Math.sin(x * 0.008 + t * 0.5) * 22 +
+                        Math.sin(x * 0.02 - t * 0.8) * 12 +
+                        Math.sin(x * 0.002 + t * 0.2) * 30 +
+                        breath * 8 -
+                        Math.exp(-Math.pow((x / W - 0.45) / 0.35, 2)) *
+                            H *
+                            0.08;
+                    if (x === 0) ctx.moveTo(x, shore);
+                    else ctx.lineTo(x, shore);
                 }
                 ctx.stroke();
-                // pinnae
-                for (let i = 2; i < 18; i++) {
-                    const u = i / 20;
-                    const py = -u * s * 5;
+            }
+
+            function drawFish(f, t) {
+                const x =
+                    (((f.x +
+                        t * f.speed * 0.04 +
+                        Math.sin(t * 0.5 + f.phase) * 0.02) %
+                        1.15) -
+                        0.05) *
+                    W;
+                const y = f.y * H + Math.sin(t * 1.5 + f.phase) * 6;
+                const s = f.s * 7;
+                const dir = Math.sin(t * 0.2 + f.phase) >= 0 ? 1 : -1;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(dir, 1);
+                ctx.globalAlpha = 0.55;
+                const hue = f.hue + organHue * 0.3 + t * 10;
+                ctx.fillStyle = hsl(hue, 70, 55);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, s, s * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // tail
+                ctx.beginPath();
+                ctx.moveTo(-s * 0.8, 0);
+                ctx.lineTo(
+                    -s * 1.4,
+                    -s * 0.45 + Math.sin(t * 8 + f.phase) * s * 0.15,
+                );
+                ctx.lineTo(
+                    -s * 1.4,
+                    s * 0.45 + Math.sin(t * 8 + f.phase) * s * 0.15,
+                );
+                ctx.closePath();
+                ctx.fill();
+                ctx.fillStyle = hsl(0, 0, 10, 0.5);
+                ctx.beginPath();
+                ctx.arc(s * 0.45, -s * 0.08, s * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function drawBird(b, t) {
+                const x = (((b.x + t * b.speed * 0.03) % 1.2) - 0.1) * W;
+                const y = b.y * H + Math.sin(t * 1.2 + b.phase) * 10;
+                const s = b.s * 6;
+                const flap = Math.sin(t * 6 + b.phase);
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.strokeStyle = hsl(b.hue, 30, 15, 0.7);
+                ctx.lineWidth = 1.4;
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(-s, flap * s * 0.5);
+                ctx.quadraticCurveTo(-s * 0.2, -s * 0.3 - flap * s * 0.2, 0, 0);
+                ctx.quadraticCurveTo(
+                    s * 0.2,
+                    -s * 0.3 - flap * s * 0.2,
+                    s,
+                    flap * s * 0.5,
+                );
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            function drawFern(f, t, breath) {
+                const x = f.x * W,
+                    y = f.y * H;
+                const s = f.s * Math.min(W, H) * 0.035 * (1 + breath * 0.04);
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(f.side * 0.12 + Math.sin(t * 0.35 + f.phase) * 0.06);
+                const hue = f.hue + organHue * 0.2;
+                ctx.strokeStyle = hsl(hue, 50, 30, 0.85);
+                ctx.lineWidth = 1.3;
+                ctx.beginPath();
+                for (let i = 0; i <= 18; i++) {
+                    const u = i / 18;
                     const px =
-                        Math.sin(u * 3 + t * 0.3 + f.phase) * s * 0.3 * f.side;
-                    const len = s * (1.4 - u) * (0.9 + 0.1 * Math.sin(t + i));
+                        Math.sin(u * 2.5 + t * 0.25 + f.phase) *
+                        s *
+                        0.25 *
+                        f.side;
+                    const py = -u * s * 4.5;
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                for (let i = 2; i < 16; i++) {
+                    const u = i / 18;
+                    const px =
+                        Math.sin(u * 2.5 + t * 0.25 + f.phase) *
+                        s *
+                        0.25 *
+                        f.side;
+                    const py = -u * s * 4.5;
+                    const len = s * (1.2 - u);
                     for (const side of [-1, 1]) {
                         ctx.beginPath();
                         ctx.moveTo(px, py);
                         ctx.quadraticCurveTo(
-                            px + side * len * 0.6,
-                            py - len * 0.15,
-                            px + side * len,
-                            py - len * 0.4,
-                        );
-                        ctx.strokeStyle = hsl(hue + i * 2, 60, 38 + i, 0.75);
-                        ctx.lineWidth = 1.1;
-                        ctx.stroke();
-                        // leaflet fill
-                        ctx.beginPath();
-                        ctx.moveTo(px, py);
-                        ctx.quadraticCurveTo(
                             px + side * len * 0.5,
-                            py - len * 0.35,
+                            py - len * 0.2,
                             px + side * len,
-                            py - len * 0.4,
+                            py - len * 0.35,
                         );
-                        ctx.quadraticCurveTo(
-                            px + side * len * 0.4,
-                            py + len * 0.05,
-                            px,
-                            py,
-                        );
-                        ctx.fillStyle = hsl(
-                            hue + i * 3 + Math.sin(t + i) * 20,
-                            65,
-                            35,
-                            0.45,
-                        );
-                        ctx.fill();
+                        ctx.strokeStyle = hsl(hue + i * 2, 55, 38, 0.65);
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
                     }
                 }
                 ctx.restore();
             }
 
             function drawMushroom(m, t, breath) {
-                const x = m.x * W + (mx - 0.5) * 14;
+                const x = m.x * W + (mx - 0.5) * 10;
                 const y = m.y * H;
                 const s =
                     m.s *
                     Math.min(W, H) *
-                    0.032 *
-                    (1 + breath * 0.07 + 0.04 * Math.sin(t * 0.7 + m.phase));
+                    0.03 *
+                    (1 + breath * 0.05 + 0.03 * Math.sin(t * 0.6 + m.phase));
                 const hue =
-                    m.hue + organHue * 0.4 + Math.sin(t * 0.28 + m.phase) * 18;
-
+                    m.hue + organHue * 0.35 + Math.sin(t * 0.25 + m.phase) * 12;
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.rotate(m.tilt + Math.sin(t * 0.3 + m.phase) * 0.04);
+                ctx.rotate(m.tilt);
 
-                // soft ground shadow
-                ctx.fillStyle = hsl(140, 30, 10, 0.25);
+                ctx.fillStyle = hsl(140, 30, 8, 0.2);
                 ctx.beginPath();
-                ctx.ellipse(0, s * 0.1, s * 0.9, s * 0.22, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, s * 0.08, s * 0.85, s * 0.18, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // stem with volume
-                const stemH = s * (m.kind === "morel" ? 2.2 : 1.55);
+                const stemH = s * (m.kind === "morel" ? 2 : 1.45);
                 const stem = ctx.createLinearGradient(
-                    -s * 0.35,
+                    -s * 0.3,
                     0,
-                    s * 0.35,
+                    s * 0.3,
                     -stemH,
                 );
-                stem.addColorStop(0, hsl(40, 35, 55));
-                stem.addColorStop(0.5, hsl(38, 30, 82));
-                stem.addColorStop(1, hsl(35, 28, 92));
+                stem.addColorStop(0, hsl(40, 30, 55));
+                stem.addColorStop(1, hsl(35, 25, 90));
                 ctx.fillStyle = stem;
                 ctx.beginPath();
-                if (m.kind === "ink") {
-                    ctx.moveTo(-s * 0.12, 0);
-                    ctx.bezierCurveTo(
-                        -s * 0.1,
-                        -stemH * 0.5,
-                        -s * 0.08,
-                        -stemH * 0.8,
-                        -s * 0.1,
-                        -stemH,
-                    );
-                    ctx.lineTo(s * 0.1, -stemH);
-                    ctx.bezierCurveTo(
-                        s * 0.08,
-                        -stemH * 0.8,
-                        s * 0.14,
-                        -stemH * 0.5,
-                        s * 0.18,
-                        0,
-                    );
-                } else {
-                    ctx.moveTo(-s * 0.28, 0);
-                    ctx.bezierCurveTo(
-                        -s * 0.22,
-                        -stemH * 0.5,
-                        -s * 0.16,
-                        -stemH * 0.75,
-                        -s * 0.14,
-                        -stemH,
-                    );
-                    ctx.lineTo(s * 0.14, -stemH);
-                    ctx.bezierCurveTo(
-                        s * 0.16,
-                        -stemH * 0.75,
-                        s * 0.24,
-                        -stemH * 0.5,
-                        s * 0.32,
-                        0,
-                    );
-                }
+                ctx.moveTo(-s * 0.22, 0);
+                ctx.bezierCurveTo(
+                    -s * 0.18,
+                    -stemH * 0.5,
+                    -s * 0.12,
+                    -stemH * 0.8,
+                    -s * 0.12,
+                    -stemH,
+                );
+                ctx.lineTo(s * 0.12, -stemH);
+                ctx.bezierCurveTo(
+                    s * 0.12,
+                    -stemH * 0.8,
+                    s * 0.2,
+                    -stemH * 0.5,
+                    s * 0.28,
+                    0,
+                );
                 ctx.closePath();
                 ctx.fill();
 
                 const capY = -stemH;
                 if (m.kind === "morel") {
-                    // ridged morel head
-                    for (let k = 0; k < 6; k++) {
-                        const cy = capY - k * s * 0.28;
-                        const cr = s * (0.55 + k * 0.08) * (1 - k * 0.05);
-                        const g = ctx.createRadialGradient(0, cy, 0, 0, cy, cr);
-                        g.addColorStop(0, hsl(hue + 20, 55, 48));
-                        g.addColorStop(1, hsl(hue - 10, 50, 22));
-                        ctx.fillStyle = g;
+                    for (let k = 0; k < 5; k++) {
+                        const cy = capY - k * s * 0.26;
+                        const cr = s * (0.5 + k * 0.08);
+                        ctx.fillStyle = hsl(hue + k * 5, 50, 40 - k * 3);
                         ctx.beginPath();
-                        ctx.ellipse(0, cy, cr, cr * 0.7, 0, 0, Math.PI * 2);
-                        ctx.fill();
-                        // ridges
-                        ctx.strokeStyle = hsl(hue - 15, 40, 18, 0.5);
-                        ctx.lineWidth = 0.8;
-                        for (let r = 0; r < 5; r++) {
-                            const a = r * 1.1 + m.phase;
-                            ctx.beginPath();
-                            ctx.ellipse(
-                                Math.cos(a) * cr * 0.3,
-                                cy,
-                                cr * 0.15,
-                                cr * 0.4,
-                                a,
-                                0,
-                                Math.PI * 2,
-                            );
-                            ctx.stroke();
-                        }
-                    }
-                } else if (m.kind === "ink") {
-                    const capR = s * 1.1;
-                    const g = ctx.createRadialGradient(
-                        -capR * 0.2,
-                        capY - capR * 0.2,
-                        0,
-                        0,
-                        capY,
-                        capR,
-                    );
-                    g.addColorStop(0, hsl(hue + 30, 20, 75));
-                    g.addColorStop(0.5, hsl(hue, 25, 45));
-                    g.addColorStop(1, hsl(hue - 20, 30, 15));
-                    ctx.fillStyle = g;
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        0,
-                        capY,
-                        capR,
-                        capR * 0.55,
-                        0,
-                        Math.PI,
-                        0,
-                        true,
-                    );
-                    ctx.fill();
-                    // dripping ink
-                    ctx.fillStyle = hsl(hue, 20, 12, 0.7);
-                    for (let d = 0; d < 3; d++) {
-                        const dx = (d - 1) * s * 0.35;
-                        ctx.beginPath();
-                        ctx.ellipse(
-                            dx,
-                            capY + s * 0.35 + Math.sin(t + d) * s * 0.1,
-                            s * 0.08,
-                            s * 0.25,
-                            0,
-                            0,
-                            Math.PI * 2,
-                        );
+                        ctx.ellipse(0, cy, cr, cr * 0.65, 0, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else {
-                    // classic dome (fly agaric / bolete)
                     const capR =
                         s *
-                        (m.kind === "fly" ? 1.55 : 1.35) *
-                        (1 + 0.06 * Math.sin(t * 0.55 + m.phase));
+                        (m.kind === "fly" ? 1.5 : 1.3) *
+                        (1 + 0.05 * Math.sin(t * 0.5 + m.phase));
                     const g = ctx.createRadialGradient(
                         -capR * 0.25,
-                        capY - capR * 0.35,
+                        capY - capR * 0.3,
                         0,
                         0,
                         capY,
-                        capR * 1.15,
+                        capR,
                     );
-                    g.addColorStop(0, hsl(hue + 18, 90, 72));
-                    g.addColorStop(0.35, hsl(hue, 85, 52));
-                    g.addColorStop(0.7, hsl(hue - 15, 78, 38));
-                    g.addColorStop(1, hsl(hue - 30, 65, 22));
+                    g.addColorStop(0, hsl(hue + 15, 88, 70));
+                    g.addColorStop(0.45, hsl(hue, 82, 48));
+                    g.addColorStop(1, hsl(hue - 25, 70, 25));
                     ctx.fillStyle = g;
                     ctx.beginPath();
-                    // organic dome path
-                    const steps = 40;
-                    for (let i = 0; i <= steps; i++) {
-                        const a = Math.PI + (i / steps) * Math.PI;
-                        let d =
-                            1 +
-                            0.06 * Math.sin(a * 4 + t + m.phase) +
-                            0.04 * Math.cos(a * 2);
-                        if (m.kind === "bolete") d *= 1 + 0.08 * Math.cos(a);
-                        const px = Math.cos(a) * capR * d;
-                        const py = capY + Math.sin(a) * capR * 0.72 * d;
-                        if (i === 0) ctx.moveTo(px, py);
-                        else ctx.lineTo(px, py);
-                    }
-                    // underside rim
+                    ctx.ellipse(0, capY, capR, capR * 0.7, 0, Math.PI, 0, true);
                     ctx.ellipse(
                         0,
                         capY,
-                        capR * 0.98,
+                        capR,
                         capR * 0.22,
                         0,
                         0,
@@ -1594,82 +1627,43 @@
                     );
                     ctx.fill();
 
-                    // gills / pores hint
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        0,
-                        capY + capR * 0.02,
-                        capR * 0.9,
-                        capR * 0.18,
-                        0,
-                        0,
-                        Math.PI,
-                    );
-                    ctx.clip();
-                    for (let gill = -8; gill <= 8; gill++) {
-                        ctx.strokeStyle = hsl(hue + 30, 40, 70, 0.2);
-                        ctx.lineWidth = 0.7;
-                        ctx.beginPath();
-                        ctx.moveTo(gill * capR * 0.1, capY);
-                        ctx.lineTo(gill * capR * 0.08, capY + capR * 0.2);
-                        ctx.stroke();
-                    }
-                    ctx.restore();
-
-                    // spots (fly agaric style especially)
                     if (m.kind === "fly" || m.kind === "bolete") {
                         for (let i = 0; i < m.spots; i++) {
-                            const a =
-                                m.phase + i * 1.7 + Math.sin(t * 0.2 + i) * 0.1;
-                            const pr = 0.2 + (i % 4) * 0.12;
-                            const px = Math.cos(a) * capR * pr * 0.85;
+                            const a = m.phase + i * 1.6;
+                            const pr = 0.22 + (i % 4) * 0.12;
+                            const px = Math.cos(a) * capR * pr * 0.8;
                             const py =
                                 capY -
-                                Math.abs(Math.sin(a * 0.9)) * capR * 0.45 * pr -
-                                capR * 0.12;
-                            const sr = s * (0.1 + (i % 3) * 0.04);
+                                Math.abs(Math.sin(a)) * capR * 0.4 * pr -
+                                capR * 0.1;
+                            ctx.fillStyle = "rgba(255,255,255,0.88)";
                             ctx.beginPath();
                             ctx.ellipse(
                                 px,
                                 py,
-                                sr,
-                                sr * 0.75,
+                                s * 0.1,
+                                s * 0.08,
                                 a,
                                 0,
                                 Math.PI * 2,
                             );
-                            const sg = ctx.createRadialGradient(
-                                px - sr * 0.2,
-                                py - sr * 0.2,
-                                0,
-                                px,
-                                py,
-                                sr,
-                            );
-                            sg.addColorStop(0, "rgba(255,255,255,0.95)");
-                            sg.addColorStop(1, "rgba(255,250,240,0.75)");
-                            ctx.fillStyle = sg;
                             ctx.fill();
                         }
                     }
-
-                    // wet specular
+                    ctx.fillStyle = "rgba(255,255,255,0.35)";
                     ctx.beginPath();
                     ctx.ellipse(
                         -capR * 0.28,
-                        capY - capR * 0.28,
-                        capR * 0.22,
-                        capR * 0.12,
-                        -0.5,
+                        capY - capR * 0.25,
+                        capR * 0.2,
+                        capR * 0.1,
+                        -0.4,
                         0,
                         Math.PI * 2,
                     );
-                    ctx.fillStyle = "rgba(255,255,255,0.4)";
                     ctx.fill();
                 }
 
-                // psychedelic aura
                 ctx.globalCompositeOperation = "screen";
                 const aura = ctx.createRadialGradient(
                     0,
@@ -1677,477 +1671,155 @@
                     0,
                     0,
                     capY,
-                    s * 3.5,
+                    s * 3,
                 );
                 aura.addColorStop(
                     0,
-                    hsl(hue, 100, 65, 0.28 + 0.1 * Math.sin(t * 2 + m.phase)),
+                    hsl(hue, 100, 65, 0.22 + 0.08 * Math.sin(t * 2 + m.phase)),
                 );
-                aura.addColorStop(0.5, hsl(hue + 60, 90, 55, 0.1));
                 aura.addColorStop(1, hsl(hue, 80, 40, 0));
                 ctx.fillStyle = aura;
                 ctx.beginPath();
-                ctx.arc(0, capY, s * 3.5, 0, Math.PI * 2);
+                ctx.arc(0, capY, s * 3, 0, Math.PI * 2);
                 ctx.fill();
-
                 ctx.restore();
             }
 
             function drawFlower(f, t, breath) {
-                const x =
-                    f.x * W +
-                    Math.sin(t * 0.55 + f.phase) * 7 +
-                    (mx - 0.5) * 10;
+                const x = f.x * W + Math.sin(t * 0.5 + f.phase) * 5;
                 const y =
-                    f.y * H +
-                    Math.sin(t * 0.75 + f.phase * 1.2) * 5 +
-                    breath * 5;
-                const s = f.s * Math.min(W, H) * 0.026 * (1 + breath * 0.07);
-                const hue =
-                    f.hue +
-                    organHue * 0.45 +
-                    t * 14 +
-                    Math.sin(t + f.phase) * 30;
-                const open =
-                    0.82 + 0.18 * Math.sin(t * 0.85 + f.phase) + breath * 0.08;
-
+                    f.y * H + Math.sin(t * 0.7 + f.phase) * 4 + breath * 4;
+                const s = f.s * Math.min(W, H) * 0.024 * (1 + breath * 0.05);
+                const hue = f.hue + organHue * 0.4 + t * 12;
+                const open = 0.85 + 0.15 * Math.sin(t * 0.8 + f.phase);
                 ctx.save();
                 ctx.translate(x, y);
-
-                // stem + leaf
-                ctx.strokeStyle = hsl(135 + organHue * 0.1, 55, 34, 0.9);
-                ctx.lineWidth = 1.4 * f.s;
+                ctx.strokeStyle = hsl(135, 50, 32, 0.85);
+                ctx.lineWidth = 1.2 * f.s;
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(
+                ctx.quadraticCurveTo(
                     Math.sin(t + f.phase) * s,
-                    s * 1.5,
-                    Math.sin(t * 0.5 + f.phase) * s * 0.5,
-                    s * 3,
-                    Math.sin(t * 0.3 + f.phase) * s * 0.2,
-                    s * 4.8,
+                    s * 2,
+                    0,
+                    s * 4.2,
                 );
                 ctx.stroke();
-                ctx.fillStyle = hsl(140, 60, 38, 0.75);
-                ctx.beginPath();
-                ctx.ellipse(
-                    -s * 0.9,
-                    s * 2.4,
-                    s * 0.75,
-                    s * 0.32,
-                    -0.7 + Math.sin(t + f.phase) * 0.1,
-                    0,
-                    Math.PI * 2,
-                );
-                ctx.fill();
 
                 const n = f.petals;
                 if (f.type === "sun") {
-                    for (let i = 0; i < 18; i++) {
-                        const a = (i / 18) * Math.PI * 2 + t * 0.12;
+                    for (let i = 0; i < 16; i++) {
+                        const a = (i / 16) * Math.PI * 2 + t * 0.1;
                         ctx.beginPath();
                         ctx.ellipse(
                             Math.cos(a) * s * open,
                             Math.sin(a) * s * open,
-                            s * 0.5,
-                            s * 0.24,
-                            a,
-                            0,
-                            Math.PI * 2,
-                        );
-                        ctx.fillStyle = hsl(hue + i * 2, 92, 58, 0.92);
-                        ctx.fill();
-                    }
-                    ctx.beginPath();
-                    ctx.arc(0, 0, s * 0.55, 0, Math.PI * 2);
-                    const c = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 0.55);
-                    c.addColorStop(0, hsl(40, 80, 35));
-                    c.addColorStop(1, hsl(30, 70, 18));
-                    ctx.fillStyle = c;
-                    ctx.fill();
-                    // seed dots
-                    for (let i = 0; i < 12; i++) {
-                        const a = i * 2.4;
-                        ctx.fillStyle = hsl(30, 40, 10, 0.5);
-                        ctx.beginPath();
-                        ctx.arc(
-                            Math.cos(a) * s * 0.3,
-                            Math.sin(a) * s * 0.3,
-                            1.2,
-                            0,
-                            Math.PI * 2,
-                        );
-                        ctx.fill();
-                    }
-                } else if (f.type === "orchid") {
-                    for (let i = 0; i < 5; i++) {
-                        const a =
-                            (i / 5) * Math.PI * 2 +
-                            Math.sin(t * 0.2 + f.phase) * 0.15;
-                        const len = i === 0 ? s * 1.1 : s * 0.75;
-                        ctx.beginPath();
-                        ctx.ellipse(
-                            Math.cos(a) * s * 0.4 * open,
-                            Math.sin(a) * s * 0.35 * open,
-                            len * open,
-                            s * 0.35,
-                            a,
-                            0,
-                            Math.PI * 2,
-                        );
-                        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, len);
-                        g.addColorStop(0, hsl(hue + 40, 80, 85, 0.95));
-                        g.addColorStop(0.5, hsl(hue, 85, 60, 0.9));
-                        g.addColorStop(1, hsl(hue - 30, 70, 45, 0.5));
-                        ctx.fillStyle = g;
-                        ctx.fill();
-                    }
-                    ctx.beginPath();
-                    ctx.arc(0, 0, s * 0.2, 0, Math.PI * 2);
-                    ctx.fillStyle = hsl(hue + 80, 90, 55);
-                    ctx.fill();
-                } else if (f.type === "tulip") {
-                    for (let i = 0; i < 6; i++) {
-                        const a = (i / 6) * Math.PI * 2;
-                        ctx.beginPath();
-                        ctx.moveTo(0, s * 0.2);
-                        ctx.bezierCurveTo(
-                            Math.cos(a) * s * 0.9 * open,
-                            -s * 0.2,
-                            Math.cos(a) * s * 0.7 * open,
-                            -s * 1.3 * open,
-                            Math.cos(a) * s * 0.15,
-                            -s * 1.4 * open,
-                        );
-                        ctx.bezierCurveTo(
-                            Math.cos(a + 0.5) * s * 0.2,
-                            -s * 1.1 * open,
-                            Math.cos(a + 0.8) * s * 0.5 * open,
-                            -s * 0.2,
-                            0,
+                            s * 0.45,
                             s * 0.2,
+                            a,
+                            0,
+                            Math.PI * 2,
                         );
-                        ctx.fillStyle = hsl(hue + i * 5, 80, 58 + i * 2, 0.88);
+                        ctx.fillStyle = hsl(hue + i * 2, 90, 58);
                         ctx.fill();
                     }
+                    ctx.fillStyle = hsl(35, 80, 28);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, s * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (f.type === "daisy") {
                     for (let i = 0; i < n; i++) {
-                        const a = (i / n) * Math.PI * 2 + t * 0.04;
+                        const a = (i / n) * Math.PI * 2;
                         ctx.beginPath();
                         ctx.ellipse(
-                            Math.cos(a) * s * 0.75 * open,
-                            Math.sin(a) * s * 0.75 * open,
-                            s * 0.48,
-                            s * 0.2,
+                            Math.cos(a) * s * 0.7 * open,
+                            Math.sin(a) * s * 0.7 * open,
+                            s * 0.42,
+                            s * 0.18,
                             a,
                             0,
                             Math.PI * 2,
                         );
-                        ctx.fillStyle = hsl(hue, 25, 96, 0.93);
+                        ctx.fillStyle = hsl(0, 0, 96, 0.92);
                         ctx.fill();
                     }
+                    ctx.fillStyle = hsl(48, 95, 55);
                     ctx.beginPath();
-                    ctx.arc(0, 0, s * 0.38, 0, Math.PI * 2);
-                    ctx.fillStyle = hsl(48 + hue * 0.05, 95, 55);
+                    ctx.arc(0, 0, s * 0.32, 0, Math.PI * 2);
                     ctx.fill();
                 } else {
-                    // poppy / flesh bloom
                     for (let i = 0; i < n; i++) {
-                        const a =
-                            (i / n) * Math.PI * 2 +
-                            Math.sin(t * 0.25 + f.phase) * 0.08;
+                        const a = (i / n) * Math.PI * 2;
                         ctx.beginPath();
                         ctx.ellipse(
-                            Math.cos(a) * s * 0.55 * open,
-                            Math.sin(a) * s * 0.48 * open,
-                            s * 0.7,
-                            s * 0.42,
+                            Math.cos(a) * s * 0.5 * open,
+                            Math.sin(a) * s * 0.45 * open,
+                            s * 0.6,
+                            s * 0.38,
                             a,
                             0,
                             Math.PI * 2,
                         );
-                        const g = ctx.createRadialGradient(
-                            Math.cos(a) * s * 0.25,
-                            Math.sin(a) * s * 0.25,
-                            0,
-                            0,
-                            0,
-                            s * 1.1,
-                        );
-                        g.addColorStop(0, hsl(hue + 25, 92, 78, 0.95));
-                        g.addColorStop(0.55, hsl(hue, 88, 54, 0.9));
-                        g.addColorStop(1, hsl(hue - 25, 70, 38, 0.45));
+                        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, s);
+                        g.addColorStop(0, hsl(hue + 20, 90, 75, 0.95));
+                        g.addColorStop(1, hsl(hue - 15, 75, 42, 0.7));
                         ctx.fillStyle = g;
                         ctx.fill();
                     }
+                    ctx.fillStyle = hsl(hue + 40, 40, 12, 0.9);
                     ctx.beginPath();
-                    ctx.arc(0, 0, s * 0.22, 0, Math.PI * 2);
-                    ctx.fillStyle = hsl(hue + 50, 35, 12, 0.92);
+                    ctx.arc(0, 0, s * 0.18, 0, Math.PI * 2);
                     ctx.fill();
                 }
-
                 ctx.globalCompositeOperation = "screen";
-                const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 2.8);
-                glow.addColorStop(0, hsl(hue, 100, 70, 0.3));
+                const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 2.5);
+                glow.addColorStop(0, hsl(hue, 100, 70, 0.25));
                 glow.addColorStop(1, hsl(hue, 80, 50, 0));
                 ctx.fillStyle = glow;
                 ctx.beginPath();
-                ctx.arc(0, 0, s * 2.8, 0, Math.PI * 2);
+                ctx.arc(0, 0, s * 2.5, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }
 
             function drawButterfly(b, t) {
-                const x =
-                    (b.x +
-                        Math.sin(t * b.speed + b.phase) * 0.14 +
-                        (mx - 0.5) * 0.04) *
-                    W;
+                const x = (b.x + Math.sin(t * b.speed + b.phase) * 0.12) * W;
                 const y =
-                    (b.y +
-                        Math.cos(t * b.speed * 0.85 + b.phase) * 0.09 +
-                        Math.sin(t * 1.6 + b.phase) * 0.025) *
-                    H;
-                const s = b.s * 9;
-                const flap = 0.45 + 0.55 * Math.sin(t * 9 * b.speed + b.phase);
-                const hue = b.hue + organHue * 0.55 + t * 25;
+                    (b.y + Math.cos(t * b.speed * 0.8 + b.phase) * 0.08) * H;
+                const s = b.s * 8;
+                const flap = 0.45 + 0.55 * Math.sin(t * 8 * b.speed + b.phase);
+                const hue = b.hue + organHue * 0.5 + t * 20;
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.rotate(Math.sin(t * b.speed + b.phase) * 0.45);
+                ctx.rotate(Math.sin(t * b.speed + b.phase) * 0.4);
                 for (const side of [-1, 1]) {
-                    // upper wing
                     ctx.beginPath();
                     ctx.ellipse(
                         side * s * 0.5 * flap,
-                        -s * 0.15,
-                        s * 0.75 * flap,
-                        s * 0.85,
-                        side * 0.35,
+                        0,
+                        s * 0.7 * flap,
+                        s * 0.9,
+                        side * 0.3,
                         0,
                         Math.PI * 2,
                     );
-                    let g = ctx.createRadialGradient(
-                        side * s * 0.25,
-                        -s * 0.1,
-                        0,
-                        0,
-                        0,
-                        s * 1.3,
-                    );
-                    g.addColorStop(0, hsl(hue, 95, 78, 0.92));
-                    g.addColorStop(0.45, hsl(hue + 45, 88, 55, 0.78));
-                    g.addColorStop(1, hsl(hue + 90, 70, 40, 0.15));
-                    ctx.fillStyle = g;
-                    ctx.fill();
-                    // lower wing
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        side * s * 0.35 * flap,
-                        s * 0.4,
-                        s * 0.5 * flap,
-                        s * 0.55,
-                        side * 0.2,
-                        0,
-                        Math.PI * 2,
-                    );
-                    g = ctx.createRadialGradient(
+                    const g = ctx.createRadialGradient(
                         side * s * 0.2,
-                        s * 0.3,
+                        0,
                         0,
                         0,
                         0,
                         s,
                     );
-                    g.addColorStop(0, hsl(hue + 30, 90, 70, 0.85));
-                    g.addColorStop(1, hsl(hue + 70, 70, 40, 0.1));
+                    g.addColorStop(0, hsl(hue, 90, 75, 0.9));
+                    g.addColorStop(1, hsl(hue + 60, 70, 40, 0.15));
                     ctx.fillStyle = g;
-                    ctx.fill();
-                    // eye spot
-                    ctx.beginPath();
-                    ctx.arc(
-                        side * s * 0.55 * flap,
-                        -s * 0.2,
-                        s * 0.12,
-                        0,
-                        Math.PI * 2,
-                    );
-                    ctx.fillStyle = hsl(hue + 180, 80, 20, 0.6);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(
-                        side * s * 0.55 * flap,
-                        -s * 0.2,
-                        s * 0.05,
-                        0,
-                        Math.PI * 2,
-                    );
-                    ctx.fillStyle = hsl(50, 100, 90, 0.7);
                     ctx.fill();
                 }
                 ctx.fillStyle = hsl(hue, 40, 15);
                 ctx.beginPath();
-                ctx.ellipse(0, 0, s * 0.1, s * 0.55, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, s * 0.1, s * 0.5, 0, 0, Math.PI * 2);
                 ctx.fill();
-                // antennae
-                ctx.strokeStyle = hsl(hue, 30, 20, 0.8);
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(0, -s * 0.4);
-                ctx.quadraticCurveTo(-s * 0.15, -s * 0.8, -s * 0.25, -s * 0.95);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(0, -s * 0.4);
-                ctx.quadraticCurveTo(s * 0.15, -s * 0.8, s * 0.25, -s * 0.95);
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            function drawDragonfly(d, t) {
-                const x = (d.x + Math.sin(t * d.speed + d.phase) * 0.1) * W;
-                const y =
-                    (d.y + Math.cos(t * d.speed * 0.7 + d.phase) * 0.06) * H;
-                const s = d.s * 10;
-                const flap = 0.7 + 0.3 * Math.sin(t * 14 + d.phase);
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(Math.sin(t * d.speed + d.phase) * 0.25);
-                // glass wings
-                ctx.globalAlpha = 0.55;
-                for (const side of [-1, 1]) {
-                    for (const row of [-1, 1]) {
-                        ctx.beginPath();
-                        ctx.ellipse(
-                            side * s * 0.7 * flap,
-                            row * s * 0.2,
-                            s * 0.9 * flap,
-                            s * 0.28,
-                            side * 0.15 * row,
-                            0,
-                            Math.PI * 2,
-                        );
-                        ctx.fillStyle = hsl(
-                            d.hue + organHue * 0.3 + t * 15,
-                            70,
-                            75,
-                            0.5,
-                        );
-                        ctx.fill();
-                        ctx.strokeStyle = hsl(d.hue, 50, 80, 0.4);
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-                ctx.globalAlpha = 1;
-                // segmented body
-                for (let i = 0; i < 6; i++) {
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        0,
-                        i * s * 0.22 - s * 0.3,
-                        s * 0.12,
-                        s * 0.14,
-                        0,
-                        0,
-                        Math.PI * 2,
-                    );
-                    ctx.fillStyle = hsl(d.hue + i * 8, 70, 45 - i * 3);
-                    ctx.fill();
-                }
-                ctx.restore();
-            }
-
-            function drawVine(v, t, breath) {
-                ctx.save();
-                ctx.strokeStyle = hsl(
-                    v.hue + organHue * 0.2 + Math.sin(t + v.phase) * 20,
-                    60,
-                    40,
-                    0.35,
-                );
-                ctx.lineWidth = v.thick;
-                ctx.beginPath();
-                const base = v.x * W;
-                for (let y = 0; y <= H; y += 6) {
-                    const x =
-                        base +
-                        Math.sin(y * 0.012 + t * 0.5 + v.phase) *
-                            v.amp *
-                            (1 + breath * 0.3) +
-                        Math.sin(y * 0.03 - t * 0.35) * v.amp * 0.4 +
-                        (mx - 0.5) * 30;
-                    if (y === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-                // leaves along vine
-                for (let y = 40; y < H; y += 55) {
-                    const x =
-                        base +
-                        Math.sin(y * 0.012 + t * 0.5 + v.phase) *
-                            v.amp *
-                            (1 + breath * 0.3) +
-                        Math.sin(y * 0.03 - t * 0.35) * v.amp * 0.4 +
-                        (mx - 0.5) * 30;
-                    const side = Math.sin(y + v.phase) > 0 ? 1 : -1;
-                    ctx.beginPath();
-                    ctx.ellipse(
-                        x + side * 10,
-                        y,
-                        9,
-                        4,
-                        side * 0.8 + Math.sin(t + y) * 0.2,
-                        0,
-                        Math.PI * 2,
-                    );
-                    ctx.fillStyle = hsl(v.hue + 20, 65, 42, 0.4);
-                    ctx.fill();
-                }
-                ctx.restore();
-            }
-
-            function drawRiver(t, breath) {
-                const y0 = H * 0.8;
-                ctx.beginPath();
-                ctx.moveTo(0, H);
-                for (let x = 0; x <= W; x += 4) {
-                    const y =
-                        y0 +
-                        Math.sin(x * 0.012 + t * 0.9) * 16 +
-                        Math.sin(x * 0.03 - t * 1.3) * 9 +
-                        breath * 7 +
-                        (my - 0.5) * 12;
-                    ctx.lineTo(x, y);
-                }
-                ctx.lineTo(W, H);
-                ctx.closePath();
-                const g = ctx.createLinearGradient(0, y0 - 30, 0, H);
-                g.addColorStop(
-                    0,
-                    hsl(185 + organHue * 0.25 + t * 6, 75, 58, 0.55),
-                );
-                g.addColorStop(0.35, hsl(205 + t * 4, 70, 42, 0.72));
-                g.addColorStop(1, hsl(230, 55, 18, 0.92));
-                ctx.fillStyle = g;
-                ctx.fill();
-
-                ctx.save();
-                ctx.globalCompositeOperation = "screen";
-                for (let i = 0; i < 28; i++) {
-                    const x =
-                        ((t * 40 * (0.5 + (i % 5) * 0.2) + i * 73) % (W + 40)) -
-                        20;
-                    const y =
-                        y0 + 18 + Math.sin(t * 2.2 + i) * 14 + (i % 6) * 10;
-                    ctx.fillStyle = hsl(
-                        45 + i * 8 + organHue,
-                        100,
-                        90,
-                        0.12 + 0.1 * Math.sin(t * 3 + i),
-                    );
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, 10 + (i % 3) * 3, 2.2, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
                 ctx.restore();
             }
 
@@ -2156,21 +1828,16 @@
                 ctx.globalCompositeOperation = "screen";
                 for (const s of spores) {
                     const x =
-                        (s.x + Math.sin(t * s.sp + s.phase) * 0.04 * s.z) * W;
-                    const y = ((s.y + t * s.sp * 0.04 * s.z) % 1.1) * H;
-                    const hue = s.hue + organHue + t * 30;
-                    const r = s.r * s.z * (1 + 0.3 * Math.sin(t * 2 + s.phase));
+                        (s.x + Math.sin(t * s.sp + s.phase) * 0.03 * s.z) * W;
+                    const y = ((s.y + t * s.sp * 0.035 * s.z) % 1.1) * H;
+                    const hue = s.hue + organHue + t * 25;
+                    const r = s.r * s.z;
                     const g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
-                    g.addColorStop(0, hsl(hue, 100, 75, 0.55 * s.z));
-                    g.addColorStop(0.4, hsl(hue + 40, 90, 60, 0.15 * s.z));
+                    g.addColorStop(0, hsl(hue, 100, 75, 0.45 * s.z));
                     g.addColorStop(1, hsl(hue, 80, 50, 0));
                     ctx.fillStyle = g;
                     ctx.beginPath();
                     ctx.arc(x, y, r * 4, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = hsl(hue, 100, 90, 0.7 * s.z);
-                    ctx.beginPath();
-                    ctx.arc(x, y, r, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 ctx.restore();
@@ -2184,60 +1851,53 @@
                 const breath = 0.5 + 0.5 * Math.sin(t * 0.48);
 
                 drawSky(t, breath);
-                for (const v of vines) drawVine(v, t, breath);
+                drawPlanets(t);
+                drawSun(t, breath);
+                for (const b of birds) drawBird(b, t);
                 for (const tr of trees) drawTree(tr, t, breath);
                 drawHills(t, breath);
                 for (const f of ferns) drawFern(f, t, breath);
-                drawRiver(t, breath);
+                drawWater(t, breath);
+                for (const f of fish) drawFish(f, t);
 
-                // depth sort mushrooms + flowers
                 const life = [
                     ...mushrooms.map((m) => ({
                         y: m.y,
-                        draw: () => drawMushroom(m, t, breath),
+                        d: () => drawMushroom(m, t, breath),
                     })),
                     ...flowers.map((f) => ({
                         y: f.y,
-                        draw: () => drawFlower(f, t, breath),
+                        d: () => drawFlower(f, t, breath),
                     })),
                 ].sort((a, b) => a.y - b.y);
-                for (const L of life) L.draw();
+                for (const L of life) L.d();
 
                 for (const b of butterflies) drawButterfly(b, t);
-                for (const d of dragonflies) drawDragonfly(d, t);
                 drawSpores(t);
 
-                // psychedelic grade
+                // mild grade
                 ctx.save();
                 ctx.globalCompositeOperation = "soft-light";
                 ctx.fillStyle = hsl(
-                    290 + organHue + t * 12,
-                    75,
+                    300 + organHue + t * 10,
+                    70,
                     50,
-                    0.14 + breath * 0.07,
-                );
-                ctx.fillRect(0, 0, W, H);
-                ctx.globalCompositeOperation = "overlay";
-                ctx.fillStyle = hsl(
-                    160 + organHue * 0.5 + t * 5,
-                    60,
-                    45,
-                    0.06 + breath * 0.04,
+                    0.1 + breath * 0.05,
                 );
                 ctx.fillRect(0, 0, W, H);
                 ctx.restore();
 
-                // vignette
+                // edge vignette only (center stays vivid; glass handles text)
                 const vig = ctx.createRadialGradient(
                     W / 2,
                     H * 0.45,
-                    H * 0.15,
+                    H * 0.25,
                     W / 2,
                     H / 2,
-                    H * 0.9,
+                    H * 0.95,
                 );
                 vig.addColorStop(0, "rgba(0,0,0,0)");
-                vig.addColorStop(1, `rgba(4,10,8,${0.28 + breath * 0.1})`);
+                vig.addColorStop(1, `rgba(4,10,8,${0.22 + breath * 0.08})`);
                 ctx.fillStyle = vig;
                 ctx.fillRect(0, 0, W, H);
 
