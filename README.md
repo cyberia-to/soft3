@@ -52,8 +52,9 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 |---|---|---|---|
 | [[soft3/cybergraph\|cybergraph]] | link | — | jets · memos · types · knowledge |
 | [[soft3/bbg\|bbg]] | store | — | 1 polynomial · 10 dims · ~200B proofs |
-| cell ([[cyb]]) | hold | — | local node · graph slice · signal chain · apply/prove loop |
+| [[cell]] | hold | — | local node · graph slice · signal chain · apply/prove loop |
 | [[fs]] | mount | — | particles · patches · sync |
+| [[tok]] | pay | — | Coin · Card · conservation |
 
 ### [[cybics/space|space]]
 
@@ -62,7 +63,8 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[mudra]] | encrypt | — | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | — | QUIC · BAO streaming · gossip |
 | [[tape]] | frame | — | typed particle framing over any byte stream |
-| [[sync]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
+| [[foculus]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
+| [[cyb/root/ward\|ward]] | authorize | spec | effect router · emit/query/link/seal/host |
 
 ### [[cybics/life|life]]
 
@@ -88,7 +90,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[soft3/nox\|nox]] | run | — | 18 patterns + jets · unconditional proof |
 | [[wysm]] | sandbox | — | WASM souls · gas-metered · cond/host |
 | [[glia]] | infer | — | .model runtime · cond/model |
-| wgpu | shade | ext | Metal/Vulkan/WebGPU shaders · cond/host |
+| [[kern]] | shade | — | Metal/Vulkan/WebGPU shaders · cond/host |
 | [[zheng]] | prove | — | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
 | [[eidos]] | certify | — | CIC type-checker · theorem → cyberlink |
 
@@ -98,8 +100,6 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 |---|---|---|---|
 | [[mir]] | render | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | — | tape dialect · chunks → UI |
-| [[tok]] | pay | — | Coin · Card · conservation |
-| [[cyb/root/ward\|ward]] | authorize | spec | effect router · emit/query/link/seal/host |
 | [[cyb]] | embody | — | Bevy worlds · terminal · live cells |
 
 ### stability
@@ -108,7 +108,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 |---|---|---|---|
 | [[conformance]] | snapshot | scaffold | hemera fingerprint per encoding · stability harness |
 
-the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · wgpu — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[nu]] (vendored Nushell) and wgpu are external pieces outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
+the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
 
 ## the SDK
 
