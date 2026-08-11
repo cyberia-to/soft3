@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>soft3 — one mind, many languages, open world</title>
+  <meta name="description" content="The stack for a shared, provable, self-improving knowledge system. Every computation leaves a proof. Every meaning carries weight." />
+  <meta property="og:title" content="soft3" />
+  <meta property="og:description" content="one mind · many languages · open world" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://soft3.org" />
+  <meta name="theme-color" content="#07070a" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='24'>◈</text></svg>" />
+  <style>
+    :root {
+      --bg: #07070a;
+      --fg: #e8e6e1;
+      --mute: #7a7872;
+      --dim: #3d3c38;
+      --line: rgba(232, 230, 225, 0.09);
+      --warm: #c4a574;
+      --glow: rgba(196, 165, 116, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* soft field behind everything */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, var(--glow), transparent 55%),
+        radial-gradient(ellipse 40% 30% at 90% 80%, rgba(120, 140, 180, 0.05), transparent 50%),
+        radial-gradient(ellipse 30% 25% at 10% 60%, rgba(196, 165, 116, 0.04), transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* —— nav —— */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.75rem 0 0;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    nav a {
+      color: var(--mute);
+      text-decoration: none;
+      transition: color 0.25s ease;
+    }
+    nav a:hover { color: var(--fg); }
+
+    .mark {
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    /* —— hero —— */
+    header.hero {
+      padding: 18vh 0 12vh;
+      text-align: center;
+    }
+
+    .glyph {
+      display: inline-block;
+      font-size: 1.1rem;
+      letter-spacing: 0.6em;
+      color: var(--warm);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: rise 1.4s ease 0.1s forwards;
+    }
+
+    h1 {
+      font-size: clamp(3.2rem, 12vw, 5.5rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 1.75rem;
+      opacity: 0;
+      animation: rise 1.2s ease 0.25s forwards;
+    }
+
+    .tagline {
+      font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+      color: var(--mute);
+      font-style: italic;
+      font-weight: 400;
+      max-width: 22em;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: rise 1.2s ease 0.45s forwards;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      justify-content: center;
+      opacity: 0;
+      animation: rise 1.2s ease 0.65s forwards;
+    }
+
+    a.btn {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.35rem;
+      border: 1px solid var(--line);
+      color: var(--fg);
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+    a.btn:hover {
+      border-color: var(--warm);
+      color: var(--warm);
+      background: rgba(196, 165, 116, 0.06);
+    }
+    a.btn.primary {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+    a.btn.primary:hover {
+      background: var(--warm);
+      border-color: var(--warm);
+      color: var(--bg);
+    }
+
+    /* —— manifesto lines —— */
+    section.manifest {
+      padding: 4rem 0 5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .line {
+      display: grid;
+      grid-template-columns: 6.5rem 1fr;
+      gap: 1rem;
+      padding: 1.35rem 0;
+      border-bottom: 1px solid var(--line);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .line.in { opacity: 1; transform: none; }
+
+    .line .k {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warm);
+      padding-top: 0.3rem;
+    }
+
+    .line .v {
+      font-size: 1.15rem;
+      color: var(--fg);
+    }
+    .line .v em {
+      font-style: italic;
+      color: var(--mute);
+      font-size: 0.95em;
+    }
+
+    /* —— triad —— */
+    section.triad {
+      padding: 2rem 0 5rem;
+    }
+
+    .triad-title {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .card {
+      background: var(--bg);
+      padding: 1.75rem 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card p {
+      color: var(--mute);
+      font-size: 0.98rem;
+    }
+
+    .card .verb {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 0.65rem;
+    }
+
+    /* —— breath quote —— */
+    section.breath {
+      padding: 5rem 0 6rem;
+      text-align: center;
+      border-top: 1px solid var(--line);
+    }
+
+    blockquote {
+      font-size: clamp(1.25rem, 3.5vw, 1.65rem);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--fg);
+      max-width: 18em;
+      margin: 0 auto 1.5rem;
+    }
+
+    .breath cite {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.68rem;
+      font-style: normal;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    /* —— footer —— */
+    footer {
+      padding: 2.5rem 0 3.5rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      justify-content: space-between;
+      align-items: center;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--mute);
+    }
+
+    footer a {
+      color: var(--mute);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--fg); }
+
+    footer .links {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 520px) {
+      .line { grid-template-columns: 1fr; gap: 0.35rem; }
+      header.hero { padding: 14vh 0 10vh; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before { animation: none !important; transition: none !important; }
+      .line { opacity: 1; transform: none; }
+      .glyph, h1, .tagline, .cta-row { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <span class="mark">soft3</span>
+      <a href="https://github.com/cyberia-to/soft3">github</a>
+    </nav>
+
+    <header class="hero">
+      <div class="glyph" aria-hidden="true">· · ·</div>
+      <h1>soft3</h1>
+      <p class="tagline">one mind, many languages, open world</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://github.com/cyberia-to/soft3">enter the stack</a>
+        <a class="btn" href="https://github.com/cyberia-to/soft3#readme">read the map</a>
+      </div>
+    </header>
+
+    <section class="manifest" aria-label="foundations">
+      <div class="line">
+        <div class="k">one mind</div>
+        <div class="v">shared · provable · self-improving<br /><em>one form, one proof, one focus</em></div>
+      </div>
+      <div class="line">
+        <div class="k">many tongues</div>
+        <div class="v">write · compute · mean<br /><em>compose without translation</em></div>
+      </div>
+      <div class="line">
+        <div class="k">open world</div>
+        <div class="v">planet scale · no schema · no gatekeeper<br /><em>add a link, not an API</em></div>
+      </div>
+    </section>
+
+    <section class="triad" aria-label="how you touch it">
+      <p class="triad-title">you touch it three ways</p>
+      <div class="cards">
+        <div class="card">
+          <div class="verb">write</div>
+          <h3>cybermark</h3>
+          <p>Meaning as links. Knowledge you can point at.</p>
+        </div>
+        <div class="card">
+          <div class="verb">compute</div>
+          <h3>trident</h3>
+          <p>Every step leaves a proof. The prover proves the prover.</p>
+        </div>
+        <div class="card">
+          <div class="verb">mean</div>
+          <h3>neural</h3>
+          <p>Weight that can be measured. Sense that can settle.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="breath">
+      <blockquote>
+        every web had a stack.<br />
+        this one remembers.
+      </blockquote>
+      <cite>soft3 — type&nbsp;2 civilization software</cite>
+    </section>
+
+    <footer>
+      <span>soft3.org</span>
+      <div class="links">
+        <a href="https://github.com/cyberia-to">cyberia</a>
+        <a href="https://github.com/cyberia-to/cyb">cyb</a>
+        <a href="https://github.com/cyberia-to/soft3">repo</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const lines = document.querySelectorAll(".line");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("in");
+        });
+      },
+      { threshold: 0.2 }
+    );
+    lines.forEach((el, i) => {
+      el.style.transitionDelay = i * 0.12 + "s";
+      io.observe(el);
+    });
+  </script>
+</body>
+</html>
