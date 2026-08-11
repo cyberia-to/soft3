@@ -9,25 +9,22 @@
         <title>soft3 — one mind</title>
         <meta
             name="description"
-            content="The living stack. Prove everything. Link everything. Breathe."
+            content="Shared mind. Proof in every breath. Link everything."
         />
-        <meta name="theme-color" content="#04060a" />
+        <meta name="theme-color" content="#1a0a14" />
         <link
             rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>◉</text></svg>"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>◎</text></svg>"
         />
         <style>
             :root {
-                --void: #030508;
-                --moss: #1a3d32;
-                --spore: #7dffb3;
-                --mycel: #3dffa8;
-                --bloom: #ff6bcb;
-                --nectar: #ffc857;
-                --iris: #8b7cff;
-                --sky: #5ce1ff;
-                --flesh: #f2e6d8;
-                --mist: rgba(242, 230, 216, 0.55);
+                --ink: #1a0f18;
+                --cream: #fff4e8;
+                --mist: rgba(255, 244, 232, 0.72);
+                --hot: #ff4d8d;
+                --sap: #7dffb3;
+                --sun: #ffd36a;
+                --void-violet: #6b3fa0;
             }
 
             * {
@@ -40,80 +37,50 @@
             body {
                 height: 100%;
                 overflow: hidden;
-                background: var(--void);
-                color: var(--flesh);
+                background: #120810;
+                color: var(--cream);
                 font-family:
-                    "SF Pro Text",
-                    "Segoe UI",
-                    system-ui,
-                    -apple-system,
-                    sans-serif;
+                    "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+                    "Times New Roman", serif;
                 -webkit-font-smoothing: antialiased;
             }
 
-            /* ——— living field ——— */
-            .field {
+            #world {
                 position: fixed;
                 inset: 0;
-                overflow: hidden;
-                pointer-events: none;
-                z-index: 0;
-            }
-
-            .field canvas {
                 width: 100%;
                 height: 100%;
                 display: block;
-                opacity: 0.85;
+                z-index: 0;
             }
 
-            .veil {
+            /* soft film so text stays readable without killing the trip */
+            .film {
                 position: fixed;
                 inset: 0;
                 z-index: 1;
                 pointer-events: none;
-                background:
-                    radial-gradient(
-                        ellipse 70% 55% at 50% 40%,
-                        transparent 20%,
-                        rgba(3, 5, 8, 0.55) 70%,
-                        rgba(3, 5, 8, 0.92) 100%
-                    ),
-                    radial-gradient(
-                        ellipse 40% 30% at 20% 80%,
-                        rgba(125, 255, 179, 0.07),
-                        transparent 60%
-                    ),
-                    radial-gradient(
-                        ellipse 35% 35% at 85% 15%,
-                        rgba(255, 107, 203, 0.08),
-                        transparent 55%
-                    ),
-                    radial-gradient(
-                        ellipse 50% 40% at 50% 100%,
-                        rgba(139, 124, 255, 0.06),
-                        transparent 50%
-                    );
-                animation: breath 8s ease-in-out infinite;
+                background: radial-gradient(
+                    ellipse 90% 80% at 50% 45%,
+                    transparent 0%,
+                    rgba(10, 4, 12, 0.15) 55%,
+                    rgba(8, 2, 10, 0.55) 100%
+                );
+                mix-blend-mode: multiply;
+                opacity: 0.85;
+                animation: film-breathe 7s ease-in-out infinite;
             }
 
-            @keyframes breath {
+            @keyframes film-breathe {
                 0%,
                 100% {
-                    opacity: 1;
-                    filter: hue-rotate(0deg) saturate(1);
+                    opacity: 0.75;
                 }
-                33% {
+                50% {
                     opacity: 0.92;
-                    filter: hue-rotate(12deg) saturate(1.15);
-                }
-                66% {
-                    opacity: 0.96;
-                    filter: hue-rotate(-8deg) saturate(1.08);
                 }
             }
 
-            /* ——— shell ——— */
             .shell {
                 position: relative;
                 z-index: 2;
@@ -121,183 +88,132 @@
                 height: 100vh;
                 display: grid;
                 grid-template-rows: auto 1fr auto;
-                padding: clamp(0.85rem, 2.2vh, 1.4rem) clamp(1rem, 3vw, 2rem);
-                max-width: 1100px;
+                padding: clamp(0.9rem, 2vh, 1.35rem) clamp(1rem, 3vw, 2rem);
+                max-width: 1080px;
                 margin: 0 auto;
-                gap: clamp(0.5rem, 1.5vh, 1rem);
+                gap: clamp(0.4rem, 1.2vh, 0.9rem);
             }
 
-            /* top bar */
             .top {
                 display: flex;
-                align-items: center;
                 justify-content: space-between;
-                gap: 1rem;
-            }
-
-            .logo {
-                display: flex;
                 align-items: center;
-                gap: 0.65rem;
-                font-weight: 600;
-                letter-spacing: -0.03em;
-                font-size: 1.05rem;
-            }
-
-            .pulse {
-                width: 0.65rem;
-                height: 0.65rem;
-                border-radius: 50%;
-                background: var(--spore);
-                box-shadow:
-                    0 0 12px var(--spore),
-                    0 0 28px rgba(125, 255, 179, 0.45);
-                animation: throb 2.4s ease-in-out infinite;
-            }
-
-            @keyframes throb {
-                0%,
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1.35);
-                    opacity: 0.7;
-                }
-            }
-
-            .top a {
-                color: var(--mist);
-                text-decoration: none;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
                 font-size: 0.78rem;
-                letter-spacing: 0.06em;
+                letter-spacing: 0.18em;
                 text-transform: uppercase;
+                color: rgba(255, 244, 232, 0.7);
+                text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            }
+            .top a {
+                color: inherit;
+                text-decoration: none;
                 transition: color 0.2s;
             }
             .top a:hover {
-                color: var(--spore);
+                color: #fff;
             }
 
-            /* main stage */
+            .logo {
+                font-weight: 600;
+                letter-spacing: 0.28em;
+                color: #fff;
+            }
+
             .stage {
                 display: grid;
                 grid-template-columns: 1.05fr 0.95fr;
-                gap: clamp(1rem, 3vw, 2.5rem);
+                gap: clamp(1rem, 3vw, 2.2rem);
                 min-height: 0;
-                align-items: stretch;
+                align-items: center;
             }
 
-            @media (max-width: 820px) {
+            @media (max-width: 800px) {
                 .stage {
                     grid-template-columns: 1fr;
-                    grid-template-rows: auto 1fr;
-                }
-                .manifesto h1 {
-                    font-size: clamp(2.1rem, 9vw, 2.8rem);
+                    grid-template-rows: auto minmax(0, 1fr);
+                    align-items: start;
                 }
             }
 
             .manifesto {
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                gap: 0.75rem;
                 min-height: 0;
-                gap: 0.85rem;
             }
 
             .eyebrow {
-                font-size: 0.72rem;
-                letter-spacing: 0.22em;
+                font-family: system-ui, sans-serif;
+                font-size: 0.68rem;
+                letter-spacing: 0.28em;
                 text-transform: uppercase;
-                color: var(--sky);
-                font-weight: 500;
-                opacity: 0.9;
-                text-shadow: 0 0 20px rgba(92, 225, 255, 0.4);
+                color: rgba(255, 211, 106, 0.9);
+                text-shadow: 0 0 24px rgba(255, 77, 141, 0.5);
             }
 
             h1 {
-                font-size: clamp(2.6rem, 6.5vw, 4.1rem);
-                font-weight: 650;
+                font-size: clamp(2.5rem, 7vw, 4rem);
+                font-weight: 400;
                 line-height: 1.02;
-                letter-spacing: -0.045em;
-                background: linear-gradient(
-                    125deg,
-                    #fff 0%,
-                    var(--spore) 28%,
-                    var(--sky) 52%,
-                    var(--bloom) 78%,
-                    var(--nectar) 100%
-                );
-                background-size: 220% 220%;
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                animation: aurora 10s ease-in-out infinite;
+                letter-spacing: -0.03em;
+                color: #fff;
+                text-shadow:
+                    0 0 40px rgba(255, 77, 141, 0.45),
+                    0 0 80px rgba(125, 255, 179, 0.25),
+                    0 4px 30px rgba(0, 0, 0, 0.45);
+                animation: title-swell 6s ease-in-out infinite;
             }
 
-            @keyframes aurora {
+            @keyframes title-swell {
                 0%,
                 100% {
-                    background-position: 0% 40%;
+                    transform: scale(1);
+                    filter: hue-rotate(0deg);
                 }
                 50% {
-                    background-position: 100% 60%;
+                    transform: scale(1.015);
+                    filter: hue-rotate(18deg);
                 }
             }
 
             .lede {
+                font-size: clamp(1rem, 1.8vw, 1.15rem);
+                line-height: 1.45;
                 color: var(--mist);
-                font-size: clamp(0.95rem, 1.6vw, 1.12rem);
-                line-height: 1.5;
-                max-width: 28em;
+                max-width: 26em;
+                text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
             }
 
-            .lede strong {
-                color: var(--flesh);
-                font-weight: 600;
-            }
-
-            /* install action */
             .action {
-                margin-top: 0.6rem;
+                margin-top: 0.55rem;
                 display: flex;
                 flex-direction: column;
-                gap: 0.55rem;
-                max-width: 28rem;
+                gap: 0.5rem;
+                max-width: 30rem;
             }
 
             .install {
                 display: flex;
-                align-items: stretch;
-                border-radius: 14px;
+                border-radius: 999px;
                 overflow: hidden;
-                background: rgba(8, 16, 14, 0.72);
-                border: 1px solid rgba(125, 255, 179, 0.28);
+                background: rgba(20, 8, 18, 0.55);
+                border: 1px solid rgba(255, 255, 255, 0.22);
+                backdrop-filter: blur(16px) saturate(1.4);
                 box-shadow:
-                    0 0 0 1px rgba(255, 107, 203, 0.08),
-                    0 12px 40px rgba(0, 0, 0, 0.45),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-                backdrop-filter: blur(12px);
-                transition:
-                    border-color 0.25s,
-                    box-shadow 0.25s;
-            }
-            .install:hover {
-                border-color: rgba(125, 255, 179, 0.55);
-                box-shadow:
-                    0 0 30px rgba(125, 255, 179, 0.12),
-                    0 12px 40px rgba(0, 0, 0, 0.45);
+                    0 10px 40px rgba(0, 0, 0, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                font-family: "SF Mono", ui-monospace, Menlo, monospace;
             }
 
             .install code {
                 flex: 1;
-                padding: 0.95rem 1.1rem;
-                font-family:
-                    "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-                font-size: clamp(0.72rem, 1.5vw, 0.88rem);
-                color: var(--spore);
-                letter-spacing: -0.02em;
+                padding: 0.9rem 1.2rem;
+                font-size: clamp(0.68rem, 1.4vw, 0.82rem);
+                color: #c8ffe0;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -307,71 +223,87 @@
             .install button {
                 border: none;
                 background: linear-gradient(
-                    160deg,
-                    rgba(125, 255, 179, 0.25),
-                    rgba(139, 124, 255, 0.2)
+                    135deg,
+                    #ff4d8d,
+                    #c44dff 55%,
+                    #5ce1ff
                 );
-                color: var(--flesh);
-                padding: 0 1.15rem;
-                font-size: 0.72rem;
-                font-weight: 650;
-                letter-spacing: 0.12em;
+                background-size: 200% 200%;
+                animation: cta-flow 5s ease infinite;
+                color: #1a0a14;
+                font-weight: 700;
+                font-size: 0.7rem;
+                letter-spacing: 0.14em;
                 text-transform: uppercase;
+                padding: 0 1.25rem;
                 cursor: pointer;
-                border-left: 1px solid rgba(125, 255, 179, 0.2);
-                transition:
-                    background 0.2s,
-                    color 0.2s;
+                font-family: system-ui, sans-serif;
+                transition: filter 0.2s;
             }
             .install button:hover {
-                background: linear-gradient(
-                    160deg,
-                    rgba(125, 255, 179, 0.45),
-                    rgba(255, 107, 203, 0.25)
-                );
-                color: #fff;
+                filter: brightness(1.1);
             }
             .install button.ok {
-                color: var(--nectar);
+                filter: saturate(1.4);
+            }
+
+            @keyframes cta-flow {
+                0%,
+                100% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
             }
 
             .hint {
-                font-size: 0.72rem;
-                color: rgba(242, 230, 216, 0.4);
-                letter-spacing: 0.02em;
+                font-family: system-ui, sans-serif;
+                font-size: 0.68rem;
+                letter-spacing: 0.04em;
+                color: rgba(255, 244, 232, 0.45);
             }
             .hint a {
-                color: var(--sky);
+                color: #ffd36a;
                 text-decoration: none;
             }
             .hint a:hover {
                 text-decoration: underline;
             }
 
-            /* ——— panel / tabs ——— */
+            /* glass organ panel */
             .panel {
                 min-height: 0;
+                height: 100%;
+                max-height: min(52vh, 420px);
                 display: flex;
                 flex-direction: column;
-                border-radius: 20px;
-                background: rgba(6, 12, 14, 0.55);
-                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 28px;
+                background: rgba(18, 6, 16, 0.38);
+                border: 1px solid rgba(255, 255, 255, 0.16);
                 box-shadow:
-                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                    0 20px 60px rgba(0, 0, 0, 0.35);
-                backdrop-filter: blur(18px) saturate(1.3);
+                    0 20px 60px rgba(0, 0, 0, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+                    0 0 60px rgba(255, 77, 141, 0.08);
+                backdrop-filter: blur(22px) saturate(1.6);
                 overflow: hidden;
+            }
+
+            @media (max-width: 800px) {
+                .panel {
+                    max-height: none;
+                    min-height: 0;
+                }
             }
 
             .tabs {
                 display: flex;
-                flex-wrap: nowrap;
-                gap: 0.25rem;
-                padding: 0.55rem;
+                gap: 0.2rem;
+                padding: 0.5rem;
                 overflow-x: auto;
                 scrollbar-width: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-                background: rgba(0, 0, 0, 0.2);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                background: rgba(0, 0, 0, 0.15);
             }
             .tabs::-webkit-scrollbar {
                 display: none;
@@ -381,152 +313,134 @@
                 flex: 0 0 auto;
                 border: none;
                 background: transparent;
-                color: rgba(242, 230, 216, 0.45);
-                font-size: 0.72rem;
-                font-weight: 600;
-                letter-spacing: 0.04em;
+                color: rgba(255, 244, 232, 0.45);
+                font-family: system-ui, sans-serif;
+                font-size: 0.7rem;
+                font-weight: 650;
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
-                padding: 0.55rem 0.75rem;
-                border-radius: 10px;
+                padding: 0.55rem 0.8rem;
+                border-radius: 999px;
                 cursor: pointer;
-                transition:
-                    color 0.2s,
-                    background 0.2s,
-                    box-shadow 0.2s;
-                white-space: nowrap;
+                transition: 0.25s ease;
             }
             .tab:hover {
-                color: var(--flesh);
-                background: rgba(255, 255, 255, 0.04);
+                color: #fff;
+                background: rgba(255, 255, 255, 0.06);
             }
             .tab[aria-selected="true"] {
-                color: #04120c;
-                background: linear-gradient(135deg, var(--spore), var(--sky));
-                box-shadow: 0 0 20px rgba(125, 255, 179, 0.35);
+                color: #1a0a14;
+                background: linear-gradient(120deg, #ffd36a, #ff4d8d, #7dffb3);
+                background-size: 200% 200%;
+                animation: cta-flow 4s ease infinite;
+                box-shadow: 0 0 24px rgba(255, 77, 141, 0.45);
             }
 
             .body {
                 flex: 1;
                 min-height: 0;
-                padding: clamp(1rem, 2.5vh, 1.5rem) clamp(1rem, 2.5vw, 1.4rem);
+                padding: 1.1rem 1.2rem 1.2rem;
                 display: flex;
                 flex-direction: column;
-                gap: 0.75rem;
+                gap: 0.55rem;
                 overflow: hidden;
             }
-
             .body[hidden] {
                 display: none;
             }
 
             .chip {
                 align-self: flex-start;
-                font-size: 0.65rem;
-                letter-spacing: 0.14em;
+                font-family: system-ui, sans-serif;
+                font-size: 0.62rem;
+                letter-spacing: 0.16em;
                 text-transform: uppercase;
-                padding: 0.3rem 0.6rem;
-                border-radius: 999px;
-                border: 1px solid rgba(125, 255, 179, 0.3);
-                color: var(--spore);
-                background: rgba(125, 255, 179, 0.08);
+                color: #ffd36a;
+                opacity: 0.9;
             }
 
             .body h2 {
-                font-size: clamp(1.35rem, 2.8vw, 1.7rem);
-                font-weight: 650;
-                letter-spacing: -0.03em;
+                font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+                font-weight: 400;
+                letter-spacing: -0.02em;
                 line-height: 1.15;
+                text-shadow: 0 0 30px rgba(255, 77, 141, 0.35);
             }
 
             .why {
-                color: var(--mist);
+                color: rgba(255, 244, 232, 0.78);
                 font-size: 0.95rem;
-                line-height: 1.5;
+                line-height: 1.45;
             }
 
             .props {
                 display: grid;
-                gap: 0.45rem;
-                margin-top: 0.25rem;
+                gap: 0.4rem;
+                margin-top: 0.2rem;
             }
 
             .prop {
                 display: grid;
-                grid-template-columns: 5.5rem 1fr;
-                gap: 0.6rem;
-                align-items: baseline;
-                padding: 0.55rem 0.65rem;
-                border-radius: 10px;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.04);
+                grid-template-columns: 5.2rem 1fr;
+                gap: 0.5rem;
+                padding: 0.5rem 0.65rem;
+                border-radius: 14px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.06);
             }
 
             .prop b {
-                font-size: 0.68rem;
-                letter-spacing: 0.1em;
+                font-family: system-ui, sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.12em;
                 text-transform: uppercase;
-                color: var(--nectar);
-                font-weight: 650;
+                color: #7dffb3;
+                font-weight: 700;
+                padding-top: 0.15rem;
             }
 
             .prop span {
                 font-size: 0.86rem;
-                color: rgba(242, 230, 216, 0.78);
+                color: rgba(255, 244, 232, 0.82);
                 line-height: 1.35;
             }
 
-            /* footer strip */
             .foot {
                 display: flex;
-                flex-wrap: wrap;
-                align-items: center;
                 justify-content: space-between;
-                gap: 0.5rem 1rem;
-                font-size: 0.7rem;
-                color: rgba(242, 230, 216, 0.35);
-                letter-spacing: 0.04em;
-            }
-            .foot a {
-                color: rgba(242, 230, 216, 0.55);
-                text-decoration: none;
-            }
-            .foot a:hover {
-                color: var(--bloom);
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                font-family: system-ui, sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(255, 244, 232, 0.4);
+                text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
             }
 
             .organs {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 0.35rem 0.75rem;
+                gap: 0.35rem 0.85rem;
             }
             .organs button {
                 border: none;
                 background: none;
                 color: inherit;
                 font: inherit;
+                letter-spacing: inherit;
+                text-transform: inherit;
                 cursor: pointer;
                 padding: 0;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-                transition: color 0.2s;
+                transition:
+                    color 0.2s,
+                    text-shadow 0.2s;
             }
             .organs button:hover,
             .organs button.on {
-                color: var(--spore);
-                text-shadow: 0 0 12px rgba(125, 255, 179, 0.5);
-            }
-
-            /* mobile: compress */
-            @media (max-height: 700px) {
-                .prop {
-                    padding: 0.4rem 0.55rem;
-                }
-                .body {
-                    gap: 0.5rem;
-                }
-                .lede {
-                    font-size: 0.9rem;
-                }
+                color: #ffd36a;
+                text-shadow: 0 0 16px rgba(255, 77, 141, 0.7);
             }
 
             @media (max-width: 520px) {
@@ -534,29 +448,25 @@
                     grid-template-columns: 1fr;
                     gap: 0.15rem;
                 }
-                .install code {
-                    font-size: 0.68rem;
-                }
             }
 
             @media (prefers-reduced-motion: reduce) {
-                .veil,
                 h1,
-                .pulse {
+                .film,
+                .install button,
+                .tab[aria-selected="true"] {
                     animation: none !important;
                 }
             }
         </style>
     </head>
     <body>
-        <div class="field" aria-hidden="true"><canvas id="mycel"></canvas></div>
-        <div class="veil" aria-hidden="true"></div>
+        <canvas id="world" aria-hidden="true"></canvas>
+        <div class="film" aria-hidden="true"></div>
 
         <div class="shell">
             <header class="top">
-                <div class="logo">
-                    <span class="pulse" aria-hidden="true"></span> soft3
-                </div>
+                <span class="logo">soft3</span>
                 <a
                     href="https://github.com/cyberia-to/soft3"
                     target="_blank"
@@ -570,32 +480,21 @@
                     <p class="eyebrow">type 2 civilization software</p>
                     <h1>one mind.<br />still growing.</h1>
                     <p class="lede">
-                        A <strong>bio-cyber stack</strong> for shared knowledge:
-                        every link has weight, every computation leaves a proof,
-                        the whole graph settles into one focus — like a forest
-                        learning itself.
+                        Shared knowledge that breathes: every link has weight,
+                        every computation leaves a proof, the whole graph
+                        settles into one focus.
                     </p>
 
                     <div class="action">
-                        <div
-                            class="install"
-                            role="group"
-                            aria-label="install command"
-                        >
+                        <div class="install" role="group" aria-label="install">
                             <code id="cmd"
                                 >cargo install soft3 --git
                                 https://github.com/cyberia-to/soft3</code
                             >
-                            <button
-                                type="button"
-                                id="copy"
-                                title="Copy install command"
-                            >
-                                copy
-                            </button>
+                            <button type="button" id="copy">copy</button>
                         </div>
                         <p class="hint">
-                            primary action · then open the living map on
+                            install · then read the map on
                             <a
                                 href="https://github.com/cyberia-to/soft3#readme"
                                 target="_blank"
@@ -606,77 +505,59 @@
                     </div>
                 </section>
 
-                <aside class="panel" aria-label="organs of the stack">
-                    <div class="tabs" role="tablist" aria-label="components">
+                <aside class="panel">
+                    <div class="tabs" role="tablist" aria-label="organs">
                         <button
                             class="tab"
                             role="tab"
-                            id="t-mind"
-                            aria-controls="p-mind"
-                            aria-selected="true"
                             data-tab="mind"
+                            aria-selected="true"
                         >
                             mind
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            id="t-proof"
-                            aria-controls="p-proof"
-                            aria-selected="false"
                             data-tab="proof"
+                            aria-selected="false"
                         >
                             proof
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            id="t-graph"
-                            aria-controls="p-graph"
-                            aria-selected="false"
                             data-tab="graph"
+                            aria-selected="false"
                         >
                             graph
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            id="t-radio"
-                            aria-controls="p-radio"
-                            aria-selected="false"
                             data-tab="radio"
+                            aria-selected="false"
                         >
                             radio
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            id="t-pay"
-                            aria-controls="p-pay"
-                            aria-selected="false"
                             data-tab="pay"
+                            aria-selected="false"
                         >
                             pay
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            id="t-body"
-                            aria-controls="p-body"
-                            aria-selected="false"
                             data-tab="body"
+                            aria-selected="false"
                         >
                             body
                         </button>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-mind"
-                        data-panel="mind"
-                        aria-labelledby="t-mind"
-                    >
+                    <div class="body" data-panel="mind">
                         <span class="chip">why you need it</span>
                         <h2>One shared mind</h2>
                         <p class="why">
@@ -702,21 +583,14 @@
                             <div class="prop">
                                 <b>feel</b
                                 ><span
-                                    >you write · compute · mean — three nerves,
-                                    one body</span
+                                    >write · compute · mean — three nerves, one
+                                    body</span
                                 >
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-proof"
-                        data-panel="proof"
-                        aria-labelledby="t-proof"
-                        hidden
-                    >
+                    <div class="body" data-panel="proof" hidden>
                         <span class="chip">zheng · hemera · lens · nox</span>
                         <h2>Proof in the marrow</h2>
                         <p class="why">
@@ -735,8 +609,8 @@
                             <div class="prop">
                                 <b>commit</b
                                 ><span
-                                    >PCS backends as one lens — pick algebra,
-                                    keep the API</span
+                                    >PCS as one lens — pick algebra, keep the
+                                    API</span
                                 >
                             </div>
                             <div class="prop">
@@ -749,14 +623,7 @@
                         </div>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-graph"
-                        data-panel="graph"
-                        aria-labelledby="t-graph"
-                        hidden
-                    >
+                    <div class="body" data-panel="graph" hidden>
                         <span class="chip">cybergraph · bbg · cell</span>
                         <h2>Knowledge as life</h2>
                         <p class="why">
@@ -789,20 +656,13 @@
                         </div>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-radio"
-                        data-panel="radio"
-                        aria-labelledby="t-radio"
-                        hidden
-                    >
+                    <div class="body" data-panel="radio" hidden>
                         <span class="chip">radio · tape · mudra · sync</span>
                         <h2>Nerves across space</h2>
                         <p class="why">
-                            A mind that cannot reach itself is not alive. You
-                            need encrypted transport, typed frames, and sync
-                            that forgives partitions.
+                            A mind that cannot reach itself is not alive.
+                            Encrypted transport, typed frames, sync that
+                            forgives partitions.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -828,18 +688,11 @@
                         </div>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-pay"
-                        data-panel="pay"
-                        aria-labelledby="t-pay"
-                        hidden
-                    >
+                    <div class="body" data-panel="pay" hidden>
                         <span class="chip">tok · foculus · tru · settle</span>
                         <h2>Value that conserves</h2>
                         <p class="why">
-                            Attention is energy. Rewards should follow real
+                            Attention is energy. Rewards follow real
                             contribution — Δφ⁺, proofs, tickets — not
                             advertising myths.
                         </p>
@@ -868,27 +721,20 @@
                         </div>
                     </div>
 
-                    <div
-                        class="body"
-                        role="tabpanel"
-                        id="p-body"
-                        data-panel="body"
-                        aria-labelledby="t-body"
-                        hidden
-                    >
+                    <div class="body" data-panel="body" hidden>
                         <span class="chip">cyb · mir · prysm · rune</span>
                         <h2>Flesh you can inhabit</h2>
                         <p class="why">
-                            A stack without a body is a lab note. You need a
-                            cell you can run — terminal, world, language — so
-                            the organism has hands.
+                            A stack without a body is a lab note. A cell you can
+                            run — terminal, world, language — so the organism
+                            has hands.
                         </p>
                         <div class="props">
                             <div class="prop">
                                 <b>cyb</b
                                 ><span
-                                    >the immortal robot shell — Bevy world +
-                                    live cell</span
+                                    >immortal robot shell — Bevy world + live
+                                    cell</span
                                 >
                             </div>
                             <div class="prop">
@@ -911,7 +757,7 @@
             </main>
 
             <footer class="foot">
-                <div class="organs" id="quick" aria-label="quick organs">
+                <div class="organs" id="quick">
                     <button type="button" data-tab="mind" class="on">
                         mind
                     </button>
@@ -921,42 +767,43 @@
                     <button type="button" data-tab="pay">pay</button>
                     <button type="button" data-tab="body">body</button>
                 </div>
-                <span>soft3.org · breathe with the stack</span>
+                <span>soft3.org</span>
             </footer>
         </div>
 
         <script>
-            /* ——— tabs ——— */
+            /* ——— UI ——— */
             const tabs = [...document.querySelectorAll(".tab")];
             const panels = [...document.querySelectorAll(".body")];
             const quick = [...document.querySelectorAll("#quick button")];
+            const order = ["mind", "proof", "graph", "radio", "pay", "body"];
+            let organ = "mind";
+            let organHue = 0;
+
+            const hues = {
+                mind: 0,
+                proof: 35,
+                graph: -25,
+                radio: 90,
+                pay: 20,
+                body: -50,
+            };
 
             function select(name) {
-                tabs.forEach((t) => {
-                    const on = t.dataset.tab === name;
-                    t.setAttribute("aria-selected", on ? "true" : "false");
-                });
+                organ = name;
+                organHue = hues[name] || 0;
+                tabs.forEach((t) =>
+                    t.setAttribute(
+                        "aria-selected",
+                        t.dataset.tab === name ? "true" : "false",
+                    ),
+                );
                 panels.forEach((p) => {
                     p.hidden = p.dataset.panel !== name;
                 });
                 quick.forEach((b) =>
                     b.classList.toggle("on", b.dataset.tab === name),
                 );
-                // tint veil slightly by organ
-                const hues = {
-                    mind: 0,
-                    proof: 40,
-                    graph: -20,
-                    radio: 80,
-                    pay: 25,
-                    body: -40,
-                };
-                document.documentElement.style.setProperty(
-                    "--hue-nudge",
-                    (hues[name] || 0) + "deg",
-                );
-                document.querySelector(".veil").style.filter =
-                    `hue-rotate(${hues[name] || 0}deg)`;
             }
 
             tabs.forEach((t) =>
@@ -966,14 +813,9 @@
                 b.addEventListener("click", () => select(b.dataset.tab)),
             );
 
-            // keyboard: 1-6 and arrows
-            const order = ["mind", "proof", "graph", "radio", "pay", "body"];
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
-                const i = order.indexOf(
-                    tabs.find((t) => t.getAttribute("aria-selected") === "true")
-                        ?.dataset.tab,
-                );
+                const i = order.indexOf(organ);
                 if (e.key >= "1" && e.key <= "6") select(order[+e.key - 1]);
                 if (e.key === "ArrowRight" || e.key === "ArrowDown") {
                     e.preventDefault();
@@ -985,159 +827,468 @@
                 }
             });
 
-            /* ——— copy install ——— */
             const cmd = document.getElementById("cmd");
             const copyBtn = document.getElementById("copy");
             copyBtn.addEventListener("click", async () => {
-                const text = cmd.textContent.trim();
                 try {
-                    await navigator.clipboard.writeText(text);
+                    await navigator.clipboard.writeText(cmd.textContent.trim());
                 } catch {
                     const r = document.createRange();
                     r.selectNodeContents(cmd);
-                    const s = getSelection();
-                    s.removeAllRanges();
-                    s.addRange(r);
+                    getSelection().removeAllRanges();
+                    getSelection().addRange(r);
                     document.execCommand("copy");
                 }
-                copyBtn.textContent = "copied";
+                copyBtn.textContent = "yes";
                 copyBtn.classList.add("ok");
                 setTimeout(() => {
                     copyBtn.textContent = "copy";
                     copyBtn.classList.remove("ok");
-                }, 1600);
+                }, 1400);
             });
 
-            /* ——— mycelial canvas ——— */
-            const canvas = document.getElementById("mycel");
-            const ctx = canvas.getContext("2d");
-            let w, h, dpr, nodes, t0;
+            /* ——— LIVING WORLD: fluid flesh / hills / orbs of life ——— */
+            const canvas = document.getElementById("world");
+            const ctx = canvas.getContext("2d", { alpha: false });
+            let W,
+                H,
+                dpr,
+                t0 = 0;
+            let mx = 0.5,
+                my = 0.5,
+                mxt = 0.5,
+                myt = 0.5;
+
+            // soft bodies: each is an organic mass (breast-like orbs, hills, petals)
+            const bodies = [];
+
+            function seedBodies() {
+                bodies.length = 0;
+                const specs = [
+                    // large breathing hills / soft forms
+                    {
+                        x: 0.22,
+                        y: 0.72,
+                        rx: 0.38,
+                        ry: 0.42,
+                        hue: 330,
+                        kind: "mound",
+                    },
+                    {
+                        x: 0.78,
+                        y: 0.7,
+                        rx: 0.36,
+                        ry: 0.4,
+                        hue: 300,
+                        kind: "mound",
+                    },
+                    {
+                        x: 0.5,
+                        y: 0.85,
+                        rx: 0.55,
+                        ry: 0.35,
+                        hue: 280,
+                        kind: "hill",
+                    },
+                    // pair of soft orbs (yes)
+                    {
+                        x: 0.35,
+                        y: 0.48,
+                        rx: 0.2,
+                        ry: 0.22,
+                        hue: 345,
+                        kind: "orb",
+                    },
+                    {
+                        x: 0.65,
+                        y: 0.48,
+                        rx: 0.2,
+                        ry: 0.22,
+                        hue: 350,
+                        kind: "orb",
+                    },
+                    // sky blossom / lung
+                    {
+                        x: 0.5,
+                        y: 0.28,
+                        rx: 0.32,
+                        ry: 0.26,
+                        hue: 160,
+                        kind: "bloom",
+                    },
+                    {
+                        x: 0.15,
+                        y: 0.3,
+                        rx: 0.22,
+                        ry: 0.28,
+                        hue: 200,
+                        kind: "bloom",
+                    },
+                    {
+                        x: 0.88,
+                        y: 0.32,
+                        rx: 0.24,
+                        ry: 0.26,
+                        hue: 40,
+                        kind: "bloom",
+                    },
+                    // smaller life-pulses
+                    {
+                        x: 0.5,
+                        y: 0.55,
+                        rx: 0.14,
+                        ry: 0.12,
+                        hue: 120,
+                        kind: "pulse",
+                    },
+                    {
+                        x: 0.25,
+                        y: 0.55,
+                        rx: 0.12,
+                        ry: 0.14,
+                        hue: 50,
+                        kind: "pulse",
+                    },
+                    {
+                        x: 0.75,
+                        y: 0.58,
+                        rx: 0.13,
+                        ry: 0.12,
+                        hue: 20,
+                        kind: "pulse",
+                    },
+                ];
+                for (const s of specs) {
+                    bodies.push({
+                        ...s,
+                        phase: Math.random() * Math.PI * 2,
+                        speed: 0.35 + Math.random() * 0.45,
+                        wobble: 0.6 + Math.random() * 0.8,
+                    });
+                }
+            }
 
             function resize() {
                 dpr = Math.min(window.devicePixelRatio || 1, 2);
-                w = window.innerWidth;
-                h = window.innerHeight;
-                canvas.width = w * dpr;
-                canvas.height = h * dpr;
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = W * dpr;
+                canvas.height = H * dpr;
+                canvas.style.width = W + "px";
+                canvas.style.height = H + "px";
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                spawn();
+                seedBodies();
             }
 
-            function spawn() {
-                const n = Math.floor(Math.min(55, (w * h) / 18000));
-                nodes = Array.from({ length: n }, () => ({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    vx: (Math.random() - 0.5) * 0.35,
-                    vy: (Math.random() - 0.5) * 0.35,
-                    r: 1.2 + Math.random() * 2.2,
-                    phase: Math.random() * Math.PI * 2,
-                    kind: Math.random(),
-                }));
+            window.addEventListener("resize", resize);
+            window.addEventListener("pointermove", (e) => {
+                mxt = e.clientX / W;
+                myt = e.clientY / H;
+            });
+
+            // hsl helper
+            function hsl(h, s, l, a = 1) {
+                return `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
             }
 
-            function palette(k, a) {
-                if (k < 0.33) return `rgba(125,255,179,${a})`;
-                if (k < 0.55) return `rgba(92,225,255,${a})`;
-                if (k < 0.75) return `rgba(255,107,203,${a})`;
-                if (k < 0.9) return `rgba(139,124,255,${a})`;
-                return `rgba(255,200,87,${a})`;
+            function drawBody(b, t, breath) {
+                const px =
+                    b.x * W + (mx - 0.5) * 40 * (b.kind === "orb" ? 1.4 : 0.8);
+                const py = b.y * H + (my - 0.5) * 30;
+
+                // multi-lobe organic silhouette
+                const br =
+                    breath * (0.08 + 0.04 * Math.sin(t * b.speed + b.phase));
+                const rx = b.rx * W * (1 + br);
+                const ry = b.ry * H * (1 + br * 1.15);
+
+                const hue =
+                    b.hue + organHue * 0.35 + Math.sin(t * 0.2 + b.phase) * 18;
+
+                ctx.save();
+                ctx.translate(px, py);
+                ctx.rotate(Math.sin(t * 0.15 + b.phase) * 0.08 * b.wobble);
+
+                // outer glow (living aura)
+                const glow = ctx.createRadialGradient(
+                    0,
+                    -ry * 0.1,
+                    0,
+                    0,
+                    0,
+                    Math.max(rx, ry) * 1.35,
+                );
+                glow.addColorStop(0, hsl(hue, 85, 62, 0.55));
+                glow.addColorStop(0.35, hsl(hue + 30, 70, 48, 0.28));
+                glow.addColorStop(0.7, hsl(hue + 60, 60, 30, 0.1));
+                glow.addColorStop(1, hsl(hue, 50, 20, 0));
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, rx * 1.25, ry * 1.25, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // flesh body with layered lobes
+                ctx.beginPath();
+                const lobes = b.kind === "orb" ? 2 : b.kind === "mound" ? 3 : 4;
+                const steps = 72;
+                for (let i = 0; i <= steps; i++) {
+                    const a = (i / steps) * Math.PI * 2;
+                    // organic deformation — not a circle
+                    let deform = 1;
+                    deform +=
+                        0.12 * Math.sin(a * lobes + t * b.speed + b.phase);
+                    deform +=
+                        0.07 * Math.sin(a * (lobes + 2) - t * 0.4 + b.phase);
+                    deform += 0.05 * Math.cos(a * 2 + breath * 3);
+                    // soft top-heavy for orb/mound (breast-like gravity)
+                    if (b.kind === "orb" || b.kind === "mound") {
+                        deform *=
+                            1 +
+                            0.08 * Math.cos(a) * Math.sin(a + Math.PI * 0.5);
+                        deform *=
+                            1 + 0.1 * Math.max(0, Math.sin(a + Math.PI * 0.5));
+                    }
+                    if (b.kind === "hill") {
+                        deform *= 1 + 0.2 * Math.max(0, Math.cos(a)); // flatter bottom
+                    }
+                    const x = Math.cos(a) * rx * deform;
+                    const y = Math.sin(a) * ry * deform;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+
+                const flesh = ctx.createRadialGradient(
+                    -rx * 0.2,
+                    -ry * 0.25,
+                    0,
+                    0,
+                    ry * 0.1,
+                    Math.max(rx, ry),
+                );
+                flesh.addColorStop(0, hsl(hue + 10, 90, 78, 0.95));
+                flesh.addColorStop(0.25, hsl(hue, 80, 62, 0.9));
+                flesh.addColorStop(0.55, hsl(hue - 15, 70, 42, 0.88));
+                flesh.addColorStop(0.85, hsl(hue - 40, 55, 28, 0.85));
+                flesh.addColorStop(1, hsl(hue - 60, 40, 12, 0.5));
+                ctx.fillStyle = flesh;
+                ctx.fill();
+
+                // specular wetness / dew
+                ctx.beginPath();
+                ctx.ellipse(
+                    -rx * 0.22,
+                    -ry * 0.28,
+                    rx * 0.28,
+                    ry * 0.18,
+                    -0.4,
+                    0,
+                    Math.PI * 2,
+                );
+                const spec = ctx.createRadialGradient(
+                    -rx * 0.22,
+                    -ry * 0.28,
+                    0,
+                    -rx * 0.22,
+                    -ry * 0.28,
+                    rx * 0.3,
+                );
+                spec.addColorStop(0, "rgba(255,255,255,0.55)");
+                spec.addColorStop(0.4, "rgba(255,255,255,0.15)");
+                spec.addColorStop(1, "rgba(255,255,255,0)");
+                ctx.fillStyle = spec;
+                ctx.fill();
+
+                // secondary glint
+                ctx.beginPath();
+                ctx.ellipse(
+                    rx * 0.15,
+                    -ry * 0.05,
+                    rx * 0.12,
+                    ry * 0.08,
+                    0.3,
+                    0,
+                    Math.PI * 2,
+                );
+                ctx.fillStyle = hsl(
+                    hue + 80,
+                    100,
+                    90,
+                    0.2 + 0.1 * Math.sin(t + b.phase),
+                );
+                ctx.fill();
+
+                // pore / freckle life
+                if (b.kind === "orb" || b.kind === "bloom") {
+                    for (let k = 0; k < 6; k++) {
+                        const aa = b.phase + k * 1.1 + t * 0.1;
+                        const pr = 0.35 + 0.2 * Math.sin(aa);
+                        const px2 = Math.cos(aa) * rx * pr * 0.55;
+                        const py2 = Math.sin(aa * 1.3) * ry * pr * 0.45;
+                        ctx.beginPath();
+                        ctx.arc(
+                            px2,
+                            py2,
+                            2 + Math.sin(t + k) * 1.2,
+                            0,
+                            Math.PI * 2,
+                        );
+                        ctx.fillStyle = hsl(hue + 40, 80, 70, 0.25);
+                        ctx.fill();
+                    }
+                }
+
+                ctx.restore();
+            }
+
+            function drawVines(t, breath) {
+                ctx.save();
+                ctx.globalCompositeOperation = "screen";
+                ctx.lineWidth = 1.5;
+                for (let v = 0; v < 7; v++) {
+                    const base = (v / 7) * W;
+                    ctx.beginPath();
+                    for (let y = 0; y <= H; y += 8) {
+                        const sway =
+                            Math.sin(y * 0.008 + t * 0.6 + v) *
+                                (28 + breath * 20) +
+                            Math.sin(y * 0.02 - t * 0.4 + v * 2) * 12 +
+                            (mx - 0.5) * 40;
+                        const x = base + sway + Math.sin(t * 0.2 + v) * 30;
+                        if (y === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    const hue =
+                        140 +
+                        v * 25 +
+                        organHue * 0.3 +
+                        Math.sin(t * 0.3 + v) * 30;
+                    ctx.strokeStyle = hsl(
+                        hue,
+                        80,
+                        60,
+                        0.12 + 0.06 * Math.sin(t + v),
+                    );
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            function drawSkyPlasma(t) {
+                // slow color wash background
+                const g = ctx.createLinearGradient(0, 0, W, H);
+                const shift = organHue + Math.sin(t * 0.15) * 40;
+                g.addColorStop(0, hsl(280 + shift, 55, 12));
+                g.addColorStop(0.35, hsl(330 + shift * 0.5, 60, 16));
+                g.addColorStop(0.6, hsl(200 + shift * 0.3, 50, 14));
+                g.addColorStop(1, hsl(160 + shift * 0.2, 45, 10));
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, W, H);
+
+                // second diagonal wash, breathing
+                const g2 = ctx.createRadialGradient(
+                    W * (0.3 + 0.1 * Math.sin(t * 0.2)),
+                    H * (0.25 + 0.08 * Math.cos(t * 0.17)),
+                    0,
+                    W * 0.5,
+                    H * 0.5,
+                    Math.max(W, H) * 0.75,
+                );
+                g2.addColorStop(0, hsl(340 + shift, 90, 45, 0.35));
+                g2.addColorStop(0.4, hsl(160 + shift, 70, 40, 0.18));
+                g2.addColorStop(0.7, hsl(40 + shift, 80, 40, 0.12));
+                g2.addColorStop(1, hsl(260, 40, 10, 0));
+                ctx.fillStyle = g2;
+                ctx.fillRect(0, 0, W, H);
+            }
+
+            function drawLightLeaks(t, breath) {
+                ctx.save();
+                ctx.globalCompositeOperation = "screen";
+                for (let i = 0; i < 5; i++) {
+                    const x =
+                        W * (0.2 + 0.15 * i + 0.05 * Math.sin(t * 0.3 + i));
+                    const y = H * (0.2 + 0.12 * Math.cos(t * 0.25 + i * 1.3));
+                    const r =
+                        (0.15 + 0.08 * Math.sin(t * 0.5 + i) + breath * 0.05) *
+                        Math.min(W, H);
+                    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+                    const hue = 20 + i * 50 + organHue + t * 8;
+                    g.addColorStop(0, hsl(hue, 100, 70, 0.22));
+                    g.addColorStop(0.5, hsl(hue + 40, 90, 55, 0.08));
+                    g.addColorStop(1, hsl(hue, 80, 40, 0));
+                    ctx.fillStyle = g;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
             }
 
             function frame(now) {
                 if (!t0) t0 = now;
                 const t = (now - t0) / 1000;
-                ctx.clearRect(0, 0, w, h);
 
-                // soft organic wash
-                const g = ctx.createRadialGradient(
-                    w * 0.5,
-                    h * 0.45,
-                    0,
-                    w * 0.5,
-                    h * 0.45,
-                    Math.max(w, h) * 0.7,
-                );
-                const pulse = 0.5 + 0.5 * Math.sin(t * 0.35);
-                g.addColorStop(0, `rgba(26, 61, 50, ${0.18 + pulse * 0.06})`);
-                g.addColorStop(0.45, `rgba(40, 20, 50, ${0.12})`);
-                g.addColorStop(1, "rgba(3,5,8,0)");
-                ctx.fillStyle = g;
-                ctx.fillRect(0, 0, w, h);
+                // smooth pointer
+                mx += (mxt - mx) * 0.04;
+                my += (myt - my) * 0.04;
 
-                // move + links
-                const maxDist = Math.min(160, Math.min(w, h) * 0.22);
+                // global breath — like the whole world inhales
+                const breath = 0.5 + 0.5 * Math.sin(t * 0.55);
 
-                for (const n of nodes) {
-                    n.x += n.vx + Math.sin(t * 0.4 + n.phase) * 0.12;
-                    n.y += n.vy + Math.cos(t * 0.35 + n.phase) * 0.1;
-                    if (n.x < -20) n.x = w + 20;
-                    if (n.x > w + 20) n.x = -20;
-                    if (n.y < -20) n.y = h + 20;
-                    if (n.y > h + 20) n.y = -20;
+                drawSkyPlasma(t);
+                drawLightLeaks(t, breath);
+
+                // draw large soft forms back-to-front by y
+                const sorted = [...bodies].sort((a, b) => a.y - b.y);
+                ctx.globalCompositeOperation = "source-over";
+                for (const b of sorted) {
+                    if (b.kind === "hill" || b.kind === "mound")
+                        drawBody(b, t, breath);
+                }
+                for (const b of sorted) {
+                    if (b.kind === "bloom") drawBody(b, t, breath);
+                }
+                for (const b of sorted) {
+                    if (b.kind === "orb" || b.kind === "pulse")
+                        drawBody(b, t, breath);
                 }
 
-                for (let i = 0; i < nodes.length; i++) {
-                    for (let j = i + 1; j < nodes.length; j++) {
-                        const a = nodes[i],
-                            b = nodes[j];
-                        const dx = a.x - b.x,
-                            dy = a.y - b.y;
-                        const d = Math.hypot(dx, dy);
-                        if (d < maxDist) {
-                            const alpha = (1 - d / maxDist) * 0.22;
-                            ctx.beginPath();
-                            ctx.strokeStyle = palette(
-                                (a.kind + b.kind) / 2,
-                                alpha,
-                            );
-                            ctx.lineWidth = 0.8;
-                            ctx.moveTo(a.x, a.y);
-                            // slight curve — hyphae
-                            const mx =
-                                (a.x + b.x) / 2 + Math.sin(t + a.phase) * 8;
-                            const my =
-                                (a.y + b.y) / 2 + Math.cos(t + b.phase) * 8;
-                            ctx.quadraticCurveTo(mx, my, b.x, b.y);
-                            ctx.stroke();
-                        }
+                drawVines(t, breath);
+
+                // film grain shimmer (subtle)
+                if ((now | 0) % 2 === 0) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.03;
+                    for (let i = 0; i < 40; i++) {
+                        ctx.fillStyle = Math.random() > 0.5 ? "#fff" : "#000";
+                        ctx.fillRect(
+                            Math.random() * W,
+                            Math.random() * H,
+                            2,
+                            2,
+                        );
                     }
+                    ctx.restore();
                 }
 
-                for (const n of nodes) {
-                    const glow = 0.45 + 0.35 * Math.sin(t * 1.2 + n.phase);
-                    ctx.beginPath();
-                    ctx.fillStyle = palette(n.kind, 0.15 + glow * 0.2);
-                    ctx.arc(n.x, n.y, n.r * (2.5 + glow), 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.fillStyle = palette(n.kind, 0.55 + glow * 0.3);
-                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                // chromatic edge pulse
+                ctx.save();
+                ctx.globalCompositeOperation = "overlay";
+                ctx.fillStyle = hsl(
+                    320 + organHue + t * 5,
+                    80,
+                    50,
+                    0.06 + breath * 0.04,
+                );
+                ctx.fillRect(0, 0, W, H);
+                ctx.restore();
 
                 requestAnimationFrame(frame);
             }
 
-            window.addEventListener("resize", resize);
             resize();
             requestAnimationFrame(frame);
-
-            // pointer wakes the field
-            window.addEventListener("pointermove", (e) => {
-                if (!nodes || !nodes.length) return;
-                const x = e.clientX,
-                    y = e.clientY;
-                for (const n of nodes) {
-                    const dx = n.x - x,
-                        dy = n.y - y;
-                    const d = Math.hypot(dx, dy);
-                    if (d < 120 && d > 1) {
-                        n.vx += (dx / d) * 0.02;
-                        n.vy += (dy / d) * 0.02;
-                    }
-                }
-            });
         </script>
     </body>
 </html>
