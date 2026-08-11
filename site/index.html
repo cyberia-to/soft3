@@ -37,7 +37,8 @@
             html,
             body {
                 height: 100%;
-                overflow: hidden;
+                overflow-x: hidden;
+                overflow-y: auto;
                 background: #06100a;
                 color: var(--cream);
                 font-family: Play, system-ui, sans-serif;
@@ -56,8 +57,8 @@
             .shell {
                 position: relative;
                 z-index: 2;
-                height: 100dvh;
-                height: 100vh;
+                min-height: 100dvh;
+                min-height: 100vh;
                 width: 100%;
                 max-width: 1180px;
                 margin: 0 auto;
@@ -107,15 +108,15 @@
                 text-shadow: 0 0 16px rgba(255, 210, 120, 0.9);
             }
 
-            /* center band: message + panel side by side, both content-sized */
+            /* center band: message on top, triad panel below — one column of cards */
             .stage {
                 display: flex;
-                flex-wrap: wrap;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 gap: clamp(0.85rem, 2.5vw, 1.5rem);
                 min-height: 0;
-                overflow: hidden;
+                padding: 0.5rem 0;
             }
 
             .glass {
@@ -130,9 +131,8 @@
             }
 
             .manifesto {
-                flex: 1 1 280px;
-                max-width: 34rem;
-                min-width: min(100%, 260px);
+                flex: none;
+                width: min(100%, 38rem);
                 padding: clamp(1rem, 2.2vh, 1.45rem)
                     clamp(1.1rem, 2.2vw, 1.55rem);
                 display: flex;
@@ -302,54 +302,73 @@
                 text-decoration: underline;
             }
 
-            /* panel sits beside manifesto — height from content, not full stage */
+            /* triad panel sits under the manifesto — same column, content-sized */
             .panel {
-                flex: 0 1 22rem;
-                width: min(100%, 22rem);
-                max-height: min(52vh, 380px);
+                flex: none;
+                width: min(100%, 38rem);
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
-                align-self: center;
+            }
+
+            .spiral {
+                padding: 0.5rem 0.9rem 0;
+                font-size: 0.64rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: rgba(255, 248, 240, 0.45);
+                text-align: center;
+            }
+            .spiral em {
+                font-style: normal;
+                color: #ffe28a;
             }
 
             .tabs {
-                display: flex;
-                gap: 0.15rem;
-                padding: 0.4rem;
-                overflow-x: auto;
-                scrollbar-width: none;
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 0.25rem;
+                padding: 0.45rem;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                background: rgba(0, 0, 0, 0.18);
-                flex-shrink: 0;
-            }
-            .tabs::-webkit-scrollbar {
-                display: none;
             }
 
             .tab {
-                flex: 0 0 auto;
                 border: none;
-                background: transparent;
-                color: rgba(255, 248, 240, 0.5);
+                background: rgba(255, 255, 255, 0.04);
+                color: rgba(255, 248, 240, 0.55);
                 font-family: Play, system-ui, sans-serif;
-                font-size: 0.72rem;
-                font-weight: 700;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-                padding: 0.48rem 0.7rem;
-                border-radius: 999px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.1rem;
+                padding: 0.45rem 0.2rem 0.4rem;
+                border-radius: 14px;
                 cursor: pointer;
+            }
+            .tab b {
+                font-size: 0.74rem;
+                font-weight: 700;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+            }
+            .tab small {
+                font-size: 0.58rem;
+                letter-spacing: 0.04em;
+                opacity: 0.75;
             }
             .tab:hover {
                 color: #fff;
-                background: rgba(255, 255, 255, 0.07);
+                background: rgba(255, 255, 255, 0.09);
             }
             .tab[aria-selected="true"] {
                 color: #0a120e;
                 background: linear-gradient(120deg, #ffe28a, #ff6bab, #6dffc4);
                 background-size: 200% 200%;
                 animation: flow 4s ease infinite;
+            }
+            .tab[aria-selected="true"] small {
+                opacity: 0.85;
             }
 
             .body {
@@ -388,7 +407,7 @@
             }
             .prop {
                 display: grid;
-                grid-template-columns: 4.2rem minmax(0, 1fr);
+                grid-template-columns: 5.8rem minmax(0, 1fr);
                 gap: 0.4rem;
                 padding: 0.42rem 0.55rem;
                 border-radius: 10px;
@@ -396,7 +415,7 @@
                 border: 1px solid rgba(255, 255, 255, 0.06);
             }
             .prop b {
-                font-size: 0.65rem;
+                font-size: 0.68rem;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
                 color: #7dffc4;
@@ -408,6 +427,16 @@
                 line-height: 1.32;
                 color: rgba(255, 248, 240, 0.9);
                 overflow-wrap: anywhere;
+            }
+            .prop a {
+                color: #fff;
+                font-weight: 700;
+                text-decoration: none;
+                border-bottom: 1px solid rgba(255, 226, 138, 0.4);
+            }
+            .prop a:hover {
+                color: #ffe28a;
+                border-bottom-color: #ffe28a;
             }
 
             .foot {
@@ -423,41 +452,16 @@
                 color: rgba(255, 248, 240, 0.5);
                 text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
             }
-            .organs {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.3rem 0.7rem;
-            }
-            .organs button {
-                border: none;
-                background: none;
-                color: inherit;
-                font: inherit;
-                letter-spacing: inherit;
-                text-transform: inherit;
-                cursor: pointer;
-                padding: 0;
-            }
-            .organs button:hover,
-            .organs button.on {
-                color: #ffe28a;
-                text-shadow: 0 0 14px rgba(255, 110, 180, 0.75);
-            }
-
             @media (max-width: 720px) {
-                .stage {
-                    flex-direction: column;
-                    align-items: stretch;
-                    justify-content: center;
-                }
                 .manifesto,
                 .panel {
-                    max-width: none;
                     width: 100%;
-                    flex: 0 1 auto;
                 }
-                .panel {
-                    max-height: min(38vh, 300px);
+                .tabs {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+                .tab small {
+                    display: none;
                 }
             }
 
@@ -545,188 +549,503 @@
                 </section>
 
                 <aside class="panel glass">
+                    <p class="spiral">
+                        cybics — one spiral · <em>7 triads</em> ·
+                        <em>21 domains</em> · every component is a verb
+                    </p>
                     <div class="tabs" role="tablist">
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="mind"
+                            data-tab="form"
                             aria-selected="true"
                         >
-                            mind
+                            <b>form</b><small>rules</small>
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="proof"
+                            data-tab="mass"
                             aria-selected="false"
                         >
-                            proof
+                            <b>mass</b><small>matter</small>
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="graph"
+                            data-tab="space"
                             aria-selected="false"
                         >
-                            graph
+                            <b>space</b><small>where</small>
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="radio"
+                            data-tab="life"
                             aria-selected="false"
                         >
-                            radio
+                            <b>life</b><small>alive</small>
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="pay"
+                            data-tab="word"
                             aria-selected="false"
                         >
-                            pay
+                            <b>word</b><small>meaning</small>
                         </button>
                         <button
                             class="tab"
                             role="tab"
-                            data-tab="body"
+                            data-tab="work"
                             aria-selected="false"
                         >
-                            body
+                            <b>work</b><small>making</small>
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            data-tab="play"
+                            aria-selected="false"
+                        >
+                            <b>play</b><small>together</small>
                         </button>
                     </div>
-                    <div class="body" data-panel="mind">
-                        <span class="chip">why you need it</span>
-                        <h2>One shared mind</h2>
+                    <div class="body" data-panel="form">
+                        <span class="chip">what are the rules?</span>
+                        <h2>The floor beneath everything</h2>
                         <p class="why">
-                            Without a common field, every app is a lonely organ.
-                            soft3 is the tissue that lets many programs think as
-                            one organism — across rooms, planets, light-minutes.
+                            One field, one hash, one commitment — silicon tuned
+                            to prove. Every layer above reduces to this floor.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>light</b
+                                <b>accelerate</b
                                 ><span
-                                    >validate all history in ~100&nbsp;ns</span
+                                    ><a
+                                        href="https://cyber.page/honeycrisp/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >honeycrisp</a
+                                    >
+                                    · NEON · AMX · Metal · ANE · zero-copy
+                                    unimem</span
                                 >
                             </div>
                             <div class="prop">
-                                <b>focus</b
+                                <b>math</b
                                 ><span
-                                    >φ* converges — no vote, no committee</span
+                                    ><a
+                                        href="https://cyber.page/strata/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >strata</a
+                                    >
+                                    · nebu 𝔽_p · genies 𝔽_q · jali R_q</span
                                 >
                             </div>
-                            <div class="prop">
-                                <b>space</b
-                                ><span
-                                    >interplanetary consensus in
-                                    cyberspace</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="body" data-panel="proof" hidden>
-                        <span class="chip">zheng · hemera · lens · nox</span>
-                        <h2>Proof in the marrow</h2>
-                        <p class="why">
-                            Trust without a priest. A light client checks the
-                            whole chain of meaning in roughly a hundred
-                            nanoseconds — not by replaying votes, by verifying
-                            the form.
-                        </p>
-                        <div class="props">
                             <div class="prop">
                                 <b>hash</b
                                 ><span
-                                    >Poseidon2 — identity, trees, streams</span
+                                    ><a
+                                        href="https://cyber.page/hemera/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >hemera</a
+                                    >
+                                    · Poseidon2 — identity, trees,
+                                    streams</span
                                 >
                             </div>
                             <div class="prop">
-                                <b>commit</b><span>PCS as one lens</span>
-                            </div>
-                            <div class="prop">
-                                <b>run</b><span>nox + zheng sumcheck</span>
+                                <b>commit</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/lens/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >lens</a
+                                    >
+                                    · one lens per algebra, 5 PCS backends</span
+                                >
                             </div>
                         </div>
                     </div>
-                    <div class="body" data-panel="graph" hidden>
-                        <span class="chip">cybergraph · bbg · cell</span>
-                        <h2>Knowledge as life</h2>
+                    <div class="body" data-panel="mass" hidden>
+                        <span class="chip">what is it made of?</span>
+                        <h2>Knowledge as matter</h2>
                         <p class="why">
-                            APIs rot. Links compound. Meaning stored as mass —
-                            not rows someone can unplug.
+                            APIs rot, links compound. Meaning stored as mass,
+                            value that conserves.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>link</b><span>cyberlinks between sense</span>
+                                <b>link</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/cybergraph/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >cybergraph</a
+                                    >
+                                    · jets · memos · types · knowledge</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>mass</b><span>BBG polynomial + proofs</span>
+                                <b>store</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/bbg/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >bbg</a
+                                    >
+                                    · one polynomial · 10 dims · ~200-byte
+                                    proofs</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>cell</b
-                                ><span>local slice — apply, prove, sync</span>
+                                <b>hold</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/cell/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >cell</a
+                                    >
+                                    · local node — graph slice, apply/prove
+                                    loop</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>mount</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/fs/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >fs</a
+                                    >
+                                    · particles · patches · sync</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>pay</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/tok/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >tok</a
+                                    >
+                                    · Coin · Card · conservation</span
+                                >
                             </div>
                         </div>
                     </div>
-                    <div class="body" data-panel="radio" hidden>
-                        <span class="chip">radio · tape · mudra · sync</span>
+                    <div class="body" data-panel="space" hidden>
+                        <span class="chip">where does it happen?</span>
                         <h2>Nerves across space</h2>
                         <p class="why">
-                            Actual sync happens in cyberspace — the shared form.
-                            Planets only need light-speed links; they do not
-                            need to vote each other into agreement.
+                            Sync is a property of cyberspace. Planets need
+                            light-speed links, never a committee.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>wave</b><span>QUIC + BAO streaming</span>
+                                <b>encrypt</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/mudra/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >mudra</a
+                                    >
+                                    · KEM · dCTIDH · TFHE · threshold</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>transmit</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/radio/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >radio</a
+                                    >
+                                    · QUIC · BAO streaming · gossip</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>frame</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/tape/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >tape</a
+                                    >
+                                    · typed particles over any byte
+                                    stream</span
+                                >
                             </div>
                             <div class="prop">
                                 <b>sync</b
                                 ><span
-                                    >magic of cyberspace, not of
-                                    committees</span
+                                    ><a
+                                        href="https://cyber.page/foculus/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >foculus</a
+                                    >
+                                    · chain · VDF · DAS · erasure · CRDT</span
                                 >
                             </div>
                             <div class="prop">
-                                <b>veil</b><span>mudra chooses who enters</span>
+                                <b>authorize</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/ward/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >ward</a
+                                    >
+                                    · effect router — emit/query/link/seal</span
+                                >
                             </div>
                         </div>
                     </div>
-                    <div class="body" data-panel="pay" hidden>
-                        <span class="chip">tok · foculus · tru · settle</span>
-                        <h2>Value that conserves</h2>
+                    <div class="body" data-panel="life" hidden>
+                        <span class="chip">who is alive?</span>
+                        <h2>The graph wakes up</h2>
                         <p class="why">
-                            Attention is energy. Rewards follow real
-                            contribution.
+                            Attention converges to one φ*. Agreement is a fixed
+                            point — no vote, no committee.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>rank</b><span>tru → φ*</span>
+                                <b>converge</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/tru/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >tru</a
+                                    >
+                                    · φ* · eigenvectors · cyberank</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>agree</b><span>foculus finality</span>
+                                <b>agree</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/foculus/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >foculus</a
+                                    >
+                                    · collective focus theorem → finality</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>mint</b><span>tok conservation</span>
+                                <b>think</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soma/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >soma</a
+                                    >
+                                    · four concurrent loops · tiered
+                                    minds</span
+                                >
                             </div>
                         </div>
                     </div>
-                    <div class="body" data-panel="body" hidden>
-                        <span class="chip">cyb · mir · prysm · rune</span>
+                    <div class="body" data-panel="word" hidden>
+                        <span class="chip">what does it mean?</span>
+                        <h2>One tongue for two species</h2>
+                        <p class="why">
+                            Humans and machines share the language: write it,
+                            run it, ask it — every answer carries a proof.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>mean</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/neural/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >neural</a
+                                    >
+                                    · sigil → word → link → sentence →
+                                    motif</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>eval</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/rune/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >rune</a
+                                    >
+                                    · scripts per item · reactive effects</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>query</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/inf/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >inf</a
+                                    >
+                                    · datalog — whole sets, with proofs</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body" data-panel="work" hidden>
+                        <span class="chip">how is it made?</span>
+                        <h2>Proof in the marrow</h2>
+                        <p class="why">
+                            Every computation leaves a zheng proof. A light
+                            client checks the whole history in ~100&nbsp;ns.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>compile</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/trident/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >trident</a
+                                    >
+                                    · .tri → .nox</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>run</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/nox/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >nox</a
+                                    >
+                                    · 18 patterns + jets · unconditional
+                                    proof</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>sandbox</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/wysm/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >wysm</a
+                                    >
+                                    · WASM souls · gas-metered</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>infer</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/glia/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >glia</a
+                                    >
+                                    · .model runtime</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>shade</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/kern/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >kern</a
+                                    >
+                                    · Metal/Vulkan/WebGPU kernels</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>prove</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/zheng/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >zheng</a
+                                    >
+                                    · SuperSpartan · Brakedown · sumcheck</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>certify</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/eidos/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >eidos</a
+                                    >
+                                    · theorems become cyberlinks</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body" data-panel="play" hidden>
+                        <span class="chip">how do we coordinate?</span>
                         <h2>Flesh you can inhabit</h2>
                         <p class="why">
-                            Terminal, world, language — hands for the organism.
+                            A world to stand in, a face to read, hands that
+                            link. The organism plays.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>cyb</b><span>Bevy world + live cell</span>
+                                <b>render</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/mir/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >mir</a
+                                    >
+                                    · positions + features → a world</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>see</b><span>mir + prysm</span>
+                                <b>paint</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/prysm/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >prysm</a
+                                    >
+                                    · tape dialect · chunks → UI</span
+                                >
                             </div>
                             <div class="prop">
-                                <b>speak</b><span>rune / neural</span>
+                                <b>embody</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/cyb/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >cyb</a
+                                    >
+                                    · Bevy worlds · terminal · live cells</span
+                                >
                             </div>
                         </div>
                     </div>
@@ -734,33 +1053,32 @@
             </main>
 
             <footer class="foot">
-                <div class="organs" id="quick">
-                    <button type="button" data-tab="mind" class="on">
-                        mind
-                    </button>
-                    <button type="button" data-tab="proof">proof</button>
-                    <button type="button" data-tab="graph">graph</button>
-                    <button type="button" data-tab="radio">radio</button>
-                    <button type="button" data-tab="pay">pay</button>
-                    <button type="button" data-tab="body">body</button>
-                </div>
+                <span>form → mass → space → life → word → work → play</span>
                 <span>soft3.org</span>
             </footer>
         </div>
 
         <script>
             const panels = [...document.querySelectorAll(".body")];
-            const quick = [...document.querySelectorAll("#quick button")];
-            const order = ["mind", "proof", "graph", "radio", "pay", "body"];
-            let organ = "mind",
+            const order = [
+                "form",
+                "mass",
+                "space",
+                "life",
+                "word",
+                "work",
+                "play",
+            ];
+            let organ = "form",
                 organHue = 0;
             const hues = {
-                mind: 0,
-                proof: 40,
-                graph: -30,
-                radio: 100,
-                pay: 25,
-                body: -55,
+                form: 0,
+                mass: 40,
+                space: 100,
+                life: -55,
+                word: -30,
+                work: 25,
+                play: 70,
             };
 
             function select(name) {
@@ -777,29 +1095,23 @@
                 panels.forEach((p) => {
                     p.hidden = p.dataset.panel !== name;
                 });
-                quick.forEach((b) =>
-                    b.classList.toggle("on", b.dataset.tab === name),
-                );
             }
             document
                 .querySelectorAll(".tab[data-tab]")
                 .forEach((t) =>
                     t.addEventListener("click", () => select(t.dataset.tab)),
                 );
-            quick.forEach((b) =>
-                b.addEventListener("click", () => select(b.dataset.tab)),
-            );
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
                 const i = order.indexOf(organ);
-                if (e.key >= "1" && e.key <= "6") select(order[+e.key - 1]);
+                if (e.key >= "1" && e.key <= "7") select(order[+e.key - 1]);
                 if (e.key === "ArrowRight" || e.key === "ArrowDown") {
                     e.preventDefault();
-                    select(order[(i + 1) % 6]);
+                    select(order[(i + 1) % 7]);
                 }
                 if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
                     e.preventDefault();
-                    select(order[(i + 5) % 6]);
+                    select(order[(i + 6) % 7]);
                 }
             });
 
