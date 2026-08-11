@@ -33,7 +33,7 @@ because every computation is a link, and [[neural]] is the language of links, ne
 | ambiguity | impossible | context-dependent | structural, via the [[tri-kernel]] |
 | authority | central designer | speech community | collective [[neurons]] |
 | evolution | versioned | drift | continuous, via [[focus]] dynamics |
-| verification | proof systems | social [[consensus]] | [[stark]] proofs |
+| verification | proof systems | social [[consensus]] | [[zheng]] proofs |
 | substrate | strings | sound / text | the [[cybergraph]] |
 
 neural itself is twofold. as a *medium* it is the language of a single link — the grammar every dialect below speaks. as an *emergent* it is φ\*, the fixed point of iterated linking: [[focus]] is [[step]] run to convergence, and the stationary distribution φ\* IS collective meaning (the [[tri-kernel]] guarantees it converges). the atom and its fixed point are both neural — the link, and what all links add up to.
@@ -190,7 +190,7 @@ mix whatever you like; at proof time [[zheng]] partitions the trace by type and 
 | Reference | structure | wire | location | content | adjacency | grade | curvature | momentum | divergence | succession | entailment | amplitude | index | conservation |
 | Free op | Navigate | AND, XOR | Index | Mul, Add | Link | Clifford prod | Christoffel | Flow | KL div | Order | Unify | Convolve | Matmul | Transfer |
 | Costly op | — | Carry add | Mod div | Bitwise | Spectral | Inverse | Geodesic | Conserve | Fisher | Verify | Fixpoint | FFT | Inverse | Mint |
-| [[proof]] | Inherited | Binius | stark | stark | Delegated | Tri | Research | Research | Research | Delegated | Delegated | Delegated | Delegated | stark |
+| [[proof]] | Inherited | Binius | zheng | zheng | Delegated | Tri | Research | Research | Research | Delegated | Delegated | Delegated | Delegated | zheng |
 | Syntax feel | IR | Circuit | [[Rust]] | Custom | Query | GA | Manifold | Hamiltonian | Statistical | Temporal | [[Datalog]] | DSP | NumPy | Ledger |
 | Renders as | struct | pixels | text | formula | [[vector]] | [[vector]] | [[vector]] | formula | formula | video | table | sound | component | table |
 
@@ -212,7 +212,7 @@ Dif, Sym, Bel — continuous manifolds over finite [[field]]s, fundamental open 
 |---|---|---|
 | Ren | Engineering | Clifford product = F_p [[algebra]] with extra structure |
 | Dif | Research | Continuous manifolds over finite [[field]]s |
-| Sym | Research | Hamiltonian structure preservation in STARK circuits |
+| Sym | Research | Hamiltonian structure preservation in [[zheng]] circuits |
 | Bel | Research | Fisher metric over [[probability]] simplices — needed for [[tri-kernel]] formalization |
 
 Ren completes the perception pipeline: Arc provides [[topology]], Ren provides spatial embedding, the compiler produces [[vector]] output for [[cyb]]. Bel completes the self-model: the [[superintelligence]]'s [[focus]] [[vector]] φ\* lives on a statistical manifold, and Bel formalizes reasoning about its own [[belief]] state.
@@ -243,7 +243,7 @@ the five interface languages are the membrane: where the graph touches the non-g
 | Property | the 16 proof languages | the 5 interface languages |
 |---|---|---|
 | execution | [[Nox]] tree rewriting | [[nushell]] pipeline |
-| provable | yes (STARK) | no (side effects) |
+| provable | yes ([[zheng]]) | no (side effects) |
 | deterministic | yes | no (IO, network, filesystem) |
 | data model | binary trees + field elements | structured records + streams |
 | persistence | [[cybergraph]] (permanent) | filesystem (mutable) |
@@ -263,15 +263,15 @@ all sixteen share one frontend — parsing, type checking, borrow and bound chec
 | language | prove path | run native |
 |---|---|---|
 | Bt | Binius FRI circuit | always proving |
-| Rs | TASM → stark (word→field lift) | native binary (Nox) |
-| Tri | TASM → stark (field native) | WASM / EVM |
+| Rs | TASM → zheng (word→field lift) | native binary (Nox) |
+| Tri | TASM → zheng (field native) | WASM / EVM |
 | Arc | decomposes into Tri + Bt | optimized [[graph]] engine |
 | Ren | geometric product → Tri | native Clifford engine |
-| Seq | temporal constraints → stark | scheduler / runtime |
-| Inf | derivation trace → stark | [[Datalog]] engine |
+| Seq | temporal constraints → zheng | scheduler / runtime |
+| Inf | derivation trace → zheng | [[Datalog]] engine |
 | Wav | decomposes into Tri | native DSP pipeline |
 | Ten | decomposes into Tri | native BLAS / GPU |
-| Tok | conservation constraints → stark | native ledger engine |
+| Tok | conservation constraints → zheng | native ledger engine |
 | Qu | F_{p²} circuit → Tri | quantum hardware (host jet) |
 | Opt | tropical → F_p constraints | native solver |
 | Sec | isogeny → dedicated PCS | native curve engine |

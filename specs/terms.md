@@ -99,7 +99,7 @@ the cybergraph ontology: two objects, one primitive (see [[cybergraph]]/specs/mo
 
 all lower to [[nox]] data.
 
-- `trident` — the compiled, STARK-provable language. `.tri → .nox`. write once, prove anywhere.
+- `trident` — the compiled, [[zheng]]-provable language. `.tri → .nox`. write once, prove anywhere.
 - `rune` — the dynamic, async, hot-reloadable runtime. default for most neurons.
 - `inf` — the Horn-clause query language over the cybergraph.
 - `nox` — the proof-native VM; the substrate all languages target.
