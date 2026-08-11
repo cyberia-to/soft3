@@ -1,399 +1,1143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>soft3 — one mind, many languages, open world</title>
-  <meta name="description" content="The stack for a shared, provable, self-improving knowledge system. Every computation leaves a proof. Every meaning carries weight." />
-  <meta property="og:title" content="soft3" />
-  <meta property="og:description" content="one mind · many languages · open world" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://soft3.org" />
-  <meta name="theme-color" content="#07070a" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='24'>◈</text></svg>" />
-  <style>
-    :root {
-      --bg: #07070a;
-      --fg: #e8e6e1;
-      --mute: #7a7872;
-      --dim: #3d3c38;
-      --line: rgba(232, 230, 225, 0.09);
-      --warm: #c4a574;
-      --glow: rgba(196, 165, 116, 0.14);
-    }
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <title>soft3 — one mind</title>
+        <meta
+            name="description"
+            content="The living stack. Prove everything. Link everything. Breathe."
+        />
+        <meta name="theme-color" content="#04060a" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>◉</text></svg>"
+        />
+        <style>
+            :root {
+                --void: #030508;
+                --moss: #1a3d32;
+                --spore: #7dffb3;
+                --mycel: #3dffa8;
+                --bloom: #ff6bcb;
+                --nectar: #ffc857;
+                --iris: #8b7cff;
+                --sky: #5ce1ff;
+                --flesh: #f2e6d8;
+                --mist: rgba(242, 230, 216, 0.55);
+            }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-    html { scroll-behavior: smooth; }
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+                background: var(--void);
+                color: var(--flesh);
+                font-family:
+                    "SF Pro Text",
+                    "Segoe UI",
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                -webkit-font-smoothing: antialiased;
+            }
 
-    body {
-      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-      background: var(--bg);
-      color: var(--fg);
-      min-height: 100vh;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+            /* ——— living field ——— */
+            .field {
+                position: fixed;
+                inset: 0;
+                overflow: hidden;
+                pointer-events: none;
+                z-index: 0;
+            }
 
-    /* soft field behind everything */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, var(--glow), transparent 55%),
-        radial-gradient(ellipse 40% 30% at 90% 80%, rgba(120, 140, 180, 0.05), transparent 50%),
-        radial-gradient(ellipse 30% 25% at 10% 60%, rgba(196, 165, 116, 0.04), transparent 45%);
-      pointer-events: none;
-      z-index: 0;
-    }
+            .field canvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+                opacity: 0.85;
+            }
 
-    .wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 42rem;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
+            .veil {
+                position: fixed;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background:
+                    radial-gradient(
+                        ellipse 70% 55% at 50% 40%,
+                        transparent 20%,
+                        rgba(3, 5, 8, 0.55) 70%,
+                        rgba(3, 5, 8, 0.92) 100%
+                    ),
+                    radial-gradient(
+                        ellipse 40% 30% at 20% 80%,
+                        rgba(125, 255, 179, 0.07),
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse 35% 35% at 85% 15%,
+                        rgba(255, 107, 203, 0.08),
+                        transparent 55%
+                    ),
+                    radial-gradient(
+                        ellipse 50% 40% at 50% 100%,
+                        rgba(139, 124, 255, 0.06),
+                        transparent 50%
+                    );
+                animation: breath 8s ease-in-out infinite;
+            }
 
-    /* —— nav —— */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.75rem 0 0;
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--mute);
-    }
+            @keyframes breath {
+                0%,
+                100% {
+                    opacity: 1;
+                    filter: hue-rotate(0deg) saturate(1);
+                }
+                33% {
+                    opacity: 0.92;
+                    filter: hue-rotate(12deg) saturate(1.15);
+                }
+                66% {
+                    opacity: 0.96;
+                    filter: hue-rotate(-8deg) saturate(1.08);
+                }
+            }
 
-    nav a {
-      color: var(--mute);
-      text-decoration: none;
-      transition: color 0.25s ease;
-    }
-    nav a:hover { color: var(--fg); }
+            /* ——— shell ——— */
+            .shell {
+                position: relative;
+                z-index: 2;
+                height: 100dvh;
+                height: 100vh;
+                display: grid;
+                grid-template-rows: auto 1fr auto;
+                padding: clamp(0.85rem, 2.2vh, 1.4rem) clamp(1rem, 3vw, 2rem);
+                max-width: 1100px;
+                margin: 0 auto;
+                gap: clamp(0.5rem, 1.5vh, 1rem);
+            }
 
-    .mark {
-      color: var(--fg);
-      font-weight: 500;
-    }
+            /* top bar */
+            .top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
 
-    /* —— hero —— */
-    header.hero {
-      padding: 18vh 0 12vh;
-      text-align: center;
-    }
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 0.65rem;
+                font-weight: 600;
+                letter-spacing: -0.03em;
+                font-size: 1.05rem;
+            }
 
-    .glyph {
-      display: inline-block;
-      font-size: 1.1rem;
-      letter-spacing: 0.6em;
-      color: var(--warm);
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: rise 1.4s ease 0.1s forwards;
-    }
+            .pulse {
+                width: 0.65rem;
+                height: 0.65rem;
+                border-radius: 50%;
+                background: var(--spore);
+                box-shadow:
+                    0 0 12px var(--spore),
+                    0 0 28px rgba(125, 255, 179, 0.45);
+                animation: throb 2.4s ease-in-out infinite;
+            }
 
-    h1 {
-      font-size: clamp(3.2rem, 12vw, 5.5rem);
-      font-weight: 400;
-      letter-spacing: -0.03em;
-      line-height: 0.95;
-      margin-bottom: 1.75rem;
-      opacity: 0;
-      animation: rise 1.2s ease 0.25s forwards;
-    }
+            @keyframes throb {
+                0%,
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+                50% {
+                    transform: scale(1.35);
+                    opacity: 0.7;
+                }
+            }
 
-    .tagline {
-      font-size: clamp(1.05rem, 2.8vw, 1.25rem);
-      color: var(--mute);
-      font-style: italic;
-      font-weight: 400;
-      max-width: 22em;
-      margin: 0 auto 3rem;
-      opacity: 0;
-      animation: rise 1.2s ease 0.45s forwards;
-    }
+            .top a {
+                color: var(--mist);
+                text-decoration: none;
+                font-size: 0.78rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                transition: color 0.2s;
+            }
+            .top a:hover {
+                color: var(--spore);
+            }
 
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.85rem;
-      justify-content: center;
-      opacity: 0;
-      animation: rise 1.2s ease 0.65s forwards;
-    }
+            /* main stage */
+            .stage {
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                gap: clamp(1rem, 3vw, 2.5rem);
+                min-height: 0;
+                align-items: stretch;
+            }
 
-    a.btn {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 0.85rem 1.35rem;
-      border: 1px solid var(--line);
-      color: var(--fg);
-      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-    }
-    a.btn:hover {
-      border-color: var(--warm);
-      color: var(--warm);
-      background: rgba(196, 165, 116, 0.06);
-    }
-    a.btn.primary {
-      background: var(--fg);
-      color: var(--bg);
-      border-color: var(--fg);
-    }
-    a.btn.primary:hover {
-      background: var(--warm);
-      border-color: var(--warm);
-      color: var(--bg);
-    }
+            @media (max-width: 820px) {
+                .stage {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: auto 1fr;
+                }
+                .manifesto h1 {
+                    font-size: clamp(2.1rem, 9vw, 2.8rem);
+                }
+            }
 
-    /* —— manifesto lines —— */
-    section.manifest {
-      padding: 4rem 0 5rem;
-      border-top: 1px solid var(--line);
-    }
+            .manifesto {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                min-height: 0;
+                gap: 0.85rem;
+            }
 
-    .line {
-      display: grid;
-      grid-template-columns: 6.5rem 1fr;
-      gap: 1rem;
-      padding: 1.35rem 0;
-      border-bottom: 1px solid var(--line);
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .line.in { opacity: 1; transform: none; }
+            .eyebrow {
+                font-size: 0.72rem;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: var(--sky);
+                font-weight: 500;
+                opacity: 0.9;
+                text-shadow: 0 0 20px rgba(92, 225, 255, 0.4);
+            }
 
-    .line .k {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--warm);
-      padding-top: 0.3rem;
-    }
+            h1 {
+                font-size: clamp(2.6rem, 6.5vw, 4.1rem);
+                font-weight: 650;
+                line-height: 1.02;
+                letter-spacing: -0.045em;
+                background: linear-gradient(
+                    125deg,
+                    #fff 0%,
+                    var(--spore) 28%,
+                    var(--sky) 52%,
+                    var(--bloom) 78%,
+                    var(--nectar) 100%
+                );
+                background-size: 220% 220%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: aurora 10s ease-in-out infinite;
+            }
 
-    .line .v {
-      font-size: 1.15rem;
-      color: var(--fg);
-    }
-    .line .v em {
-      font-style: italic;
-      color: var(--mute);
-      font-size: 0.95em;
-    }
+            @keyframes aurora {
+                0%,
+                100% {
+                    background-position: 0% 40%;
+                }
+                50% {
+                    background-position: 100% 60%;
+                }
+            }
 
-    /* —— triad —— */
-    section.triad {
-      padding: 2rem 0 5rem;
-    }
+            .lede {
+                color: var(--mist);
+                font-size: clamp(0.95rem, 1.6vw, 1.12rem);
+                line-height: 1.5;
+                max-width: 28em;
+            }
 
-    .triad-title {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 2rem;
-      text-align: center;
-    }
+            .lede strong {
+                color: var(--flesh);
+                font-weight: 600;
+            }
 
-    .cards {
-      display: grid;
-      gap: 1px;
-      background: var(--line);
-      border: 1px solid var(--line);
-    }
+            /* install action */
+            .action {
+                margin-top: 0.6rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.55rem;
+                max-width: 28rem;
+            }
 
-    .card {
-      background: var(--bg);
-      padding: 1.75rem 1.5rem;
-    }
+            .install {
+                display: flex;
+                align-items: stretch;
+                border-radius: 14px;
+                overflow: hidden;
+                background: rgba(8, 16, 14, 0.72);
+                border: 1px solid rgba(125, 255, 179, 0.28);
+                box-shadow:
+                    0 0 0 1px rgba(255, 107, 203, 0.08),
+                    0 12px 40px rgba(0, 0, 0, 0.45),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+                backdrop-filter: blur(12px);
+                transition:
+                    border-color 0.25s,
+                    box-shadow 0.25s;
+            }
+            .install:hover {
+                border-color: rgba(125, 255, 179, 0.55);
+                box-shadow:
+                    0 0 30px rgba(125, 255, 179, 0.12),
+                    0 12px 40px rgba(0, 0, 0, 0.45);
+            }
 
-    .card h3 {
-      font-size: 1.35rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
-    }
+            .install code {
+                flex: 1;
+                padding: 0.95rem 1.1rem;
+                font-family:
+                    "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+                font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+                color: var(--spore);
+                letter-spacing: -0.02em;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                user-select: all;
+            }
 
-    .card p {
-      color: var(--mute);
-      font-size: 0.98rem;
-    }
+            .install button {
+                border: none;
+                background: linear-gradient(
+                    160deg,
+                    rgba(125, 255, 179, 0.25),
+                    rgba(139, 124, 255, 0.2)
+                );
+                color: var(--flesh);
+                padding: 0 1.15rem;
+                font-size: 0.72rem;
+                font-weight: 650;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                cursor: pointer;
+                border-left: 1px solid rgba(125, 255, 179, 0.2);
+                transition:
+                    background 0.2s,
+                    color 0.2s;
+            }
+            .install button:hover {
+                background: linear-gradient(
+                    160deg,
+                    rgba(125, 255, 179, 0.45),
+                    rgba(255, 107, 203, 0.25)
+                );
+                color: #fff;
+            }
+            .install button.ok {
+                color: var(--nectar);
+            }
 
-    .card .verb {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--warm);
-      margin-bottom: 0.65rem;
-    }
+            .hint {
+                font-size: 0.72rem;
+                color: rgba(242, 230, 216, 0.4);
+                letter-spacing: 0.02em;
+            }
+            .hint a {
+                color: var(--sky);
+                text-decoration: none;
+            }
+            .hint a:hover {
+                text-decoration: underline;
+            }
 
-    /* —— breath quote —— */
-    section.breath {
-      padding: 5rem 0 6rem;
-      text-align: center;
-      border-top: 1px solid var(--line);
-    }
+            /* ——— panel / tabs ——— */
+            .panel {
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                border-radius: 20px;
+                background: rgba(6, 12, 14, 0.55);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 20px 60px rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(18px) saturate(1.3);
+                overflow: hidden;
+            }
 
-    blockquote {
-      font-size: clamp(1.25rem, 3.5vw, 1.65rem);
-      font-style: italic;
-      font-weight: 400;
-      line-height: 1.45;
-      color: var(--fg);
-      max-width: 18em;
-      margin: 0 auto 1.5rem;
-    }
+            .tabs {
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 0.25rem;
+                padding: 0.55rem;
+                overflow-x: auto;
+                scrollbar-width: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                background: rgba(0, 0, 0, 0.2);
+            }
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
 
-    .breath cite {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.68rem;
-      font-style: normal;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--mute);
-    }
+            .tab {
+                flex: 0 0 auto;
+                border: none;
+                background: transparent;
+                color: rgba(242, 230, 216, 0.45);
+                font-size: 0.72rem;
+                font-weight: 600;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                padding: 0.55rem 0.75rem;
+                border-radius: 10px;
+                cursor: pointer;
+                transition:
+                    color 0.2s,
+                    background 0.2s,
+                    box-shadow 0.2s;
+                white-space: nowrap;
+            }
+            .tab:hover {
+                color: var(--flesh);
+                background: rgba(255, 255, 255, 0.04);
+            }
+            .tab[aria-selected="true"] {
+                color: #04120c;
+                background: linear-gradient(135deg, var(--spore), var(--sky));
+                box-shadow: 0 0 20px rgba(125, 255, 179, 0.35);
+            }
 
-    /* —— footer —— */
-    footer {
-      padding: 2.5rem 0 3.5rem;
-      border-top: 1px solid var(--line);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem 2rem;
-      justify-content: space-between;
-      align-items: center;
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      color: var(--mute);
-    }
+            .body {
+                flex: 1;
+                min-height: 0;
+                padding: clamp(1rem, 2.5vh, 1.5rem) clamp(1rem, 2.5vw, 1.4rem);
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                overflow: hidden;
+            }
 
-    footer a {
-      color: var(--mute);
-      text-decoration: none;
-    }
-    footer a:hover { color: var(--fg); }
+            .body[hidden] {
+                display: none;
+            }
 
-    footer .links {
-      display: flex;
-      gap: 1.25rem;
-    }
+            .chip {
+                align-self: flex-start;
+                font-size: 0.65rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                padding: 0.3rem 0.6rem;
+                border-radius: 999px;
+                border: 1px solid rgba(125, 255, 179, 0.3);
+                color: var(--spore);
+                background: rgba(125, 255, 179, 0.08);
+            }
 
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: none; }
-    }
+            .body h2 {
+                font-size: clamp(1.35rem, 2.8vw, 1.7rem);
+                font-weight: 650;
+                letter-spacing: -0.03em;
+                line-height: 1.15;
+            }
 
-    @media (max-width: 520px) {
-      .line { grid-template-columns: 1fr; gap: 0.35rem; }
-      header.hero { padding: 14vh 0 10vh; }
-    }
+            .why {
+                color: var(--mist);
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before { animation: none !important; transition: none !important; }
-      .line { opacity: 1; transform: none; }
-      .glyph, h1, .tagline, .cta-row { opacity: 1; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <nav>
-      <span class="mark">soft3</span>
-      <a href="https://github.com/cyberia-to/soft3">github</a>
-    </nav>
+            .props {
+                display: grid;
+                gap: 0.45rem;
+                margin-top: 0.25rem;
+            }
 
-    <header class="hero">
-      <div class="glyph" aria-hidden="true">· · ·</div>
-      <h1>soft3</h1>
-      <p class="tagline">one mind, many languages, open world</p>
-      <div class="cta-row">
-        <a class="btn primary" href="https://github.com/cyberia-to/soft3">enter the stack</a>
-        <a class="btn" href="https://github.com/cyberia-to/soft3#readme">read the map</a>
-      </div>
-    </header>
+            .prop {
+                display: grid;
+                grid-template-columns: 5.5rem 1fr;
+                gap: 0.6rem;
+                align-items: baseline;
+                padding: 0.55rem 0.65rem;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.04);
+            }
 
-    <section class="manifest" aria-label="foundations">
-      <div class="line">
-        <div class="k">one mind</div>
-        <div class="v">shared · provable · self-improving<br /><em>one form, one proof, one focus</em></div>
-      </div>
-      <div class="line">
-        <div class="k">many tongues</div>
-        <div class="v">write · compute · mean<br /><em>compose without translation</em></div>
-      </div>
-      <div class="line">
-        <div class="k">open world</div>
-        <div class="v">planet scale · no schema · no gatekeeper<br /><em>add a link, not an API</em></div>
-      </div>
-    </section>
+            .prop b {
+                font-size: 0.68rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--nectar);
+                font-weight: 650;
+            }
 
-    <section class="triad" aria-label="how you touch it">
-      <p class="triad-title">you touch it three ways</p>
-      <div class="cards">
-        <div class="card">
-          <div class="verb">write</div>
-          <h3>cybermark</h3>
-          <p>Meaning as links. Knowledge you can point at.</p>
+            .prop span {
+                font-size: 0.86rem;
+                color: rgba(242, 230, 216, 0.78);
+                line-height: 1.35;
+            }
+
+            /* footer strip */
+            .foot {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem 1rem;
+                font-size: 0.7rem;
+                color: rgba(242, 230, 216, 0.35);
+                letter-spacing: 0.04em;
+            }
+            .foot a {
+                color: rgba(242, 230, 216, 0.55);
+                text-decoration: none;
+            }
+            .foot a:hover {
+                color: var(--bloom);
+            }
+
+            .organs {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem 0.75rem;
+            }
+            .organs button {
+                border: none;
+                background: none;
+                color: inherit;
+                font: inherit;
+                cursor: pointer;
+                padding: 0;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                transition: color 0.2s;
+            }
+            .organs button:hover,
+            .organs button.on {
+                color: var(--spore);
+                text-shadow: 0 0 12px rgba(125, 255, 179, 0.5);
+            }
+
+            /* mobile: compress */
+            @media (max-height: 700px) {
+                .prop {
+                    padding: 0.4rem 0.55rem;
+                }
+                .body {
+                    gap: 0.5rem;
+                }
+                .lede {
+                    font-size: 0.9rem;
+                }
+            }
+
+            @media (max-width: 520px) {
+                .prop {
+                    grid-template-columns: 1fr;
+                    gap: 0.15rem;
+                }
+                .install code {
+                    font-size: 0.68rem;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .veil,
+                h1,
+                .pulse {
+                    animation: none !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="field" aria-hidden="true"><canvas id="mycel"></canvas></div>
+        <div class="veil" aria-hidden="true"></div>
+
+        <div class="shell">
+            <header class="top">
+                <div class="logo">
+                    <span class="pulse" aria-hidden="true"></span> soft3
+                </div>
+                <a
+                    href="https://github.com/cyberia-to/soft3"
+                    target="_blank"
+                    rel="noopener"
+                    >github ↗</a
+                >
+            </header>
+
+            <main class="stage">
+                <section class="manifesto">
+                    <p class="eyebrow">type 2 civilization software</p>
+                    <h1>one mind.<br />still growing.</h1>
+                    <p class="lede">
+                        A <strong>bio-cyber stack</strong> for shared knowledge:
+                        every link has weight, every computation leaves a proof,
+                        the whole graph settles into one focus — like a forest
+                        learning itself.
+                    </p>
+
+                    <div class="action">
+                        <div
+                            class="install"
+                            role="group"
+                            aria-label="install command"
+                        >
+                            <code id="cmd"
+                                >cargo install soft3 --git
+                                https://github.com/cyberia-to/soft3</code
+                            >
+                            <button
+                                type="button"
+                                id="copy"
+                                title="Copy install command"
+                            >
+                                copy
+                            </button>
+                        </div>
+                        <p class="hint">
+                            primary action · then open the living map on
+                            <a
+                                href="https://github.com/cyberia-to/soft3#readme"
+                                target="_blank"
+                                rel="noopener"
+                                >github</a
+                            >
+                        </p>
+                    </div>
+                </section>
+
+                <aside class="panel" aria-label="organs of the stack">
+                    <div class="tabs" role="tablist" aria-label="components">
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-mind"
+                            aria-controls="p-mind"
+                            aria-selected="true"
+                            data-tab="mind"
+                        >
+                            mind
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-proof"
+                            aria-controls="p-proof"
+                            aria-selected="false"
+                            data-tab="proof"
+                        >
+                            proof
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-graph"
+                            aria-controls="p-graph"
+                            aria-selected="false"
+                            data-tab="graph"
+                        >
+                            graph
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-radio"
+                            aria-controls="p-radio"
+                            aria-selected="false"
+                            data-tab="radio"
+                        >
+                            radio
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-pay"
+                            aria-controls="p-pay"
+                            aria-selected="false"
+                            data-tab="pay"
+                        >
+                            pay
+                        </button>
+                        <button
+                            class="tab"
+                            role="tab"
+                            id="t-body"
+                            aria-controls="p-body"
+                            aria-selected="false"
+                            data-tab="body"
+                        >
+                            body
+                        </button>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-mind"
+                        data-panel="mind"
+                        aria-labelledby="t-mind"
+                    >
+                        <span class="chip">why you need it</span>
+                        <h2>One shared mind</h2>
+                        <p class="why">
+                            Without a common field, every app is a lonely organ.
+                            soft3 is the tissue that lets many programs think as
+                            one organism.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>form</b
+                                ><span
+                                    >one multilinear form over one field —
+                                    composition is free</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>focus</b
+                                ><span
+                                    >the graph settles to φ* — collective
+                                    attention, not a vote count</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>feel</b
+                                ><span
+                                    >you write · compute · mean — three nerves,
+                                    one body</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-proof"
+                        data-panel="proof"
+                        aria-labelledby="t-proof"
+                        hidden
+                    >
+                        <span class="chip">zheng · hemera · lens · nox</span>
+                        <h2>Proof in the marrow</h2>
+                        <p class="why">
+                            Trust without a priest. Every step can be checked;
+                            the prover proves the prover. You need this when
+                            “just trust me” is not an architecture.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>hash</b
+                                ><span
+                                    >Poseidon2 sponge — identity, trees,
+                                    verified streams</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>commit</b
+                                ><span
+                                    >PCS backends as one lens — pick algebra,
+                                    keep the API</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>run</b
+                                ><span
+                                    >nox jets + zheng sumcheck — compute that
+                                    can stand in court</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-graph"
+                        data-panel="graph"
+                        aria-labelledby="t-graph"
+                        hidden
+                    >
+                        <span class="chip">cybergraph · bbg · cell</span>
+                        <h2>Knowledge as life</h2>
+                        <p class="why">
+                            APIs rot. Links compound. You need a graph that
+                            stores meaning as mass — not rows in a silo someone
+                            else can unplug.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>link</b
+                                ><span
+                                    >cyberlinks — typed edges between particles
+                                    of sense</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>mass</b
+                                ><span
+                                    >BBG: one polynomial, ten dims, ~200B
+                                    proofs</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>cell</b
+                                ><span
+                                    >local slice of the organism — apply, prove,
+                                    sync</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-radio"
+                        data-panel="radio"
+                        aria-labelledby="t-radio"
+                        hidden
+                    >
+                        <span class="chip">radio · tape · mudra · sync</span>
+                        <h2>Nerves across space</h2>
+                        <p class="why">
+                            A mind that cannot reach itself is not alive. You
+                            need encrypted transport, typed frames, and sync
+                            that forgives partitions.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>wave</b
+                                ><span
+                                    >QUIC + BAO streaming — gossip that carries
+                                    substance</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>frame</b
+                                ><span
+                                    >tape: particles over any byte stream</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>veil</b
+                                ><span
+                                    >mudra: KEM, AEAD, threshold — skin that
+                                    chooses who enters</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-pay"
+                        data-panel="pay"
+                        aria-labelledby="t-pay"
+                        hidden
+                    >
+                        <span class="chip">tok · foculus · tru · settle</span>
+                        <h2>Value that conserves</h2>
+                        <p class="why">
+                            Attention is energy. Rewards should follow real
+                            contribution — Δφ⁺, proofs, tickets — not
+                            advertising myths.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>rank</b
+                                ><span
+                                    >tru converges φ* — who actually moved the
+                                    mind</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>agree</b
+                                ><span
+                                    >foculus finality — collective focus as
+                                    consensus</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>mint</b
+                                ><span
+                                    >tok conservation ledger — coins that cannot
+                                    fantasize supply</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="body"
+                        role="tabpanel"
+                        id="p-body"
+                        data-panel="body"
+                        aria-labelledby="t-body"
+                        hidden
+                    >
+                        <span class="chip">cyb · mir · prysm · rune</span>
+                        <h2>Flesh you can inhabit</h2>
+                        <p class="why">
+                            A stack without a body is a lab note. You need a
+                            cell you can run — terminal, world, language — so
+                            the organism has hands.
+                        </p>
+                        <div class="props">
+                            <div class="prop">
+                                <b>cyb</b
+                                ><span
+                                    >the immortal robot shell — Bevy world +
+                                    live cell</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>see</b
+                                ><span
+                                    >mir + prysm — positions become places,
+                                    chunks become UI</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>speak</b
+                                ><span
+                                    >rune / neural — write, eval, mean without
+                                    translation tax</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </main>
+
+            <footer class="foot">
+                <div class="organs" id="quick" aria-label="quick organs">
+                    <button type="button" data-tab="mind" class="on">
+                        mind
+                    </button>
+                    <button type="button" data-tab="proof">proof</button>
+                    <button type="button" data-tab="graph">graph</button>
+                    <button type="button" data-tab="radio">radio</button>
+                    <button type="button" data-tab="pay">pay</button>
+                    <button type="button" data-tab="body">body</button>
+                </div>
+                <span>soft3.org · breathe with the stack</span>
+            </footer>
         </div>
-        <div class="card">
-          <div class="verb">compute</div>
-          <h3>trident</h3>
-          <p>Every step leaves a proof. The prover proves the prover.</p>
-        </div>
-        <div class="card">
-          <div class="verb">mean</div>
-          <h3>neural</h3>
-          <p>Weight that can be measured. Sense that can settle.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="breath">
-      <blockquote>
-        every web had a stack.<br />
-        this one remembers.
-      </blockquote>
-      <cite>soft3 — type&nbsp;2 civilization software</cite>
-    </section>
+        <script>
+            /* ——— tabs ——— */
+            const tabs = [...document.querySelectorAll(".tab")];
+            const panels = [...document.querySelectorAll(".body")];
+            const quick = [...document.querySelectorAll("#quick button")];
 
-    <footer>
-      <span>soft3.org</span>
-      <div class="links">
-        <a href="https://github.com/cyberia-to">cyberia</a>
-        <a href="https://github.com/cyberia-to/cyb">cyb</a>
-        <a href="https://github.com/cyberia-to/soft3">repo</a>
-      </div>
-    </footer>
-  </div>
+            function select(name) {
+                tabs.forEach((t) => {
+                    const on = t.dataset.tab === name;
+                    t.setAttribute("aria-selected", on ? "true" : "false");
+                });
+                panels.forEach((p) => {
+                    p.hidden = p.dataset.panel !== name;
+                });
+                quick.forEach((b) =>
+                    b.classList.toggle("on", b.dataset.tab === name),
+                );
+                // tint veil slightly by organ
+                const hues = {
+                    mind: 0,
+                    proof: 40,
+                    graph: -20,
+                    radio: 80,
+                    pay: 25,
+                    body: -40,
+                };
+                document.documentElement.style.setProperty(
+                    "--hue-nudge",
+                    (hues[name] || 0) + "deg",
+                );
+                document.querySelector(".veil").style.filter =
+                    `hue-rotate(${hues[name] || 0}deg)`;
+            }
 
-  <script>
-    const lines = document.querySelectorAll(".line");
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("in");
-        });
-      },
-      { threshold: 0.2 }
-    );
-    lines.forEach((el, i) => {
-      el.style.transitionDelay = i * 0.12 + "s";
-      io.observe(el);
-    });
-  </script>
-</body>
+            tabs.forEach((t) =>
+                t.addEventListener("click", () => select(t.dataset.tab)),
+            );
+            quick.forEach((b) =>
+                b.addEventListener("click", () => select(b.dataset.tab)),
+            );
+
+            // keyboard: 1-6 and arrows
+            const order = ["mind", "proof", "graph", "radio", "pay", "body"];
+            document.addEventListener("keydown", (e) => {
+                if (e.target.matches("input, textarea")) return;
+                const i = order.indexOf(
+                    tabs.find((t) => t.getAttribute("aria-selected") === "true")
+                        ?.dataset.tab,
+                );
+                if (e.key >= "1" && e.key <= "6") select(order[+e.key - 1]);
+                if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                    e.preventDefault();
+                    select(order[(i + 1) % order.length]);
+                }
+                if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                    e.preventDefault();
+                    select(order[(i - 1 + order.length) % order.length]);
+                }
+            });
+
+            /* ——— copy install ——— */
+            const cmd = document.getElementById("cmd");
+            const copyBtn = document.getElementById("copy");
+            copyBtn.addEventListener("click", async () => {
+                const text = cmd.textContent.trim();
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch {
+                    const r = document.createRange();
+                    r.selectNodeContents(cmd);
+                    const s = getSelection();
+                    s.removeAllRanges();
+                    s.addRange(r);
+                    document.execCommand("copy");
+                }
+                copyBtn.textContent = "copied";
+                copyBtn.classList.add("ok");
+                setTimeout(() => {
+                    copyBtn.textContent = "copy";
+                    copyBtn.classList.remove("ok");
+                }, 1600);
+            });
+
+            /* ——— mycelial canvas ——— */
+            const canvas = document.getElementById("mycel");
+            const ctx = canvas.getContext("2d");
+            let w, h, dpr, nodes, t0;
+
+            function resize() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                spawn();
+            }
+
+            function spawn() {
+                const n = Math.floor(Math.min(55, (w * h) / 18000));
+                nodes = Array.from({ length: n }, () => ({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.35,
+                    vy: (Math.random() - 0.5) * 0.35,
+                    r: 1.2 + Math.random() * 2.2,
+                    phase: Math.random() * Math.PI * 2,
+                    kind: Math.random(),
+                }));
+            }
+
+            function palette(k, a) {
+                if (k < 0.33) return `rgba(125,255,179,${a})`;
+                if (k < 0.55) return `rgba(92,225,255,${a})`;
+                if (k < 0.75) return `rgba(255,107,203,${a})`;
+                if (k < 0.9) return `rgba(139,124,255,${a})`;
+                return `rgba(255,200,87,${a})`;
+            }
+
+            function frame(now) {
+                if (!t0) t0 = now;
+                const t = (now - t0) / 1000;
+                ctx.clearRect(0, 0, w, h);
+
+                // soft organic wash
+                const g = ctx.createRadialGradient(
+                    w * 0.5,
+                    h * 0.45,
+                    0,
+                    w * 0.5,
+                    h * 0.45,
+                    Math.max(w, h) * 0.7,
+                );
+                const pulse = 0.5 + 0.5 * Math.sin(t * 0.35);
+                g.addColorStop(0, `rgba(26, 61, 50, ${0.18 + pulse * 0.06})`);
+                g.addColorStop(0.45, `rgba(40, 20, 50, ${0.12})`);
+                g.addColorStop(1, "rgba(3,5,8,0)");
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, w, h);
+
+                // move + links
+                const maxDist = Math.min(160, Math.min(w, h) * 0.22);
+
+                for (const n of nodes) {
+                    n.x += n.vx + Math.sin(t * 0.4 + n.phase) * 0.12;
+                    n.y += n.vy + Math.cos(t * 0.35 + n.phase) * 0.1;
+                    if (n.x < -20) n.x = w + 20;
+                    if (n.x > w + 20) n.x = -20;
+                    if (n.y < -20) n.y = h + 20;
+                    if (n.y > h + 20) n.y = -20;
+                }
+
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const a = nodes[i],
+                            b = nodes[j];
+                        const dx = a.x - b.x,
+                            dy = a.y - b.y;
+                        const d = Math.hypot(dx, dy);
+                        if (d < maxDist) {
+                            const alpha = (1 - d / maxDist) * 0.22;
+                            ctx.beginPath();
+                            ctx.strokeStyle = palette(
+                                (a.kind + b.kind) / 2,
+                                alpha,
+                            );
+                            ctx.lineWidth = 0.8;
+                            ctx.moveTo(a.x, a.y);
+                            // slight curve — hyphae
+                            const mx =
+                                (a.x + b.x) / 2 + Math.sin(t + a.phase) * 8;
+                            const my =
+                                (a.y + b.y) / 2 + Math.cos(t + b.phase) * 8;
+                            ctx.quadraticCurveTo(mx, my, b.x, b.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                for (const n of nodes) {
+                    const glow = 0.45 + 0.35 * Math.sin(t * 1.2 + n.phase);
+                    ctx.beginPath();
+                    ctx.fillStyle = palette(n.kind, 0.15 + glow * 0.2);
+                    ctx.arc(n.x, n.y, n.r * (2.5 + glow), 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.fillStyle = palette(n.kind, 0.55 + glow * 0.3);
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(frame);
+            }
+
+            window.addEventListener("resize", resize);
+            resize();
+            requestAnimationFrame(frame);
+
+            // pointer wakes the field
+            window.addEventListener("pointermove", (e) => {
+                if (!nodes || !nodes.length) return;
+                const x = e.clientX,
+                    y = e.clientY;
+                for (const n of nodes) {
+                    const dx = n.x - x,
+                        dy = n.y - y;
+                    const d = Math.hypot(dx, dy);
+                    if (d < 120 && d > 1) {
+                        n.vx += (dx / d) * 0.02;
+                        n.vy += (dy / d) * 0.02;
+                    }
+                }
+            });
+        </script>
+    </body>
 </html>
