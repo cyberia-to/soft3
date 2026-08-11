@@ -190,6 +190,45 @@
                 max-width: 32em;
             }
 
+            /* killer feature */
+            .kill {
+                margin-top: 0.15rem;
+                padding: 0.75rem 0.9rem;
+                border-radius: 16px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(125, 255, 179, 0.12),
+                    rgba(255, 107, 171, 0.1),
+                    rgba(92, 225, 255, 0.1)
+                );
+                border: 1px solid rgba(255, 226, 138, 0.35);
+                box-shadow:
+                    0 0 40px rgba(125, 255, 179, 0.12),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            }
+            .kill-stat {
+                font-size: clamp(1.05rem, 2vw, 1.28rem);
+                font-weight: 700;
+                line-height: 1.25;
+                color: #fff;
+                letter-spacing: -0.02em;
+            }
+            .kill-stat em {
+                font-style: normal;
+                color: #7dffc4;
+                text-shadow: 0 0 20px rgba(125, 255, 179, 0.55);
+            }
+            .kill-sub {
+                margin-top: 0.4rem;
+                font-size: clamp(0.88rem, 1.4vw, 1rem);
+                line-height: 1.4;
+                color: rgba(255, 248, 240, 0.88);
+            }
+            .kill-sub strong {
+                color: #ffe28a;
+                font-weight: 700;
+            }
+
             .action {
                 display: flex;
                 flex-direction: column;
@@ -468,12 +507,22 @@
                         every computation leaves a proof, the whole graph
                         settles into one focus.
                     </p>
+                    <div class="kill" role="note">
+                        <p class="kill-stat">
+                            Light client validates <em>all of history</em> in
+                            roughly <em>~100&nbsp;ns</em>.
+                        </p>
+                        <p class="kill-sub">
+                            That is how soft3 does
+                            <strong>interplanetary consensus</strong> — no vote,
+                            no committee. Sync happens in
+                            <strong>cyberspace</strong>: the graph converges;
+                            distance is just latency of light, not of politics.
+                        </p>
+                    </div>
                     <div class="action">
                         <div class="install">
-                            <code id="cmd"
-                                >cargo install soft3 --git
-                                https://github.com/cyberia-to/soft3</code
-                            >
+                            <code id="cmd">cargo install soft3</code>
                             <button type="button" id="copy">copy</button>
                         </div>
                         <p class="hint">
@@ -552,25 +601,27 @@
                         <p class="why">
                             Without a common field, every app is a lonely organ.
                             soft3 is the tissue that lets many programs think as
-                            one organism.
+                            one organism — across rooms, planets, light-minutes.
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>form</b
+                                <b>light</b
                                 ><span
-                                    >one multilinear form over one field</span
+                                    >validate all history in ~100&nbsp;ns</span
                                 >
                             </div>
                             <div class="prop">
                                 <b>focus</b
                                 ><span
-                                    >graph settles to φ* — collective
-                                    attention</span
+                                    >φ* converges — no vote, no committee</span
                                 >
                             </div>
                             <div class="prop">
-                                <b>feel</b
-                                ><span>write · compute · mean — one body</span>
+                                <b>space</b
+                                ><span
+                                    >interplanetary consensus in
+                                    cyberspace</span
+                                >
                             </div>
                         </div>
                     </div>
@@ -578,8 +629,10 @@
                         <span class="chip">zheng · hemera · lens · nox</span>
                         <h2>Proof in the marrow</h2>
                         <p class="why">
-                            Trust without a priest. Every step can be checked;
-                            the prover proves the prover.
+                            Trust without a priest. A light client checks the
+                            whole chain of meaning in roughly a hundred
+                            nanoseconds — not by replaying votes, by verifying
+                            the form.
                         </p>
                         <div class="props">
                             <div class="prop">
