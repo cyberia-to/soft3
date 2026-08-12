@@ -28,3 +28,8 @@ mod tests {
         assert!(!super::manifesto().is_empty());
     }
 }
+
+// Re-exports of the published train (product facade).
+pub use cyb;
+pub use cybergraph;
+pub use foculus;

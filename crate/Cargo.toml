@@ -1,6 +1,6 @@
 [package]
 name = "soft3"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "soft3 — type 2 civilization software stack (lib facade + CLI)"
 license-file = "LICENSE"
@@ -18,3 +18,8 @@ path = "src/lib.rs"
 name = "soft3"
 path = "src/bin/soft3.rs"
 [workspace]
+
+[dependencies]
+cyb = { version = "0.2" }
+foculus = { version = "0.1", default-features = false }
+cybergraph = { version = "0.1" }
