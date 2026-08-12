@@ -26,7 +26,7 @@
             :root {
                 --cream: #fff8f0;
                 --ink-glass: rgba(8, 16, 12, 0.62);
-                --accent-h: 0;
+                --accent-h: 150;
             }
 
             * {
@@ -146,20 +146,30 @@
                 );
             }
 
+            /* hero: type on the left, the crystal sigil carrying the killer
+               number on the right — the stat is drawn, not boxed */
             .manifesto {
-                padding: clamp(1rem, 2.2vh, 1.45rem)
+                padding: clamp(1.1rem, 2.4vh, 1.6rem)
                     clamp(1.1rem, 2.2vw, 1.55rem);
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 0.4rem clamp(0.9rem, 2.5vw, 1.6rem);
+                align-items: center;
+            }
+
+            .pitch {
                 display: flex;
                 flex-direction: column;
-                gap: 0.55rem;
+                gap: 0.6rem;
+                min-width: 0;
             }
 
             .eyebrow {
-                font-size: clamp(0.68rem, 1.15vw, 0.8rem);
+                font-size: clamp(0.62rem, 1vw, 0.72rem);
                 font-weight: 700;
-                letter-spacing: 0.18em;
+                letter-spacing: 0.22em;
                 text-transform: uppercase;
-                color: #ffe28a;
+                color: rgba(255, 248, 240, 0.55);
             }
 
             h1 {
@@ -176,16 +186,15 @@
                 display: block;
                 background: linear-gradient(
                     110deg,
-                    #fff,
-                    #ff9ed0 30%,
-                    #8dffe0 60%,
-                    #ffe28a
+                    rgba(255, 248, 240, 0.95),
+                    #7dffc4 55%,
+                    rgba(255, 248, 240, 0.95)
                 );
-                background-size: 200% auto;
+                background-size: 220% auto;
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
-                animation: sheen 7s ease-in-out infinite;
+                animation: sheen 9s ease-in-out infinite;
             }
             @keyframes sheen {
                 0%,
@@ -204,43 +213,81 @@
                 max-width: 32em;
             }
 
-            /* killer feature */
-            .kill {
-                margin-top: 0.15rem;
-                padding: 0.75rem 0.9rem;
-                border-radius: 16px;
-                background: linear-gradient(
-                    135deg,
-                    rgba(125, 255, 179, 0.12),
-                    rgba(255, 107, 171, 0.1),
-                    rgba(92, 225, 255, 0.1)
+            /* the sigil: the killer number drawn inside the crystal — the same
+               heptagon geometry as the triad ring below, one visual language */
+            .sigil {
+                position: relative;
+                width: clamp(11rem, 22vw, 14.5rem);
+                aspect-ratio: 1 / 1;
+                justify-self: center;
+            }
+            .sigil::before {
+                content: "";
+                position: absolute;
+                inset: 12%;
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    rgba(125, 255, 196, 0.16),
+                    transparent 70%
                 );
-                border: 1px solid rgba(255, 226, 138, 0.35);
-                box-shadow:
-                    0 0 40px rgba(125, 255, 179, 0.12),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+                filter: blur(6px);
             }
-            .kill-stat {
-                font-size: clamp(1.05rem, 2vw, 1.28rem);
+            .sigil svg {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                overflow: visible;
+            }
+            .sigil polygon {
+                fill: none;
+                stroke: rgba(255, 248, 240, 0.28);
+                stroke-width: 1;
+                transform-origin: 100px 100px;
+                animation: spin 140s linear infinite;
+            }
+            .sigil polygon.inner {
+                stroke: rgba(125, 255, 196, 0.45);
+                stroke-dasharray: 4 5;
+                animation: spin 100s linear infinite reverse;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .sigil-text {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.15rem;
+                text-align: center;
+            }
+            .sigil-text b {
+                font-size: clamp(1.5rem, 3vw, 1.95rem);
                 font-weight: 700;
-                line-height: 1.25;
-                color: #fff;
                 letter-spacing: -0.02em;
-            }
-            .kill-stat em {
-                font-style: normal;
                 color: #7dffc4;
-                text-shadow: 0 0 20px rgba(125, 255, 179, 0.55);
+                text-shadow: 0 0 24px rgba(125, 255, 196, 0.5);
             }
-            .kill-sub {
-                margin-top: 0.4rem;
-                font-size: clamp(0.88rem, 1.4vw, 1rem);
-                line-height: 1.4;
-                color: rgba(255, 248, 240, 0.88);
-            }
-            .kill-sub strong {
-                color: #ffe28a;
+            .sigil-text span {
+                font-size: 0.66rem;
                 font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                line-height: 1.5;
+                color: rgba(255, 248, 240, 0.62);
+            }
+
+            .consensus {
+                font-size: clamp(0.85rem, 1.35vw, 0.95rem);
+                line-height: 1.45;
+                color: rgba(255, 248, 240, 0.6);
+                max-width: 30em;
             }
 
             .action {
@@ -309,7 +356,7 @@
                 color: rgba(255, 248, 240, 0.55);
             }
             .hint a {
-                color: #ffe28a;
+                color: #7dffc4;
                 text-decoration: none;
             }
             .hint a:hover {
@@ -334,7 +381,7 @@
             }
             .spiral em {
                 font-style: normal;
-                color: #ffe28a;
+                color: #7dffc4;
             }
 
             /* the crystal ring: 7 triads as facets of one heptagon, not a row of
@@ -443,7 +490,7 @@
                 font-weight: 700;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
-                color: #ffe28a;
+                color: #7dffc4;
             }
             .body h2 {
                 font-size: clamp(1.15rem, 2.2vw, 1.45rem);
@@ -487,11 +534,11 @@
                 color: #fff;
                 font-weight: 700;
                 text-decoration: none;
-                border-bottom: 1px solid rgba(255, 226, 138, 0.4);
+                border-bottom: 1px solid rgba(125, 255, 196, 0.35);
             }
             .prop a:hover {
-                color: #ffe28a;
-                border-bottom-color: #ffe28a;
+                color: #7dffc4;
+                border-bottom-color: #7dffc4;
             }
 
             .foot {
@@ -510,6 +557,14 @@
             @media (max-width: 720px) {
                 .crystal {
                     width: 100%;
+                }
+                /* hero stacks: sigil under the type, centered */
+                .manifesto {
+                    grid-template-columns: 1fr;
+                }
+                .sigil {
+                    width: clamp(9.5rem, 44vw, 12rem);
+                    margin-top: 0.3rem;
                 }
                 /* the heptagon needs room a phone doesn't have — the same 7
                    buttons fall back to a plain wrapping row, DOM order intact */
@@ -545,7 +600,8 @@
 
             @media (prefers-reduced-motion: reduce) {
                 h1 em,
-                .install button {
+                .install button,
+                .sigil polygon {
                     animation: none !important;
                 }
             }
@@ -576,47 +632,59 @@
             <main class="stage">
                 <div class="crystal glass">
                 <section class="manifesto">
-                    <p class="eyebrow">type 2 civilization software</p>
-                    <h1>one mind.<em>still growing.</em></h1>
-                    <p class="lede">
-                        Shared knowledge that breathes: every link has weight,
-                        every computation leaves a proof, the whole graph
-                        settles into one focus.
-                    </p>
-                    <div class="kill" role="note">
-                        <p class="kill-stat">
-                            Light client validates <em>all of history</em> in
-                            roughly <em>~100&nbsp;ns</em>.
+                    <div class="pitch">
+                        <p class="eyebrow">type 2 civilization software</p>
+                        <h1>one mind.<em>still growing.</em></h1>
+                        <p class="lede">
+                            Every link has weight, every computation leaves a
+                            proof, the whole graph settles into one focus.
                         </p>
-                        <p class="kill-sub">
-                            That is how soft3 does
-                            <strong>interplanetary consensus</strong> — no vote,
-                            no committee. Sync happens in
-                            <strong>cyberspace</strong>: the graph converges;
-                            distance is just latency of light, not of politics.
+                        <p class="consensus">
+                            Interplanetary consensus with no vote and no
+                            committee: the graph converges in cyberspace —
+                            distance is latency of light, not of politics.
                         </p>
-                    </div>
-                    <div class="action">
-                        <div class="install">
-                            <code id="cmd">cargo install soft3</code>
-                            <button type="button" id="copy">copy</button>
+                        <div class="action">
+                            <div class="install">
+                                <code id="cmd">cargo install soft3</code>
+                                <button type="button" id="copy">copy</button>
+                            </div>
+                            <p class="hint">
+                                install ·
+                                <a
+                                    href="https://cyber.page/soft3/"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >docs</a
+                                >
+                                ·
+                                <a
+                                    href="https://github.com/cyberia-to/soft3"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >github</a
+                                >
+                            </p>
                         </div>
-                        <p class="hint">
-                            install ·
-                            <a
-                                href="https://cyber.page/soft3/"
-                                target="_blank"
-                                rel="noopener"
-                                >docs</a
-                            >
-                            ·
-                            <a
-                                href="https://github.com/cyberia-to/soft3"
-                                target="_blank"
-                                rel="noopener"
-                                >github</a
-                            >
-                        </p>
+                    </div>
+                    <div
+                        class="sigil"
+                        role="img"
+                        aria-label="light client verifies all of history in about 100 nanoseconds"
+                    >
+                        <svg viewBox="0 0 200 200" aria-hidden="true">
+                            <polygon
+                                points="100,22 161,51.4 176,117.4 133.8,170.3 66.2,170.3 24,117.4 39,51.4"
+                            />
+                            <polygon
+                                class="inner"
+                                points="100,43.8 143.9,65 154.7,112.5 124.3,150.6 75.7,150.6 45.3,112.5 56.1,65"
+                            />
+                        </svg>
+                        <div class="sigil-text">
+                            <b>~100&nbsp;ns</b>
+                            <span>light client verifies<br />all of history</span>
+                        </div>
                     </div>
                 </section>
 
@@ -1192,9 +1260,11 @@
             function select(name) {
                 organ = name;
                 organHue = hues[name] || 0;
+                // canvas hue is a rotation offset (0 = unshifted world); the UI
+                // accent anchors that same offset to the brand mint (H≈150)
                 document.documentElement.style.setProperty(
                     "--accent-h",
-                    organHue,
+                    150 + organHue,
                 );
                 document
                     .querySelectorAll(".tab[data-tab]")
