@@ -101,6 +101,7 @@ soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally
 | [[mir]] | render | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | — | tape dialect · chunks → UI |
 | [[cyb]] | embody | — | Bevy worlds · terminal · live cells |
+| [[lytics]] | measure | — | signed visitor events · PoW-priced · retention · cohorts · funnels |
 
 ### stability
 
