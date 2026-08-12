@@ -20,12 +20,18 @@ of address on production:
 
 | species | address | components |
 |---|---|---|
-| subgraph under soft3 | `cyber.page/soft3/<name>/` | cybergraph · bbg · nox · zheng · tru · hemera · strata · lens · mudra · radio · tape · foculus |
-| concept page at root | `cyber.page/<name>/` | cell · tok · soma · mir · glia · inf · neural · cyb |
-| unpublished | 404 everywhere | honeycrisp · trident · rune · wysm · eidos · prysm · fs · ward · kern |
+| subgraph under soft3 | `cyber.page/soft3/<name>/` | cybergraph · bbg · nox · zheng · tru · hemera · strata · lens · mudra · radio · tape · foculus · lytics · tok |
+| subgraph under cyb | `cyber.page/cyb/<name>/` | honeycrisp · wysm · prysm · fs · ward |
+| subgraph under neural | `cyber.page/neural/<name>/` | trident · eidos · rune · inf |
+| concept page at root | `cyber.page/<name>/` | cell · soma · mir · glia · neural · cyb · kern |
 
-locally all 29 resolve (private repos included in the local build); the
-publish set is narrower, so the site's links rotted silently.
+the registry (`cyber/subgraphs.toml`) is the single source of the mount
+map: `parent` decides the namespace. the first audit misread six of
+these as unpublished when they were simply mounted under `cyb/` and
+`neural/` rather than `soft3/` — the mess was link paths, never missing
+pages. the site now links every component at its registry-derived
+address; the only GitHub links left are the soft3 repo's own header and
+footer.
 
 ## the canon
 
@@ -39,19 +45,22 @@ publish set is narrower, so the site's links rotted silently.
 4. `site/check-links.nu` enforces this: it curls every external href in
    the site and fails on any non-200. run it before every deploy.
 
-## the reconciliation queue
+## the reconciliation record
 
-to retire every fallback, publish these as subgraphs (public repos —
-add to the cyber workspace publish set): honeycrisp, trident, rune,
-wysm, eidos, prysm. then create the missing pages: `kern` (the shader
-component that wraps wgpu — repo does not exist yet), `fs` and `ward`
-(pages live in the cyb subgraph; publish or mirror them). each landing
-turns a GitHub/stack-page fallback back into its canonical address —
-`check-links.nu` stays green through every step.
+resolved 2026-08-12: every component link on the site points at its
+canonical cyber.page address; zero GitHub fallbacks remain in the triad
+panels. two registry drifts were fixed on the way — `lytics` mounted at
+`soft3/lytics`, and `tok` flipped public with `repo = "plumb"` (the org
+repo was renamed; publish.yml now honors the `repo` field when cloning).
+`fs` stays a page inside the cyb subgraph (`cyb/fs`) while its own repo
+remains private; `kern` has a root concept page and still needs its
+repo.
 
-lytics is queued the same way: mounted at `soft3/lytics` in the cyber
-registry (2026-08-12); the site links its GitHub repo until the next
-cyber.page deploy, then flips to `cyber.page/soft3/lytics/`.
+known tooling drift, deliberately not applied: `scripts/sync-org.nu`
+still reads per-repo `subgraphs/*.md` declarations and proposes ~50
+"adopt" stubs that would duplicate `subgraphs.toml`. the registry moved
+to the single toml; sync-org needs the same migration before its
+--apply is safe again.
 
 ## the deeper cut (optional, later)
 
