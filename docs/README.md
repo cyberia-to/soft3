@@ -8,7 +8,7 @@ alias: soft3 whitepaper, foundational soft3 methods, soft3 foundations
 ---
 # soft3 — foundations
 
-soft3 is twenty components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
+soft3 is thirty-one components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
 
 soft3 is **one mind**, reachable in **many languages**, growing into an **open world**.
 
@@ -16,15 +16,16 @@ soft3 is **one mind**, reachable in **many languages**, growing into an **open w
 - **many languages** — where every other stack locks you in, soft3 is plural at the surface. you *write* in one language, *compute* in a family of them, and *mean* in a third — and all of them lower to the same substrate.
 - **open world** — where every other stack builds walls, soft3 stays open. it holds at planet scale, composes without glue, and admits anything that lowers to [[nox]].
 
-learn those three and the twenty repos stop being twenty things to memorize — they become three ideas applied many times. this is the whitepaper for those ideas.
+learn those three and the thirty-one repos stop being thirty-one things to memorize — they become three ideas applied many times. this is the whitepaper for those ideas.
 
 ```svgbob
    +------------------------------------------------------------------------+
-   | the 20 components  —  each a specialization of the substrate below     |
+   | the 31 components  —  each a specialization of the substrate below     |
    +------------------------------------------------------------------------+
-   | strata . hemera . lens . trident . nox . zheng . cybergraph . bbg      |
-   | tru . glia . mir . mudra . radio . tape . sync . foculus . soma        |
-   | conformance . rune . fs . plumb                                        |
+   | honeycrisp . strata . hemera . lens . cybergraph . bbg . cell . fs     |
+   | tok . mudra . radio . tape . foculus . ward . tru . soma . neural      |
+   | rune . inf . trident . nox . wysm . glia . kern . zheng . eidos        |
+   | mir . prysm . cyb . lytics . conformance                               |
    +------------------------------------------------------------------------+
                                         |
                                         | each component, the same mind
@@ -174,26 +175,25 @@ the bedrock diagram shows soft3 as a substrate — three principles stacked unde
    | mimi  midao  my    |  focus . karma|                                    |
    +--------------------+               |                                    |
     mudra -----keys ------------------->|                                    |
-    plumb -----value ------------------>|                                    |
+    tok -------value ------------------>|                                    |
                                         +-------+-----------+-----------+----+
                                                 |           |           |
                                                 |store      |sync       |transmit
                                                 v           v           v
                                             +-------+   +-------+   +-------+
-                                            |  bbg  |   | sync  |   | tape  |
+                                            |  bbg  |   |foculus|   | tape  |
                                             +-------+   +-------+   +-------+
                                             |:store |   | :sync |   |:frame |
-                                            +-------+   +-------+   +-------+
-                                                |           |           |
-                                                |verify     |agree      |frames
-                                                |           |           |
-                                                |           |           |
-                                                |           v           v
-                                                |       +-------+   +-------+
-                                                |       |foculus|   | radio |
-                                                |       +-------+   +-------+
-                                                |       |:agree |   |:trans |
-                                                |       +-------+   +-------+
+                                            +-------+   |:agree |   +-------+
+                                                |       +-------+       |
+                                                |verify                 |frames
+                                                |                       |
+                                                |                       v
+                                                |                   +-------+
+                                                |                   | radio |
+                                                |                   +-------+
+                                                |                   |:trans |
+                                                |                   +-------+
                                                 |
                                                 |
                                                 |
