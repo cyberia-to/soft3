@@ -49,6 +49,10 @@ component that wraps wgpu — repo does not exist yet), `fs` and `ward`
 turns a GitHub/stack-page fallback back into its canonical address —
 `check-links.nu` stays green through every step.
 
+lytics is queued the same way: mounted at `soft3/lytics` in the cyber
+registry (2026-08-12); the site links its GitHub repo until the next
+cyber.page deploy, then flips to `cyber.page/soft3/lytics/`.
+
 ## the deeper cut (optional, later)
 
 the site's triad panels restate the README table by hand. if the drift
