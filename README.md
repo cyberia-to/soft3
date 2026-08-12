@@ -141,3 +141,14 @@ const result = await client.rank.search('cyber')
 dependencies not yet stabilised — full implementation is blocked on wire format finalisation (`schema/`), BBG proof serialisation (lens `Commitment`/`Opening` serde), and the query RPC protocol. the scaffold is in place; implementations land per component as deps stabilise.
 
 see [soft3/docs](docs/) for the foundations whitepaper — the methods behind one mind, many languages, open world.
+
+
+## default network
+
+After install, **space-pussy** is the default sync target:
+
+```bash
+cargo install soft3
+soft3 sync
+# → space-pussy @ https://rpc.space-pussy.cybernode.ai
+```
