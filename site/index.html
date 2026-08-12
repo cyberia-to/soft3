@@ -26,6 +26,7 @@
             :root {
                 --cream: #fff8f0;
                 --ink-glass: rgba(8, 16, 12, 0.62);
+                --accent-h: 0;
             }
 
             * {
@@ -108,13 +109,10 @@
                 text-shadow: 0 0 16px rgba(255, 210, 120, 0.9);
             }
 
-            /* center band: message on top, triad panel below — one column of cards */
+            /* center band: one crystal, top to bottom */
             .stage {
                 display: flex;
-                flex-direction: column;
-                align-items: center;
                 justify-content: center;
-                gap: clamp(0.85rem, 2.5vw, 1.5rem);
                 min-height: 0;
                 padding: 0.5rem 0;
             }
@@ -130,9 +128,25 @@
                 -webkit-backdrop-filter: blur(22px) saturate(1.35);
             }
 
-            .manifesto {
-                flex: none;
+            /* one glass shell holds both chapters — the pitch and the crystal */
+            .crystal {
                 width: min(100%, 38rem);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .divider {
+                height: 1px;
+                margin: 0.2rem clamp(1.1rem, 2.2vw, 1.55rem);
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.16),
+                    transparent
+                );
+            }
+
+            .manifesto {
                 padding: clamp(1rem, 2.2vh, 1.45rem)
                     clamp(1.1rem, 2.2vw, 1.55rem);
                 display: flex;
@@ -302,22 +316,20 @@
                 text-decoration: underline;
             }
 
-            /* triad panel sits under the manifesto — same column, content-sized */
+            /* triad chapter sits under the pitch — same shell, same width */
             .panel {
-                flex: none;
-                width: min(100%, 38rem);
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
             }
 
             .spiral {
-                padding: 0.5rem 0.9rem 0;
+                padding: 0.7rem 0.9rem 0;
                 font-size: 0.64rem;
                 font-weight: 700;
                 letter-spacing: 0.14em;
                 text-transform: uppercase;
-                color: rgba(255, 248, 240, 0.45);
+                color: rgba(255, 248, 240, 0.4);
                 text-align: center;
             }
             .spiral em {
@@ -325,50 +337,93 @@
                 color: #ffe28a;
             }
 
-            .tabs {
-                display: grid;
-                grid-template-columns: repeat(7, 1fr);
-                gap: 0.25rem;
-                padding: 0.45rem;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            /* the crystal ring: 7 triads as facets of one heptagon, not a row of
+               pills — the spiral is a shape you see, not a caption you read. one
+               dashed edge (play → form) shows the spiral closing and starting over. */
+            .ring {
+                position: relative;
+                width: min(76%, 260px);
+                aspect-ratio: 1 / 1;
+                margin: 0.7rem auto 0.3rem;
+            }
+            .ring-lines {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                overflow: visible;
+            }
+            .ring-lines polyline {
+                fill: none;
+                stroke: rgba(255, 255, 255, 0.16);
+                stroke-width: 1;
+            }
+            .ring-lines .loop {
+                stroke: rgba(255, 226, 138, 0.4);
+                stroke-width: 1;
+                stroke-dasharray: 3 4;
+            }
+            .ring-core {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 38%;
+                height: 38%;
+                transform: translate(-50%, -50%);
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    hsl(var(--accent-h) 85% 60% / 0.4),
+                    transparent 72%
+                );
+                filter: blur(4px);
+                pointer-events: none;
+                transition: background 0.5s ease;
             }
 
             .tab {
-                border: none;
-                background: rgba(255, 255, 255, 0.04);
-                color: rgba(255, 248, 240, 0.55);
+                position: absolute;
+                left: var(--x);
+                top: var(--y);
+                transform: translate(-50%, -50%);
+                width: 3.5rem;
+                height: 3.5rem;
+                border: 1px solid rgba(255, 255, 255, 0.16);
+                background: rgba(6, 16, 10, 0.6);
+                color: rgba(255, 248, 240, 0.6);
                 font-family: Play, system-ui, sans-serif;
+                border-radius: 999px;
                 display: flex;
-                flex-direction: column;
                 align-items: center;
-                gap: 0.1rem;
-                padding: 0.45rem 0.2rem 0.4rem;
-                border-radius: 14px;
+                justify-content: center;
                 cursor: pointer;
+                transition:
+                    transform 0.2s ease,
+                    background 0.2s ease,
+                    color 0.2s ease,
+                    border-color 0.2s ease;
             }
             .tab b {
-                font-size: 0.74rem;
+                font-size: 0.62rem;
                 font-weight: 700;
-                letter-spacing: 0.07em;
+                letter-spacing: 0.04em;
                 text-transform: uppercase;
+                pointer-events: none;
             }
             .tab small {
-                font-size: 0.58rem;
-                letter-spacing: 0.04em;
-                opacity: 0.75;
+                display: none;
             }
             .tab:hover {
                 color: #fff;
-                background: rgba(255, 255, 255, 0.09);
+                border-color: rgba(255, 255, 255, 0.4);
+                transform: translate(-50%, -50%) scale(1.08);
             }
             .tab[aria-selected="true"] {
                 color: #0a120e;
-                background: linear-gradient(120deg, #ffe28a, #ff6bab, #6dffc4);
-                background-size: 200% 200%;
-                animation: flow 4s ease infinite;
-            }
-            .tab[aria-selected="true"] small {
-                opacity: 0.85;
+                background: hsl(var(--accent-h) 82% 62%);
+                border-color: hsl(var(--accent-h) 82% 75%);
+                box-shadow: 0 0 22px hsl(var(--accent-h) 82% 55% / 0.55);
+                transform: translate(-50%, -50%) scale(1.15);
             }
 
             .body {
@@ -453,15 +508,32 @@
                 text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
             }
             @media (max-width: 720px) {
-                .manifesto,
-                .panel {
+                .crystal {
                     width: 100%;
                 }
-                .tabs {
-                    grid-template-columns: repeat(4, 1fr);
+                /* the heptagon needs room a phone doesn't have — the same 7
+                   buttons fall back to a plain wrapping row, DOM order intact */
+                .ring {
+                    position: static;
+                    width: 100%;
+                    aspect-ratio: auto;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.35rem;
+                    margin: 0.6rem auto 0.2rem;
                 }
-                .tab small {
+                .ring-lines,
+                .ring-core {
                     display: none;
+                }
+                .tab {
+                    position: static;
+                    transform: none !important;
+                    flex: 1 1 21%;
+                    width: auto;
+                    height: auto;
+                    border-radius: 12px;
+                    padding: 0.5rem 0.2rem;
                 }
             }
 
@@ -473,8 +545,7 @@
 
             @media (prefers-reduced-motion: reduce) {
                 h1 em,
-                .install button,
-                .tab[aria-selected="true"] {
+                .install button {
                     animation: none !important;
                 }
             }
@@ -503,7 +574,8 @@
             </header>
 
             <main class="stage">
-                <section class="manifesto glass">
+                <div class="crystal glass">
+                <section class="manifesto">
                     <p class="eyebrow">type 2 civilization software</p>
                     <h1>one mind.<em>still growing.</em></h1>
                     <p class="lede">
@@ -548,17 +620,33 @@
                     </div>
                 </section>
 
-                <aside class="panel glass">
+                <div class="divider" aria-hidden="true"></div>
+
+                <aside class="panel">
                     <p class="spiral">
-                        cybics — one spiral · <em>7 triads</em> ·
-                        <em>21 domains</em> · every component is a verb
+                        one crystal · <em>7 triads</em> ·
+                        <em>21 domains</em> — tap a facet
                     </p>
-                    <div class="tabs" role="tablist">
+                    <div class="ring" role="tablist">
+                        <svg
+                            class="ring-lines"
+                            viewBox="0 0 200 200"
+                            aria-hidden="true"
+                        >
+                            <!-- polyline, not polygon: it must NOT auto-close, so the
+                                 dashed loop line below reads as its own distinct edge -->
+                            <polyline
+                                points="100,22 161,51.4 176,117.4 133.8,170.3 66.2,170.3 24,117.4 39,51.4"
+                            />
+                            <line class="loop" x1="39" y1="51.4" x2="100" y2="22" />
+                        </svg>
+                        <div class="ring-core" aria-hidden="true"></div>
                         <button
                             class="tab"
                             role="tab"
                             data-tab="form"
                             aria-selected="true"
+                            style="--x: 50%; --y: 11%"
                         >
                             <b>form</b><small>rules</small>
                         </button>
@@ -567,6 +655,7 @@
                             role="tab"
                             data-tab="mass"
                             aria-selected="false"
+                            style="--x: 80.5%; --y: 25.7%"
                         >
                             <b>mass</b><small>matter</small>
                         </button>
@@ -575,6 +664,7 @@
                             role="tab"
                             data-tab="space"
                             aria-selected="false"
+                            style="--x: 88%; --y: 58.7%"
                         >
                             <b>space</b><small>where</small>
                         </button>
@@ -583,6 +673,7 @@
                             role="tab"
                             data-tab="life"
                             aria-selected="false"
+                            style="--x: 66.9%; --y: 85.15%"
                         >
                             <b>life</b><small>alive</small>
                         </button>
@@ -591,6 +682,7 @@
                             role="tab"
                             data-tab="word"
                             aria-selected="false"
+                            style="--x: 33.1%; --y: 85.15%"
                         >
                             <b>word</b><small>meaning</small>
                         </button>
@@ -599,6 +691,7 @@
                             role="tab"
                             data-tab="work"
                             aria-selected="false"
+                            style="--x: 12%; --y: 58.7%"
                         >
                             <b>work</b><small>making</small>
                         </button>
@@ -607,6 +700,7 @@
                             role="tab"
                             data-tab="play"
                             aria-selected="false"
+                            style="--x: 19.5%; --y: 25.7%"
                         >
                             <b>play</b><small>together</small>
                         </button>
@@ -1050,10 +1144,11 @@
                         </div>
                     </div>
                 </aside>
+                </div>
             </main>
 
             <footer class="foot">
-                <span>form → mass → space → life → word → work → play</span>
+                <span>don't trust. don't fear. don't beg.</span>
                 <span>soft3.org</span>
             </footer>
         </div>
@@ -1084,6 +1179,10 @@
             function select(name) {
                 organ = name;
                 organHue = hues[name] || 0;
+                document.documentElement.style.setProperty(
+                    "--accent-h",
+                    organHue,
+                );
                 document
                     .querySelectorAll(".tab[data-tab]")
                     .forEach((t) =>
