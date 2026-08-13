@@ -12,6 +12,23 @@ soft3 is thirty-one components. the components are not the foundation. each one 
 
 soft3 is **one mind**, reachable in **many languages**, growing into an **open world**.
 
+```text
+one mind
+   one form     —  one multilinear form over one field
+   one proof    —  the prover proves the prover
+   one focus    —  the graph settles into one φ*
+
+many languages
+   write        —  cybermark
+   compute      —  the trident family
+   mean         —  neural
+
+open world
+   it holds     —  one fabric, planet scale
+   it composes  —  add a cyberlink, not an API
+   it admits    —  no schema, no gatekeeper, no closed set
+```
+
 - **one mind** — where every other stack sprawls, soft3 is one. one form: everything is a single polynomial over a single field. one proof: the prover proves the prover. one focus: the whole graph converges into one collective thought.
 - **many languages** — where every other stack locks you in, soft3 is plural at the surface. you *write* in one language, *compute* in a family of them, and *mean* in a third — and all of them lower to the same substrate.
 - **open world** — where every other stack builds walls, soft3 stays open. it holds at planet scale, composes without glue, and admits anything that lowers to [[nox]].
