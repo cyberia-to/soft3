@@ -50,6 +50,7 @@ this repo is the developer experience layer on top — the SDKs, CLI, MCP server
 ## go deeper
 
 - [[soft3/stack|the stack registry]] — what each component does and how far it is
+- [[neural]] — the language you speak by linking: sigil → word → link → sentence → motif → dialect
 - [[soft3/docs|the whitepaper]] — the foundations behind the three lines above
 - [[soft3/specs/languages|languages]] · [[soft3/specs/types|types]] · [[soft3/specs/terms|terms]] — the specs
 - [[component-boundaries]] · [[stack-completeness]] · [[terms-map]] — the roadmap
