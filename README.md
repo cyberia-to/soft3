@@ -29,5 +29,4 @@ deeper:
 - [[soft3/docs|the whitepaper]] — the ideas: one mind, many languages, open world
 - [[neural]] — the language you speak by linking
 - specs: [[soft3/specs/languages|languages]] · [[soft3/specs/types|types]] · [[soft3/specs/terms|terms]]
-- roadmap: [[component-boundaries]] · [[stack-completeness]] · [[terms-map]]
 - SDKs: [js/](js/) · [cli/](cli/) · [mcp/](mcp/) · [py/](py/) · [schema/](schema/)
