@@ -14,14 +14,15 @@ import the stack, and your world — a game, a city, a market, a science guild �
 
 ```bash
 cargo install true-cyber
-cyber sync                 # → spacepussy-test (soft3 chaosnet)
+cyber sync                 # → spacepussy-test @ https://cyb.ai/spacepussy-test
 ```
 
 or the stack facade:
 
 ```bash
 cargo install soft3
-soft3 sync                 # same network: spacepussy-test @ http://127.0.0.1:7780
+soft3 sync                 # same public chaosnet on cybernode
+soft3 node                 # run a local surface (optional)
 ```
 
 **spacepussy-test** is the soft3 product chaosnet. cosmos **space-pussy** on cybernode is a different chain (bootloader) — see [[bootloader]].
