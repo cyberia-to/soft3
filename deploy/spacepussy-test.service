@@ -1,0 +1,19 @@
+[Unit]
+Description=spacepussy-test soft3 chaosnet (product RPC)
+After=network.target
+
+[Service]
+Type=simple
+User=cyber
+Group=cyber
+WorkingDirectory=/home/cyber/spacepussy-test
+Environment=SOFT3_HOME=/home/cyber/spacepussy-test/data
+Environment=SOFT3_BIND=127.0.0.1:7780
+Environment=SOFT3_MONIKER=cyberproxy-spt
+ExecStart=/usr/bin/python3 /home/cyber/spacepussy-test/spacepussy_test_node.py
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

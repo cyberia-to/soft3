@@ -18,19 +18,23 @@ this is the day-one network for [[soft3]], [[true-cyber|cyber]], and [[cyb]]. to
 | name | spacepussy-test |
 | chain_id | `spacepussy-test` |
 | role | soft3 chaosnet · product default |
-| rpc | `http://127.0.0.1:7780` |
-| lcd | `http://127.0.0.1:7781` |
-| index | `http://127.0.0.1:7782` |
+| public rpc | `https://cyb.ai/spacepussy-test` |
+| host | cyberproxy (cybernode edge) |
+| local bind | `127.0.0.1:7780` |
 | denom | `testpussy` |
+| moniker | `cyberproxy-spt` |
 
 aliases accepted by the CLI: `spacepussy-test`, `test`, `soft3`, `sptest`.
 
 ```bash
 cargo install true-cyber
-cyber network
-# network spacepussy-test
-#   role     soft3 chaosnet (product default)
-#   rpc      http://127.0.0.1:7780
+cyber sync
+# cyber sync · spacepussy-test
+#   reachable        yes
+#   chain_id         spacepussy-test
+#   moniker          cyberproxy-spt
+#   latest_height    …
+#   rpc              https://cyb.ai/spacepussy-test
 ```
 
 ## two chains with similar names
@@ -82,26 +86,22 @@ cyber tools                  # list registered tools
 
 | surface | status |
 |---------|--------|
-| network presets (`spacepussy-test`, ports 7780–7782) | shipped in soft3 0.4 / true-cyber 0.3 |
-| `cyber sync` / `soft3 sync` probe | shipped — reports reachable / offline |
+| network presets (`spacepussy-test`) | shipped · soft3 0.5 / true-cyber 0.4 |
+| public chaosnet on cybernode | **live** · `https://cyb.ai/spacepussy-test` |
+| `cyber sync` / `soft3 sync` probe | shipped · parses `/status` JSON |
+| `soft3 node` (local / host surface) | shipped · HTTP status + height tick |
 | local [[cybergraph]] processor + store | usable — single-node link / query / root |
-| [[foculus]] consensus tools + device sync daemon | usable — not yet the product RPC on 7780 |
-| [[radio]] gossip | builds — signal membrane onto gossip open |
-| soft3-node binary (one process, product ports) | not shipped — S6 |
-| genesis tooling | not shipped — S6 |
+| [[foculus]] consensus tools | usable — component CLI |
+| full soft3-node (radio + φ* multi-peer) | S6 — not yet |
 
-when nothing listens on 7780:
+deploy (cyberproxy):
 
 ```bash
-cyber sync
-# cyber sync · spacepussy-test
-#   role             soft3 chaosnet (product default)
-#   rpc              http://127.0.0.1:7780
-#   reachable        no
-#   detail           no soft3 node at http://127.0.0.1:7780 …
+# from soft3 repo
+nu deploy/deploy-cyberproxy.nu
+# systemd: spacepussy-test.service
+# nginx: cyb.ai/spacepussy-test/ → 127.0.0.1:7780
 ```
-
-that is the correct offline signal. do not point product sync at cosmos endpoints to make the probe green.
 
 ## path A — local graph (available now)
 

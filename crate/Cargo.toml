@@ -1,6 +1,6 @@
 [package]
 name = "soft3"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 description = "soft3 — type 2 civilization software stack (lib facade + CLI)"
 license-file = "LICENSE"

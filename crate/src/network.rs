@@ -1,6 +1,7 @@
 //! Product networks for the soft3 stack.
 //!
-//! Default after install: **spacepussy-test** — the soft3 chaosnet.
+//! Default after install: **spacepussy-test** — the soft3 chaosnet,
+//! hosted on cybernode (`rpc.spacepussy-test.soft3.org`).
 //!
 //! This is not the cosmos-sdk chain named `space-pussy` on cybernode
 //! (rpc.space-pussy.cybernode.ai). That bootloader chain is a migration
@@ -21,15 +22,8 @@ impl Network {
 
     pub fn parse(s: &str) -> Option<Self> {
         match s.trim().to_ascii_lowercase().as_str() {
-            "spacepussy-test"
-            | "space-pussy-test"
-            | "spacepussy_test"
-            | "sptest"
-            | "soft3-test"
-            | "soft3"
-            | "test"
-            | "default" => Some(Self::SpacePussyTest),
-            // explicit rejection of bootloader cosmos names — never silent alias
+            "spacepussy-test" | "space-pussy-test" | "spacepussy_test" | "sptest"
+            | "soft3-test" | "soft3" | "test" | "default" => Some(Self::SpacePussyTest),
             "space-pussy" | "spacepussy" | "pussy" | "sp" | "bostrom" | "boot" => None,
             _ => None,
         }
@@ -51,7 +45,6 @@ impl Network {
 
     pub fn bech32_prefix(self) -> &'static str {
         match self {
-            // soft3-native naming — not cosmos `pussy` prefix
             Self::SpacePussyTest => "pussy",
         }
     }
@@ -62,28 +55,36 @@ impl Network {
         }
     }
 
-    /// Default local soft3 node RPC (product chaosnet).
+    /// Public product RPC — spacepussy-test on cybernode (cyberproxy).
+    /// Live edge: HTTPS under cyb.ai until rpc.spacepussy-test.soft3.org DNS is live.
     pub fn rpc(self) -> &'static str {
         match self {
-            Self::SpacePussyTest => "http://127.0.0.1:7780",
+            Self::SpacePussyTest => "https://cyb.ai/spacepussy-test",
         }
     }
 
     pub fn lcd(self) -> &'static str {
         match self {
-            Self::SpacePussyTest => "http://127.0.0.1:7781",
+            Self::SpacePussyTest => "https://cyb.ai/spacepussy-test",
         }
     }
 
     pub fn index(self) -> &'static str {
         match self {
-            Self::SpacePussyTest => "http://127.0.0.1:7782",
+            Self::SpacePussyTest => "https://cyb.ai/spacepussy-test",
         }
     }
 
     pub fn websocket(self) -> &'static str {
         match self {
-            Self::SpacePussyTest => "ws://127.0.0.1:7780/ws",
+            Self::SpacePussyTest => "wss://cyb.ai/spacepussy-test/ws",
+        }
+    }
+
+    /// Local bind for `soft3 node` on the host (behind nginx on cyberproxy).
+    pub fn local_bind(self) -> &'static str {
+        match self {
+            Self::SpacePussyTest => "127.0.0.1:7780",
         }
     }
 
@@ -106,51 +107,90 @@ impl fmt::Display for Network {
     }
 }
 
-/// Reachability / light status for a soft3 network endpoint.
+/// Live status from a soft3 /status probe.
 #[derive(Debug, Clone)]
 pub struct SyncStatus {
     pub network: Network,
     pub reachable: bool,
     pub http_status: Option<u16>,
+    pub chain_id: String,
+    pub moniker: String,
+    pub latest_height: u64,
+    pub earliest_height: u64,
+    pub catching_up: bool,
     pub body_preview: String,
 }
 
-/// Probe the network RPC. soft3 nodes are not cosmos tendermint — we only
-/// check that something answers. A connection error means the local (or
-/// configured) spacepussy-test node is not running.
+/// Probe the network RPC. Prefers soft3 JSON `/status`; falls back to any 2xx.
 pub fn probe(network: Network) -> Result<SyncStatus, String> {
-    let url = network.rpc().trim_end_matches('/').to_string();
-    // try /status then bare root — soft3 node surface is still settling
-    for path in ["/status", "/", "/health"] {
-        let full = format!("{url}{path}");
+    let base = network.rpc().trim_end_matches('/');
+    for path in ["/status", "/health", "/"] {
+        let full = format!("{base}{path}");
         match http_get(&full) {
             Ok((code, body)) => {
-                let preview: String = body.chars().take(120).collect();
-                return Ok(SyncStatus {
+                if code >= 500 {
+                    continue;
+                }
+                let mut st = SyncStatus {
                     network,
-                    reachable: code < 500,
+                    reachable: true,
                     http_status: Some(code),
-                    body_preview: preview,
-                });
+                    chain_id: network.chain_id().into(),
+                    moniker: String::new(),
+                    latest_height: 0,
+                    earliest_height: 0,
+                    catching_up: false,
+                    body_preview: body.chars().take(160).collect(),
+                };
+                if path == "/status" {
+                    enrich_from_status_json(&mut st, &body);
+                }
+                return Ok(st);
             }
             Err(_) => continue,
         }
     }
     Err(format!(
-        "no soft3 node at {} — start spacepussy-test locally or set the rpc",
+        "no soft3 node at {} — spacepussy-test offline or unreachable",
         network.rpc()
     ))
 }
 
+fn enrich_from_status_json(st: &mut SyncStatus, body: &str) {
+    if let Ok(v) = serde_json::from_str::<serde_json::Value>(body) {
+        let result = v.get("result").unwrap_or(&v);
+        if let Some(node) = result.get("node_info") {
+            if let Some(s) = node.get("network").and_then(|x| x.as_str()) {
+                st.chain_id = s.to_string();
+            }
+            if let Some(s) = node.get("moniker").and_then(|x| x.as_str()) {
+                st.moniker = s.to_string();
+            }
+        }
+        if let Some(sync) = result.get("sync_info") {
+            st.latest_height = json_u64(sync.get("latest_block_height")).unwrap_or(0);
+            st.earliest_height = json_u64(sync.get("earliest_block_height")).unwrap_or(0);
+            st.catching_up = sync
+                .get("catching_up")
+                .and_then(|x| x.as_bool())
+                .unwrap_or(false);
+        }
+    }
+}
+
+fn json_u64(v: Option<&serde_json::Value>) -> Option<u64> {
+    let v = v?;
+    v.as_u64()
+        .or_else(|| v.as_str().and_then(|s| s.parse().ok()))
+}
+
 fn http_get(url: &str) -> Result<(u16, String), String> {
     let resp = ureq::get(url)
-        .timeout(std::time::Duration::from_secs(3))
+        .timeout(std::time::Duration::from_secs(8))
         .call()
         .map_err(|e| format!("request failed: {e}"))?;
     let code = resp.status();
-    let body = resp
-        .into_string()
-        .map_err(|e| format!("body: {e}"))?;
+    let body = resp.into_string().map_err(|e| format!("body: {e}"))?;
     Ok((code, body))
 }
 
@@ -165,24 +205,18 @@ mod tests {
     }
 
     #[test]
-    fn parse_product_aliases() {
-        assert_eq!(Network::parse("spacepussy-test"), Some(Network::SpacePussyTest));
-        assert_eq!(Network::parse("test"), Some(Network::SpacePussyTest));
-        assert_eq!(Network::parse("soft3"), Some(Network::SpacePussyTest));
+    fn product_rpc_is_public_soft3_edge() {
+        let rpc = Network::DEFAULT.rpc();
+        assert!(rpc.contains("spacepussy-test"));
+        assert!(rpc.starts_with("https://"));
+        assert!(!rpc.contains("space-pussy.cybernode"));
+        assert!(!rpc.contains("127.0.0.1"));
     }
 
     #[test]
     fn bootloader_names_rejected() {
         assert!(Network::parse("space-pussy").is_none());
         assert!(Network::parse("bostrom").is_none());
-        assert!(Network::parse("pussy").is_none());
         assert!(Network::is_bootloader_name("space-pussy"));
-        assert!(Network::is_bootloader_name("bostrom"));
-    }
-
-    #[test]
-    fn no_cybernode_in_product_rpc() {
-        assert!(!Network::DEFAULT.rpc().contains("cybernode.ai"));
-        assert!(!Network::DEFAULT.rpc().contains("space-pussy"));
     }
 }

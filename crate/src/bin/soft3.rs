@@ -1,6 +1,8 @@
 //! soft3 CLI — default network is **spacepussy-test** (soft3 chaosnet).
 
 use soft3::network::{self, Network};
+use soft3::node;
+use std::path::PathBuf;
 
 fn main() {
     let mut args: Vec<String> = std::env::args().skip(1).collect();
@@ -39,6 +41,7 @@ fn main() {
             print_network(n);
         }
         "status" | "sync" => cmd_sync(net),
+        "node" => cmd_node(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -76,24 +79,81 @@ fn cmd_sync(net: Network) {
                 "  reachable        {}",
                 if s.reachable { "yes" } else { "no" }
             );
+            if !s.chain_id.is_empty() {
+                println!("  chain_id         {}", s.chain_id);
+            }
+            if !s.moniker.is_empty() {
+                println!("  moniker          {}", s.moniker);
+            }
+            if s.latest_height > 0 {
+                println!("  latest_height    {}", s.latest_height);
+            }
+            if s.earliest_height > 0 {
+                println!("  earliest_height  {}", s.earliest_height);
+            }
+            println!(
+                "  catching_up      {}",
+                if s.catching_up { "yes" } else { "no" }
+            );
             if let Some(code) = s.http_status {
                 println!("  http             {code}");
-            }
-            if !s.body_preview.is_empty() {
-                println!("  body             {}", s.body_preview.replace('\n', " "));
             }
         }
         Err(e) => {
             println!("  reachable        no");
             println!("  detail           {e}");
-            println!();
-            println!("spacepussy-test is the soft3 chaosnet.");
-            println!(
-                "cosmos `space-pussy` / `bostrom` on cybernode are bootloader chains — different networks."
-            );
             std::process::exit(1);
         }
     }
+}
+
+fn cmd_node(args: &[String]) {
+    let mut home = node::default_home();
+    let mut bind = Network::DEFAULT.local_bind().to_string();
+    let mut moniker = hostname_fallback();
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--home" => {
+                i += 1;
+                home = PathBuf::from(args.get(i).expect("--home needs a path"));
+            }
+            "--bind" => {
+                i += 1;
+                bind = args.get(i).expect("--bind needs host:port").clone();
+            }
+            "--moniker" => {
+                i += 1;
+                moniker = args.get(i).expect("--moniker needs a name").clone();
+            }
+            "-h" | "--help" => {
+                println!("soft3 node — run the spacepussy-test chaosnet surface");
+                println!();
+                println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+                println!();
+                println!("defaults:");
+                println!("  --home    ~/.spacepussy-test");
+                println!("  --bind    {}", Network::DEFAULT.local_bind());
+                println!("  --moniker <hostname>");
+                return;
+            }
+            other => {
+                eprintln!("unknown node flag `{other}`");
+                std::process::exit(2);
+            }
+        }
+        i += 1;
+    }
+    if let Err(e) = node::run(home, &bind, &moniker) {
+        eprintln!("soft3 node failed: {e}");
+        std::process::exit(1);
+    }
+}
+
+fn hostname_fallback() -> String {
+    std::env::var("HOSTNAME")
+        .or_else(|_| std::env::var("HOST"))
+        .unwrap_or_else(|_| "soft3-node".into())
 }
 
 fn print_network(n: Network) {
@@ -105,6 +165,7 @@ fn print_network(n: Network) {
     println!("  lcd      {}", n.lcd());
     println!("  index    {}", n.index());
     println!("  ws       {}", n.websocket());
+    println!("  bind     {}", n.local_bind());
     if n == Network::DEFAULT {
         println!("  (product default)");
     }
@@ -127,12 +188,13 @@ fn print_help() {
     println!("  soft3 sync [--network spacepussy-test]");
     println!("  soft3 status              # alias of sync");
     println!("  soft3 network [name]      # print endpoints");
+    println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
     println!("  soft3 manifesto");
     println!("  soft3 version");
     println!();
     println!("not soft3 networks (cosmos bootloader on cybernode):");
-    println!("  space-pussy · bostrom     # migration sources, not product defaults");
+    println!("  space-pussy · bostrom");
     println!();
-    println!("docs  https://cyber.page/soft3/");
+    println!("docs  https://cyber.page/soft3/docs/launch");
     println!("site  https://soft3.org");
 }

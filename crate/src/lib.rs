@@ -1,11 +1,12 @@
 //! soft3 — stack facade and CLI product crate.
 //!
 //! Default network after install: **spacepussy-test**
-//! (`http://127.0.0.1:7780`) — the soft3 chaosnet.
+//! (`https://cyb.ai/spacepussy-test`) — the soft3 chaosnet on cybernode.
 //!
 //! Not the cosmos-sdk chain `space-pussy` on cybernode.
 
 pub mod network;
+pub mod node;
 
 /// Crate version.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
