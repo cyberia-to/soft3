@@ -13,10 +13,17 @@ that flips what you can own. knowledge becomes property: it outlives platforms, 
 import the stack, and your world — a game, a city, a market, a science guild — ships with identity, memory, money and truth out of the box. [[cyberia]] is the first world built this way. yours is next.
 
 ```bash
-cargo install soft3
-soft3 sync   # → space-pussy @ https://rpc.space-pussy.cybernode.ai
+cargo install true-cyber
+cyber sync                 # → spacepussy-test (soft3 chaosnet)
 ```
 
-a live slice of the graph under your fingers. space-pussy is a chaosnet — everything on it is test, [[rewards]] included. play fearlessly.
+or the stack facade:
+
+```bash
+cargo install soft3
+soft3 sync                 # same network: spacepussy-test @ http://127.0.0.1:7780
+```
+
+**spacepussy-test** is the soft3 product chaosnet. cosmos **space-pussy** on cybernode is a different chain (bootloader) — see [[bootloader]].
 
 [[cyber]] · [[cyb]] · [[bootloader]] · [[soft3/stack]] · [[install]]

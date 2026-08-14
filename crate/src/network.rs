@@ -1,80 +1,95 @@
-//! Default networks for soft3 / cyb / cyber stack.
+//! Product networks for the soft3 stack.
 //!
-//! **Space Pussy is the default sync target** after install — the living
-//! bootloader graph used for product smoke tests and light-client sync.
+//! Default after install: **spacepussy-test** — the soft3 chaosnet.
+//!
+//! This is not the cosmos-sdk chain named `space-pussy` on cybernode
+//! (rpc.space-pussy.cybernode.ai). That bootloader chain is a migration
+//! source; product tools never point there by default.
 
 use std::fmt;
 
-/// Known cyber ecosystems (Cosmos SDK cyber-family chains).
+/// soft3 product networks.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Network {
-    /// Space Pussy — default product / test sync network.
-    SpacePussy,
-    /// Bostrom — main bootloader chain.
-    Bostrom,
+    /// soft3 chaosnet — product default after install.
+    SpacePussyTest,
 }
 
 impl Network {
-    /// Product default after `cargo install soft3` / `cyb`.
-    pub const DEFAULT: Network = Network::SpacePussy;
+    /// Product default after `cargo install soft3` / `true-cyber`.
+    pub const DEFAULT: Network = Network::SpacePussyTest;
 
     pub fn parse(s: &str) -> Option<Self> {
         match s.trim().to_ascii_lowercase().as_str() {
-            "space-pussy" | "spacepussy" | "pussy" | "sp" => Some(Self::SpacePussy),
-            "bostrom" | "boot" => Some(Self::Bostrom),
+            "spacepussy-test"
+            | "space-pussy-test"
+            | "spacepussy_test"
+            | "sptest"
+            | "soft3-test"
+            | "soft3"
+            | "test"
+            | "default" => Some(Self::SpacePussyTest),
+            // explicit rejection of bootloader cosmos names — never silent alias
+            "space-pussy" | "spacepussy" | "pussy" | "sp" | "bostrom" | "boot" => None,
             _ => None,
         }
     }
 
+    /// True when `s` names a cosmos bootloader chain (not a soft3 network).
+    pub fn is_bootloader_name(s: &str) -> bool {
+        matches!(
+            s.trim().to_ascii_lowercase().as_str(),
+            "space-pussy" | "spacepussy" | "pussy" | "sp" | "bostrom" | "boot"
+        )
+    }
+
     pub fn chain_id(self) -> &'static str {
         match self {
-            Self::SpacePussy => "space-pussy",
-            Self::Bostrom => "bostrom",
+            Self::SpacePussyTest => "spacepussy-test",
         }
     }
 
     pub fn bech32_prefix(self) -> &'static str {
         match self {
-            Self::SpacePussy => "pussy",
-            Self::Bostrom => "bostrom",
+            // soft3-native naming — not cosmos `pussy` prefix
+            Self::SpacePussyTest => "pussy",
         }
     }
 
     pub fn denom(self) -> &'static str {
         match self {
-            Self::SpacePussy => "pussy",
-            Self::Bostrom => "boot",
+            Self::SpacePussyTest => "testpussy",
         }
     }
 
-    /// Tendermint RPC (HTTPS).
+    /// Default local soft3 node RPC (product chaosnet).
     pub fn rpc(self) -> &'static str {
         match self {
-            Self::SpacePussy => "https://rpc.space-pussy.cybernode.ai",
-            Self::Bostrom => "https://rpc.bostrom.cybernode.ai",
+            Self::SpacePussyTest => "http://127.0.0.1:7780",
         }
     }
 
-    /// REST LCD.
     pub fn lcd(self) -> &'static str {
         match self {
-            Self::SpacePussy => "https://lcd.space-pussy.cybernode.ai",
-            Self::Bostrom => "https://lcd.bostrom.cybernode.ai",
+            Self::SpacePussyTest => "http://127.0.0.1:7781",
         }
     }
 
-    /// GraphQL index.
     pub fn index(self) -> &'static str {
         match self {
-            Self::SpacePussy => "https://index.space-pussy.cybernode.ai/v1/graphql",
-            Self::Bostrom => "https://index.bostrom.cybernode.ai/v1/graphql",
+            Self::SpacePussyTest => "http://127.0.0.1:7782",
         }
     }
 
     pub fn websocket(self) -> &'static str {
         match self {
-            Self::SpacePussy => "wss://rpc.space-pussy.cybernode.ai/websocket",
-            Self::Bostrom => "wss://rpc.bostrom.cybernode.ai/websocket",
+            Self::SpacePussyTest => "ws://127.0.0.1:7780/ws",
+        }
+    }
+
+    pub fn role(self) -> &'static str {
+        match self {
+            Self::SpacePussyTest => "soft3 chaosnet (product default)",
         }
     }
 }
@@ -91,84 +106,52 @@ impl fmt::Display for Network {
     }
 }
 
-/// Live status pulled from Tendermint `/status`.
+/// Reachability / light status for a soft3 network endpoint.
 #[derive(Debug, Clone)]
 pub struct SyncStatus {
     pub network: Network,
-    pub chain_id: String,
-    pub moniker: String,
-    pub latest_height: u64,
-    pub catching_up: bool,
-    pub earliest_height: u64,
+    pub reachable: bool,
+    pub http_status: Option<u16>,
+    pub body_preview: String,
 }
 
-/// Probe default (Space Pussy) or the given network RPC.
+/// Probe the network RPC. soft3 nodes are not cosmos tendermint — we only
+/// check that something answers. A connection error means the local (or
+/// configured) spacepussy-test node is not running.
 pub fn probe(network: Network) -> Result<SyncStatus, String> {
-    let url = format!("{}/status", network.rpc().trim_end_matches('/'));
-    let body = http_get(&url)?;
-    parse_status(network, &body)
+    let url = network.rpc().trim_end_matches('/').to_string();
+    // try /status then bare root — soft3 node surface is still settling
+    for path in ["/status", "/", "/health"] {
+        let full = format!("{url}{path}");
+        match http_get(&full) {
+            Ok((code, body)) => {
+                let preview: String = body.chars().take(120).collect();
+                return Ok(SyncStatus {
+                    network,
+                    reachable: code < 500,
+                    http_status: Some(code),
+                    body_preview: preview,
+                });
+            }
+            Err(_) => continue,
+        }
+    }
+    Err(format!(
+        "no soft3 node at {} — start spacepussy-test locally or set the rpc",
+        network.rpc()
+    ))
 }
 
-fn http_get(url: &str) -> Result<String, String> {
-    // minimal dependency-free GET via `ureq` if present; else std-only fallback with curl-less TCP is hard.
-    // We use ureq from soft3 Cargo.toml.
-    ureq::get(url)
-        .timeout(std::time::Duration::from_secs(12))
+fn http_get(url: &str) -> Result<(u16, String), String> {
+    let resp = ureq::get(url)
+        .timeout(std::time::Duration::from_secs(3))
         .call()
-        .map_err(|e| format!("rpc request failed: {e}"))?
+        .map_err(|e| format!("request failed: {e}"))?;
+    let code = resp.status();
+    let body = resp
         .into_string()
-        .map_err(|e| format!("rpc body: {e}"))
-}
-
-fn parse_status(network: Network, body: &str) -> Result<SyncStatus, String> {
-    // tiny hand-parse to avoid serde_json weight in edge cases; use serde_json for reliability
-    let v: serde_json::Value =
-        serde_json::from_str(body).map_err(|e| format!("status json: {e}"))?;
-    let result = v
-        .get("result")
-        .ok_or_else(|| "missing result".to_string())?;
-    let node = result
-        .get("node_info")
-        .ok_or_else(|| "missing node_info".to_string())?;
-    let sync = result
-        .get("sync_info")
-        .ok_or_else(|| "missing sync_info".to_string())?;
-
-    let chain_id = node
-        .get("network")
-        .and_then(|x| x.as_str())
-        .unwrap_or("?")
-        .to_string();
-    let moniker = node
-        .get("moniker")
-        .and_then(|x| x.as_str())
-        .unwrap_or("?")
-        .to_string();
-    let latest_height = sync
-        .get("latest_block_height")
-        .and_then(|x| x.as_str())
-        .and_then(|s| s.parse().ok())
-        .or_else(|| sync.get("latest_block_height").and_then(|x| x.as_u64()))
-        .unwrap_or(0);
-    let earliest_height = sync
-        .get("earliest_block_height")
-        .and_then(|x| x.as_str())
-        .and_then(|s| s.parse().ok())
-        .or_else(|| sync.get("earliest_block_height").and_then(|x| x.as_u64()))
-        .unwrap_or(0);
-    let catching_up = sync
-        .get("catching_up")
-        .and_then(|x| x.as_bool())
-        .unwrap_or(false);
-
-    Ok(SyncStatus {
-        network,
-        chain_id,
-        moniker,
-        latest_height,
-        catching_up,
-        earliest_height,
-    })
+        .map_err(|e| format!("body: {e}"))?;
+    Ok((code, body))
 }
 
 #[cfg(test)]
@@ -176,14 +159,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn default_is_space_pussy() {
-        assert_eq!(Network::DEFAULT, Network::SpacePussy);
-        assert_eq!(Network::default().chain_id(), "space-pussy");
+    fn default_is_spacepussy_test() {
+        assert_eq!(Network::DEFAULT, Network::SpacePussyTest);
+        assert_eq!(Network::default().chain_id(), "spacepussy-test");
     }
 
     #[test]
-    fn parse_aliases() {
-        assert_eq!(Network::parse("pussy"), Some(Network::SpacePussy));
-        assert_eq!(Network::parse("bostrom"), Some(Network::Bostrom));
+    fn parse_product_aliases() {
+        assert_eq!(Network::parse("spacepussy-test"), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("test"), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("soft3"), Some(Network::SpacePussyTest));
+    }
+
+    #[test]
+    fn bootloader_names_rejected() {
+        assert!(Network::parse("space-pussy").is_none());
+        assert!(Network::parse("bostrom").is_none());
+        assert!(Network::parse("pussy").is_none());
+        assert!(Network::is_bootloader_name("space-pussy"));
+        assert!(Network::is_bootloader_name("bostrom"));
+    }
+
+    #[test]
+    fn no_cybernode_in_product_rpc() {
+        assert!(!Network::DEFAULT.rpc().contains("cybernode.ai"));
+        assert!(!Network::DEFAULT.rpc().contains("space-pussy"));
     }
 }

@@ -2,14 +2,22 @@
 
 > one mind, many languages, open world
 
-The developer surface for the soft3 stack.
+Developer surface for the soft3 stack. Default network: **spacepussy-test**.
 
 ```bash
 cargo install soft3
-soft3 --help
+soft3 sync
+```
+
+Product entry (recommended):
+
+```bash
+cargo install true-cyber
+cyber sync
 ```
 
 - Site: https://soft3.org  
 - Docs: https://cyber.page/soft3/  
 - Repo: https://github.com/cyberia-to/soft3  
-- Runtime cell: `cargo install cyb` → binary `cy`
+
+`space-pussy` / `bostrom` on cybernode are cosmos bootloader chains, not this crate's default.

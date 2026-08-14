@@ -1,7 +1,9 @@
 //! soft3 — stack facade and CLI product crate.
 //!
-//! Default sync network after install: **space-pussy**
-//! (`https://rpc.space-pussy.cybernode.ai`).
+//! Default network after install: **spacepussy-test**
+//! (`http://127.0.0.1:7780`) — the soft3 chaosnet.
+//!
+//! Not the cosmos-sdk chain `space-pussy` on cybernode.
 
 pub mod network;
 
@@ -13,7 +15,7 @@ pub fn identity() -> &'static str {
     "soft3"
 }
 
-/// Default network for install / first sync (Space Pussy).
+/// Default network for install / first sync (spacepussy-test).
 pub fn default_network() -> network::Network {
     network::Network::DEFAULT
 }
@@ -26,7 +28,7 @@ pub fn manifesto() -> &'static [&'static str] {
         "open world — no schema, no gatekeeper",
         "light client validates all of history in roughly ~100 ns",
         "interplanetary consensus — no vote; sync in cyberspace",
-        "default sync network: space-pussy",
+        "default network: spacepussy-test (soft3 chaosnet)",
     ]
 }
 
@@ -38,8 +40,8 @@ mod tests {
     }
 
     #[test]
-    fn default_network_space_pussy() {
-        assert_eq!(super::default_network().chain_id(), "space-pussy");
+    fn default_network_spacepussy_test() {
+        assert_eq!(super::default_network().chain_id(), "spacepussy-test");
     }
 }
 
