@@ -85,19 +85,25 @@ fn cmd_sync(net: Network) {
             if !s.moniker.is_empty() {
                 println!("  moniker          {}", s.moniker);
             }
-            if s.latest_height > 0 {
-                println!("  latest_height    {}", s.latest_height);
+            if !s.engine.is_empty() {
+                println!("  engine           {}", s.engine);
             }
+            println!("  latest_height    {}", s.latest_height);
             if s.earliest_height > 0 {
                 println!("  earliest_height  {}", s.earliest_height);
+            }
+            if !s.bbg_root.is_empty() {
+                println!("  bbg_root         {}", s.bbg_root);
+            }
+            if s.signals > 0 || s.particles > 0 {
+                println!("  signals          {}", s.signals);
+                println!("  particles        {}", s.particles);
+                println!("  axons            {}", s.axons);
             }
             println!(
                 "  catching_up      {}",
                 if s.catching_up { "yes" } else { "no" }
             );
-            if let Some(code) = s.http_status {
-                println!("  http             {code}");
-            }
         }
         Err(e) => {
             println!("  reachable        no");
@@ -127,9 +133,12 @@ fn cmd_node(args: &[String]) {
                 moniker = args.get(i).expect("--moniker needs a name").clone();
             }
             "-h" | "--help" => {
-                println!("soft3 node — run the spacepussy-test chaosnet surface");
+                println!("soft3 node — run spacepussy-test (cybergraph + bbg)");
                 println!();
                 println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+                println!();
+                println!("engine: cybergraph processor + authenticated bbg state");
+                println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
                 println!();
                 println!("defaults:");
                 println!("  --home    ~/.spacepussy-test");

@@ -1,14 +1,15 @@
 [package]
 name = "soft3"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
-description = "soft3 — type 2 civilization software stack (lib facade + CLI)"
+description = "soft3 — type 2 civilization software stack: network + real cybergraph node + CLI"
 license-file = "LICENSE"
 repository = "https://github.com/cyberia-to/soft3"
 homepage = "https://soft3.org"
 readme = "README.md"
-keywords = ["soft3", "cyber", "proof", "knowledge"]
+keywords = ["soft3", "cyber", "cybergraph", "spacepussy-test"]
 categories = ["command-line-utilities", "science"]
+rust-version = "1.85"
 
 [lib]
 name = "soft3"
@@ -20,9 +21,18 @@ path = "src/bin/soft3.rs"
 
 [workspace]
 
+[features]
+default = []
+# full stack re-exports (heavy)
+stack = ["dep:cyb"]
+
 [dependencies]
-cyb = { version = "0.2.1" }
-foculus = { version = "0.1.1", default-features = false }
+# real node engine
 cybergraph = { version = "0.1.1" }
+foculus = { version = "0.1.1", default-features = false }
+hemera = { package = "cyber-hemera", version = "0.3" }
+# optional facade
+cyb = { version = "0.2.1", optional = true }
+# probe + http client for sync
 ureq = { version = "2", default-features = false, features = ["tls"] }
 serde_json = "1"

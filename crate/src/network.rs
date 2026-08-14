@@ -118,6 +118,11 @@ pub struct SyncStatus {
     pub latest_height: u64,
     pub earliest_height: u64,
     pub catching_up: bool,
+    pub bbg_root: String,
+    pub engine: String,
+    pub signals: u64,
+    pub particles: u64,
+    pub axons: u64,
     pub body_preview: String,
 }
 
@@ -140,9 +145,14 @@ pub fn probe(network: Network) -> Result<SyncStatus, String> {
                     latest_height: 0,
                     earliest_height: 0,
                     catching_up: false,
+                    bbg_root: String::new(),
+                    engine: String::new(),
+                    signals: 0,
+                    particles: 0,
+                    axons: 0,
                     body_preview: body.chars().take(160).collect(),
                 };
-                if path == "/status" {
+                if path.contains("status") || body.trim_start().starts_with('{') {
                     enrich_from_status_json(&mut st, &body);
                 }
                 return Ok(st);
@@ -166,6 +176,14 @@ fn enrich_from_status_json(st: &mut SyncStatus, body: &str) {
             if let Some(s) = node.get("moniker").and_then(|x| x.as_str()) {
                 st.moniker = s.to_string();
             }
+            if let Some(s) = node.get("engine").and_then(|x| x.as_str()) {
+                st.engine = s.to_string();
+            }
+            if let Some(s) = node.get("protocol").and_then(|x| x.as_str()) {
+                if st.engine.is_empty() {
+                    st.engine = s.to_string();
+                }
+            }
         }
         if let Some(sync) = result.get("sync_info") {
             st.latest_height = json_u64(sync.get("latest_block_height")).unwrap_or(0);
@@ -174,6 +192,14 @@ fn enrich_from_status_json(st: &mut SyncStatus, body: &str) {
                 .get("catching_up")
                 .and_then(|x| x.as_bool())
                 .unwrap_or(false);
+            if let Some(s) = sync.get("bbg_root").and_then(|x| x.as_str()) {
+                st.bbg_root = s.to_string();
+            }
+        }
+        if let Some(soft) = result.get("soft3") {
+            st.signals = json_u64(soft.get("signals")).unwrap_or(0);
+            st.particles = json_u64(soft.get("particles")).unwrap_or(0);
+            st.axons = json_u64(soft.get("axons")).unwrap_or(0);
         }
     }
 }

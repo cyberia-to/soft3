@@ -7,9 +7,9 @@ alias: launch network, soft3 node, start testnet, spacepussy-test guide
 ---
 # launch spacepussy-test
 
-how to stand up the soft3 product network — the chaosnet named **spacepussy-test**.
+how to run the **real soft3 network** — cybergraph + bbg as the chaosnet **spacepussy-test**.
 
-this is the day-one network for [[soft3]], [[true-cyber|cyber]], and [[cyb]]. tokens and state here are test. mainnet is a later gate; see [[cyber/launch]].
+this is not a status stub. the node processes cyberlinks into authenticated state, advances height on finalize, and serves product RPC.
 
 ## network identity
 
@@ -17,253 +17,170 @@ this is the day-one network for [[soft3]], [[true-cyber|cyber]], and [[cyb]]. to
 |-------|-------|
 | name | spacepussy-test |
 | chain_id | `spacepussy-test` |
-| role | soft3 chaosnet · product default |
+| engine | cybergraph + bbg |
+| protocol | `soft3/spacepussy-test/v1` |
 | public rpc | `https://cyb.ai/spacepussy-test` |
 | host | cyberproxy (cybernode edge) |
 | local bind | `127.0.0.1:7780` |
 | denom | `testpussy` |
-| moniker | `cyberproxy-spt` |
 
-aliases accepted by the CLI: `spacepussy-test`, `test`, `soft3`, `sptest`.
+cosmos **space-pussy** / **bostrom** on cybernode are bootloader chains (go-cyber). product tools reject those names.
+
+## install
 
 ```bash
-cargo install true-cyber
+rustup update stable    # need rustc ≥ 1.85 (edition 2024 deps)
+cargo install soft3     # operator / node
+cargo install true-cyber  # product face (thin client)
+```
+
+## run a node (local)
+
+```bash
+soft3 node --home ~/.spacepussy-test --bind 127.0.0.1:7780 --moniker dev-1
+```
+
+what starts:
+
+- cybergraph processor (intend/seal/link lifecycle)
+- bbg authenticated state
+- durable log at `$home/log` + block height at `$home/blocks`
+- HTTP RPC on the bind address
+
+### RPC
+
+| method | path | role |
+|--------|------|------|
+| GET | `/status` | chain_id, moniker, height, bbg_root, signals, particles |
+| GET | `/health` | `ok` |
+| GET | `/root` | BBG root hex |
+| GET | `/stats` | height, root, graph counts |
+| POST | `/v1/link` | submit cyberlink JSON |
+| POST | `/v1/finalize` | close block (advance height) |
+
+### submit a cyberlink
+
+labels are hemera-hashed; pure hex (≤64 chars) is left-padded identity.
+
+```bash
+curl -sS -X POST http://127.0.0.1:7780/v1/link \
+  -H 'content-type: application/json' \
+  -d '{"neuron":"01","from":"0a","to":"0b","amount":1,"valence":0,"finalize":true}'
+```
+
+response:
+
+```json
+{"ok": true, "height": 1, "root": "…", "signals": 1}
+```
+
+`finalize: true` (default) calls `bbg.finalize_block` after the link so height advances.
+
+### probe
+
+```bash
+soft3 sync
+# or, against local bind:
+# soft3 does not yet take --rpc; use curl for local-only, public edge via soft3 sync
+curl -sS http://127.0.0.1:7780/status | head
+cyber sync                 # product client → public edge
+```
+
+## run the public chaosnet (cybernode)
+
+host: **cyberproxy** (edge for cyb.ai).
+
+```bash
+# on an operator machine with soft3 0.6+
+cargo install soft3 --force
+
+# on cyberproxy
+ssh cyberproxy
+export PATH="$HOME/.cargo/bin:$PATH"
+cargo install soft3 --force
+
+# stop any legacy python scaffold
+sudo systemctl stop spacepussy-test 2>/dev/null || true
+
+# install systemd unit that runs soft3 node
+sudo tee /etc/systemd/system/spacepussy-test.service >/dev/null <<'EOF'
+[Unit]
+Description=spacepussy-test soft3 node (cybergraph+bbg)
+After=network.target
+
+[Service]
+Type=simple
+User=cyber
+Group=cyber
+Environment=HOME=/home/cyber
+Environment=PATH=/home/cyber/.cargo/bin:/usr/bin
+ExecStart=/home/cyber/.cargo/bin/soft3 node --home /home/cyber/spacepussy-test/data --bind 127.0.0.1:7780 --moniker cyberproxy-spt
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now spacepussy-test
+sudo systemctl status spacepussy-test --no-pager | head -20
+curl -sS http://127.0.0.1:7780/status | head
+```
+
+nginx (already on cyberproxy): `cyb.ai/spacepussy-test/` → `127.0.0.1:7780`.
+
+```bash
+# public
+curl -sS https://cyb.ai/spacepussy-test/status | head
 cyber sync
-# cyber sync · spacepussy-test
-#   reachable        yes
-#   chain_id         spacepussy-test
-#   moniker          cyberproxy-spt
-#   latest_height    …
-#   rpc              https://cyb.ai/spacepussy-test
 ```
 
-## two chains with similar names
-
-| name | substrate | what it is |
-|------|-----------|------------|
-| spacepussy-test | soft3 | product chaosnet — this guide |
-| space-pussy | cosmos-sdk / [[go-cyber]] on cybernode | bootloader experimental chain — migration source |
-
-`cyber sync -n space-pussy` and `soft3 sync -n bostrom` are rejected on purpose. bootloader history lives under [[bootloader]]; product tools never default to cybernode cosmos RPC.
-
-## goal of a live network
-
-two or more independent nodes converge on one [[cybergraph]]:
-
-- signals carry proofs
-- gossip moves signals between peers
-- [[foculus]] orders and finalizes by φ*
-- [[bbg]] holds authenticated state
-- [[cyber sync]] / `soft3 sync` report the node reachable on port 7780
-
-that package is the soft3-node + genesis work (milestone S6 in [[cyber/launch]]). pieces exist as crates today; the single binary that wires them is the remaining spine.
-
-## prerequisites
+redeploy after soft3 upgrade:
 
 ```bash
-# rust stable
-rustc --version
-
-# product CLI (probe + network presets)
-cargo install true-cyber
-# or stack facade
-cargo install soft3
-
-# workspace root for building components from source
-export CYBER_ROOT="${CYBER_ROOT:-$HOME/cyber}"
-# expected layout: $CYBER_ROOT/{soft3,cybergraph,foculus,radio,bbg,...}
+ssh cyberproxy 'export PATH=$HOME/.cargo/bin:$PATH; cargo install soft3 --force; sudo systemctl restart spacepussy-test'
 ```
 
-optional advanced bootstrap of the full toolset:
+## multi-node (current limits)
+
+v1 is **single-node cybergraph**. each `soft3 node` is an independent local processor with its own store.
+
+not yet on the public chaosnet:
+
+| capability | status |
+|------------|--------|
+| cybergraph link + bbg state | **live** |
+| height / root / stats RPC | **live** |
+| durable log | **live** |
+| radio gossip between nodes | open (S4) |
+| foculus multi-node φ* finality | open (S5) |
+| seal STARK binding at commit | open (S3) |
+
+next work is wire [[radio]] + [[foculus]] so two soft3 nodes exchange signals and share one tip — see [[cyber/launch]] S3–S6.
+
+until then: one public node on cyberproxy is the product spacepussy-test; clients sync to it with `cyber sync` / `soft3 sync`.
+
+## product client
 
 ```bash
-cyber source                 # clone public stack repos into $CYBER_ROOT
-cyber tools                  # list registered tools
-# cyber install cybergraph   # when you need component CLIs on PATH
+cargo install true-cyber --force
+export PATH="$HOME/.cargo/bin:$PATH"
+cyber version    # cyber … (true-cyber)
+cyber sync       # probes soft3 node on cybernode
 ```
 
-## status today
+true-cyber is a thin product face over the soft3 network. the network itself is the soft3 node.
 
-| surface | status |
-|---------|--------|
-| network presets (`spacepussy-test`) | shipped · soft3 0.5 / true-cyber 0.4 |
-| public chaosnet on cybernode | **live** · `https://cyb.ai/spacepussy-test` |
-| `cyber sync` / `soft3 sync` probe | shipped · parses `/status` JSON |
-| `soft3 node` (local / host surface) | shipped · HTTP status + height tick |
-| local [[cybergraph]] processor + store | usable — single-node link / query / root |
-| [[foculus]] consensus tools | usable — component CLI |
-| full soft3-node (radio + φ* multi-peer) | S6 — not yet |
+## not soft3
 
-deploy (cyberproxy):
-
-```bash
-# from soft3 repo
-nu deploy/deploy-cyberproxy.nu
-# systemd: spacepussy-test.service
-# nginx: cyb.ai/spacepussy-test/ → 127.0.0.1:7780
-```
-
-## path A — local graph (available now)
-
-run the cyberlink processor against a local store. this exercises intend / seal / link / query / root on one machine. it is not yet multi-node consensus and does not bind product ports 7780–7782 until soft3-node exists.
-
-```bash
-cd "$CYBER_ROOT/cybergraph"
-cargo build --release -p cybergraph-cli   # package name may be cybergraph; see crate Cargo.toml
-
-# ephemeral (in-memory)
-cybergraph link --neuron alice --from cat --to dog
-
-# durable store
-mkdir -p /tmp/spacepussy-test-store
-cybergraph --store /tmp/spacepussy-test-store link --neuron alice --from cat --to dog
-cybergraph --store /tmp/spacepussy-test-store stats
-cybergraph --store /tmp/spacepussy-test-store root
-cybergraph --store /tmp/spacepussy-test-store chain alice
-```
-
-useful operators:
-
-| command | role |
-|---------|------|
-| `cybergraph intend …` | declare an unsealed intent |
-| `cybergraph seal …` | seal intent into a signal |
-| `cybergraph link …` | one-shot submit (auto chain fields) |
-| `cybergraph query '<datalog>'` | [[inf]] query over the graph |
-| `cybergraph finalize` | advance root + height |
-| `cybergraph root` | print BBG root |
-
-seal binding and proof verification at the commit port are still open (S3). local processing is the scaffold the soft3-node will wrap.
-
-## path B — foculus consensus tools (available now)
-
-drive φ*, fork-choice, and finality by hand, or run the device-sync daemon (QUIC, default port 4200 — a foculus sync port, separate from product RPC 7780).
-
-```bash
-cd "$CYBER_ROOT/foculus"
-cargo build --release
-
-# core consensus CLI (no network)
-foculus --help
-
-# device sync daemon (feature `net` when required by the build)
-foculus node --dir ~/.foculus-a --port 4200 daemon
-# second peer on another port / dir, then add-peer + sync
-```
-
-foculus is the ordering and finality engine inside the future soft3-node. it is a component surface, not the product chaosnet endpoint.
-
-## path C — soft3-node (target)
-
-the product launch command once S6 lands:
-
-```bash
-# planned — not shipped yet
-soft3 node --network spacepussy-test --home ~/.spacepussy-test
-# listens: rpc :7780 · lcd :7781 · index :7782
-
-cyber sync
-# reachable yes · chain_id spacepussy-test
-```
-
-### what soft3-node wires
-
-```text
-                    soft3-node (one binary)
-    ┌──────────────────────────────────────────────────┐
-    │  rpc :7780   lcd :7781   index :7782             │
-    │                                                  │
-    │  cybergraph ──► bbg state                        │
-    │       │              ▲                           │
-    │       ▼              │                           │
-    │  tape frames ──► radio gossip ──► peers          │
-    │       │                                          │
-    │       ▼                                          │
-    │  foculus order + φ* finality                     │
-    │       │                                          │
-    │       ▼                                          │
-    │  soma drive-loop: fetch → execute → prove → commit│
-    └──────────────────────────────────────────────────┘
-```
-
-| layer | crate | job in the node |
-|-------|-------|-----------------|
-| process | [[cybergraph]] | intend / seal / link · signal chains |
-| state | [[bbg]] | authenticated polynomial state |
-| frame | [[tape]] | particle / cyberlink / signal on the wire |
-| transport | [[radio]] | QUIC + gossip |
-| order / finality | [[foculus]] | per-neuron chains · φ* · fork choice |
-| runtime | [[soma]] | fetch → execute → prove → commit loop |
-| prove | [[nox]] · [[zheng]] | execution + proof |
-| identity | [[mudra]] | keys · signatures on signals |
-| rank | [[tru]] | φ* over the live graph |
-
-### genesis (planned)
-
-```bash
-# planned
-soft3 genesis init --network spacepussy-test --out ~/.spacepussy-test
-soft3 node --home ~/.spacepussy-test
-```
-
-genesis root starts the network. mainnet later migrates bootloader graph state (space-pussy rehearsal, then bostrom) onto soft3 — see R-milestones in [[cyber/launch]]. genesis of spacepussy-test itself is empty-or-seeded soft3 state, not a cosmos export.
-
-### multi-node (planned)
-
-```bash
-# node A
-soft3 node --home ~/.spt-a --rpc 7780 --p2p 7783
-
-# node B
-soft3 node --home ~/.spt-b --rpc 7790 --p2p 7793 --peer <A-multiaddr>
-
-cyber sync                    # A
-cyber sync --rpc http://127.0.0.1:7790   # B — when flag exists
-```
-
-gate: both nodes finalize the same root; a signal on A appears on B before finality.
-
-## milestone ladder (network path)
-
-from [[cyber/launch]] — only the network-relevant slice:
-
-| stage | name | gate for launch |
-|-------|------|-----------------|
-| S1 | wire & framing | [[tape]] particle/cyberlink/signal round-trip, schema frozen |
-| S2 | identity | signal signatures via [[mudra]] verified at order |
-| S3 | proven processor | seal binding: unproven signal rejected |
-| S4 | networking | signals on [[radio]] gossip · [[foculus]] order across peers |
-| S5 | consensus v0 | multi-node φ* finality · no conflicting finals |
-| S6 | node + genesis | soft3-node boots · genesis root · peers join |
-| ★ | MVP testnet | multi-node public · 30 days · live economy |
-
-spacepussy-test is the name of that MVP testnet as a product network. shipping soft3-node is the hard gate that turns `cyber sync` green by default.
-
-## ports
-
-| port | service | now |
-|------|---------|-----|
-| 7780 | product RPC (soft3-node) | reserved · offline until S6 |
-| 7781 | product LCD / REST | reserved · offline until S6 |
-| 7782 | product index | reserved · offline until S6 |
-| 4200 | foculus device-sync default | component daemon only |
-
-keep 7780–7782 free for the product node so `cyber sync` stays one command for everyone.
-
-## operator checklist
-
-1. install `true-cyber` (or `soft3`)
-2. confirm presets: `cyber network` → chain_id `spacepussy-test`, rpc `127.0.0.1:7780`
-3. run path A (cybergraph) and/or path B (foculus) while developing components
-4. do not point product CLIs at cybernode cosmos RPC
-5. when soft3-node ships: `soft3 node` then `cyber sync` → reachable yes
-6. multi-node → public spacepussy-test → MVP gate in [[cyber/launch]]
+| name | substrate | role |
+|------|-----------|------|
+| spacepussy-test | soft3 cybergraph+bbg | product chaosnet |
+| space-pussy | cosmos go-cyber | bootloader experimental |
+| bostrom | cosmos go-cyber | bootloader mainnet history |
 
 ## related
 
-- [[soft3]] — stack entry
-- [[soft3/stack]] — component registry
-- [[soft3/docs|foundations]] — one mind · many languages · open world
-- [[install]] — product install (`cargo install true-cyber`)
-- [[bootloader]] — cosmos bostrom / space-pussy as migration sources
-- [[cyber/launch]] — full milestone ladder to mainnet
+- [[soft3]] · [[soft3/stack]] · [[install]] · [[bootloader]] · [[cyber/launch]]
