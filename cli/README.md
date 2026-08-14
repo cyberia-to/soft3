@@ -28,21 +28,34 @@ soft3 verify <proof-file>
 soft3 particle <file>
     compute the particle (hemera hash) of a file
 
+soft3 sync / soft3 network
+    product probe and presets — default spacepussy-test @ :7780
+    (shipped in soft3 0.4)
+
 soft3 node
-    start a local development node
+    start the product soft3-node for spacepussy-test
+    (planned — milestone S6; see soft3/docs/launch.md)
 
 soft3 status [--node <addr>]
     show node status, BBG root, block height
 ```
 
+## launch
+
+full operator guide: [[soft3/docs/launch|launch spacepussy-test]].
+
+summary:
+
+- product network is **spacepussy-test**, not cosmos space-pussy on cybernode
+- today: local [[cybergraph]] + [[foculus]] components; `cyber sync` probes :7780
+- target: `soft3 node` binds rpc/lcd/index on 7780–7782 and peers over [[radio]]
+
 ## implementation
 
-Rust binary. depends on:
-- `hemera` (particle computation)
-- `bbg` (proof verification)
-- `lens` (Lens opening verification)
+Rust binary in `crate/`. network presets and `sync` are live.
 
-not yet implemented — scaffold only. blocked on:
+remaining CLI surface (link / query / verify / node) waits on:
+
 - BBG proof serialisation (serde for `QueryProof`)
 - query wire protocol (`schema/`)
-- network transport (`radio`)
+- soft3-node wiring (cybergraph + bbg + radio + foculus + soma)

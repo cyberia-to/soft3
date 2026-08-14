@@ -257,4 +257,11 @@ building a new component is specializing the same substrate to a new job. it com
 
 **one mind, many languages, open world.**
 
+## docs in this folder
+
+| page | role |
+|------|------|
+| this page | foundations whitepaper — methods under the stack |
+| [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
+
 see [[soft3]] for the component stack and the troika compass.

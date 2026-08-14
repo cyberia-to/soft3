@@ -26,4 +26,6 @@ soft3 sync                 # same network: spacepussy-test @ http://127.0.0.1:77
 
 **spacepussy-test** is the soft3 product chaosnet. cosmos **space-pussy** on cybernode is a different chain (bootloader) — see [[bootloader]].
 
-[[cyber]] · [[cyb]] · [[bootloader]] · [[soft3/stack]] · [[install]]
+how to launch the network: [[soft3/docs/launch|launch spacepussy-test]].
+
+[[cyber]] · [[cyb]] · [[bootloader]] · [[soft3/stack]] · [[install]] · [[soft3/docs/launch|launch]]
