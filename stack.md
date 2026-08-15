@@ -24,7 +24,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | [[fs]] | mount | — | — | particles · patches · sync |
 | [[tok]] | pay | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation |
 | [[cybics/space|space]] |  |  |  |  |
-| [[mudra]] | encrypt | — | — | KEM · dCTIDH · AEAD · TFHE · threshold |
+| [[mudra]] | encrypt | [0.1.0](https://github.com/cyberia-to/mudra/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-mudra) | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip |
 | [[tape]] | frame | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
 | [[foculus]] | sync | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT |
@@ -36,7 +36,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | [[cybics/word|word]] |  |  |  |  |
 | [[neural]] | mean | — | — | sigil → word → link → sentence → motif → dialect |
 | [[rune]] | eval | — | — | Rs · hint · host · eval · async |
-| [[inf]] | query | — | — | datalog · fixed-point over BBG |
+| [[inf]] | query | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |
 | [[trident]] | compile | [0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
 | [[soft3/nox\|nox]] | run | [0.1.2](https://github.com/cyberia-to/nox/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
