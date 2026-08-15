@@ -1,0 +1,14 @@
+[package]
+name = "cyber-conformance"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Stability harness for the soft3 stack — hemera fingerprints of canonical encodings and mechanism outputs"
+repository = "https://github.com/cyberia-to/conformance"
+readme = "../README.md"
+
+[dependencies]
+# cyber-hemera = { path = "../../hemera/rs" }
+# enabled once hemera output reaches stable release
+
+[dev-dependencies]

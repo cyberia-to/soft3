@@ -11,7 +11,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
-| [[soft3]] | compose | [0.8.0](https://github.com/cyberia-to/soft3/releases/tag/v0.8.0) | [0.8.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · this repo |
+| [[soft3]] | compose | [0.8.0](https://github.com/cyberia-to/soft3/releases/tag/v0.8.0) | [0.8.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
 | [[cybics/form|form]] |  |  |  |  |
 | [[honeycrisp]] | accelerate | [0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
 | [[strata]] | math | [0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-strata) | nebu 𝔽_p · genies 𝔽_q · jali R_q |
@@ -50,8 +50,6 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | [[prysm]] | paint | — | — | tape dialect · chunks → UI |
 | [[cyb]] | embody | [0.2.1](https://github.com/cyberia-to/cyb/releases/tag/v0.2.1-crates) | [0.2.1](https://crates.io/crates/cyb) | Bevy worlds · terminal · live cells |
 | [[lytics]] | measure | — | — | signed visitor events · PoW-priced · retention · cohorts · funnels |
-| stability |  |  |  |  |
-| [[conformance]] | snapshot | scaffold | — | hemera fingerprint per encoding · stability harness |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
 
