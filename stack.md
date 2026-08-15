@@ -58,7 +58,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
-| [[trident]] | compile | [v0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | — | .tri → .nox |
+| [[trident]] | compile | [v0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [trident-lang 0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
 | [[soft3/nox\|nox]] | run | [v0.1.1](https://github.com/cyberia-to/nox/releases/tag/v0.1.1) | [cyber-nox 0.1.1](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
 | [[wysm]] | sandbox | — | — | WASM souls · gas-metered · cond/host |
 | [[glia]] | infer | — | — | .model runtime · cond/model |
