@@ -23,7 +23,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
 | [[soft3/cybergraph\|cybergraph]] | link | [v0.1.1](https://github.com/cyberia-to/cybergraph/releases/tag/v0.1.1) | [cybergraph 0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
-| [[soft3/bbg\|bbg]] | store | [v0.1.1](https://github.com/cyberia-to/bbg/releases/tag/v0.1.1) | [bbg 0.1.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs |
+| [[soft3/bbg\|bbg]] | store | [v0.1.1](https://github.com/cyberia-to/bbg/releases/tag/v0.1.1) | [bbg 0.1.2](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs |
 | [[cell]] | hold | — | — | local node · graph slice · signal chain · apply/prove loop |
 | [[fs]] | mount | — | — | particles · patches · sync |
 | [[tok]] | pay | [v0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [cyber-tok 0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation |
@@ -35,7 +35,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | [[mudra]] | encrypt | — | — | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | — | [cyber-radio 0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip |
 | [[tape]] | frame | — | [cyber-tape 0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
-| [[foculus]] | sync | [v0.1.1](https://github.com/cyberia-to/foculus/releases/tag/v0.1.1) | [foculus 0.1.1](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT |
+| [[foculus]] | sync | [v0.1.1](https://github.com/cyberia-to/foculus/releases/tag/v0.1.1) | [foculus 0.1.2](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT |
 | [[cyb/root/ward\|ward]] | authorize | spec | — | effect router · emit/query/link/seal/host |
 
 ## [[cybics/life|life]]
@@ -43,7 +43,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
 | [[tru]] | converge | [v0.1.1](https://github.com/cyberia-to/tru/releases/tag/v0.1.1) | [cyber-tru 0.1.1](https://crates.io/crates/cyber-tru) | φ* · eigenvectors · cyberank |
-| [[foculus]] | agree | [v0.1.1](https://github.com/cyberia-to/foculus/releases/tag/v0.1.1) | [foculus 0.1.1](https://crates.io/crates/foculus) | [[collective focus theorem]] → finality |
+| [[foculus]] | agree | [v0.1.1](https://github.com/cyberia-to/foculus/releases/tag/v0.1.1) | [foculus 0.1.2](https://crates.io/crates/foculus) | [[collective focus theorem]] → finality |
 | [[soft3/soma\|soma]] | think | — | — | four concurrent loops · tiered model stack |
 
 ## [[cybics/word|word]]
@@ -59,11 +59,11 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
 | [[trident]] | compile | [v0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [trident-lang 0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
-| [[soft3/nox\|nox]] | run | [v0.1.1](https://github.com/cyberia-to/nox/releases/tag/v0.1.1) | [cyber-nox 0.1.1](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
+| [[soft3/nox\|nox]] | run | [v0.1.1](https://github.com/cyberia-to/nox/releases/tag/v0.1.1) | [cyber-nox 0.1.2](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
 | [[wysm]] | sandbox | — | — | WASM souls · gas-metered · cond/host |
 | [[glia]] | infer | — | — | .model runtime · cond/model |
 | [[kern]] | shade | — | — | Metal/Vulkan/WebGPU shaders · cond/host |
-| [[zheng]] | prove | [v0.1.1](https://github.com/cyberia-to/zheng/releases/tag/v0.1.1) | [zheng 0.1.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
+| [[zheng]] | prove | [v0.1.1](https://github.com/cyberia-to/zheng/releases/tag/v0.1.1) | [zheng 0.1.2](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
 | [[eidos]] | certify | — | — | CIC type-checker · theorem → cyberlink |
 
 ## [[cybics/play|play]]
