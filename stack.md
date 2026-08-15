@@ -33,7 +33,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
 | [[mudra]] | encrypt | — | — | KEM · dCTIDH · AEAD · TFHE · threshold |
-| [[radio]] | transmit | — | [cyber-radio 0.96.1](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip |
+| [[radio]] | transmit | — | [cyber-radio 0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip |
 | [[tape]] | frame | — | [cyber-tape 0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
 | [[foculus]] | sync | — | [foculus 0.1.1](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT |
 | [[cyb/root/ward\|ward]] | authorize | spec | — | effect router · emit/query/link/seal/host |
