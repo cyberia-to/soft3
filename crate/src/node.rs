@@ -8,11 +8,12 @@
 //!   GET  /health   — ok
 //!   GET  /root     — BBG root hex
 //!   GET  /stats    — graph statistics
-//!   POST /v1/link  — submit a cyberlink (JSON)
-//!   POST /v1/finalize — close a block (advance height)
+//!   GET  /log      — the signal-frame log (native replication wire)
+//!   POST /v1/frame — submit native signal frames (foculus encoding)
+//!   POST /v1/link  — submit a cyberlink (JSON bridge)
 //!
-//! Persistence: `$home/log` (signal frames) + `$home/blocks` (finalize count),
-//! same layout as cybergraph-cli.
+//! Persistence: `$home/log` (signal frames). Canon: one signal, one block —
+//! every applied signal finalizes, so live state and log replay agree.
 
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
@@ -118,7 +119,6 @@ impl Node {
 
     pub fn finalize(&mut self) -> (u64, String) {
         self.graph.bbg.finalize_block();
-        bump_blocks(&self.home);
         (self.height(), self.root_hex())
     }
 
@@ -226,24 +226,22 @@ fn escape_json(s: &str) -> String {
 
 // ── persistence (cybergraph-cli compatible) ─────────────────────────────────
 
+/// Canon replay: one signal, one block. Every applied signal is followed by
+/// a finalize, so the live order and any replay of the log produce the same
+/// state and the same root — a peer can verify by recomputation.
 fn open_store(home: &Path) -> Cybergraph {
     let mut cg = Cybergraph::new();
     if let Ok(bytes) = std::fs::read(home.join("log")) {
         for frame in decode_events(&bytes) {
             match frame {
                 CyberFrame::Signal(s) => {
-                    let _ = cg.link(s);
+                    if cg.link(s).is_ok() {
+                        cg.bbg.finalize_block();
+                    }
                 }
                 CyberFrame::Intent(i) => {
                     cg.bbg.apply_intent(&i);
                 }
-            }
-        }
-    }
-    if let Ok(text) = std::fs::read_to_string(home.join("blocks")) {
-        if let Ok(n) = text.trim().parse::<u64>() {
-            for _ in 0..n {
-                cg.bbg.finalize_block();
             }
         }
     }
@@ -259,15 +257,6 @@ fn append_frame(home: &Path, frame: &[u8]) {
     {
         let _ = f.write_all(frame);
     }
-}
-
-fn bump_blocks(home: &Path) {
-    let path = home.join("blocks");
-    let n = std::fs::read_to_string(&path)
-        .ok()
-        .and_then(|t| t.trim().parse::<u64>().ok())
-        .unwrap_or(0);
-    let _ = std::fs::write(path, (n + 1).to_string());
 }
 
 fn load_or_init_genesis(home: &Path) -> std::io::Result<u64> {
@@ -333,8 +322,8 @@ pub fn run(home: PathBuf, bind: &str, moniker: &str) -> std::io::Result<()> {
             n.signal_count(),
             n.particle_count()
         );
-        eprintln!("  GET  /status /health /root /stats");
-        eprintln!("  POST /v1/link  /v1/finalize");
+        eprintln!("  GET  /status /health /root /stats /log");
+        eprintln!("  POST /v1/frame  /v1/link  /v1/finalize");
     }
 
     let listener = TcpListener::bind(bind)?;
@@ -358,25 +347,87 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
     stream.set_read_timeout(Some(Duration::from_secs(30)))?;
     stream.set_write_timeout(Some(Duration::from_secs(30)))?;
 
-    let mut buf = vec![0u8; 64 * 1024];
-    let n = stream.read(&mut buf)?;
-    if n == 0 {
+    // Byte-safe request read: headers first, then exactly content-length of
+    // body — frames on /v1/frame are binary and must survive untouched.
+    let mut raw: Vec<u8> = Vec::with_capacity(8 * 1024);
+    let mut tmp = [0u8; 8 * 1024];
+    let header_end = loop {
+        let n = stream.read(&mut tmp)?;
+        if n == 0 {
+            return Ok(());
+        }
+        raw.extend_from_slice(&tmp[..n]);
+        if let Some(pos) = find_bytes(&raw, b"\r\n\r\n") {
+            break pos + 4;
+        }
+        if raw.len() > 64 * 1024 {
+            return Ok(());
+        }
+    };
+    let head = String::from_utf8_lossy(&raw[..header_end]).into_owned();
+    let request_line = head.lines().next().unwrap_or("").to_string();
+    let mut parts = request_line.split_whitespace();
+    let method = parts.next().unwrap_or("GET").to_string();
+    let full_path = parts.next().unwrap_or("/").to_string();
+    let (path, query) = full_path
+        .split_once('?')
+        .unwrap_or((full_path.as_str(), ""));
+
+    let content_length: usize = head
+        .lines()
+        .find_map(|l| {
+            let (k, v) = l.split_once(':')?;
+            k.trim()
+                .eq_ignore_ascii_case("content-length")
+                .then(|| v.trim().parse().ok())?
+        })
+        .unwrap_or(0);
+    while raw.len() < header_end + content_length {
+        let n = stream.read(&mut tmp)?;
+        if n == 0 {
+            break;
+        }
+        raw.extend_from_slice(&tmp[..n]);
+    }
+    let body = &raw[header_end..(header_end + content_length).min(raw.len())];
+    let method = method.as_str();
+
+    // ── native wire ─────────────────────────────────────────────────────
+    // The durable log IS the replication protocol: a peer pulls the frame
+    // bytes, replays them, and recomputes the root itself — verification by
+    // recomputation, no trust in the served numbers.
+    if method == "GET" && (path == "/log" || path == "/log/") {
+        let bytes = {
+            let n = node.lock().unwrap();
+            std::fs::read(n.home.join("log")).unwrap_or_default()
+        };
+        let from: usize = query
+            .split('&')
+            .find_map(|kv| kv.strip_prefix("from="))
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(0);
+        let slice: &[u8] = if from <= bytes.len() {
+            &bytes[from..]
+        } else {
+            &[]
+        };
+        let head = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\n\r\n",
+            slice.len()
+        );
+        stream.write_all(head.as_bytes())?;
+        stream.write_all(slice)?;
         return Ok(());
     }
-    let req = String::from_utf8_lossy(&buf[..n]);
-    let mut lines = req.lines();
-    let request_line = lines.next().unwrap_or("");
-    let mut parts = request_line.split_whitespace();
-    let method = parts.next().unwrap_or("GET");
-    let path = parts.next().unwrap_or("/").split('?').next().unwrap_or("/");
-
-    // body after blank line
-    let body = req
-        .split("\r\n\r\n")
-        .nth(1)
-        .or_else(|| req.split("\n\n").nth(1))
-        .unwrap_or("")
-        .as_bytes();
+    if method == "POST" && (path == "/v1/frame" || path == "/v1/frame/") {
+        let (status, body_out) = handle_frames(node, body);
+        let resp = format!(
+            "HTTP/1.1 {status}\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\n\r\n{body_out}",
+            body_out.len()
+        );
+        stream.write_all(resp.as_bytes())?;
+        return Ok(());
+    }
 
     let (status, ctype, body_out) = match (method, path) {
         ("GET", "/status") | ("GET", "/status/") => {
@@ -431,12 +482,14 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
             ),
         },
         ("POST", "/v1/finalize") | ("POST", "/v1/finalize/") => {
-            let mut n = node.lock().unwrap();
-            let (h, root) = n.finalize();
+            // Standalone empty blocks broke replay determinism: a finalize
+            // between signals is invisible to the log, so live state and
+            // replay diverged. Canon is one signal, one block.
             (
-                "200 OK",
-                "application/json",
-                format!("{{\n  \"height\": {h},\n  \"root\": \"{root}\"\n}}\n"),
+                "410 Gone",
+                "text/plain; charset=utf-8",
+                "---\nparticle: receipt\nerror: finalize is part of every signal now — one signal, one block\n---\n"
+                    .into(),
             )
         }
         _ => ("404 Not Found", "text/plain", "not found\n".into()),
@@ -448,6 +501,51 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
     );
     stream.write_all(resp.as_bytes())?;
     Ok(())
+}
+
+fn find_bytes(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+    haystack
+        .windows(needle.len())
+        .position(|w| w == needle)
+}
+
+/// Accept native signal frames (foculus encoding), apply, finalize once.
+/// Answers a cybermark receipt.
+fn handle_frames(node: &Mutex<Node>, body: &[u8]) -> (&'static str, String) {
+    let frames = decode_events(body);
+    if frames.is_empty() {
+        return (
+            "400 Bad Request",
+            "---\nparticle: receipt\nerror: no frames decoded\n---\n".into(),
+        );
+    }
+    let mut n = node.lock().unwrap();
+    let mut applied = 0u64;
+    let mut rejected = 0u64;
+    for f in frames {
+        match f {
+            CyberFrame::Signal(s) => {
+                if n.graph.link(s.clone()).is_ok() {
+                    append_frame(&n.home, &encode_signal_frame(&s));
+                    n.graph.bbg.finalize_block();
+                    applied += 1;
+                } else {
+                    rejected += 1;
+                }
+            }
+            CyberFrame::Intent(i) => {
+                n.graph.bbg.apply_intent(&i);
+                applied += 1;
+            }
+        }
+    }
+    let (h, root) = (n.height(), n.root_hex());
+    (
+        "200 OK",
+        format!(
+            "---\nparticle: receipt\napplied: {applied}\nrejected: {rejected}\nheight: {h}\nbbg-root: {root}\n---\n"
+        ),
+    )
 }
 
 fn handle_link(node: &Mutex<Node>, body: &[u8]) -> Result<String, String> {
@@ -474,27 +572,14 @@ fn handle_link(node: &Mutex<Node>, body: &[u8]) -> Result<String, String> {
         .get("valence")
         .and_then(|x| x.as_i64())
         .unwrap_or(0) as i8;
-    let auto_finalize = v
-        .get("finalize")
-        .and_then(|x| x.as_bool())
-        .unwrap_or(true);
-
     let mut n = node.lock().unwrap();
     n.link(neuron, from, to, token, amount, valence)?;
-    if auto_finalize {
-        let (h, root) = n.finalize();
-        Ok(format!(
-            "{{\n  \"ok\": true,\n  \"height\": {h},\n  \"root\": \"{root}\",\n  \"signals\": {}\n}}\n",
-            n.signal_count()
-        ))
-    } else {
-        Ok(format!(
-            "{{\n  \"ok\": true,\n  \"height\": {},\n  \"root\": \"{}\",\n  \"signals\": {}\n}}\n",
-            n.height(),
-            n.root_hex(),
-            n.signal_count()
-        ))
-    }
+    // canon: one signal, one block — the finalize is part of the signal
+    let (h, root) = n.finalize();
+    Ok(format!(
+        "{{\n  \"ok\": true,\n  \"height\": {h},\n  \"root\": \"{root}\",\n  \"signals\": {}\n}}\n",
+        n.signal_count()
+    ))
 }
 
 fn json_str(s: &str) -> String {
