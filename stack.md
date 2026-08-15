@@ -14,7 +14,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
 | [[honeycrisp]] | accelerate | [v0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [honeycrisp 0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
-| [[strata]] | math | [v0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | — | nebu 𝔽_p · genies 𝔽_q · jali R_q |
+| [[strata]] | math | [v0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | [cyber-strata 0.1.0](https://crates.io/crates/cyber-strata) | nebu 𝔽_p · genies 𝔽_q · jali R_q |
 | [[hemera]] | hash | [v0.3.0](https://github.com/cyberia-to/hemera/releases/tag/v0.3.0) | [cyber-hemera 0.3.0](https://crates.io/crates/cyber-hemera) | [[Poseidon2]] sponge · identity · trees · verified streaming |
 | [[lens]] | commit | [v0.1.2](https://github.com/cyberia-to/lens/releases/tag/v0.1.2) | [cyber-lens 0.1.0](https://crates.io/crates/cyber-lens) | 5 PCS backends, one per algebra |
 
