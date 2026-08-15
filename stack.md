@@ -11,7 +11,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 
 | repo | verb | release | crates | what it does |
 |---|---|---|---|---|
-| [[soft3]] | compose | [0.9.0](https://github.com/cyberia-to/soft3/releases/tag/v0.9.0) | [0.9.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
+| [[soft3]] | compose | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
 | [[cybics/form|form]] |  |  |  |  |
 | [[honeycrisp]] | accelerate | [0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
 | [[strata]] | math | [0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-strata) | nebu 𝔽_p · genies 𝔽_q · jali R_q |
@@ -35,7 +35,7 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 | [[soft3/soma\|soma]] | think | — | — | four concurrent loops · tiered model stack |
 | [[cybics/word|word]] |  |  |  |  |
 | [[neural]] | mean | — | — | sigil → word → link → sentence → motif → dialect |
-| [[rune]] | eval | — | — | Rs · hint · host · eval · async |
+| [[rune]] | eval | [0.1.0](https://github.com/cyberia-to/rune/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-rune) | Rs · hint · host · eval · async |
 | [[inf]] | query | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |
 | [[trident]] | compile | [0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
@@ -59,7 +59,7 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` stack CLI + node [0.9.0](https://crates.io/crates/soft3) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
+| [cli/](cli/) | `soft3` stack CLI + node [0.10.0](https://crates.io/crates/soft3) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 
