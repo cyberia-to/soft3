@@ -11,75 +11,75 @@ the component registry: every repo, its verb, its release, its role. soft3 is th
 
 ## [[cybics/form|form]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[honeycrisp]] | accelerate | — | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
-| [[strata]] | math | — | nebu 𝔽_p · genies 𝔽_q · jali R_q |
-| [[hemera]] | hash | v0.2.0 | [[Poseidon2]] sponge · identity · trees · verified streaming |
-| [[lens]] | commit | — | 5 PCS backends, one per algebra |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[honeycrisp]] | accelerate | — | [honeycrisp 0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
+| [[strata]] | math | — | — | nebu 𝔽_p · genies 𝔽_q · jali R_q |
+| [[hemera]] | hash | v0.2.0 | [cyber-hemera 0.3.0](https://crates.io/crates/cyber-hemera) | [[Poseidon2]] sponge · identity · trees · verified streaming |
+| [[lens]] | commit | — | [cyber-lens 0.1.0](https://crates.io/crates/cyber-lens) | 5 PCS backends, one per algebra |
 
 ## [[cybics/mass|mass]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[soft3/cybergraph\|cybergraph]] | link | — | jets · memos · types · knowledge |
-| [[soft3/bbg\|bbg]] | store | — | 1 polynomial · 10 dims · ~200B proofs |
-| [[cell]] | hold | — | local node · graph slice · signal chain · apply/prove loop |
-| [[fs]] | mount | — | particles · patches · sync |
-| [[tok]] | pay | — | Coin · Card · conservation |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[soft3/cybergraph\|cybergraph]] | link | — | [cybergraph 0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
+| [[soft3/bbg\|bbg]] | store | — | [bbg 0.1.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs |
+| [[cell]] | hold | — | — | local node · graph slice · signal chain · apply/prove loop |
+| [[fs]] | mount | — | — | particles · patches · sync |
+| [[tok]] | pay | — | [cyber-tok 0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation |
 
 ## [[cybics/space|space]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[mudra]] | encrypt | — | KEM · dCTIDH · AEAD · TFHE · threshold |
-| [[radio]] | transmit | — | QUIC · BAO streaming · gossip |
-| [[tape]] | frame | — | typed particle framing over any byte stream |
-| [[foculus]] | sync | — | chain · VDF · equivocation · DAS · erasure · CRDT |
-| [[cyb/root/ward\|ward]] | authorize | spec | effect router · emit/query/link/seal/host |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[mudra]] | encrypt | — | — | KEM · dCTIDH · AEAD · TFHE · threshold |
+| [[radio]] | transmit | — | [cyber-radio 0.96.1](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip |
+| [[tape]] | frame | — | [cyber-tape 0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
+| [[foculus]] | sync | — | [foculus 0.1.1](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT |
+| [[cyb/root/ward\|ward]] | authorize | spec | — | effect router · emit/query/link/seal/host |
 
 ## [[cybics/life|life]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[tru]] | converge | — | φ* · eigenvectors · cyberank |
-| [[foculus]] | agree | — | [[collective focus theorem]] → finality |
-| [[soft3/soma\|soma]] | think | — | four concurrent loops · tiered model stack |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[tru]] | converge | — | [cyber-tru 0.1.1](https://crates.io/crates/cyber-tru) | φ* · eigenvectors · cyberank |
+| [[foculus]] | agree | — | [foculus 0.1.1](https://crates.io/crates/foculus) | [[collective focus theorem]] → finality |
+| [[soft3/soma\|soma]] | think | — | — | four concurrent loops · tiered model stack |
 
 ## [[cybics/word|word]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[neural]] | mean | — | sigil → word → link → sentence → motif → dialect |
-| [[rune]] | eval | — | Rs · hint · host · eval · async |
-| [[inf]] | query | — | datalog · fixed-point over BBG |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[neural]] | mean | — | — | sigil → word → link → sentence → motif → dialect |
+| [[rune]] | eval | — | — | Rs · hint · host · eval · async |
+| [[inf]] | query | — | — | datalog · fixed-point over BBG |
 
 ## [[cybics/work|work]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[trident]] | compile | v0.1.0 | .tri → .nox |
-| [[soft3/nox\|nox]] | run | — | 18 patterns + jets · unconditional proof |
-| [[wysm]] | sandbox | — | WASM souls · gas-metered · cond/host |
-| [[glia]] | infer | — | .model runtime · cond/model |
-| [[kern]] | shade | — | Metal/Vulkan/WebGPU shaders · cond/host |
-| [[zheng]] | prove | — | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
-| [[eidos]] | certify | — | CIC type-checker · theorem → cyberlink |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[trident]] | compile | v0.1.0 | — | .tri → .nox |
+| [[soft3/nox\|nox]] | run | — | [cyber-nox 0.1.1](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
+| [[wysm]] | sandbox | — | — | WASM souls · gas-metered · cond/host |
+| [[glia]] | infer | — | — | .model runtime · cond/model |
+| [[kern]] | shade | — | — | Metal/Vulkan/WebGPU shaders · cond/host |
+| [[zheng]] | prove | — | [zheng 0.1.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] |
+| [[eidos]] | certify | — | — | CIC type-checker · theorem → cyberlink |
 
 ## [[cybics/play|play]]
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[mir]] | render | — | positions + features → [[R-1.0]] world |
-| [[prysm]] | paint | — | tape dialect · chunks → UI |
-| [[cyb]] | embody | — | Bevy worlds · terminal · live cells |
-| [[lytics]] | measure | — | signed visitor events · PoW-priced · retention · cohorts · funnels |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[mir]] | render | — | — | positions + features → [[R-1.0]] world |
+| [[prysm]] | paint | — | — | tape dialect · chunks → UI |
+| [[cyb]] | embody | — | [cyb 0.2.1](https://crates.io/crates/cyb) | Bevy worlds · terminal · live cells |
+| [[lytics]] | measure | — | — | signed visitor events · PoW-priced · retention · cohorts · funnels |
 
 ## stability
 
-| repo | verb | release | what it does |
-|---|---|---|---|
-| [[conformance]] | snapshot | scaffold | hemera fingerprint per encoding · stability harness |
+| repo | verb | release | crates | what it does |
+|---|---|---|---|---|
+| [[conformance]] | snapshot | scaffold | — | hemera fingerprint per encoding · stability harness |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the boundary analysis for the network tier lives in [[component-boundaries]].
 
@@ -89,7 +89,7 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` command-line tool | scaffold |
+| [cli/](cli/) | `soft3` stack CLI + node · [soft3 0.8.0](https://crates.io/crates/soft3) · product face [true-cyber 0.7.0](https://crates.io/crates/true-cyber) | published |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 
