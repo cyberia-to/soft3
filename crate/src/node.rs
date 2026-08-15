@@ -122,44 +122,37 @@ impl Node {
         (self.height(), self.root_hex())
     }
 
-    pub fn status_json(&self) -> String {
+    /// The node's status as a cybermark particle — frontmatter plus one body
+    /// line. This is the native wire: the same page format the graph speaks,
+    /// readable by curl, a browser, and a forty-line parser alike.
+    pub fn status_cybermark(&self) -> String {
         let stats = self.graph.bbg.statistics();
         format!(
-            r#"{{
-  "jsonrpc": "2.0",
-  "id": -1,
-  "result": {{
-    "node_info": {{
-      "network": "{chain}",
-      "moniker": "{moniker}",
-      "version": "{version}",
-      "protocol": "soft3/spacepussy-test/v1",
-      "engine": "cybergraph+bbg"
-    }},
-    "sync_info": {{
-      "latest_block_height": "{height}",
-      "earliest_block_height": "0",
-      "catching_up": false,
-      "genesis_time": {genesis},
-      "bbg_root": "{root}"
-    }},
-    "soft3": {{
-      "role": "{role}",
-      "denom": "{denom}",
-      "prefix": "{prefix}",
-      "rpc": "{rpc}",
-      "signals": {signals},
-      "neurons": {neurons},
-      "particles": {particles},
-      "axons": {axons},
-      "node_count": {node_count},
-      "max_degree": {max_degree}
-    }}
-  }}
-}}
-"#,
+            "---\n\
+             particle: status\n\
+             chain: {chain}\n\
+             protocol: soft3/spacepussy-test/v2\n\
+             engine: cybergraph+bbg\n\
+             version: {version}\n\
+             moniker: {moniker}\n\
+             height: {height}\n\
+             genesis: {genesis}\n\
+             bbg-root: {root}\n\
+             signals: {signals}\n\
+             neurons: {neurons}\n\
+             particles: {particles}\n\
+             axons: {axons}\n\
+             node-count: {node_count}\n\
+             max-degree: {max_degree}\n\
+             role: {role}\n\
+             denom: {denom}\n\
+             prefix: {prefix}\n\
+             rpc: {rpc}\n\
+             catching-up: false\n\
+             ---\n\
+             the state of [[spacepussy-test]] at height {height}\n",
             chain = self.network.chain_id(),
-            moniker = escape_json(&self.moniker),
+            moniker = frontmatter_safe(&self.moniker),
             version = env!("CARGO_PKG_VERSION"),
             height = self.height(),
             genesis = self.genesis_unix,
@@ -219,6 +212,12 @@ fn next_pos(cg: &Cybergraph, neuron: &NeuronId) -> (u64, Particle) {
 
 fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
+}
+
+/// Frontmatter values live on one line; fold anything that would break the
+/// block (newlines) into spaces.
+fn frontmatter_safe(s: &str) -> String {
+    s.replace(['\n', '\r'], " ")
 }
 
 fn escape_json(s: &str) -> String {
@@ -382,7 +381,7 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
     let (status, ctype, body_out) = match (method, path) {
         ("GET", "/status") | ("GET", "/status/") => {
             let n = node.lock().unwrap();
-            ("200 OK", "application/json", n.status_json())
+            ("200 OK", "text/plain; charset=utf-8", n.status_cybermark())
         }
         ("GET", "/health") | ("GET", "/health/") => {
             ("200 OK", "text/plain", "ok\n".into())
@@ -396,9 +395,9 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
             let s = n.graph.bbg.statistics();
             (
                 "200 OK",
-                "application/json",
+                "text/plain; charset=utf-8",
                 format!(
-                    "{{\n  \"height\": {},\n  \"root\": \"{}\",\n  \"signals\": {},\n  \"neurons\": {},\n  \"particles\": {},\n  \"axons\": {},\n  \"node_count\": {},\n  \"max_degree\": {}\n}}\n",
+                    "---\nparticle: stats\nheight: {}\nbbg-root: {}\nsignals: {}\nneurons: {}\nparticles: {}\naxons: {}\nnode-count: {}\nmax-degree: {}\n---\n",
                     n.height(),
                     n.root_hex(),
                     n.signal_count(),
