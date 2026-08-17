@@ -12,7 +12,7 @@ alias: computation languages, language set, sixteen languages, languages of supe
 
 ## the foundation — neural
 
-everything here reduces to one atom: the [[cyberlink]]. in [[nox]], evaluating a program IS creating an edge — the result is a [[particle]], the evaluation is the link from formula to result (see [[nox: frozen provable computer]]). so the floor is not a language but a link: particle → particle, signed by a [[neuron]], weighted by stake.
+everything here reduces to one atom: the [[cyberlink]]. in [[nox]], evaluating a program IS creating an edge — the result is a [[particle]], the evaluation is the link from formula to result (see [[nox - frozen provable computer]]). so the floor is not a language but a link: particle → particle, signed by a [[neuron]], weighted by stake.
 
 the cyberlink is the [[form]] triad made concrete — every link is [[bit]] · [[step]] · [[proof]]:
 
