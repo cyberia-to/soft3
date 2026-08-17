@@ -27,6 +27,13 @@ do NOT implement stack logic here. call into the stack repos via FFI, WASM, or R
 - `js/` package.json dependency versions — discuss before changing
 - `schema/` wire formats — changes must propagate to all language SDKs simultaneously
 
+## filenames (Windows / NTFS)
+
+tracked paths must be valid on NTFS. never use `<>:"/\|?*`, trailing `.` or space, or reserved device names (`CON`, `PRN`, …).
+
+- policy: [[filenames]] → `specs/filenames.md`
+- check: `python3 scripts/check-filenames.py --root ~/cyber`
+
 ## companion repos
 
 | repo | role |
