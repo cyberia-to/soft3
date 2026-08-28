@@ -46,6 +46,17 @@
                 -webkit-font-smoothing: antialiased;
             }
 
+            /* desktop is a single game screen: nothing to scroll, only to click */
+            @media (min-width: 901px) {
+                body {
+                    overflow: hidden;
+                }
+                .shell {
+                    height: 100dvh;
+                    height: 100vh;
+                }
+            }
+
             #world {
                 position: fixed;
                 inset: 0;
@@ -109,12 +120,14 @@
                 text-shadow: 0 0 16px rgba(255, 210, 120, 0.9);
             }
 
-            /* center band: one crystal, top to bottom */
+            /* the stage: pitch card left, the playable crystal right.
+               desktop is one screen — no page scroll, you click, not read down */
             .stage {
-                display: flex;
-                justify-content: center;
+                display: grid;
+                grid-template-columns: minmax(300px, 25rem) minmax(0, 1fr);
+                gap: clamp(0.8rem, 2vw, 1.4rem);
                 min-height: 0;
-                padding: 0.5rem 0;
+                align-items: stretch;
             }
 
             .glass {
@@ -128,40 +141,18 @@
                 -webkit-backdrop-filter: blur(22px) saturate(1.35);
             }
 
-            /* one glass shell holds both chapters — the pitch and the crystal */
-            .crystal {
-                width: min(100%, 38rem);
-                display: flex;
-                flex-direction: column;
-            }
-
-            .divider {
-                height: 1px;
-                margin: 0.2rem clamp(1.1rem, 2.2vw, 1.55rem);
-                background: linear-gradient(
-                    90deg,
-                    transparent,
-                    rgba(255, 255, 255, 0.16),
-                    transparent
-                );
-            }
-
-            /* hero: type on the left, the crystal sigil carrying the killer
-               number on the right — the stat is drawn, not boxed */
-            .manifesto {
-                padding: clamp(1.1rem, 2.4vh, 1.6rem)
-                    clamp(1.1rem, 2.2vw, 1.55rem);
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto;
-                gap: 0.4rem clamp(0.9rem, 2.5vw, 1.6rem);
-                align-items: center;
-            }
-
+            /* the pitch card: everything a stranger needs — what this is,
+               the one number that matters, and how to install */
             .pitch {
                 display: flex;
                 flex-direction: column;
-                gap: 0.6rem;
+                justify-content: center;
+                gap: 0.55rem;
                 min-width: 0;
+                min-height: 0;
+                padding: clamp(1rem, 2.2vh, 1.5rem)
+                    clamp(1.1rem, 2vw, 1.5rem);
+                overflow: auto;
             }
 
             .eyebrow {
@@ -173,7 +164,7 @@
             }
 
             h1 {
-                font-size: clamp(1.95rem, 5.2vw, 3.35rem);
+                font-size: clamp(1.8rem, 3.4vw, 2.7rem);
                 font-weight: 700;
                 line-height: 1.05;
                 letter-spacing: -0.02em;
@@ -216,9 +207,10 @@
                heptagon geometry as the triad ring below, one visual language */
             .sigil {
                 position: relative;
-                width: clamp(11rem, 22vw, 14.5rem);
+                width: clamp(10rem, 21vh, 12.5rem);
                 aspect-ratio: 1 / 1;
-                justify-self: center;
+                align-self: center;
+                margin: 0.15rem 0;
             }
             .sigil::before {
                 content: "";
@@ -274,7 +266,7 @@
                 text-shadow: 0 0 24px rgba(125, 255, 196, 0.5);
             }
             .sigil-text span {
-                font-size: 0.66rem;
+                font-size: 0.58rem;
                 font-weight: 700;
                 letter-spacing: 0.1em;
                 text-transform: uppercase;
@@ -362,11 +354,27 @@
                 text-decoration: underline;
             }
 
-            /* triad chapter sits under the pitch — same shell, same width */
+            /* right column: the ring floats over the world, the detail card
+               below it takes whatever height is left — never the page */
             .panel {
                 display: flex;
                 flex-direction: column;
-                overflow: hidden;
+                gap: 0.5rem;
+                min-height: 0;
+                min-width: 0;
+            }
+            .ringwrap {
+                flex: none;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .detail {
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
             }
 
             .spiral {
@@ -388,9 +396,25 @@
                dashed edge (play → form) shows the spiral closing and starting over. */
             .ring {
                 position: relative;
-                width: min(76%, 260px);
+                width: clamp(200px, 30vh, 290px);
                 aspect-ratio: 1 / 1;
-                margin: 0.7rem auto 0.3rem;
+                margin: 0.55rem auto 0.2rem;
+            }
+            .ring-q {
+                position: absolute;
+                inset: 30%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-size: 0.6rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                line-height: 1.5;
+                color: rgba(255, 248, 240, 0.75);
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+                pointer-events: none;
             }
             .ring-lines {
                 position: absolute;
@@ -553,20 +577,20 @@
                 color: rgba(255, 248, 240, 0.5);
                 text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
             }
-            @media (max-width: 720px) {
-                .crystal {
-                    width: 100%;
+            /* phone: one column, natural scroll — pitch, then the ring as a
+               compact chip grid, then the detail. app-like, thumb-friendly */
+            @media (max-width: 900px) {
+                .stage {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0.4rem 0;
                 }
-                /* hero stacks: sigil under the type, centered */
-                .manifesto {
-                    grid-template-columns: 1fr;
+                .pitch {
+                    overflow: visible;
                 }
                 .sigil {
-                    width: clamp(9.5rem, 44vw, 12rem);
-                    margin-top: 0.3rem;
+                    width: clamp(9rem, 40vw, 11rem);
                 }
-                /* the heptagon needs room a phone doesn't have — the same 7
-                   buttons fall back to a plain wrapping row, DOM order intact */
                 .ring {
                     position: static;
                     width: 100%;
@@ -574,11 +598,15 @@
                     display: flex;
                     flex-wrap: wrap;
                     gap: 0.35rem;
-                    margin: 0.6rem auto 0.2rem;
+                    margin: 0.5rem auto 0.2rem;
                 }
                 .ring-lines,
-                .ring-core {
+                .ring-core,
+                .ring-q {
                     display: none;
+                }
+                .ringwrap {
+                    align-items: stretch;
                 }
                 .tab {
                     position: static;
@@ -588,6 +616,9 @@
                     height: auto;
                     border-radius: 12px;
                     padding: 0.5rem 0.2rem;
+                }
+                .detail {
+                    overflow: visible;
                 }
             }
 
@@ -629,48 +660,24 @@
             </header>
 
             <main class="stage">
-                <div class="crystal glass">
-                <section class="manifesto">
-                    <div class="pitch">
-                        <p class="eyebrow">type 2 civilization software</p>
-                        <h1>one mind.<em>still growing.</em></h1>
-                        <p class="lede">
-                            Every link has weight,<br />
-                            every computation leaves a proof,<br />
-                            the whole graph settles into one focus.
-                        </p>
-                        <p class="consensus">
-                            Interplanetary consensus with no vote and no
-                            committee: the graph converges in cyberspace —
-                            distance is latency of light, not of politics.
-                        </p>
-                        <div class="action">
-                            <div class="install">
-                                <code id="cmd">cargo install soft3</code>
-                                <button type="button" id="copy">copy</button>
-                            </div>
-                            <p class="hint">
-                                install ·
-                                <a
-                                    href="https://cyber.page/soft3/"
-                                    target="_blank"
-                                    rel="noopener"
-                                    >docs</a
-                                >
-                                ·
-                                <a
-                                    href="https://github.com/cyberia-to/soft3"
-                                    target="_blank"
-                                    rel="noopener"
-                                    >github</a
-                                >
-                            </p>
-                        </div>
-                    </div>
+                <section class="pitch glass">
+                    <p class="eyebrow">an open stack for provable computing</p>
+                    <h1>one mind.<em>still growing.</em></h1>
+                    <p class="lede">
+                        Every link has weight,<br />
+                        every computation leaves a proof,<br />
+                        the whole graph settles into one focus.
+                    </p>
+                    <p class="consensus">
+                        A shared knowledge graph that computes: claims are
+                        signed, results carry proofs, ranking falls out of the
+                        math. Agreement is convergence, not voting — it works
+                        even across light-minutes.
+                    </p>
                     <div
                         class="sigil"
                         role="img"
-                        aria-label="light client verifies all of history in about 100 nanoseconds"
+                        aria-label="a light client verifies all of history in about 100 nanoseconds"
                     >
                         <svg viewBox="0 0 200 200" aria-hidden="true">
                             <polygon
@@ -683,17 +690,37 @@
                         </svg>
                         <div class="sigil-text">
                             <b>~100&nbsp;ns</b>
-                            <span>light client verifies<br />all of history</span>
+                            <span>verify all of history<br />on any device</span>
                         </div>
+                    </div>
+                    <div class="action">
+                        <div class="install">
+                            <code id="cmd">cargo install soft3</code>
+                            <button type="button" id="copy">copy</button>
+                        </div>
+                        <p class="hint">
+                            install ·
+                            <a
+                                href="https://cyber.page/soft3/"
+                                target="_blank"
+                                rel="noopener"
+                                >docs</a
+                            >
+                            ·
+                            <a
+                                href="https://github.com/cyberia-to/soft3"
+                                target="_blank"
+                                rel="noopener"
+                                >github</a
+                            >
+                        </p>
                     </div>
                 </section>
 
-                <div class="divider" aria-hidden="true"></div>
-
                 <aside class="panel">
+                    <div class="ringwrap">
                     <p class="spiral">
-                        one crystal · <em>7 triads</em> ·
-                        <em>21 domains</em> — tap a facet
+                        the whole stack in <em>7 facets</em> — click around
                     </p>
                     <div class="ring" role="tablist">
                         <svg
@@ -709,6 +736,7 @@
                             <line class="loop" x1="39" y1="51.4" x2="100" y2="22" />
                         </svg>
                         <div class="ring-core" aria-hidden="true"></div>
+                        <div class="ring-q" id="ringq" aria-hidden="true"></div>
                         <button
                             class="tab"
                             role="tab"
@@ -773,12 +801,15 @@
                             <b>play</b><small>together</small>
                         </button>
                     </div>
+                    </div>
+                    <div class="detail glass">
                     <div class="body" data-panel="form">
                         <span class="chip">what are the rules?</span>
                         <h2>The floor beneath everything</h2>
                         <p class="why">
-                            One field, one hash, one commitment — silicon tuned
-                            to prove. Every layer above reduces to this floor.
+                            The math floor: field arithmetic, hashing,
+                            commitments — tuned to the silicon so proofs come
+                            cheap.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -803,7 +834,7 @@
                                         rel="noopener"
                                         >strata</a
                                     >
-                                    · nebu 𝔽_p · genies 𝔽_q · jali R_q</span
+                                    · finite fields, three algebras (𝔽_p · 𝔽_q · R_q)</span
                                 >
                             </div>
                             <div class="prop">
@@ -828,7 +859,7 @@
                                         rel="noopener"
                                         >lens</a
                                     >
-                                    · one lens per algebra, 5 PCS backends</span
+                                    · polynomial commitments — 5 backends</span
                                 >
                             </div>
                         </div>
@@ -837,8 +868,9 @@
                         <span class="chip">what is it made of?</span>
                         <h2>Knowledge as matter</h2>
                         <p class="why">
-                            APIs rot, links compound. Meaning stored as mass,
-                            value that conserves.
+                            Where data lives: a content-addressed graph.
+                            Writing is linking, state is one cryptographic
+                            commitment, value is conserved by proof.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -850,7 +882,7 @@
                                         rel="noopener"
                                         >cybergraph</a
                                     >
-                                    · jets · memos · types · knowledge</span
+                                    · signed links between content-addressed data</span
                                 >
                             </div>
                             <div class="prop">
@@ -862,8 +894,7 @@
                                         rel="noopener"
                                         >bbg</a
                                     >
-                                    · one polynomial · 10 dims · ~200-byte
-                                    proofs</span
+                                    · all state as one polynomial · ~200-byte proofs</span
                                 >
                             </div>
                             <div class="prop">
@@ -875,8 +906,7 @@
                                         rel="noopener"
                                         >cell</a
                                     >
-                                    · local node — graph slice, apply/prove
-                                    loop</span
+                                    · your local node: a slice of the graph</span
                                 >
                             </div>
                             <div class="prop">
@@ -888,7 +918,7 @@
                                         rel="noopener"
                                         >fs</a
                                     >
-                                    · particles · patches · sync</span
+                                    · the graph mounted as a filesystem</span
                                 >
                             </div>
                             <div class="prop">
@@ -900,7 +930,7 @@
                                         rel="noopener"
                                         >tok</a
                                     >
-                                    · Coin · Card · conservation</span
+                                    · coins &amp; cards — conservation enforced by proof</span
                                 >
                             </div>
                         </div>
@@ -909,8 +939,9 @@
                         <span class="chip">where does it happen?</span>
                         <h2>Nerves across space</h2>
                         <p class="why">
-                            Sync is a property of cyberspace. Planets need
-                            light-speed links, never a committee.
+                            How machines talk: encrypted transport, typed
+                            streams, and sync that converges without a
+                            coordinator — even across planets.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -922,7 +953,7 @@
                                         rel="noopener"
                                         >mudra</a
                                     >
-                                    · KEM · dCTIDH · TFHE · threshold</span
+                                    · post-quantum keys, encryption, thresholds</span
                                 >
                             </div>
                             <div class="prop">
@@ -946,8 +977,7 @@
                                         rel="noopener"
                                         >tape</a
                                     >
-                                    · typed particles over any byte
-                                    stream</span
+                                    · typed framing over any byte stream</span
                                 >
                             </div>
                             <div class="prop">
@@ -959,7 +989,7 @@
                                         rel="noopener"
                                         >foculus</a
                                     >
-                                    · chain · VDF · DAS · erasure · CRDT</span
+                                    · replicas converge — no coordinator</span
                                 >
                             </div>
                             <div class="prop">
@@ -971,7 +1001,7 @@
                                         rel="noopener"
                                         >ward</a
                                     >
-                                    · effect router — emit/query/link/seal</span
+                                    · capability gate for every effect</span
                                 >
                             </div>
                         </div>
@@ -980,8 +1010,9 @@
                         <span class="chip">who is alive?</span>
                         <h2>The graph wakes up</h2>
                         <p class="why">
-                            Attention converges to one φ*. Agreement is a fixed
-                            point — no vote, no committee.
+                            How agreement happens: collective attention ranks
+                            everything, and consensus is the fixed point of
+                            that math — no votes, no leaders.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -993,7 +1024,7 @@
                                         rel="noopener"
                                         >tru</a
                                     >
-                                    · φ* · eigenvectors · cyberank</span
+                                    · attention ranking — the φ* fixed point</span
                                 >
                             </div>
                             <div class="prop">
@@ -1005,7 +1036,7 @@
                                         rel="noopener"
                                         >foculus</a
                                     >
-                                    · collective focus theorem → finality</span
+                                    · finality from one convergence theorem</span
                                 >
                             </div>
                             <div class="prop">
@@ -1017,8 +1048,7 @@
                                         rel="noopener"
                                         >soma</a
                                     >
-                                    · four concurrent loops · tiered
-                                    minds</span
+                                    · the resident machine mind</span
                                 >
                             </div>
                         </div>
@@ -1040,8 +1070,7 @@
                                         rel="noopener"
                                         >neural</a
                                     >
-                                    · sigil → word → link → sentence →
-                                    motif</span
+                                    · meaning as graph structure — sigil to dialect</span
                                 >
                             </div>
                             <div class="prop">
@@ -1053,7 +1082,7 @@
                                         rel="noopener"
                                         >rune</a
                                     >
-                                    · scripts per item · reactive effects</span
+                                    · scripts with effects — reactive, per-item</span
                                 >
                             </div>
                             <div class="prop">
@@ -1074,8 +1103,9 @@
                         <span class="chip">how is it made?</span>
                         <h2>Proof in the marrow</h2>
                         <p class="why">
-                            Every computation leaves a zheng proof. A light
-                            client checks the whole history in ~100&nbsp;ns.
+                            How code runs: executing and proving are the same
+                            act. Anyone can verify any result in
+                            ~100&nbsp;ns.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -1087,7 +1117,7 @@
                                         rel="noopener"
                                         >trident</a
                                     >
-                                    · .tri → .nox</span
+                                    · high-level language → provable bytecode</span
                                 >
                             </div>
                             <div class="prop">
@@ -1099,8 +1129,7 @@
                                         rel="noopener"
                                         >nox</a
                                     >
-                                    · 18 patterns + jets · unconditional
-                                    proof</span
+                                    · the VM where executing IS proving</span
                                 >
                             </div>
                             <div class="prop">
@@ -1112,7 +1141,7 @@
                                         rel="noopener"
                                         >wysm</a
                                     >
-                                    · WASM souls · gas-metered</span
+                                    · run any WASM, gas-metered</span
                                 >
                             </div>
                             <div class="prop">
@@ -1124,7 +1153,7 @@
                                         rel="noopener"
                                         >glia</a
                                     >
-                                    · .model runtime</span
+                                    · run ML models</span
                                 >
                             </div>
                             <div class="prop">
@@ -1148,7 +1177,7 @@
                                         rel="noopener"
                                         >zheng</a
                                     >
-                                    · SuperSpartan · Brakedown · sumcheck</span
+                                    · the proof system — sumcheck + Brakedown</span
                                 >
                             </div>
                             <div class="prop">
@@ -1160,7 +1189,7 @@
                                         rel="noopener"
                                         >eidos</a
                                     >
-                                    · theorems become cyberlinks</span
+                                    · machine-checked theorems become links</span
                                 >
                             </div>
                         </div>
@@ -1169,8 +1198,9 @@
                         <span class="chip">how do we coordinate?</span>
                         <h2>Flesh you can inhabit</h2>
                         <p class="why">
-                            A world to stand in, a face to read, hands that
-                            link. The organism plays.
+                            What you actually touch: a 3D world, live UI, an
+                            app shell — and analytics where every visitor
+                            holds their own key.
                         </p>
                         <div class="props">
                             <div class="prop">
@@ -1182,7 +1212,7 @@
                                         rel="noopener"
                                         >mir</a
                                     >
-                                    · positions + features → a world</span
+                                    · the graph rendered as a 3D world</span
                                 >
                             </div>
                             <div class="prop">
@@ -1194,7 +1224,7 @@
                                         rel="noopener"
                                         >prysm</a
                                     >
-                                    · tape dialect · chunks → UI</span
+                                    · data streams painted as UI</span
                                 >
                             </div>
                             <div class="prop">
@@ -1206,7 +1236,7 @@
                                         rel="noopener"
                                         >cyb</a
                                     >
-                                    · Bevy worlds · terminal · live cells</span
+                                    · the app you inhabit — worlds, terminal, live cells</span
                                 >
                             </div>
                             <div class="prop">
@@ -1218,14 +1248,13 @@
                                         rel="noopener"
                                         >lytics</a
                                     >
-                                    · every visitor a neuron — signed events,
-                                    retention, cohorts, funnels</span
+                                    · analytics: every visitor holds a key, every event signed</span
                                 >
                             </div>
                         </div>
                     </div>
+                    </div>
                 </aside>
-                </div>
             </main>
 
             <footer class="foot">
@@ -1256,6 +1285,16 @@
                 work: 25,
                 play: 70,
             };
+            const questions = {
+                form: "what are the rules?",
+                mass: "what is it made of?",
+                space: "where does it happen?",
+                life: "who is alive?",
+                word: "what does it mean?",
+                work: "how is it made?",
+                play: "how do we coordinate?",
+            };
+            const ringq = document.getElementById("ringq");
 
             function select(name) {
                 organ = name;
@@ -1277,12 +1316,15 @@
                 panels.forEach((p) => {
                     p.hidden = p.dataset.panel !== name;
                 });
+                if (ringq) ringq.textContent = questions[name] || "";
             }
             document
                 .querySelectorAll(".tab[data-tab]")
                 .forEach((t) =>
                     t.addEventListener("click", () => select(t.dataset.tab)),
                 );
+            // every visit lands on a different facet — the crystal has no front
+            select(order[Math.floor(Math.random() * order.length)]);
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
                 const i = order.indexOf(organ);
