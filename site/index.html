@@ -100,6 +100,19 @@
                 letter-spacing: 0.28em;
                 color: #fff;
                 text-shadow: 0 0 24px rgba(120, 255, 180, 0.55);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+            .xbadge {
+                font-size: 0.56rem;
+                letter-spacing: 0.14em;
+                color: #7dffc4;
+                border: 1px solid rgba(125, 255, 196, 0.45);
+                border-radius: 999px;
+                padding: 0.18rem 0.55rem;
+                text-shadow: none;
+                white-space: nowrap;
             }
             .nav-links {
                 display: flex;
@@ -352,6 +365,11 @@
             }
             .hint a:hover {
                 text-decoration: underline;
+            }
+            .early {
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+                color: rgba(255, 248, 240, 0.45);
             }
 
             /* right column: the ring floats over the world, the detail card
@@ -642,7 +660,9 @@
 
         <div class="shell">
             <header class="top">
-                <span class="logo">soft3</span>
+                <span class="logo"
+                    >soft3<span class="xbadge">experimental</span></span
+                >
                 <nav class="nav-links">
                     <a
                         href="https://cyber.page/soft3/"
@@ -713,6 +733,10 @@
                                 rel="noopener"
                                 >github</a
                             >
+                        </p>
+                        <p class="early">
+                            early experimental build — interfaces, proofs and
+                            formats still shift week to week
                         </p>
                     </div>
                 </section>
