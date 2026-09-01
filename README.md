@@ -39,4 +39,4 @@ launch manual: [[soft3/docs/launch|launch spacepussy-test]].
 
 cosmos **space-pussy** / **bostrom** on cybernode are bootloader chains — different substrate. see [[bootloader]].
 
-[[cyber]] · [[cyb]] · [[soft3/stack]] · [[install]] · [[soft3/docs/launch|launch]]
+[[cyber]] · [[cyb]] · [[soft3/status]] · [[install]] · [[soft3/docs/launch|launch]]

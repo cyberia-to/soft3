@@ -183,4 +183,4 @@ true-cyber is a thin product face over the soft3 network. the network itself is 
 
 ## related
 
-- [[soft3]] · [[soft3/stack]] · [[install]] · [[bootloader]] · [[cyber/launch]]
+- [[soft3]] · [[soft3/status]] · [[install]] · [[bootloader]] · [[cyber/launch]]
