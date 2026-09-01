@@ -27,7 +27,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[tok]] | pay | published | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation · no live economy yet |
 | [[cybics/space|space]] |  |  |  |  |  |
 | [[mudra]] | encrypt | live | [0.1.0](https://github.com/cyberia-to/mudra/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-mudra) | KEM · dCTIDH · AEAD · TFHE · threshold |
-| [[radio]] | transmit | unwired | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip · not yet in the node |
+| [[radio]] | transmit | live | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip · carries `cyb/sync/0` |
 | [[tape]] | frame | published | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
 | [[foculus]] | sync | unwired | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT · engine partial, never deployed |
 | [[cyb/root/ward\|ward]] | authorize | spec | — | — | effect router · emit/query/link/seal/host |
@@ -57,9 +57,9 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 
 ## the verdict
 
-**the stack is complete in principle and single-node in fact.** everything live above runs on one trusted node ([[cybernode]]) with a trusted write path. [[lytics]] is the strongest evidence the stack has: cybergraph + bbg + hemera + mudra + inf holding real, adversarial-facing traffic in production — the graph, state and identity layers are not paper. but no two nodes have ever reconciled: radio is published and unwired, foculus's engine has never been deployed, and the fork-choice has never chosen a fork.
+**the stack is complete in principle and peer-pair in fact.** [[lytics]] remains the strongest single-node evidence: cybergraph + bbg + hemera + mudra + inf holding real, adversarial-facing traffic in production. and as of 2026-09-01 **the wire exists**: `cy wire listen` / `cy wire dial` converge two cells over [[radio]] QUIC (ALPN `cyb/sync/0`) with no cybernode between them — snapshot anti-entropy on connect, live frames after, both feeding the one idempotent commit. proven on one machine: push both directions, durability across restart, anti-entropy across a gap, convergence to the union with merged weights.
 
-**milestone №1 is therefore not a component — it is a wire:** two [[cyb]]s syncing one neuron's graph over [[radio]] with no cybernode in the middle. every piece it needs is named (radio → cell → foculus availability); none of them is connected. until that wire exists, "productive cyb" means "a beautiful client to one server", and the honest word for the network tier is *latent*.
+**milestone №1 is crossed in its first form; the next three are named:** the same wire across two machines (relay / hole-punching, which radio already carries); gossip beyond a pair (fan-out is [[foculus]]'s reconciliation seat, not a pair's rebroadcast); and the [[cyb]] shell app speaking the protocol its own `cy` already speaks — with [[mudra]] keys instead of endpoint-derived neurons. the fork-choice has still never chosen a fork; that remains foculus's unproven half.
 
 ## critical, and out of scope
 
