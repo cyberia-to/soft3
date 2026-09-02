@@ -6,7 +6,7 @@
         <title>soft3 — the scheme</title>
         <meta
             name="description"
-            content="soft3 in one glance: a closed cybernetic loop — say, sign, link, prove, focus, act, observe — and the observation becomes the next word"
+            content="soft3 in one glance: three motions (say, act, observe), three guarantees (signed, linked, proven), one attractor (focus) — a closed loop orbiting one mind"
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,10 +20,7 @@
             rel="icon"
         />
         <style>
-            :root {
-                --cream: #fff8f0;
-                --mint: #7dffc4;
-            }
+            :root { --cream: #fff8f0; --mint: #7dffc4; }
             * { box-sizing: border-box; }
             body {
                 margin: 0;
@@ -46,29 +43,10 @@
             }
             header a { color: var(--mint); text-decoration: none; }
             header a:hover { text-decoration: underline; }
-            h1 {
-                margin: 0;
-                font-size: 1rem;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-            }
+            h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
             h1 em { color: var(--mint); font-style: normal; }
             .sub { font-size: 0.72rem; color: rgba(255, 248, 240, 0.6); }
-            svg[role="img"] {
-                width: min(96vw, 1040px);
-                height: auto;
-                display: block;
-            }
-            .stages svg { flex: none; }
-            .foot {
-                padding: 0 1.4rem 1.4rem;
-                font-size: 0.68rem;
-                color: rgba(255, 248, 240, 0.5);
-                text-align: center;
-                max-width: 46rem;
-                line-height: 1.5;
-            }
-            .foot a { color: var(--mint); }
+            svg[role="img"] { width: min(96vw, 1040px); height: auto; display: block; }
             .stages {
                 width: 100%;
                 max-width: 1080px;
@@ -97,6 +75,7 @@
                 border-color: var(--mint);
                 background: rgba(125, 255, 196, 0.1);
             }
+            .stages svg { flex: none; }
             .stages b { font-weight: 700; }
             .stages span {
                 font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -110,7 +89,6 @@
             }
             .stages .ok { color: var(--mint); }
             .stages .warn { color: rgba(255, 178, 120, 0.9); }
-            .stages .dim { color: rgba(255, 248, 240, 0.55); }
             .stageinfo {
                 margin: 0.45rem 0 0;
                 font-size: 0.74rem;
@@ -119,193 +97,174 @@
                 max-width: 44rem;
                 padding: 0 1.4rem;
             }
-
             text { font-family: Play, system-ui, sans-serif; }
             .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+            .foot {
+                padding: 0 1.4rem 1.4rem;
+                font-size: 0.68rem;
+                color: rgba(255, 248, 240, 0.5);
+                text-align: center;
+                max-width: 46rem;
+                line-height: 1.5;
+            }
+            .foot a { color: var(--mint); }
         </style>
     </head>
     <body>
         <header>
             <h1><a href="/">soft3</a> · the <em>scheme</em></h1>
             <span class="sub">
-                one glance: the loop is closed, and it stands on proof —
+                one glance: three motions, three guarantees, one attractor —
                 the parts: <a href="/chart/">/chart</a>
             </span>
         </header>
-        <nav class="stages" aria-label="the three stages of the loop">
-            <button data-stage="1"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="1.7" fill="#2a332e"/><circle cx="7.1" cy="19.1" r="1.7" fill="#2a332e"/><circle cx="2.2" cy="13.0" r="1.7" fill="#2a332e"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>1 · network</b><span>shared</span><i class="ok">live</i></button>
-            <button data-stage="2"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="2.6" fill="#8000ff"/><circle cx="7.1" cy="19.1" r="2.6" fill="#ff0000"/><circle cx="2.2" cy="13.0" r="1.7" fill="#2a332e"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>2 · mind</b><span>one</span><i class="warn">building</i></button>
-            <button data-stage="3" aria-selected="true"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="2.6" fill="#8000ff"/><circle cx="7.1" cy="19.1" r="2.6" fill="#ff0000"/><circle cx="2.2" cy="13.0" r="2.6" fill="#ff8000"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>3 · life</b><span>alive</span><i class="dim">partial</i></button>
+        <nav class="stages" aria-label="the three stages">
+            <button data-stage="1"><svg viewBox="0 0 26 26" width="24" height="24" aria-hidden="true">
+<path d="M 13 3 L 23 21 L 3 21 Z" fill="none" stroke="rgba(255,248,240,0.75)" stroke-width="1.6"/>
+<path d="M 6.5 15.5 A 7 7 0 0 1 13 6.7" fill="none" stroke="#4000ff" stroke-width="2.2"/>
+<path d="M 13 6.7 A 7 7 0 0 1 19.5 15.5" fill="none" stroke="#0000ff" stroke-width="2.2"/>
+<path d="M 19.5 15.5 A 7 7 0 0 1 6.5 15.5" fill="none" stroke="#2a332e" stroke-width="2.2"/>
+<circle cx="13" cy="13" r="2.6" fill="#2a332e"/></svg><b>1 · medium</b><span>shared</span><i class="ok">live</i></button>
+            <button data-stage="2"><svg viewBox="0 0 26 26" width="24" height="24" aria-hidden="true">
+<path d="M 13 3 L 23 21 L 3 21 Z" fill="none" stroke="rgba(255,248,240,0.75)" stroke-width="1.6"/>
+<path d="M 6.5 15.5 A 7 7 0 0 1 13 6.7" fill="none" stroke="#4000ff" stroke-width="2.2"/>
+<path d="M 13 6.7 A 7 7 0 0 1 19.5 15.5" fill="none" stroke="#0000ff" stroke-width="2.2"/>
+<path d="M 19.5 15.5 A 7 7 0 0 1 6.5 15.5" fill="none" stroke="#ff8000" stroke-width="2.2"/>
+<circle cx="13" cy="13" r="2.6" fill="#2a332e"/></svg><b>2 · proof</b><span>trustless</span><i class="warn">building</i></button>
+            <button data-stage="3" aria-selected="true"><svg viewBox="0 0 26 26" width="24" height="24" aria-hidden="true">
+<path d="M 13 3 L 23 21 L 3 21 Z" fill="none" stroke="rgba(255,248,240,0.75)" stroke-width="1.6"/>
+<path d="M 6.5 15.5 A 7 7 0 0 1 13 6.7" fill="none" stroke="#4000ff" stroke-width="2.2"/>
+<path d="M 13 6.7 A 7 7 0 0 1 19.5 15.5" fill="none" stroke="#0000ff" stroke-width="2.2"/>
+<path d="M 19.5 15.5 A 7 7 0 0 1 6.5 15.5" fill="none" stroke="#ff8000" stroke-width="2.2"/>
+<circle cx="13" cy="13" r="2.6" fill="#8000ff"/></svg><b>3 · mind</b><span>one</span><i class="warn">undeployed</i></button>
         </nav>
         <p id="stageinfo" class="stageinfo"></p>
 
-        <!-- ═══ the principled scheme ═══════════════════════════════════
-             a closed cybernetic loop of six verbs, wearing the six upper
-             flag colours; the seventh — form, green — is the floor it all
-             stands on. the trinity turns in the centre. the arc that closes
-             the loop (ACT → SAY) is the whole point: what the mind does is
-             measured back into what it next says. -->
-        <svg viewBox="0 0 1040 872" role="img"
-             aria-label="soft3: a closed loop — say · sign · link · prove · focus · act · observe, with cyb, cyber and cyberia turning in the centre">
+        <!-- ═══ the perfected scheme: 7 = 3 + 3 + 1 ══════════════════════
+             three MOTIONS form the loop — say, act, observe: word, deed,
+             sight. three GUARANTEES are the medium every motion passes
+             through — signed, linked, proven; the triangle is equilateral
+             around the ring, so each motion crosses the medium exactly at
+             a seam between two guarantees. one ATTRACTOR sits at the
+             centre — focus, the φ* the whole loop orbits. the loop runs
+             from day one; the stages switch the medium on, then the
+             proofs, then the mind lights. -->
+        <svg viewBox="0 0 1040 812" role="img"
+             aria-label="soft3: say, act and observe form a loop through a medium that is signed, linked and proven, orbiting one focus">
             <defs>
                 <marker id="arw" viewBox="0 0 10 10" refX="8.4" refY="5"
                         markerWidth="6.5" markerHeight="6.5" orient="auto">
                     <path d="M 0 0 L 10 5 L 0 10 z" fill="#fff8f0"/>
                 </marker>
                 <marker id="arw-green" viewBox="0 0 10 10" refX="8.4" refY="5"
-                        markerWidth="7.5" markerHeight="7.5" orient="auto">
+                        markerWidth="7" markerHeight="7" orient="auto">
                     <path d="M 0 0 L 10 5 L 0 10 z" fill="#00ff00"/>
                 </marker>
-                <linearGradient id="lg-close" gradientUnits="userSpaceOnUse"
-                                x1="297" y1="252" x2="520" y2="155">
-                    <stop offset="0" stop-color="#ffff00"/>
-                    <stop offset="1" stop-color="#00ff00"/>
-                </linearGradient>
             </defs>
 
-            <!-- the loop: seven arcs — the seventh, green, closes it -->
-            <g fill="none" stroke-linecap="round">
-                <path data-arc="a0" d="M 598.6 166.0 A 285 285 0 0 1 685.2 207.8" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a1" d="M 783.2 330.6 A 285 285 0 0 1 804.6 424.4" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a2" d="M 769.6 577.5 A 285 285 0 0 1 709.6 652.7" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a3" d="M 568.1 720.9 A 285 285 0 0 1 471.9 720.9" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a4" d="M 330.4 652.7 A 285 285 0 0 1 270.4 577.5" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a5" d="M 235.4 424.4 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="a6" d="M 354.8 207.8 A 285 285 0 0 1 441.4 166.0" stroke="url(#lg-close)" stroke-width="4.5" marker-end="url(#arw-green)"/>
-            
-                <path data-arc="b26" d="M 769.6 577.5 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="b36" d="M 568.1 720.9 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path data-arc="b46" d="M 330.4 652.7 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+            <!-- the medium: three guarantees, one ring; motions cross at the seams -->
+            <g fill="none" stroke-linecap="butt">
+                <path data-g="signed" d="M 377.5 381.0 A 168.0 168.0 0 0 1 662.5 381.0" stroke="#4000ff" stroke-width="11" stroke-opacity="0.9"/>
+                <path data-g="linked" d="M 668.3 391.1 A 168.0 168.0 0 0 1 525.9 637.9" stroke="#0000ff" stroke-width="11" stroke-opacity="0.9"/>
+                <path data-g="proven" d="M 514.1 637.9 A 168.0 168.0 0 0 1 371.7 391.1" stroke="#ff8000" stroke-width="11" stroke-opacity="0.9"/>
             </g>
-
-            <g class="mono" font-size="12.5" fill="rgba(255,248,240,0.66)" text-anchor="middle">
-                <text data-arc="a0" x="666.7" y="135.5">the sentence</text>
-                <text data-arc="a1" x="849.5" y="364.8">the signal</text>
-                <text data-arc="a2" x="784.3" y="650.7">the state</text>
-                <text data-arc="a3" x="520.0" y="778.0">the proofs</text>
-                <text data-arc="a4" x="255.7" y="650.7">the rank</text>
-                <text data-arc="a5" x="190.5" y="364.8">the deed</text>
-                <text data-arc="a6" x="330" y="116" fill="#ffff00" font-size="13.5" font-weight="700">the observation</text>
-                <text data-arc="a6" x="330" y="133" fill="#00ff00">becomes the next word</text>
-            
-                <text data-arc="b26" x="376.8" y="737.3">the state</text>
-                <text data-arc="b36" x="262.0" y="645.8">the proofs</text>
-                <text data-arc="b46" x="172.0" y="516.0">the rank</text>
-            </g>
-
-            <g text-anchor="middle" data-st="0">
-                <rect x="415.0" y="118.0" width="210" height="74" rx="16" fill="#00ff00"/>
-                <text x="520.0" y="149.0" font-size="23" font-weight="700" fill="#0a120e">SAY</text>
-                <text x="520.0" y="170.0" font-size="11.5" fill="rgba(10,18,14,0.85)">a thought becomes a sentence</text>
-                <text x="520.0" y="184.0" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: the signal · rich: languages</text>
-            </g>
-            <g text-anchor="middle" data-st="1">
-                <rect x="652.8" y="225.3" width="180" height="74" rx="16" fill="#0000ff"/>
-                <text x="742.8" y="256.3" font-size="23" font-weight="700" fill="#fff8f0">SIGN</text>
-                <text x="742.8" y="277.3" font-size="11.5" fill="rgba(255,248,240,0.85)">a neuron seals it</text>
-                <text x="742.8" y="291.3" font-size="9" fill="rgba(255,248,240,0.7)" class="mono">core: mudra · radio</text>
-            </g>
-            <g text-anchor="middle" data-st="2">
-                <rect x="702.9" y="466.4" width="190" height="74" rx="16" fill="#4000ff"/>
-                <text x="797.9" y="497.4" font-size="23" font-weight="700" fill="#fff8f0">LINK</text>
-                <text x="797.9" y="518.4" font-size="11.5" fill="rgba(255,248,240,0.85)">the graph grows</text>
-                <text x="797.9" y="532.4" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: cell · cybergraph</text>
-            </g>
-            <g text-anchor="middle" data-st="3">
-                <rect x="538.7" y="659.8" width="210" height="74" rx="16" fill="#8000ff"/>
-                <text x="643.7" y="690.8" font-size="23" font-weight="700" fill="#fff8f0">PROVE</text>
-                <text x="643.7" y="711.8" font-size="11.5" fill="rgba(255,248,240,0.85)">executing is proving</text>
-                <text x="643.7" y="725.8" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: nox · zheng · bbg</text>
-            </g>
-            <g text-anchor="middle" data-st="4">
-                <rect x="291.3" y="659.8" width="210" height="74" rx="16" fill="#ff0000"/>
-                <text x="396.3" y="690.8" font-size="23" font-weight="700" fill="#fff8f0">FOCUS</text>
-                <text x="396.3" y="711.8" font-size="11.5" fill="rgba(255,248,240,0.85)">one φ* — agreement, not voting</text>
-                <text x="396.3" y="725.8" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: tru · foculus — final past τ</text>
-            </g>
-            <g text-anchor="middle" data-st="5">
-                <rect x="147.1" y="466.4" width="190" height="74" rx="16" fill="#ff8000"/>
-                <text x="242.1" y="497.4" font-size="23" font-weight="700" fill="#0a120e">ACT</text>
-                <text x="242.1" y="518.4" font-size="11.5" fill="rgba(10,18,14,0.85)">bodies embody the focus</text>
-                <text x="242.1" y="532.4" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: mir · prysm</text>
-            </g>
-            <g text-anchor="middle" data-st="6">
-                <rect x="184.7" y="225.3" width="225" height="74" rx="16" fill="#ffff00"/>
-                <text x="297.2" y="256.3" font-size="23" font-weight="700" fill="#0a120e">OBSERVE</text>
-                <text x="297.2" y="277.3" font-size="11.5" fill="rgba(10,18,14,0.85)">the deed against the rules</text>
-                <text x="297.2" y="291.3" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: hemera · lens · lytics</text>
-            </g>
-            <!-- the heart -->
             <g text-anchor="middle">
-                <circle cx="520" cy="440" r="108" fill="#7dffc4" fill-opacity="0.06" stroke="#7dffc4" stroke-opacity="0.4"/>
-                <text x="520" y="418" font-size="15" fill="#7dffc4" letter-spacing="3" font-weight="700">ONE MIND</text>
-                <text x="520" y="444" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyb — the body</text>
-                <text x="520" y="464" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyber — the mind</text>
-                <text x="520" y="484" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyberia — the state</text>
+                <g data-g="signed">
+                    <text x="520" y="338" font-size="14" font-weight="700" fill="#8f86ff">SIGNED</text>
+                    <text x="520" y="354" font-size="9" fill="rgba(143,134,255,0.85)" class="mono">every word owned · mudra</text>
+                </g>
+                <g data-g="linked">
+                    <text x="612" y="530" font-size="14" font-weight="700" fill="#7d9dff">LINKED</text>
+                    <text x="612" y="546" font-size="8.5" fill="rgba(125,157,255,0.85)" class="mono">cell · radio</text>
+                </g>
+                <g data-g="proven">
+                    <text x="428" y="530" font-size="14" font-weight="700" fill="#ffb066">PROVEN</text>
+                    <text x="428" y="546" font-size="8.5" fill="rgba(255,176,102,0.85)" class="mono">nox zheng bbg</text>
+                </g>
             </g>
 
-            <!-- who feeds the loop -->
+            <!-- the motions: word → deed → sight → word -->
+            <g fill="none" stroke-linecap="round">
+                <path d="M 557.6 225.1 L 750.9 559.9" stroke="rgba(255,248,240,0.85)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 681.1 625.0 L 358.9 625.0" stroke="rgba(255,248,240,0.85)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 289.1 559.9 L 482.4 225.1" stroke="#00ff00" stroke-width="4" marker-end="url(#arw-green)"/>
+            </g>
+            <g class="mono" font-size="13" fill="rgba(255,248,240,0.66)">
+                <text x="772" y="452" text-anchor="start">the word, embodied</text>
+                <text x="520" y="678" text-anchor="middle">the deed, seen</text>
+                <text x="258" y="342" text-anchor="middle" fill="#00ff00" font-weight="700">the observation</text>
+                <text x="258" y="360" text-anchor="middle" fill="#00ff00">becomes the next word</text>
+            </g>
+
+            <!-- the attractor -->
+            <g data-g="focus" text-anchor="middle">
+                <circle cx="520" cy="470" r="80" fill="#8000ff" fill-opacity="0.14"
+                        stroke="#8000ff" stroke-opacity="0.85" stroke-width="2"/>
+                <text x="520" y="454" font-size="20" font-weight="700" fill="#c89bff">FOCUS</text>
+                <text x="520" y="474" font-size="10.5" fill="rgba(255,248,240,0.85)">one φ* — the point</text>
+                <text x="520" y="489" font-size="10.5" fill="rgba(255,248,240,0.85)">the loop orbits</text>
+                <text x="520" y="507" font-size="9" fill="rgba(255,248,240,0.6)" class="mono">tru · foculus</text>
+            </g>
+
+            <!-- the motions' stations -->
+            <g text-anchor="middle">
+                <rect x="410" y="123" width="220" height="74" rx="16" fill="#ff0000"/>
+                <text x="520" y="154" font-size="23" font-weight="700" fill="#fff8f0">SAY</text>
+                <text x="520" y="175" font-size="11.5" fill="rgba(255,248,240,0.85)">a thought becomes a sentence</text>
+                <text x="520" y="189" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">the signal · rich: trident rune inf neural</text>
+            </g>
+            <g text-anchor="middle">
+                <rect x="688" y="588" width="200" height="74" rx="16" fill="#ffff00"/>
+                <text x="788" y="619" font-size="23" font-weight="700" fill="#0a120e">ACT</text>
+                <text x="788" y="640" font-size="11.5" fill="rgba(10,18,14,0.85)">bodies embody the focus</text>
+                <text x="788" y="654" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">mir · prysm — gated by ward</text>
+            </g>
+            <g text-anchor="middle">
+                <rect x="142" y="588" width="220" height="74" rx="16" fill="#00ff00"/>
+                <text x="252" y="619" font-size="23" font-weight="700" fill="#0a120e">OBSERVE</text>
+                <text x="252" y="640" font-size="11.5" fill="rgba(10,18,14,0.85)">the deed, seen against the rules</text>
+                <text x="252" y="654" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">hemera · lens · lytics · sigma</text>
+            </g>
+
+            <!-- who feeds it -->
             <g class="mono" font-size="12" fill="rgba(255,248,240,0.6)">
-                <text x="520" y="46" text-anchor="middle">humans · agents · sensors</text>
-                <line x1="520" y1="56" x2="520" y2="94" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
+                <text x="520" y="48" text-anchor="middle">humans · agents · sensors</text>
+                <line x1="520" y1="58" x2="520" y2="108" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
             </g>
-
-            <!-- the colours carry their innate emotions — the evolutionary
-                 theory of color perception (anger red · disgust orange ·
-                 surprise yellow · joy green · interest blue · sadness indigo
-                 · fear violet). the loop wears the flag in the flag's own
-                 order; the emotions belong to the colours, not the verbs. -->
-            <g font-size="11" class="mono">
-                <text x="936" y="60" fill="rgba(255,248,240,0.6)" text-anchor="middle" font-size="10.5">colours are emotions — by evolution</text>
-                <text x="900" y="82" fill="#00ff00">joy</text><text x="972" y="82" fill="rgba(255,248,240,0.55)">— green</text>
-                <text x="900" y="102" fill="#4d7dff">interest</text><text x="972" y="102" fill="rgba(255,248,240,0.55)">— blue</text>
-                <text x="900" y="122" fill="#7a66ff">sadness</text><text x="972" y="122" fill="rgba(255,248,240,0.55)">— indigo</text>
-                <text x="900" y="142" fill="#a366ff">fear</text><text x="972" y="142" fill="rgba(255,248,240,0.55)">— violet</text>
-                <text x="900" y="162" fill="#ff4d4d">anger</text><text x="972" y="162" fill="rgba(255,248,240,0.55)">— red</text>
-                <text x="900" y="182" fill="#ff8000">disgust</text><text x="972" y="182" fill="rgba(255,248,240,0.55)">— orange</text>
-                <text x="900" y="202" fill="#ffff00">surprise</text><text x="972" y="202" fill="rgba(255,248,240,0.55)">— yellow</text>
-                <text x="936" y="230" fill="rgba(255,248,240,0.45)" text-anchor="middle" font-size="9.5">the spectrum, bent into a loop</text>
-            </g>
-
-
-
-            <!-- the claim, spelled once -->
-            <text x="520" y="806" text-anchor="middle" font-size="12" fill="rgba(255,248,240,0.55)" class="mono">shared → one → alive</text>
-            <text x="520" y="840" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
-                the boundary rule: a component is stack iff some stage cannot close without it — the rest is enrichment, or a product
+            <text x="520" y="722" text-anchor="middle" font-size="12" fill="rgba(125,255,196,0.7)" class="mono">cyb — the body · cyber — the mind · cyberia — the state</text>
+            <text x="520" y="750" text-anchor="middle" font-size="12" fill="rgba(255,248,240,0.55)" class="mono">three motions · three guarantees · one attractor — shared → trustless → one</text>
+            <text x="520" y="782" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
+                the boundary rule: a component is stack iff the loop cannot run, the medium cannot hold, or the mind cannot converge without it
             </text>
         </svg>
 
         <p class="foot">
-            seven verbs wearing the flag in the flag's own order — the visible
-            spectrum bent into a loop. the colours carry their innate
-            emotions, bound by evolution, not culture: anger red, disgust
-            orange, surprise yellow, joy green, interest blue, sadness
-            indigo, fear violet — the evolutionary theory of color
-            perception. the closing arc runs yellow into green: the surprise
-            of measurement becomes the joy of the next word — new information
-            feeding life's reward. that is why it is called <b>cyber</b>-anything. the parts behind each verb:
-            <a href="/chart/">the chart</a> · the registry:
-            <a href="https://cyber.page/soft3/status">status</a>
+            seven seats, no chain: <b>say · act · observe</b> are the loop —
+            word, deed, sight, the smallest circle a mind can draw.
+            <b>signed · linked · proven</b> are not steps but the medium every
+            motion passes through — each motion crosses the ring at a seam
+            between two guarantees. <b>focus</b> is not a step either — it is
+            the attractor the whole loop orbits, and it lights last: the mind
+            emerges when a proven, shared loop converges. colours carry their
+            innate emotions — the evolutionary theory of color perception.
+            the parts behind each seat: <a href="/chart/">the chart</a> · the
+            registry: <a href="https://cyber.page/soft3/status">status</a>
         </p>
         <script>
-            // the stages ARE the loop at four degrees: pick one, and the big
-            // circuit shows exactly which stations run at that closure
+            // the loop runs from day one; the stages switch layers on:
+            // the medium holds, then proves, then the mind lights
             const STAGES = {
-                1: { st: [0,1,2,6], arcs: ["a0","a1","b26","a6"],
-                     info: "cells share one graph — say → sign → link → observe. live: the wire, since 2026-09-01." },
-                2: { st: [0,1,2,3,4,6], arcs: ["a0","a1","a2","a3","b46","a6"],
-                     info: "prove and focus join: every claim proven, the whole graph converging to one φ*. building — zheng openings open, foculus undeployed." },
-                3: { st: [0,1,2,3,4,5,6], arcs: ["a0","a1","a2","a3","a4","a5","a6"],
-                     info: "act joins and the loop is whole: bodies embody the focus, every act observed back into the graph. partial — lytics already lives." },
+                1: { on: ["signed", "linked"],
+                     info: "the medium holds: every word owned and landed in one shared graph — say → act → observe already circulates. live: the wire, since 2026-09-01." },
+                2: { on: ["signed", "linked", "proven"],
+                     info: "the medium proves: every claim carries a proof a stranger can check. building — zheng openings open." },
+                3: { on: ["signed", "linked", "proven", "focus"],
+                     info: "the centre lights: the whole graph converges to one φ* and the mind emerges. undeployed — foculus has never chosen a fork." },
             };
             function setStage(n) {
                 const cfg = STAGES[n];
-                document.querySelectorAll("[data-st]").forEach((g) => {
-                    g.style.opacity = cfg.st.includes(+g.dataset.st) ? 1 : 0.16;
-                });
-                document.querySelectorAll("[data-arc]").forEach((el) => {
-                    el.style.display = cfg.arcs.includes(el.dataset.arc) ? "" : "none";
+                document.querySelectorAll("[data-g]").forEach((el) => {
+                    el.style.opacity = cfg.on.includes(el.dataset.g) ? 1 : 0.14;
                 });
                 document.querySelectorAll(".stages button").forEach((b) =>
                     b.setAttribute("aria-selected", b.dataset.stage === String(n) ? "true" : "false"),
