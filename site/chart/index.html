@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>soft3 — the chart</title>
+        <meta
+            name="description"
+            content="the principled interaction chart of the soft3 stack: seven facet hubs, every component, every concrete input and output"
+        />
+        <meta name="theme-color" content="#08140c" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
+            rel="icon"
+        />
+        <style>
+            :root {
+                --cream: #fff8f0;
+                --mint: #7dffc4;
+            }
+            * { box-sizing: border-box; }
+            body {
+                margin: 0;
+                background: #06100a;
+                color: var(--cream);
+                font-family: Play, system-ui, sans-serif;
+                min-height: 100vh;
+            }
+            header {
+                display: flex;
+                align-items: baseline;
+                gap: 1rem;
+                padding: 1rem 1.4rem 0.4rem;
+                flex-wrap: wrap;
+            }
+            header a { color: var(--mint); text-decoration: none; }
+            header a:hover { text-decoration: underline; }
+            h1 {
+                margin: 0;
+                font-size: 1rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+            h1 em { color: var(--mint); font-style: normal; }
+            .sub {
+                font-size: 0.72rem;
+                color: rgba(255, 248, 240, 0.6);
+            }
+            .wrap {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 300px;
+                gap: 0.6rem;
+                padding: 0 1rem 1rem;
+                align-items: start;
+            }
+            @media (max-width: 900px) {
+                .wrap { grid-template-columns: 1fr; }
+            }
+            #stage {
+                width: 100%;
+                aspect-ratio: 1;
+                max-height: 92vh;
+                display: block;
+            }
+            .panel {
+                position: sticky;
+                top: 0.6rem;
+                border: 1px solid rgba(255, 255, 255, 0.14);
+                border-radius: 0.8rem;
+                background: rgba(6, 16, 10, 0.72);
+                padding: 0.9rem 1rem;
+                font-size: 0.78rem;
+                line-height: 1.45;
+                min-height: 12rem;
+            }
+            .panel h2 {
+                margin: 0 0 0.1rem;
+                font-size: 0.95rem;
+                letter-spacing: 0.04em;
+            }
+            .panel .facet-tag {
+                font-size: 0.6rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                opacity: 0.85;
+            }
+            .panel .io {
+                margin: 0.6rem 0 0;
+                padding: 0;
+                list-style: none;
+            }
+            .panel .io li {
+                margin: 0.22rem 0;
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.66rem;
+                color: rgba(255, 248, 240, 0.82);
+            }
+            .panel .io b {
+                font-weight: 700;
+                color: var(--cream);
+            }
+            .panel .hint {
+                color: rgba(255, 248, 240, 0.55);
+                font-size: 0.7rem;
+            }
+            .panel .dir {
+                margin-top: 0.55rem;
+                font-size: 0.6rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(255, 248, 240, 0.5);
+            }
+            /* svg text */
+            text { font-family: "JetBrains Mono", ui-monospace, monospace; }
+            .hub-label {
+                font-family: Play, system-ui, sans-serif;
+                font-weight: 700;
+                letter-spacing: 0.18em;
+            }
+            .node { cursor: pointer; }
+            .foot {
+                padding: 0 1.4rem 1.2rem;
+                font-size: 0.66rem;
+                color: rgba(255, 248, 240, 0.45);
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1><a href="/">soft3</a> · the <em>chart</em></h1>
+            <span class="sub">
+                every component, every concrete input and output — the full
+                cycle first, reduction later. click a component.
+            </span>
+        </header>
+        <div class="wrap">
+            <svg id="stage" viewBox="0 0 1500 1160"></svg>
+            <aside class="panel" id="panel">
+                <h2>the whole stack</h2>
+                <p class="hint">
+                    seven facets as hubs, arranged as the cyberia flag. every
+                    arrow is a real flow from one component's output into
+                    another's input. products — cyb, lytics, erga — ride
+                    <b>above</b> the stack: they consume it, they are not it.
+                    click any node to read its exact inputs and outputs;
+                    click the background to release.
+                </p>
+                <p class="hint">
+                    dashed nodes — <b>vault</b> (keep secrets) and
+                    <b>sigma</b> (evaluate) — are proposed seats, not yet
+                    repos.
+                </p>
+            </aside>
+        </div>
+        <p class="foot">
+            drawn from component-boundaries and the status registry ·
+            <a style="color: var(--mint)" href="https://cyber.page/soft3/">docs</a>
+        </p>
+        <script>
+            // ── the data: facets, components, and the concrete flows ─────
+            const FACETS = {
+                form: { c: "#00ff01", t: "#0a120e" },
+                mass: { c: "#00b4ff", t: "#0a120e" },
+                space: { c: "#1700fe", t: "#fff8f0" },
+                life: { c: "#6b00fe", t: "#fff8f0" },
+                word: { c: "#fe0000", t: "#fff8f0" },
+                work: { c: "#ff6501", t: "#0a120e" },
+                play: { c: "#ffc501", t: "#0a120e" },
+                apps: { c: "#fff8f0", t: "#0a120e" },
+            };
+            // order around the ring, exactly as the flag: form at the top,
+            // clockwise. apps ride above the crown.
+            const RING = ["form", "mass", "space", "life", "word", "work", "play"];
+            const NODES = [
+                { id: "honeycrisp", f: "form" },
+                { id: "strata", f: "form" },
+                { id: "lens", f: "form" },
+                { id: "hemera", f: "form" },
+                { id: "cybergraph", f: "mass" },
+                { id: "bbg", f: "mass" },
+                { id: "fs", f: "mass" },
+                { id: "tok", f: "mass" },
+                { id: "cell", f: "mass" },
+                { id: "mudra", f: "space" },
+                { id: "vault", f: "space", ghost: true },
+                { id: "radio", f: "space" },
+                { id: "tape", f: "space" },
+                { id: "ward", f: "space" },
+                { id: "foculus", f: "life" },
+                { id: "tru", f: "life" },
+                { id: "sigma", f: "life", ghost: true },
+                { id: "soma", f: "life" },
+                { id: "neural", f: "word" },
+                { id: "inf", f: "word" },
+                { id: "rune", f: "word" },
+                { id: "trident", f: "word" },
+                { id: "nox", f: "work" },
+                { id: "zheng", f: "work" },
+                { id: "glia", f: "work" },
+                { id: "eidos", f: "work" },
+                { id: "wysm", f: "work" },
+                { id: "kern", f: "work" },
+                { id: "mir", f: "play" },
+                { id: "prysm", f: "play" },
+                { id: "cyb", f: "apps" },
+                { id: "lytics", f: "apps" },
+                { id: "erga", f: "apps" },
+            ];
+            // [from, to, what flows] — producer feeds consumer
+            const EDGES = [
+                ["honeycrisp", "strata", "NEON · AMX · Metal kernels"],
+                ["honeycrisp", "glia", "ANE inference"],
+                ["honeycrisp", "erga", "zero-copy GPU"],
+                ["strata", "hemera", "𝔽_p arithmetic"],
+                ["strata", "lens", "three algebras"],
+                ["strata", "nox", "field ops"],
+                ["hemera", "cybergraph", "particle ids"],
+                ["hemera", "mudra", "identity hashing"],
+                ["hemera", "radio", "verified streams"],
+                ["hemera", "foculus", "NMT trees"],
+                ["lens", "bbg", "commitments · openings"],
+                ["lens", "zheng", "Brakedown PCS"],
+                ["cybergraph", "bbg", "state writes"],
+                ["cybergraph", "tru", "the link graph"],
+                ["cybergraph", "neural", "motifs"],
+                ["cybergraph", "mir", "positions + features"],
+                ["cybergraph", "lytics", "events"],
+                ["bbg", "inf", "reads with proofs"],
+                ["bbg", "foculus", "state roots"],
+                ["cell", "cybergraph", "applied signals"],
+                ["cell", "radio", "cast frames"],
+                ["cell", "cyb", "the local node"],
+                ["fs", "cell", "mounted patches"],
+                ["tok", "cybergraph", "value moves"],
+                ["mudra", "cell", "signatures"],
+                ["mudra", "radio", "transport crypto"],
+                ["mudra", "foculus", "VDF"],
+                ["vault", "mudra", "sealed keys"],
+                ["radio", "cell", "peer frames"],
+                ["tape", "radio", "wire framing"],
+                ["tape", "prysm", "dialect chunks"],
+                ["ward", "cybergraph", "gated writes"],
+                ["tru", "foculus", "φ* fork-choice"],
+                ["tru", "tok", "Δφ* rewards"],
+                ["tru", "sigma", "scores"],
+                ["foculus", "cell", "signal-frame codec"],
+                ["soma", "cell", "thought links"],
+                ["soma", "cyb", "the mind"],
+                ["sigma", "cybergraph", "evaluations as links"],
+                ["neural", "soma", "meaning"],
+                ["trident", "nox", ".nox programs"],
+                ["rune", "nox", "lowered eval"],
+                ["rune", "ward", "effects + caps"],
+                ["inf", "bbg", "datalog queries"],
+                ["inf", "sigma", "query results"],
+                ["inf", "lytics", "reports"],
+                ["nox", "zheng", "execution traces"],
+                ["zheng", "cybergraph", "proof particles"],
+                ["zheng", "eidos", "certificates"],
+                ["eidos", "cybergraph", "theorem links"],
+                ["glia", "soma", "inference"],
+                ["glia", "rune", "model witness"],
+                ["wysm", "nox", "souls via trident LIR"],
+                ["wysm", "rune", "host witness"],
+                ["kern", "rune", "shader witness"],
+                ["mir", "cyb", "the rendered world"],
+                ["prysm", "cyb", "the painted surface"],
+            ];
+
+            // ── layout: hubs on the flag heptagon, components on an outer
+            //    arc around their hub, apps in a crown above ──────────────
+            const CX = 750, CY = 640, HUB_R = 240, NODE_R = 455, APP_R = 580;
+            const pos = {};
+            const hubPos = {};
+            RING.forEach((f, i) => {
+                const a = -Math.PI / 2 + (i * 2 * Math.PI) / 7;
+                hubPos[f] = { x: CX + HUB_R * Math.cos(a), y: CY + HUB_R * Math.sin(a), a };
+            });
+            RING.forEach((f) => {
+                const members = NODES.filter((n) => n.f === f);
+                const spread = 0.19; // radians between siblings
+                members.forEach((n, i) => {
+                    const a = hubPos[f].a + (i - (members.length - 1) / 2) * spread;
+                    pos[n.id] = { x: CX + NODE_R * Math.cos(a), y: CY + NODE_R * Math.sin(a) };
+                });
+            });
+            NODES.filter((n) => n.f === "apps").forEach((n, i, all) => {
+                const a = -Math.PI / 2 + (i - (all.length - 1) / 2) * 0.17;
+                pos[n.id] = { x: CX + APP_R * Math.cos(a), y: CY + APP_R * Math.sin(a) };
+            });
+
+            // ── draw ─────────────────────────────────────────────────────
+            const svg = document.getElementById("stage");
+            const NS = "http://www.w3.org/2000/svg";
+            const el = (t, at, parent) => {
+                const e = document.createElementNS(NS, t);
+                for (const k in at) e.setAttribute(k, at[k]);
+                (parent || svg).appendChild(e);
+                return e;
+            };
+            // defs: one arrowhead per facet colour
+            const defs = el("defs", {});
+            Object.entries(FACETS).forEach(([f, v]) => {
+                const m = el("marker", {
+                    id: "arr-" + f, viewBox: "0 0 10 10", refX: 9, refY: 5,
+                    markerWidth: 5.5, markerHeight: 5.5, orient: "auto-start-reverse",
+                }, defs);
+                el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m);
+            });
+
+            const edgeLayer = el("g", {});
+            const hubLayer = el("g", {});
+            const nodeLayer = el("g", {});
+
+            // the spiral through the hubs: form → … → play, closing dashed
+            {
+                const pts = RING.map((f) => hubPos[f]);
+                el("polyline", {
+                    points: pts.map((p) => `${p.x},${p.y}`).join(" "),
+                    fill: "none", stroke: "rgba(255,255,255,0.14)", "stroke-width": 1,
+                }, hubLayer);
+                el("line", {
+                    x1: pts[6].x, y1: pts[6].y, x2: pts[0].x, y2: pts[0].y,
+                    stroke: "rgba(255,226,138,0.4)", "stroke-width": 1,
+                    "stroke-dasharray": "4 5",
+                }, hubLayer);
+            }
+
+            // hubs: the flag, writ large
+            RING.forEach((f) => {
+                const { x, y } = hubPos[f];
+                el("circle", {
+                    cx: x, cy: y, r: 48,
+                    fill: FACETS[f].c, "fill-opacity": 0.16,
+                    stroke: FACETS[f].c, "stroke-opacity": 0.55, "stroke-width": 1.4,
+                }, hubLayer);
+                el("text", {
+                    x, y: y + 4, "text-anchor": "middle",
+                    fill: FACETS[f].c, "font-size": 15, class: "hub-label",
+                }, hubLayer).textContent = f.toUpperCase();
+            });
+            // spokes hub → its components (faint, structural)
+            NODES.forEach((n) => {
+                if (n.f === "apps") return;
+                const h = hubPos[n.f], p = pos[n.id];
+                el("line", {
+                    x1: h.x + (p.x - h.x) * 0.34, y1: h.y + (p.y - h.y) * 0.34,
+                    x2: p.x, y2: p.y,
+                    stroke: FACETS[n.f].c, "stroke-opacity": 0.16, "stroke-width": 1,
+                }, hubLayer);
+            });
+
+            // flows: curved toward the centre so the middle reads as the bus
+            const edgeEls = [];
+            EDGES.forEach(([a, b, label], i) => {
+                const A = pos[a], B = pos[b];
+                const f = NODES.find((n) => n.id === a).f;
+                const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+                const pull = 0.22;
+                const cx = mx + (CX - mx) * pull, cy = my + (CY - my) * pull;
+                const path = el("path", {
+                    d: `M ${A.x} ${A.y} Q ${cx} ${cy} ${B.x} ${B.y}`,
+                    fill: "none",
+                    stroke: FACETS[f].c, "stroke-opacity": 0.45, "stroke-width": 1.6,
+                    "marker-end": `url(#arr-${f})`,
+                }, edgeLayer);
+                el("title", {}, path).textContent = `${a} → ${b} · ${label}`;
+                edgeEls.push({ path, a, b, label, f });
+            });
+
+            // nodes: flag-coloured pills; ghosts dashed
+            const nodeEls = {};
+            NODES.forEach((n) => {
+                const { x, y } = pos[n.id];
+                const w = 18 + n.id.length * 8.8;
+                const g = el("g", { class: "node", "data-id": n.id });
+                el("rect", {
+                    x: x - w / 2, y: y - 13, width: w, height: 26, rx: 13,
+                    fill: n.f === "apps" ? "rgba(255,248,240,0.09)" : FACETS[n.f].c,
+                    stroke: n.f === "apps" ? "rgba(255,248,240,0.7)" : "rgba(255,255,255,0.28)",
+                    "stroke-width": 1,
+                    ...(n.ghost || n.f === "apps" ? { "stroke-dasharray": n.ghost ? "4 3" : "" } : {}),
+                }, g);
+                el("text", {
+                    x, y: y + 4, "text-anchor": "middle",
+                    fill: n.f === "apps" ? "#fff8f0" : FACETS[n.f].t,
+                    "font-size": 13, "font-weight": 700,
+                }, g);
+                g.lastChild.textContent = n.id;
+                nodeLayer.appendChild(g);
+                nodeEls[n.id] = g;
+            });
+            // a caption over the crown
+            el("text", {
+                x: CX, y: CY - APP_R - 44, "text-anchor": "middle",
+                fill: "rgba(255,248,240,0.55)", "font-size": 12,
+            }).textContent = "built ON soft3 — products consume the stack, they are not it";
+
+            // ── interaction: select a node, read its exact I/O ───────────
+            const panel = document.getElementById("panel");
+            const defaultPanel = panel.innerHTML;
+            function release() {
+                edgeEls.forEach((e) => {
+                    e.path.setAttribute("stroke-opacity", 0.45);
+                    e.path.setAttribute("stroke-width", 1.6);
+                });
+                Object.values(nodeEls).forEach((g) => (g.style.opacity = 1));
+                panel.innerHTML = defaultPanel;
+            }
+            function select(id) {
+                const ins = edgeEls.filter((e) => e.b === id);
+                const outs = edgeEls.filter((e) => e.a === id);
+                const near = new Set([id]);
+                edgeEls.forEach((e) => {
+                    const touch = e.a === id || e.b === id;
+                    e.path.setAttribute("stroke-opacity", touch ? 0.95 : 0.05);
+                    e.path.setAttribute("stroke-width", touch ? 2.2 : 1);
+                    if (touch) { near.add(e.a); near.add(e.b); }
+                });
+                Object.entries(nodeEls).forEach(([nid, g]) => {
+                    g.style.opacity = near.has(nid) ? 1 : 0.22;
+                });
+                const n = NODES.find((x) => x.id === id);
+                const fc = n.f === "apps" ? "#fff8f0" : FACETS[n.f].c;
+                panel.innerHTML =
+                    `<h2>${id}</h2>` +
+                    `<div class="facet-tag" style="color:${fc}">${n.f === "apps" ? "built on soft3" : n.f}${n.ghost ? " · proposed" : ""}</div>` +
+                    `<div class="dir">in — what arrives</div>` +
+                    (ins.length
+                        ? `<ul class="io">` + ins.map((e) => `<li>← <b>${e.a}</b> · ${e.label}</li>`).join("") + `</ul>`
+                        : `<p class="hint">nothing — this is a source</p>`) +
+                    `<div class="dir">out — what it feeds</div>` +
+                    (outs.length
+                        ? `<ul class="io">` + outs.map((e) => `<li>→ <b>${e.b}</b> · ${e.label}</li>`).join("") + `</ul>`
+                        : `<p class="hint">nothing — this is a sink</p>`);
+            }
+            nodeLayer.addEventListener("click", (ev) => {
+                const g = ev.target.closest(".node");
+                if (g) { select(g.dataset.id); ev.stopPropagation(); }
+            });
+            svg.addEventListener("click", (ev) => {
+                if (!ev.target.closest(".node")) release();
+            });
+            const q = new URLSearchParams(location.search).get("sel");
+            if (q && nodeEls[q]) select(q);
+        </script>
+    </body>
+</html>

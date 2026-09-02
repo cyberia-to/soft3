@@ -26,6 +26,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[fs]] | mount | spec | — | — | particles · patches · sync · repo is empty |
 | [[tok]] | pay | published | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation · no live economy yet |
 | [[cybics/space|space]] |  |  |  |  |  |
+| [[vault]] | keep | spec | — | — | secret storage: seeds, caps, sealed state — a seat proposed, not yet a repo |
 | [[mudra]] | encrypt | live | [0.1.0](https://github.com/cyberia-to/mudra/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-mudra) | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | live | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip · carries `cyb/sync/0` |
 | [[tape]] | frame | published | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
@@ -34,6 +35,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/life|life]] |  |  |  |  |  |
 | [[tru]] | converge | published | [0.1.1](https://github.com/cyberia-to/tru/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tru) | φ* · eigenvectors · cyberank |
 | [[foculus]] | agree | spec | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | [[collective focus theorem]] → finality · fork-choice unproven in the wild |
+| [[sigma]] | evaluate | spec | — | — | assessment: scores and gradings become links — a seat proposed, not yet a repo |
 | [[soft3/soma\|soma]] | think | live | — | — | four concurrent loops · tiered model stack · phase 1 in [[cyb]] |
 | [[cybics/word|word]] |  |  |  |  |  |
 | [[neural]] | mean | spec | — | — | sigil → word → link → sentence → motif → dialect |
@@ -50,8 +52,14 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/play|play]] |  |  |  |  |  |
 | [[mir]] | render | live | — | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | live | — | — | tape dialect · chunks → UI |
-| [[cyb]] | embody | live | [0.2.1](https://github.com/cyberia-to/cyb/releases/tag/v0.2.1-crates) | [0.2.1](https://crates.io/crates/cyb) | Bevy worlds · terminal · live cells |
-| [[lytics]] | measure | live | — | — | signed visitor events · PoW-priced · retention · cohorts · funnels |
+
+**products are not the stack.** [[cyb]] embodies it and [[lytics]] measures with it — both *consume* soft3, they are not seats in it; listing cyb inside the stack it depends on was a structural error, corrected 2026-09-02. the stack's own top-tier seats are [[cell]] (hold), [[cyb/root/ward|ward]] (authorize), [[vault]] (keep) and [[sigma]] (evaluate). the full interaction graph, with every concrete input and output, is drawn at [soft3.org/chart](https://soft3.org/chart).
+
+| built on soft3 | verb | state | what it is |
+|---|---|---|---|
+| [[cyb]] | embody | live | Bevy worlds · terminal · live cells · [0.2.1](https://crates.io/crates/cyb) |
+| [[lytics]] | measure | live | signed visitor events · PoW-priced · cohorts · funnels |
+| [[warriors/erga|erga]] | mine | live | the Autolykos warrior — honeycrisp's first paying customer |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the layered map and the five architectural gaps live in [[stack-completeness]]; the network-tier borders in [[component-boundaries]].
 
