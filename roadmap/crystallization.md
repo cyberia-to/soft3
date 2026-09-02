@@ -22,7 +22,9 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 | 6 | **act** | play | bodies embody the focus | [[mir]] · [[prysm]] |
 | 7 | **measure** | form | the deed against the rules | [[hemera]] · [[lens]] · [[lytics]] |
 
-**form is the measure** — hash is the ruler, commitment the gauge, the field ([[strata]]) the unit system. The green arc closes the loop: the measurement becomes the next word. Measurement is in the loop from degree one — the germ wire already hashes every particle with hemera.
+**form is the measure** — hash is the ruler, commitment the gauge, the field ([[strata]]) the unit system. Measurement is in the loop from degree one: the germ wire already hashes every particle with hemera.
+
+**the colours are emotions, not badges.** on [the scheme](https://soft3.org/scheme) the loop wears the flag in the flag's own order, and each colour means what cyberia's colours have always meant — the emotional root of the step: say is **growth** (a thought sprouts), sign is **flow**, link is **depth**, prove is **spirit** (beyond trust), focus is **fire** (one burning point), act is **craft**, measure is **light**. the closing arc runs light-into-growth — the measurement feeds the next word the way a day closes into a leaf. facets classify the parts; colours carry the feeling; neither owns the other.
 
 ## the four closures
 
