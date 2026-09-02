@@ -23,6 +23,10 @@ the smallest circle a mind can draw, and every station carries real traffic toda
 
 the closing arc is the loop's whole point: the measurement becomes the next link. play holds two verbs because play is the membrane where the stack touches the world — render is the way out, measure is the way back.
 
+**why exactly four.** the removal test: remove *link* and the system is mute — it can only react to its own renders. remove *transmit* and it is many private loops, not one mind. remove *render* and it is a diary — no agency. remove *measure* and it is open-loop — no feedback, no cybernetics. each removal kills a distinct property: novelty, unity, agency, feedback. and none merge: link is not measure (a mind's reference input is not a sensor reading), render is not transmit (out to the world is not across the graph). a single agent's OODA collapses to measure → focus → render; link and transmit exist precisely because the mind is distributed. there is no fifth motion — everything else is a property of the channel (encrypt, prove) or the attractor (focus).
+
+**verbs outside, components inside.** the scheme names each seat by its verb and lists the components that hold it; the decomposition within a seat — each component's own registry verb and how they interact — opens on click at [soft3.org/scheme](https://soft3.org/scheme). grouping is a debt: if several components share a seat, the seat owes an internal diagram, and now pays it.
+
 ## the two guarantees — the medium
 
 not steps but properties of the channel every link enjoys:

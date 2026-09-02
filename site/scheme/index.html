@@ -6,7 +6,7 @@
         <title>soft3 — the scheme</title>
         <meta
             name="description"
-            content="soft3 in one glance: the loop link → transmit → render → measure, the medium encrypt + prove, the centre converge — every verb from the registry"
+            content="soft3 in one glance: the loop link → transmit → render → measure, the medium encrypt + prove, the centre focus — click any seat for its internals"
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,6 +47,9 @@
             h1 em { color: var(--mint); font-style: normal; }
             .sub { font-size: 0.72rem; color: rgba(255, 248, 240, 0.6); }
             svg[role="img"] { width: min(96vw, 1040px); height: auto; display: block; }
+            .seat { cursor: pointer; }
+            .seat:hover rect { filter: brightness(1.18); }
+            .seat:hover { filter: brightness(1.12); }
             .stages {
                 width: 100%;
                 max-width: 1080px;
@@ -97,8 +100,61 @@
                 max-width: 44rem;
                 padding: 0 1.4rem;
             }
+            .hint {
+                margin: 0.2rem 0 0;
+                font-size: 0.68rem;
+                color: rgba(125, 255, 196, 0.55);
+                text-align: center;
+            }
             text { font-family: Play, system-ui, sans-serif; }
             .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+            #detail {
+                width: min(96vw, 980px);
+                margin: 0.4rem 0 1rem;
+                background: rgba(255, 248, 240, 0.035);
+                border: 1px solid rgba(255, 248, 240, 0.12);
+                border-left-width: 4px;
+                border-radius: 14px;
+                padding: 1rem 1.3rem 1.1rem;
+            }
+            #detail header { padding: 0; display: flex; align-items: baseline; gap: 0.9rem; max-width: none; }
+            #detail h2 { margin: 0; font-size: 1.15rem; letter-spacing: 0.08em; }
+            #detail .prop { font-size: 0.8rem; color: rgba(255, 248, 240, 0.7); }
+            #detail .x {
+                margin-left: auto; background: none; border: none; color: rgba(255,248,240,0.5);
+                font-size: 1rem; cursor: pointer; font-family: inherit;
+            }
+            #detail .x:hover { color: var(--cream); }
+            #detail .flow {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.74rem; line-height: 1.7;
+                color: rgba(255, 248, 240, 0.8);
+                margin: 0.7rem 0;
+            }
+            #detail .flow b { color: var(--cream); }
+            #detail .flow i { font-style: normal; color: var(--mint); }
+            #detail table {
+                width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 0.3rem 0 0.5rem;
+            }
+            #detail td {
+                padding: 0.32rem 0.6rem 0.32rem 0;
+                border-top: 1px solid rgba(255, 248, 240, 0.08);
+                color: rgba(255, 248, 240, 0.75); vertical-align: top;
+            }
+            #detail td.c { font-weight: 700; color: var(--cream); white-space: nowrap; }
+            #detail td.v {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                color: var(--mint); white-space: nowrap;
+            }
+            #detail td.st {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.68rem; white-space: nowrap; text-align: right;
+            }
+            #detail td.st.live { color: var(--mint); }
+            #detail td.st.published, #detail td.st.unwired { color: rgba(255, 213, 128, 0.9); }
+            #detail td.st.blocked, #detail td.st.dormant { color: rgba(255, 140, 120, 0.9); }
+            #detail td.st.spec { color: rgba(255, 248, 240, 0.45); }
+            #detail .note { font-size: 0.74rem; color: rgba(255, 248, 240, 0.6); margin: 0.4rem 0 0; line-height: 1.55; }
             .foot {
                 padding: 0 1.4rem 1.4rem;
                 font-size: 0.68rem;
@@ -136,14 +192,15 @@
 <circle cx="13" cy="13" r="2.6" fill="#8000ff"/></svg><b>3 · mind</b><span>one</span><i class="warn">undeployed</i></button>
         </nav>
         <p id="stageinfo" class="stageinfo"></p>
+        <p class="hint">click any seat — verb outside, components inside</p>
 
-        <!-- ═══ the scheme, in the registry's own verbs: 7 = 4 + 2 + 1 ═══
-             the LOOP is four live verbs — link, transmit, render, measure:
-             the link, the focus, the world, and the measurement that
-             becomes the next link. the MEDIUM is two guarantees every
-             link enjoys — encrypt (owned) and prove (checked). the CENTRE
-             is converge — the φ* the loop orbits. no invented words:
-             every verb is a component's own verb from status. -->
+        <!-- ═══ 7 = 4 + 2 + 1, every verb from the registry ══════════════
+             seats show the verb and the components; the internal
+             decomposition — each component's own verb and how they
+             interact — opens on click. why exactly four motions: remove
+             link and the system is mute; remove transmit and it is many
+             loops, not one; remove render and it is a diary; remove
+             measure and it is open-loop. -->
         <svg viewBox="0 0 1040 866" role="img"
              aria-label="soft3: link, transmit, render and measure form a live loop through a medium that encrypts and proves, orbiting the focus">
             <defs>
@@ -159,17 +216,17 @@
 
             <!-- the medium: two guarantees on every link -->
             <g fill="none" stroke-linecap="butt">
-                <path data-g="encrypt" d="M 310.1 462.7 A 210.0 210.0 0 0 1 729.9 462.7" stroke="#4000ff" stroke-width="11" stroke-opacity="0.9"/>
-                <path data-g="prove" d="M 729.9 477.3 A 210.0 210.0 0 0 1 310.1 477.3" stroke="#ff8000" stroke-width="11" stroke-opacity="0.9"/>
+                <path data-g="encrypt" data-seat="encrypt" class="seat" d="M 310.1 462.7 A 210.0 210.0 0 0 1 729.9 462.7" stroke="#4000ff" stroke-width="11" stroke-opacity="0.9"/>
+                <path data-g="prove" data-seat="prove" class="seat" d="M 729.9 477.3 A 210.0 210.0 0 0 1 310.1 477.3" stroke="#ff8000" stroke-width="11" stroke-opacity="0.9"/>
             </g>
             <g text-anchor="middle">
-                <g data-g="encrypt">
+                <g data-g="encrypt" data-seat="encrypt" class="seat">
                     <text x="520" y="300" font-size="14" font-weight="700" fill="#8f86ff">ENCRYPT</text>
-                    <text x="520" y="316" font-size="9" fill="rgba(143,134,255,0.85)" class="mono">every link owned · mudra — vault keeps</text>
+                    <text x="520" y="316" font-size="9" fill="rgba(143,134,255,0.85)" class="mono">mudra · vault · tok</text>
                 </g>
-                <g data-g="prove">
+                <g data-g="prove" data-seat="prove" class="seat">
                     <text x="520" y="596" font-size="14" font-weight="700" fill="#ffb066">PROVE</text>
-                    <text x="520" y="612" font-size="9" fill="rgba(255,176,102,0.85)" class="mono">every claim checked &amp; kept · nox zheng bbg</text>
+                    <text x="520" y="612" font-size="9" fill="rgba(255,176,102,0.85)" class="mono">nox · zheng · bbg · lens</text>
                 </g>
             </g>
 
@@ -178,7 +235,7 @@
                 <path d="M 588.0 258.8 L 798.8 422.5" stroke="rgba(255,248,240,0.85)" stroke-width="3" marker-end="url(#arw)"/>
                 <path d="M 798.8 511.4 L 588.0 654.0" stroke="rgba(255,248,240,0.85)" stroke-width="3" marker-end="url(#arw)"/>
                 <path d="M 452.0 654.0 L 241.2 511.4" stroke="rgba(255,248,240,0.85)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 241.2 422.5 L 452.0 258.8" stroke="#00ff00" stroke-width="4" marker-end="url(#arw-green)"/>
+                <path d="M 241.2 422.5 L 445.2 264.1" stroke="#00ff00" stroke-width="4" marker-end="url(#arw-green)"/>
             </g>
             <g class="mono" font-size="13" fill="rgba(255,248,240,0.66)">
                 <text x="746" y="318" text-anchor="middle">the link</text>
@@ -189,44 +246,39 @@
             </g>
 
             <!-- the centre -->
-            <g data-g="converge" text-anchor="middle">
+            <g data-g="converge" data-seat="focus" class="seat" text-anchor="middle">
                 <circle cx="520" cy="470" r="78" fill="#8000ff" fill-opacity="0.14"
                         stroke="#8000ff" stroke-opacity="0.85" stroke-width="2"/>
-                <text x="520" y="456" font-size="20" font-weight="700" fill="#c89bff">FOCUS</text>
-                <text x="520" y="476" font-size="10.5" fill="rgba(255,248,240,0.85)">one φ* — the point</text>
-                <text x="520" y="491" font-size="10.5" fill="rgba(255,248,240,0.85)">the loop orbits</text>
-                <text x="520" y="507" font-size="9" fill="rgba(255,248,240,0.6)" class="mono">converge · agree · think</text>
-                <text x="520" y="521" font-size="9" fill="rgba(255,248,240,0.6)" class="mono">tru · foculus · soma</text>
+                <text x="520" y="452" font-size="20" font-weight="700" fill="#c89bff">FOCUS</text>
+                <text x="520" y="472" font-size="10.5" fill="rgba(255,248,240,0.85)">one φ* — the point</text>
+                <text x="520" y="487" font-size="10.5" fill="rgba(255,248,240,0.85)">the loop orbits</text>
+                <text x="520" y="506" font-size="9" font-weight="700" fill="rgba(255,248,240,0.65)" class="mono">tru · foculus · soma</text>
             </g>
 
-            <!-- the loop's stations, verbs from the registry -->
-            <g text-anchor="middle">
-                <rect x="395" y="160" width="250" height="92" rx="16" fill="#ff0000"/>
-                <text x="520" y="191" font-size="22" font-weight="700" fill="#fff8f0">LINK</text>
-                <text x="520" y="212" font-size="11.5" fill="rgba(255,248,240,0.88)">a thought becomes links</text>
-                <text x="520" y="228" font-size="8.5" fill="rgba(255,248,240,0.72)" class="mono">hash · mean · compile · eval · query</text>
-                <text x="520" y="242" font-size="8.5" fill="rgba(255,248,240,0.6)" class="mono">cybergraph · hemera + the languages</text>
+            <!-- the loop's stations: verb outside, components inside -->
+            <g data-seat="link" class="seat" text-anchor="middle">
+                <rect x="395" y="163" width="250" height="86" rx="16" fill="#ff0000"/>
+                <text x="520" y="194" font-size="22" font-weight="700" fill="#fff8f0">LINK</text>
+                <text x="520" y="215" font-size="11.5" fill="rgba(255,248,240,0.88)">a thought becomes links</text>
+                <text x="520" y="233" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">cybergraph · hemera + languages</text>
             </g>
-            <g text-anchor="middle">
-                <rect x="740" y="424" width="240" height="92" rx="16" fill="#0000ff"/>
-                <text x="860" y="455" font-size="22" font-weight="700" fill="#fff8f0">TRANSMIT</text>
-                <text x="860" y="476" font-size="11.5" fill="rgba(255,248,240,0.88)">cells share one graph</text>
-                <text x="860" y="492" font-size="8.5" fill="rgba(255,248,240,0.72)" class="mono">hold · frame · sync · mount</text>
-                <text x="860" y="506" font-size="8.5" fill="rgba(255,248,240,0.6)" class="mono">radio · cell · tape · fs</text>
+            <g data-seat="transmit" class="seat" text-anchor="middle">
+                <rect x="740" y="427" width="240" height="86" rx="16" fill="#0000ff"/>
+                <text x="860" y="458" font-size="22" font-weight="700" fill="#fff8f0">TRANSMIT</text>
+                <text x="860" y="479" font-size="11.5" fill="rgba(255,248,240,0.88)">cells share one graph</text>
+                <text x="860" y="497" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">radio · cell · tape · fs</text>
             </g>
-            <g text-anchor="middle">
-                <rect x="400" y="654" width="240" height="92" rx="16" fill="#ffff00"/>
-                <text x="520" y="685" font-size="22" font-weight="700" fill="#0a120e">RENDER</text>
-                <text x="520" y="706" font-size="11.5" fill="rgba(10,18,14,0.88)">the focus becomes world</text>
-                <text x="520" y="722" font-size="8.5" fill="rgba(10,18,14,0.72)" class="mono">paint · authorize</text>
-                <text x="520" y="736" font-size="8.5" fill="rgba(10,18,14,0.6)" class="mono">mir · prysm — gated by ward</text>
+            <g data-seat="render" class="seat" text-anchor="middle">
+                <rect x="400" y="657" width="240" height="86" rx="16" fill="#ffff00"/>
+                <text x="520" y="688" font-size="22" font-weight="700" fill="#0a120e">RENDER</text>
+                <text x="520" y="709" font-size="11.5" fill="rgba(10,18,14,0.88)">the focus becomes world</text>
+                <text x="520" y="727" font-size="9.5" font-weight="700" fill="rgba(10,18,14,0.8)" class="mono">mir · prysm · ward</text>
             </g>
-            <g text-anchor="middle">
-                <rect x="65" y="424" width="230" height="92" rx="16" fill="#00ff00"/>
-                <text x="180" y="455" font-size="22" font-weight="700" fill="#0a120e">MEASURE</text>
-                <text x="180" y="476" font-size="11.5" fill="rgba(10,18,14,0.88)">the world becomes links</text>
-                <text x="180" y="492" font-size="8.5" fill="rgba(10,18,14,0.72)" class="mono">evaluate</text>
-                <text x="180" y="506" font-size="8.5" fill="rgba(10,18,14,0.6)" class="mono">lytics · sigma</text>
+            <g data-seat="measure" class="seat" text-anchor="middle">
+                <rect x="65" y="427" width="230" height="86" rx="16" fill="#00ff00"/>
+                <text x="180" y="458" font-size="22" font-weight="700" fill="#0a120e">MEASURE</text>
+                <text x="180" y="479" font-size="11.5" fill="rgba(10,18,14,0.88)">the world becomes links</text>
+                <text x="180" y="497" font-size="9.5" font-weight="700" fill="rgba(10,18,14,0.8)" class="mono">lytics · sigma</text>
             </g>
 
             <!-- who feeds it -->
@@ -234,7 +286,7 @@
                 <text x="520" y="48" text-anchor="middle">humans · agents · sensors</text>
                 <line x1="520" y1="58" x2="520" y2="106" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
             </g>
-            <text x="520" y="778" text-anchor="middle" font-size="10.5" fill="rgba(255,248,240,0.45)" class="mono">beneath it all: math · commit · accelerate — strata · lens · honeycrisp</text>
+            <text x="520" y="778" text-anchor="middle" font-size="10.5" fill="rgba(255,248,240,0.45)" class="mono">beneath it all: strata · lens · honeycrisp — the math, the commitments, the silicon</text>
             <text x="520" y="804" text-anchor="middle" font-size="12" fill="rgba(125,255,196,0.7)" class="mono">cyb — the body · cyber — the mind · cyberia — the state</text>
             <text x="520" y="830" text-anchor="middle" font-size="12" fill="rgba(255,248,240,0.55)" class="mono">four live motions · two guarantees · one attractor — shared → trustless → one</text>
             <text x="520" y="858" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
@@ -242,22 +294,56 @@
             </text>
         </svg>
 
+        <section id="detail" hidden>
+            <header>
+                <h2 id="d-title"></h2>
+                <span class="prop" id="d-prop"></span>
+                <button class="x" id="d-close" aria-label="close">✕</button>
+            </header>
+            <p class="flow" id="d-flow"></p>
+            <table><tbody id="d-rows"></tbody></table>
+            <p class="note" id="d-note"></p>
+        </section>
+
         <p class="foot">
-            no invented words: every verb on this page is a component's own
-            verb from <a href="https://cyber.page/soft3/status">the registry</a>.
-            the loop is four verbs that are all <b>live today</b> — link,
-            transmit, render, measure: the link, the focus, the world, and the
-            measurement that becomes the next link. <b>encrypt</b> and
-            <b>prove</b> are not steps but the medium every link enjoys.
-            <b>the focus</b> is the attractor the loop orbits — converge is its verb — and it lights
-            last: the mind emerges when a proven, shared loop converges.
-            colours carry their innate emotions. the parts:
+            why exactly four motions: remove <b>link</b> and the system is
+            mute; remove <b>transmit</b> and it is many loops, not one;
+            remove <b>render</b> and it is a diary; remove <b>measure</b> and
+            it is open-loop. each removal kills a distinct property —
+            novelty, unity, agency, feedback. <b>encrypt</b> and
+            <b>prove</b> are the medium, not motions; <b>the focus</b> is the
+            attractor, not a step — it lights last. every verb is a
+            component's own verb from
+            <a href="https://cyber.page/soft3/status">the registry</a>;
+            click a seat for the decomposition inside. the parts:
             <a href="/chart/">the chart</a>
         </p>
         <script>
-            // the loop is live end to end; the stages follow the registry:
-            // stage 1 = every live verb, stage 2 = + prove (building),
-            // stage 3 = + converge (undeployed)
+            const DETAILS = {"link": {"color": "#ff0000", "title": "LINK", "prop": "a thought becomes links", "flow": "thought \u2192 <i>mean</i> \u2192 sentence \u2192 <i>hash</i> \u2192 <b>particle</b> \u2192 <i>link</i> \u2192 <b>cyberlink</b> \u2192 sealed by encrypt, carried by transmit", "rows": "<tr><td class=\"c\">cybergraph</td><td class=\"v\">link</td><td>jets \u00b7 memos \u00b7 types \u2014 particles + neuron become a cyberlink</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">hemera</td><td class=\"v\">hash</td><td>Poseidon2 sponge \u2014 any bytes become a particle; the identity of everything</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">neural</td><td class=\"v\">mean</td><td>sigil \u2192 word \u2192 link \u2192 sentence \u2192 motif \u2192 dialect \u2014 meaning as graph structure</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">trident</td><td class=\"v\">compile</td><td>.tri \u2192 .nox \u2014 sentences that lower to provable bytecode</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">rune</td><td class=\"v\">eval</td><td>scripted, effectful saying</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">inf</td><td class=\"v\">query</td><td>datalog over bbg \u2014 asking is saying</td><td class=\"st live\">live</td></tr>", "note": "the languages are richer mouths for the same mouth: whatever is meant, compiled, evaluated or asked, it lowers to particles and cyberlinks \u2014 hemera names, cybergraph binds."}, "transmit": {"color": "#0000ff", "title": "TRANSMIT", "prop": "cells share one graph", "flow": "<b>cell</b> <i>holds</i> the slice \u2192 <b>tape</b> <i>frames</i> it \u2192 <b>radio</b> <i>transmits</i> QUIC \u21c4 the peer cell <i>absorbs</i> \u2014 routing is read from the graph itself: FOLLOW \u00b7 ANTENNA \u00b7 SOCKET links", "rows": "<tr><td class=\"c\">radio</td><td class=\"v\">transmit</td><td>QUIC \u00b7 BAO streaming \u00b7 gossip \u2014 carries cyb/sync</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">cell</td><td class=\"v\">hold</td><td>the local node: graph slice, signal chain, apply/prove loop \u2014 lives inside cyb today</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">tape</td><td class=\"v\">frame</td><td>typed particle framing over any byte stream</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">fs</td><td class=\"v\">mount</td><td>particles as files</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">sync</td><td>reconciliation beyond a pair \u2014 gossip fan-out is its seat, not a rebroadcast</td><td class=\"st unwired\">unwired</td></tr>", "note": "the wire obeys the graph: following is a cyberlink, the address is graph content, and the mechanism replicates the very links that route it \u2014 proven live 2026-09-01."}, "render": {"color": "#ffff00", "title": "RENDER", "prop": "the focus becomes world", "flow": "the focused graph \u2192 <b>mir</b> <i>renders</i> worlds \u00b7 <b>prysm</b> <i>paints</i> chunks \u2192 screens, sound, effects \u2014 and every effect that touches the world passes <b>ward</b> <i>authorize</i>", "rows": "<tr><td class=\"c\">mir</td><td class=\"v\">render</td><td>positions + features \u2192 an R-1.0 world</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">prysm</td><td class=\"v\">paint</td><td>tape dialect \u2014 chunks become UI; affect drawn as color</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">ward</td><td class=\"v\">authorize</td><td>effect router: emit / query / link / seal / host \u2014 no capability, no effect</td><td class=\"st spec\">spec</td></tr>", "note": "a payment or a motor is a render too \u2014 the focus embodied in a medium, gated by capability. discovery is what a human does inside a rendered world."}, "measure": {"color": "#00ff00", "title": "MEASURE", "prop": "the world becomes links", "flow": "the world responds \u2192 <b>lytics</b> <i>measures</i> signed events (PoW-priced) \u2192 links in the graph \u2192 <span style=\"color:#00ff00\">the measurement becomes the next link</span>", "rows": "<tr><td class=\"c\">lytics</td><td class=\"v\">measure</td><td>signed visitor events \u00b7 cohorts \u00b7 funnels \u2014 cybernetics is impossible without measurement</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">sigma</td><td class=\"v\">evaluate</td><td>scores and gradings become links \u2014 proposed, not yet a repo</td><td class=\"st spec\">spec</td></tr>", "note": "measurement is the loop's return path: without it render is a broadcast, not an act of a mind."}, "encrypt": {"color": "#4000ff", "title": "ENCRYPT", "prop": "every link owned", "flow": "<b>vault</b> <i>keeps</i> the seed \u2192 <b>mudra</b> derives the neuron and <i>seals</i> every link \u2192 <b>tok</b> makes some links <i>carry value</i>", "rows": "<tr><td class=\"c\">mudra</td><td class=\"v\">encrypt</td><td>KEM \u00b7 dCTIDH \u00b7 AEAD \u00b7 TFHE \u00b7 threshold \u2014 the neuron's keys</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">vault</td><td class=\"v\">keep</td><td>seeds, caps, sealed state \u2014 proposed seat</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">tok</td><td class=\"v\">pay</td><td>Coin \u00b7 Card \u00b7 conservation \u2014 value moves as links; no live economy yet</td><td class=\"st published\">published</td></tr>", "note": "ownership is not a step of the journey: linking is owned, rendering is owned, measuring is owned."}, "prove": {"color": "#ff8000", "title": "PROVE", "prop": "every claim checked &amp; kept", "flow": "trident LIR \u2192 <b>nox</b> <i>runs</i> (running is proving) \u2192 <b>zheng</b> <i>proves</i> succinctly \u2192 <b>bbg</b> <i>stores</i> provable state \u2192 <b>lens</b> <i>commits &amp; opens</i> \u2192 inf reads with proofs", "rows": "<tr><td class=\"c\">nox</td><td class=\"v\">run</td><td>18 patterns + jets \u2014 unconditional proof</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">zheng</td><td class=\"v\">prove</td><td>SuperSpartan \u00b7 Brakedown \u00b7 sumcheck \u2014 axis/hash/look openings open</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">bbg</td><td class=\"v\">store</td><td>1 polynomial \u00b7 10 dims \u00b7 ~200B proofs \u2014 storing is proving</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">lens</td><td class=\"v\">commit</td><td>5 PCS backends \u2014 the commitments zheng and bbg open</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">glia</td><td class=\"v\">infer</td><td>model inference, conditional</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">eidos</td><td class=\"v\">certify</td><td>theorems become links \u2014 zheng bridge is a stub</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">wysm</td><td class=\"v\">sandbox</td><td>any wasm, gas-metered</td><td class=\"st dormant\">dormant</td></tr><tr><td class=\"c\">kern</td><td class=\"v\">shade</td><td>gpu shaders, metered</td><td class=\"st spec\">spec</td></tr>", "note": "a proof-contract ladder: nox unconditional at the top, glia/wysm/kern conditional-on-host below \u2014 the long arc lowers every soul toward nox."}, "focus": {"color": "#8000ff", "title": "FOCUS", "prop": "one \u03c6* \u2014 the point the loop orbits", "flow": "<b>tru</b> <i>converges</i> \u03c6* over the whole graph \u2192 <b>foculus</b> <i>agrees</i>: final past \u03c4 \u2192 <b>soma</b> <i>thinks</i> with the focused graph", "rows": "<tr><td class=\"c\">tru</td><td class=\"v\">converge</td><td>\u03c6* \u00b7 eigenvectors \u00b7 cyberank</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">agree</td><td>collective focus theorem \u2192 finality \u00b7 VDF \u00b7 fork-choice never yet chosen a fork</td><td class=\"st unwired\">unwired</td></tr><tr><td class=\"c\">soma</td><td class=\"v\">think</td><td>four concurrent loops \u00b7 tiered models \u2014 phase 1 in cyb</td><td class=\"st live\">live</td></tr>", "note": "the centre is a noun: everything dances around it, and it lights last \u2014 the mind emerges when a proven, shared loop converges."}};
+            const detail = document.getElementById("detail");
+            function openSeat(id) {
+                const d = DETAILS[id];
+                if (!d) return;
+                detail.style.borderLeftColor = d.color;
+                document.getElementById("d-title").textContent = d.title;
+                document.getElementById("d-title").style.color = d.color === "#0000ff" ? "#7d9dff" : d.color;
+                document.getElementById("d-prop").innerHTML = d.prop;
+                document.getElementById("d-flow").innerHTML = d.flow;
+                document.getElementById("d-rows").innerHTML = d.rows;
+                document.getElementById("d-note").innerHTML = d.note;
+                detail.hidden = false;
+                history.replaceState(null, "", "?seat=" + id + location.hash);
+                detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+            document.getElementById("d-close").addEventListener("click", () => {
+                detail.hidden = true;
+                history.replaceState(null, "", location.pathname + location.hash);
+            });
+            document.querySelectorAll("[data-seat]").forEach((el) =>
+                el.addEventListener("click", () => openSeat(el.dataset.seat)),
+            );
+
+            // stages follow the registry: live → + prove → + converge
             const STAGES = {
                 1: { on: ["encrypt"],
                      info: "everything lit is live in the registry: link → transmit → render → measure circulates, every link owned. the wire, since 2026-09-01." },
@@ -279,8 +365,10 @@
             document.querySelectorAll(".stages button").forEach((b) =>
                 b.addEventListener("click", () => setStage(+b.dataset.stage)),
             );
-            const q = new URLSearchParams(location.search).get("stage");
+            const params = new URLSearchParams(location.search);
+            const q = params.get("stage");
             setStage(q >= 1 && q <= 3 ? +q : 3);
+            if (params.get("seat")) openSeat(params.get("seat"));
         </script>
     </body>
 </html>
