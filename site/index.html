@@ -469,6 +469,17 @@
                 transition: background 0.5s ease;
             }
 
+            /* the seven colours are the cyberia flag, exactly — the ring IS
+               the flag: same heptagon, same circles, same paint. light discs
+               carry dark text, dark discs carry cream. */
+            .tab[data-tab="form"],  .band[data-go="form"]  { --fc: #00ff01; --ft: #0a120e; }
+            .tab[data-tab="mass"],  .band[data-go="mass"]  { --fc: #00b4ff; --ft: #0a120e; }
+            .tab[data-tab="space"], .band[data-go="space"] { --fc: #1700fe; --ft: #fff8f0; }
+            .tab[data-tab="life"],  .band[data-go="life"]  { --fc: #6b00fe; --ft: #fff8f0; }
+            .tab[data-tab="word"],  .band[data-go="word"]  { --fc: #fe0000; --ft: #fff8f0; }
+            .tab[data-tab="work"],  .band[data-go="work"]  { --fc: #ff6501; --ft: #0a120e; }
+            .tab[data-tab="play"],  .band[data-go="play"]  { --fc: #ffc501; --ft: #0a120e; }
+
             .tab {
                 position: absolute;
                 left: var(--x);
@@ -476,9 +487,10 @@
                 transform: translate(-50%, -50%);
                 width: 3.5rem;
                 height: 3.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.16);
-                background: rgba(6, 16, 10, 0.6);
-                color: rgba(255, 248, 240, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.22);
+                background: var(--fc);
+                color: var(--ft);
+                opacity: 0.9;
                 font-family: Play, system-ui, sans-serif;
                 border-radius: 999px;
                 display: flex;
@@ -502,16 +514,87 @@
                 display: none;
             }
             .tab:hover {
-                color: #fff;
-                border-color: rgba(255, 255, 255, 0.4);
+                opacity: 1;
+                border-color: rgba(255, 255, 255, 0.5);
                 transform: translate(-50%, -50%) scale(1.08);
             }
             .tab[aria-selected="true"] {
-                color: #0a120e;
-                background: hsl(var(--accent-h) 82% 62%);
-                border-color: hsl(var(--accent-h) 82% 75%);
-                box-shadow: 0 0 22px hsl(var(--accent-h) 82% 55% / 0.55);
-                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 1;
+                border-color: #fff8f0;
+                box-shadow: 0 0 26px var(--fc);
+                transform: translate(-50%, -50%) scale(1.16);
+            }
+
+            /* ── the architecture, before the toy: the whole stack as seven
+               layers, foundation at the bottom, each wearing its flag colour.
+               this is the first thing a visitor reads; the crystal below is
+               how they play with it. */
+            .scheme {
+                display: flex;
+                flex-direction: column;
+                gap: 0.28rem;
+                margin: 0 0 0.7rem;
+            }
+            .scheme-cap {
+                font-size: 0.62rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: rgba(255, 248, 240, 0.65);
+                margin: 0 0 0.35rem;
+            }
+            .scheme-cap em {
+                color: #7dffc4;
+                font-style: normal;
+            }
+            .band {
+                display: flex;
+                align-items: center;
+                gap: 0.55rem;
+                width: 100%;
+                padding: 0.34rem 0.65rem;
+                border-radius: 0.55rem;
+                border: 1px solid color-mix(in srgb, var(--fc) 38%, transparent);
+                background: color-mix(in srgb, var(--fc) 14%, rgba(6, 16, 10, 0.55));
+                color: rgba(255, 248, 240, 0.88);
+                font-family: Play, system-ui, sans-serif;
+                cursor: pointer;
+                text-align: left;
+                transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+            }
+            .band i {
+                flex: none;
+                width: 0.72rem;
+                height: 0.72rem;
+                border-radius: 999px;
+                background: var(--fc);
+                box-shadow: 0 0 8px color-mix(in srgb, var(--fc) 70%, transparent);
+            }
+            .band b {
+                flex: none;
+                width: 3.1rem;
+                font-size: 0.62rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+            .band span {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.58rem;
+                letter-spacing: 0.02em;
+                color: rgba(255, 248, 240, 0.62);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .band:hover {
+                background: color-mix(in srgb, var(--fc) 26%, rgba(6, 16, 10, 0.55));
+                transform: translateX(2px);
+            }
+            .band[aria-selected="true"] {
+                border-color: color-mix(in srgb, var(--fc) 85%, transparent);
+                background: color-mix(in srgb, var(--fc) 30%, rgba(6, 16, 10, 0.5));
+                color: #fff8f0;
             }
 
             .body {
@@ -743,8 +826,18 @@
 
                 <aside class="panel">
                     <div class="ringwrap">
+                    <div class="scheme" role="tablist" aria-label="the stack, top to bottom">
+                        <p class="scheme-cap">the <em>whole stack</em>, top to bottom</p>
+                        <button class="band" data-go="play"><i></i><b>play</b><span>cyb · mir · prysm · lytics</span></button>
+                        <button class="band" data-go="work"><i></i><b>work</b><span>trident · nox · wysm · glia · zheng · eidos</span></button>
+                        <button class="band" data-go="word"><i></i><b>word</b><span>neural · rune · inf</span></button>
+                        <button class="band" data-go="life"><i></i><b>life</b><span>tru · foculus · soma</span></button>
+                        <button class="band" data-go="space"><i></i><b>space</b><span>mudra · radio · tape · foculus · ward</span></button>
+                        <button class="band" data-go="mass"><i></i><b>mass</b><span>cybergraph · bbg · cell · fs · tok</span></button>
+                        <button class="band" data-go="form"><i></i><b>form</b><span>honeycrisp · strata · hemera · lens</span></button>
+                    </div>
                     <p class="spiral">
-                        the whole stack in <em>7 facets</em> — click around
+                        the same stack as <em>7 facets</em> — click around
                     </p>
                     <div class="ring" role="tablist">
                         <svg
@@ -1300,14 +1393,17 @@
             ];
             let organ = "form",
                 organHue = 0;
+            // offsets chosen so 150 + offset lands on each facet's exact flag
+            // hue: form #00ff01→120, mass #00b4ff→197, space #1700fe→245,
+            // life #6b00fe→265, word #fe0000→0, work #ff6501→24, play #ffc501→46
             const hues = {
-                form: 0,
-                mass: 40,
-                space: 100,
-                life: -55,
-                word: -30,
-                work: 25,
-                play: 70,
+                form: -30,
+                mass: 47,
+                space: 95,
+                life: 115,
+                word: -150,
+                work: -126,
+                play: -104,
             };
             const questions = {
                 form: "what are the rules?",
@@ -1330,6 +1426,14 @@
                     150 + organHue,
                 );
                 document
+                    .querySelectorAll(".band[data-go]")
+                    .forEach((b) =>
+                        b.setAttribute(
+                            "aria-selected",
+                            b.dataset.go === name ? "true" : "false",
+                        ),
+                    );
+                document
                     .querySelectorAll(".tab[data-tab]")
                     .forEach((t) =>
                         t.setAttribute(
@@ -1347,8 +1451,13 @@
                 .forEach((t) =>
                     t.addEventListener("click", () => select(t.dataset.tab)),
                 );
-            // every visit lands on a different facet — the crystal has no front
-            select(order[Math.floor(Math.random() * order.length)]);
+            // the scheme's layers select facets too, and stay in step
+            document.querySelectorAll(".band[data-go]").forEach((b) =>
+                b.addEventListener("click", () => select(b.dataset.go)),
+            );
+            // the page opens on the architecture, so the crystal starts at the
+            // foundation — deterministic, not a roll of the dice
+            select("form");
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
                 const i = order.indexOf(organ);
