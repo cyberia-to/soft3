@@ -20,24 +20,23 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 | 4 | **prove** | work | executing is proving | [[soft3/nox\|nox]] · [[zheng]] · [[soft3/bbg\|bbg]] |
 | 5 | **focus** | life | one φ* — agreement, not voting | [[tru]] · [[foculus]] |
 | 6 | **act** | play | bodies embody the focus | [[mir]] · [[prysm]] |
-| 7 | **measure** | form | the deed against the rules | [[hemera]] · [[lens]] · [[lytics]] |
+| 7 | **observe** | form | the deed against the rules — measurement is observation's special case | [[hemera]] · [[lens]] · [[lytics]] |
 
-**form is the measure** — hash is the ruler, commitment the gauge, the field ([[strata]]) the unit system. Measurement is in the loop from degree one: the germ wire already hashes every particle with hemera.
+**form is the observer** — hash is the ruler, commitment the gauge, the field ([[strata]]) the unit system — and measurement is only the sharpest case of observation. Observation is in the loop from stage one: the germ wire already hashes every particle with hemera.
 
 **the colours are emotions — by evolution, not by assignment.** on [the scheme](https://soft3.org/scheme) the loop wears the flag in the flag's own order — the visible spectrum bent into a loop — and each colour carries its innate emotion per the evolutionary theory of color perception: anger red, disgust orange, surprise yellow, joy green, interest blue, sadness indigo, fear violet. the emotions belong to the colours, not to the verbs; facets classify the parts; neither owns the other. the closing arc runs yellow into green — the surprise of measurement becomes the joy of the next word. the map is anchored at [[color]], the full framework at [[color-emotion spectrum]], the protocol use at [[emotion]].
 
-## the four closures
+## the three stages
 
-| closure | property | minimal core | state |
-|---|---|---|---|
-| 1 · germ | **shared** | cell · cybergraph · mudra · radio · hemera | **closed 2026-09-01** — [[wire]], two cells, no server |
-| 2 · proof | **trustless** | + nox · zheng · bbg · lens · strata | blocked — zheng opening derivation |
-| 3 · mind | **one** | + tru · foculus | unwired — never deployed |
-| 4 · flesh | **alive** | + mir · prysm · sigma (lytics already lives) | partial |
+the loop does not close once — but neither does it need four names. reduced honestly, seven steps pass through **three states**, each the same circuit with more stations lit:
 
-**the four closures are the same loop, growing.** a closure is not a layer beside the loop — it IS the loop, run with fewer stations. germ is the shortest circulation that still closes: **say → sign → link → measure** — speak, seal, land, hash — exactly the circuit the [[wire]] runs today. proof adds the **prove** station, mind adds **focus**, flesh adds **act**, and at seven stations the loop is whole: four dots, then five, then six, then the whole flag.
+| stage | property | stations lit | core | state |
+|---|---|---|---|---|
+| 1 · network | **shared** | say · sign · link · observe | [[cell]] · [[soft3/cybergraph\|cybergraph]] · [[mudra]] · [[radio]] · [[hemera]] | **live** — [[wire]], 2026-09-01 |
+| 2 · mind | **one** | + prove · focus | + [[soft3/nox\|nox]] · [[zheng]] · [[soft3/bbg\|bbg]] · [[lens]] · [[strata]] · [[tru]] · [[foculus]] | building — zheng openings, foculus undeployed |
+| 3 · life | **alive** | + act | + [[mir]] · [[prysm]] · [[sigma]] | partial — [[lytics]] already lives |
 
-**shared → trustless → one → alive.** Closures compose but are not strictly serial: a trusting community runs germ+mind without proof (foculus's fork-choice is pluggable); lytics measures today without finality. The trinity maps: [[cyb]] needs flesh, [[cyber]] needs mind, [[cyberia]] needs trustless *and* one.
+**shared → one → alive.** four stations, then six, then the whole flag. trustlessness is not a stage of its own: a mind is genuinely *one* only when its agreement needs no trust — proof and convergence arrive together, or the "one" is a clique. the trinity maps cleanly: the **network** is what [[cyb]]s form, the **mind** is [[cyber]], and **life** is what [[cyberia]] governs.
 
 ## the census — every component, classified
 
@@ -45,22 +44,22 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 
 | component | station | closure |
 |---|---|---|
-| [[cell]] | link | 1 · germ |
-| [[soft3/cybergraph\|cybergraph]] | link | 1 · germ |
-| [[mudra]] | sign | 1 · germ |
-| [[radio]] | sign | 1 · germ |
-| [[hemera]] | measure | 1 · germ |
-| [[soft3/nox\|nox]] | prove | 2 · proof |
-| [[zheng]] | prove | 2 · proof |
-| [[soft3/bbg\|bbg]] | prove | 2 · proof |
-| [[lens]] | measure | 2 · proof |
-| [[strata]] | measure | 2 · proof |
-| [[tru]] | focus | 3 · mind |
-| [[foculus]] | focus | 3 · mind |
-| [[mir]] | act | 4 · flesh |
-| [[prysm]] | act | 4 · flesh |
-| [[lytics]] | measure | 4 · flesh |
-| [[sigma]] | measure | 4 · flesh — proposed, not yet a repo |
+| [[cell]] | link | 1 · network |
+| [[soft3/cybergraph\|cybergraph]] | link | 1 · network |
+| [[mudra]] | sign | 1 · network |
+| [[radio]] | sign | 1 · network |
+| [[hemera]] | observe | 1 · network |
+| [[soft3/nox\|nox]] | prove | 2 · mind |
+| [[zheng]] | prove | 2 · mind |
+| [[soft3/bbg\|bbg]] | prove | 2 · mind |
+| [[lens]] | observe | 2 · mind |
+| [[strata]] | observe | 2 · mind |
+| [[tru]] | focus | 2 · mind |
+| [[foculus]] | focus | 2 · mind |
+| [[mir]] | act | 3 · life |
+| [[prysm]] | act | 3 · life |
+| [[lytics]] | observe | 3 · life |
+| [[sigma]] | observe | 3 · life — proposed, not yet a repo |
 
 **enrichment** (a richer way to perform a station the loop already performs):
 
@@ -79,21 +78,20 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 | [[kern]] | prove | gpu shaders, metered |
 | [[eidos]] | prove | theorems become links |
 | [[cyb/root/ward\|ward]] | act | no act without a capability |
-| [[honeycrisp]] | measure | the same arithmetic, at silicon speed |
+| [[honeycrisp]] | observe | the same arithmetic, at silicon speed |
 
 **products** (consume the loop entire, are not in it): [[cyb]] · [[optica]] · [[Signal Studio\|studio]] · [[warriors/erga\|erga]] · [[warriors/zoya\|zoya]] · [[warriors/mona\|mona]] · [[warriors/xena\|xena]]
 
 **the trinity** (what the loop is for, not parts of it): [[cyb]] the body · [[cyber]] the mind · [[cyberia]] the state.
 
-## the closure tests
+## the stage tests
 
-A closure is claimed only when a signal demonstrably completes the circuit at that degree:
+a stage is claimed only when a signal demonstrably completes the circuit at that degree:
 
-1. **germ** — a link cast in one cell arrives in another with no third party. **Passed live**: [[wire]], 2026-09-01.
-2. **proof** — a stranger verifies a read it never trusted.
-3. **mind** — two conflicting signals, one survivor, chosen by φ* past τ.
-4. **flesh** — an act in the world measurably changes what the mind next says.
+1. **network** — a link cast in one cell arrives in another with no third party. **passed live**: [[wire]], 2026-09-01.
+2. **mind** — a stranger verifies a read it never trusted, and of two conflicting signals one survives, chosen by φ* past τ.
+3. **life** — an act in the world observably changes what the mind next says.
 
 ## what this buys
 
-**Focus:** the germ core is five components — hardening those beats widening anything. **Honesty:** [[status]] states map onto closure states. **Discipline:** a proposed component must name its station and its closure; "it would be nice" is not a station.
+**Focus:** the network core is five components — hardening those beats widening anything. **Honesty:** [[status]] states map onto stage states. **Discipline:** a proposed component must name its station and its stage; "it would be nice" is not a station.

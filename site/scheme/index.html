@@ -6,7 +6,7 @@
         <title>soft3 — the scheme</title>
         <meta
             name="description"
-            content="soft3 in one glance: a closed cybernetic loop on a proof floor — say, sign, link, prove, focus, act, and the measurement becomes the next word"
+            content="soft3 in one glance: a closed cybernetic loop — say, sign, link, prove, focus, act, observe — and the observation becomes the next word"
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -54,11 +54,12 @@
             }
             h1 em { color: var(--mint); font-style: normal; }
             .sub { font-size: 0.72rem; color: rgba(255, 248, 240, 0.6); }
-            svg {
+            svg[role="img"] {
                 width: min(96vw, 1040px);
                 height: auto;
                 display: block;
             }
+            .stages svg { flex: none; }
             .foot {
                 padding: 0 1.4rem 1.4rem;
                 font-size: 0.68rem;
@@ -72,42 +73,53 @@
                 width: 100%;
                 max-width: 1080px;
                 display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.7rem 1.4rem 0;
+                justify-content: center;
+                gap: 0.7rem;
+                padding: 0.9rem 1.4rem 0;
                 flex-wrap: wrap;
             }
             .stages button {
                 font-family: Play, system-ui, sans-serif;
                 display: flex;
                 align-items: center;
-                gap: 0.45rem;
+                gap: 0.55rem;
                 background: rgba(255, 248, 240, 0.04);
-                border: 1px solid rgba(255, 248, 240, 0.25);
+                border: 1px solid rgba(255, 248, 240, 0.22);
                 color: var(--cream);
                 border-radius: 999px;
-                padding: 0.34rem 0.85rem;
-                font-size: 0.78rem;
+                padding: 0.45rem 1.05rem;
+                font-size: 0.85rem;
                 cursor: pointer;
+                transition: border-color 0.15s ease, background 0.15s ease;
             }
             .stages button:hover { border-color: rgba(255, 248, 240, 0.55); }
             .stages button[aria-selected="true"] {
                 border-color: var(--mint);
-                background: rgba(125, 255, 196, 0.12);
+                background: rgba(125, 255, 196, 0.1);
+            }
+            .stages b { font-weight: 700; }
+            .stages span {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.66rem;
+                color: rgba(255, 248, 240, 0.55);
             }
             .stages i {
                 font-style: normal;
                 font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.6rem;
+                font-size: 0.62rem;
             }
             .stages .ok { color: var(--mint); }
             .stages .warn { color: rgba(255, 178, 120, 0.9); }
             .stages .dim { color: rgba(255, 248, 240, 0.55); }
-            #stageinfo {
-                font-size: 0.72rem;
-                color: rgba(255, 248, 240, 0.6);
-                margin-left: 0.4rem;
+            .stageinfo {
+                margin: 0.45rem 0 0;
+                font-size: 0.74rem;
+                color: rgba(255, 248, 240, 0.62);
+                text-align: center;
+                max-width: 44rem;
+                padding: 0 1.4rem;
             }
+
             text { font-family: Play, system-ui, sans-serif; }
             .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
         </style>
@@ -120,13 +132,12 @@
                 the parts: <a href="/chart/">/chart</a>
             </span>
         </header>
-        <nav class="stages" aria-label="the four closures as stages">
-            <button data-stage="1"><b>1 · germ</b><i class="ok">live</i></button>
-            <button data-stage="2"><b>2 · proof</b><i class="warn">blocked</i></button>
-            <button data-stage="3"><b>3 · mind</b><i class="warn">unwired</i></button>
-            <button data-stage="4" aria-selected="true"><b>4 · flesh</b><i class="dim">partial</i></button>
-            <span id="stageinfo"></span>
+        <nav class="stages" aria-label="the three stages of the loop">
+            <button data-stage="1"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="1.7" fill="#2a332e"/><circle cx="7.1" cy="19.1" r="1.7" fill="#2a332e"/><circle cx="2.2" cy="13.0" r="1.7" fill="#2a332e"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>1 · network</b><span>shared</span><i class="ok">live</i></button>
+            <button data-stage="2"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="2.6" fill="#8000ff"/><circle cx="7.1" cy="19.1" r="2.6" fill="#ff0000"/><circle cx="2.2" cy="13.0" r="1.7" fill="#2a332e"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>2 · mind</b><span>one</span><i class="warn">building</i></button>
+            <button data-stage="3" aria-selected="true"><svg viewBox="0 0 22 22" width="22" height="22" aria-hidden="true"><circle cx="11.0" cy="2.0" r="2.6" fill="#00ff00"/><circle cx="18.0" cy="5.4" r="2.6" fill="#0000ff"/><circle cx="19.8" cy="13.0" r="2.6" fill="#4000ff"/><circle cx="14.9" cy="19.1" r="2.6" fill="#8000ff"/><circle cx="7.1" cy="19.1" r="2.6" fill="#ff0000"/><circle cx="2.2" cy="13.0" r="2.6" fill="#ff8000"/><circle cx="4.0" cy="5.4" r="2.6" fill="#ffff00"/></svg><b>3 · life</b><span>alive</span><i class="dim">partial</i></button>
         </nav>
+        <p id="stageinfo" class="stageinfo"></p>
 
         <!-- ═══ the principled scheme ═══════════════════════════════════
              a closed cybernetic loop of six verbs, wearing the six upper
@@ -134,8 +145,8 @@
              stands on. the trinity turns in the centre. the arc that closes
              the loop (ACT → SAY) is the whole point: what the mind does is
              measured back into what it next says. -->
-        <svg viewBox="0 0 1040 1020" role="img"
-             aria-label="soft3: a closed loop — say, sign, link, prove, focus, act — on a floor of one field, with cyb, cyber and cyberia turning in the centre">
+        <svg viewBox="0 0 1040 872" role="img"
+             aria-label="soft3: a closed loop — say · sign · link · prove · focus · act · observe, with cyb, cyber and cyberia turning in the centre">
             <defs>
                 <marker id="arw" viewBox="0 0 10 10" refX="8.4" refY="5"
                         markerWidth="6.5" markerHeight="6.5" orient="auto">
@@ -174,7 +185,7 @@
                 <text data-arc="a3" x="520.0" y="778.0">the proofs</text>
                 <text data-arc="a4" x="255.7" y="650.7">the rank</text>
                 <text data-arc="a5" x="190.5" y="364.8">the deed</text>
-                <text data-arc="a6" x="330" y="116" fill="#ffff00" font-size="13.5" font-weight="700">the measurement</text>
+                <text data-arc="a6" x="330" y="116" fill="#ffff00" font-size="13.5" font-weight="700">the observation</text>
                 <text data-arc="a6" x="330" y="133" fill="#00ff00">becomes the next word</text>
             
                 <text data-arc="b26" x="376.8" y="737.3">the state</text>
@@ -220,7 +231,7 @@
             </g>
             <g text-anchor="middle" data-st="6">
                 <rect x="184.7" y="225.3" width="225" height="74" rx="16" fill="#ffff00"/>
-                <text x="297.2" y="256.3" font-size="23" font-weight="700" fill="#0a120e">MEASURE</text>
+                <text x="297.2" y="256.3" font-size="23" font-weight="700" fill="#0a120e">OBSERVE</text>
                 <text x="297.2" y="277.3" font-size="11.5" fill="rgba(10,18,14,0.85)">the deed against the rules</text>
                 <text x="297.2" y="291.3" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: hemera · lens · lytics</text>
             </g>
@@ -256,84 +267,12 @@
                 <text x="936" y="230" fill="rgba(255,248,240,0.45)" text-anchor="middle" font-size="9.5">the spectrum, bent into a loop</text>
             </g>
 
-            <!-- the four closures ARE the loop — the same circuit, growing.
-                 germ is the shortest circulation (say→sign→link→measure —
-                 exactly the wire); each later closure adds a station until
-                 the loop is whole at seven. lit dots take part; dim ones
-                 wait their degree. -->
-            <g text-anchor="middle">
-                <text x="520" y="800" font-size="12" fill="rgba(255,248,240,0.6)">the loop closes four times — the same circuit, gaining a station at each degree:</text>
-                <path d="M 203.6 818.7 A 40 40 0 0 1 221.9 827.6" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 231.5 839.5 A 40 40 0 0 1 236.0 859.3" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 232.6 874.2 A 40 40 0 1 1 160.5 839.5" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 170.1 827.6 A 40 40 0 0 1 188.4 818.7" fill="none" stroke="#00ff00" stroke-width="1.8" stroke-linecap="round"/>
-                <circle cx="196.0" cy="818.0" r="6" fill="#00ff00"/>
-                <circle cx="227.3" cy="833.1" r="6" fill="#0000ff"/>
-                <circle cx="235.0" cy="866.9" r="6" fill="#4000ff"/>
-                <circle cx="213.4" cy="894.0" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="178.6" cy="894.0" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="157.0" cy="866.9" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="164.7" cy="833.1" r="6" fill="#ffff00"/>
-                <text x="196" y="924" font-size="12" font-weight="700" fill="#7dffc4">1 · germ — SHARED</text>
-                <text x="196" y="938" font-size="8.4" fill="rgba(255,248,240,0.65)" class="mono">cell cybergraph mudra radio hemera</text>
-                <text x="196" y="949" font-size="8.4" fill="#7dffc4" class="mono">closed 2026-09-01 · live</text>
-                <line x1="258" y1="858" x2="354" y2="858" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
-                <path d="M 423.6 818.7 A 40 40 0 0 1 441.9 827.6" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 451.5 839.5 A 40 40 0 0 1 456.0 859.3" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 452.6 874.2 A 40 40 0 0 1 439.9 890.1" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 426.2 896.7 A 40 40 0 0 1 380.5 839.5" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 390.1 827.6 A 40 40 0 0 1 408.4 818.7" fill="none" stroke="#00ff00" stroke-width="1.8" stroke-linecap="round"/>
-                <circle cx="416.0" cy="818.0" r="6" fill="#00ff00"/>
-                <circle cx="447.3" cy="833.1" r="6" fill="#0000ff"/>
-                <circle cx="455.0" cy="866.9" r="6" fill="#4000ff"/>
-                <circle cx="433.4" cy="894.0" r="6" fill="#8000ff"/>
-                <circle cx="398.6" cy="894.0" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="377.0" cy="866.9" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="384.7" cy="833.1" r="6" fill="#ffff00"/>
-                <text x="416" y="924" font-size="12" font-weight="700" fill="rgba(255,248,240,0.85)">2 · proof — TRUSTLESS</text>
-                <text x="416" y="938" font-size="8.4" fill="rgba(255,248,240,0.65)" class="mono">+ nox zheng bbg · lens strata</text>
-                <text x="416" y="949" font-size="8.4" fill="rgba(255,178,120,0.9)" class="mono">blocked: zheng openings</text>
-                <line x1="478" y1="858" x2="574" y2="858" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
-                <path d="M 643.6 818.7 A 40 40 0 0 1 661.9 827.6" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 671.5 839.5 A 40 40 0 0 1 676.0 859.3" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 672.6 874.2 A 40 40 0 0 1 659.9 890.1" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 646.2 896.7 A 40 40 0 0 1 625.8 896.7" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 612.1 890.1 A 40 40 0 0 1 600.5 839.5" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 610.1 827.6 A 40 40 0 0 1 628.4 818.7" fill="none" stroke="#00ff00" stroke-width="1.8" stroke-linecap="round"/>
-                <circle cx="636.0" cy="818.0" r="6" fill="#00ff00"/>
-                <circle cx="667.3" cy="833.1" r="6" fill="#0000ff"/>
-                <circle cx="675.0" cy="866.9" r="6" fill="#4000ff"/>
-                <circle cx="653.4" cy="894.0" r="6" fill="#8000ff"/>
-                <circle cx="618.6" cy="894.0" r="6" fill="#ff0000"/>
-                <circle cx="597.0" cy="866.9" r="4" fill="#1c241f" stroke="#3a463f" stroke-width="1"/>
-                <circle cx="604.7" cy="833.1" r="6" fill="#ffff00"/>
-                <text x="636" y="924" font-size="12" font-weight="700" fill="rgba(255,248,240,0.85)">3 · mind — ONE</text>
-                <text x="636" y="938" font-size="8.4" fill="rgba(255,248,240,0.65)" class="mono">+ tru foculus</text>
-                <text x="636" y="949" font-size="8.4" fill="rgba(255,178,120,0.9)" class="mono">unwired: never deployed</text>
-                <line x1="698" y1="858" x2="794" y2="858" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
-                <path d="M 863.6 818.7 A 40 40 0 0 1 881.9 827.6" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 891.5 839.5 A 40 40 0 0 1 896.0 859.3" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 892.6 874.2 A 40 40 0 0 1 879.9 890.1" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 866.2 896.7 A 40 40 0 0 1 845.8 896.7" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 832.1 890.1 A 40 40 0 0 1 819.4 874.2" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 816.0 859.3 A 40 40 0 0 1 820.5 839.5" fill="none" stroke="rgba(255,248,240,0.5)" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M 830.1 827.6 A 40 40 0 0 1 848.4 818.7" fill="none" stroke="#00ff00" stroke-width="1.8" stroke-linecap="round"/>
-                <circle cx="856.0" cy="818.0" r="6" fill="#00ff00"/>
-                <circle cx="887.3" cy="833.1" r="6" fill="#0000ff"/>
-                <circle cx="895.0" cy="866.9" r="6" fill="#4000ff"/>
-                <circle cx="873.4" cy="894.0" r="6" fill="#8000ff"/>
-                <circle cx="838.6" cy="894.0" r="6" fill="#ff0000"/>
-                <circle cx="817.0" cy="866.9" r="6" fill="#ff8000"/>
-                <circle cx="824.7" cy="833.1" r="6" fill="#ffff00"/>
-                <text x="856" y="924" font-size="12" font-weight="700" fill="rgba(255,248,240,0.85)">4 · flesh — ALIVE</text>
-                <text x="856" y="938" font-size="8.4" fill="rgba(255,248,240,0.65)" class="mono">+ mir prysm · sigma</text>
-                <text x="856" y="949" font-size="8.4" fill="rgba(125,255,196,0.8)" class="mono">partial: lytics lives</text>
-                <text x="520" y="972" font-size="11.5" fill="rgba(255,248,240,0.55)" class="mono">shared → trustless → one → alive — four dots, then five, then six, then the whole flag</text>
-            </g>
+
 
             <!-- the claim, spelled once -->
-            <text x="520" y="1000" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
-                the boundary rule: a component is stack iff some closure cannot happen without it — the rest is enrichment, or a product
+            <text x="520" y="806" text-anchor="middle" font-size="12" fill="rgba(255,248,240,0.55)" class="mono">shared → one → alive</text>
+            <text x="520" y="840" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
+                the boundary rule: a component is stack iff some stage cannot close without it — the rest is enrichment, or a product
             </text>
         </svg>
 
@@ -354,13 +293,11 @@
             // circuit shows exactly which stations run at that closure
             const STAGES = {
                 1: { st: [0,1,2,6], arcs: ["a0","a1","b26","a6"],
-                     info: "the shortest circulation that still closes — say → sign → link → measure. live: the wire, since 2026-09-01." },
-                2: { st: [0,1,2,3,6], arcs: ["a0","a1","a2","b36","a6"],
-                     info: "prove joins: every run and read carries a proof. blocked on zheng openings." },
-                3: { st: [0,1,2,3,4,6], arcs: ["a0","a1","a2","a3","b46","a6"],
-                     info: "focus joins: the graph converges to one φ*. built, never deployed." },
-                4: { st: [0,1,2,3,4,5,6], arcs: ["a0","a1","a2","a3","a4","a5","a6"],
-                     info: "act joins and the loop is whole — bodies embody, every act is measured. lytics already lives." },
+                     info: "cells share one graph — say → sign → link → observe. live: the wire, since 2026-09-01." },
+                2: { st: [0,1,2,3,4,6], arcs: ["a0","a1","a2","a3","b46","a6"],
+                     info: "prove and focus join: every claim proven, the whole graph converging to one φ*. building — zheng openings open, foculus undeployed." },
+                3: { st: [0,1,2,3,4,5,6], arcs: ["a0","a1","a2","a3","a4","a5","a6"],
+                     info: "act joins and the loop is whole: bodies embody the focus, every act observed back into the graph. partial — lytics already lives." },
             };
             function setStage(n) {
                 const cfg = STAGES[n];
@@ -379,7 +316,7 @@
                 b.addEventListener("click", () => setStage(+b.dataset.stage)),
             );
             const q = new URLSearchParams(location.search).get("stage");
-            setStage(q >= 1 && q <= 4 ? +q : 4);
+            setStage(q >= 1 && q <= 3 ? +q : 3);
         </script>
     </body>
 </html>
