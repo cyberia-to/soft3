@@ -68,6 +68,46 @@
                 line-height: 1.5;
             }
             .foot a { color: var(--mint); }
+            .stages {
+                width: 100%;
+                max-width: 1080px;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.7rem 1.4rem 0;
+                flex-wrap: wrap;
+            }
+            .stages button {
+                font-family: Play, system-ui, sans-serif;
+                display: flex;
+                align-items: center;
+                gap: 0.45rem;
+                background: rgba(255, 248, 240, 0.04);
+                border: 1px solid rgba(255, 248, 240, 0.25);
+                color: var(--cream);
+                border-radius: 999px;
+                padding: 0.34rem 0.85rem;
+                font-size: 0.78rem;
+                cursor: pointer;
+            }
+            .stages button:hover { border-color: rgba(255, 248, 240, 0.55); }
+            .stages button[aria-selected="true"] {
+                border-color: var(--mint);
+                background: rgba(125, 255, 196, 0.12);
+            }
+            .stages i {
+                font-style: normal;
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+                font-size: 0.6rem;
+            }
+            .stages .ok { color: var(--mint); }
+            .stages .warn { color: rgba(255, 178, 120, 0.9); }
+            .stages .dim { color: rgba(255, 248, 240, 0.55); }
+            #stageinfo {
+                font-size: 0.72rem;
+                color: rgba(255, 248, 240, 0.6);
+                margin-left: 0.4rem;
+            }
             text { font-family: Play, system-ui, sans-serif; }
             .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
         </style>
@@ -80,6 +120,13 @@
                 the parts: <a href="/chart/">/chart</a>
             </span>
         </header>
+        <nav class="stages" aria-label="the four closures as stages">
+            <button data-stage="1"><b>1 · germ</b><i class="ok">live</i></button>
+            <button data-stage="2"><b>2 · proof</b><i class="warn">blocked</i></button>
+            <button data-stage="3"><b>3 · mind</b><i class="warn">unwired</i></button>
+            <button data-stage="4" aria-selected="true"><b>4 · flesh</b><i class="dim">partial</i></button>
+            <span id="stageinfo"></span>
+        </nav>
 
         <!-- ═══ the principled scheme ═══════════════════════════════════
              a closed cybernetic loop of six verbs, wearing the six upper
@@ -107,63 +154,71 @@
 
             <!-- the loop: seven arcs — the seventh, green, closes it -->
             <g fill="none" stroke-linecap="round">
-                <path d="M 598.6 166.0 A 285 285 0 0 1 685.2 207.8" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 783.2 330.6 A 285 285 0 0 1 804.6 424.4" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 769.6 577.5 A 285 285 0 0 1 709.6 652.7" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 568.1 720.9 A 285 285 0 0 1 471.9 720.9" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 330.4 652.7 A 285 285 0 0 1 270.4 577.5" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 235.4 424.4 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
-                <path d="M 354.8 207.8 A 285 285 0 0 1 441.4 166.0" stroke="url(#lg-close)" stroke-width="4.5" marker-end="url(#arw-green)"/>
+                <path data-arc="a0" d="M 598.6 166.0 A 285 285 0 0 1 685.2 207.8" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a1" d="M 783.2 330.6 A 285 285 0 0 1 804.6 424.4" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a2" d="M 769.6 577.5 A 285 285 0 0 1 709.6 652.7" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a3" d="M 568.1 720.9 A 285 285 0 0 1 471.9 720.9" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a4" d="M 330.4 652.7 A 285 285 0 0 1 270.4 577.5" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a5" d="M 235.4 424.4 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="a6" d="M 354.8 207.8 A 285 285 0 0 1 441.4 166.0" stroke="url(#lg-close)" stroke-width="4.5" marker-end="url(#arw-green)"/>
+            
+                <path data-arc="b26" d="M 769.6 577.5 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="b36" d="M 568.1 720.9 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path data-arc="b46" d="M 330.4 652.7 A 285 285 0 0 1 256.8 330.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
             </g>
 
             <g class="mono" font-size="12.5" fill="rgba(255,248,240,0.66)" text-anchor="middle">
-                <text x="666.7" y="135.5">the sentence</text>
-                <text x="849.5" y="364.8">the signal</text>
-                <text x="784.3" y="650.7">the state</text>
-                <text x="520.0" y="778.0">the proofs</text>
-                <text x="255.7" y="650.7">the rank</text>
-                <text x="190.5" y="364.8">the deed</text>
-                <text x="330" y="116" fill="#ffff00" font-size="13.5" font-weight="700">the measurement</text>
-                <text x="330" y="133" fill="#00ff00">becomes the next word</text>
+                <text data-arc="a0" x="666.7" y="135.5">the sentence</text>
+                <text data-arc="a1" x="849.5" y="364.8">the signal</text>
+                <text data-arc="a2" x="784.3" y="650.7">the state</text>
+                <text data-arc="a3" x="520.0" y="778.0">the proofs</text>
+                <text data-arc="a4" x="255.7" y="650.7">the rank</text>
+                <text data-arc="a5" x="190.5" y="364.8">the deed</text>
+                <text data-arc="a6" x="330" y="116" fill="#ffff00" font-size="13.5" font-weight="700">the measurement</text>
+                <text data-arc="a6" x="330" y="133" fill="#00ff00">becomes the next word</text>
+            
+                <text data-arc="b26" x="376.8" y="737.3">the state</text>
+                <text data-arc="b36" x="262.0" y="645.8">the proofs</text>
+                <text data-arc="b46" x="172.0" y="516.0">the rank</text>
             </g>
 
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="0">
                 <rect x="415.0" y="118.0" width="210" height="74" rx="16" fill="#00ff00"/>
                 <text x="520.0" y="149.0" font-size="23" font-weight="700" fill="#0a120e">SAY</text>
                 <text x="520.0" y="170.0" font-size="11.5" fill="rgba(10,18,14,0.85)">a thought becomes a sentence</text>
                 <text x="520.0" y="184.0" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: the signal · rich: languages</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="1">
                 <rect x="652.8" y="225.3" width="180" height="74" rx="16" fill="#0000ff"/>
                 <text x="742.8" y="256.3" font-size="23" font-weight="700" fill="#fff8f0">SIGN</text>
                 <text x="742.8" y="277.3" font-size="11.5" fill="rgba(255,248,240,0.85)">a neuron seals it</text>
                 <text x="742.8" y="291.3" font-size="9" fill="rgba(255,248,240,0.7)" class="mono">core: mudra · radio</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="2">
                 <rect x="702.9" y="466.4" width="190" height="74" rx="16" fill="#4000ff"/>
                 <text x="797.9" y="497.4" font-size="23" font-weight="700" fill="#fff8f0">LINK</text>
                 <text x="797.9" y="518.4" font-size="11.5" fill="rgba(255,248,240,0.85)">the graph grows</text>
                 <text x="797.9" y="532.4" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: cell · cybergraph</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="3">
                 <rect x="538.7" y="659.8" width="210" height="74" rx="16" fill="#8000ff"/>
                 <text x="643.7" y="690.8" font-size="23" font-weight="700" fill="#fff8f0">PROVE</text>
                 <text x="643.7" y="711.8" font-size="11.5" fill="rgba(255,248,240,0.85)">executing is proving</text>
                 <text x="643.7" y="725.8" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: nox · zheng · bbg</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="4">
                 <rect x="291.3" y="659.8" width="210" height="74" rx="16" fill="#ff0000"/>
                 <text x="396.3" y="690.8" font-size="23" font-weight="700" fill="#fff8f0">FOCUS</text>
                 <text x="396.3" y="711.8" font-size="11.5" fill="rgba(255,248,240,0.85)">one φ* — agreement, not voting</text>
                 <text x="396.3" y="725.8" font-size="9" fill="rgba(255,248,240,0.65)" class="mono">core: tru · foculus — final past τ</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="5">
                 <rect x="147.1" y="466.4" width="190" height="74" rx="16" fill="#ff8000"/>
                 <text x="242.1" y="497.4" font-size="23" font-weight="700" fill="#0a120e">ACT</text>
                 <text x="242.1" y="518.4" font-size="11.5" fill="rgba(10,18,14,0.85)">bodies embody the focus</text>
                 <text x="242.1" y="532.4" font-size="9" fill="rgba(10,18,14,0.7)" class="mono">core: mir · prysm</text>
             </g>
-            <g text-anchor="middle">
+            <g text-anchor="middle" data-st="6">
                 <rect x="184.7" y="225.3" width="225" height="74" rx="16" fill="#ffff00"/>
                 <text x="297.2" y="256.3" font-size="23" font-weight="700" fill="#0a120e">MEASURE</text>
                 <text x="297.2" y="277.3" font-size="11.5" fill="rgba(10,18,14,0.85)">the deed against the rules</text>
@@ -294,5 +349,37 @@
             <a href="/chart/">the chart</a> · the registry:
             <a href="https://cyber.page/soft3/status">status</a>
         </p>
+        <script>
+            // the stages ARE the loop at four degrees: pick one, and the big
+            // circuit shows exactly which stations run at that closure
+            const STAGES = {
+                1: { st: [0,1,2,6], arcs: ["a0","a1","b26","a6"],
+                     info: "the shortest circulation that still closes — say → sign → link → measure. live: the wire, since 2026-09-01." },
+                2: { st: [0,1,2,3,6], arcs: ["a0","a1","a2","b36","a6"],
+                     info: "prove joins: every run and read carries a proof. blocked on zheng openings." },
+                3: { st: [0,1,2,3,4,6], arcs: ["a0","a1","a2","a3","b46","a6"],
+                     info: "focus joins: the graph converges to one φ*. built, never deployed." },
+                4: { st: [0,1,2,3,4,5,6], arcs: ["a0","a1","a2","a3","a4","a5","a6"],
+                     info: "act joins and the loop is whole — bodies embody, every act is measured. lytics already lives." },
+            };
+            function setStage(n) {
+                const cfg = STAGES[n];
+                document.querySelectorAll("[data-st]").forEach((g) => {
+                    g.style.opacity = cfg.st.includes(+g.dataset.st) ? 1 : 0.16;
+                });
+                document.querySelectorAll("[data-arc]").forEach((el) => {
+                    el.style.display = cfg.arcs.includes(el.dataset.arc) ? "" : "none";
+                });
+                document.querySelectorAll(".stages button").forEach((b) =>
+                    b.setAttribute("aria-selected", b.dataset.stage === String(n) ? "true" : "false"),
+                );
+                document.getElementById("stageinfo").textContent = cfg.info;
+            }
+            document.querySelectorAll(".stages button").forEach((b) =>
+                b.addEventListener("click", () => setStage(+b.dataset.stage)),
+            );
+            const q = new URLSearchParams(location.search).get("stage");
+            setStage(q >= 1 && q <= 4 ? +q : 4);
+        </script>
     </body>
 </html>
