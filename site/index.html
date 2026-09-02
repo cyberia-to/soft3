@@ -532,7 +532,7 @@
             .scheme {
                 display: flex;
                 flex-direction: column;
-                gap: 0.28rem;
+                gap: 0.22rem;
                 margin: 0 0 0.7rem;
             }
             .scheme-cap {
@@ -550,51 +550,65 @@
             .band {
                 display: flex;
                 align-items: center;
-                gap: 0.55rem;
+                gap: 0.5rem;
                 width: 100%;
-                padding: 0.34rem 0.65rem;
+                padding: 0.3rem 0.55rem;
                 border-radius: 0.55rem;
-                border: 1px solid color-mix(in srgb, var(--fc) 38%, transparent);
-                background: color-mix(in srgb, var(--fc) 14%, rgba(6, 16, 10, 0.55));
+                border: 1px solid color-mix(in srgb, var(--fc) 34%, transparent);
+                background: color-mix(in srgb, var(--fc) 10%, rgba(6, 16, 10, 0.62));
                 color: rgba(255, 248, 240, 0.88);
                 font-family: Play, system-ui, sans-serif;
                 cursor: pointer;
                 text-align: left;
-                transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+                transition: background 0.15s ease, border-color 0.15s ease;
+            }
+            .band .chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.26rem;
+                flex: 1;
+                min-width: 0;
             }
             .band i {
-                flex: none;
-                width: 0.72rem;
-                height: 0.72rem;
-                border-radius: 999px;
-                background: var(--fc);
-                box-shadow: 0 0 8px color-mix(in srgb, var(--fc) 70%, transparent);
-            }
-            .band b {
-                flex: none;
-                width: 3.1rem;
-                font-size: 0.62rem;
-                font-weight: 700;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-            }
-            .band span {
+                font-style: normal;
                 font-family: "JetBrains Mono", ui-monospace, monospace;
                 font-size: 0.58rem;
                 letter-spacing: 0.02em;
-                color: rgba(255, 248, 240, 0.62);
-                overflow: hidden;
-                text-overflow: ellipsis;
+                padding: 0.14rem 0.42rem;
+                border-radius: 999px;
+                background: var(--fc);
+                color: var(--ft);
                 white-space: nowrap;
             }
+            .band b {
+                flex: none;
+                font-size: 0.56rem;
+                font-weight: 700;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: color-mix(in srgb, var(--fc) 78%, #fff8f0);
+            }
+            .band.base {
+                justify-content: center;
+            }
+            .band.base b {
+                display: none;
+            }
             .band:hover {
-                background: color-mix(in srgb, var(--fc) 26%, rgba(6, 16, 10, 0.55));
-                transform: translateX(2px);
+                background: color-mix(in srgb, var(--fc) 22%, rgba(6, 16, 10, 0.6));
             }
             .band[aria-selected="true"] {
                 border-color: color-mix(in srgb, var(--fc) 85%, transparent);
-                background: color-mix(in srgb, var(--fc) 30%, rgba(6, 16, 10, 0.5));
-                color: #fff8f0;
+                background: color-mix(in srgb, var(--fc) 26%, rgba(6, 16, 10, 0.5));
+            }
+            /* the verbs between layers: how one hangs from the next */
+            .edge {
+                font-size: 0.56rem;
+                letter-spacing: 0.06em;
+                color: rgba(255, 248, 240, 0.5);
+                padding-left: 0.9rem;
+                margin: -0.06rem 0;
+                user-select: none;
             }
 
             .body {
@@ -678,8 +692,19 @@
                 color: rgba(255, 248, 240, 0.5);
                 text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
             }
-            /* phone: one column, natural scroll — pitch, then the ring as a
-               compact chip grid, then the detail. app-like, thumb-friendly */
+
+            /* wide screens: the diagram reads on the left, the crystal spins
+               on the right — the map beside the toy, not above it */
+            .ringwrap {
+                display: grid;
+                grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+                grid-template-areas: "scheme spiral" "scheme ring";
+                column-gap: 1.1rem;
+                align-items: center;
+            }
+            .scheme { grid-area: scheme; margin: 0; }
+            .spiral { grid-area: spiral; align-self: end; }
+            .ring { grid-area: ring; align-self: start; }
             @media (max-width: 900px) {
                 .stage {
                     display: flex;
@@ -710,6 +735,29 @@
                     align-items: stretch;
                 }
                 .tab {
+                    position: static;
+                    transform: none !important;
+                    flex: 1 1 21%;
+                    width: auto;
+                    height: auto;
+                    border-radius: 12px;
+                    padding: 0.5rem 0.2rem;
+                }
+                .detail {
+                    overflow: visible;
+                }
+            }
+
+            @media (max-width: 1180px) {
+                .ringwrap {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+            }
+
+            .tab {
+            .tab {
                     position: static;
                     transform: none !important;
                     flex: 1 1 21%;
@@ -826,15 +874,23 @@
 
                 <aside class="panel">
                     <div class="ringwrap">
-                    <div class="scheme" role="tablist" aria-label="the stack, top to bottom">
-                        <p class="scheme-cap">the <em>whole stack</em>, top to bottom</p>
-                        <button class="band" data-go="play"><i></i><b>play</b><span>cyb · mir · prysm · lytics</span></button>
-                        <button class="band" data-go="work"><i></i><b>work</b><span>trident · nox · wysm · glia · zheng · eidos</span></button>
-                        <button class="band" data-go="word"><i></i><b>word</b><span>neural · rune · inf</span></button>
-                        <button class="band" data-go="life"><i></i><b>life</b><span>tru · foculus · soma</span></button>
-                        <button class="band" data-go="space"><i></i><b>space</b><span>mudra · radio · tape · foculus · ward</span></button>
-                        <button class="band" data-go="mass"><i></i><b>mass</b><span>cybergraph · bbg · cell · fs · tok</span></button>
-                        <button class="band" data-go="form"><i></i><b>form</b><span>honeycrisp · strata · hemera · lens</span></button>
+                    <div class="scheme" role="tablist" aria-label="the architecture, top to bottom">
+                        <p class="scheme-cap">the <em>architecture</em> — how it hangs together</p>
+                        <button class="band" data-go="play"><span class="chips"><i>cyb</i><i>mir</i><i>prysm</i><i>lytics</i></span><b>play</b></button>
+                        <div class="edge">↓ &nbsp;embodies one focus over</div>
+                        <button class="band" data-go="life"><span class="chips"><i>soma</i><i>tru</i><i>foculus</i></span><b>life</b></button>
+                        <div class="edge">↓ &nbsp;thinks · converges · agrees on</div>
+                        <button class="band" data-go="mass"><span class="chips"><i>cybergraph</i><i>bbg</i><i>cell</i><i>fs</i><i>tok</i></span><b>mass</b></button>
+                        <div class="edge">↓ &nbsp;signals signed &amp; carried by</div>
+                        <button class="band" data-go="space"><span class="chips"><i>mudra</i><i>radio</i><i>tape</i><i>ward</i></span><b>space</b></button>
+                        <div class="edge">↓ &nbsp;programs written in</div>
+                        <button class="band" data-go="word"><span class="chips"><i>neural</i><i>trident</i><i>rune</i><i>inf</i></span><b>word</b></button>
+                        <div class="edge">↓ &nbsp;lowered into one waist</div>
+                        <button class="band" data-go="work"><span class="chips"><i>nox</i><i>zheng</i><i>glia</i><i>eidos</i><i>wysm</i><i>kern</i></span><b>work</b></button>
+                        <div class="edge">↓ &nbsp;arithmetic from</div>
+                        <button class="band" data-go="form"><span class="chips"><i>strata</i><i>hemera</i><i>lens</i></span><b>form</b></button>
+                        <div class="edge">↓ &nbsp;tuned to the silicon</div>
+                        <button class="band base" data-go="form"><span class="chips"><i>honeycrisp</i></span><b>form</b></button>
                     </div>
                     <p class="spiral">
                         the same stack as <em>7 facets</em> — click around
@@ -1191,6 +1247,18 @@
                                 >
                             </div>
                             <div class="prop">
+                                <b>compile</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/neural/trident/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >trident</a
+                                    >
+                                    · high-level language → provable bytecode</span
+                                >
+                            </div>
+                            <div class="prop">
                                 <b>eval</b
                                 ><span
                                     ><a
@@ -1226,18 +1294,6 @@
                         </p>
                         <div class="props">
                             <div class="prop">
-                                <b>compile</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/trident/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >trident</a
-                                    >
-                                    · high-level language → provable bytecode</span
-                                >
-                            </div>
-                            <div class="prop">
                                 <b>run</b
                                 ><span
                                     ><a
@@ -1246,43 +1302,7 @@
                                         rel="noopener"
                                         >nox</a
                                     >
-                                    · the VM where executing IS proving</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>sandbox</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/wysm/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >wysm</a
-                                    >
-                                    · run any WASM, gas-metered</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>infer</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/glia/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >glia</a
-                                    >
-                                    · run ML models</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>shade</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/kern/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >kern</a
-                                    >
-                                    · Metal/Vulkan/WebGPU kernels</span
+                                    · provable execution</span
                                 >
                             </div>
                             <div class="prop">
@@ -1294,7 +1314,19 @@
                                         rel="noopener"
                                         >zheng</a
                                     >
-                                    · the proof system — sumcheck + Brakedown</span
+                                    · the proof system</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>infer</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/soft3/glia/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >glia</a
+                                    >
+                                    · dynamic model inference</span
                                 >
                             </div>
                             <div class="prop">
@@ -1307,6 +1339,30 @@
                                         >eidos</a
                                     >
                                     · machine-checked theorems become links</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>sandbox</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/cyb/wysm/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >wysm</a
+                                    >
+                                    · metered wasm</span
+                                >
+                            </div>
+                            <div class="prop">
+                                <b>shade</b
+                                ><span
+                                    ><a
+                                        href="https://cyber.page/kern/"
+                                        target="_blank"
+                                        rel="noopener"
+                                        >kern</a
+                                    >
+                                    · metered gpu</span
                                 >
                             </div>
                         </div>

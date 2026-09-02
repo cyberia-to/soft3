@@ -37,16 +37,16 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[soft3/soma\|soma]] | think | live | — | — | four concurrent loops · tiered model stack · phase 1 in [[cyb]] |
 | [[cybics/word|word]] |  |  |  |  |  |
 | [[neural]] | mean | spec | — | — | sigil → word → link → sentence → motif → dialect |
+| [[trident]] | compile | published | [0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
 | [[rune]] | eval | published | [0.1.0](https://github.com/cyberia-to/rune/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-rune) | Rs · hint · host · eval · async |
 | [[inf]] | query | live | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |  |
-| [[trident]] | compile | published | [0.1.0](https://github.com/cyberia-to/trident/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/trident-lang) | .tri → .nox |
 | [[soft3/nox\|nox]] | run | published | [0.1.2](https://github.com/cyberia-to/nox/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
-| [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
-| [[glia]] | infer | live | — | — | .model runtime · cond/model |
-| [[kern]] | shade | spec | — | — | Metal/Vulkan/WebGPU shaders · cond/host |
 | [[zheng]] | prove | blocked | [0.1.2](https://github.com/cyberia-to/zheng/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash/look opening derivation open |
+| [[glia]] | infer | live | — | — | .model runtime · cond/model |
 | [[eidos]] | certify | blocked | — | — | CIC type-checker · theorem → cyberlink · zheng bridge is a stub |
+| [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
+| [[kern]] | shade | spec | — | — | Metal/Vulkan/WebGPU shaders · cond/host |
 | [[cybics/play|play]] |  |  |  |  |  |
 | [[mir]] | render | live | — | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | live | — | — | tape dialect · chunks → UI |
