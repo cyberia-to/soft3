@@ -52,14 +52,16 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/play|play]] |  |  |  |  |  |
 | [[mir]] | render | live | — | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | live | — | — | tape dialect · chunks → UI |
+| [[lytics]] | measure | live | — | — | signed visitor events · PoW-priced · cohorts · funnels — cybernetics is impossible without measurement |
 
-**products are not the stack.** [[cyb]] embodies it and [[lytics]] measures with it — both *consume* soft3, they are not seats in it; listing cyb inside the stack it depends on was a structural error, corrected 2026-09-02. the stack's own top-tier seats are [[cell]] (hold), [[cyb/root/ward|ward]] (authorize), [[vault]] (keep) and [[sigma]] (evaluate). the full interaction graph, with every concrete input and output, is drawn at [soft3.org/chart](https://soft3.org/chart).
+**the stack has a heart, and products grow on its skin.** at the centre sits the trinity the whole stack exists to turn: [[cyb]] the body, [[cyber]] the mind, [[cyberia]] the state — a cycle (bodies feed the mind, the mind guides the state, citizens embody). they are not seats in the registry; the registry is what they are made of. listing cyb inside the stack it depends on was a structural error, corrected 2026-09-02. [[lytics]] however IS a seat — measurement is how cybernetics closes its loop — and returned to play. the stack's own top-tier seats are [[cell]] (hold), [[cyb/root/ward|ward]] (authorize), [[vault]] (keep) and [[sigma]] (evaluate). the full interaction graph, with every concrete input and output, is drawn at [soft3.org/chart](https://soft3.org/chart).
 
-| built on soft3 | verb | state | what it is |
-|---|---|---|---|
-| [[cyb]] | embody | live | Bevy worlds · terminal · live cells · [0.2.1](https://crates.io/crates/cyb) |
-| [[lytics]] | measure | live | signed visitor events · PoW-priced · cohorts · funnels |
-| [[warriors/erga|erga]] | mine | live | the Autolykos warrior — honeycrisp's first paying customer |
+| grown on soft3 | verb | what it is |
+|---|---|---|
+| [[warriors/erga|erga]] | mine | the Autolykos warrior — honeycrisp's first paying customer |
+| [[optica]] | publish | the graph, rendered — cyber.page and every subgraph site |
+| [[Signal Studio|studio]] | sign | hemera particles · mudra neurons · ADR-036 signals |
+| [[warriors/zoya|zoya]] · [[warriors/mona|mona]] · [[warriors/xena|xena]] | mine | the other warriors, each a physics question answered |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the layered map and the five architectural gaps live in [[stack-completeness]]; the network-tier borders in [[component-boundaries]].
 

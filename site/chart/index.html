@@ -144,12 +144,13 @@
             <aside class="panel" id="panel">
                 <h2>the whole stack</h2>
                 <p class="hint">
-                    seven facets as hubs, arranged as the cyberia flag. every
-                    arrow is a real flow from one component's output into
-                    another's input. products — cyb, lytics, erga — ride
-                    <b>above</b> the stack: they consume it, they are not it.
-                    click any node to read its exact inputs and outputs;
-                    click the background to release.
+                    seven facets as hubs, arranged as the cyberia flag; every
+                    arrow a real flow from one component's output into
+                    another's input. at the centre, the point of it all —
+                    <b>cyb</b> the body, <b>cyber</b> the mind,
+                    <b>cyberia</b> the state — a cycle the stack exists to
+                    turn. above, products keep growing on it. click any node
+                    for its exact inputs and outputs.
                 </p>
                 <p class="hint">
                     dashed nodes — <b>vault</b> (keep secrets) and
@@ -173,6 +174,7 @@
                 work: { c: "#ff6501", t: "#0a120e" },
                 play: { c: "#ffc501", t: "#0a120e" },
                 apps: { c: "#fff8f0", t: "#0a120e" },
+                core: { c: "#7dffc4", t: "#0a120e" },
             };
             // order around the ring, exactly as the flag: form at the top,
             // clockwise. apps ride above the crown.
@@ -208,15 +210,25 @@
                 { id: "kern", f: "work" },
                 { id: "mir", f: "play" },
                 { id: "prysm", f: "play" },
-                { id: "cyb", f: "apps" },
-                { id: "lytics", f: "apps" },
+                { id: "lytics", f: "play" },
+                { id: "cyb", f: "core" },
+                { id: "cyber", f: "core" },
+                { id: "cyberia", f: "core" },
                 { id: "erga", f: "apps" },
+                { id: "optica", f: "apps" },
+                { id: "studio", f: "apps" },
+                { id: "zoya", f: "apps" },
+                { id: "mona", f: "apps" },
+                { id: "xena", f: "apps" },
             ];
             // [from, to, what flows] — producer feeds consumer
             const EDGES = [
                 ["honeycrisp", "strata", "NEON · AMX · Metal kernels"],
                 ["honeycrisp", "glia", "ANE inference"],
-                ["honeycrisp", "erga", "zero-copy GPU"],
+                ["honeycrisp", "erga", "the silicon"],
+                ["honeycrisp", "zoya", "the silicon"],
+                ["honeycrisp", "mona", "the silicon"],
+                ["honeycrisp", "xena", "the silicon"],
                 ["strata", "hemera", "𝔽_p arithmetic"],
                 ["strata", "lens", "three algebras"],
                 ["strata", "nox", "field ops"],
@@ -231,11 +243,16 @@
                 ["cybergraph", "neural", "motifs"],
                 ["cybergraph", "mir", "positions + features"],
                 ["cybergraph", "lytics", "events"],
+                ["mudra", "lytics", "visitor identity"],
+                ["lytics", "cybergraph", "measured attention as links"],
+                ["cybergraph", "optica", "the graph, published"],
+                ["cell", "studio", "signed signals"],
                 ["bbg", "inf", "reads with proofs"],
                 ["bbg", "foculus", "state roots"],
                 ["cell", "cybergraph", "applied signals"],
                 ["cell", "radio", "cast frames"],
                 ["cell", "cyb", "the local node"],
+                ["ward", "cyb", "permissions"],
                 ["fs", "cell", "mounted patches"],
                 ["tok", "cybergraph", "value moves"],
                 ["mudra", "cell", "signatures"],
@@ -271,6 +288,14 @@
                 ["kern", "rune", "shader witness"],
                 ["mir", "cyb", "the rendered world"],
                 ["prysm", "cyb", "the painted surface"],
+                ["cybergraph", "cyber", "the shared graph"],
+                ["tru", "cyber", "one focus"],
+                ["foculus", "cyber", "finality"],
+                ["tok", "cyberia", "the economy"],
+                ["sigma", "cyberia", "civil evaluation"],
+                ["cyb", "cyber", "bodies feed the mind"],
+                ["cyber", "cyberia", "guides the state"],
+                ["cyberia", "cyb", "citizens embody"],
             ];
 
             // ── layout: hubs on the flag heptagon, components on an outer
@@ -291,9 +316,13 @@
                 });
             });
             NODES.filter((n) => n.f === "apps").forEach((n, i, all) => {
-                const a = -Math.PI / 2 + (i - (all.length - 1) / 2) * 0.17;
+                const a = -Math.PI / 2 + (i - (all.length - 1) / 2) * 0.155;
                 pos[n.id] = { x: CX + APP_R * Math.cos(a), y: CY + APP_R * Math.sin(a) };
             });
+            // the trinity: what the whole stack is for, at the very centre
+            pos["cyb"] = { x: CX, y: CY - 58 };
+            pos["cyber"] = { x: CX - 64, y: CY + 44 };
+            pos["cyberia"] = { x: CX + 66, y: CY + 44 };
 
             // ── draw ─────────────────────────────────────────────────────
             const svg = document.getElementById("stage");
@@ -317,6 +346,13 @@
             const edgeLayer = el("g", {});
             const hubLayer = el("g", {});
             const nodeLayer = el("g", {});
+
+            // the heart's halo
+            el("circle", {
+                cx: CX, cy: CY, r: 132,
+                fill: "#7dffc4", "fill-opacity": 0.035,
+                stroke: "#7dffc4", "stroke-opacity": 0.25, "stroke-width": 1,
+            }, hubLayer);
 
             // the spiral through the hubs: form → … → play, closing dashed
             {
@@ -347,7 +383,7 @@
             });
             // spokes hub → its components (faint, structural)
             NODES.forEach((n) => {
-                if (n.f === "apps") return;
+                if (n.f === "apps" || n.f === "core") return;
                 const h = hubPos[n.f], p = pos[n.id];
                 el("line", {
                     x1: h.x + (p.x - h.x) * 0.34, y1: h.y + (p.y - h.y) * 0.34,
@@ -362,7 +398,7 @@
                 const A = pos[a], B = pos[b];
                 const f = NODES.find((n) => n.id === a).f;
                 const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
-                const pull = 0.22;
+                const pull = 0.12;
                 const cx = mx + (CX - mx) * pull, cy = my + (CY - my) * pull;
                 const path = el("path", {
                     d: `M ${A.x} ${A.y} Q ${cx} ${cy} ${B.x} ${B.y}`,
@@ -383,8 +419,9 @@
                 el("rect", {
                     x: x - w / 2, y: y - 13, width: w, height: 26, rx: 13,
                     fill: n.f === "apps" ? "rgba(255,248,240,0.09)" : FACETS[n.f].c,
-                    stroke: n.f === "apps" ? "rgba(255,248,240,0.7)" : "rgba(255,255,255,0.28)",
-                    "stroke-width": 1,
+                    stroke: n.f === "apps" ? "rgba(255,248,240,0.7)"
+                        : n.f === "core" ? "#fff8f0" : "rgba(255,255,255,0.28)",
+                    "stroke-width": n.f === "core" ? 1.6 : 1,
                     ...(n.ghost || n.f === "apps" ? { "stroke-dasharray": n.ghost ? "4 3" : "" } : {}),
                 }, g);
                 el("text", {
@@ -396,11 +433,15 @@
                 nodeLayer.appendChild(g);
                 nodeEls[n.id] = g;
             });
+            el("text", {
+                x: CX, y: CY + 96, "text-anchor": "middle",
+                fill: "rgba(125,255,196,0.6)", "font-size": 11,
+            }).textContent = "the point of the whole stack";
             // a caption over the crown
             el("text", {
                 x: CX, y: CY - APP_R - 44, "text-anchor": "middle",
                 fill: "rgba(255,248,240,0.55)", "font-size": 12,
-            }).textContent = "built ON soft3 — products consume the stack, they are not it";
+            }).textContent = "and products keep growing on it — miners, publishers, studios";
 
             // ── interaction: select a node, read its exact I/O ───────────
             const panel = document.getElementById("panel");
