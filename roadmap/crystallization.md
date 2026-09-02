@@ -36,7 +36,7 @@ nothing "gets encrypted" as a stage of the journey — linking is owned, renderi
 
 ## the one attractor — the centre
 
-**converge** (facet: life; core [[tru]] · [[foculus]] agrees · [[soma]] thinks) is not a step the signal passes through. it is the φ* the whole loop orbits. of two conflicting signals, one survives, chosen by φ* past τ: agreement, not voting.
+the centre is a noun, not a verb: **the focus** — φ*, [[tru]]'s own word, the name [[foculus]] carries. its verbs from the registry: converge ([[tru]]), agree ([[foculus]]), think ([[soft3/soma|soma]]). it is not a step the signal passes through — it is the point the whole loop orbits: everything dances around it. of two conflicting signals, one survives, chosen by φ* past τ: agreement, not voting.
 
 **beneath it all — the ground.** [[strata]] does the math, [[lens]] commits, [[honeycrisp]] accelerates: form is not a station but what every station is made of, with [[hemera]]'s hash as the ruler.
 
