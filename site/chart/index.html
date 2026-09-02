@@ -135,8 +135,9 @@
         <header>
             <h1><a href="/">soft3</a> · the <em>chart</em></h1>
             <span class="sub">
-                every component, every concrete input and output — the full
-                cycle first, reduction later. click a component.
+                every component, every concrete input and output — click a
+                component and its wires say what flows. the one-glance idea:
+                <a href="/scheme/" style="color: var(--mint)">/scheme</a>
             </span>
         </header>
         <div class="wrap">
@@ -407,7 +408,7 @@
                     "marker-end": `url(#arr-${f})`,
                 }, edgeLayer);
                 el("title", {}, path).textContent = `${a} → ${b} · ${label}`;
-                edgeEls.push({ path, a, b, label, f });
+                edgeEls.push({ path, a, b, label, f, A, B, cx, cy });
             });
 
             // nodes: flag-coloured pills; ghosts dashed
@@ -445,6 +446,21 @@
 
             // ── interaction: select a node, read its exact I/O ───────────
             const panel = document.getElementById("panel");
+            const labelLayer = el("g", {});
+            function clearLabels() {
+                while (labelLayer.firstChild) labelLayer.firstChild.remove();
+            }
+            function labelEdge(e) {
+                // midpoint of the quadratic: (A + 2C + B) / 4
+                const x = (e.A.x + 2 * e.cx + e.B.x) / 4;
+                const y = (e.A.y + 2 * e.cy + e.B.y) / 4;
+                const t = el("text", {
+                    x, y: y - 4, "text-anchor": "middle",
+                    "font-size": 10.5, fill: "#fff8f0",
+                    "paint-order": "stroke", stroke: "#06100a", "stroke-width": 4,
+                }, labelLayer);
+                t.textContent = e.label;
+            }
             const defaultPanel = panel.innerHTML;
             function release() {
                 edgeEls.forEach((e) => {
@@ -452,17 +468,19 @@
                     e.path.setAttribute("stroke-width", 1.6);
                 });
                 Object.values(nodeEls).forEach((g) => (g.style.opacity = 1));
+                clearLabels();
                 panel.innerHTML = defaultPanel;
             }
             function select(id) {
                 const ins = edgeEls.filter((e) => e.b === id);
                 const outs = edgeEls.filter((e) => e.a === id);
                 const near = new Set([id]);
+                clearLabels();
                 edgeEls.forEach((e) => {
                     const touch = e.a === id || e.b === id;
                     e.path.setAttribute("stroke-opacity", touch ? 0.95 : 0.05);
                     e.path.setAttribute("stroke-width", touch ? 2.2 : 1);
-                    if (touch) { near.add(e.a); near.add(e.b); }
+                    if (touch) { near.add(e.a); near.add(e.b); labelEdge(e); }
                 });
                 Object.entries(nodeEls).forEach(([nid, g]) => {
                     g.style.opacity = near.has(nid) ? 1 : 0.22;

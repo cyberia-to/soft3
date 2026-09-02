@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>soft3 — the scheme</title>
+        <meta
+            name="description"
+            content="soft3 in one glance: a closed cybernetic loop on a proof floor — say, sign, link, prove, focus, act, and the measurement becomes the next word"
+        />
+        <meta name="theme-color" content="#08140c" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
+            rel="icon"
+        />
+        <style>
+            :root {
+                --cream: #fff8f0;
+                --mint: #7dffc4;
+            }
+            * { box-sizing: border-box; }
+            body {
+                margin: 0;
+                background: #06100a;
+                color: var(--cream);
+                font-family: Play, system-ui, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            header {
+                width: 100%;
+                max-width: 1080px;
+                display: flex;
+                align-items: baseline;
+                gap: 1rem;
+                padding: 1.1rem 1.4rem 0;
+                flex-wrap: wrap;
+            }
+            header a { color: var(--mint); text-decoration: none; }
+            header a:hover { text-decoration: underline; }
+            h1 {
+                margin: 0;
+                font-size: 1rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+            h1 em { color: var(--mint); font-style: normal; }
+            .sub { font-size: 0.72rem; color: rgba(255, 248, 240, 0.6); }
+            svg {
+                width: min(96vw, 1040px);
+                height: auto;
+                display: block;
+            }
+            .foot {
+                padding: 0 1.4rem 1.4rem;
+                font-size: 0.68rem;
+                color: rgba(255, 248, 240, 0.5);
+                text-align: center;
+                max-width: 46rem;
+                line-height: 1.5;
+            }
+            .foot a { color: var(--mint); }
+            text { font-family: Play, system-ui, sans-serif; }
+            .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1><a href="/">soft3</a> · the <em>scheme</em></h1>
+            <span class="sub">
+                one glance: the loop is closed, and it stands on proof —
+                the parts: <a href="/chart/">/chart</a>
+            </span>
+        </header>
+
+        <!-- ═══ the principled scheme ═══════════════════════════════════
+             a closed cybernetic loop of six verbs, wearing the six upper
+             flag colours; the seventh — form, green — is the floor it all
+             stands on. the trinity turns in the centre. the arc that closes
+             the loop (ACT → SAY) is the whole point: what the mind does is
+             measured back into what it next says. -->
+        <svg viewBox="0 0 1040 900" role="img"
+             aria-label="soft3: a closed loop — say, sign, link, prove, focus, act — on a floor of one field, with cyb, cyber and cyberia turning in the centre">
+            <defs>
+                <marker id="arw" viewBox="0 0 10 10" refX="8.4" refY="5"
+                        markerWidth="6.5" markerHeight="6.5" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#fff8f0"/>
+                </marker>
+                <marker id="arw-loop" viewBox="0 0 10 10" refX="8.4" refY="5"
+                        markerWidth="7.5" markerHeight="7.5" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7dffc4"/>
+                </marker>
+            </defs>
+
+            <!-- the loop: six arcs, cream; the closing arc mint and loud -->
+            <g fill="none" stroke-linecap="round">
+                <path d="M 603.4 153.2 A 270 270 0 0 1 700.7 209.4" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 784.1 353.9 A 270 270 0 0 1 784.1 466.1" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 700.7 610.6 A 270 270 0 0 1 603.4 666.8" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 436.6 666.8 A 270 270 0 0 1 339.3 610.6" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 255.9 466.1 A 270 270 0 0 1 255.9 353.9" stroke="rgba(255,248,240,0.75)" stroke-width="3" marker-end="url(#arw)"/>
+                <path d="M 339.3 209.4 A 270 270 0 0 1 436.6 153.2" stroke="#7dffc4" stroke-width="4.5" marker-end="url(#arw-loop)"/>
+            </g>
+
+            <!-- what travels each arc -->
+            <g class="mono" font-size="12.5" fill="rgba(255,248,240,0.66)" text-anchor="middle">
+                <text x="685.0" y="124.2">the sentence</text>
+                <text x="840.0" y="410.0">the signal</text>
+                <text x="685.0" y="695.8">the state</text>
+                <text x="520.0" y="746.0">the proofs</text>
+                <text x="206.0" y="402.0">the rank</text>
+                <text x="352" y="112" fill="#7dffc4" font-size="13.5" font-weight="700">the measurement</text>
+                <text x="352" y="129" fill="#7dffc4">becomes the next word</text>
+            </g>
+
+            <!-- six stations, clockwise from the top: the flag's upper six -->
+            <!-- SAY · word · (520,140) -->
+            <g text-anchor="middle">
+                <rect x="440" y="101" width="160" height="78" rx="16" fill="#fe0000"/>
+                <text x="520" y="134" font-size="24" font-weight="700" fill="#fff8f0">SAY</text>
+                <text x="520" y="156" font-size="11.5" fill="rgba(255,248,240,0.85)">a thought becomes a sentence</text>
+                <text x="520" y="170" font-size="9.5" fill="rgba(255,248,240,0.6)" class="mono">word — human or machine</text>
+            </g>
+            <!-- SIGN · space · (753,275) -->
+            <g text-anchor="middle">
+                <rect x="663" y="236" width="180" height="78" rx="16" fill="#1700fe"/>
+                <text x="753" y="269" font-size="24" font-weight="700" fill="#fff8f0">SIGN</text>
+                <text x="753" y="291" font-size="11.5" fill="rgba(255,248,240,0.85)">a neuron seals it,</text>
+                <text x="753" y="305" font-size="9.5" fill="rgba(255,248,240,0.6)" class="mono">space — the wire carries it</text>
+            </g>
+            <!-- LINK · mass · (753,545) -->
+            <g text-anchor="middle">
+                <rect x="663" y="506" width="180" height="78" rx="16" fill="#00b4ff"/>
+                <text x="753" y="539" font-size="24" font-weight="700" fill="#0a120e">LINK</text>
+                <text x="753" y="561" font-size="11.5" fill="rgba(10,18,14,0.85)">the graph grows</text>
+                <text x="753" y="575" font-size="9.5" fill="rgba(10,18,14,0.6)" class="mono">mass — knowledge as matter</text>
+            </g>
+            <!-- PROVE · work · (520,680) -->
+            <g text-anchor="middle">
+                <rect x="405" y="641" width="230" height="78" rx="16" fill="#ff6501"/>
+                <text x="520" y="674" font-size="24" font-weight="700" fill="#0a120e">PROVE</text>
+                <text x="520" y="696" font-size="11.5" fill="rgba(10,18,14,0.85)">executing is proving</text>
+                <text x="520" y="710" font-size="9.5" fill="rgba(10,18,14,0.6)" class="mono">work — ~100 ns verifies all history</text>
+            </g>
+            <!-- FOCUS · life · (286,545) -->
+            <g text-anchor="middle">
+                <rect x="186" y="499" width="200" height="92" rx="16" fill="#6b00fe"/>
+                <text x="286" y="532" font-size="24" font-weight="700" fill="#fff8f0">FOCUS</text>
+                <text x="286" y="554" font-size="11.5" fill="rgba(255,248,240,0.85)">the graph converges to one φ*</text>
+                <text x="286" y="568" font-size="11.5" fill="rgba(255,248,240,0.85)">agreement, without voting</text>
+                <text x="286" y="582" font-size="9.5" fill="rgba(255,248,240,0.6)" class="mono">life — final past τ</text>
+            </g>
+            <!-- ACT · play · (286,275) -->
+            <g text-anchor="middle">
+                <rect x="196" y="236" width="180" height="78" rx="16" fill="#ffc501"/>
+                <text x="286" y="269" font-size="24" font-weight="700" fill="#0a120e">ACT</text>
+                <text x="286" y="291" font-size="11.5" fill="rgba(10,18,14,0.85)">bodies embody the focus</text>
+                <text x="286" y="305" font-size="9.5" fill="rgba(10,18,14,0.6)" class="mono">play — every act measured</text>
+            </g>
+
+            <!-- the heart: the trinity the loop turns -->
+            <g text-anchor="middle">
+                <circle cx="520" cy="410" r="112" fill="#7dffc4" fill-opacity="0.06"
+                        stroke="#7dffc4" stroke-opacity="0.4"/>
+                <text x="520" y="386" font-size="15" fill="#7dffc4" letter-spacing="3" font-weight="700">ONE MIND</text>
+                <text x="520" y="414" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyb — the body</text>
+                <text x="520" y="434" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyber — the mind</text>
+                <text x="520" y="454" font-size="13" fill="rgba(255,248,240,0.9)" class="mono">cyberia — the state</text>
+            </g>
+
+            <!-- the floor: form, the seventh colour, under everything -->
+            <g>
+                <rect x="120" y="768" width="800" height="66" rx="14"
+                      fill="#00ff01" fill-opacity="0.13"
+                      stroke="#00ff01" stroke-opacity="0.55"/>
+                <text x="520" y="796" text-anchor="middle" font-size="15" font-weight="700" fill="#00ff01" letter-spacing="2">ONE FIELD</text>
+                <text x="520" y="816" text-anchor="middle" font-size="11.5" fill="rgba(255,248,240,0.75)">form — state, identity, proof and rank are one arithmetic, tuned to the silicon</text>
+                <line x1="440" y1="722" x2="440" y2="768" stroke="#00ff01" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="2 4"/>
+                <line x1="520" y1="722" x2="520" y2="768" stroke="#00ff01" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="2 4"/>
+                <line x1="600" y1="722" x2="600" y2="768" stroke="#00ff01" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="2 4"/>
+            </g>
+
+            <!-- who feeds the loop -->
+            <g class="mono" font-size="12" fill="rgba(255,248,240,0.6)">
+                <text x="520" y="44" text-anchor="middle">humans · agents · sensors</text>
+                <line x1="520" y1="54" x2="520" y2="92" stroke="rgba(255,248,240,0.45)" stroke-width="2" marker-end="url(#arw)"/>
+            </g>
+
+            <!-- the claim, spelled once -->
+            <text x="520" y="868" text-anchor="middle" font-size="13.5" fill="rgba(255,248,240,0.85)">
+                the loop is closed — a complete cybernetic system: say · sign · link · prove · focus · act · measure · say again
+            </text>
+        </svg>
+
+        <p class="foot">
+            six verbs, six colours of the flag; the seventh — green — is the
+            floor. every arc carries something concrete, every station leaves
+            a proof, and the mint arc is the whole point: what the mind does
+            is measured back into what it next says. that is why it is called
+            <b>cyber</b>-anything. the parts behind each verb:
+            <a href="/chart/">the chart</a> · the registry:
+            <a href="https://cyber.page/soft3/status">status</a>
+        </p>
+    </body>
+</html>
