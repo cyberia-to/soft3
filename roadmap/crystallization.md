@@ -24,7 +24,7 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 
 **form is the measure** — hash is the ruler, commitment the gauge, the field ([[strata]]) the unit system. Measurement is in the loop from degree one: the germ wire already hashes every particle with hemera.
 
-**the colours are emotions, not badges.** on [the scheme](https://soft3.org/scheme) the loop wears the flag in the flag's own order, and each colour means what cyberia's colours have always meant — the emotional root of the step: say is **growth** (a thought sprouts), sign is **flow**, link is **depth**, prove is **spirit** (beyond trust), focus is **fire** (one burning point), act is **craft**, measure is **light**. the closing arc runs light-into-growth — the measurement feeds the next word the way a day closes into a leaf. facets classify the parts; colours carry the feeling; neither owns the other. the emotional map itself — still a draft — lives at [[colors of cyberia]].
+**the colours are emotions — by evolution, not by assignment.** on [the scheme](https://soft3.org/scheme) the loop wears the flag in the flag's own order — the visible spectrum bent into a loop — and each colour carries its innate emotion per the evolutionary theory of color perception: anger red, disgust orange, surprise yellow, joy green, interest blue, sadness indigo, fear violet. the emotions belong to the colours, not to the verbs; facets classify the parts; neither owns the other. the closing arc runs yellow into green — the surprise of measurement becomes the joy of the next word. the map is anchored at [[color]], the full framework at [[color-emotion spectrum]], the protocol use at [[emotion]].
 
 ## the four closures
 
