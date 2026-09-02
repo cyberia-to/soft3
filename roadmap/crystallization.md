@@ -35,6 +35,8 @@ soft3 is a closed cybernetic loop of **seven verbs, one per facet** — drawn at
 | 3 · mind | **one** | + tru · foculus | unwired — never deployed |
 | 4 · flesh | **alive** | + mir · prysm · sigma (lytics already lives) | partial |
 
+**the four closures are the same loop, growing.** a closure is not a layer beside the loop — it IS the loop, run with fewer stations. germ is the shortest circulation that still closes: **say → sign → link → measure** — speak, seal, land, hash — exactly the circuit the [[wire]] runs today. proof adds the **prove** station, mind adds **focus**, flesh adds **act**, and at seven stations the loop is whole: four dots, then five, then six, then the whole flag.
+
 **shared → trustless → one → alive.** Closures compose but are not strictly serial: a trusting community runs germ+mind without proof (foculus's fork-choice is pluggable); lytics measures today without finality. The trinity maps: [[cyb]] needs flesh, [[cyber]] needs mind, [[cyberia]] needs trustless *and* one.
 
 ## the census — every component, classified
