@@ -27,6 +27,39 @@ the closing arc is the loop's whole point: the measurement becomes the next link
 
 **verbs outside, components inside.** the scheme names each seat by its verb and lists the components that hold it; the decomposition within a seat — each component's own registry verb and how they interact — opens on click at [soft3.org/scheme](https://soft3.org/scheme). grouping is a debt: if several components share a seat, the seat owes an internal diagram, and now pays it.
 
+## the loop among loops
+
+the four survive every known control doctrine — and each teaches something:
+
+| framework | its steps | in our verbs | the lesson |
+|---|---|---|---|
+| OODA (Boyd) | observe · orient · decide · act | measure · focus · render | orientation dominates and shapes every station — the centre is not a step; and tempo, the loop's speed, is the competitive quantity |
+| PDCA (Deming) | plan · do · check · adjust | focus · render · measure · link | check and adjust are different verbs — a measurement is not yet the next word |
+| MAPE-K (IBM autonomic) | monitor · analyze · plan · execute over shared K | measure · focus · render around the graph | the shared knowledge sits in the middle — our K is the cybergraph and its focus |
+| D3A (targeting) | decide · detect · deliver · assess | focus · measure · render · measure | detection and assessment are two measurements — [[lytics]] measures, [[sigma]] evaluates, one seat, two components |
+| F3EAD (spec-ops) | find · fix · finish · exploit · analyze · disseminate | measure · render · focus · transmit | every distributed doctrine grows an explicit disseminate step — transmit is a motion, not plumbing |
+| SECI (Nonaka) | socialize · externalize · combine · internalize | humans · link · focus · render | externalization — tacit becoming explicit — is exactly "a thought becomes links" |
+| active inference (Friston) | perception ⇄ action around a generative model | measure ⇄ render around focus | perception and action are dual moves against one model — the attractor picture again |
+
+single-agent loops are three motions — OODA collapses to measure → focus → render. a distributed mind adds exactly two: link, because minds are reference inputs and not sensors, and transmit, because one graph must live in many cells. no doctrine demands a fifth.
+
+## the top-verbs test
+
+against the most frequent English verbs the seats hold: say · tell · ask · write → link; see · hear · watch · find → measure; think · know · decide · understand → focus; do · make · build · show · play → render; send · bring · carry · follow → transmit; have · hold · keep → the medium. the big verbs that are not primitive compose from the loop:
+
+| verb | decomposition |
+|---|---|
+| talk | link + transmit + measure — a conversation is two interleaved loops. english hides the channel inside "talk" because air is free; soft3 names it because the channel is the hard part |
+| learn | the loop iterated until the focus shifts — the spiral, not a station |
+| know | hold + prove — a claim kept together with its checking |
+| remember | store + query — [[soft3/bbg\|bbg]] + [[inf]] |
+| teach | render + transmit aimed at another mind's measure |
+| promise | link + encrypt, with the measurement deferred |
+| understand | converge past τ |
+| want | the weights of φ* — the focus is the want-vector |
+
+the sweep surfaces two honest absences, both already named critical in [[status]]: **want** has no component — it lives implicitly in φ* weights and [[tok]] prices (the economics of writing, critical 1) — and **forget** has no verb at all (deletion and liability, critical 4). the registry will one day owe a verb to forgetting.
+
 ## the two guarantees — the medium
 
 not steps but properties of the channel every link enjoys:
