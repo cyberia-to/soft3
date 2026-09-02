@@ -472,13 +472,13 @@
             /* the seven colours are the cyberia flag, exactly — the ring IS
                the flag: same heptagon, same circles, same paint. light discs
                carry dark text, dark discs carry cream. */
-            .tab[data-tab="form"],  .band[data-go="form"]  { --fc: #00ff01; --ft: #0a120e; }
-            .tab[data-tab="mass"],  .band[data-go="mass"]  { --fc: #00b4ff; --ft: #0a120e; }
-            .tab[data-tab="space"], .band[data-go="space"] { --fc: #1700fe; --ft: #fff8f0; }
-            .tab[data-tab="life"],  .band[data-go="life"]  { --fc: #6b00fe; --ft: #fff8f0; }
-            .tab[data-tab="word"],  .band[data-go="word"]  { --fc: #fe0000; --ft: #fff8f0; }
-            .tab[data-tab="work"],  .band[data-go="work"]  { --fc: #ff6501; --ft: #0a120e; }
-            .tab[data-tab="play"],  .band[data-go="play"]  { --fc: #ffc501; --ft: #0a120e; }
+            .tab[data-tab="form"],  .band[data-go="form"]  { --fc: #00ff00; --ft: #0a120e; }
+            .tab[data-tab="mass"],  .band[data-go="mass"]  { --fc: #0000ff; --ft: #0a120e; }
+            .tab[data-tab="space"], .band[data-go="space"] { --fc: #4000ff; --ft: #fff8f0; }
+            .tab[data-tab="life"],  .band[data-go="life"]  { --fc: #8000ff; --ft: #fff8f0; }
+            .tab[data-tab="word"],  .band[data-go="word"]  { --fc: #ff0000; --ft: #fff8f0; }
+            .tab[data-tab="work"],  .band[data-go="work"]  { --fc: #ff8000; --ft: #0a120e; }
+            .tab[data-tab="play"],  .band[data-go="play"]  { --fc: #ffff00; --ft: #0a120e; }
 
             .tab {
                 position: absolute;
@@ -1452,8 +1452,8 @@
             let organ = "form",
                 organHue = 0;
             // offsets chosen so 150 + offset lands on each facet's exact flag
-            // hue: form #00ff01→120, mass #00b4ff→197, space #1700fe→245,
-            // life #6b00fe→265, word #fe0000→0, work #ff6501→24, play #ffc501→46
+            // hue: form #00ff00→120, mass #0000ff→197, space #4000ff→245,
+            // life #8000ff→265, word #ff0000→0, work #ff8000→24, play #ffff00→46
             const hues = {
                 form: -30,
                 mass: 47,
