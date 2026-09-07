@@ -44,7 +44,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[inf]] | query | live | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |  |
 | [[soft3/nox\|nox]] | run | published | [0.1.2](https://github.com/cyberia-to/nox/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof |
-| [[zheng]] | prove | blocked | [0.1.2](https://github.com/cyberia-to/zheng/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash/look opening derivation open |
+| [[zheng]] | prove | published | [0.1.2](https://github.com/cyberia-to/zheng/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash-rate/look bindings closed 2026-09-07 (strictness gates + linkage + zero-error); residual: option-B in-circuit binding |
 | [[glia]] | infer | live | — | — | .model runtime · cond/model |
 | [[eidos]] | certify | blocked | — | — | CIC type-checker · theorem → cyberlink · zheng bridge is a stub |
 | [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
