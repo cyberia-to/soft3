@@ -47,7 +47,7 @@ tracked paths must be valid on NTFS. never use `<>:"/\|?*`, trailing `.` or spac
 
 ## current blockers (do not implement past these)
 
-1. BBG `QueryProof` has no serde — `Commitment`/`Opening` are lens-internal types
+1. ~~BBG `QueryProof` has no serde~~ — RESOLVED 2026-09-07: serde behind a `serde` feature in lens (Commitment/Opening) and bbg (QueryProof), canonical point codec, golden wire fixtures; schema seed at `bbg/docs/api/query-proof-wire.md`
 2. query wire protocol not yet defined (`schema/` is a draft)
 3. zheng accumulator size not yet stabilised (blocks checkpoint format)
 
