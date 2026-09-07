@@ -36,19 +36,67 @@ pub struct Node {
     network: Network,
     genesis_unix: u64,
     graph: Cybergraph,
+    /// The pi ledger: testpussy per neuron, derived deterministically
+    /// from the signal log (replayed at open, applied per signal live).
+    /// Economics per tru/specs/rewards.md §8, chaosnet phase: the subsidy
+    /// envelope runs pro-rata over proven work checkpoints — a link
+    /// zheng -> pussy carries its weight in verified tickets and mints
+    /// weight x SUBSIDY_PER_PROOF to the casting neuron. Transfers ride
+    /// delta_pi: (recipient, amount), debited from the signal's neuron,
+    /// skipped deterministically when funds are short.
+    balances: std::collections::HashMap<NeuronId, u64>,
+}
+
+/// testpussy minted per verified ticket in a work checkpoint. The
+/// bootstrap rate: one proof, one testpussy — matching the declared
+/// rate the body page shows.
+const SUBSIDY_PER_PROOF: u64 = 1;
+
+/// The subsidy anchor particles (labels, hemera-hashed like key32 does).
+fn subsidy_edge() -> (Particle, Particle) {
+    let label = |s: &str| -> Particle {
+        let h = hemera::hash(s.as_bytes());
+        let b = h.as_bytes();
+        let mut out = [0u8; 32];
+        out[..b.len().min(32)].copy_from_slice(&b[..b.len().min(32)]);
+        out
+    };
+    (label("zheng"), label("pussy"))
+}
+
+/// Apply one signal's economics to the ledger. Called in log replay and
+/// on every live signal — one rule, one order, replay-deterministic.
+fn apply_economics(balances: &mut std::collections::HashMap<NeuronId, u64>, sig: &Signal) {
+    let (zheng_p, pussy_p) = subsidy_edge();
+    for l in &sig.links {
+        if l.from == zheng_p && l.to == pussy_p {
+            *balances.entry(sig.neuron).or_insert(0) +=
+                l.amount.saturating_mul(SUBSIDY_PER_PROOF);
+        }
+    }
+    for (to, amount) in &sig.delta_pi {
+        let from_bal = balances.get(&sig.neuron).copied().unwrap_or(0);
+        if from_bal >= *amount {
+            *balances.entry(sig.neuron).or_insert(0) -= amount;
+            *balances.entry(*to).or_insert(0) += amount;
+        }
+        // Short funds: the entry is skipped, deterministically, on every
+        // replay alike. The signal still stands as a record.
+    }
 }
 
 impl Node {
     pub fn open(home: PathBuf, moniker: String) -> std::io::Result<Self> {
         std::fs::create_dir_all(&home)?;
         let genesis_unix = load_or_init_genesis(&home)?;
-        let graph = open_store(&home);
+        let (graph, balances) = open_store(&home);
         Ok(Self {
             home,
             moniker,
             network: Network::SpacePussyTest,
             genesis_unix,
             graph,
+            balances,
         })
     }
 
@@ -113,6 +161,50 @@ impl Node {
         self.graph
             .link(signal.clone())
             .map_err(|e| format!("link rejected: {e:?}"))?;
+        apply_economics(&mut self.balances, &signal);
+        append_frame(&self.home, &encode_signal_frame(&signal));
+        Ok(())
+    }
+
+    /// The balance of one neuron, in the chain's denom.
+    pub fn balance(&self, neuron: &NeuronId) -> u64 {
+        self.balances.get(neuron).copied().unwrap_or(0)
+    }
+
+    /// Total testpussy in circulation (sum of the ledger).
+    pub fn pi_supply(&self) -> u64 {
+        self.balances.values().sum()
+    }
+
+    /// A transfer: `amount` from `from` to `to`, as a delta_pi signal —
+    /// one signal, one block, finality the moment it lands. Refused when
+    /// the funds are short: the LEDGER gates here at the door, so a
+    /// rejected pay never becomes a signal at all.
+    pub fn pay(&mut self, from: &str, to: &str, amount: u64) -> Result<(), String> {
+        let f = key32(from)?;
+        let t = key32(to)?;
+        if amount == 0 {
+            return Err("zero amount".into());
+        }
+        if self.balance(&f) < amount {
+            return Err(format!("insufficient funds: {} < {amount}", self.balance(&f)));
+        }
+        let (step, prev) = next_pos(&self.graph, &f);
+        let signal = Signal {
+            neuron: f,
+            network: SELF_NETWORK,
+            links: vec![],
+            delta_pi: vec![(t, amount)],
+            box_moves: vec![],
+            prev,
+            step,
+            height: 0,
+            proof: None,
+        };
+        self.graph
+            .link(signal.clone())
+            .map_err(|e| format!("pay rejected: {e:?}"))?;
+        apply_economics(&mut self.balances, &signal);
         append_frame(&self.home, &encode_signal_frame(&signal));
         Ok(())
     }
@@ -229,14 +321,16 @@ fn escape_json(s: &str) -> String {
 /// Canon replay: one signal, one block. Every applied signal is followed by
 /// a finalize, so the live order and any replay of the log produce the same
 /// state and the same root — a peer can verify by recomputation.
-fn open_store(home: &Path) -> Cybergraph {
+fn open_store(home: &Path) -> (Cybergraph, std::collections::HashMap<NeuronId, u64>) {
     let mut cg = Cybergraph::new();
+    let mut balances = std::collections::HashMap::new();
     if let Ok(bytes) = std::fs::read(home.join("log")) {
         for frame in decode_events(&bytes) {
             match frame {
                 CyberFrame::Signal(s) => {
-                    if cg.link(s).is_ok() {
+                    if cg.link(s.clone()).is_ok() {
                         cg.bbg.finalize_block();
+                        apply_economics(&mut balances, &s);
                     }
                 }
                 CyberFrame::Intent(i) => {
@@ -245,7 +339,7 @@ fn open_store(home: &Path) -> Cybergraph {
             }
         }
     }
-    cg
+    (cg, balances)
 }
 
 fn append_frame(home: &Path, frame: &[u8]) {
@@ -473,6 +567,35 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
                 ),
             )
         }
+        ("GET", p) if p.starts_with("/balance/") => {
+            let arg = p.trim_start_matches("/balance/").trim_end_matches('/');
+            match key32(arg) {
+                Ok(neuron) => {
+                    let n = node.lock().unwrap();
+                    (
+                        "200 OK",
+                        "text/plain; charset=utf-8",
+                        format!(
+                            "---\nparticle: balance\nneuron: {}\ndenom: {}\nbalance: {}\nheight: {}\nsupply: {}\n---\n",
+                            hex(&neuron),
+                            n.network.denom(),
+                            n.balance(&neuron),
+                            n.height(),
+                            n.pi_supply(),
+                        ),
+                    )
+                }
+                Err(e) => ("400 Bad Request", "text/plain", format!("{e}\n")),
+            }
+        }
+        ("POST", "/v1/pay") | ("POST", "/v1/pay/") => match handle_pay(node, body) {
+            Ok(msg) => ("200 OK", "application/json", msg),
+            Err(e) => (
+                "400 Bad Request",
+                "application/json",
+                format!("{{\"error\":{}}}\n", json_str(&e)),
+            ),
+        },
         ("POST", "/v1/link") | ("POST", "/v1/link/") => match handle_link(node, body) {
             Ok(msg) => ("200 OK", "application/json", msg),
             Err(e) => (
@@ -582,6 +705,82 @@ fn handle_link(node: &Mutex<Node>, body: &[u8]) -> Result<String, String> {
     ))
 }
 
+/// `{"neuron": from, "to": recipient, "amount": N}` — strings are hex32
+/// or labels, like everywhere else on this wire. The pay finalizes as its
+/// own block; the response carries the finality (height, root) and the
+/// sender's remaining balance.
+fn handle_pay(node: &Mutex<Node>, body: &[u8]) -> Result<String, String> {
+    let v: serde_json::Value =
+        serde_json::from_slice(body).map_err(|e| format!("json: {e}"))?;
+    let from = v
+        .get("neuron")
+        .and_then(|x| x.as_str())
+        .ok_or_else(|| "missing neuron".to_string())?;
+    let to = v
+        .get("to")
+        .and_then(|x| x.as_str())
+        .ok_or_else(|| "missing to".to_string())?;
+    let amount = v
+        .get("amount")
+        .and_then(|x| x.as_u64())
+        .ok_or_else(|| "missing amount".to_string())?;
+    let mut n = node.lock().unwrap();
+    n.pay(from, to, amount)?;
+    let (h, root) = n.finalize();
+    let from_key = key32(from)?;
+    Ok(format!(
+        "{{\n  \"ok\": true,\n  \"height\": {h},\n  \"root\": \"{root}\",\n  \"balance\": {}\n}}\n",
+        n.balance(&from_key)
+    ))
+}
+
 fn json_str(s: &str) -> String {
     format!("\"{}\"", escape_json(s))
+}
+
+#[cfg(test)]
+mod pi_tests {
+    use super::*;
+
+    fn tmp_node(tag: &str) -> Node {
+        let home = std::env::temp_dir().join(format!("soft3-pi-{tag}-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&home);
+        Node::open(home, "test".into()).expect("open")
+    }
+
+    /// The whole loop: proven work mints, a pay moves it, short funds are
+    /// refused at the door, and a REOPEN replays the same ledger.
+    #[test]
+    fn subsidy_pay_and_replay() {
+        let mut n = tmp_node("loop");
+        n.link("miner", "zheng", "pussy", "0", 100, 0).expect("checkpoint");
+        n.finalize();
+        let miner = key32("miner").unwrap();
+        let friend = key32("friend").unwrap();
+        assert_eq!(n.balance(&miner), 100 * SUBSIDY_PER_PROOF);
+
+        n.pay("miner", "friend", 40).expect("pay");
+        n.finalize();
+        assert_eq!(n.balance(&miner), 60);
+        assert_eq!(n.balance(&friend), 40);
+        assert_eq!(n.pi_supply(), 100);
+
+        assert!(n.pay("miner", "friend", 1000).is_err(), "short funds must refuse");
+
+        // Replay: a fresh node over the same log derives the same ledger.
+        let home = n.home.clone();
+        drop(n);
+        let n2 = Node::open(home, "test".into()).expect("reopen");
+        assert_eq!(n2.balance(&miner), 60);
+        assert_eq!(n2.balance(&friend), 40);
+    }
+
+    /// An ordinary link (not the subsidy edge) mints nothing.
+    #[test]
+    fn ordinary_links_mint_nothing() {
+        let mut n = tmp_node("plain");
+        n.link("someone", "body", "networks", "0", 5, 0).expect("link");
+        n.finalize();
+        assert_eq!(n.pi_supply(), 0);
+    }
 }
