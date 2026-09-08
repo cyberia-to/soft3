@@ -44,7 +44,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[inf]] | query | live | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |  |
 | [[soft3/nox\|nox]] | run | live | [0.2.0](https://github.com/cyberia-to/nox/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof · executes trident programs via joy |
-| [[zheng]] | prove | live | [0.2.0](https://github.com/cyberia-to/zheng/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash-rate/look bindings closed 2026-09-07 (strictness gates + linkage + zero-error); residual: option-B in-circuit binding |
+| [[zheng]] | prove | live | [0.2.1](https://github.com/cyberia-to/zheng/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash-rate/look bindings closed 2026-09-07 (strictness gates + linkage + zero-error); residual: option-B in-circuit binding |
 | [[glia]] | infer | live | — | — | .model runtime · cond/model |
 | [[eidos]] | certify | blocked | — | — | CIC type-checker · theorem → cyberlink · zheng bridge is a stub |
 | [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
@@ -61,7 +61,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[warriors/erga|erga]] | mine | the Autolykos warrior — honeycrisp's first paying customer |
 | [[optica]] | publish | the graph, rendered — cyber.page and every subgraph site |
 | [[Signal Studio|studio]] | sign | hemera particles · mudra neurons · ADR-036 signals |
-| [[joy]] | prove | the cyber warrior — runs, proves, verifies trident programs on nox; `cargo install cyber-joy` ([0.2.1](https://github.com/cyberia-to/joy/releases/tag/v0.2.1)) |
+| [[joy]] | prove | the cyber warrior — runs, proves, verifies trident programs on nox; `cargo install cyber-joy` ([0.2.2](https://github.com/cyberia-to/joy/releases/tag/v0.2.2)) |
 | [[warriors/zoya|zoya]] · [[warriors/mona|mona]] · [[warriors/xena|xena]] | mine | the other warriors, each a physics question answered |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the layered map and the five architectural gaps live in [[stack-completeness]]; the network-tier borders in [[component-boundaries]].
