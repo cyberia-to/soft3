@@ -21,7 +21,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[lens]] | commit | published | [0.1.3](https://github.com/cyberia-to/lens/releases/tag/v0.1.3) | [0.1.3](https://crates.io/crates/cyber-lens) | 5 PCS backends, one per algebra · serde for Commitment/Opening |
 | [[cybics/mass|mass]] |  |  |  |  |  |
 | [[soft3/cybergraph\|cybergraph]] | link | live | [0.1.1](https://github.com/cyberia-to/cybergraph/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
-| [[soft3/bbg\|bbg]] | store | live | [0.2.0](https://github.com/cyberia-to/bbg/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs · QueryProof serde |
+| [[soft3/bbg\|bbg]] | store | live | [0.2.1](https://github.com/cyberia-to/bbg/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs · QueryProof serde |
 | [[cell]] | hold | spec | — | — | local node · graph slice · signal chain · apply/prove loop · overlaps cyb-core, to converge |
 | [[fs]] | mount | spec | — | — | particles · patches · sync · repo is empty |
 | [[tok]] | pay | published | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation · no live economy yet |
@@ -44,7 +44,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[inf]] | query | live | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |  |
 | [[soft3/nox\|nox]] | run | live | [0.2.0](https://github.com/cyberia-to/nox/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof · executes trident programs via joy |
-| [[zheng]] | prove | live | [0.2.1](https://github.com/cyberia-to/zheng/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · axis/hash-rate/look bindings closed 2026-09-07 (strictness gates + linkage + zero-error); residual: option-B in-circuit binding |
+| [[zheng]] | prove | live | [0.3.1](https://github.com/cyberia-to/zheng/releases/tag/v0.3.1) | [0.3.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · universal step CCS 2026-09-09: any program ≤ 2 accumulator groups, ~1–2 KB proofs, every wire byte verifier-read; residuals: verifier-checked fold (degree ≥ 2 rows), lens Brakedown evaluation binding (lens#3) |
 | [[glia]] | infer | live | — | — | .model runtime · cond/model |
 | [[eidos]] | certify | blocked | — | — | CIC type-checker · theorem → cyberlink · zheng bridge is a stub |
 | [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
@@ -61,7 +61,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[warriors/erga|erga]] | mine | the Autolykos warrior — honeycrisp's first paying customer |
 | [[optica]] | publish | the graph, rendered — cyber.page and every subgraph site |
 | [[Signal Studio|studio]] | sign | hemera particles · mudra neurons · ADR-036 signals |
-| [[joy]] | prove | the cyber warrior — runs, proves, verifies trident programs on nox; `cargo install cyber-joy` ([0.2.2](https://github.com/cyberia-to/joy/releases/tag/v0.2.2)) |
+| [[joy]] | prove | the cyber warrior — runs, proves, verifies trident programs on nox; `cargo install cyber-joy` ([0.3.0](https://github.com/cyberia-to/joy/releases/tag/v0.3.0)) |
 | [[warriors/zoya|zoya]] · [[warriors/mona|mona]] · [[warriors/xena|xena]] | mine | the other warriors, each a physics question answered |
 
 the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the layered map and the five architectural gaps live in [[stack-completeness]]; the network-tier borders in [[component-boundaries]].
