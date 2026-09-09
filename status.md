@@ -44,7 +44,7 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[inf]] | query | live | [0.1.0](https://github.com/cyberia-to/inf/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/inf-cli) | datalog · fixed-point over BBG |
 | [[cybics/work|work]] |  |  |  |  |  |
 | [[soft3/nox\|nox]] | run | live | [0.2.0](https://github.com/cyberia-to/nox/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/cyber-nox) | 18 patterns + jets · unconditional proof · executes trident programs via joy |
-| [[zheng]] | prove | live | [0.3.1](https://github.com/cyberia-to/zheng/releases/tag/v0.3.1) | [0.3.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · universal step CCS 2026-09-09: any program ≤ 2 accumulator groups, ~1–2 KB proofs, every wire byte verifier-read; residuals: verifier-checked fold (degree ≥ 2 rows), lens Brakedown evaluation binding (lens#3) |
+| [[zheng]] | prove | live | [0.3.1](https://github.com/cyberia-to/zheng/releases/tag/v0.3.1) | [0.3.1](https://crates.io/crates/zheng) | [[SuperSpartan]] · Brakedown · [[sumcheck]] · universal step CCS 2026-09-09: any program ≤ 2 accumulator groups, ~1–2 KB proofs, every wire byte verifier-read; residuals: verifier-checked fold (degree ≥ 2 rows), lens Brakedown evaluation binding (lens#6) |
 | [[glia]] | infer | live | — | — | .model runtime · cond/model |
 | [[eidos]] | certify | blocked | — | — | CIC type-checker · theorem → cyberlink · zheng bridge is a stub |
 | [[wysm]] | sandbox | dormant | — | — | WASM souls · gas-metered · cond/host · no commits since june |
