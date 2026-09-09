@@ -45,6 +45,12 @@ pub struct Node {
     /// delta_pi: (recipient, amount), debited from the signal's neuron,
     /// skipped deterministically when funds are short.
     balances: std::collections::HashMap<NeuronId, u64>,
+    /// The proof weight of the signal about to finalize, if it carries a
+    /// zheng -> pussy checkpoint link — set by `link`/`pay`, consumed and
+    /// zeroed by the very next `finalize()`. Both calls happen back to
+    /// back under the same lock in every HTTP handler, so there is never
+    /// a second signal in between to see a stale value.
+    pending_weight: u64,
 }
 
 /// testpussy minted per verified ticket in a work checkpoint. The
@@ -62,6 +68,18 @@ fn subsidy_edge() -> (Particle, Particle) {
         out
     };
     (label("zheng"), label("pussy"))
+}
+
+/// The proof weight a signal carries, if it is a zheng -> pussy checkpoint
+/// link — the same amount [`apply_economics`] mints from. Zero for every
+/// other kind of signal (a plain cyberlink, a pay).
+fn checkpoint_weight(sig: &Signal) -> u64 {
+    let (zheng_p, pussy_p) = subsidy_edge();
+    sig.links
+        .iter()
+        .find(|l| l.from == zheng_p && l.to == pussy_p)
+        .map(|l| l.amount)
+        .unwrap_or(0)
 }
 
 /// Apply one signal's economics to the ledger. Called in log replay and
@@ -97,6 +115,7 @@ impl Node {
             genesis_unix,
             graph,
             balances,
+            pending_weight: 0,
         })
     }
 
@@ -162,6 +181,7 @@ impl Node {
             .link(signal.clone())
             .map_err(|e| format!("link rejected: {e:?}"))?;
         apply_economics(&mut self.balances, &signal);
+        self.pending_weight = checkpoint_weight(&signal);
         append_frame(&self.home, &encode_signal_frame(&signal));
         Ok(())
     }
@@ -205,13 +225,83 @@ impl Node {
             .link(signal.clone())
             .map_err(|e| format!("pay rejected: {e:?}"))?;
         apply_economics(&mut self.balances, &signal);
+        self.pending_weight = 0;
         append_frame(&self.home, &encode_signal_frame(&signal));
         Ok(())
     }
 
     pub fn finalize(&mut self) -> (u64, String) {
         self.graph.bbg.finalize_block();
+        self.record_block();
         (self.height(), self.root_hex())
+    }
+
+    /// Append this block's observability line — local bookkeeping only,
+    /// never part of the signal/wire format. `oracle` (the explorer page)
+    /// is the only reader: height, wall-clock time, running pi supply, and
+    /// the proof weight this block carried (0 when it wasn't a zheng ->
+    /// pussy checkpoint). Covers the JSON bridge (`link`/`pay`) — the
+    /// native frame path (`/v1/frame`) finalizes without going through
+    /// economics at all today, so it has nothing to record here either.
+    fn record_block(&mut self) {
+        let line = format!(
+            "{} {} {} {}\n",
+            self.height(),
+            now_unix(),
+            self.pi_supply(),
+            self.pending_weight,
+        );
+        self.pending_weight = 0;
+        if let Ok(mut f) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(self.home.join("block_meta"))
+        {
+            let _ = f.write_all(line.as_bytes());
+        }
+    }
+
+    /// The block-observability sidecar, one line per height starting from
+    /// whenever this feature first ran — blocks finalized before that
+    /// carry no time/supply/weight record, honestly: nothing was ever
+    /// measured for them, so nothing is invented now.
+    fn block_meta(&self) -> Vec<(u64, u64, u64, u64)> {
+        let Ok(text) = std::fs::read_to_string(self.home.join("block_meta")) else {
+            return Vec::new();
+        };
+        text.lines()
+            .filter_map(|l| {
+                let mut it = l.split_whitespace();
+                let height: u64 = it.next()?.parse().ok()?;
+                let time: u64 = it.next()?.parse().ok()?;
+                let supply: u64 = it.next()?.parse().ok()?;
+                let weight: u64 = it.next()?.parse().ok()?;
+                Some((height, time, supply, weight))
+            })
+            .collect()
+    }
+
+    /// This block's own signal — the transactions an explorer shows for
+    /// it. Replays the log exactly like [`open_store`], counting only the
+    /// signals that actually finalized (native-frame Intents never do),
+    /// and stops at the requested height. O(height) per call: fine at
+    /// this chain's size, and correct is worth more than fast here.
+    fn block_signal(&self, height: u64) -> Option<Signal> {
+        let bytes = std::fs::read(self.home.join("log")).ok()?;
+        let mut cg = Cybergraph::new();
+        let mut seen = 0u64;
+        for frame in decode_events(&bytes) {
+            if let CyberFrame::Signal(s) = frame {
+                if cg.link(s.clone()).is_ok() {
+                    cg.bbg.finalize_block();
+                    seen += 1;
+                    if seen == height {
+                        return Some(s);
+                    }
+                }
+            }
+        }
+        None
     }
 
     /// The node's status as a cybermark particle — frontmatter plus one body
@@ -586,6 +676,66 @@ fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> std::io::Result<(
                     )
                 }
                 Err(e) => ("400 Bad Request", "text/plain", format!("{e}\n")),
+            }
+        }
+        // ── oracle (block explorer) ─────────────────────────────────────
+        // `/blocks` lists the observability sidecar (height/time/supply/
+        // proof-weight), newest first; `/block/<height>` decodes that
+        // one height's own signal for its transactions. Both are local
+        // bookkeeping reads — neither touches consensus state.
+        ("GET", p) if p == "/blocks" || p == "/blocks/" => {
+            let n = node.lock().unwrap();
+            let qp = |key: &str| -> Option<u64> {
+                query
+                    .split('&')
+                    .find_map(|kv| kv.strip_prefix(key))
+                    .and_then(|v| v.parse().ok())
+            };
+            let limit = qp("limit=").unwrap_or(50).clamp(1, 500) as usize;
+            let before = qp("before=");
+            let mut rows = n.block_meta();
+            rows.sort_by(|a, b| b.0.cmp(&a.0));
+            if let Some(before) = before {
+                rows.retain(|(h, ..)| *h < before);
+            }
+            let mut out = String::from("---\nparticle: blocks\n---\n");
+            for (h, t, supply, weight) in rows.into_iter().take(limit) {
+                out.push_str(&format!("{h} {t} {supply} {weight}\n"));
+            }
+            ("200 OK", "text/plain; charset=utf-8", out)
+        }
+        ("GET", p) if p.starts_with("/block/") => {
+            let arg = p.trim_start_matches("/block/").trim_end_matches('/');
+            match arg.parse::<u64>() {
+                Ok(height) => {
+                    let n = node.lock().unwrap();
+                    let meta = n.block_meta().into_iter().find(|(h, ..)| *h == height);
+                    match n.block_signal(height) {
+                        Some(sig) => {
+                            let (_, time, supply, weight) = meta.unwrap_or((height, 0, 0, 0));
+                            let mut out = format!(
+                                "---\nparticle: block\nheight: {height}\ntime: {time}\nsupply: {supply}\nweight: {weight}\nneuron: {}\n---\n",
+                                hex(&sig.neuron),
+                            );
+                            for l in &sig.links {
+                                out.push_str(&format!(
+                                    "link {} -> {} amount {} valence {}\n",
+                                    hex(&l.from), hex(&l.to), l.amount, l.valence
+                                ));
+                            }
+                            for (to, amount) in &sig.delta_pi {
+                                out.push_str(&format!("pay -> {} amount {}\n", hex(to), amount));
+                            }
+                            ("200 OK", "text/plain; charset=utf-8", out)
+                        }
+                        None => (
+                            "404 Not Found",
+                            "text/plain",
+                            format!("no block at height {height}\n"),
+                        ),
+                    }
+                }
+                Err(_) => ("400 Bad Request", "text/plain", "bad height\n".into()),
             }
         }
         ("POST", "/v1/pay") | ("POST", "/v1/pay/") => match handle_pay(node, body) {
