@@ -12,7 +12,7 @@ the canonical vocabulary of the [[soft3]] stack. one name per concept, grouped b
 
 ## execution architecture
 
-Normative definitions and compatibility rules: [warriors, workers and networks](warriors.md).
+Normative definitions and compatibility rules: [execution model](execution-model.md).
 
 - `warrior` — reusable implementation of a VM/OS target family across an open-ended set of compatible network instances.
 - `worker` — running instance of warrior capabilities, with a backend, resource budget and job lifecycle; embedded, isolated or remote.

@@ -6,7 +6,7 @@ soft3 owns foundational stack composition contracts and developer interfaces:
 language libraries, MCP server, CLI and wire format adapters. Component
 algorithms remain in their owning repositories.
 
-`specs/warriors.md` is the normative warrior/worker/network architecture.
+`specs/execution-model.md` is the normative execution architecture.
 A warrior supports a VM/OS family across an open-ended set of compatible
 network instances; workers and hardware backends are independent deployment
 choices. `specs/README.md` indexes contracts. Keep the root README and site

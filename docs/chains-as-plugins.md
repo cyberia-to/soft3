@@ -8,7 +8,7 @@ alias: chain adapters, blockchain as plugin, universal verifying substrate, tran
 ---
 # chains as plugins
 
-The normative composition model is [warriors, workers and networks](../specs/warriors.md).
+The normative composition model is the [execution model](../specs/execution-model.md).
 An OS/protocol adapter can serve any number of compatible network instances;
 genesis and endpoints configure an instance, while worker placement and
 hardware are separate choices. This page explains the substrate/adoption idea.

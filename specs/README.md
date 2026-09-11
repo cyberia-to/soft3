@@ -8,13 +8,13 @@ alias: soft3 specs, stack contracts
 
 # soft3 specifications
 
-Start with [warriors, workers and networks](warriors.md), the foundational
+Start with the [execution model](execution-model.md), the foundational
 execution architecture: reusable VM/OS support, open-ended compatible network
 instances, explicit proof profiles and independently placed workers.
 
 | specification | scope |
 |---|---|
-| [warriors, workers and networks](warriors.md) | normative architecture; implementation coverage is reported separately |
+| [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |
 | [languages](languages.md) | language contracts |

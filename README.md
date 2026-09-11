@@ -10,7 +10,7 @@ soft3 is the substrate for planetary superintelligence: signed staked [[cyberlin
 
 ## architectural foundation
 
-[Warriors, workers and networks — the foundational contract](specs/warriors.md).
+[Execution model — the foundational contract](specs/execution-model.md).
 
 A warrior supports a VM/OS family across an open-ended set of compatible
 networks. Workers instantiate its capabilities inside a node, in a separate

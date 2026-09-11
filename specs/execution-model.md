@@ -1,14 +1,14 @@
 ---
-title: warriors, workers and networks
+title: execution model
 tags: cyber, soft3, spec, foundation, architecture, warrior, worker
 crystal-type: spec
 crystal-domain: cyber
 status: normative
 version: 1
-alias: warrior model, worker model, execution architecture, warrior foundation
+alias: soft3 execution model, execution architecture, warrior model, worker model, warriors workers and networks
 ---
 
-# warriors, workers and networks
+# execution model
 
 One warrior supports a VM/OS family across an open-ended set of compatible
 networks. Any number of workers can instantiate its capabilities. A worker
