@@ -24,3 +24,15 @@ Soft3 owns composition invariants. Trident, warriors, proof systems and node
 products own their specialized interfaces. [Foundations](../docs/README.md)
 explains the substrate; [chains as plugins](../docs/chains-as-plugins.md)
 discusses protocol adapters over it.
+
+## report placement across the stack
+
+Each repository keeps audits, implementation status reports, benchmark results
+and release validation in its root `audit/` directory, grouped by subsystem
+when needed. `specs/` and `reference/` define contracts, invariants, formats and
+acceptance criteria. Mixed documents keep their contract here and move observed
+results into an audit report, linked from the relevant contract or index.
+
+Reports retain their checked revisions, dates, evidence and limitations.
+Relocation updates relative links and graph paths together. A report's results
+describe the recorded check; a directory move does not revalidate them.
