@@ -194,7 +194,6 @@ This specification does not claim that the following gaps are already closed:
 | component | observed surface | remaining alignment |
 |---|---|---|
 | Joy | nox execution, restricted public execution certificates, target description | cyber is currently a stateless nox alias; build/deploy CLI are planned; open network binding and worker scheduling are future work |
-| Trisha | Triton lowering/run/prove/verify and Neptune target/state presets | live deployment is unsupported; shipped presets alone do not establish open network binding |
 | Cyber | local node binary and proposed worker contract | embedded Joy, remote workers, network verification and arbitrary compatible instance configuration remain integration work |
 | Trident | warrior API, target discovery and runtime traits | some prose assumes an external binary and one battlefield; generic network descriptors and operation capabilities require alignment |
 
