@@ -8,6 +8,11 @@ alias: chain adapters, blockchain as plugin, universal verifying substrate, tran
 ---
 # chains as plugins
 
+The normative composition model is [warriors, workers and networks](../specs/warriors.md).
+An OS/protocol adapter can serve any number of compatible network instances;
+genesis and endpoints configure an instance, while worker placement and
+hardware are separate choices. This page explains the substrate/adoption idea.
+
 every blockchain client rebuilds the same seven things. soft3 builds them once, and the chain becomes the small part.
 
 this is the claim, and the second half of this document is the part that is actually hard: a faster transport does not get adopted because it is faster. it gets adopted because someone benefits from it **alone**.

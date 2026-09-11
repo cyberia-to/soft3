@@ -1,10 +1,16 @@
-# soft3 — developer experience layer
+# soft3 — stack contracts and developer interfaces
 
 ## what this repo is
 
-the soft3 SDK: language libraries, MCP server, CLI, and wire format schema for the [[soft3]] stack.
+soft3 owns foundational stack composition contracts and developer interfaces:
+language libraries, MCP server, CLI and wire format adapters. Component
+algorithms remain in their owning repositories.
 
-not the stack itself — a client layer on top of it.
+`specs/warriors.md` is the normative warrior/worker/network architecture.
+A warrior supports a VM/OS family across an open-ended set of compatible
+network instances; workers and hardware backends are independent deployment
+choices. `specs/README.md` indexes contracts. Keep the root README and site
+navigation linked to this foundation when changing architecture.
 
 ## components
 

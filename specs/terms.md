@@ -10,6 +10,17 @@ alias: vocabulary, glossary, soft3 terms, lexicon, definitions
 
 the canonical vocabulary of the [[soft3]] stack. one name per concept, grouped by layer. companion to [[types]] (the type theory) and [[cybergraph]]/specs/model (the graph ontology). where a term has a fuller spec, the definition here is the one-line anchor.
 
+## execution architecture
+
+Normative definitions and compatibility rules: [warriors, workers and networks](warriors.md).
+
+- `warrior` — reusable implementation of a VM/OS target family across an open-ended set of compatible network instances.
+- `worker` — running instance of warrior capabilities, with a backend, resource budget and job lifecycle; embedded, isolated or remote.
+- `backend` — concrete software/hardware implementation of an operation; CPU/GPU selection preserves warrior identity.
+- `proof profile` — exact statement semantics, proof format, verifier parameters, disclosure and supported operation limits.
+- `network instance` — identified OS/protocol instance with genesis/domain and rule versions; endpoints locate it, and roots identify snapshots within it.
+- `node` — network participant owning state, synchronization and admission/finality policy; it may use local or remote workers.
+
 ## substrate — the data model
 
 the value layer every language lowers to. one leaf, one join; everything else is recursion.

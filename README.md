@@ -8,6 +8,18 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
 soft3 is the substrate for planetary superintelligence: signed staked [[cyberlink]]s between [[particles]], authenticated state in [[bbg]], proofs via [[zheng]] / [[nox]]. the product chaosnet is **spacepussy-test**.
 
+## architectural foundation
+
+[Warriors, workers and networks — the foundational contract](specs/warriors.md).
+
+A warrior supports a VM/OS family across an open-ended set of compatible
+networks. Workers instantiate its capabilities inside a node, in a separate
+process, or remotely. CPU/GPU selection changes the backend, not the warrior.
+Machine, environment, proof profile, network instance and executor are
+separate selections with explicit compatibility rules.
+
+[All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md)
+
 ## install
 
 ```bash

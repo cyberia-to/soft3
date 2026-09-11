@@ -8,6 +8,10 @@ alias: soft3 whitepaper, foundational soft3 methods, soft3 foundations
 ---
 # soft3 — foundations
 
+Architecture contract: [warriors, workers and networks](../specs/warriors.md).
+It defines VM/OS ownership, open-ended network instances, proof-profile
+selection and worker placement. The substrate explanation follows below.
+
 soft3 is thirty-one components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
 
 soft3 is **one mind**, reachable in **many languages**, growing into an **open world**.
@@ -262,6 +266,7 @@ building a new component is specializing the same substrate to a new job. it com
 | page | role |
 |------|------|
 | this page | foundations whitepaper — methods under the stack |
+| [warriors, workers and networks](../specs/warriors.md) | normative execution architecture and composition invariants |
 | [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
 
