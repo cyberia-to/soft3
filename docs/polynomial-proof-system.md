@@ -8,6 +8,16 @@ date: 2026-03-25
 ---
 # polynomial proof system
 
+**status: target architecture, not the current lens.** the Merkle-free,
+constant-size claims below (proof size, verification cost, the 240-byte
+checkpoint) describe a recursive Brakedown opening that turned out to have
+a soundness gap and is blocked — see [[recursive-brakedown]] in zheng's
+roadmap/ and `lens` issue #6. the lens in use today is `TensorMerkle`:
+Merkle-authenticated columns, proof size growing with trace size. see
+[[zheng/docs/explanation/performance|performance]] for current numbers.
+the five-operations architecture and the "one Lens" thesis below still
+hold — only the Merkle-free part of the numbers is aspirational.
+
 a proof system where the polynomial is the universal primitive. commit to data, prove computation, identify content, sample availability, fold composition — one operation on one object. no [[hash]] trees. no Merkle paths. no separate identity scheme. the polynomial IS the [[proof]], the [[state model|state]], the identity, and the [[erasure coding|erasure code]].
 
 ## definition
