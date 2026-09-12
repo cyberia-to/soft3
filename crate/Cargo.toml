@@ -28,7 +28,7 @@ stack = ["dep:cyb"]
 
 [dependencies]
 # real node engine
-cybergraph = { version = "0.1.1", path = "../../cybergraph" }
+cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
 hemera = { package = "cyber-hemera", version = "0.3" }
 # optional facade
@@ -36,3 +36,4 @@ cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync
 ureq = { version = "2", default-features = false, features = ["tls"] }
 serde_json = "1"
+serde = { version = "1", features = ["derive"] }
