@@ -269,5 +269,6 @@ building a new component is specializing the same substrate to a new job. it com
 | [execution model](../specs/execution-model.md) | normative execution architecture and composition invariants |
 | [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
+| [[soft3/docs/polynomial-proof-system\|polynomial proof system]] | the technical companion to "one form/one proof" above — the five operations (commit, open, verify, fold, identify), the numbers behind them, and what they make possible |
 
 see [[soft3]] for the component stack and the troika compass.
