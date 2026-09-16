@@ -13,6 +13,13 @@ An OS/protocol adapter can serve any number of compatible network instances;
 genesis and endpoints configure an instance, while worker placement and
 hardware are separate choices. This page explains the substrate/adoption idea.
 
+The adapter scenarios below are design targets. Current migration evidence
+covers the [native signed profile](../specs/signed-native-adapter.md) and the
+[declared consumer profiles](../specs/identity-consumers.md). The generic robot
+foreign attachment is observation-only until that domain has its own implemented
+custody and authorization adapter. Preserved foreign SDK/wallet formats retain
+their original network rules.
+
 every blockchain client rebuilds the same seven things. soft3 builds them once, and the chain becomes the small part.
 
 this is the claim, and the second half of this document is the part that is actually hard: a faster transport does not get adopted because it is faster. it gets adopted because someone benefits from it **alone**.
@@ -43,33 +50,57 @@ cut along the seam. what is genuinely chain-specific stays in an adapter. everyt
 | consensus rules | **adapter** | irreducibly per-chain |
 | state model | **adapter** | UTXO vs accounts vs eUTXO |
 | encoding | **adapter** | RLP vs sigma vs protobuf |
-| identity | [[mudra]] | a key is a key |
-| framing | [[tape]] | marker · sigil · render · varint · payload, over any byte stream |
+| identity | [neuron](../specs/neuron.md), [[mudra]], domain adapter | Native H(compressed pubkey) or explicit foreign domain/address/network; preserve derivation, custody and signing rules |
+| framing | [[tade]] | marker · sigil · render · varint · payload, over any byte stream |
 | content identity | [[hemera]] | Poseidon2, trees, verified streaming |
 | transport | [[radio]] | QUIC · hole-punching · relay · gossip |
-| reconciliation | [[foculus]] | availability, erasure, DAS, CRDT merge, fork-choice |
+| reconciliation | [[foculus]] and the domain adapter | Native availability/order rules; foreign fork-choice, finality and proof validation remain domain-specific |
 | storage | [[soft3/bbg\|bbg]] | one polynomial, ten dims |
 | proving | [[zheng]] | SuperSpartan · Brakedown · folding |
 | query | [[inf]] | datalog with fixed-point over the store |
-| execution | [[soft3/nox\|nox]] · [[wysm]] | metered, deterministic, provable |
+| execution | neuron/Rune/worker and selected [[soft3/nox\|nox]] / [[wysm]] family | Captured subject/network/grant, bounded work and declared evidence profile |
 | acceleration | [[honeycrisp]] | the silicon under all of it |
-| the node itself | [[cell]] | the app *is* the node |
+| graph host | product GraphSession + cybergraph/BBG | Hosts retained multi-neuron graph state; process placement supplies no signing identity |
+
+A robot attaches neurons for different keys, networks and devices. Progs,
+invocations and worker placements identify work under those subjects. Endpoint
+keys authenticate transport; network/genesis pins identify the destination;
+neuron custody authorizes the exact action. A chain UID, address string, contract
+ID or shard ID cannot be cast into a native NeuronId to manufacture authority.
 
 the test of the claim is a ratio: the adapter should be thousands of lines, the substrate tens of thousands. if the adapter grows to match the substrate, the seam was cut in the wrong place.
 
 this is the move LLVM made for compilers and VFS made for filesystems. neither invented a language or a disk format. both made the *next* one cheap.
 
-## what falls out for free
+## what an adapter must establish
 
-once a chain is an adapter over the substrate, four things arrive that nobody built for that chain:
+The substrate provides reusable mechanisms for four capabilities. Each chain
+adapter must implement and test the binding from those mechanisms to its own
+state and consensus rules:
 
-**provable reads.** state roots already exist — ethereum commits an MPT root, ergo commits an AVL+ root. that is the hard prerequisite, and it is already in consensus. [[inf]] answers a datalog query *with a proof against that root*. today the equivalent is an explorer or an indexer, and both are trusted. a query that carries its own proof is a different category of thing, not a better version of the same thing.
+**Provable reads.** Ethereum's MPT and Ergo's AVL+ roots belong to their native
+commitment schemes. An adapter must authenticate the selected root and verify
+the mapping from the queried data to that root. Indexing it in BBG or returning
+an inf relation alone does not supply that proof. The current neuron runtime
+query projection explicitly reports local, unproved data.
 
-**a light client that is not a committee.** [[zheng]] folds header transitions: each block folds into an accumulator, history is never re-proved. the trust root moves from "512 validators signed" to "this proof verifies".
+**Light verification.** A folded header profile must express the foreign
+transition/finality rules, trusted starting point, coverage and verifier
+parameters. Folding compresses the evidence for that statement; the original
+chain's authority and trust assumptions remain part of the statement.
 
-**one identity, one UI.** [[mudra]] for keys, [[cyb]] for the surface. a wallet for a new chain becomes a manifest, not a product.
+**One robot, several neurons.** Cyb provides one surface over explicitly attached
+native and foreign identities. Mudra and domain adapters retain the proper keys,
+addresses and message bytes. A manifest can select a supported adapter and
+network; it cannot create the missing verifier, custody or spending authority.
 
-**bridges as queries, not committees.** this is the sharpest consequence. if chain A's state and chain B's state are both particles in one graph, each proven against its own root, then a bridge is a *query over that graph*. the committee exists today only because the two states live in incompatible worlds and someone has to swear across the gap. put both in one verified graph and there is no gap to swear across.
+**Cross-domain conditions.** A query can read authenticated state from two
+domains. Settlement still needs each home ledger's issuer/spending rules,
+freshness/finality assumptions, expiry and correlated receipts. The
+[domain ladder](../../cyber/specs/domain-ladder.md) and
+[3C contract](../../cyber/3c.md) preserve these obligations. Content IDs and shared
+storage make facts referenceable; they do not execute a transfer or waive a
+foreign chain's consensus rules.
 
 ## the transport question
 
@@ -113,7 +144,11 @@ the blockchain analogue already exists: devp2p **negotiates capabilities**. a no
 
 **3 — the sidecar.** do not modify the node at all. run the relay beside an unmodified geth or ergo node and attach over its normal P2P port. the node stays exactly as its operator installed it; it simply starts receiving blocks earlier, because the sidecar has a fast backchannel to other sidecars.
 
-this pattern is not speculative — it is a deployed industry. FIBRE and bloXroute exist because miners and validators pay real money for a hundred milliseconds, since latency is orphan risk and MEV. the difference is what you have to trust: those relays are trusted intermediaries. a relay carrying [[hemera]]-verified content is not trusted at all, because every chunk proves itself.
+FIBRE and bloXroute are the historical industry examples motivating the sidecar
+proposal. A soft3 relay carrying hemera-verified content can verify each chunk
+against an expected content root. The adapter still authenticates that root and
+checks protocol validity, freshness and availability; a valid content hash alone
+does not establish any of those properties.
 
 **4 — greenfield.** the surfaces with no incumbent are where the substrate simply *is* the protocol: light clients, proof distribution, the miner↔pool link, mobile. no displacement, no negotiation.
 
@@ -125,7 +160,11 @@ the speed is the smaller half. the structural change is that peers stop matterin
 
 in devp2p you ask a peer for a block and trust it to send the right bytes; you find out at the end. with [[hemera]] verified streaming, verification is **incremental** — a lie is caught at the first bad chunk, not after the download. so you can fetch from anyone, from many at once, in parallel, and stop caring who they are.
 
-that inverts the failure mode. a peer can no longer feed you wrong data. it can only **withhold** — and withholding is precisely what [[foculus]] is built against: erasure coding, data-availability sampling, reconciliation. the residual threat lands exactly on the component that already owns it.
+For a correctly authenticated expected root, content verification detects changed
+bytes. Peers can still withhold data, and an unauthenticated or stale root remains
+an adapter-level failure. Erasure coding, data-availability sampling and
+reconciliation address their declared availability assumptions; they complement
+the domain's validity, coverage and finality checks.
 
 ### the rule that keeps this safe
 
@@ -139,7 +178,7 @@ concretely: keep a mandatory quota of legacy peers, always. treat the overlay as
 
 - **implementing a legacy protocol faithfully is unglamorous and long.** RLPx is an ECIES handshake, frame encryption and snappy; discv5 is its own world. get a detail wrong and you are disconnected or banned. this is months per chain, and no amount of substrate quality removes it.
 - **relays cost money and centralize a little.** hole-punching fails on symmetric NAT, so relays are necessary, and someone runs them.
-- **an open overlay invites sybils.** [[mudra]] gives real identity and the graph gives reputation, but the policy is design work that is not done.
+- **an open overlay invites sybils.** Mudra verifies key claims; a person can hold many keys. Reputation, admission cost and the selected network's Sybil policy remain explicit design and validation work.
 - **fragmentation is a real risk.** if soft3 nodes prefer each other too strongly they drift from the network they are supposed to serve. the legacy quota is the mitigation, and it must be enforced, not advised.
 - **[[zheng]] has not had an adversarial audit.** until it does, proofs are an engineering claim, not a security guarantee.
 
