@@ -122,7 +122,7 @@ all lower to [[nox]] data.
 
 the nineteen repos, each the substrate specialized to one job (verb in parens).
 
-- `strata` (math) · `hemera` (hash) · `lens` (commit) · `trident` (compile) · `nox` (run) · `zheng` (prove) · `cybergraph` (link) · `bbg` (store) · `tru` (converge) · `glia` (infer) · `mir` (render) · `mudra` (encrypt) · `radio` (transmit) · `tape` (frame) · `foculus` (sync + agree) · `soma` (think) · `conformance` (snapshot) · `rune` (eval) · `fs` (mount) · `plumb` (pay).
+- `strata` (math) · `hemera` (hash) · `lens` (commit) · `trident` (compile) · `nox` (run) · `zheng` (prove) · `cybergraph` (link) · `bbg` (store) · `tru` (converge) · `glia` (infer) · `mir` (render) · `mudra` (encrypt) · `radio` (transmit) · `tade` (frame) · `foculus` (sync + agree) · `soma` (think) · `conformance` (snapshot) · `rune` (eval) · `fs` (mount) · `plumb` (pay).
 
 ## naming decisions
 

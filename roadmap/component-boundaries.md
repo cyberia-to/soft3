@@ -8,7 +8,7 @@ status: draft
 
 # component boundaries — the transport, crypto and consensus tier
 
-five repos sit between [[soft3/nox|nox]] execution and the wire: [[hemera]], [[mudra]], [[radio]], [[tape]], [[foculus]]. they grew independently, and the borders blurred — most of the blur is concentrated in one place. this roadmap fixes each component to a single responsibility and records the moves that get there. (the sync repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate, which resolves the sync↔foculus ownership drift this document originally flagged.)
+five repos sit between [[soft3/nox|nox]] execution and the wire: [[hemera]], [[mudra]], [[radio]], [[tade]], [[foculus]]. they grew independently, and the borders blurred — most of the blur is concentrated in one place. this roadmap fixes each component to a single responsibility and records the moves that get there. (the sync repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate, which resolves the sync↔foculus ownership drift this document originally flagged.)
 
 the layer-protocol view lives in [[foculus/specs/structural-sync|structural-sync.md]] (which signal field belongs to which of the verification layers). this document is the orthogonal view: which component owns which mechanism, and where the same mechanism is implemented twice.
 
@@ -20,7 +20,7 @@ the hashing fear is unfounded. there is one hash home — [[hemera]] (Poseidon2 
 
 - `iroh-docs` (range-based set reconciliation) + `iroh-willow` (Willow sync) — these are [[foculus]]'s reconciliation domain.
 - vendored `rustls` + `ring` TLS and `ed25519-dalek` — these are [[mudra]]'s key-agreement and signature domain (and classical, which strains the post-quantum claim).
-- per-protocol postcard / irpc framing — this is [[tape]]'s framing domain.
+- per-protocol postcard / irpc framing — this is [[tade]]'s framing domain.
 - `cyber-bao` verified streaming — a reimplementation of `hemera::stream` (see below).
 
 the remaining duplications sit on the hemera↔radio, hemera↔foculus, and mudra↔foculus seams.
@@ -33,14 +33,14 @@ one responsibility per component. the verb is the whole job.
 |---|---|---|
 | [[hemera]] | content identity and its proof: Poseidon2 sponge, Merkle / NMT / sparse trees, content-defined chunking, and the verified-streaming codec (`stream` / `stream_async` / `async_io`) | nebu (field) |
 | [[mudra]] | confidentiality and key distribution: seal (KEM), stealth (NIKE), veil (FHE), quorum (threshold), the identity definition, and the VDF primitive | hemera (hash), nebu / genies / jali (algebras) |
-| [[tape]] | wire framing: marker + sigil + render + varint + payload, plus the minimal stream-control set | bytes only |
-| [[radio]] | transmit: iroh transport (QUIC, hole-punching, relay, gossip), piping a hemera-encoded verified stream over the wire | hemera (streaming), tape (framing), mudra (transport crypto) |
-| [[foculus]] | the whole reconciliation engine: structural availability and merge (erasure coding / Reed-Solomon, DAS, CRDT reconciliation, layer-2 ordering) *and* the fork-choice that completes the merge on conflict — the τ-threshold rule over φ\*, nullifier double-spend, the epoch beacon. fork-choice is a pluggable strategy, so the availability/merge substrate runs without the tri-kernel for trusted deployments | tru (φ\*, Focus strategy only), hemera (NMT, hash), nebu (RS), mudra (VDF), radio (transport), tape (frames), bbg (state), zheng (proof) |
+| [[tade]] | wire framing: marker + sigil + render + varint + payload, plus the minimal stream-control set | bytes only |
+| [[radio]] | transmit: iroh transport (QUIC, hole-punching, relay, gossip), piping a hemera-encoded verified stream over the wire | hemera (streaming), tade (framing), mudra (transport crypto) |
+| [[foculus]] | the whole reconciliation engine: structural availability and merge (erasure coding / Reed-Solomon, DAS, CRDT reconciliation, layer-2 ordering) *and* the fork-choice that completes the merge on conflict — the τ-threshold rule over φ\*, nullifier double-spend, the epoch beacon. fork-choice is a pluggable strategy, so the availability/merge substrate runs without the tri-kernel for trusted deployments | tru (φ\*, Focus strategy only), hemera (NMT, hash), nebu (RS), mudra (VDF), radio (transport), tade (frames), bbg (state), zheng (proof) |
 
 dependency order is a clean DAG, bottom up:
 
 ```text
-hemera   tape          (leaves)
+hemera   tade          (leaves)
    │       │
  mudra     │
    │       │
@@ -79,7 +79,7 @@ mudra scope creep. `mudra/specs/place.md` (location via RTT and MDS) proves posi
 
 ## hygiene
 
-- tape houses the prysm dialect catalog (`spec/7-catalog.md`, `molecule.rs`); tape already flags it for migration to prysm. tape keeps the framing substrate and the `(*,k)` dialect-declaration mechanism, not any one dialect's schemas. reconcile the spec-versus-impl vocabulary drift (`type`/`size` versus `sigil`/`render`) in the same pass.
+- tade houses the prysm dialect catalog (`spec/7-catalog.md`, `molecule.rs`); tade already flags it for migration to prysm. tade keeps the framing substrate and the `(*,k)` dialect-declaration mechanism, not any one dialect's schemas. reconcile the spec-versus-impl vocabulary drift (`type`/`size` versus `sigil`/`render`) in the same pass.
 - foculus's `store::GSet` is a last-writer-wins set with an `f64` confidence and a clock drift — a float in a field-arithmetic stack. make it a true grow-only set, or update the spec, and remove the float per [[tru/specs/arithmetic|field arithmetic]].
 - retire stale roadmaps that describe a border the code already moved past: `hemera/roadmap/erasure-coding.md`, `mudra/.claude/plans/expand-mudra-scope.md`.
-- write a boundary section into the CLAUDE.md of [[radio]], [[tape]], and [[foculus]] — they have none, which is how the borders drifted in the first place.
+- write a boundary section into the CLAUDE.md of [[radio]], [[tade]], and [[foculus]] — they have none, which is how the borders drifted in the first place.

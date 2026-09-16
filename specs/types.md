@@ -8,7 +8,7 @@ alias: type theory, type mechanisms, typing, refinement types, nominal types, fi
 ---
 # types
 
-how any part of the [[soft3]] stack types its values. one uni-typed grammar at the bottom, every type above it. this is a stack-wide convention, not a component feature: [[nox]], [[inf]], [[trident]], [[rune]], [[cybergraph]], [[tape]] all type the same way, over the same grammar.
+how any part of the [[soft3]] stack types its values. one uni-typed grammar at the bottom, every type above it. this is a stack-wide convention, not a component feature: [[nox]], [[inf]], [[trident]], [[rune]], [[cybergraph]], [[tade]] all type the same way, over the same grammar.
 
 a value can be given a type in exactly five ways. the stack uses two of them, reserves one for substrate invariants, and refuses two. the result is a kernel with no type system at all, and two open type systems living above it for two different jobs.
 
@@ -40,7 +40,7 @@ two dropped, one reserved, two open.
 
 ### dropped — framing
 
-a framing tag makes identity an artifact of how bytes were written rather than what the value is. it conflates serialization with semantics. [[hemera]] already states the principle for hashing: type is "not prepended to the input." framing is refused everywhere except transport length-framing, which is a property of a byte stream (see [[tape]]) and never touches identity or storage.
+a framing tag makes identity an artifact of how bytes were written rather than what the value is. it conflates serialization with semantics. [[hemera]] already states the principle for hashing: type is "not prepended to the input." framing is refused everywhere except transport length-framing, which is a property of a byte stream (see [[tade]]) and never touches identity or storage.
 
 ### dropped — primitive
 

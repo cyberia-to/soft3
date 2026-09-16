@@ -5,18 +5,18 @@ crystal-domain: cyber
 status: implemented
 date: 2026-06-07
 ---
-# Architecture upgrade: cybergraph + sync + tape
+# Architecture upgrade: cybergraph + sync + tade
 
 > Superseded in part: the `sync` repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate. Everywhere below, "sync" (the component) is now the [[foculus]] crate. The architecture this proposal describes still holds; only the component name changed. This document is kept as the implemented record.
 
-Reshape the network layer of the soft3 stack so that cybergraph is a unified link processor with one API, [[foculus]] owns the full structural-sync protocol, tape becomes a first-class stack member for wire framing, and intent is promoted to a first-class verb alongside signal.
+Reshape the network layer of the soft3 stack so that cybergraph is a unified link processor with one API, [[foculus]] owns the full structural-sync protocol, tade becomes a first-class stack member for wire framing, and intent is promoted to a first-class verb alongside signal.
 
 ## Goals
 
 1. One API surface for soma — `declare / submit / subscribe / query` all through cybergraph.
 2. No read/write split across repos.
 3. foculus owns *all* structural-sync mechanics (validity, ordering, availability, local merge) — not just availability.
-4. tape becomes the wire substrate; radio carries tape frames; foculus and cybergraph mint frames in their dialect.
+4. tade becomes the wire substrate; radio carries tade frames; foculus and cybergraph mint frames in their dialect.
 5. intent is recognised everywhere — bbg persists it, foculus validates it, cybergraph exposes `declare()` for it.
 
 ## Final architecture
@@ -34,7 +34,7 @@ Reshape the network layer of the soft3 stack so that cybergraph is a unified lin
                        │               │
                        └──── uses ─────┤
                                        ▼
-                                     tape
+                                     tade
                                     (frame)
 ```
 
@@ -42,7 +42,7 @@ Backend ↔ backend connections (no funnel through cybergraph):
 
 - `foculus ↔ bbg` — foculus reads `BBG_root` and requests Lens openings for completeness verification.
 - `foculus ↔ radio` — foculus chunks signals/intents, hands frames to radio for gossip; radio delivers peer frames to foculus.
-- `radio ↔ tape` — radio carries tape-framed bytes; tape is the codec.
+- `radio ↔ tade` — radio carries tade-framed bytes; tade is the codec.
 
 Forbidden: `bbg ↔ radio` direct (bbg is pure state, never network), `cybergraph ↔ radio` direct (cybergraph only sees validated objects, never raw frames).
 
@@ -70,14 +70,14 @@ trait Sync {
     fn verify_completeness(&self, peer: PeerId, dim: u8) -> Result<(), SyncError>;
 }
 
-// radio (transmit) — bytes via tape frames
+// radio (transmit) — bytes via tade frames
 trait Radio {
     fn gossip(&self, f: TapeFrame);
     fn request(&self, peer: PeerId, f: TapeFrame) -> impl Future<Output = TapeFrame>;
     fn on_frame(&self, handler: impl Fn(TapeFrame));
 }
 
-// tape (frame) — pure codec, no runtime
+// tade (frame) — pure codec, no runtime
 trait Tape {
     fn encode(t: u8, data: &[u8]) -> TapeFrame;
     fn decode(bytes: &[u8]) -> Option<(u8, &[u8], &[u8])>; // (type, data, remainder)
@@ -104,13 +104,13 @@ Add two rows; keep cybergraph at #6. Final ordering:
 | 10 | mir | render | — |
 | 11 | mudra | encrypt | — |
 | 12 | radio | transmit | — |
-| 13 | tape | frame | — |
+| 13 | tade | frame | — |
 | 14 | sync | sync | — |
 | 15 | foculus | agree | — |
 | 16 | soma | think | — |
 | + | rune | eval | — |
 
-Renumbers foculus from 13→15 and soma from 14→16 to slot tape (13) and sync (14) into the network triplet.
+Renumbers foculus from 13→15 and soma from 14→16 to slot tade (13) and sync (14) into the network triplet.
 
 ## subgraphs.toml diff
 
@@ -118,7 +118,7 @@ Renumbers foculus from 13→15 and soma from 14→16 to slot tape (13) and sync 
 # Add under soft3 parent block:
 
 [[subgraph]]
-name = "tape"
+name = "tade"
 parent = "soft3"
 visibility = "private"
 ```
@@ -168,7 +168,7 @@ Commits (atomic):
 | add module | `src/protocol.rs` — top-level `validate_intent`, `validate_signal`, `order_and_chain`, `on_peer_frame` |
 | add module | `src/broadcast.rs` — `broadcast_intent`, `broadcast_signal` via radio |
 | add module | `src/completeness.rs` — `verify_completeness` via bbg Lens openings |
-| update | `Cargo.toml` to depend on bbg, radio, tape |
+| update | `Cargo.toml` to depend on bbg, radio, tade |
 | spec | `specs/protocol.md` explaining how the 5 layers compose |
 
 Commits:
@@ -176,14 +176,14 @@ Commits:
 2. `feat: add broadcast and completeness modules`
 3. `docs: add structural-sync protocol spec`
 
-### tape
+### tade
 
 | change | detail |
 |---|---|
 | add | `Cargo.toml` (if not already a Rust crate — currently has impl/) |
 | reference | from radio's Cargo.toml |
 | spec | `spec/0-overview.md` already exists — add cyber-dialect section pointing at sync's types |
-| nothing destructive | tape already exists and is well-specced |
+| nothing destructive | tade already exists and is well-specced |
 
 Commit: `docs: document cyber dialect type registry (signal, intent, chunk)`
 
@@ -191,11 +191,11 @@ Commit: `docs: document cyber dialect type registry (signal, intent, chunk)`
 
 | change | detail |
 |---|---|
-| add | dependency on tape |
+| add | dependency on tade |
 | add | `on_frame(handler)` API for sync to register a callback |
-| update spec | `specs/` (if exists) — note tape framing on the wire |
+| update spec | `specs/` (if exists) — note tade framing on the wire |
 
-Commit: `feat: integrate tape framing; expose on_frame handler API`
+Commit: `feat: integrate tade framing; expose on_frame handler API`
 
 ### soma
 
@@ -211,21 +211,21 @@ Commit: `docs: update cybergraph interface for declare() and corrected fan-out`
 
 | change | detail |
 |---|---|
-| update | `README.md` stack table — add sync (#14, verb `sync`) and tape (#13, verb `frame`); renumber foculus (15), soma (16) |
-| update | `README.md` diagram showing soma → cybergraph → {bbg, sync, radio → tape} |
-| add | `proposals/cybergraph-sync-tape-architecture.md` (this file) |
+| update | `README.md` stack table — add sync (#14, verb `sync`) and tade (#13, verb `frame`); renumber foculus (15), soma (16) |
+| update | `README.md` diagram showing soma → cybergraph → {bbg, sync, radio → tade} |
+| add | `proposals/cybergraph-sync-tade-architecture.md` (this file) |
 
 Commits:
-1. `docs: add cybergraph-sync-tape architecture proposal`
-2. `docs: update stack table and diagram for sync/tape/soma`
+1. `docs: add cybergraph-sync-tade architecture proposal`
+2. `docs: update stack table and diagram for sync/tade/soma`
 
 ### cyber/subgraphs.toml
 
 | change | detail |
 |---|---|
-| add | `tape` under `soft3` parent |
+| add | `tade` under `soft3` parent |
 
-Commit: `chore: add tape to subgraphs under soft3 parent`
+Commit: `chore: add tade to subgraphs under soft3 parent`
 
 ### inf
 
@@ -242,7 +242,7 @@ Each phase is independent within itself; later phases depend on earlier ones.
 ### Phase 1 — paperwork (no code moves)
 
 1. Commit this proposal to soft3/proposals/
-2. Update subgraphs.toml (add tape)
+2. Update subgraphs.toml (add tade)
 3. Update soft3/README.md (stack table + diagram)
 
 ### Phase 2 — bbg gains intents dimension
@@ -268,10 +268,10 @@ Each phase is independent within itself; later phases depend on earlier ones.
 3. Update integration tests if they reach into chain.rs internals
 4. Update specs and README
 
-### Phase 5 — radio + tape integration
+### Phase 5 — radio + tade integration
 
-1. Radio depends on tape
-2. Sync uses tape encoding/decoding for outbound/inbound frames
+1. Radio depends on tade
+2. Sync uses tade encoding/decoding for outbound/inbound frames
 3. Document the cyber dialect type registry (frame type bytes)
 
 ### Phase 6 — documentation pass
@@ -296,16 +296,16 @@ Each phase is independent within itself; later phases depend on earlier ones.
 |---|---|
 | Phase 3 breaks cybergraph's existing tests | Run the full `stack_*` integration suite after every phase commit |
 | `dim::INTENTS = 13` collides with existing EPHEMERAL slot in bbg backends | This proposal explicitly numbers INTENTS = 13, EPHEMERAL stays at 12, expand arrays to 14 — safe |
-| sync's `on_peer_frame` introduces a new ingress path that wasn't tested | Add a smoke test where a tape frame is decoded into a Signal and ingested |
+| sync's `on_peer_frame` introduces a new ingress path that wasn't tested | Add a smoke test where a tade frame is decoded into a Signal and ingested |
 | Cross-repo coordination (changes land in different repos at different times) | Use the migration sequence above; each phase is atomic per repo; no in-flight cross-repo breakage if order is followed |
 | README and spec drift | Phase 6 explicit documentation pass; CI lint that flags stale "structural-sync" mentions in cybergraph |
 
 ## Acceptance criteria
 
-1. `cargo test` passes across cybergraph, sync, bbg, radio, tape after Phase 5.
+1. `cargo test` passes across cybergraph, sync, bbg, radio, tade after Phase 5.
 2. soma-spec §7 diagram matches the final architecture diagram in this proposal.
-3. `soft3/README.md` stack table contains 17 rows (0–16 + rune), with sync at #14 verb `sync`, tape at #13 verb `frame`.
-4. `subgraphs.toml` contains a `tape` entry under `soft3` parent.
+3. `soft3/README.md` stack table contains 17 rows (0–16 + rune), with sync at #14 verb `sync`, tade at #13 verb `frame`.
+4. `subgraphs.toml` contains a `tade` entry under `soft3` parent.
 5. Cybergraph's `src/` no longer contains chain.rs or vdf.rs; sync's `src/` contains them and exposes `SignalChain`, `VdfProof`, `validate_intent`, `validate_signal`, `order_and_chain`.
 6. Cybergraph's public API has four verbs: `declare`, `submit`, `subscribe`, `query`.
 7. bbg has `dim::INTENTS` and `apply_intent` + `apply_signal_record` methods.
@@ -316,7 +316,7 @@ Each phase is independent within itself; later phases depend on earlier ones.
 - Phase 2 (bbg intents): 2 pomodoros
 - Phase 3 (sync absorbs chain+vdf): 3 pomodoros
 - Phase 4 (cybergraph 4-verb): 3 pomodoros
-- Phase 5 (radio+tape): 2 pomodoros (mostly Cargo wiring)
+- Phase 5 (radio+tade): 2 pomodoros (mostly Cargo wiring)
 - Phase 6 (docs pass): 2 pomodoros
 
 Total: ~13 pomodoros = ~2 sessions of focused work.
