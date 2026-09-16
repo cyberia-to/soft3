@@ -8,6 +8,11 @@ alias: vocabulary migration, terms migration, type cleanup plan
 ---
 # types & terms migration — execution plan
 
+Domain-cell scope is now governed by the
+[neuron + cell convergence plan](neuron-cell-convergence.md). Its identity and
+legacy-state migration is separate from this document's substrate/hash changes.
+The historical audit counts below are not a current workspace inventory.
+
 the stack-wide cleanup of the type design and vocabulary. this is the
 careful execution plan; the *what* lives in four source docs, this is the
 *how* and the *order*. it touches every repo, and a subset of it changes
@@ -62,7 +67,8 @@ first, rebuild downstream — the type rename does most of the work.
 
 ### cell → pair — CONTEXT-DEPENDENT (the careful one)
 
-Rename ONLY the nox substrate pair. Keep every other `cell`.
+For this substrate migration, rename only the nox pair. Other meanings follow
+their own contracts; domain cells are covered by the convergence plan.
 
 RENAME → `pair`:
 - nox: `cell(noun,noun)` in `specs/noun/`, `reduction.md`, `encoding.md`
@@ -73,10 +79,9 @@ RENAME → `pair`:
   docs (~12).
 
 KEEP (different meaning — do NOT touch):
-- cyber `cell` = the hierarchy/shard entity (geographic/semantic/economic/
-  social shard) — ~57 in `hierarchy.md`/`cell.md`/`3c.md`. a first-class
-  domain concept. (renaming the substrate to `pair` actually REMOVES this
-  collision — a win.)
+- cyber hierarchy/shard cells — outside the pair rename. The convergence plan
+  separates graph regions, services, ledgers and acting neurons; it supersedes
+  the former instruction to preserve every domain-cell definition.
 - DAS / erasure / polynomial-grid cells: hemera, bbg, zheng, mir (~25).
 - memory/storage cells: bbg `unimem` (~8).
 - WASM stack `Cell(u64)`: wysm (~40).
@@ -121,7 +126,7 @@ Then do (2) as one coordinated epoch.
 
 ## repos touched
 
-nox, hemera, zheng, bbg, tape, trident, inf, cybergraph, radio, mudra,
+nox, hemera, zheng, bbg, tade, trident, inf, cybergraph, radio, mudra,
 conformance, soft3. (cyber graph docs reference the terms but rebuild
 from the specs.)
 
@@ -163,7 +168,7 @@ In dependency order, rebuild downstream after each:
    identifiers still carrying `noun` (`hash_noun`, `read_hash_noun`, `noun_id`,
    `parse_noun`, `print_noun`, `WireEntry.noun` field) and the `rs/noun/`
    module dir → `rs/data/` (+ `crate::noun::` → `crate::data::`).
-2. consumers of nox types — bbg, cybergraph, zheng, tape, soft3 sdk —
+2. consumers of nox types — bbg, cybergraph, zheng, tade, soft3 sdk —
    absorb the renamed types, rebuild. (pending)
 3. trident: `U32 → Word` surface (`ast/mod.rs:193`, `typecheck/types.rs:13`
    + ~60 `Ty::U32`; leave `cost/scorer.rs const U32`; `Digest` untouched).

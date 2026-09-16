@@ -8,7 +8,13 @@ status: draft
 
 # stack completeness — coverage, gaps, and the deep overlaps
 
-a map of the whole [[soft3]] stack as layers, a verdict on what it covers end to end, and the gaps and overlaps that remain once the new components ([[eidos]], [[honeycrisp]], [[wysm]], [[neural]]) and the cyb-resident pieces ([[cyb/root/ward|ward]], cell) are placed. the network-tier borders are settled separately in [[component-boundaries]]; this document takes the full-stack view.
+A map of component ownership and the remaining integration work. The
+2026-09-13 update reflects the implemented neuron/prog model, shared graph host
+and local ward/vault/Soma profiles. The [execution contract](../specs/execution-model.md)
+defines compatibility and [neuron](../specs/neuron.md) defines subject identity.
+The [implementation ledger](../audit/neuron-cell/implementation.md) carries
+test evidence and pending acceptance gates; architectural coverage alone does
+not establish a release, network deployment or Hermes parity.
 
 ## the layered model
 
@@ -19,10 +25,12 @@ app          cyb (embody)             lytics (measure)
 value        tok (pay)
 cognition    soma (think)
 capability   ward (authorize)
+subject      neuron (act: identity + optional durable progs)
+custody      vault (keep; host-bound secret access)
 present      mir (render world)        prysm (paint UI)
-network      mudra · radio · tape · foculus
+network      mudra · radio · tade · foculus
 dynamics     tru (converge φ*)         foculus (agree)
-graph        cybergraph · bbg · cell · fs
+graph        cybergraph · bbg · fs
 proof        zheng (execution)         eidos (theorem)
 runtime      nox · wysm · glia · wgpu  (the proof-contract ladder)
 language     trident · neural · rune · inf     (+ cybermark, nu host)
@@ -31,40 +39,59 @@ math         strata — nebu 𝔽_p · genies 𝔽_q · jali R_q
 substrate    honeycrisp (accelerate)
 ```
 
-two verbs share a layer when they are orthogonal readings of it, not duplicates: zheng proves execution while eidos certifies theorems; mir paints the spatial world while prysm paints the symbolic surface; tru converges the field while foculus decides finality on it; cyb is the general graph — any particle, any cyberlink, the whole protocol's neuron namespace — while lytics is one domain-scoped subgraph — every visitor a neuron under its own derivation path, every link a page view, nothing else. [[lytics]] runs in production today (cybergraph + bbg + hemera direct, mudra for domain-scoped identity, inf for reports) — the stack's first live proof that the graph + state + identity layers hold real, adversarial-facing traffic, not just tests.
+The rows describe roles; authority, custody and evidence cross several rows.
+Zheng proves a declared execution statement; eidos checks theorem terms; mir
+renders the graph and prysm renders an interface. Tru computes focus while
+foculus owns declared ordering/finality rules. Cyb is the named robot and its
+bodies. Its GraphSession hosts multi-neuron graph state over cybergraph/BBG.
+Lytics is a domain-scoped consumer with its own signed event and analytics
+contract. Its historical deployment is traffic evidence; current replay and
+identity compatibility are recorded in the [consumer audit](../audit/neuron-cell/consumers.md).
 
 ## the proof-contract ladder
 
-the runtime layer is four seats, ordered by how much trust their output carries. this is the spine of the execution model, already specified in [[wysm]]:
+Execution families expose different evidence. The family name alone cannot
+select a proof contract; machine, proof profile, worker and network must match:
 
 | runtime | compiler | what runs | proof contract |
 |---|---|---|---|
-| [[soft3/nox|nox]] | trident | proven .nox programs, jets | unconditional |
-| [[glia]] | tru | .model inference | conditional on model |
-| [[wysm]] | external | conventional WASM souls | conditional on host |
-| wgpu | external | GPU compute shaders | conditional on host |
+| [[soft3/nox|nox]] | trident | .nox programs and supported jets | Declared trace/statement/verifier profile |
+| [[glia]] | model loader | .model inference | Pinned model and host observation; current local profile |
+| [[wysm]] | external | WASM programs | Declared metering/isolation and host evidence |
+| wgpu | external | GPU compute shaders | Declared host result and bounds |
 
-a soul starts in the weakest seat it can (wasm accepts any language that compiles to WebAssembly) and graduates toward nox as its hot loops are lowered through trident LIR. the conditional runtimes do not break provability — each host call returns a noun recorded as a witness in the calling rune program, so the surrounding pure computation stays provable conditional on that witness. trident LIR is the single waist every path funnels through.
+Soul retains policy and configuration. Progs and invocations carry executable
+state and work. The current neuron engine reuses Rune and records correlated
+host observations, reservations and continuations. That durable observation can
+be an input to a later proof, but does not prove the remote effect or model
+execution by itself. Lowering more work through Trident/nox is a separate profile
+implementation, not an automatic consequence of installing a prog.
 
 ## completeness verdict
 
-the stack covers the full arc end to end: silicon → field → identity → language → execution → proof → graph → convergence → consensus → network → render → capability → cognition → value → app. nothing in that chain is missing a home. the three through-lines hold:
+The architecture assigns owners from silicon to application. Its three
+through-lines are design constraints whose concrete profiles require evidence:
 
-- one form — identity, state, data and proof are one multilinear form over one Goldilocks field ([[strata]] / nebu); composition is free because there is nothing to translate.
-- one proof — every computation lowers to nox and is settled by zheng; eidos lifts the same machinery from execution-correctness to theorem-correctness.
-- one focus — the graph settles into one φ\* ([[tru]]), which ranks every particle, drives reward, and is the fork-choice that [[foculus]] finalizes.
+- one form — compatible field and commitment primitives support composition; exact codecs, subject domains and native/foreign wire identities remain explicit.
+- one proof — verified statements name their semantics and verifier; native receipts and trusted host observations keep their declared evidence tier.
+- one focus — tru computes the attention field; network rewards/finality and local execution budget units each retain their own accounting and validation contract.
 
-what completeness analysis added that the prior table omitted: nebu/genies/jali are named as the strata family (the field was load-bearing but invisible); [[inf]] (query) and [[prysm]] (paint) were missing language and present-layer repos; [[honeycrisp]] is the substrate under everything rather than a stage in the chain; the four-runtime ladder makes the execution model legible; and two real stack components were hiding inside cyb — [[cyb/root/ward|ward]] and cell.
+The convergence now has executable owners: neuron for subject/prog lifecycle,
+cyb Host/Registry for binding and custody, Rune/worker for admitted work,
+cybergraph/BBG for history, and Soma for tasks. Identity-only consumers remain
+independent of the runtime. [Ward](../../cyb/specs/runtime-authority.md) and
+[vault](../../cyb/specs/private-vault.md) have local host implementations;
+standalone packaging is a separate question.
 
 ## the gaps
 
-coverage is complete in principle; these are the places where a layer exists in spec but not yet in working code, or where a seam is named but unbuilt.
+The earlier gap list has changed. Current scope and remaining work:
 
-1. capability enforcement is unbuilt. ward is a spec ([[cyb/root/ward]]); the only effect handler in the running system is cyb's `TerminalHost`, which performs `emit` ungated. until ward exists, every runtime touches the world without a permission boundary — the object-capability story is a design, not a control.
+1. Local capability enforcement is implemented: admission/dispatch bind subject, network, revision, grant and worker generation. Publication holds the current authority guard through commit. Broader OS/device/remote adapters still need their own declared permission, fencing, receipt and isolation profiles; a device label alone proves no attestation.
 2. eidos settles nothing yet. its zheng bridge is a stub (`certificate.rs`: `stark_bytes` empty, zheng and bbg crates unlinked). the CIC kernel checks terms, but a checked theorem does not yet become a settled, memoized cyberlink. the theorem-proof half of the proof layer is not closed.
-3. the witness ladder is partial. the proof-contract ladder is specified, but the mechanism that records a glia/wysm/wgpu host call as a witness noun in the calling rune program is not uniformly implemented across the three conditional runtimes. without it, conditional proofs cannot actually compose.
-4. there is no single runtime contract. the four runtimes share a shape — `(subject, event) → (subject, effects)` plus a witness — but no common trait or spec names it. rune orchestrates them ad hoc. a unified runtime contract would let ward gate, and zheng witness, all four the same way.
-5. cell and cyb-core overlap. both assemble signed `Signal`s (cell holds a local graph + chain; cyb-core's `SignalBus` queues them in-process). they should converge into one local-node abstraction rather than two signal builders.
+3. The evidence ladder remains partial. Soma/glia observations are correlated and durable, with actual local model evidence. General proofs of inference or arbitrary host effects need their own witness/verifier integration. Trusted Nu and cooperative GPU execution do not imply hard preemption or remote sandboxing.
+4. The shared runtime contract is implemented for the supported Rune/worker path: bounded admission, per-prog CAS, continuation, children/budgets, current-grant dispatch and unknown-outcome recovery. Additional compatible execution families must satisfy the [execution model](../specs/execution-model.md), rather than add another subject hierarchy or VM.
+5. The original cyb-core `Cell` has become GraphSession; the standalone runtime has moved to neuron. The [convergence plan](neuron-cell-convergence.md) still owns complete workspace acceptance, legacy operator rehearsals and packaging/context evidence. Immutable original `cell/*/1` bytes remain reader provenance. The [Soma audit](../../soma/audit/neuron-composition.md) establishes the current local task profile; full provider/tool/channel parity is separately staged.
 
 ## the deep overlaps
 
@@ -77,15 +104,16 @@ these are places where two components touch the same noun. each is either a clea
 | two render verbs — mir (3D world from the graph) / prysm (UI from a particle dialect) | different input and output: spatial graph viz vs symbolic chunk stream | complement — distinct, name the border so neither grows into the other |
 | three terminal surfaces — rune (provable eval → nox) / neu (neural command-as-sentence) / nu (host OS shell) | provable vs semantic vs host; neu may displace nu over time | clarify — three languages, one prompt; document which is which |
 | the field stack — strata (algebra API) / nebu (portable 𝔽_p, NTT) / acpu (accelerated) | one API, one portable impl, one silicon impl | clean once nebu is named; acpu is the fast path nebu dispatches to |
-| local-state assembly — cell / cyb-core / foculus (local) / cybergraph write-path | several places build and hold signals | converge cell + cyb-core; foculus owns availability, cybergraph the write-path |
-| ward vs rune caps | rune carries `~caps`; ward owns the verbs, policy, and enforcement | clarify — rune transports capability, ward is the gate |
+| local-state assembly — neuron execution / cyb-core / foculus / cybergraph | runtime history and multi-neuron graph hosting were conflated | neuron owns program execution; cybergraph/bbg own graph durability; foculus owns protocol order/finality |
+| ward vs Rune capability values | language values refer to host authority; host retains current grants and custody | Current binding/grant checks at dispatch; an artifact or mutable `~caps` value cannot grant itself authority |
 
 ## closing the gaps
 
-ordered by leverage, the moves that take the stack from complete-in-principle to complete-in-fact:
+Extend the working ownership boundaries with evidence for each added profile:
 
-- define one runtime contract (gap 4) — the trait that nox / wysm / glia / wgpu all satisfy, with the witness shape explicit. this unblocks both ward (one place to gate) and the witness ladder (one place to record).
-- build ward (gap 1) — promote cyb's `TerminalHost` into the runtime-blind effect router, so the conditional runtimes run behind a capability boundary.
-- close the witness ladder (gap 3) — record every conditional host call as a witness noun, so conditional proofs compose.
+- reuse neuron/Rune/worker admission and history when adding another tool or execution family; keep subject/network/budget and current authority explicit (gaps 1 and 4).
+- close the witness ladder (gap 3) — specify what a host observation proves, and implement the additional witness/verifier work needed for stronger claims.
 - link eidos to zheng (gap 2) — fill the certificate stub so a checked theorem settles as a memoized cyberlink.
-- converge cell and cyb-core (gap 5) — one local-node abstraction.
+- finish and audit all gates of the neuron/cell convergence plan (gap 5), with
+  legacy preservation, release source provenance and generated-context checks.
+  Record broader agent parity and remote network work under their own scopes.
