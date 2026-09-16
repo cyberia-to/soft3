@@ -7,27 +7,45 @@ date: 2026-09-16
 ---
 # Vault: secret custody and authorized operations
 
-The owner's direction is explicit: Vault owns seed custody and prevents ordinary
-consumers from extracting it. This proposal develops that direction; concrete
-wire formats, platform profiles and recovery factors are not yet accepted.
-Current implementation observations live in
-[the custody audit](../audit/vault-custody-2026-09-16.md).
+Vault owns typed secrets and their protected use: seeds, private keys, passwords,
+PINs, authentication factors and service credentials. Ordinary consumers request
+operations; they cannot extract a root seed. The neuron's derivation operation is
+`derive_neuron`. These are the owner's directions. This proposal develops them;
+wire formats, platform profiles and recovery factors remain draft.
+
+Composition follows [cyb's anatomy](../../cyb/anatomy.md) and the
+[soft3 execution model](../specs/execution-model.md). Current implementation
+observations live in [the custody audit](../audit/vault-custody-2026-09-16.md);
+the [alignment review](../audit/vault-architecture-alignment-2026-09-16.md)
+records the contracts checked and remaining decisions.
 
 ## Ownership and deployment
 
 | Component | Responsibility |
 |---|---|
-| Vault | Secret generation/import, derivation, custody, protected operations, lock/unlock, backup/recovery and key lifecycle |
+| Vault | Typed secret generation/import, derivation, custody, protected operations, lock/unlock, backup/recovery and lifecycle |
 | Mudra | Crypto algorithms, public verification and profile-specific encodings; secret operations execute inside Vault's boundary |
-| Ward | Permission/policy semantics; their enforcement also runs at Vault's operation boundary |
-| Neuron | Subject/binding references, exact intents, durable execution and operation receipts |
-| BBG storage | Durable private ciphertext records and transactions, through its existing database owner |
-| cyb | Public key/permission status and approved interaction; ordinary UI/agent context never receives root secrets |
+| Soul / Ward | Policy configuration / its single authorization authority, including enforcement at Vault's operation boundary |
+| Neuron | Subject/binding references, exact action intents and execution through existing host ports |
+| Cybergraph / BBG | Canonical history and private application records / their atomic durable storage through the existing database owner |
+| Sigma | Assets and neuron attachments; presents spending and subject selection without holding private keys |
+| Body / workers | Placement, process supervision and resource limits; no ambient access to secrets |
+| Com / cyb | Controlled entry and approval surfaces, scoped metadata and product assembly; ordinary UI/agent context never receives root secrets |
 
 Vault is a reusable component, independent of the GUI and Neuron engine. Its
 crate graph points to crypto/profile code, not to a VM/renderer/inference host.
-Public clients use a small protocol/client package. A dedicated repository/crate
-is the proposed home; Soft3 owns the cross-component contract.
+Public clients use a small protocol/client package; host composition supplies
+authorization and storage ports. Soft3 owns this composition contract. An organ,
+crate, repository and process are different boundaries: this proposal requires
+no new organ or separately distributed binary, and leaves repository packaging
+open. Headless hosts use the same interfaces as cyb.
+
+One Vault can hold many secrets for many neurons and compatible networks.
+`VaultRef` and `SecretRef` identify custody objects, not additional protocol
+subjects. Creating a password entry does not create a neuron. Watch-only
+attachments need no key or unlocked Vault. Secret metadata and even public-key
+associations remain subject to disclosure policy; public-key material is not
+automatically public graph data.
 
 Native deployments isolate custody from application/plugin/agent processes,
 using authenticated bounded IPC and an explicit OS sandbox/privilege profile.
@@ -39,62 +57,130 @@ alone must not be presented as an equivalent hostile-host boundary.
 
 ## Secret classes and public interface
 
-Root seeds, private signing keys, discovery keys and storage/wrapping keys are
-custodial objects with purpose restrictions. Exportable password-manager entries
-are a different class. An imported entry tagged "seed" cannot acquire a generic
-copy/reveal operation through the password UI.
+Each record has a versioned kind/schema, opaque reference, purpose and applicable
+subject/service/network scope, allowed operations, Ward policy reference,
+disclosure rule, custody/recovery profile and lifecycle revision. Payload and
+sensitive metadata are encrypted. `KeyRef` is a restricted kind of `SecretRef`.
+Kind, permission and custody level are independent: a password is not a seed,
+and marking a software-held key non-exportable does not make it hardware-held.
 
-The application interface has no `get_seed`, `get_private_key`, secret-bearing
-serialization, arbitrary derivation callback or unrestricted signing oracle.
-It returns public descriptors, references and policy-approved results:
+| Secret kind | Protected use | Disclosure boundary |
+|---|---|---|
+| Root seed / mnemonic | Generate/import, derive purpose-scoped keys and neurons, sealed backup | No raw read/reveal/copy through application APIs |
+| Private signing / authority key | Authorize an exact action, approved proof or authentication assertion | Public authorization result; private material stays in custody |
+| Discovery / payload / channel / wrapping key | Profile-bound discovery, agreement, open/seal or key wrapping | Only declared results; internal storage keys never serve generic decryption |
+| Password / PIN | Deliver to the bound service/device or use as an external authenticator | Recipient necessarily receives the value; trusted reveal/export requires a separate explicit grant |
+| TOTP / HOTP authenticator | Produce a code under a fixed algorithm/parameter profile | Codes only during normal use; enrollment-seed transfer needs an explicit sealed migration profile |
+| Recovery codes | Select/reserve one code for its bound provider | One authorized code release, with durable use state |
+| API token / service credential | Authenticate through a bound adapter to a declared audience/origin | Delivery to that recipient; no implicit return to an agent/tool context |
+| Passkey credential | Assertion bound to the relying party, challenge and supported profile | Assertion only; portability depends on the credential's custody profile |
+
+"2FA" is a role in an authentication policy, not one storage format: OTP seeds,
+passkeys and recovery codes have different operations and lifecycles. A stored
+service password/PIN is also distinct from a Vault unlock factor. A low-entropy
+PIN is not root-key entropy; its unlock profile must provide enforceable attempt
+limits and resistance to offline guessing. Storing a TOTP seed beside a password
+does not provide two independent factors against compromise of that Vault.
+
+There is no generic secret dump, arbitrary derivation callback or unrestricted
+sign/decrypt oracle. New kinds require a reviewed schema and operation profile;
+unknown kinds fail closed. Retagging a seed as a password cannot enable reveal.
+The interface returns descriptors, references and explicitly permitted results:
 
 ```text
-create/import through trusted Vault ceremony -> KeyRef + public descriptor
-derive_identity(KeyRef, approved derivation profile) -> KeyRef + public identity
+create/import through trusted Vault ceremony -> SecretRef + permitted descriptor
+derive_neuron(KeyRef, derivation_profile, scope, selector, grant, request_id)
+    -> KeyRef + SubjectRef + public descriptor
 authorize_action(KeyRef, canonical intent, grant, request_id) -> authorization
-open_message(KeyRef, bound encrypted message, grant) -> permitted message content
-prove_authority(KeyRef, approved relation, public inputs, grant) -> proof
-backup(VaultRef, recovery policy) -> sealed recovery capsule
+open_message(KeyRef, bound encrypted message, grant, request_id) -> permitted content
+prove_authority(KeyRef, approved relation, public inputs, grant, request_id) -> proof
+otp_code(SecretRef, bound OTP request, grant, request_id) -> code
+deliver_credential(SecretRef, bound destination, grant, request_id) -> delivery receipt
+reveal_entry(SecretRef, trusted output surface, grant, request_id) -> permitted entry
+backup(VaultRef, recovery policy, grant, request_id) -> sealed recovery capsule
 lock / revoke / rotate under their authenticated lifecycle policies
 ```
 
 These signatures are design sketches, not a frozen wire ABI. Public descriptors
-declare actual algorithm, key purpose, custody level and allowed operation set.
-An opaque KeyRef names a key; possession of it grants no authority. Root and
-storage keys are unavailable to general signing/decryption operations. Channel
-and derived secret material stays behind purpose-scoped handles when required
-by the profile. Payload decryption never doubles as opening a vault backup.
+declare actual algorithm, purpose, custody level and allowed operation set.
+Possession of a reference grants no authority. `reveal_entry` is permitted only
+for explicitly revealable kinds under their policy; it cannot reveal seeds or
+private keys. Purpose-scoped handles retain derived secret material. Payload
+decryption never doubles as opening a vault backup. Credential delivery binds
+the authenticated recipient and disclosed fields; redirects or origin changes
+require renewed checks. Its receipt proves no external login succeeded.
+
+`derive_neuron` deterministically resolves key material and its subject under an
+explicit existing profile. Repeating the same root/profile/scope/selector returns
+the same key and subject association. Native profiles return `Native(NeuronId)`;
+a supported foreign profile retains `Foreign(domain, address_bytes)`, never a
+hash or cast invented to fit a native ID. Derivation creates no grant, attachment,
+active selection or ledger record. Sigma/host composition manages attachments.
+Network, derivation domain, endpoint and display format are separate inputs;
+changing an endpoint or worker cannot silently derive a different neuron.
 
 Seed generation, mnemonic parsing and HD derivation move behind this boundary.
 BIP-39/BIP-32 arithmetic may remain a low-level crypto implementation detail;
 application use of `mudra::seed -> SigningKey` and raw-key getters ends. Existing
 Cosmos paths, domain derivations, native IDs and signature bytes stay unchanged.
 Moving custody does not silently introduce a new identity or hash profile.
+Mudra's [programmable authority](../../mudra/specs/identity.md) remains the
+strategic proof-based interface; current signature compatibility and future
+private-proof profiles use the same custody boundary. Rotation cannot preserve
+a key-derived subject ID without a separately specified authority transition.
 
 Trusted import/recovery input goes directly to Vault's controlled entry surface,
 outside generic chat, terminal history, argv/environment and ordinary UI state.
+Com routes an explicit protected-entry mode before capture by history or Soma;
+pattern matching arbitrary chat is not a guarantee of secret interception.
+Revealable passwords/codes use a narrowly authorized output surface, not root-key
+UI state or model context. Clipboard use is a separate disclosure permission.
 Existing external mnemonic copies are a pre-existing exposure, not something
 the import operation can retroactively revoke.
 
 ## Authorization protocol
 
 Vault receives enough canonical intent to reconstruct the exact approved
-statement: subject/key profile, network/genesis, operation/program, payload,
-policy revision, nonce/expiry, requested disclosures and applicable limits.
+statement: secret/purpose, caller, operation, payload, policy revision,
+nonce/expiry, requested disclosures and applicable limits. Neuron actions also
+bind subject/binding revision, key profile, network/genesis and program;
+credential operations bind their service/origin. Local secret management does
+not invent a network or neuron merely to fit the action format.
 A caller-supplied digest plus `approved=true` is insufficient. Profile adapters
 must define which action semantics and transaction fields Vault verifies.
 
-Vault authenticates the caller and checks current Ward policy inside its trust
-boundary. Grants bind caller, key/purpose, network, operations, limits, policy
-generation and lifetime. A caller cannot mint one by filling a JSON object.
+Ward remains the sole permission authority derived from Soul. Vault authenticates
+the caller and enforces that authority at the secret-operation boundary: either
+the shared Ward evaluator runs there, or an authenticated Ward decision binds
+the exact request with a defined freshness/revocation protocol. This is not a
+second grant issuer or an independently edited permission database. Custody
+constraints can further restrict a grant, never widen it. Grants bind caller,
+secret/purpose, applicable network/service, operations, limits, generation and
+lifetime. A caller cannot mint one by filling a JSON object.
+Ward policy revisions, decision credentials and trusted confirmations need the
+selected profile's protection; an authenticated decision from a compromised
+ordinary application does not establish independent user authorization.
 Headless automation uses explicit bounded grants; unattended operation does not
 require broad export permissions or a prompt for every signature.
 
-Grant revocation, quotas and request identity have durable state. A request ID
-binds the complete intent; conflicting reuse is rejected. Reserve permission/
-quota before a protected operation and durably record its outcome before replying.
+Ward owns grant/revocation state; Vault durably tracks protected uses and local
+quota reservations under it. Policy freshness must be established before use;
+offline automation needs an explicitly authorized lease and revocation bound.
+A request ID binds the complete intent; conflicting reuse is rejected. Reserve
+permission/quota before a protected operation and durably record its outcome
+before replying.
 Crash recovery preserves spent/reserved exposure and exact retry meaning. The
 profile defines handling of uncertain hardware/prover completion.
+
+OTP and recovery codes need their own retry rules. TOTP may repeat within a time
+window; local generation cannot promise one-time acceptance at the provider.
+The OTP profile fixes parameters and time/counter authority; an untrusted caller
+cannot choose arbitrary future time steps or rewind a counter.
+HOTP counter reservations are atomic and durable before release; recovery cannot
+silently rewind them. Recovery codes distinguish available, reserved, consumed
+and uncertain use. A timeout or backup restore cannot make a released code unused.
+Concurrent bodies require one authorized writer or a qualified coordination
+profile for counters, use state and quotas; copying encrypted backups is not one.
 
 Signing has an explicit linearization point against revocation. Revocation can
 stop later operations; it cannot retract an already delivered signature. Neuron
@@ -103,6 +189,14 @@ its own current-root, expiry and nonce rules. Vault signing is not a replacement
 for ledger admission or consensus verification.
 
 ## Proofs and private computation
+
+Proved execution uses soft3's five selections: machine, environment, proof,
+network and executor. Custody limits permissible placements and disclosure;
+it is not a sixth identity axis or a new warrior. Reuse the host's Body/worker
+composition and approved proof adapters. One warrior can serve many compatible
+networks and workers; a GPU switch creates neither a warrior nor a neuron.
+Network-specific context remains bound to each job. Local password/OTP use and
+native crypto operations need no VM or proof worker merely to use Vault.
 
 ZK hides a witness from the verifier, not from the prover. A seed-derived private
 witness stays inside the declared custody/prover boundary. General workers,
@@ -131,11 +225,15 @@ and concrete measured parameters; a hardware profile declares its supported key
 and operation types. The only means to unlock a stored seed cannot be that same
 stored seed.
 
-Ciphertext and custody receipts use the existing BBG private storage path through
-its database owner. Vault does not open a competing writer on an exclusively
-owned database. The store receives ciphertext, never plaintext keys. Keep records
-outside public graph publication; a public content hash or lookup pattern may
-also disclose metadata. No new canonical WAL/database is proposed.
+Ciphertext and custody receipts use Cybergraph's private application/history
+ports over the existing BBG database owner. Cybergraph owns history; BBG supplies
+atomic storage and durability, not another policy or history owner. Vault opens
+no competing writer and introduces no canonical WAL/database. The store receives
+ciphertext, never plaintext keys. Private namespaces are not publication grants;
+public hashes, receipts, subject associations and lookup patterns may also leak.
+Bootstrap/open/unlock must work through an authorized local private storage port
+before a signing neuron is available: loading the seed cannot require signing
+with that same locked seed. Public graph admission remains independently gated.
 
 Acknowledged updates require the actual backend durability barrier. Atomic
 record/wrapped-key/generation updates, backups and restoration need crash tests.
@@ -168,14 +266,33 @@ The recovery factor has custody-level authority and needs its own protection.
 An optional raw-mnemonic ceremony would explicitly weaken the strict no-export
 profile and is not enabled by this proposal.
 
+Vault recovery restores secret custody, not the whole robot. Cyb's resurrection
+contract remains name + Soul + Vault recovery material + Log. A seed reconstructs
+only deterministic derivations: imported passwords, OTP enrollments, tokens and
+use counters also require their encrypted records and authenticated freshness.
+The independent recovery factor and capsule locator must survive loss of the
+original device; a credential available only inside that lost Vault cannot
+provide its recovery path. Device-bound keys need provider re-enrollment or an
+explicit alternate authority path.
+
+Mudra's [private recovery](../../mudra/specs/private-recovery.md) still owns
+discovery/coverage and spend-state requirements. Vault retains its purpose-scoped
+keys; Neuron and authorized workers perform the allowed recovery computation.
+Neither a Vault backup nor a derived seed replaces retained payment ciphertexts,
+verified history or available openings. This proposal changes no UTXO/account
+model and promises no faster scan by itself.
+
 ## Cutover and acceptance
 
-1. Freeze threat/custody levels, recovery policy, intent/grant semantics and
-   versioned sealed storage. Implement the service/client boundary with test keys.
+1. Freeze typed record/operation schemas, threat/custody levels, recovery policy,
+   Ward freshness semantics and versioned sealed storage. Implement the
+   service/client boundary with test secrets of every initially supported kind.
 2. Import existing secrets through a bounded migration ceremony. Verify public
    identities and exact derivation/signing vectors, durable reopen and independent
-   recovery before disabling the old readers. Do not automatically delete the
-   user's original recovery material or claim erasure from SSDs/backups.
+   recovery before disabling the old readers. Envelope changes use an explicit
+   versioned migration; existing private record/profile bytes remain readable.
+   Do not automatically delete the user's original recovery material or claim
+   erasure from SSDs/backups.
 3. Replace Neuron KeyVault, cyb identity loading and UI seed-copy paths with
    Vault clients. Missing/locked/corrupt custody fails closed or opens watch-only;
    it never silently creates a replacement identity or uses a fixed test key.
@@ -187,7 +304,10 @@ purpose; altered intent/grant; revoke-vs-sign race; exact/conflicting retries;
 crash at each reservation/persistence/reply boundary; rollback and restore;
 backup loss/corruption; unsupported hardware operations; secret leakage through
 serialization/logs/errors/UI; a malicious proof program trying to reveal its
-witness. Successful restore must reproduce the expected public identity.
+witness. Include secret-kind confusion/relabeling, credential destination changes,
+protected-entry bypass, OTP/counter crashes, recovery-code uncertainty and two
+bodies attempting the same reserved use. Successful restore must reproduce the
+expected subjects and preserve imported records and protected-use state.
 
 Before implementation, settle the first platform's isolation level, the recovery
 factor/capsule format, and which typed operation profiles are allowed initially.

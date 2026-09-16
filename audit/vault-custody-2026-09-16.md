@@ -7,6 +7,8 @@ date: 2026-09-16
 Read-only source inspection supporting the
 [Vault proposal](../proposals/vault-secret-custody.md). No real mnemonic/key file
 was opened, no signing operation was requested, and no custody migration ran.
+The subsequent [architecture alignment review](vault-architecture-alignment-2026-09-16.md)
+records typed-secret and composition changes to the proposal, not runtime fixes.
 
 Observed bases: Mudra `e2d1a63bccd760b96ba55f448ef338b7ab027c37`, Neuron
 `34bbff9dbf36421a45c5c283e6c1336dcafc997a`, cyb
@@ -21,7 +23,7 @@ P13 source for this observed checkout. This is a source review, not fresh testin
 | [Mudra domain](../../mudra/src/domain.rs) | `domain_scalar()` returns a secret scalar; `DomainKey::signing_key()` exposes the private signing object |
 | [Neuron authority](../../neuron/node/src/authority.rs) | KeyVault holds a caller-supplied SigningKey in the host process; SigningVault narrows runtime access but supplies no isolated custody/store |
 | [Neuron CLI](../../neuron/cli/src/main.rs) | `key()` reads a raw 32-byte scalar; `keygen()` writes one to a mode-0600 file and syncs it |
-| [Cyb vault store](../../cyb/shell/src/worlds/vault/store.rs) | XChaCha20-Poly1305 seals entries, using SHA256(domain || BIP39 seed) derived from a separately plaintext mnemonic file; `key()` returns raw key bytes |
+| [Cyb vault store](../../cyb/shell/src/worlds/vault/store.rs) | XChaCha20-Poly1305 seals entries, using SHA256(concat(domain, BIP39 seed)) derived from a separately plaintext mnemonic file; `key()` returns raw key bytes |
 | [Cyb Vault UI](../../cyb/shell/src/worlds/vault/mod.rs) | The root mnemonic is loaded into a String entry in UI state; generic reveal/copy handling includes that entry; TOTP generates codes, not a vault-unlock factor |
 | [Cyb identity](../../cyb/shell/src/worlds/identity.rs) | GUI holds an Arc<SigningKey>; load_or_mint can create a new mnemonic on read failure and has an ultimate fixed-test-vector fallback on derivation/generation failure |
 | [Cyb CLI identity](../../cyb/cli/src/main.rs) | Reads/creates the plaintext mnemonic independently and derives a key outside a custody service |
