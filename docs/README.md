@@ -93,7 +93,7 @@ this looks like bookkeeping; it is the deepest unification in the stack. soft3 h
 - **one field.** every value is an element of the [[Goldilocks field]]. the field is the alphabet, chosen so that proofs, [[FHE]], and secret-sharing all operate inside it — cryptography is intrinsic, and there is no boundary between running a computation and proving it.
 - **one object.** all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree, and cross-index consistency is structural rather than proven: there is one polynomial, so there is nothing to keep in sync.
 - **five algebras.** the one field hosts five algebraic regimes ([[strata]]) — truth, efficiency, encryption, optimization, privacy. a type picks its regime; the substance is the same in all of them, so a value can move between regimes without changing what it is.
-- **particle identity.** a [[particle]]'s name is the [[hemera]] hash of its content, which is itself a polynomial commitment — so content is identity, the same bytes always produce the same address, and the graph needs no registry.
+- **particle identity.** a [[file]]'s particle is the [[hemera]] hash of its content, which is itself a polynomial commitment — so content is identity, the same bytes always produce the same address, and the graph needs no registry.
 
 this is why composition is free: when [[zheng]] hands [[bbg]] a commitment, or [[cybergraph]] hands [[hemera]] some content, they pass the same kind of object. there is nothing to serialize, because there is nothing to translate between. one field, one polynomial; everything else is a view of it.
 

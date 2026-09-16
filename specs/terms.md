@@ -29,13 +29,13 @@ the value layer every language lowers to. one leaf, one join; everything else is
 - `atom` — a leaf: one `field`. the indivisible unit. **8 bytes.**
 - `pair` — two children joined, each an `atom` or a `pair`. the structural constructor. its size is its children's; the smallest pair, two atoms, is **16 bytes**.
 - `data` — an `atom` or a `pair`. any structure, **`8·N` bytes** for `N` leaves. the value. homoiconic: a program, its input, and its result are all data.
-- `particle` — the *global* identity of data: its **32-byte** [[hemera]] hash (itself 4-atom data). content-derived and immutable — the same data always has the same particle, distinct data distinct particles. (within one execution a node also has a *local* identity, its `order` — see *computation*.)
+- `particle` — the identity of a `file`: the **32-byte** [[hemera]] hash of its data (itself 4-atom data), the *global* name a `cyberlink` holds. content-derived and immutable — the same data always has the same particle, distinct data distinct particles. (within one execution a node also has a *local* identity, its `order` — see *computation*.)
 - `link` — two `particles` joined, a `from → to` pair: **64 bytes**. the structural skeleton of a relation (a [[cyberlink]] is built on it — full definition under *graph — tokens and links* below).
-- `file` — a piece of `data` identified by its `particle` and reachable by a `name`. the [[fs]] unit. data carries no label inside it: its identity is its particle (computed from content), its name is assigned separately.
+- `file` — the thing a `particle` names: `file = (particle, data, name, meta)` — a document, an image, a model, a neuron's key, an axon's pair of endpoints. the [[fs]] unit; what a neuron reads, makes, links and pays for. data carries no label inside it: its identity is its particle (computed from content), its name is assigned separately.
 
 the size ladder, counted in 8-byte `field`s — `atom` 8 · `pair` 16 · `particle` 32 · `link` 64. the encoding is **length-discriminated and tag-free**: structure is read from length, and the leaf/node distinction lives in [[hemera]] capacity (a substrate invariant), never in a tag byte inside the data.
 
-note: data is the thing; its `particle` is its identity; a `name` is a separate, mutable label that points to it. every particle is data (a 4-atom one); not all data is a particle.
+note: the file is the thing; its `particle` is its identity, computed from its data; a `name` is a separate, mutable label that points to it. every particle is data (a 4-atom one); not all data is a particle.
 
 ## identity and naming
 

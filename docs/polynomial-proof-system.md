@@ -24,11 +24,11 @@ a proof system where the polynomial is the universal primitive. commit to data, 
 
 a polynomial proof system is a transparent argument of knowledge where:
 
-1. **the witness is a multilinear polynomial.** the [[nox]] execution trace, the [[BBG|state]], the [[particles|content]] — all are multilinear polynomials over the Boolean hypercube $\{0,1\}^k$
+1. **the witness is a multilinear polynomial.** the [[nox]] execution trace, the [[BBG|state]], the [[file|content]] — all are multilinear polynomials over the Boolean hypercube $\{0,1\}^k$
 2. **the commitment is a linear-code encoding.** no hash tree. the prover encodes the polynomial via an expander graph ([[Brakedown]]). binding from one [[hemera]] call. opening from [[recursive brakedown|recursive tensor decomposition]]
 3. **the constraint check is a [[sumcheck]].** the verifier reduces an exponential sum to one evaluation. the prover's table halves each round. total prover work: O(N)
 4. **composition is [[folding]].** multiple proof instances fold into one [[HyperNova]] accumulator with ~30 field operations. verification happens once at the end
-5. **identity is the commitment.** the Lens commitment to content IS the content's identity ([[particles|CID]]). accessing content IS opening the commitment. proving IS committing. one primitive
+5. **identity is the commitment.** the Lens commitment to a file's content IS the file's identity — its [[particle]]. accessing content IS opening the commitment. proving IS committing. one primitive
 
 properties: transparent (no setup), post-quantum (code-based), linear-time prover, logarithmic proof size, Merkle-free, algebraically composable.
 
@@ -152,9 +152,9 @@ this 32 bytes IS:
   the state binding (for authenticated queries)
 ```
 
-accessing byte range [a,b] of a [[particles|particle]] = opening the particle's polynomial at positions [a,b]. the proof is ~75 bytes per position. no download of the full content. no separate verification step.
+accessing byte range [a,b] of a [[file]] = opening the file's polynomial at positions [a,b]. the proof is ~75 bytes per position. no download of the full content. no separate verification step.
 
-this unification means: every content-addressed object in the system — every [[particles|particle]], every formula, every [[signal]] — is simultaneously identifiable, provable, and sampleable through one operation.
+this unification means: every content-addressed object in the system — every [[file]], every formula, every [[signal]] — is simultaneously identifiable, provable, and sampleable through one operation.
 
 ## DAS is native
 
@@ -166,7 +166,7 @@ reshape as $\sqrt{N} \times \sqrt{N}$ bivariate polynomial. the extension to $2\
 
 ## the numbers
 
-for N = 2²⁰ (typical execution trace or large particle):
+for N = 2²⁰ (typical execution trace or large file):
 
 ```
 commit:          O(N) field ops, ~40 ms single core
@@ -232,7 +232,7 @@ cost vs hemera:     11× hash    3× hash      1× hash      0.12× hash
 
 **self-proving computation.** every [[nox]] VM step carries its proof via [[proof-carrying computation|proof-carrying]]. no separate proving phase. no prover infrastructure. the computation IS the proof.
 
-**O(1) content access.** any byte range of any [[particles|particle]] verified by one Lens opening. no download of full content. a phone verifies a 1 GB model's layer 47 weights with a 75-byte proof.
+**O(1) content access.** any byte range of any [[file]] verified by one Lens opening. no download of full content. a phone verifies a 1 GB model's layer 47 weights with a 75-byte proof.
 
 **240-byte chain checkpoint.** the [[universal accumulator]] ([[BBG]] root + [[HyperNova]] folding accumulator + height) proves ALL history. join the network: download 240 bytes, verify in ~0.1 μs (~89 constraints). cheaper than hashing 56 bytes. full confidence from genesis.
 

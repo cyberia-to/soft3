@@ -6,7 +6,7 @@ crystal-domain: cyber
 icon: "👙"
 alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
-soft3 is the substrate for planetary superintelligence: signed staked [[cyberlink]]s between [[particles]], authenticated state in [[bbg]], proofs via [[zheng]] / [[nox]]. the product chaosnet is **spacepussy-test**.
+soft3 is the substrate for planetary superintelligence: signed staked [[cyberlinks]] between [[files]], authenticated state in [[bbg]], proofs via [[zheng]] / [[nox]]. the product chaosnet is **spacepussy-test**.
 
 ## first storage use case: vault
 
