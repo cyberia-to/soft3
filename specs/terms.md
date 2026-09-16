@@ -29,9 +29,9 @@ the value layer every language lowers to. one leaf, one join; everything else is
 - `atom` — a leaf: one `field`. the indivisible unit. **8 bytes.**
 - `pair` — two children joined, each an `atom` or a `pair`. the structural constructor. its size is its children's; the smallest pair, two atoms, is **16 bytes**.
 - `data` — an `atom` or a `pair`. any structure, **`8·N` bytes** for `N` leaves. the value. homoiconic: a program, its input, and its result are all data.
-- `particle` — the identity of a `file`: the **32-byte** [[hemera]] hash of its data (itself 4-atom data), the *global* name a `cyberlink` holds. content-derived and immutable — the same data always has the same particle, distinct data distinct particles. (within one execution a node also has a *local* identity, its `order` — see *computation*.)
+- `particle` — the identity of a `file`: the **32-byte** [[hemera]] hash of its data (itself 4-atom data), the global identity a `cyberlink` holds. content-derived and immutable — the same data always has the same particle, distinct data distinct particles. (within one execution a node also has a *local* identity, its `order` — see *computation*.)
 - `link` — two `particles` joined, a `from → to` pair: **64 bytes**. the structural skeleton of a relation (a [[cyberlink]] is built on it — full definition under *graph — tokens and links* below).
-- `file` — the thing a `particle` names: `file = (particle, data, name, meta)` — a document, an image, a model, a neuron's key, an axon's pair of endpoints. the [[fs]] unit; what a neuron reads, makes, links and pays for. data carries no label inside it: its identity is its particle (computed from content), its name is assigned separately.
+- `file` — the thing a `particle` identifies: `file = (particle, data, name, meta)` — a document, an image, a model, a neuron's key, an axon's pair of endpoints. the [[fs]] unit; what a neuron reads, makes, links and pays for. data carries no label inside it: its identity is its particle (computed from content), its name is assigned separately.
 
 the size ladder, counted in 8-byte `field`s — `atom` 8 · `pair` 16 · `particle` 32 · `link` 64. the encoding is **length-discriminated and tag-free**: structure is read from length, and the leaf/node distinction lives in [[hemera]] capacity (a substrate invariant), never in a tag byte inside the data.
 
@@ -41,7 +41,7 @@ note: the file is the thing; its `particle` is its identity, computed from its d
 
 content-derived identity versus assigned, mutable names — two different things often confused.
 
-- `identity` — a content-derived address: `hemera(content) = particle`. immutable, unique, signatureless (`cybergraph`/specs/identity). a `neuron`'s identity is `hemera(secret)`; a `particle` is `hemera(data)`. distinct content always yields distinct identity.
+- `identity` — a content-derived address: `hemera(content) = particle`. A particle is `hemera(data)`. A neuron's derivation follows its explicit [identity profile](neuron.md): the supported secp256k1 profile uses `hemera(compressed_pubkey)`. A future secret/proof-based profile does not reinterpret existing IDs. An address alone proves no authority.
 - `name` — a mutable label resolved by supersession: the latest `cyberlink` by a `neuron` under a path (`inf`/specs/relations). names point to particles and change over time — move, rename, update are new cyberlinks under the same path. many names may point to one particle; a particle never changes.
 
 ## types — how values are typed
@@ -77,7 +77,7 @@ the cybergraph ontology: two objects, one primitive (see [[cybergraph]]/specs/mo
 
 ## graph — actors and weights
 
-- `neuron` — an identity `card` (id = `hemera(pubkey)`). the actor: signs cyberlinks, runs progs, bears karma and focus. the identity is the wallet.
+- `neuron` — the protocol subject: authors cyberlinks, runs progs, bears karma and focus. Its own `NeuronId` follows the declared [identity profile](neuron.md); keys, programs and workers serve the subject. Runtime execution belongs to the neuron, with no separate cell subject identity.
 - `particle` (knowledge card) — a `card` whose id is `hemera(content)`; accumulates conviction from incoming cyberlinks.
 - `subject` — the `neuron` that asserts (signs) a cyberlink. an actor, itself a particle.
 - `object` — the data a `formula` runs on ([[nox]] term). the acted-upon.
@@ -91,7 +91,7 @@ the cybergraph ontology: two objects, one primitive (see [[cybergraph]]/specs/mo
 
 - `skill` — a composable hook adding behavior to a token (knowledge, identity, conviction, staking, …). skills install into `plumb` slots and compose.
 - `dialect` — the rules that validate a class of cyberlinks. applications are dialects, not contracts; the graph is the state.
-- `prog` — autonomous behavior installed on a neuron: listens for events, reads state, emits cyberlinks. runs in [[rune]] (dynamic) or [[trident]] (provable).
+- `prog` — autonomous behavior installed on a neuron: listens for events, reads state, emits cyberlinks. Runs through a compatible warrior/worker, including [[rune]] and [[trident]]. Installation, task, invocation and checkpoint IDs identify data/work, without another signing identity.
 - `plumb` — the unified validation system: WHO (auth), WHAT (conservation), HOW (hooks). proving ownership of the `from` token is the only authorization.
 - `bbg` — authenticated state: one polynomial, ten dimensions, ~200-byte query proofs.
 
@@ -129,7 +129,7 @@ the nineteen repos, each the substrate specialized to one job (verb in parens).
 resolved this design session:
 
 - `noun → data` — the value-model term. "code is data" is homoiconicity; `data` says it plainly and everyone already knows the word. `data model` over `noun model`.
-- `cell → pair` — the substrate join. `link` stays for relations between `particles`; `cell` stays free for higher-level apps; `pair` is the simple structural word with no clash.
+- `cell → pair` — the substrate join. Domain runtime cells converge into neuron/prog; graph regions are shards, OS declarations are modules, and UI destinations are typed views. Rust, memory, grid, WASM and biological cells retain their own meanings. See [convergence](../roadmap/neuron-cell-convergence.md).
 - `subject` / `object` stay as actor (neuron) and data — not repurposed as the two halves of a `pair`/`link`, to avoid colliding with the graph's `subject = neuron`.
 - `particle`, not `digest`/`Cid`, in the core (mono-hash). `digest` lives only at trident's target boundary.
 </content>
