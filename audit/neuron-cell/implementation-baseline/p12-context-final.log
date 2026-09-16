@@ -1,0 +1,10 @@
+Scanning pages...
+Discovered 0 subgraph repos from frontmatter
+Total files: 180
+Page index: 180 pages, 279 aliases
+Computing gravity and density...
+Packing into 64K token budget [224000 chars]...
+Soul: 3061 chars prepended
+Pinned: 17 pages forced in
+Saved 42/195 pages to /Users/master/cyber/ctx/.ctx-228a3355-c23e-482b-a27e-780400dbc2ad.md — 219.0 KB, ~63982 tokens [21.5% coverage]
+Generated context and provenance: /Users/master/cyber/ctx

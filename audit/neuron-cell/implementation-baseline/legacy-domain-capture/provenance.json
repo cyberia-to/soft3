@@ -1,0 +1,9 @@
+{
+  "repository": "mudra",
+  "revision": "348c46195388ac009667144987511a0e33bdc859",
+  "sha256": {
+    "domain": "adf8bd1bb8de4e87c1b54cd57415c3f4200aa63c3f107a03d48b1a4d98c30fdf",
+    "claim": "c2ed723a8aedb5c2c0fdfec43b2e31d5e9423706361a29d6cd598ad2077d394a",
+    "cosmos": "5fbda6bda203812f27695ae03f586db9c904c2ae94d70da84465d2fb521031d0"
+  }
+}

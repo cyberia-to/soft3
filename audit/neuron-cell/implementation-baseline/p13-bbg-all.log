@@ -1,0 +1,300 @@
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+warning: field `journal_recovery_mode` is never read
+  --> vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+   Compiling cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+   Compiling cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.28s
+     Running unittests src/lib.rs (bbg/rs/target/debug/deps/bbg-f1bc98cc3bc638b8)
+
+running 81 tests
+test query::tests::dim_roundtrip ... ok
+test prune::tests::bounded_candidates_reject_before_collecting_an_extra_entry ... ok
+test prune::tests::high_rank_edge_is_protected ... ok
+test prune::tests::gravity_prunes_fresh_low_density_when_over_budget ... ok
+test prune::tests::refresh_resets_staleness ... ok
+test prune::tests::stale_low_weight_edge_is_pruned ... ok
+test prune::tests::fresh_edge_survives_normal_pruning ... ok
+test query::tests::look_provider_invalid_namespace_returns_none ... ok
+test query::tests::look_provider_neuron_focus_cell_by_index ... ok
+test query::tests::look_provider_missing_returns_none ... ok
+test query::tests::look_provider_balances_returns_none ... ok
+test query::tests::bbg_query_balances_returns_none ... ok
+test stats::tests::different_diameter_changes_commitment ... ok
+test stats::tests::commit_is_deterministic ... ok
+test query::tests::look_provider_reads_cell_by_index ... ok
+test stats::tests::relation_index_constants_cover_all_slots ... ok
+test stats::tests::different_node_count_changes_commitment ... ok
+test stats::tests::serialize_length_is_fixed ... ok
+test query::tests::collect_look_openings_non_look_row_ignored ... ok
+test query::tests::collect_look_openings_empty_trace ... ok
+test storage::application::migration::tests::import_directory_creation_preserves_a_competing_store ... ok
+test query::tests::proof_look_provider_missing_key_returns_none_no_opening ... ok
+test query::tests::bbg_query_time_uses_first_8_bytes_as_u64 ... ok
+test storage::application::transfer::tests::transfer_child ... ok
+test query::tests::bbg_query_neurons_returns_proof ... ok
+test query::tests::proof_provider_value_matches_fast_provider_time ... ok
+test query::tests::bbg_query_particles_returns_proof ... ok
+test query::tests::take_look_openings_drains_the_buffer ... ok
+test query::tests::proof_look_provider_accumulates_multiple_openings ... ok
+test query::tests::proof_provider_value_matches_fast_provider_neuron ... ok
+test query::tests::proof_look_provider_returns_value_and_accumulates_opening ... ok
+test query::tests::verify_query_valid_proof ... ok
+test query::tests::collect_look_openings_from_real_trace ... ok
+test storage::database::native_tests::native_lost_barrier_ack_recovers_all_domains_and_deduplicates_retry ... ok
+test storage::database::native_tests::native_precommit_read_error_rolls_back_every_composed_domain ... ok
+test storage::database::native_tests::native_sync_error_freezes_every_shared_view_until_reopen ... ok
+test storage::database::native_tests::native_write_error_recovers_a_whole_composed_commit ... ok
+test storage::redb::tests::disk_read_failure_is_an_error_and_preserves_committed_data ... ok
+test storage::redb::tests::disk_sync_failure_keeps_pending_batch_and_recovers_atomically ... ok
+test storage::redb::tests::failed_warm_commit_retains_hot_pending_state_and_blocks_publication ... ok
+test storage::redb::tests::disk_write_failure_keeps_pending_batch_and_recovers_atomically ... ok
+test storage::redb::tests::lost_sync_acknowledgement_is_resolved_by_reopened_marker ... ok
+test storage::redb::tests::shared_application_barrier_failure_freezes_every_view_and_resolves_both_domains ... ok
+test storage::tiered::tests::ephemeral_not_in_dirty_after_commit ... ok
+test storage::tiered::tests::ephemeral_not_written_to_warm ... ok
+test storage::tiered::tests::get_mut_and_mark_dirty_roundtrip ... ok
+test storage::tiered::tests::hot_hit_shadows_warm ... ok
+test storage::tiered::tests::iter_returns_dimension_entries ... ok
+test storage::tiered::tests::promote_moves_warm_to_hot ... ok
+test storage::tiered::tests::read_cascades_hot_then_warm ... ok
+test storage::tiered::tests::remove_clears_from_all_tiers ... ok
+test storage::tiered::tests::write_through_to_warm ... ok
+test tests::compute_root_is_deterministic ... ok
+test tests::cyberlink_changes_root ... ok
+test tests::diameter_bound_defaults_to_node_count_minus_one ... ok
+test storage::redb::tests::shared_application_lost_barrier_reply_never_replays_an_accepted_transition ... ok
+test tests::double_spend_is_rejected ... ok
+test tests::empty_graph_stats_are_zero ... ok
+test tests::empty_root_is_deterministic ... ok
+test tests::finalize_block_increments_height ... ok
+test tests::installed_diameter_bound_is_used_and_changes_root ... ok
+test tests::prove_and_verify_particle_roundtrip ... ok
+test tests::prove_particle_returns_none_for_unknown_cid ... ok
+test tests::statistics_count_nodes_and_relations ... ok
+test tests::lazy_root_after_bulk_inserts_matches_per_insert_root ... ok
+test transition::undo::tests::oversized_adjacency_is_rejected_before_encoding_a_snapshot ... ok
+test transition::undo::tests::capture_limit_counts_unique_keys_and_coalesces_repeated_addresses ... ok
+test storage::database::tests::coordination_is_shared_bounded_and_reclaims_expired_roles ... ok
+test storage::application::transfer::tests::archive_rejects_missing_receipt_and_empty_path_without_a_source_transaction ... ok
+test storage::database::backend::tests::engine_scans_prefixes_and_exclusive_cursors_with_byte_limits ... ok
+test storage::database::backend::tests::engine_scan_rejects_oversized_keys_before_copying ... ok
+test storage::database::generation::tests::generation_promotion_is_durable_monotonic_and_rejects_incomplete_states ... ok
+test storage::database::backend::tests::engine_rejects_a_second_writer_and_creates_private_paths ... ok
+test storage::database::backend::tests::engine_reopens_changes_and_deletions_across_tables ... ok
+test storage::database::tests::opener_rechecks_import_guard_after_acquiring_database_owner ... ok
+test storage::database::transaction::tests::staging_reserves_automatic_markers_within_total_transaction_limits ... ok
+test storage::application::transfer::tests::archive_inspection_is_read_only_bounded_and_survives_the_seal ... ok
+test storage::application::transfer::tests::broken_receipt_coverage_never_completes ... ok
+test storage::application::transfer::tests::activation_requires_complete_transfer_and_the_pinned_target ... ok
+test storage::application::transfer::tests::interrupted_validation_does_not_advance_cursor_or_copy_a_partial_page ... ok
+test storage::application::transfer::tests::killed_transfer_resumes_source_seal_target_reservation_pages_and_completion ... ok
+
+test result: ok. 81 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.39s
+
+     Running tests/application_migration.rs (bbg/rs/target/debug/deps/application_migration-8b769d15fa4e45f5)
+
+running 13 tests
+test parent_aliases_check_the_same_guard_for_an_absent_destination ... ok
+test an_import_guard_blocks_open_even_before_the_destination_exists ... ok
+test path_aliases_cannot_bypass_a_guard_before_the_first_database_marker ... ok
+test missing_or_unknown_tables_are_rejected_before_destination_creation ... ok
+test existing_destinations_are_refused_and_legacy_open_preserves_file_bytes ... ok
+test migration_requires_exclusive_access_to_the_source ... ok
+test integrity::an_empty_legacy_application_database_can_migrate_and_accept_its_first_write ... ok
+test integrity::successful_receipt_validation_removes_its_temporary_reverse_index ... ok
+test migration_preserves_paged_history_retries_claims_and_the_usable_source ... ok
+test dangling_history_and_receipts_cannot_complete_migration ... ok
+test integrity::missing_all_or_one_receipt_prevents_migration_completion ... ok
+test integrity::duplicate_receipts_cannot_cover_another_missing_history_entry ... ok
+test malformed_records_leave_a_sealed_destination ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 32.47s
+
+     Running tests/application_storage.rs (bbg/rs/target/debug/deps/application_storage-59d3d2e57ac7fb3c)
+
+running 5 tests
+test unique_claims_cover_namespaces_and_rollback_with_rejected_content ... ok
+test head_races_and_changed_retries_are_conflicts ... ok
+test rejection_does_not_publish_staged_bytes_or_advance_history ... ok
+test simultaneous_writers_cannot_both_advance_the_same_head ... ok
+test committed_head_content_and_request_survive_reopen ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.11s
+
+     Running tests/look_e2e.rs (bbg/rs/target/debug/deps/look_e2e-50660863d40ed61a)
+
+running 3 tests
+test certified_state_reads_bind_actual_execution_and_reject_missing_proof_data ... ok
+test legacy_recursive_opening_fails_closed ... ok
+test look_against_stale_root_is_rejected ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/native_records.rs (bbg/rs/target/debug/deps/native_records-8ed9e76645d510f4)
+
+running 3 tests
+test native_record_reads_and_scans_enforce_bounds_without_cross_domain_leaks ... ok
+test native_domains_shards_and_application_publish_in_one_reopenable_commit ... ok
+test rejected_application_transition_discards_all_native_and_shard_changes ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.95s
+
+     Running tests/native_transition.rs (bbg/rs/target/debug/deps/native_transition-cc706e111de67a5f)
+
+running 13 tests
+test intent_only_persists_exact_record_and_retains_current_root_and_height ... ok
+test duplicate_nullifier_inside_one_signal_is_rejected_before_mutation ... ok
+test typed_records_preserve_raw_integer_bytes_and_sort_numeric_keys ... ok
+test empty_and_oversized_batches_fail_without_changing_state ... ok
+test dropped_preparation_restores_every_record_and_checkpoint ... ok
+test overflow_is_rejected_even_when_credit_and_debit_keys_alias ... ok
+test failure_in_later_batch_event_rolls_back_earlier_signal_and_intent ... ok
+test callback_failure_rolls_back_and_later_retry_succeeds ... ok
+test published_candidate_matches_standard_signal_finalization_and_exact_changes ... ok
+test repeated_positions_and_inconsistent_headers_are_rejected ... ok
+test epoch_pruning_restores_removed_records_and_adjacency_on_drop ... ok
+test successful_batch_coalesces_overlapping_keys_and_keeps_each_snapshot ... ok
+test preparation_touches_only_signal_neighborhood_in_large_graph ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.61s
+
+     Running tests/public_balance.rs (bbg/rs/target/debug/deps/public_balance-dbfe2fa7ef112008)
+
+running 1 test
+test full_u64_balance_requires_exact_root_key_and_both_limbs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+     Running tests/query_authentication.rs (bbg/rs/target/debug/deps/query_authentication-2cda33929184d420)
+
+running 6 tests
+test private_tables_are_not_disclosed_and_cannot_claim_public_context ... ok
+test public_query_limit_is_explicit_and_large_certificates_remain_available ... ok
+test query_claim_context_opening_and_certificate_mutations_fail ... ok
+test legacy_look_needs_matching_complete_context_and_rejects_each_substitution ... ok
+test exact_particle_root_and_injective_key_are_pinned ... ok
+test every_public_dimension_entity_locator_uses_its_real_record_layout ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.28s
+
+     Running tests/serde_wire.rs (bbg/rs/target/debug/deps/serde_wire-06dfed3c5b7e30fa)
+
+running 4 tests
+test legacy_opening_variants_are_rejected ... ok
+test queryproof_rejects_noncanonical_point ... ok
+test query_wire_bounds_and_contextless_refusal ... ok
+test queryproof_roundtrip_real_proof ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests/shared_application.rs (bbg/rs/target/debug/deps/shared_application-71874558d33dd2fc)
+
+running 8 tests
+test application_child ... ok
+test rejected_combined_transition_publishes_neither_domain ... ok
+test duplicate_conflicting_content_in_one_batch_is_rejected ... ok
+test conflicting_claims_across_namespaces_serialize_and_rollback ... ok
+test old_retry_after_successor_never_executes_shard_transition_again ... ok
+test applications_and_shards_share_one_owner_and_publication_boundary ... ok
+test killed_process_recovers_shards_history_claims_and_receipt_together ... ok
+test opaque_application_values_exceed_shard_value_size_without_field_conversion ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.50s
+
+     Running tests/state_certificate.rs (bbg/rs/target/debug/deps/state_certificate-afe9254bc5ff16bb)
+
+running 5 tests
+test certificate_serde_requires_version_metadata_and_roundtrips ... ok
+test every_committed_component_and_structural_metadata_is_checked ... ok
+test arbitrary_key_bytes_and_u64_values_have_no_modulus_alias ... ok
+test stale_cached_roots_and_changed_signal_networks_are_rejected ... ok
+test certificates_authenticate_actual_cells_and_the_same_root_as_query_proofs ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.92s
+
+     Running tests/storage_contract.rs (bbg/rs/target/debug/deps/storage_contract-89b729b5db269132)
+
+running 13 tests
+test storage_child ... ok
+test pending_element_budget_rejects_growth_without_losing_earlier_values ... ok
+test full_scan_detects_malformed_keys_before_the_smallest_valid_key ... ok
+test disk_access_enforces_dimensions_and_allocation_budgets ... ok
+test a_second_writer_cannot_open_the_same_store ... ok
+test reopened_trait_reads_and_paginates_every_persistent_dimension ... ok
+test deletes_are_staged_with_updates_and_survive_reopen ... ok
+test warm_recovery_and_deletion_override_an_old_archive ... ok
+test repeated_hot_overwrites_are_coalesced_and_rejected_writes_leave_store_usable ... ok
+test commit_identity_binds_values_deletes_and_canonical_order ... ok
+test malformed_disk_values_are_errors_not_missing_or_reduced_values ... ok
+test process_kill_preserves_atomic_batches_and_releases_the_writer ... ok
+test durable_attachment_rejects_a_conflicting_hot_cache ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.90s
+
+     Running tests/storage_persistence.rs (bbg/rs/target/debug/deps/storage_persistence-23ec086f4d4784f8)
+
+running 5 tests
+test eviction_keeps_ephemeral_in_hot ... ok
+test eviction_without_warm_preserves_the_last_copy ... ok
+test redb_commit_and_hot_mutation_survive_reopen ... ok
+test fjall_commit_and_hot_mutation_survive_reopen ... ok
+test disk_backends_persist_dimensions_overwrites_and_keep_ephemeral_local ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.92s
+
+     Running tests/storage_tier_failures.rs (bbg/rs/target/debug/deps/storage_tier_failures-63341614cc8ca880)
+
+running 2 tests
+test redb_warm_success_hot_failure_preserves_unknown_commit_identity ... ok
+test fjall_warm_success_hot_failure_preserves_unknown_commit_identity ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.32s
+
+   Doc-tests bbg
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

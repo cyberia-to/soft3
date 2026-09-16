@@ -1,0 +1,1230 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.44
+   Compiling libc v0.2.180
+   Compiling serde_core v1.0.228
+    Checking cfg-if v1.0.4
+   Compiling serde v1.0.228
+    Checking memchr v2.8.0
+    Checking log v0.4.29
+   Compiling cfg_aliases v0.2.1
+    Checking allocator-api2 v0.2.21
+    Checking equivalent v1.0.2
+    Checking foldhash v0.2.0
+   Compiling libm v0.2.16
+    Checking smallvec v1.15.1
+   Compiling thiserror v2.0.18
+    Checking once_cell v1.21.3
+   Compiling autocfg v1.5.0
+   Compiling version_check v0.9.5
+    Checking arrayvec v0.7.6
+   Compiling crossbeam-utils v0.8.21
+   Compiling typenum v1.19.0
+   Compiling zerocopy v0.8.39
+    Checking subtle v2.6.1
+   Compiling shlex v1.3.0
+    Checking objc2-encode v4.1.0
+   Compiling getrandom v0.4.1
+    Checking pin-project-lite v0.2.16
+   Compiling generic-array v0.14.7
+   Compiling unicode-xid v0.2.6
+   Compiling num-traits v0.2.19
+    Checking const-oid v0.9.6
+   Compiling objc2 v0.6.3
+    Checking core-foundation-sys v0.8.7
+   Compiling typeid v1.0.3
+    Checking fastrand v2.3.0
+   Compiling hashbrown v0.16.1
+    Checking aho-corasick v1.1.4
+   Compiling unicode-segmentation v1.12.0
+   Compiling indexmap v2.13.0
+   Compiling syn v2.0.117
+   Compiling convert_case v0.10.0
+    Checking futures-core v0.3.32
+    Checking regex-syntax v0.8.9
+   Compiling getrandom v0.3.4
+    Checking either v1.15.0
+   Compiling erased-serde v0.4.9
+    Checking getrandom v0.2.17
+    Checking errno v0.3.14
+    Checking rand_core v0.6.4
+    Checking futures-io v0.3.32
+    Checking inventory v0.3.22
+   Compiling winnow v0.7.14
+    Checking slab v0.4.12
+    Checking regex-automata v0.4.14
+    Checking itoa v1.0.17
+   Compiling toml_datetime v0.7.5+spec-1.1.0
+    Checking unicode-width v0.2.2
+   Compiling rustix v1.1.3
+   Compiling parking_lot_core v0.9.12
+    Checking atomic-waker v1.1.2
+    Checking scopeguard v1.2.0
+    Checking itertools v0.14.0
+    Checking lock_api v0.4.14
+    Checking parking v2.2.1
+    Checking concurrent-queue v2.5.0
+   Compiling toml_parser v1.0.9+spec-1.1.0
+   Compiling encase_derive_impl v0.12.0
+    Checking thread_local v1.1.9
+    Checking sha1_smol v1.0.1
+    Checking typewit v1.14.2
+   Compiling find-msvc-tools v0.1.9
+    Checking foldhash v0.1.5
+    Checking event-listener v5.4.1
+   Compiling bytemuck_derive v1.10.2
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v2.0.18
+   Compiling zeroize_derive v1.5.0
+   Compiling zerocopy-derive v0.8.39
+   Compiling derive_more-impl v2.1.1
+   Compiling toml_edit v0.23.10+spec-1.0.0
+    Checking hashbrown v0.15.5
+   Compiling cc v1.2.56
+    Checking zeroize v1.8.2
+    Checking const_panic v0.2.15
+    Checking bytemuck v1.25.0
+   Compiling bevy_macro_utils v0.18.0
+    Checking crossbeam-queue v0.3.12
+   Compiling zmij v1.0.21
+    Checking nu-ansi-term v0.50.3
+    Checking event-listener-strategy v0.5.4
+   Compiling encase_derive v0.12.0
+    Checking block2 v0.6.2
+    Checking tracing-core v0.1.36
+    Checking spin v0.10.0
+   Compiling crc32fast v1.5.0
+   Compiling bitflags v2.11.0
+    Checking rand_core v0.9.5
+    Checking simd-adler32 v0.3.8
+   Compiling tracing-attributes v0.1.31
+   Compiling slotmap v1.1.1
+   Compiling heck v0.5.0
+    Checking derive_more v2.1.1
+    Checking futures-lite v2.6.1
+    Checking adler2 v2.0.1
+    Checking fixedbitset v0.5.7
+    Checking bumpalo v3.20.2
+    Checking disqualified v1.0.0
+    Checking futures-sink v0.3.34
+    Checking bit-vec v0.8.0
+    Checking async-task v4.7.1
+    Checking miniz_oxide v0.8.9
+    Checking async-channel v2.5.0
+    Checking tracing v0.1.44
+   Compiling bevy_reflect_derive v0.18.0
+   Compiling variadics_please v1.1.0
+    Checking bit-set v0.8.0
+   Compiling assert_type_match v0.1.1
+    Checking bevy_ptr v0.18.0
+    Checking zlib-rs v0.6.2
+    Checking downcast-rs v2.0.2
+    Checking byteorder v1.5.0
+   Compiling nix v0.31.1
+    Checking async-executor v1.14.0
+    Checking futures-channel v0.3.32
+    Checking parking_lot v0.12.5
+    Checking nonmax v0.5.5
+    Checking crypto-common v0.1.7
+    Checking block-buffer v0.10.4
+   Compiling bevy_ecs_macros v0.18.0
+   Compiling futures-macro v0.3.32
+   Compiling serde_json v1.0.149
+    Checking futures-task v0.3.32
+    Checking digest v0.10.7
+    Checking atomic v0.6.1
+    Checking objc2-core-foundation v0.3.2
+    Checking md-5 v0.10.6
+    Checking dispatch2 v0.3.0
+    Checking uuid v1.21.0
+    Checking encase v0.12.0
+    Checking futures-util v0.3.32
+   Compiling bevy_derive v0.18.0
+    Checking objc2-io-kit v0.3.2
+    Checking crossbeam-channel v0.5.15
+    Checking bytes v1.11.1
+   Compiling litrs v1.0.0
+   Compiling rustversion v1.0.22
+   Compiling glob v0.3.3
+    Checking sysinfo v0.37.2
+    Checking fdeflate v0.3.7
+   Compiling document-features v0.2.12
+   Compiling clang-sys v1.8.1
+   Compiling synstructure v0.13.2
+   Compiling minimal-lexical v0.2.1
+    Checking raw-window-handle v0.6.2
+   Compiling nom v7.1.3
+   Compiling regex v1.12.3
+   Compiling zerofrom-derive v0.1.6
+    Checking flate2 v1.1.9
+   Compiling libloading v0.8.9
+   Compiling bindgen v0.72.1
+    Checking quick-error v2.0.1
+    Checking weezl v0.1.12
+    Checking lazy_static v1.5.0
+    Checking zune-core v0.4.12
+    Checking zerofrom v0.1.6
+   Compiling cexpr v0.6.0
+   Compiling yoke-derive v0.8.1
+    Checking wgpu-types v27.0.1
+    Checking smol_str v0.2.2
+    Checking bevy_platform v0.18.0
+    Checking ppv-lite86 v0.2.21
+    Checking petgraph v0.8.3
+    Checking bevy_utils v0.18.0
+    Checking half v2.7.1
+    Checking rand_chacha v0.9.0
+    Checking zune-jpeg v0.4.21
+   Compiling itertools v0.13.0
+    Checking pxfm v0.1.27
+    Checking rand v0.9.2
+    Checking stable_deref_trait v1.2.1
+    Checking fax v0.2.7
+   Compiling rustc-hash v2.1.1
+    Checking bevy_tasks v0.18.0
+    Checking rand_distr v0.5.1
+    Checking color_quant v1.1.0
+    Checking byteorder-lite v0.1.0
+    Checking zune-core v0.5.3
+    Checking tiff v0.10.3
+    Checking png v0.18.1
+    Checking gif v0.14.2
+   Compiling blake3 v1.8.3
+    Checking zune-jpeg v0.5.15
+    Checking image-webp v0.2.4
+    Checking piper v0.2.4
+    Checking moxcms v0.7.11
+    Checking async-lock v3.4.2
+   Compiling zerovec-derive v0.11.2
+    Checking self_cell v1.2.2
+    Checking const-fnv1a-hash v1.1.0
+    Checking blocking v1.6.2
+    Checking rustc-hash v1.1.0
+    Checking arrayref v0.3.9
+    Checking constant_time_eq v0.4.2
+    Checking ron v0.12.0
+    Checking terminal_size v0.4.3
+    Checking async-fs v2.2.0
+    Checking async-broadcast v0.7.2
+   Compiling bevy_asset_macros v0.18.0
+    Checking stackfuture v0.3.1
+   Compiling foreign-types-macros v0.2.3
+   Compiling displaydoc v0.2.5
+    Checking mio v1.1.1
+    Checking atomicow v1.1.0
+    Checking ctrlc v3.5.2
+    Checking foreign-types-shared v0.3.1
+    Checking strata-core v0.1.1 (/Users/master/cyber/strata/core)
+    Checking sharded-slab v0.1.7
+    Checking tracing-log v0.2.0
+    Checking matchers v0.2.0
+    Checking foreign-types v0.5.0
+    Checking termcolor v1.4.1
+    Checking euclid v0.22.13
+    Checking twox-hash v2.1.2
+    Checking svg_fmt v0.4.5
+    Checking cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling paste v1.0.15
+    Checking tracing-subscriber v0.3.22
+    Checking ktx2 v0.4.0
+    Checking core-foundation v0.10.1
+    Checking ruzstd v0.8.2
+    Checking image v0.25.9
+    Checking rectangle-pack v0.4.2
+    Checking guillotiere v0.6.2
+    Checking hexf-parse v0.2.1
+    Checking glam v0.30.10
+    Checking strata-proof v0.1.1 (/Users/master/cyber/strata/proof)
+    Checking strata-ext v0.1.1 (/Users/master/cyber/strata/ext)
+    Checking malloc_buf v0.0.6
+   Compiling nix v0.30.1
+    Checking const_soft_float v0.1.4
+    Checking sys-locale v0.3.2
+    Checking unicode-linebreak v0.1.5
+    Checking block v0.1.6
+    Checking strata-compute v0.1.1 (/Users/master/cyber/strata/compute)
+    Checking objc v0.2.7
+    Checking ryu v1.0.23
+    Checking constgebra v0.1.4
+    Checking utf8parse v0.2.2
+    Checking bevy_mikktspace v0.17.0-dev
+    Checking strata-nebu v0.1.1 (/Users/master/cyber/strata/nebu/rs)
+    Checking profiling v1.0.17
+    Checking bitflags v1.3.2
+    Checking tinyvec_macros v0.1.1
+    Checking memmap2 v0.9.10
+    Checking anstyle v1.0.13
+    Checking anstyle-query v1.1.5
+    Checking is_terminal_polyfill v1.70.2
+    Checking colorchoice v1.0.4
+    Checking tinyvec v1.10.0
+    Checking core-foundation v0.9.4
+    Checking vte v0.14.1
+   Compiling naga v27.0.3
+    Checking unicode-width v0.1.14
+    Checking codespan-reporting v0.12.0
+    Checking iana-time-zone v0.1.65
+    Checking static_assertions v1.1.0
+   Compiling ref-cast v1.0.25
+    Checking pure-rust-locales v0.8.2
+   Compiling signal-hook v0.3.18
+   Compiling owo-colors v4.3.0
+    Checking castaway v0.2.4
+    Checking cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+    Checking anstyle-parse v0.2.7
+    Checking tempfile v3.25.0
+   Compiling ref-cast-impl v1.0.25
+    Checking signal-hook-registry v1.4.8
+    Checking yoke v0.8.1
+    Checking anstream v0.6.21
+    Checking core-graphics-types v0.2.0
+    Checking crossbeam-epoch v0.9.18
+   Compiling wgpu-hal v27.0.4
+    Checking bevy_reflect v0.18.0
+    Checking hexasphere v16.0.0
+   Compiling typetag v0.2.21
+    Checking chrono v0.4.43
+    Checking strsim v0.11.1
+    Checking clap_lex v1.0.0
+    Checking percent-encoding v2.3.2
+    Checking clap_builder v4.5.60
+    Checking font-types v0.10.1
+    Checking zerocopy v0.7.35
+   Compiling clap_derive v4.5.55
+   Compiling typetag-impl v0.2.21
+   Compiling miette-derive v7.6.0
+    Checking metal v0.32.0
+   Compiling proc-macro-error-attr2 v2.0.0
+   Compiling anyhow v1.0.102
+    Checking unicase v2.9.0
+    Checking siphasher v1.0.2
+    Checking fnv v1.0.7
+    Checking option-ext v0.2.0
+    Checking clap v4.5.60
+   Compiling proc-macro-error2 v2.0.1
+    Checking buf-trait v0.4.1
+    Checking dirs-sys v0.5.0
+    Checking cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+    Checking strip-ansi-escapes v0.2.1
+    Checking core_maths v0.1.1
+   Compiling wgpu-core v27.0.3
+    Checking data-encoding v2.10.0
+    Checking neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Checking base64 v0.22.1
+    Checking lean_string v0.5.1
+    Checking dirs v6.0.0
+    Checking byteyarn v0.5.1
+    Checking core-graphics-types v0.1.3
+    Checking signal-hook-mio v0.2.5
+    Checking fancy-regex v0.17.0
+   Compiling strum_macros v0.27.2
+    Checking lscolors v0.20.0
+    Checking crossterm v0.29.0
+    Checking num-format v0.4.4
+   Compiling wgpu v27.0.1
+    Checking radsort v0.1.1
+   Compiling libproc v0.14.11
+   Compiling objc-sys v0.3.5
+    Checking naga_oil v0.20.0
+    Checking zerovec v0.11.5
+    Checking is_ci v1.2.0
+    Checking supports-color v3.0.2
+    Checking read-fonts v0.36.0
+    Checking read-fonts v0.35.0
+    Checking textwrap v0.16.2
+    Checking toml_datetime v0.6.3
+    Checking serde_spanned v0.6.9
+    Checking http v1.4.0
+    Checking offset-allocator v0.2.0
+   Compiling bevy_render_macros v0.18.0
+   Compiling bevy_encase_derive v0.18.0
+    Checking supports-hyperlinks v3.2.0
+    Checking winnow v0.5.40
+    Checking mach2 v0.6.0
+    Checking supports-unicode v3.0.0
+    Checking same-file v1.0.6
+    Checking web-time v1.1.0
+    Checking miette v7.6.0
+    Checking walkdir v2.5.0
+    Checking skrifa v0.37.0
+    Checking toml_edit v0.20.2
+   Compiling nu-derive-value v0.110.0 (/Users/master/cyber/nu/crates/nu-derive-value)
+    Checking wgpu-core-deps-apple v27.0.0
+    Checking ttf-parser v0.25.1
+    Checking cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+    Checking chrono-humanize v0.2.3
+    Checking type-map v0.5.1
+    Checking nu-experimental v0.110.0 (/Users/master/cyber/nu/crates/nu-experimental)
+   Compiling tokio-macros v2.6.1
+    Checking os_pipe v1.2.3
+    Checking socket2 v0.6.2
+    Checking lru v0.16.3
+    Checking zeno v0.3.3
+    Checking yazi v0.2.1
+    Checking strum v0.27.2
+    Checking writeable v0.6.2
+    Checking nu-utils v0.110.0 (/Users/master/cyber/nu/crates/nu-utils)
+    Checking litemap v0.8.1
+    Checking nu-glob v0.110.0 (/Users/master/cyber/nu/crates/nu-glob)
+    Checking swash v0.2.6
+    Checking tokio v1.50.0
+    Checking fontdb v0.23.0
+    Checking toml v0.8.2
+    Checking harfrust v0.4.1
+    Checking skrifa v0.39.0
+    Checking zerotrie v0.2.3
+   Compiling strum_macros v0.26.4
+    Checking objc2 v0.5.2
+    Checking fluent-syntax v0.12.0
+    Checking der v0.7.10
+    Checking num-integer v0.1.46
+    Checking cpufeatures v0.2.17
+   Compiling bigdecimal v0.4.10
+    Checking path-dedot v3.1.1
+   Compiling icu_normalizer_data v2.1.1
+    Checking rune-ast v0.1.0 (/Users/master/cyber/rune/rs/ast)
+    Checking compare v0.0.6
+    Checking unicode-script v0.5.8
+    Checking nu-system v0.110.0 (/Users/master/cyber/nu/crates/nu-system)
+   Compiling icu_properties_data v2.1.2
+    Checking unicode-bidi v0.3.18
+    Checking linebender_resource_handle v0.1.1
+    Checking tinystr v0.8.2
+    Checking potential_utf v0.1.4
+    Checking rangemap v1.7.1
+    Checking accesskit v0.21.1
+    Checking interval-heap v0.0.5
+    Checking path-absolutize v3.1.1
+    Checking icu_collections v2.1.1
+    Checking strum v0.26.3
+    Checking cosmic-text v0.16.0
+    Checking num-bigint v0.4.6
+    Checking block2 v0.5.1
+    Checking nu-path v0.110.0 (/Users/master/cyber/nu/crates/nu-path)
+   Compiling coreaudio-sys v0.2.17
+    Checking phf_shared v0.13.1
+    Checking strata-jali v0.1.1 (/Users/master/cyber/strata/jali/rs)
+    Checking strata-kuro v0.1.1 (/Users/master/cyber/strata/kuro/rs)
+    Checking strata-genies v0.1.1 (/Users/master/cyber/strata/genies/rs)
+    Checking strata-trop v0.1.1 (/Users/master/cyber/strata/trop/rs)
+    Checking hmac v0.12.1
+    Checking ff v0.13.1
+    Checking byteview v0.6.1
+    Checking varint-rs v2.2.1
+   Compiling httparse v1.10.1
+    Checking dispatch v0.2.0
+    Checking base16ct v0.2.0
+   Compiling uucore v0.5.0
+    Checking xxhash-rust v0.8.18
+    Checking sec1 v0.7.3
+    Checking value-log v1.9.0
+    Checking objc2-foundation v0.2.2
+    Checking group v0.13.0
+    Checking cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+    Checking cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+    Checking cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+    Checking cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+    Checking phf v0.13.1
+    Checking sha2 v0.10.9
+    Checking crossbeam-skiplist v0.1.3
+   Compiling enum_dispatch v0.3.13
+    Checking xattr v1.6.1
+    Checking crypto-bigint v0.5.5
+    Checking nu-protocol v0.110.0 (/Users/master/cyber/nu/crates/nu-protocol)
+    Checking os_display v0.1.4
+    Checking quick_cache v0.6.24
+   Compiling const_format_proc_macros v0.2.34
+   Compiling uucore_procs v0.5.0
+    Checking guardian v1.3.0
+    Checking dunce v1.0.5
+    Checking double-ended-peekable v0.1.0
+    Checking hashbrown v0.14.5
+    Checking lz4_flex v0.11.6
+    Checking dpi v0.1.2
+   Compiling thiserror v1.0.69
+   Compiling rayon-core v1.13.0
+    Checking dashmap v6.1.0
+    Checking unic-langid-impl v0.9.6
+    Checking icu_locale_core v2.1.1
+    Checking lsm-tree v2.10.4
+    Checking unic-langid v0.9.6
+    Checking elliptic-curve v0.13.8
+    Checking objc2-app-kit v0.2.2
+    Checking cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+    Checking intl_pluralrules v7.0.2
+    Checking intl-memoizer v0.5.3
+    Checking fluent-langneg v0.13.1
+    Checking icu_provider v2.1.1
+    Checking rfc6979 v0.4.0
+    Checking spki v0.7.3
+    Checking fluent-bundle v0.16.0
+    Checking icu_normalizer v2.1.1
+    Checking icu_properties v2.1.2
+    Checking http-body v1.1.0
+    Checking fluent v0.17.0
+    Checking form_urlencoded v1.2.2
+    Checking crossbeam-deque v0.8.6
+    Checking cyber-tape v0.1.0 (/Users/master/cyber/tape/impl/rust)
+    Checking signature v2.2.0
+    Checking rustls-pki-types v1.15.1
+   Compiling ring v0.17.14
+   Compiling thiserror-impl v1.0.69
+    Checking security-framework-sys v2.17.0
+    Checking encoding_rs v0.8.35
+   Compiling naga v24.0.0 (/Users/master/cyber/evy/forks/naga)
+   Compiling winit v0.30.12
+   Compiling native-tls v0.2.18
+   Compiling portable-atomic v1.13.1
+   Compiling system-configuration-sys v0.6.0
+    Checking bytesize v2.3.1
+   Compiling cpal v0.15.3
+   Compiling inflections v1.1.1
+   Compiling ident_case v1.0.1
+    Checking std-semaphore v0.1.0
+    Checking inf-ast v0.1.0 (/Users/master/cyber/inf/rs/ast)
+    Checking jiff-core v0.1.0
+   Compiling darling_core v0.20.11
+   Compiling gltf-derive v1.4.1
+    Checking jiff v0.2.35
+    Checking bevy_ecs v0.18.0
+    Checking bevy_math v0.18.0
+    Checking coreaudio-rs v0.11.3
+    Checking security-framework v3.7.0
+    Checking idna_adapter v1.2.1
+    Checking fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+    Checking ecdsa v0.16.9
+   Compiling prost-derive v0.13.5
+    Checking zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+    Checking tokio-util v0.7.19
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+    Checking accesskit_consumer v0.31.0
+    Checking cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+    Checking neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Checking core-graphics v0.23.2
+    Checking bevy_color v0.18.0
+    Checking inf-value v0.1.0 (/Users/master/cyber/inf/rs/value)
+    Checking codespan-reporting v0.11.1
+    Checking rand_chacha v0.3.1
+    Checking ogg v0.8.0
+    Checking console v0.16.2
+    Checking mach2 v0.4.3
+    Checking hex-conservative v0.2.2
+   Compiling wgpu-hal v24.0.4
+   Compiling mutants v0.0.3
+    Checking utf8_iter v1.0.4
+   Compiling ucd-trie v0.1.7
+    Checking dasp_sample v0.11.0
+    Checking cursor-icon v1.2.0
+    Checking rune-lex v0.1.0 (/Users/master/cyber/rune/rs/lex)
+   Compiling gilrs v0.11.1
+    Checking grid v1.0.0
+    Checking tower-service v0.3.3
+    Checking vec_map v0.8.2
+    Checking try-lock v0.2.5
+    Checking rune-parse-pure v0.1.0 (/Users/master/cyber/rune/rs/parse-pure)
+    Checking taffy v0.9.2
+    Checking gilrs-core v0.6.7
+    Checking want v0.3.1
+   Compiling pest v2.8.6
+    Checking idna v1.1.0
+    Checking unimem v0.2.0 (/Users/master/cyber/honeycrisp/unimem)
+    Checking bitcoin_hashes v0.14.1
+    Checking lewton v0.10.2
+    Checking rand v0.8.5
+    Checking inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+    Checking cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+    Checking bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Checking h2 v0.4.19
+    Checking accesskit_macos v0.22.2
+    Checking k256 v0.13.4
+    Checking rayon v1.11.0
+   Compiling darling_macro v0.20.11
+    Checking gltf-json v1.4.1
+    Checking bs58 v0.5.1
+    Checking pbkdf2 v0.12.2
+    Checking rune-subject v0.1.0 (/Users/master/cyber/rune/rs/subject)
+    Checking metal v0.31.0
+    Checking unicode-normalization v0.1.25
+    Checking linked-hash-map v0.5.6
+    Checking ripemd v0.1.3
+    Checking wgpu-types v24.0.0
+   Compiling bevy_gizmos_macros v0.18.0
+   Compiling bevy_animation_macros v0.18.0
+   Compiling wgpu-core v24.0.5
+    Checking mime v0.3.17
+   Compiling pkg-config v0.3.32
+   Compiling powerfmt v0.2.0
+    Checking unit-prefix v0.5.2
+    Checking untrusted v0.9.0
+   Compiling tz-rs v0.7.3
+   Compiling syn v1.0.109
+    Checking inf-lex v0.1.0 (/Users/master/cyber/inf/rs/lex)
+   Compiling prettyplease v0.2.37
+    Checking indicatif v0.18.4
+    Checking inf-parse v0.1.0 (/Users/master/cyber/inf/rs/parse)
+   Compiling tzdb_data v0.2.3
+   Compiling deranged v0.5.7
+   Compiling onig_sys v69.9.3
+    Checking bip32 v0.5.3
+    Checking bip39 v2.2.2
+    Checking nu-json v0.110.0 (/Users/master/cyber/nu/crates/nu-json)
+    Checking foculus v0.1.3 (/Users/master/cyber/foculus)
+    Checking rune-lower v0.1.0 (/Users/master/cyber/rune/rs/lower)
+    Checking hyper v1.11.1
+   Compiling darling v0.20.11
+    Checking system-configuration v0.7.0
+    Checking accesskit_winit v0.29.2
+    Checking rodio v0.20.1
+    Checking inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+   Compiling pest_meta v2.8.6
+    Checking url v2.5.8
+    Checking rune-parse v0.1.0 (/Users/master/cyber/rune/rs/parse)
+    Checking neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling prost v0.13.5
+    Checking inf-plan v0.1.0 (/Users/master/cyber/inf/rs/plan)
+    Checking acpu v0.2.0 (/Users/master/cyber/honeycrisp/acpu)
+    Checking serde_urlencoded v0.7.1
+    Checking nu-engine v0.110.0 (/Users/master/cyber/nu/crates/nu-engine)
+    Checking rune-interp v0.1.0 (/Users/master/cyber/rune/rs/interp)
+    Checking ansitok v0.3.0
+    Checking anstyle-parse v1.0.0
+    Checking objc2-foundation v0.3.2
+    Checking objc2-core-graphics v0.3.2
+   Compiling bevy_state_macros v0.18.0
+    Checking approx v0.5.1
+   Compiling num_threads v0.1.7
+    Checking nu-parser v0.110.0 (/Users/master/cyber/nu/crates/nu-parser)
+    Checking filetime v0.2.27
+    Checking sync_wrapper v1.0.2
+   Compiling wgpu v24.0.5
+   Compiling time-core v0.1.8
+    Checking tower-layer v0.3.3
+    Checking base64ct v1.8.3
+    Checking ipnet v2.12.1
+    Checking bevy_app v0.18.0
+   Compiling num-conv v0.2.0
+    Checking bech32 v0.11.1
+   Compiling rustls v0.23.43
+    Checking objc2-app-kit v0.3.2
+    Checking gltf v1.4.1
+    Checking nu-cmd-base v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-base)
+   Compiling petgraph v0.7.1
+    Checking cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling time v0.3.47
+    Checking hyper-util v0.1.20
+    Checking pem-rfc7468 v1.0.0
+    Checking tower v0.5.3
+   Compiling derive_builder_core v0.20.2
+    Checking anstream v1.0.0
+    Checking aruminium v0.2.0 (/Users/master/cyber/honeycrisp/aruminium)
+    Checking ansi-str v0.9.0
+    Checking neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+    Checking cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling pest_generator v2.8.6
+   Compiling tzdb v0.7.3
+    Checking rustls-webpki v0.103.15
+    Checking tokio-native-tls v0.3.1
+    Checking http-body-util v0.1.5
+    Checking const_format v0.2.35
+    Checking env_filter v2.0.0
+    Checking safe_arch v0.7.4
+    Checking inout v0.1.4
+   Compiling ahash v0.8.12
+   Compiling is_debug v1.1.0
+   Compiling prost-types v0.13.5
+   Compiling rust_decimal v1.40.0
+   Compiling multimap v0.10.1
+   Compiling esaxx-rs v0.1.10
+    Checking bytecount v0.6.9
+   Compiling v_htmlescape v0.15.8
+    Checking base64 v0.23.1
+    Checking alloc-no-stdlib v2.0.4
+    Checking papergrid v0.17.0
+    Checking ureq-proto v0.6.1
+    Checking alloc-stdlib v0.2.2
+   Compiling prost-build v0.13.5
+   Compiling pest_consume_macros v1.1.0
+    Checking cipher v0.4.4
+    Checking env_logger v0.11.11
+    Checking bevy_time v0.18.0
+    Checking bevy_log v0.18.0
+    Checking bevy_input v0.18.0
+    Checking bevy_a11y v0.18.0
+    Checking bevy_state v0.18.0
+    Checking wide v0.7.33
+    Checking bevy_transform v0.18.0
+    Checking bevy_diagnostic v0.18.0
+    Checking neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+    Checking bevy_asset v0.18.0
+    Checking hyper-tls v0.6.0
+   Compiling pest_derive v2.8.6
+   Compiling derive_builder_macro v0.20.2
+    Checking tower-http v0.6.11
+    Checking der v0.8.1
+    Checking bevy_gilrs v0.18.0
+    Checking nu-color-config v0.110.0 (/Users/master/cyber/nu/crates/nu-color-config)
+    Checking webpki-roots v1.0.9
+    Checking webpki-root-certs v1.0.9
+   Compiling mime_guess v2.0.5
+    Checking phf_shared v0.11.3
+    Checking phf_shared v0.12.1
+    Checking futures-executor v0.3.32
+   Compiling shadow-rs v1.7.0
+    Checking keyboard-types v0.7.0
+    Checking zopfli v0.8.3
+    Checking fd-lock v4.0.4
+    Checking universal-hash v0.5.1
+    Checking socks v0.3.4
+   Compiling monostate-impl v0.1.18
+    Checking fsevent-sys v4.1.0
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+    Checking env_home v0.1.0
+    Checking pollster v0.4.0
+    Checking debug_unsafe v0.1.4
+    Checking base64 v0.13.1
+    Checking utf8-zero v0.8.1
+   Compiling pastey v0.2.3
+   Compiling chrono-tz v0.10.4
+    Checking opaque-debug v0.3.1
+    Checking which v8.0.0
+    Checking run v0.1.0 (/Users/master/cyber/glia/run)
+    Checking atoi_simd v0.16.1
+   Compiling nu-cmd-lang v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-lang)
+    Checking ureq v3.4.0
+    Checking spm_precompiled v0.1.4
+    Checking reedline v0.45.0
+    Checking poly1305 v0.8.0
+    Checking monostate v0.1.18
+    Checking macro_rules_attribute v0.2.3
+    Checking notify v6.1.1
+    Checking zip v4.6.1
+warning: unused import: `crate::backend::BackendError`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:22:5
+   |
+22 | use crate::backend::BackendError;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::backend::honeycrisp::device::HoneycrispDevice`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:23:5
+   |
+23 | use crate::backend::honeycrisp::device::HoneycrispDevice;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::backend::BackendError`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1954:13
+     |
+1954 |         use crate::backend::BackendError;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    Checking onig v6.5.3
+    Checking futures v0.3.32
+    Checking phf v0.12.1
+    Checking phf v0.11.3
+    Checking reqwest v0.12.28
+    Checking derive_builder v0.20.2
+    Checking pest_consume v1.1.3
+    Checking soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+   Compiling import v0.1.0 (/Users/master/cyber/glia/import)
+    Checking chacha20 v0.9.1
+    Checking tabled v0.20.0
+    Checking brotli-decompressor v5.0.0
+warning: unused variable: `pipe_q`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1996:13
+     |
+1996 |         let pipe_q = match kind {
+     |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `n_blk_inter_sz`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2156:13
+     |
+2156 |         let n_blk_inter_sz = inter_size / block_size as usize;
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_n_blk_inter_sz`
+
+warning: unused variable: `pipe_q_dual`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2210:13
+     |
+2210 |         let pipe_q_dual    = match kind {
+     |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual`
+
+warning: unused variable: `pipe_q_gus`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2214:13
+     |
+2214 |         let pipe_q_gus     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus`
+
+warning: unused variable: `pipe_q_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2219:13
+     |
+2219 |         let pipe_q_opt     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_opt`
+
+warning: unused variable: `pipe_q_dual_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2223:13
+     |
+2223 |         let pipe_q_dual_opt = match kind {
+     |             ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual_opt`
+
+warning: unused variable: `pipe_q_gus_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2227:13
+     |
+2227 |         let pipe_q_gus_opt = match kind {
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus_opt`
+
+warning: unused variable: `pipe_qk_rope`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2254:13
+     |
+2254 |         let pipe_qk_rope                = &self.pipe_qk_rope.0;
+     |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_qk_rope`
+
+warning: unused variable: `pipe_q8_large2_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2263:13
+     |
+2263 |         let pipe_q8_large2_res     = &self.pipe_q8_large2_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large2_res`
+
+warning: unused variable: `pipe_q8_large8_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2265:13
+     |
+2265 |         let pipe_q8_large8_res     = &self.pipe_q8_large8_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8_res`
+
+warning: unused variable: `pipe_q8_mbx16_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2266:13
+     |
+2266 |         let pipe_q8_mbx16_res      = &self.pipe_q8_mbx16_res.0;
+     |             ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_mbx16_res`
+
+warning: unused variable: `pipe_q8_large4t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2267:13
+     |
+2267 |         let pipe_q8_large4t_res    = &self.pipe_q8_large4t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large4t_res`
+
+warning: unused variable: `pipe_q8_large8t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2268:13
+     |
+2268 |         let pipe_q8_large8t_res    = &self.pipe_q8_large8t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8t_res`
+
+warning: unused variable: `pipe_q8_large16t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2269:13
+     |
+2269 |         let pipe_q8_large16t_res   = &self.pipe_q8_large16t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large16t_res`
+
+warning: unused variable: `pipe_q8_gus_nrm_mb64_r4`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2278:13
+     |
+2278 |         let pipe_q8_gus_nrm_mb64_r4 = &self.pipe_q8_gus_nrm_mb64_r4.0;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_gus_nrm_mb64_r4`
+
+    Checking parse_datetime v0.13.3
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/glia/run/tokenizer/loader.rs:219:9
+    |
+219 |     let mut add = |tokens: &mut Vec<(u32, String)>, id: u32, name: String| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `dbg_stats` is never used
+   --> /Users/master/cyber/glia/run/arch/decoder/forward.rs:666:4
+    |
+666 | fn dbg_stats(label: &str, v: &[f32]) { dbg_stats_l(0, label, v); }
+    |    ^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `matmul_f32_scalar` is never used
+  --> /Users/master/cyber/glia/run/backend/cpu/matmul.rs:90:8
+   |
+90 | pub fn matmul_f32_scalar(x: &Tensor, w: &Tensor) -> Result<Tensor, BackendError> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: field `device` is never read
+  --> /Users/master/cyber/glia/run/backend/wgpu/mod.rs:29:5
+   |
+27 | struct GpuBuffer {
+   |        --------- field in this struct
+28 |     buffer: wgpu::Buffer,
+29 |     device: Arc<Device>,
+   |     ^^^^^^
+
+warning: fields `pipe_qk_norm_rope` and `transposed_down_w` are never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:156:5
+    |
+131 | pub struct HoneycrispBackend {
+    |            ----------------- fields in this struct
+...
+156 |     pipe_qk_norm_rope: HcPipeline,
+    |     ^^^^^^^^^^^^^^^^^
+...
+234 |     transposed_down_w: std::sync::Mutex<TransposedCache>,
+    |     ^^^^^^^^^^^^^^^^^
+
+warning: field `0` is never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:244:24
+    |
+244 | struct TransposedCache(std::collections::HashMap<usize, Box<aruminium::Buffer>>);
+    |        --------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |        |
+    |        field in this struct
+    |
+    = help: consider removing this field
+
+warning: function `transpose_q8_blocks` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:252:4
+    |
+252 | fn transpose_q8_blocks(src: &[u8], n_rows: usize, n_blk: usize) -> Vec<u8> {
+    |    ^^^^^^^^^^^^^^^^^^^
+
+warning: methods `get_or_transpose_down_w` and `upload_tensor` are never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:594:8
+    |
+266 | impl HoneycrispBackend {
+    | ---------------------- methods in this implementation
+...
+594 |     fn get_or_transpose_down_w(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^
+...
+620 |     fn upload_tensor(&self, t: &Tensor) -> Result<aruminium::Buffer, BackendError> {
+    |        ^^^^^^^^^^^^^
+
+warning: field `down_w_t` is never read
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2144:13
+     |
+2126 |         struct LPtrs {
+     |                ----- field in this struct
+...
+2144 |             down_w_t:      *const aruminium::Buffer, // transposed; null if not needed
+     |             ^^^^^^^^
+
+warning: field `queue` is never read
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/device.rs:11:9
+   |
+ 9 | pub struct HoneycrispDevice {
+   |            ---------------- field in this struct
+10 |     pub gpu: aruminium::Gpu,
+11 |     pub queue: aruminium::Queue,
+   |         ^^^^^
+
+warning: constant `MAX_SEQ_SHARED` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:25:11
+   |
+25 | pub const MAX_SEQ_SHARED: u32 = 2048;
+   |           ^^^^^^^^^^^^^^
+
+warning: function `dispatch_silu_mul` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/elementwise.rs:89:8
+   |
+89 | pub fn dispatch_silu_mul(
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 18;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:180:8
+    |
+180 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+    |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:268:8
+    |
+268 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+    |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:658:8
+    |
+658 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `LANES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:17:11
+   |
+17 | pub const LANES: u32 = 32;
+   |           ^^^^^
+
+warning: constant `SCALE_MIN_HELPER` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:80:7
+   |
+80 | const SCALE_MIN_HELPER: &str = r#"
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `tg_count` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:453:8
+    |
+453 | pub fn tg_count(n_rows: u32, batch: u32) -> usize {
+    |        ^^^^^^^^
+
+warning: function `tg_size` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:458:8
+    |
+458 | pub fn tg_size() -> usize { (SIMDS_PER_GROUP * LANES) as usize }
+    |        ^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 34;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:94:8
+   |
+94 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+   |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:96:8
+   |
+96 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+   |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:644:8
+    |
+644 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `MSL_TEMPLATE` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:14:7
+   |
+14 | const MSL_TEMPLATE: &str = r#"
+   |       ^^^^^^^^^^^^
+
+warning: function `msl_for` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:226:8
+    |
+226 | pub fn msl_for(head_dim: usize) -> String {
+    |        ^^^^^^^
+
+warning: function `dispatch` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:271:8
+    |
+271 | pub fn dispatch(
+    |        ^^^^^^^^
+
+warning: function `softmax` is never used
+   --> /Users/master/cyber/glia/run/generate.rs:201:4
+    |
+201 | fn softmax(logits: &[f32]) -> Vec<f32> {
+    |    ^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:454:9
+    |
+454 |         &self,
+    |         ^^^^^ the lifetime is elided here
+...
+462 |     ) -> Result<std::sync::MutexGuard<Vec<AttnState>>, BackendError> {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+462 |     ) -> Result<std::sync::MutexGuard<'_, Vec<AttnState>>, BackendError> {
+    |                                       +++
+
+    Checking rayon-cond v0.4.0
+    Checking quick-xml v0.38.4
+warning: `run` (lib) generated 47 warnings (run `cargo fix --lib -p run` to apply 20 suggestions)
+    Checking codepage v0.1.2
+    Checking pori v0.0.0
+    Checking compact_str v0.9.1
+    Checking png v0.17.16
+    Checking dary_heap v0.3.9
+    Checking aead v0.5.2
+    Checking nu-pretty-hex v0.110.0 (/Users/master/cyber/nu/crates/nu-pretty-hex)
+    Checking fuzzy-matcher v0.3.7
+    Checking itertools v0.11.0
+    Checking platform-info v2.0.5
+    Checking num_cpus v1.17.0
+    Checking serde_spanned v1.0.4
+    Checking csv-core v0.1.13
+    Checking unicode-normalization-alignments v0.1.12
+    Checking shell-words v1.1.1
+    Checking toml_writer v1.0.6+spec-1.1.0
+    Checking unicode_categories v0.1.1
+    Checking fast-float2 v0.2.3
+    Checking file-id v0.2.3
+    Checking linux-raw-sys v0.12.1
+    Checking unsafe-libyaml v0.2.11
+    Checking pathdiff v0.2.3
+    Checking fs_extra v1.3.0
+    Checking toml v0.9.12+spec-1.1.0
+    Checking notify-debouncer-full v0.3.2
+    Checking calamine v0.32.0
+    Checking uu_cp v0.5.0
+    Checking open v5.3.3
+    Checking uu_mv v0.5.0
+    Checking wax v0.6.0
+    Checking serde_yaml v0.9.34+deprecated
+    Checking dialoguer v0.12.0
+    Checking csv v1.4.0
+    Checking hf-hub v0.5.0
+    Checking uu_uname v0.5.0
+    Checking bevy_image v0.18.0
+    Checking bevy_shader v0.18.0
+    Checking bevy_audio v0.18.0
+    Checking muda v0.17.1
+    Checking chacha20poly1305 v0.10.1
+    Checking nu-table v0.110.0 (/Users/master/cyber/nu/crates/nu-table)
+    Checking uu_touch v0.5.0
+    Checking brotli v8.0.2
+    Checking oem_cp v2.1.2
+    Checking dtparse v2.0.1
+    Checking nuon v0.110.0 (/Users/master/cyber/nu/crates/nuon)
+    Checking umask v2.1.0
+    Checking bevy_mesh v0.18.0
+    Checking bevy_window v0.18.0
+    Checking bevy_text v0.18.0
+    Checking uu_mkdir v0.5.0
+    Checking uu_mktemp v0.5.0
+   Compiling nu-cmd-extra v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-extra)
+    Checking uu_whoami v0.5.0
+    Checking chardetng v0.1.17
+    Checking nu-term-grid v0.110.0 (/Users/master/cyber/nu/crates/nu-term-grid)
+    Checking print-positions v0.6.1
+    Checking nucleo-matcher v0.3.1
+    Checking titlecase v3.6.0
+    Checking devicons v0.6.12
+    Checking rmp v0.8.15
+    Checking filesize v0.2.0
+   Compiling cyb v0.13.1 (/Users/master/cyber/cyb/shell)
+    Checking alphanumeric-sort v1.5.5
+    Checking bevy_camera v0.18.0
+    Checking bevy_animation v0.18.0
+    Checking is_executable v1.0.5
+    Checking bracoxide v0.1.8
+    Checking roxmltree v0.20.0
+    Checking tray-icon v0.21.3
+    Checking cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+    Checking soma-kernel v0.1.0 (/Users/master/cyber/soma/kernel)
+    Checking nu-cli v0.110.0 (/Users/master/cyber/nu/crates/nu-cli)
+    Checking global-hotkey v0.7.0
+    Checking arboard v3.6.1
+    Checking nu-std v0.110.0 (/Users/master/cyber/nu/crates/nu-std)
+    Checking rune-prysm v0.1.0 (/Users/master/cyber/rune/rs/prysm)
+    Checking sha1 v0.10.7
+    Checking base32 v0.5.1
+    Checking bevy_render v0.18.0
+    Checking bevy_picking v0.18.0
+    Checking bevy_light v0.18.0
+    Checking bevy_scene v0.18.0
+    Checking bevy_gizmos v0.18.0
+    Checking bevy_sprite v0.18.0
+    Checking bevy_input_focus v0.18.0
+    Checking bevy_winit v0.18.0
+    Checking bevy_ui v0.18.0
+    Checking tokenizers v0.22.2
+    Checking human-date-parser v0.3.1
+    Checking nu-command v0.110.0 (/Users/master/cyber/nu/crates/nu-command)
+    Checking bevy_core_pipeline v0.18.0
+    Checking bevy_sprite_render v0.18.0
+    Checking bevy_pbr v0.18.0
+    Checking bevy_anti_alias v0.18.0
+    Checking bevy_post_process v0.18.0
+    Checking bevy_ui_render v0.18.0
+    Checking bevy_gizmos_render v0.18.0
+    Checking bevy_gltf v0.18.0
+    Checking bevy_internal v0.18.0
+    Checking bevy v0.18.0
+    Checking prysm v0.1.0 (/Users/master/cyber/prysm)
+    Checking mir v0.1.0 (/Users/master/cyber/mir)
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/mir/src/bevy/world.rs:177:9
+    |
+177 |     let mut lock = match epoch_res.inner.try_write() {
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `hsl_to_rgb` is never used
+   --> /Users/master/cyber/mir/src/epoch/mod.rs:101:4
+    |
+101 | fn hsl_to_rgb(h_rad: f32, s: f32, l: f32) -> [f32; 3] {
+    |    ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mir` (lib) generated 2 warnings (run `cargo fix --lib -p mir` to apply 1 suggestion)
+warning: unused import: `SubjectRef`
+ --> shell/src/worlds/identity.rs:6:65
+  |
+6 | use cyb_core::robot::{self, BindingState, NetworkRef, Registry, SubjectRef, VaultKey};
+  |                                                                 ^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> shell/src/worlds/body/prover.rs:285:9
+    |
+285 |     let mut id = |index: &mut std::collections::HashMap<[u8; 32], usize>, p: [u8; 32]| {
+    |         ----^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `policy` is never used
+   --> shell/src/worlds/identity.rs:202:4
+    |
+202 | fn policy() -> [u8; 32] {
+    |    ^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `cyb` (lib) generated 3 warnings (run `cargo fix --lib -p cyb` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 21s

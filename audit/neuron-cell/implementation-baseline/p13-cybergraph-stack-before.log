@@ -1,0 +1,1159 @@
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling inf-value v0.1.0 (/Users/master/cyber/inf/rs/value)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+   Compiling inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+   Compiling cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+   Compiling cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+   Compiling cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+   Compiling cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+error[E0432]: unresolved imports `nox::OrderId`, `nox::Tag`
+  --> tests/common/mod.rs:14:11
+   |
+14 | use nox::{OrderId, Order, Tag};
+   |           ^^^^^^^         ^^^ no `Tag` in the root
+   |           |
+   |           no `OrderId` in the root
+   |
+help: a similar name exists in the module
+   |
+14 - use nox::{OrderId, Order, Tag};
+14 + use nox::{Order, Order, Tag};
+   |
+
+error[E0432]: unresolved import `nox::Tag`
+  --> tests/stack_rejection.rs:25:26
+   |
+25 | use nox::{reduce, Order, Tag, VecTrace, NullCalls, Outcome, ErrorKind};
+   |                          ^^^ no `Tag` in the root
+
+error[E0432]: unresolved import `nox::Tag`
+  --> tests/stack_multi_pattern.rs:25:26
+   |
+25 | use nox::{reduce, Order, Tag, VecTrace, NullCalls, Outcome};
+   |                          ^^^ no `Tag` in the root
+
+error[E0432]: unresolved import `nox::Tag`
+  --> tests/stack_compute.rs:18:26
+   |
+18 | use nox::{reduce, Order, Tag, VecTrace, NullCalls, Outcome};
+   |                          ^^^ no `Tag` in the root
+
+error[E0432]: unresolved import `nox::Tag`
+  --> tests/stack_hash.rs:23:26
+   |
+23 | use nox::{reduce, Order, Tag, VecTrace, NullCalls};
+   |                          ^^^ no `Tag` in the root
+
+error[E0432]: unresolved imports `nox::NounId`, `nox::Tag`
+  --> tests/stack_call.rs:19:26
+   |
+19 | use nox::{reduce, Order, NounId, Tag, VecTrace, NullCalls, Outcome, ErrorKind, CallProvider, LookProvider};
+   |                          ^^^^^^  ^^^ no `Tag` in the root
+   |                          |
+   |                          no `NounId` in the root
+   |
+help: a similar name exists in the module
+   |
+19 - use nox::{reduce, Order, NounId, Tag, VecTrace, NullCalls, Outcome, ErrorKind, CallProvider, LookProvider};
+19 + use nox::{reduce, Order, bound, Tag, VecTrace, NullCalls, Outcome, ErrorKind, CallProvider, LookProvider};
+   |
+
+error[E0432]: unresolved import `nox::Tag`
+  --> tests/stack_axis.rs:23:26
+   |
+23 | use nox::{reduce, Order, Tag, VecTrace, NullCalls};
+   |                          ^^^ no `Tag` in the root
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/common/mod.rs:40:52
+   |
+40 | pub fn make_bbg_object<const N: usize>(order: &mut Order<N>, limbs: [Goldilocks; 4]) -> OrderId {
+   |                                                    ^^^^^--- help: remove the unnecessary generics
+   |                                                    |
+   |                                                    expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/common/mod.rs:54:17
+   |
+54 |     order: &mut Order<N>,
+   |                 ^^^^^--- help: remove the unnecessary generics
+   |                 |
+   |                 expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/common/mod.rs:61:54
+   |
+61 | pub fn make_look_formula<const N: usize>(order: &mut Order<N>, ns: u64, key: u64) -> OrderId {
+   |                                                      ^^^^^--- help: remove the unnecessary generics
+   |                                                      |
+   |                                                      expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/common/mod.rs:74:53
+   |
+74 | pub fn make_field_binop<const N: usize>(order: &mut Order<N>, tag: u64, a: u64, b: u64) -> OrderId {
+   |                                                     ^^^^^--- help: remove the unnecessary generics
+   |                                                     |
+   |                                                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/common/mod.rs:87:52
+   |
+87 | pub fn make_word_binop<const N: usize>(order: &mut Order<N>, tag: u64, a: u64, b: u64) -> OrderId {
+   |                                                    ^^^^^--- help: remove the unnecessary generics
+   |                                                    |
+   |                                                    expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/common/mod.rs:100:54
+    |
+100 | pub fn make_call_formula<const N: usize>(order: &mut Order<N>, call_tag: u64) -> OrderId {
+    |                                                      ^^^^^--- help: remove the unnecessary generics
+    |                                                      |
+    |                                                      expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0063]: missing field `bbg_root` in initializer of `Statement`
+  --> tests/common/mod.rs:23:5
+   |
+23 |     zheng::Statement {
+   |     ^^^^^^^^^^^^^^^^ missing `bbg_root`
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_call.rs:35:35
+   |
+35 |     fn provide(&self, order: &mut Order<N>, _tag: Goldilocks, _object: NounId) -> Option<NounId> {
+   |                                   ^^^^^--- help: remove the unnecessary generics
+   |                                   |
+   |                                   expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_call.rs:48:35
+   |
+48 |     fn provide(&self, order: &mut Order<N>, _tag: Goldilocks, _object: NounId) -> Option<NounId> {
+   |                                   ^^^^^--- help: remove the unnecessary generics
+   |                                   |
+   |                                   expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:41:21
+   |
+41 |     let al0 = order.atom(limbs[0], Tag::Field).unwrap();
+   |                     ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:42:21
+   |
+42 |     let al1 = order.atom(limbs[1], Tag::Field).unwrap();
+   |                     ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:43:21
+   |
+43 |     let al2 = order.atom(limbs[2], Tag::Field).unwrap();
+   |                     ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:44:21
+   |
+44 |     let al3 = order.atom(limbs[3], Tag::Field).unwrap();
+   |                     ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:45:27
+   |
+45 |     let inner     = order.pair(al2, al3).unwrap();
+   |                           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:46:27
+   |
+46 |     let mid       = order.pair(al1, inner).unwrap();
+   |                           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:47:27
+   |
+47 |     let root_pair = order.pair(al0, mid).unwrap();
+   |                           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:48:27
+   |
+48 |     let rest      = order.atom(Goldilocks::ZERO, Tag::Field).unwrap();
+   |                           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:49:11
+   |
+49 |     order.pair(root_pair, rest).unwrap()
+   |           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:62:22
+   |
+62 |     let t17  = order.atom(g(17), Tag::Field).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:63:22
+   |
+63 |     let t1   = order.atom(g(1),  Tag::Field).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:64:22
+   |
+64 |     let vns  = order.atom(g(ns),  Tag::Field).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:65:22
+   |
+65 |     let vkey = order.atom(g(key), Tag::Field).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:66:23
+   |
+66 |     let ns_f  = order.pair(t1, vns).unwrap();
+   |                       ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:67:23
+   |
+67 |     let key_f = order.pair(t1, vkey).unwrap();
+   |                       ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:68:23
+   |
+68 |     let body  = order.pair(ns_f, key_f).unwrap();
+   |                       ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:69:11
+   |
+69 |     order.pair(t17, body).unwrap()
+   |           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:75:20
+   |
+75 |     let t  = order.atom(g(tag), Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:76:20
+   |
+76 |     let t1 = order.atom(g(1),   Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:77:20
+   |
+77 |     let va = order.atom(g(a),   Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:78:20
+   |
+78 |     let vb = order.atom(g(b),   Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:79:22
+   |
+79 |     let qa   = order.pair(t1, va).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:80:22
+   |
+80 |     let qb   = order.pair(t1, vb).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:81:22
+   |
+81 |     let body = order.pair(qa, qb).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:82:11
+   |
+82 |     order.pair(t, body).unwrap()
+   |           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:88:20
+   |
+88 |     let t  = order.atom(g(tag), Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:89:20
+   |
+89 |     let t1 = order.atom(g(1),   Tag::Field).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:90:20
+   |
+90 |     let va = order.atom(g(a),   Tag::Word).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:91:20
+   |
+91 |     let vb = order.atom(g(b),   Tag::Word).unwrap();
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:92:22
+   |
+92 |     let qa   = order.pair(t1, va).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:93:22
+   |
+93 |     let qb   = order.pair(t1, vb).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:94:22
+   |
+94 |     let body = order.pair(qa, qb).unwrap();
+   |                      ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+  --> tests/common/mod.rs:95:11
+   |
+95 |     order.pair(t, body).unwrap()
+   |           ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:101:24
+    |
+101 |     let t16    = order.atom(g(16),       Tag::Field).unwrap();
+    |                        ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:102:24
+    |
+102 |     let t1     = order.atom(g(1),        Tag::Field).unwrap();
+    |                        ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:103:24
+    |
+103 |     let ctag   = order.atom(g(call_tag), Tag::Field).unwrap();
+    |                        ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:104:24
+    |
+104 |     let zero   = order.atom(g(0),        Tag::Field).unwrap();
+    |                        ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:105:25
+    |
+105 |     let tag_f   = order.pair(t1, ctag).unwrap();   // [1 call_tag]
+    |                         ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:106:25
+    |
+106 |     let check_f = order.pair(t1, zero).unwrap();   // [1 0] — always accepted
+    |                         ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:107:25
+    |
+107 |     let body    = order.pair(tag_f, check_f).unwrap();
+    |                         ^^^^ method not found in `&mut u32`
+
+error[E0599]: no method named `pair` found for mutable reference `&mut u32` in the current scope
+   --> tests/common/mod.rs:108:11
+    |
+108 |     order.pair(t16, body).unwrap()
+    |           ^^^^ method not found in `&mut u32`
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_rejection.rs:46:21
+   |
+46 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_compute.rs:29:21
+   |
+29 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_hash.rs:31:21
+   |
+31 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_multi_pattern.rs:58:21
+   |
+58 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_look.rs:36:21
+   |
+36 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_axis.rs:52:22
+   |
+52 |     let mut order  = Order::<ORDER_SIZE>::new();
+   |                      ^^^^^-------------- help: remove the unnecessary generics
+   |                      |
+   |                      expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_bbg_lifecycle.rs:63:21
+   |
+63 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/stack_call.rs:36:20
+   |
+36 |         Some(order.atom(g(42), Tag::Field).unwrap())
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_signal.rs:180:21
+    |
+180 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_hash.rs:31:42
+    |
+ 31 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_compute.rs:29:42
+    |
+ 29 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_rejection.rs:46:42
+    |
+ 46 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_multi_pattern.rs:58:42
+    |
+ 58 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_look.rs:36:42
+    |
+ 36 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_bbg_lifecycle.rs:63:42
+    |
+ 63 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_axis.rs:52:43
+    |
+ 52 |     let mut order  = Order::<ORDER_SIZE>::new();
+    |                                           ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_compute.rs:45:21
+   |
+45 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_signal.rs:180:42
+    |
+180 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_hash.rs:63:25
+   |
+63 |         let mut order = Order::<ORDER_SIZE>::new();
+   |                         ^^^^^-------------- help: remove the unnecessary generics
+   |                         |
+   |                         expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no method named `atom` found for mutable reference `&mut u32` in the current scope
+  --> tests/stack_call.rs:49:20
+   |
+49 |         Some(order.atom(g(99), Tag::Field).unwrap())
+   |                    ^^^^ method not found in `&mut u32`
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_rejection.rs:76:21
+   |
+76 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_axis.rs:75:21
+   |
+75 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_multi_pattern.rs:106:21
+    |
+106 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_look.rs:66:21
+   |
+66 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_compute.rs:45:42
+    |
+ 45 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_hash.rs:63:46
+    |
+ 63 |         let mut order = Order::<ORDER_SIZE>::new();
+    |                                              ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_rejection.rs:76:42
+    |
+ 76 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_bbg_lifecycle.rs:150:21
+    |
+150 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_call.rs:59:21
+   |
+59 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_axis.rs:75:42
+    |
+ 75 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_compute.rs:61:21
+   |
+61 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_multi_pattern.rs:106:42
+    |
+106 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_look.rs:66:42
+    |
+ 66 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_rejection.rs:101:21
+    |
+101 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_look.rs:92:21
+   |
+92 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_bbg_lifecycle.rs:150:42
+    |
+150 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_compute.rs:61:42
+    |
+ 61 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_call.rs:59:42
+    |
+ 59 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_compute.rs:83:21
+   |
+83 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_rejection.rs:101:42
+    |
+101 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_look.rs:92:42
+    |
+ 92 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0063]: missing field `bbg_root` in initializer of `Statement`
+   --> tests/stack_rejection.rs:109:16
+    |
+109 |     let stmt = Statement {
+    |                ^^^^^^^^^ missing `bbg_root`
+
+error[E0609]: no field `bbg_root` on type `zheng::LookOpening`
+   --> tests/stack_look.rs:108:26
+    |
+108 |         prov_openings[0].bbg_root, col_openings[0].bbg_root,
+    |                          ^^^^^^^^ unknown field
+    |
+    = note: available fields are: `commitment`, `point`, `value`, `opening`, `transcript_seed` ... and 2 others
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_rejection.rs:125:21
+    |
+125 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0609]: no field `bbg_root` on type `zheng::LookOpening`
+   --> tests/stack_look.rs:108:52
+    |
+108 |         prov_openings[0].bbg_root, col_openings[0].bbg_root,
+    |                                                    ^^^^^^^^ unknown field
+    |
+    = note: available fields are: `commitment`, `point`, `value`, `opening`, `transcript_seed` ... and 2 others
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+  --> tests/stack_call.rs:85:21
+   |
+85 |     let mut order = Order::<ORDER_SIZE>::new();
+   |                     ^^^^^-------------- help: remove the unnecessary generics
+   |                     |
+   |                     expected 0 generic arguments
+   |
+note: type alias defined here, with 0 generic parameters
+  --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+   |
+20 | pub type Order = u32;
+   |          ^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_compute.rs:83:42
+    |
+ 83 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_rejection.rs:125:42
+    |
+125 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0063]: missing field `bbg_root` in initializer of `Statement`
+   --> tests/stack_rejection.rs:132:16
+    |
+132 |     let stmt = Statement {
+    |                ^^^^^^^^^ missing `bbg_root`
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_call.rs:85:42
+    |
+ 85 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_rejection.rs:155:21
+    |
+155 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+error[E0107]: type alias takes 0 generic arguments but 1 generic argument was supplied
+   --> tests/stack_call.rs:109:21
+    |
+109 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                     ^^^^^-------------- help: remove the unnecessary generics
+    |                     |
+    |                     expected 0 generic arguments
+    |
+note: type alias defined here, with 0 generic parameters
+   --> /Users/master/cyber/nox/rs/data/mod.rs:20:10
+    |
+ 20 | pub type Order = u32;
+    |          ^^^^^
+
+Some errors have detailed explanations: E0063, E0107, E0432, E0599.
+For more information about an error, try `rustc --explain E0063`.
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_rejection.rs:155:42
+    |
+155 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0063]: missing field `bbg_root` in initializer of `Statement`
+   --> tests/stack_rejection.rs:166:18
+    |
+166 |     let stmt_b = Statement {
+    |                  ^^^^^^^^^ missing `bbg_root`
+
+error[E0599]: no function or associated item named `new` found for type `u32` in the current scope
+   --> tests/stack_call.rs:109:42
+    |
+109 |     let mut order = Order::<ORDER_SIZE>::new();
+    |                                          ^^^ function or associated item not found in `u32`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/cmp.rs:264:5
+    |
+264 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some errors have detailed explanations: E0063, E0107, E0432, E0599, E0609.
+error: could not compile `cybergraph` (test "stack_hash") due to 54 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `cybergraph` (test "stack_multi_pattern") due to 54 previous errors
+error: could not compile `cybergraph` (test "stack_axis") due to 54 previous errors
+error: could not compile `cybergraph` (test "stack_bbg_lifecycle") due to 53 previous errors
+error: could not compile `cybergraph` (test "stack_signal") due to 51 previous errors
+error: could not compile `cybergraph` (test "stack_look") due to 57 previous errors
+error: could not compile `cybergraph` (test "stack_compute") due to 58 previous errors
+error: could not compile `cybergraph` (test "stack_call") due to 60 previous errors
+error: could not compile `cybergraph` (test "stack_rejection") due to 63 previous errors

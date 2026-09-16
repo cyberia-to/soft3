@@ -1,0 +1,48 @@
+warning: field `journal_recovery_mode` is never read
+  --> vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.41s
+     Running unittests src/lib.rs (bbg/rs/target/debug/deps/bbg-fdb38d63503368db)
+
+running 4 tests
+test storage::database::native_tests::native_sync_error_freezes_every_shared_view_until_reopen ... ok
+test storage::database::native_tests::native_lost_barrier_ack_recovers_all_domains_and_deduplicates_retry ... ok
+test storage::database::native_tests::native_precommit_read_error_rolls_back_every_composed_domain ... ok
+test storage::database::native_tests::native_write_error_recovers_a_whole_composed_commit ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 77 filtered out; finished in 0.31s
+

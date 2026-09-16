@@ -1,0 +1,83 @@
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.10s
+     Running tests/applications.rs (target/debug/deps/applications-bc8d2e811dde36ea)
+
+running 5 tests
+test noncanonical_atoms_and_child_particles_do_not_get_normalized ... ok
+test retained_application_references_are_required_and_fingerprint_binds_claims ... ok
+test application_views_share_one_database_owner_and_receipts ... ok
+test corruption_is_reported_on_read_without_reinitializing_history ... ok
+test missing_closure_and_application_rejection_publish_nothing ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.86s
+
+     Running tests/native_import.rs (target/debug/deps/native_import-9036d4822df79463)
+
+running 11 tests
+test intent_import_respects_event_count_when_byte_budget_has_room ... ok
+test imported_history_requires_its_source_marker ... ok
+test copied_completion_marker_cannot_claim_an_empty_store_imported_a_log ... ok
+test unknown_uninitialized_records_are_preserved_without_writing_import_metadata ... ok
+test ordinary_operations_follow_import_without_changing_its_exact_prefix ... ok
+test wrong_genesis_import_preserves_readiness_of_existing_empty_store ... ok
+test interrupted_import_rejects_different_exact_prefix_even_with_valid_chain_and_marker ... ok
+test interrupted_import_resumes_after_exact_committed_frames_without_rebatching_them ... ok
+test import_preserves_historical_bytes_and_resume_compares_representation_exactly ... ok
+test completed_marker_source_and_event_count_are_checked_against_history ... ok
+test aggregate_legacy_log_exceeding_operation_limit_is_split_into_valid_requests has been running for over 60 seconds
+test aggregate_legacy_log_exceeding_operation_limit_is_split_into_valid_requests ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 85.79s
+
+     Running tests/native_storage.rs (target/debug/deps/native_storage-5a61dd3c46950fb8)
+
+running 10 tests
+test equal_commands_without_identity_are_distinct_operations ... ok
+test rejected_batch_restores_graph_ledger_chain_and_disk ... ok
+test native_rewards_intents_and_networks_are_retained ... ok
+test original_payment_receipt_survives_other_commits_and_restart ... ok
+test economics_overflow_never_publishes_a_partial_batch ... ok
+test multi_neuron_steps_have_distinct_global_records ... ok
+test legacy_import_keeps_bytes_and_requires_complete_input ... ok
+test authenticated_proof_bytes_and_commitment_survive_durable_recovery ... ok
+test extra_or_missing_records_are_not_silently_skipped ... ok
+test changed_genesis_or_corrupt_persisted_state_refuses_readiness ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.07s
+

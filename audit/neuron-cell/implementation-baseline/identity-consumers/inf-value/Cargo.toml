@@ -1,0 +1,10 @@
+[package]
+name = "identity-check-inf-value"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies.subject]
+package = "inf-value"
+path = "/Users/master/cyber/inf/rs/value"
+default-features = false
+features = []

@@ -1,0 +1,217 @@
+   Compiling inf-ast v0.1.0 (/Users/master/cyber/inf/rs/ast)
+   Compiling inf-lex v0.1.0 (/Users/master/cyber/inf/rs/lex)
+   Compiling inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling inf-plan v0.1.0 (/Users/master/cyber/inf/rs/plan)
+   Compiling inf-parse v0.1.0 (/Users/master/cyber/inf/rs/parse)
+   Compiling inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+   Compiling inf-lower v0.1.0 (/Users/master/cyber/inf/rs/lower)
+   Compiling inf-cli v0.1.0 (/Users/master/cyber/inf/rs/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.51s
+     Running unittests src/lib.rs (target/debug/deps/inf_ast-b8307a9558be00a4)
+
+running 2 tests
+test tests::aggr_head_detected ... ok
+test tests::entry_lookup ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/inf-acdb70a4c01ac5ee)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_eval-aaf60ce3837b58c2)
+
+running 6 tests
+test expr::tests::me_resolves ... ok
+test expr::tests::type_tests_and_conversions ... ok
+test expr::tests::arithmetic_is_exact ... ok
+test expr::tests::comparisons ... ok
+test expr::tests::string_and_list_functions ... ok
+test funcs::tests::regex_and_json ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/engine.rs (target/debug/deps/engine-4428cd7d1df8843b)
+
+running 24 tests
+test fixed_rule_dijkstra_shortest_path ... ok
+test assert_none_fails_when_violated ... ok
+test assert_none_passes_when_invariant_holds ... ok
+test infix_arithmetic_in_bind ... ok
+test aggregation_count_per_neuron ... ok
+test fixed_rule_degree_centrality ... ok
+test discovery_join_filter_sort_limit ... ok
+test live_host_call_is_a_witness ... ok
+test bounded_reachability_stops_at_depth ... ok
+test fixed_rule_random_walk_seeded_deterministic ... ok
+test fixed_rule_dfs_and_scc ... ok
+test fixed_rule_pagerank_deterministic_and_positive ... ok
+test mutation_derives_link_batch ... ok
+test full_closure_without_bound ... ok
+test fixed_rule_connected_components_one_component ... ok
+test fixed_rule_mst_and_astar_and_yen ... ok
+test negation_finds_unlinked_under_topic ... ok
+test reactive_re_evaluates_on_subscribed_events ... ok
+test ordered_aggregate_running_count_per_partition ... ok
+test fixed_rule_centralities_and_community ... ok
+test underscore_temp_relation_usable_by_later_rules ... ok
+test semi_naive_handles_multiple_occurrences_of_the_same_recursive_relation ... ok
+test semi_naive_scale_long_chain ... ok
+test scale_inequality_self_join_running_count ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_lex-85626c785fca1db3)
+
+running 4 tests
+test tests::ints_and_minus ... ok
+test tests::assign_vs_colon ... ok
+test tests::comments_and_strings ... ok
+test tests::sigils_and_paths ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_lower-0a5ff4aba0dffc7b)
+
+running 22 tests
+test tests::nox_cond_returns_none_for_hash_vars ... ok
+test tests::tuple_columns_lower_and_run_on_nox ... ok
+test tests::nox_cond_lt ... ok
+test tests::unsupported_is_reported_not_faked ... ok
+test tests::runs_on_the_real_nox_vm ... ok
+test tests::nox_cond_gt ... ok
+test tests::whole_query_bounded_reachability_matches_reference ... ok
+test tests::nox_scan_single_column ... ok
+test tests::arithmetic_lowers_and_matches_reference ... ok
+test tests::nox_cond_eq_and_ne ... ok
+test tests::nox_cond_ge_le ... ok
+test tests::whole_query_join_with_filter_matches_reference ... ok
+test tests::whole_query_filter_lt_matches_reference ... ok
+test tests::whole_query_filter_gt_matches_reference ... ok
+test tests::whole_query_eq_condition_matches_reference ... ok
+test tests::nox_cond_and_or ... ok
+test tests::nox_scan_all_rows_matches_reference ... ok
+test tests::nox_scan_gt_filter_matches_reference ... ok
+test tests::nox_bounded_reach_1hop_matches_reference ... ok
+test tests::nox_bounded_reach_2hops_matches_reference ... ok
+test tests::nox_equijoin_matches_reference ... ok
+test tests::nox_equijoin_with_filter_matches_reference ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_parse-1faea080a7ff6c70)
+
+running 11 tests
+test tests::aggregation_head ... ok
+test tests::assert_none ... ok
+test tests::bounded_recursion ... ok
+test tests::mutation_link ... ok
+test tests::negation_and_bind ... ok
+test tests::declarations ... ok
+test tests::ordered_aggregate_order_attr ... ok
+test tests::order_and_bounded_attrs_parse_in_either_order ... ok
+test tests::declaration_types ... ok
+test tests::sibling_call_and_infix ... ok
+test tests::vertical_slice ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_plan-1792b08755094387)
+
+running 13 tests
+test tests::missing_entry_rejected ... ok
+test tests::order_without_running_aggregate_is_rejected ... ok
+test tests::negation_in_recursion_is_rejected ... ok
+test tests::negation_stratifies_above ... ok
+test tests::non_recursive_single_stratum ... ok
+test tests::recursion_is_detected_and_bounded ... ok
+test tests::order_key_must_be_bound ... ok
+test tests::ordered_aggregate_accepted_and_plans ... ok
+test tests::reordering_prefers_the_more_bound_read_among_ready_atoms ... ok
+test tests::running_aggregate_without_order_is_rejected ... ok
+test tests::unsafe_head_var_rejected ... ok
+test tests::reordering_pushes_cond_atoms_to_their_earliest_bound_point ... ok
+test tests::plain_rule_reading_an_aggregate_is_not_misflagged_recursive ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_source-ae7291a87bcb0e97)
+
+running 8 tests
+test tests::graph_stats_max_rounds_is_diameter ... ok
+test tests::graph_stats_default_is_zero ... ok
+test tests::local_source_graph_stats_none_before_compute ... ok
+test tests::local_source_scan_and_schema ... ok
+test tests::compute_stats_without_canonical_rels_falls_back_to_largest ... ok
+test tests::with_stats_overrides_computed ... ok
+test tests::local_source_graph_stats_some_after_compute ... ok
+test tests::graph_stats_computes_from_local_data ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_value-aeece6a1cc7801da)
+
+running 9 tests
+test field::tests::add_sub_roundtrip ... ok
+test field::tests::mul_is_commutative_and_associative ... ok
+test field::tests::order_matches_canonical_residue ... ok
+test field::tests::inverse_is_correct ... ok
+test field::tests::reduction_is_canonical ... ok
+test tests::cross_type_total_order_is_stable ... ok
+test tests::set_semantics_dedup_and_order ... ok
+test tests::tag_hash_is_deterministic_and_distinct ... ok
+test tests::truthiness ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_ast
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_eval
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_lex
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_lower
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_parse
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_plan
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_source
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_value
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

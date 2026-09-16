@@ -1,0 +1,707 @@
+    Blocking waiting for file lock on package cache
+     Locking 312 packages to latest compatible versions
+      Adding aead v0.5.2
+      Adding allocator-api2 v0.2.21
+      Adding android_system_properties v0.1.6
+      Adding arrayvec v0.7.8
+      Adding async-compat v0.2.5
+      Adding async-trait v0.1.92
+      Adding async_io_stream v0.3.3
+      Adding atomic-polyfill v1.0.3
+      Adding atomic-waker v1.1.2
+      Adding attohttpc v0.30.1
+      Adding autocfg v1.5.1
+      Adding aws-lc-rs v1.18.0
+      Adding aws-lc-sys v0.44.0
+      Adding backon v1.6.0
+      Adding base32 v0.5.1
+      Adding bip32 v0.5.3
+      Adding bip39 v2.2.2
+      Adding bitcoin_hashes v0.14.101
+      Adding block-buffer v0.11.0
+      Adding block2 v0.6.2
+      Adding bs58 v0.5.1
+      Adding bumpalo v3.20.3
+      Adding cfg_aliases v0.2.2
+      Adding chacha20 v0.9.1
+      Adding chacha20 v0.10.2
+      Adding chacha20poly1305 v0.10.1
+      Adding chrono v0.4.45
+      Adding cipher v0.4.4
+      Adding cmake v0.1.58
+      Adding cobs v0.3.0
+      Adding combine v4.6.7
+      Adding const-oid v0.10.2
+      Adding convert_case v0.10.0
+      Adding cordyceps v0.3.5
+      Adding core-foundation v0.10.1
+      Adding core-foundation-sys v0.8.7
+      Adding cpufeatures v0.3.1
+      Adding critical-section v1.2.0
+      Adding crossbeam-channel v0.5.17
+      Adding crypto-common v0.2.2
+      Adding curve25519-dalek v5.0.0-pre.1
+      Adding curve25519-dalek-derive v0.1.1
+      Adding cyb v0.2.1 (/Users/master/cyber/cyb/crates/cyb)
+      Adding cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+      Adding cyber-radio v0.1.0
+      Adding cyber-radio-base v0.1.1
+      Adding cyber-radio-netwatch v0.1.0
+      Adding cyber-radio-portmapper v0.1.0
+      Adding cyber-radio-quinn v0.1.0
+      Adding cyber-radio-quinn-proto v0.1.0
+      Adding cyber-radio-quinn-udp v0.1.0
+      Adding cyber-radio-relay v0.1.0
+      Adding darling v0.20.11
+      Adding darling_core v0.20.11
+      Adding darling_macro v0.20.11
+      Adding data-encoding v2.11.1
+      Adding der v0.8.0-rc.10 (available: v0.8.1)
+      Adding deranged v0.5.8
+      Adding derive_builder v0.20.2
+      Adding derive_builder_core v0.20.2
+      Adding derive_builder_macro v0.20.2
+      Adding derive_more v2.1.1
+      Adding derive_more-impl v2.1.1
+      Adding diatomic-waker v0.2.3
+      Adding digest v0.11.0-rc.10 (available: v0.11.3)
+      Adding dispatch2 v0.3.1
+      Adding dlopen2 v0.5.0
+      Adding document-features v0.2.12
+      Adding dunce v1.0.5
+      Adding dyn-clone v1.0.20
+      Adding ed25519 v3.0.0-rc.4 (available: v3.0.0)
+      Adding ed25519-dalek v3.0.0-pre.1
+      Adding embedded-io v0.4.0
+      Adding embedded-io v0.6.1
+      Adding enum-as-inner v0.6.1
+      Adding enum-assoc v1.4.1
+      Adding fastbloom v0.14.1
+      Adding fiat-crypto v0.3.0
+      Adding fnv v1.0.7
+      Adding foldhash v0.2.0
+      Adding fs_extra v1.3.0
+      Adding futures v0.3.34
+      Adding futures-buffered v0.2.13
+      Adding futures-channel v0.3.34
+      Adding futures-core v0.3.34
+      Adding futures-executor v0.3.34
+      Adding futures-io v0.3.34
+      Adding futures-lite v2.6.1
+      Adding futures-macro v0.3.34
+      Adding futures-sink v0.3.34
+      Adding futures-task v0.3.34
+      Adding futures-util v0.3.34
+      Adding generator v0.8.8
+      Adding getrandom v0.4.3
+      Adding gloo-timers v0.3.0
+      Adding h2 v0.4.19
+      Adding hash32 v0.2.1
+      Adding heapless v0.7.17
+      Adding hex-conservative v0.2.3
+      Adding hickory-proto v0.25.2
+      Adding hickory-resolver v0.25.2
+      Adding http v1.5.0
+      Adding http-body v1.1.0
+      Adding http-body-util v0.1.5
+      Adding httparse v1.10.1
+      Adding httpdate v1.0.3
+      Adding hybrid-array v0.4.14
+      Adding hyper v1.11.1
+      Adding hyper-rustls v0.27.9
+      Adding hyper-util v0.1.20
+      Adding iana-time-zone v0.1.65
+      Adding iana-time-zone-haiku v0.1.2
+      Adding ident_case v1.0.1
+      Adding identity-hash v0.1.0
+      Adding igd-next v0.16.2
+      Adding inout v0.1.4
+      Adding ipconfig v0.3.4
+      Adding ipnet v2.12.2
+      Adding iroh-metrics v0.38.3
+      Adding iroh-metrics-derive v0.4.1
+      Adding jni v0.22.4
+      Adding jni-macros v0.22.4
+      Adding jni-sys v0.4.1
+      Adding jni-sys-macros v0.4.1
+      Adding jobserver v0.1.35
+      Adding js-sys v0.3.104 (available: v0.3.105)
+      Adding lazy_static v1.5.0
+      Adding libm v0.2.16
+      Adding litrs v1.0.0
+      Adding loom v0.7.2
+      Adding lru v0.16.4
+      Adding lru-slab v0.1.2
+      Adding mac-addr v0.3.0
+      Adding matchers v0.2.0
+      Adding mio v1.2.3
+      Adding moka v0.12.16
+      Adding n0-error v0.1.3
+      Adding n0-error-macros v0.1.3
+      Adding n0-future v0.3.2
+      Adding n0-watcher v0.6.1
+      Adding netdev v0.40.1
+      Adding netlink-packet-core v0.8.1
+      Adding netlink-packet-route v0.28.0
+      Adding netlink-packet-route v0.29.0
+      Adding netlink-proto v0.12.0
+      Adding netlink-sys v0.8.8
+      Adding neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+      Adding neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+      Adding neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+      Adding ntimestamp v1.0.0
+      Adding nu-ansi-term v0.50.3
+      Adding num-conv v0.2.2
+      Adding num-traits v0.2.19
+      Adding num_enum v0.7.6
+      Adding num_enum_derive v0.7.6
+      Adding num_threads v0.1.7
+      Adding objc2 v0.6.4
+      Adding objc2-core-foundation v0.3.2
+      Adding objc2-encode v4.1.0
+      Adding objc2-security v0.3.2
+      Adding objc2-system-configuration v0.3.2
+      Adding opaque-debug v0.3.1
+      Adding openssl-probe v0.2.1
+      Adding papaya v0.2.5
+      Adding parking v2.2.1
+      Adding parking_lot v0.12.5
+      Adding paste v1.0.15
+      Adding pbkdf2 v0.12.2
+      Adding pem-rfc7468 v1.0.0
+      Adding pharos v0.5.3
+      Adding pin-project v1.1.13
+      Adding pin-project-internal v1.1.13
+      Adding pin-project-lite v0.2.17
+      Adding pkarr v5.0.3
+      Adding pkcs8 v0.11.0-rc.10 (available: v0.11.0)
+      Adding pkg-config v0.3.34
+      Adding plist v1.10.0
+      Adding poly1305 v0.8.0
+      Adding portable-atomic v1.15.0
+      Adding postcard v1.1.3
+      Adding postcard-derive v0.2.2
+      Adding powerfmt v0.2.0
+      Adding proc-macro-crate v3.5.0
+      Adding quick-xml v0.41.0
+      Adding quinn v0.11.11
+      Adding quinn-proto v0.11.17
+      Adding quinn-udp v0.5.15
+      Adding r-efi v6.0.0
+      Adding rand v0.8.8
+      Adding rand v0.10.2
+      Adding rand_chacha v0.3.1
+      Adding rand_core v0.10.1
+      Adding rand_pcg v0.10.2
+      Adding reqwest v0.12.28
+      Adding reqwest v0.13.4
+      Adding resolv-conf v0.7.6
+      Adding rune-ast v0.1.0 (/Users/master/cyber/rune/rs/ast)
+      Adding rune-interp v0.1.0 (/Users/master/cyber/rune/rs/interp)
+      Adding rune-lex v0.1.0 (/Users/master/cyber/rune/rs/lex)
+      Adding rune-lower v0.1.0 (/Users/master/cyber/rune/rs/lower)
+      Adding rune-parse v0.1.0 (/Users/master/cyber/rune/rs/parse)
+      Adding rune-parse-pure v0.1.0 (/Users/master/cyber/rune/rs/parse-pure)
+      Adding rune-subject v0.1.0 (/Users/master/cyber/rune/rs/subject)
+      Adding rustc_version v0.4.1
+      Adding rustls-native-certs v0.8.3
+      Adding rustls-platform-verifier v0.7.0
+      Adding rustls-platform-verifier-android v0.1.1
+      Adding rustversion v1.0.23
+      Adding ryu v1.0.23
+      Adding same-file v1.0.6
+      Adding schannel v0.1.29
+      Adding scoped-tls v1.0.1
+      Adding secp256k1 v0.27.0
+      Adding secp256k1-sys v0.8.2
+      Adding security-framework v3.7.0
+      Adding security-framework-sys v2.17.0
+      Adding seize v0.5.1
+      Adding semver v1.0.28
+      Adding send_wrapper v0.6.0
+      Adding serde_bytes v0.11.19
+      Adding serde_urlencoded v0.7.1
+      Adding sha1_smol v1.0.1
+      Adding sha2 v0.11.0-rc.2
+      Adding sharded-slab v0.1.7
+      Adding signal-hook-registry v1.4.8
+      Adding signature v3.0.0-rc.10 (available: v3.0.0)
+      Adding simd_cesu8 v1.2.0
+      Adding simdutf8 v0.1.5
+      Adding simple-dns v0.9.3
+      Adding siphasher v1.0.3
+      Adding slab v0.4.12
+      Adding socket2 v0.6.5
+      Adding soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+      Adding sorted-index-buffer v0.2.1
+      Adding spez v0.1.2
+      Adding spin v0.9.9
+      Adding spin v0.10.1
+      Adding spki v0.8.0-rc.4 (available: v0.8.0)
+      Adding strum v0.27.2
+      Adding strum_macros v0.27.2
+      Adding sync_wrapper v1.0.2
+      Adding tagptr v0.2.0
+      Adding thread_local v1.1.10
+      Adding time v0.3.55
+      Adding time-core v0.1.9
+      Adding time-macros v0.2.32
+      Adding tinyvec v1.13.2
+      Adding tinyvec_macros v0.1.1
+      Adding tokio v1.53.1
+      Adding tokio-macros v2.7.2
+      Adding tokio-rustls v0.26.5
+      Adding tokio-stream v0.1.19
+      Adding tokio-util v0.7.19
+      Adding tokio-websockets v0.12.3
+      Adding toml_datetime v1.1.1+spec-1.1.0
+      Adding toml_edit v0.25.15+spec-1.1.0
+      Adding toml_parser v1.1.3+spec-1.1.0
+      Adding tower v0.5.3
+      Adding tower-http v0.6.11
+      Adding tower-layer v0.3.3
+      Adding tower-service v0.3.3
+      Adding tracing v0.1.44
+      Adding tracing-attributes v0.1.31
+      Adding tracing-core v0.1.36
+      Adding tracing-log v0.2.0
+      Adding tracing-subscriber v0.3.23
+      Adding try-lock v0.2.5
+      Adding unicode-normalization v0.1.25
+      Adding unicode-segmentation v1.13.3
+      Adding unicode-xid v0.2.6
+      Adding universal-hash v0.5.1
+      Adding uuid v1.26.1
+      Adding valuable v0.1.1
+      Adding vergen v9.1.0
+      Adding vergen-gitcl v1.0.8
+      Adding vergen-lib v0.1.6
+      Adding vergen-lib v9.1.0
+      Adding walkdir v2.5.0
+      Adding want v0.3.1
+      Adding wasm-bindgen v0.2.127 (available: v0.2.128)
+      Adding wasm-bindgen-futures v0.4.77
+      Adding wasm-bindgen-macro v0.2.127 (available: v0.2.128)
+      Adding wasm-bindgen-macro-support v0.2.127 (available: v0.2.128)
+      Adding wasm-bindgen-shared v0.2.127 (available: v0.2.128)
+      Adding wasm-streams v0.4.2
+      Adding web-sys v0.3.104
+      Adding web-time v1.1.0
+      Adding webpki-root-certs v1.0.9
+      Adding widestring v1.2.1
+      Adding winapi v0.3.9
+      Adding winapi-i686-pc-windows-gnu v0.4.0
+      Adding winapi-util v0.1.11
+      Adding winapi-x86_64-pc-windows-gnu v0.4.0
+      Adding windows v0.62.2
+      Adding windows-collections v0.3.2
+      Adding windows-core v0.62.2
+      Adding windows-future v0.3.2
+      Adding windows-implement v0.60.2
+      Adding windows-interface v0.59.3
+      Adding windows-numerics v0.3.1
+      Adding windows-registry v0.6.1
+      Adding windows-result v0.4.1
+      Adding windows-strings v0.5.1
+      Adding windows-sys v0.59.0
+      Adding windows-threading v0.2.1
+      Adding winnow v1.0.4
+      Adding wmi v0.18.4
+      Adding ws_stream_wasm v0.7.5
+      Adding xml-rs v0.8.29
+      Adding xmltree v0.10.3
+      Adding z32 v1.3.0
+      Adding zeroize_derive v1.5.0
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling portable-atomic v1.15.0
+    Checking critical-section v1.2.0
+    Checking memchr v2.8.3
+    Checking subtle v2.6.1
+    Checking typenum v1.20.1
+    Checking pin-project-lite v0.2.17
+    Checking smallvec v1.16.0
+    Checking futures-core v0.3.34
+   Compiling libc v0.2.189
+   Compiling syn v2.0.119
+   Compiling syn v3.0.5
+    Checking getrandom v0.2.17
+    Checking errno v0.3.14
+    Checking socket2 v0.6.5
+    Checking futures-io v0.3.34
+    Checking mio v1.2.3
+    Checking cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+    Checking signal-hook-registry v1.4.8
+    Checking slab v0.4.12
+    Checking rand_core v0.6.4
+    Checking futures-sink v0.3.34
+    Checking futures-task v0.3.34
+   Compiling cfg_aliases v0.2.2
+   Compiling dunce v1.0.5
+   Compiling pkg-config v0.3.34
+    Checking futures-channel v0.3.34
+   Compiling fs_extra v1.3.0
+   Compiling rustversion v1.0.23
+   Compiling aws-lc-rs v1.18.0
+    Checking http v1.5.0
+    Checking percent-encoding v2.3.2
+   Compiling rustls v0.23.44
+   Compiling jobserver v0.1.35
+    Checking cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling semver v1.0.28
+    Checking form_urlencoded v1.2.2
+   Compiling crossbeam-epoch v0.9.21
+    Checking foldhash v0.2.0
+   Compiling fnv v1.0.7
+    Checking atomic-waker v1.1.2
+   Compiling strsim v0.11.1
+    Checking cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling cc v1.4.5
+   Compiling ident_case v1.0.1
+   Compiling rustc_version v0.4.1
+    Checking allocator-api2 v0.2.21
+    Checking parking_lot_core v0.9.12
+   Compiling httparse v1.10.1
+    Checking ipnet v2.12.2
+    Checking tinyvec_macros v0.1.1
+    Checking http-body v1.1.0
+    Checking tinyvec v1.13.2
+    Checking const-oid v0.10.2
+   Compiling unicode-segmentation v1.13.3
+   Compiling objc2 v0.6.4
+    Checking hashbrown v0.16.1
+    Checking try-lock v0.2.5
+   Compiling unicode-xid v0.2.6
+    Checking httpdate v1.0.3
+    Checking tower-service v0.3.3
+    Checking want v0.3.1
+    Checking rustix v1.1.4
+    Checking cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+    Checking hybrid-array v0.4.14
+    Checking objc2-encode v4.1.0
+   Compiling convert_case v0.10.0
+   Compiling cmake v0.1.58
+    Checking base64ct v1.8.3
+    Checking ff v0.13.1
+    Checking rune-ast v0.1.0 (/Users/master/cyber/rune/rs/ast)
+    Checking cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+    Checking group v0.13.0
+    Checking cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+    Checking pem-rfc7468 v1.0.0
+    Checking cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+    Checking crypto-common v0.2.2
+    Checking block-buffer v0.11.0
+    Checking cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+    Checking quick_cache v0.6.24
+   Compiling anyhow v1.0.104
+    Checking cordyceps v0.3.5
+    Checking tower-layer v0.3.3
+    Checking core-foundation-sys v0.8.7
+    Checking parking v2.2.1
+   Compiling aws-lc-sys v0.44.0
+   Compiling ring v0.17.14
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.2
+   Compiling winnow v1.0.4
+   Compiling getrandom v0.4.3
+    Checking spin v0.10.1
+    Checking diatomic-waker v0.2.3
+    Checking futures-lite v2.6.1
+    Checking digest v0.11.0-rc.10
+    Checking cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+    Checking futures-buffered v0.2.13
+    Checking http-body-util v0.1.5
+   Compiling heapless v0.7.17
+    Checking serde_json v1.0.151
+   Compiling curve25519-dalek v5.0.0-pre.1
+   Compiling synstructure v0.13.2
+   Compiling darling_core v0.20.11
+   Compiling indexmap v2.14.2
+    Checking aho-corasick v1.1.5
+   Compiling n0-future v0.3.2
+   Compiling cyber-radio-quinn-udp v0.1.0
+    Checking sync_wrapper v1.0.2
+   Compiling toml_parser v1.1.3+spec-1.1.0
+   Compiling vergen-lib v9.1.0
+   Compiling vergen-lib v0.1.6
+   Compiling vergen v9.1.0
+   Compiling libm v0.2.16
+   Compiling toml_datetime v1.1.1+spec-1.1.0
+    Checking arrayvec v0.7.8
+    Checking crossbeam-skiplist v0.1.3
+   Compiling toml_edit v0.25.15+spec-1.1.0
+    Checking hex-conservative v0.2.3
+   Compiling serde_derive v1.0.229
+   Compiling tokio-macros v2.7.2
+   Compiling futures-macro v0.3.34
+   Compiling zerovec-derive v0.11.6
+   Compiling zeroize_derive v1.5.0
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+    Checking tokio v1.53.1
+    Checking futures-util v0.3.34
+    Checking zeroize v1.9.0
+   Compiling displaydoc v0.2.7
+   Compiling tracing-attributes v0.1.31
+   Compiling thiserror-impl v2.0.20
+    Checking zerofrom v0.1.8
+   Compiling darling_macro v0.20.11
+   Compiling derive_more-impl v2.1.1
+   Compiling darling v0.20.11
+   Compiling n0-error-macros v0.1.3
+    Checking thiserror v2.0.20
+   Compiling enum_dispatch v0.3.13
+   Compiling spez v0.1.2
+    Checking n0-error v0.1.3
+    Checking dispatch2 v0.3.1
+    Checking block2 v0.6.2
+   Compiling pin-project-internal v1.1.13
+    Checking objc2-core-foundation v0.3.2
+    Checking derive_more v2.1.1
+    Checking pin-project v1.1.13
+    Checking generic-array v0.14.9
+    Checking crypto-common v0.1.6
+    Checking rustls-pki-types v1.15.1
+    Checking block-buffer v0.10.4
+    Checking digest v0.10.7
+    Checking der v0.7.10
+    Checking hmac v0.12.1
+    Checking webpki-roots v1.0.9
+    Checking crypto-bigint v0.5.5
+    Checking sec1 v0.7.3
+    Checking der v0.8.0-rc.10
+    Checking elliptic-curve v0.13.8
+    Checking spki v0.7.3
+    Checking yoke v0.8.3
+    Checking rfc6979 v0.4.0
+    Checking spki v0.8.0-rc.4
+    Checking signature v2.2.0
+    Checking sha2 v0.10.9
+    Checking ecdsa v0.16.9
+    Checking pkcs8 v0.11.0-rc.10
+   Compiling async-trait v0.1.92
+   Compiling clap_derive v4.6.4
+    Checking regex-automata v0.4.18
+   Compiling derive_builder_core v0.20.2
+   Compiling vergen-gitcl v1.0.8
+   Compiling derive_builder_macro v0.20.2
+    Checking tokio-util v0.7.19
+   Compiling derive_builder v0.20.2
+    Checking tower v0.5.3
+    Checking zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+    Checking security-framework-sys v2.17.0
+    Checking core-foundation v0.10.1
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking inf-value v0.1.0 (/Users/master/cyber/inf/rs/value)
+    Checking toml_edit v0.22.27
+    Checking once_cell v1.21.4
+    Checking hash32 v0.2.1
+    Checking tracing-core v0.1.36
+    Checking path-dedot v3.1.1
+    Checking path-absolutize v3.1.1
+    Checking tempfile v3.27.0
+    Checking tracing v0.1.44
+    Checking value-log v1.9.0
+    Checking dashmap v6.2.1
+    Checking lsm-tree v2.10.4
+   Compiling num_threads v0.1.7
+    Checking rand_chacha v0.3.1
+    Checking toml v0.8.23
+   Compiling num-conv v0.2.2
+   Compiling deranged v0.5.8
+    Checking rune-lex v0.1.0 (/Users/master/cyber/rune/rs/lex)
+    Checking cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+    Checking time-core v0.1.9
+   Compiling powerfmt v0.2.0
+    Checking ryu v1.0.23
+    Checking signature v3.0.0-rc.10
+   Compiling time v0.3.55
+    Checking ed25519 v3.0.0-rc.4
+    Checking cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+    Checking rune-parse-pure v0.1.0 (/Users/master/cyber/rune/rs/parse-pure)
+    Checking rand v0.8.8
+    Checking inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+    Checking security-framework v3.7.0
+    Checking neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Checking regex v1.13.1
+    Checking clap v4.6.6
+    Checking cobs v0.3.0
+    Checking k256 v0.13.4
+    Checking bs58 v0.5.1
+    Checking pbkdf2 v0.12.2
+    Checking ripemd v0.1.3
+    Checking objc2-security v0.3.2
+   Compiling proc-macro-crate v3.5.0
+   Compiling postcard-derive v0.2.2
+    Checking zerovec v0.11.8
+    Checking zerotrie v0.2.5
+    Checking bitcoin_hashes v0.14.101
+    Checking sha2 v0.11.0-rc.2
+    Checking rune-subject v0.1.0 (/Users/master/cyber/rune/rs/subject)
+    Checking unicode-normalization v0.1.25
+    Checking quick-xml v0.41.0
+    Checking data-encoding v2.11.1
+    Checking siphasher v1.0.3
+   Compiling litrs v1.0.0
+    Checking fastbloom v0.14.1
+    Checking plist v1.10.0
+    Checking bip39 v2.2.2
+    Checking rune-lower v0.1.0 (/Users/master/cyber/rune/rs/lower)
+   Compiling num_enum_derive v0.7.6
+    Checking bip32 v0.5.3
+   Compiling document-features v0.2.12
+    Checking objc2-system-configuration v0.3.2
+    Checking neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+    Checking inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+    Checking rune-parse v0.1.0 (/Users/master/cyber/rune/rs/parse)
+    Checking uuid v1.26.1
+    Checking futures-executor v0.3.34
+    Checking inout v0.1.4
+   Compiling enum-as-inner v0.6.1
+   Compiling iroh-metrics-derive v0.4.1
+   Compiling enum-assoc v1.4.1
+    Checking rune-interp v0.1.0 (/Users/master/cyber/rune/rs/interp)
+    Checking parking_lot v0.12.5
+    Checking crossbeam-channel v0.5.17
+   Compiling cyber-radio-netwatch v0.1.0
+   Compiling pkarr v5.0.3
+    Checking ed25519-dalek v3.0.0-pre.1
+   Compiling cyber-radio-quinn v0.1.0
+    Checking base32 v0.5.1
+    Checking identity-hash v0.1.0
+    Checking xml-rs v0.8.29
+    Checking tagptr v0.2.0
+    Checking lru-slab v0.1.2
+    Checking sorted-index-buffer v0.2.1
+    Checking mac-addr v0.3.0
+    Checking cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+    Checking moka v0.12.16
+    Checking ntimestamp v1.0.0
+    Checking netdev v0.40.1
+    Checking xmltree v0.10.3
+    Checking neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+    Checking futures v0.3.34
+    Checking cipher v0.4.4
+    Checking num_enum v0.7.6
+    Checking serde_urlencoded v0.7.1
+    Checking async-compat v0.2.5
+    Checking postcard v1.1.3
+    Checking tokio-stream v0.1.19
+    Checking universal-hash v0.5.1
+   Compiling strum_macros v0.27.2
+    Checking n0-watcher v0.6.1
+    Checking lru v0.16.4
+    Checking simple-dns v0.9.3
+    Checking opaque-debug v0.3.1
+    Checking sha1_smol v1.0.1
+    Checking dyn-clone v1.0.20
+    Checking resolv-conf v0.7.6
+    Checking simdutf8 v0.1.5
+    Checking h2 v0.4.19
+    Checking poly1305 v0.8.0
+    Checking chacha20 v0.9.1
+    Checking aead v0.5.2
+    Checking serde_bytes v0.11.19
+   Compiling cyber-radio v0.1.0
+    Checking seize v0.5.1
+    Checking z32 v1.3.0
+    Checking papaya v0.2.5
+    Checking strum v0.27.2
+    Checking chacha20poly1305 v0.10.1
+    Checking backon v1.6.0
+    Checking webpki-roots v0.26.11
+    Checking fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+   Compiling cyber-radio-relay v0.1.0
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+    Checking bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Checking hyper v1.11.1
+    Checking foculus v0.1.3 (/Users/master/cyber/foculus)
+    Checking tinystr v0.8.4
+    Checking potential_utf v0.1.6
+    Checking icu_collections v2.3.0
+    Checking hyper-util v0.1.20
+    Checking icu_locale_core v2.3.0
+    Checking cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Checking icu_provider v2.3.1
+    Checking icu_properties v2.3.0
+    Checking icu_normalizer v2.3.0
+    Checking neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+    Checking soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+    Checking idna_adapter v1.2.2
+    Checking idna v1.1.0
+    Checking url v2.5.8
+    Checking cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+    Checking tower-http v0.6.11
+    Checking attohttpc v0.30.1
+    Checking cyber-radio-base v0.1.1
+    Checking igd-next v0.16.2
+warning: use of deprecated associated function `sha2::digest::generic_array::GenericArray::<T, N>::from_slice`: please upgrade to generic-array 1.x
+   --> /Users/master/cyber/cyb/core/src/private_vault.rs:218:26
+    |
+218 |         .encrypt(XNonce::from_slice(&nonce), plain.0.as_slice())
+    |                          ^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated associated function `sha2::digest::generic_array::GenericArray::<T, N>::from_slice`: please upgrade to generic-array 1.x
+   --> /Users/master/cyber/cyb/core/src/private_vault.rs:232:30
+    |
+232 |             .decrypt(XNonce::from_slice(&rest[..24]), &rest[24..])
+    |                              ^^^^^^^^^^
+
+warning: `cyb-core` (lib) generated 2 warnings
+    Checking iroh-metrics v0.38.3
+    Checking cyber-radio-portmapper v0.1.0
+    Checking rustls-webpki v0.103.15
+    Checking tokio-rustls v0.26.5
+    Checking rustls-platform-verifier v0.7.0
+    Checking cyber-radio-quinn-proto v0.1.0
+    Checking ureq v2.12.1
+    Checking hyper-rustls v0.27.9
+    Checking hickory-proto v0.25.2
+    Checking tokio-websockets v0.12.3
+    Checking reqwest v0.13.4
+    Checking reqwest v0.12.28
+    Checking hickory-resolver v0.25.2
+    Checking cyb v0.2.1 (/Users/master/cyber/cyb/crates/cyb)
+    Checking soft3 v0.10.0 (/Users/master/cyber/soft3/crate)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 24.01s

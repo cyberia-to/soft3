@@ -1,0 +1,189 @@
+    Checking strata-core v0.1.1 (/Users/master/cyber/strata/core)
+    Checking cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+    Checking cfg-if v1.0.4
+    Checking zeroize v1.9.0
+    Checking typenum v1.20.1
+    Checking subtle v2.6.1
+    Checking const-oid v0.9.6
+    Checking equivalent v1.0.2
+    Checking once_cell v1.21.4
+    Checking memchr v2.8.3
+    Checking libc v0.2.189
+    Checking serde_core v1.0.229
+    Checking crossbeam-utils v0.8.23
+    Checking bitflags v2.13.2
+    Checking rand_core v0.6.4
+    Checking neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Checking zmij v1.0.23
+    Checking compare v0.0.6
+    Checking strata-ext v0.1.1 (/Users/master/cyber/strata/ext)
+    Checking strata-proof v0.1.1 (/Users/master/cyber/strata/proof)
+    Checking strata-compute v0.1.1 (/Users/master/cyber/strata/compute)
+    Checking fastrand v2.5.0
+    Checking itoa v1.0.18
+    Checking hashbrown v0.17.1
+    Checking der v0.7.10
+    Checking strata-trop v0.1.1 (/Users/master/cyber/strata/trop/rs)
+    Checking strata-genies v0.1.1 (/Users/master/cyber/strata/genies/rs)
+    Checking path-dedot v3.1.1
+    Checking strata-nebu v0.1.1 (/Users/master/cyber/strata/nebu/rs)
+    Checking interval-heap v0.0.5
+    Checking strata-kuro v0.1.1 (/Users/master/cyber/strata/kuro/rs)
+    Checking path-absolutize v3.1.1
+    Checking xxhash-rust v0.8.18
+    Checking utf8parse v0.2.2
+    Checking byteorder v1.5.0
+    Checking winnow v0.7.15
+    Checking varint-rs v2.2.1
+    Checking scopeguard v1.2.0
+    Checking byteview v0.6.1
+    Checking rustc-hash v2.1.3
+    Checking strata-jali v0.1.1 (/Users/master/cyber/strata/jali/rs)
+    Checking crossbeam-epoch v0.9.21
+    Checking toml_write v0.1.2
+    Checking cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+    Checking rune-ast v0.1.0 (/Users/master/cyber/rune/rs/ast)
+    Checking hashbrown v0.16.1
+    Checking log v0.4.34
+    Checking smallvec v1.16.1
+    Checking lock_api v0.4.14
+    Checking anstyle-parse v1.0.0
+    Checking cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+    Checking cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+    Checking cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+    Checking zerocopy v0.8.57
+    Checking errno v0.3.14
+    Checking getrandom v0.4.3
+    Checking parking_lot_core v0.9.12
+    Checking crossbeam-skiplist v0.1.3
+    Checking getrandom v0.3.4
+    Checking indexmap v2.14.2
+    Checking ff v0.13.1
+    Checking generic-array v0.14.9
+    Checking rustix v1.1.4
+    Checking guardian v1.3.0
+    Checking double-ended-peekable v0.1.0
+   Compiling enum_dispatch v0.3.13
+    Checking self_cell v1.3.0
+    Checking cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+    Checking cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+    Checking cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+    Checking colorchoice v1.0.5
+    Checking base16ct v0.2.0
+    Checking quick_cache v0.6.24
+    Checking is_terminal_polyfill v1.70.2
+    Checking hashbrown v0.14.5
+    Checking anstyle v1.0.14
+    Checking anstyle-query v1.1.5
+    Checking lz4_flex v0.11.6
+    Checking cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+    Checking rand_core v0.9.5
+    Checking group v0.13.0
+    Checking thiserror v2.0.20
+    Checking memmap2 v0.9.11
+    Checking anstream v1.0.0
+    Checking aho-corasick v1.1.5
+    Checking inf-ast v0.1.0 (/Users/master/cyber/inf/rs/ast)
+    Checking regex-syntax v0.8.11
+    Checking std-semaphore v0.1.0
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.6
+    Checking sec1 v0.7.3
+    Checking crypto-bigint v0.5.5
+    Checking strsim v0.11.1
+    Checking clap_lex v1.1.0
+    Checking spki v0.7.3
+    Checking cpufeatures v0.2.17
+    Checking digest v0.10.7
+    Checking dashmap v6.2.1
+    Checking zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+    Checking bytes v1.12.1
+    Checking rune-lex v0.1.0 (/Users/master/cyber/rune/rs/lex)
+    Checking inf-value v0.1.0 (/Users/master/cyber/inf/rs/value)
+    Checking clap_builder v4.6.6
+    Checking anyhow v1.0.104
+    Checking hmac v0.12.1
+    Checking signature v2.2.0
+    Checking inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+    Checking rfc6979 v0.4.0
+    Checking rune-parse-pure v0.1.0 (/Users/master/cyber/rune/rs/parse-pure)
+    Checking sha2 v0.10.9
+    Checking rune-subject v0.1.0 (/Users/master/cyber/rune/rs/subject)
+    Checking inf-lex v0.1.0 (/Users/master/cyber/inf/rs/lex)
+    Checking ripemd v0.1.3
+    Checking rune-lower v0.1.0 (/Users/master/cyber/rune/rs/lower)
+    Checking inf-parse v0.1.0 (/Users/master/cyber/inf/rs/parse)
+    Checking inf-plan v0.1.0 (/Users/master/cyber/inf/rs/plan)
+    Checking rune-parse v0.1.0 (/Users/master/cyber/rune/rs/parse)
+    Checking rune-interp v0.1.0 (/Users/master/cyber/rune/rs/interp)
+    Checking cyber-tape v0.1.0 (/Users/master/cyber/tape/impl/rust)
+    Checking tempfile v3.27.0
+    Checking base64 v0.22.1
+    Checking bech32 v0.11.1
+    Checking value-log v1.9.0
+    Checking serde v1.0.229
+    Checking serde_json v1.0.151
+    Checking elliptic-curve v0.13.8
+    Checking lsm-tree v2.10.4
+    Checking serde_spanned v0.6.9
+    Checking toml_datetime v0.6.11
+    Checking ecdsa v0.16.9
+    Checking toml_edit v0.22.27
+    Checking neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Checking regex-automata v0.4.18
+    Checking clap v4.6.6
+    Checking k256 v0.13.4
+    Checking cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+    Checking neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+    Checking neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+    Checking ppv-lite86 v0.2.21
+    Checking toml v0.8.23
+    Checking rand_chacha v0.9.0
+    Checking rand v0.9.5
+    Checking regex v1.13.1
+    Checking cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+    Checking fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+    Checking inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+    Checking cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+    Checking bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Checking foculus v0.1.3 (/Users/master/cyber/foculus)
+    Checking cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Checking neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+    Checking soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.95s

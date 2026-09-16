@@ -1,0 +1,10 @@
+[package]
+name = "identity-check-model-serde"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies.subject]
+package = "neuron-model"
+path = "/Users/master/cyber/neuron/model"
+default-features = false
+features = ["serde"]

@@ -1,0 +1,145 @@
+scanned .github: 4 text files
+scanned .worktrees/mudra-private-retrieval: 86 text files
+scanned .worktrees/soft3-thread-publication: 60 text files
+scanned aos: 18 text files
+scanned arc: 2 text files
+scanned bbg: 176 text files
+scanned bel: 2 text files
+scanned bita: 223 text files
+scanned bootloader: 18 text files
+scanned bostrom: 88 text files
+scanned bt: 2 text files
+scanned cloud-forest: 54 text files
+scanned conformance: 2 text files
+scanned crystal: 553 text files
+scanned ctx: 5 text files
+scanned cve: 356 text files
+scanned cyb: 261 text files
+scanned cyber: 230 text files
+scanned cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a: 293 text files
+scanned cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291: 314 text files
+scanned cyber-valley: 102 text files
+scanned cybergraph: 79 text files
+scanned cyberia: 178 text files
+scanned cyberia/research/cyberia-my: 43 text files
+scanned cyberia/research/events: 680 text files
+scanned cyberia/research/mimi: 77 text files
+scanned cyberia-blog: 111 text files
+scanned cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a: 293 text files
+scanned cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291: 314 text files
+scanned cyberia-blog/build/cyberia/midao/lib/forge-std: 76 text files
+scanned cyberia-blog/build/neural/nu: 2730 text files
+scanned cyberia-capital: 3 text files
+scanned cyberia-my: 43 text files
+scanned cyberia-to: 3 text files
+scanned cybernet: 255 text files
+scanned cybernode: 165 text files
+scanned cyberstates: 342 text files
+scanned cybervalley-io: 3 text files
+scanned cybics: 558 text files
+scanned cybland: 1 text files
+scanned dif: 2 text files
+scanned eidos: 70 text files
+scanned episode-1: 34 text files
+scanned erga: 74 text files
+scanned evy: 899 text files
+scanned foculus: 78 text files
+scanned fs: 5 text files
+scanned glia: 175 text files
+scanned go-cyber: 1329 text files
+scanned hemera: 135 text files
+scanned honeycrisp: 307 text files
+scanned honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a: 248 text files
+scanned honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291: 266 text files
+scanned hub: 109 text files
+scanned inf: 64 text files
+scanned inf/rs/cozo: 228 text files
+scanned joy: 53 text files
+scanned kadek: 33 text files
+scanned lens: 53 text files
+scanned li: 123 text files
+scanned lytics: 42 text files
+scanned maker: 23 text files
+scanned midao: 94 text files
+scanned midao/lib/forge-std: 68 text files
+scanned mir: 40 text files
+scanned mona: 27 text files
+scanned mudra: 90 text files
+scanned neural: 25 text files
+scanned neuron: 95 text files
+scanned nika: 32 text files
+scanned nika/.vendor/nockchain: 839 text files
+scanned nox: 148 text files
+scanned nu: 2305 text files
+scanned omi/refs/omi-local: 3614 text files
+scanned omi/refs/omi-upstream: 952 text files
+scanned omi/refs/parakeet.cpp: 382 text files
+scanned omi/refs/parakeet.cpp/third_party/ggml: 1201 text files
+scanned opt: 2 text files
+scanned optica: 69 text files
+scanned organiq: 510 text files
+scanned oxytocin: 1 text files
+scanned perla: 23 text files
+scanned portal: 99 text files
+scanned prysm: 97 text files
+scanned pure: 1 text files
+scanned qu: 2 text files
+scanned quanta: 104 text files
+scanned radio: 843 text files
+scanned ren: 2 text files
+scanned rockets: 1 text files
+scanned rs: 156 text files
+scanned rune: 62 text files
+scanned sec: 2 text files
+scanned seq: 2 text files
+scanned simulation: 26 text files
+scanned soft3: 284 text files
+scanned soft3/js: 59 text files
+scanned soma: 27 text files
+scanned space-pussy: 1591 text files
+scanned strata: 244 text files
+scanned superhuman: 214 text files
+scanned sym: 2 text files
+scanned tape: 20 text files
+scanned ten: 2 text files
+scanned tok: 13 text files
+scanned trident: 583 text files
+scanned trisha: 613 text files
+scanned tru: 122 text files
+scanned true-cyber: 12 text files
+scanned uhash: 70 text files
+scanned valkyra: 1 text files
+scanned warriors: 5 text files
+scanned wav: 2 text files
+scanned wysm: 319 text files
+scanned xena: 48 text files
+scanned zheng: 121 text files
+scanned zheng-pin: 82 text files
+scanned zoya: 21 text files
+{
+  "repositories": 118,
+  "non_git_sources": 6,
+  "totals": {
+    "listed_files": 52337,
+    "text_files_scanned": 29651,
+    "text_bytes_scanned": 795262172,
+    "neuron_files": 1896,
+    "neuron_lines": 17672,
+    "identity_files": 596,
+    "identity_lines": 1669,
+    "cell_files": 2484,
+    "cell_lines": 27792,
+    "missing_or_gitlink": 12497,
+    "dependency_files": 19,
+    "dependency_lines": 56,
+    "binary_files_excluded": 1590,
+    "domain_files": 83,
+    "domain_lines": 272,
+    "build_or_metadata_files_excluded": 8626,
+    "credential_files_excluded": 38,
+    "symlink_files_excluded": 16,
+    "sparse_index_blobs_read": 55
+  },
+  "discovery_errors": 0,
+  "repository_errors": 12397
+}

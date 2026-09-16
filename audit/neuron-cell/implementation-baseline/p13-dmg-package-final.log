@@ -1,0 +1,18 @@
+rm -rf target/release/cyb.app
+mkdir -p target/release/cyb.app/Contents/MacOS
+mkdir -p target/release/cyb.app/Contents/Resources
+cp target/release/cyb target/release/cyb.app/Contents/MacOS/cyb
+cp shell/assets/icon.icns target/release/cyb.app/Contents/Resources/icon.icns
+/usr/libexec/PlistBuddy -c "Add :CFBundleName string cyb" target/release/cyb.app/Contents/Info.plist
+File Doesn't Exist, Will Create: target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string cyb" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string cyb" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string ai.cyb.app" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 0.13.1" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 0.13.1" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundlePackageType string APPL" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string 13.0" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :NSHighResolutionCapable bool true" target/release/cyb.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string icon" target/release/cyb.app/Contents/Info.plist
+rm -f target/release/cyb.dmg
+created: /Users/master/cyber/cyb/target/release/cyb.dmg

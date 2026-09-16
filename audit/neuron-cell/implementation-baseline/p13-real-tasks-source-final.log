@@ -1,0 +1,10 @@
+task body artifacts: /var/folders/gc/64p7ymwx60144drqltvslckr0000gn/T/cyb-tasks.x8w2fq3o
+task executables: CLI=/Users/master/cyber/cyb/target/debug/cy; GUI=/Users/master/cyber/cyb/target/release/cyb
+PASS cli: durable model result, exact terminal read, original attachment
+Bevy observation: 30s
+Bevy observation: 60s
+Bevy observation: 90s
+Bevy observation: 120s
+Bevy observation: 150s
+PASS bevy: durable model result, exact terminal read, original attachment
+PASS both actual bodies completed through the shared durable task host

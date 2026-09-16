@@ -1,0 +1,93 @@
+     Locking 20 packages to latest compatible versions
+    Updating bbg v0.1.2 (/Users/master/cyber/bbg/rs) -> v0.3.0
+    Updating cyber-hemera v0.3.0 (/Users/master/cyber/hemera/rs) -> v0.3.1
+    Updating cyber-lens v0.1.2 (/Users/master/cyber/lens/src) -> v0.2.0
+    Updating cyber-lens-assayer v0.1.1 (/Users/master/cyber/lens/assayer) -> v0.2.0
+    Updating cyber-lens-brakedown v0.1.1 (/Users/master/cyber/lens/brakedown) -> v0.2.0
+    Updating cyber-lens-core v0.1.1 (/Users/master/cyber/lens/core) -> v0.1.2
+    Updating cyber-lens-ikat v0.1.1 (/Users/master/cyber/lens/ikat) -> v0.2.0
+    Updating cyber-lens-porphyry v0.1.1 (/Users/master/cyber/lens/porphyry) -> v0.2.0
+    Updating cyber-nox v0.1.2 (/Users/master/cyber/nox/rs) -> v0.3.0
+      Adding neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Updating strata-compute v0.1.0 (/Users/master/cyber/strata/compute) -> v0.1.1
+    Updating strata-core v0.1.0 (/Users/master/cyber/strata/core) -> v0.1.1
+    Updating strata-ext v0.1.0 (/Users/master/cyber/strata/ext) -> v0.1.1
+    Updating strata-genies v0.1.0 (/Users/master/cyber/strata/genies/rs) -> v0.1.1
+    Updating strata-jali v0.1.0 (/Users/master/cyber/strata/jali/rs) -> v0.1.1
+    Updating strata-kuro v0.1.0 (/Users/master/cyber/strata/kuro/rs) -> v0.1.1
+    Updating strata-nebu v0.1.0 (/Users/master/cyber/strata/nebu/rs) -> v0.1.1
+    Updating strata-proof v0.1.0 (/Users/master/cyber/strata/proof) -> v0.1.1
+    Updating strata-trop v0.1.0 (/Users/master/cyber/strata/trop/rs) -> v0.1.1
+    Updating zheng v0.1.2 (/Users/master/cyber/zheng/rs) -> v0.4.0
+   Compiling strata-core v0.1.1 (/Users/master/cyber/strata/core)
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+   Compiling inf-value v0.1.0 (/Users/master/cyber/inf/rs/value)
+   Compiling strata-proof v0.1.1 (/Users/master/cyber/strata/proof)
+   Compiling strata-ext v0.1.1 (/Users/master/cyber/strata/ext)
+   Compiling strata-compute v0.1.1 (/Users/master/cyber/strata/compute)
+   Compiling strata-trop v0.1.1 (/Users/master/cyber/strata/trop/rs)
+   Compiling strata-nebu v0.1.1 (/Users/master/cyber/strata/nebu/rs)
+   Compiling strata-kuro v0.1.1 (/Users/master/cyber/strata/kuro/rs)
+   Compiling strata-genies v0.1.1 (/Users/master/cyber/strata/genies/rs)
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling strata-jali v0.1.1 (/Users/master/cyber/strata/jali/rs)
+   Compiling cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+   Compiling cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+   Compiling cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+   Compiling cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.71s
+     Running unittests src/lib.rs (target/debug/deps/inf_source-d85406621c134ee3)
+
+running 15 tests
+test tests::graph_stats_max_rounds_is_diameter ... ok
+test bbg::tests::schema_maps_dimensions ... ok
+test tests::graph_stats_default_is_zero ... ok
+test tests::graph_stats_computes_from_local_data ... ok
+test tests::local_source_graph_stats_none_before_compute ... ok
+test tests::local_source_graph_stats_some_after_compute ... ok
+test tests::local_source_scan_and_schema ... ok
+test tests::with_stats_overrides_computed ... ok
+test tests::compute_stats_without_canonical_rels_falls_back_to_largest ... ok
+test bbg::tests::graph_stats_come_from_committed_statistics ... ok
+test bbg::tests::snapshot_is_state_height_and_reads_are_not_yet_provable ... ok
+test bbg::tests::scan_axons_flattens_adjacency_into_edges ... ok
+test bbg::tests::scan_time_exposes_height_and_root ... ok
+test bbg::tests::unknown_relation_scans_empty ... ok
+test bbg::tests::scan_neurons_returns_committed_rows ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/inf_value-aeece6a1cc7801da)
+
+running 9 tests
+test field::tests::add_sub_roundtrip ... ok
+test field::tests::mul_is_commutative_and_associative ... ok
+test field::tests::inverse_is_correct ... ok
+test tests::cross_type_total_order_is_stable ... ok
+test tests::tag_hash_is_deterministic_and_distinct ... ok
+test field::tests::order_matches_canonical_residue ... ok
+test field::tests::reduction_is_canonical ... ok
+test tests::truthiness ... ok
+test tests::set_semantics_dedup_and_order ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_source
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests inf_value
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,55 @@
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling soft3 v0.10.0 (/Users/master/cyber/soft3/crate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running unittests src/lib.rs (target/debug/deps/soft3-7173f84df279cba3)
+
+running 5 tests
+test node::signed::tests::subject_network_payload_signature_and_canonical_encoding_are_enforced ... ok
+test node::signed::tests::interrupted_activation_retires_genesis_before_readiness_and_missing_target_fails ... ok
+test node::signed::tests::prepared_journal_recovers_without_a_second_native_acceptance ... ok
+test node::signed::tests::activation_blocks_old_writers_and_survives_restart ... ok
+test node::signed::tests::exact_signal_and_payment_receipts_survive_lost_response_and_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 3.61s
+
+     Running unittests src/bin/soft3.rs (target/debug/deps/soft3-2fc54844dff069ab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

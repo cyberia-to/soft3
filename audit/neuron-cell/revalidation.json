@@ -1,0 +1,68 @@
+{
+  "checked_utc": "2026-09-12T08:54:39.129047+00:00",
+  "scope": "Git marker rediscovery; SHA comparison of baseline matching files in listed core repos; two added specs reviewed. Not a new full scan.",
+  "new_markers": [],
+  "removed_markers": [
+    "cve-legacy-local",
+    "cve-legacy-local/docs"
+  ],
+  "changed_core_matching_files": {
+    "bbg": [
+      {
+        "path": "bbg/rs/src/lib.rs",
+        "baseline_sha256": "61461cb93e2221b70b759b2659a87c1c2014d529e1c0393e42d17860c3d9ae6c",
+        "observed_sha256": "1b52baa5a4d247e725a525fe3c0de053b131f67b94514bcfbd0c07a80534a289"
+      },
+      {
+        "path": "bbg/rs/src/prune.rs",
+        "baseline_sha256": "5db28f6a6cdfe40e253639916b55f2c80fee7800d5f17a48b82021f3190b70c5",
+        "observed_sha256": "4cf3cafa542be71de53580667acc0b2782b67b2477bcadf95b8bb9e01d1e4c01"
+      },
+      {
+        "path": "bbg/rs/src/storage/database/mod.rs",
+        "baseline_sha256": "d229664d51339a36668bf4495e98cf25e77bba0c7f22b446ba1886b63ad2b027",
+        "observed_sha256": "b889e8a15c8bf64022d84bf3e8530b5d59a423ab45f2b645d606f5e6f2ff0e5f"
+      }
+    ],
+    "cell": [],
+    "cyb": [],
+    "cybergraph": [
+      {
+        "path": "cybergraph/src/lib.rs",
+        "baseline_sha256": "9ff8c6bda5a1d82edb36866640bba516256e2636a58df7fda472c04151f2b802",
+        "observed_sha256": "e8d76b72d398c85b976eee738da10bc89eeb6b79be3c8466de8f5e1c031d44df"
+      }
+    ],
+    "foculus": [
+      {
+        "path": "foculus/Cargo.lock",
+        "baseline_sha256": "b23b9885a2d1fe357e03188fcd9e8a0c19ea465df047df3da7ed99f3f9d833b3",
+        "observed_sha256": "6b66285c66e3be311a00fc843c0d4d352b7708126617a8802eb2210d3aaf2a68"
+      },
+      {
+        "path": "foculus/src/frames.rs",
+        "baseline_sha256": "955ea78884d2edf16c0f84747aef80938a4b7540d66ed481d1dc345e3b9df52e",
+        "observed_sha256": "33c40ff3e6f313b2c5ebfd3c1fc70a8d69a016feffffa333bc3ff933ecba7a3c"
+      },
+      {
+        "path": "foculus/src/lib.rs",
+        "baseline_sha256": "dc82c20ce28b78b63dfd8c6922f494c6f4d71b1e1e9594d52cf45e13383e7daa",
+        "observed_sha256": "0d4bad5143a6cd2d5a6e921fb664b7008d53794ee076d67327f477490f9aa792"
+      }
+    ],
+    "mudra": [],
+    "rs": [],
+    "rune": [],
+    "soma": []
+  },
+  "additional_reviewed_specs": [
+    {
+      "path": "cybergraph/specs/native-storage.md",
+      "sha256": "eeb2dec8ceaaecaa2c4476babd6b374a019ed3b9789ca89e1a36c2a099d6c87c"
+    },
+    {
+      "path": "soft3/specs/native-node.md",
+      "sha256": "2ab49cc01f0b4a2013cdf5b616be6dd845d31bd164144bb93c8e29253cae8f2d"
+    }
+  ]
+}
