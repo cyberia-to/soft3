@@ -8,6 +8,14 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
 soft3 is the substrate for planetary superintelligence: signed staked [[cyberlink]]s between [[particles]], authenticated state in [[bbg]], proofs via [[zheng]] / [[nox]]. the product chaosnet is **spacepussy-test**.
 
+## first storage use case: vault
+
+[Vault](https://github.com/cyberia-to/vault) is the first end-to-end use case for
+safe storage and private synchronization: retain typed secrets, replicate their
+encrypted state and recover after device loss. Its product and specifications
+have a dedicated repository; soft3 owns the [composition contract](specs/vault.md).
+This is the next implementation target, not an already shipped custody service.
+
 ## architectural foundation
 
 [Execution model — the foundational contract](specs/execution-model.md).

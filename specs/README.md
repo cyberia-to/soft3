@@ -20,6 +20,7 @@ instances, explicit proof profiles and independently placed workers.
 | [types](types.md) | data/type model |
 | [languages](languages.md) | language contracts |
 | [filenames](filenames.md) | portable source-tree paths |
+| [vault composition](vault.md) | first storage/sync use case; secret custody, complete replicas and device-loss recovery |
 
 Soft3 owns composition invariants. Trident, warriors, proof systems and node
 products own their specialized interfaces. [Foundations](../docs/README.md)
