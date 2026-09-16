@@ -15,6 +15,8 @@ instances, explicit proof profiles and independently placed workers.
 | specification | scope |
 |---|---|
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
+| [neuron](neuron.md) | one subject identity, installed programs, authority and compatibility |
+| [identity consumers](identity-consumers.md) | native/foreign SDK, transport and historical compatibility boundaries |
 | [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |
