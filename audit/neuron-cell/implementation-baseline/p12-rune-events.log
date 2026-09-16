@@ -1,0 +1,122 @@
+    Blocking waiting for file lock on package cache
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling rune-parse-pure v0.1.0 (/Users/master/cyber/rune/rs/parse-pure)
+   Compiling rune-subject v0.1.0 (/Users/master/cyber/rune/rs/subject)
+   Compiling rune-interp v0.1.0 (/Users/master/cyber/rune/rs/interp)
+   Compiling rune-lower v0.1.0 (/Users/master/cyber/rune/rs/lower)
+   Compiling rune-parse v0.1.0 (/Users/master/cyber/rune/rs/parse)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.95s
+     Running unittests lib.rs (rune/target/debug/deps/rune_interp-4ad10ed9b89a1695)
+
+running 59 tests
+test event::tests::pure_formula_completes ... ok
+test tests::add_basic ... ok
+test event::tests::hint_yields_then_resumes ... ok
+test event::tests::run_with_events_drives_loop ... ok
+test tests::add_wraps_goldilocks ... ok
+test tests::act_performs_and_splices_result ... ok
+test tests::and_basic ... ok
+test event::tests::event_injected_at_head_of_subject ... ok
+test tests::act_reads_caps_from_axis_30 ... ok
+test event::tests::run_events_reacts_per_event ... ok
+test tests::acts_compose_via_cons ... ok
+test tests::axis_deep_14 ... ok
+test tests::axis_deep_6 ... ok
+test tests::axis_deep_7 ... ok
+test tests::axis_head ... ok
+test tests::axis_identity ... ok
+test tests::axis_tail ... ok
+test tests::axis_zero_hash_atom_stub ... ok
+test tests::axis_zero_hash_cell_stub ... ok
+test tests::branch_nonzero_takes_no ... ok
+test tests::branch_zero_takes_yes ... ok
+test tests::compose_chaining_via_quote ... ok
+test tests::compose_identity_chain ... ok
+test tests::compose_quote_then_identity ... ok
+test tests::cons_two_literals ... ok
+test tests::distribution_cell_formula ... ok
+test tests::distribution_nested ... ok
+test tests::eq_atoms_equal ... ok
+test tests::eq_atoms_not_equal ... ok
+test tests::eq_cells_equal ... ok
+test tests::eq_cells_not_equal ... ok
+test tests::field_add_sub_inverse ... ok
+test tests::field_mul_inv ... ok
+test tests::hash_atom_returns_atom ... ok
+test tests::hash_atom_differs_by_value ... ok
+test tests::hash_atom_is_deterministic ... ok
+test tests::hint_evaluates_arithmetic_body ... ok
+test tests::hint_evaluates_body ... ok
+test tests::host_call_returns_zero ... ok
+test tests::inv_nonzero ... ok
+test tests::inv_zero ... ok
+test tests::look_finds_entry_in_world ... ok
+test tests::look_misses_entry_returns_zero ... ok
+test tests::hash_cell_returns_atom ... ok
+test tests::look_stub_returns_zero ... ok
+test tests::hash_cell_differs_from_atom ... ok
+test tests::lt_false_equal ... ok
+test tests::lt_false_greater ... ok
+test tests::lt_true ... ok
+test tests::mul_basic ... ok
+test tests::not_basic ... ok
+test tests::pub_axis_fn ... ok
+test tests::pure_eval_noops_acts ... ok
+test tests::quote_atom ... ok
+test tests::quote_cell ... ok
+test tests::shl_basic ... ok
+test tests::sub_basic ... ok
+test tests::sub_wraps_around ... ok
+test tests::xor_basic ... ok
+
+test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/authority.rs (rune/target/debug/deps/authority-756d45be77be6558)
+
+running 1 test
+test sequential_nested_and_reactive_acts_keep_host_authority ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/checkpoints.rs (rune/target/debug/deps/checkpoints-cca5a1dcba677023)
+
+running 4 tests
+test completion_at_the_exact_limit_does_not_need_an_extra_slice ... ok
+test budget_cannot_reset_through_checkpoint_and_decode_is_bounded ... ok
+test nested_tool_continuation_survives_serialization_and_consumes_input_once ... ok
+test every_slice_can_restore_without_changing_pure_results ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration.rs (rune/target/debug/deps/integration-ed58b44c6f02b368)
+
+running 20 tests
+test add_5_plus_3 ... ok
+test door_arm_call_no_args ... ok
+test double_function ... ok
+test address_miss_returns_zero ... ok
+test gate_call_two_args ... ok
+test address_scries_world_for_its_value ... ok
+test door_arm_call_with_arg ... ok
+test gate_call_single_arg ... ok
+test if_zero_eq_zero_takes_yes ... ok
+test literal_42 ... ok
+test let_x_equals_10 ... ok
+test gte_operator ... ok
+test closure_captures_outer_var ... ok
+test mul_6_times_7 ... ok
+test lte_operator ... ok
+test tilde_self_reads_the_self_slot ... ok
+test infix_precedence_and_logical_inequality ... ok
+test subject_slots_survive_nested_bindings_and_gates ... ok
+test factorial_5 ... ok
+test fibonacci_10 ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests rune_interp
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

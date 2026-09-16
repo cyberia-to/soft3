@@ -1,0 +1,449 @@
+   Compiling bitflags v2.11.0
+   Compiling zerocopy v0.8.39
+   Compiling sha2 v0.10.9
+   Compiling core-foundation-sys v0.8.7
+   Compiling malloc_buf v0.0.6
+   Compiling foreign-types v0.5.0
+   Compiling strum v0.26.3
+   Compiling num-traits v0.2.19
+   Compiling bytemuck v1.25.0
+   Compiling neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling parking_lot v0.12.5
+   Compiling flate2 v1.1.9
+   Compiling jiff-core v0.1.0
+   Compiling env_filter v2.0.0
+   Compiling either v1.15.0
+   Compiling thiserror v1.0.69
+   Compiling rustix v1.1.3
+   Compiling objc v0.2.7
+   Compiling naga v24.0.0 (/Users/master/cyber/evy/forks/naga)
+   Compiling wgpu-types v24.0.0
+   Compiling core-foundation v0.9.4
+   Compiling rayon v1.11.0
+   Compiling k256 v0.13.4
+   Compiling bs58 v0.5.1
+   Compiling neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+   Compiling png v0.18.1
+   Compiling safe_arch v0.7.4
+   Compiling pxfm v0.1.27
+   Compiling jiff v0.2.35
+   Compiling core-graphics-types v0.1.3
+   Compiling wide v0.7.33
+   Compiling metal v0.31.0
+   Compiling bip32 v0.5.3
+   Compiling tempfile v3.25.0
+   Compiling value-log v1.9.0
+   Compiling lsm-tree v2.10.4
+   Compiling moxcms v0.7.11
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling env_logger v0.11.11
+   Compiling rand_chacha v0.3.1
+   Compiling rand_chacha v0.9.0
+   Compiling fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+   Compiling rand v0.9.2
+   Compiling rand v0.8.5
+   Compiling bip39 v2.2.2
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling wgpu-hal v24.0.4
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling image v0.25.9
+   Compiling wgpu-core v24.0.5
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+   Compiling wgpu v24.0.5
+   Compiling run v0.1.0 (/Users/master/cyber/glia/run)
+warning: unused import: `crate::backend::BackendError`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:22:5
+   |
+22 | use crate::backend::BackendError;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::backend::honeycrisp::device::HoneycrispDevice`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:23:5
+   |
+23 | use crate::backend::honeycrisp::device::HoneycrispDevice;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::backend::BackendError`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1954:13
+     |
+1954 |         use crate::backend::BackendError;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `pipe_q`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1996:13
+     |
+1996 |         let pipe_q = match kind {
+     |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `n_blk_inter_sz`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2156:13
+     |
+2156 |         let n_blk_inter_sz = inter_size / block_size as usize;
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_n_blk_inter_sz`
+
+warning: unused variable: `pipe_q_dual`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2210:13
+     |
+2210 |         let pipe_q_dual    = match kind {
+     |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual`
+
+warning: unused variable: `pipe_q_gus`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2214:13
+     |
+2214 |         let pipe_q_gus     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus`
+
+warning: unused variable: `pipe_q_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2219:13
+     |
+2219 |         let pipe_q_opt     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_opt`
+
+warning: unused variable: `pipe_q_dual_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2223:13
+     |
+2223 |         let pipe_q_dual_opt = match kind {
+     |             ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual_opt`
+
+warning: unused variable: `pipe_q_gus_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2227:13
+     |
+2227 |         let pipe_q_gus_opt = match kind {
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus_opt`
+
+warning: unused variable: `pipe_qk_rope`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2254:13
+     |
+2254 |         let pipe_qk_rope                = &self.pipe_qk_rope.0;
+     |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_qk_rope`
+
+warning: unused variable: `pipe_q8_large2_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2263:13
+     |
+2263 |         let pipe_q8_large2_res     = &self.pipe_q8_large2_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large2_res`
+
+warning: unused variable: `pipe_q8_large8_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2265:13
+     |
+2265 |         let pipe_q8_large8_res     = &self.pipe_q8_large8_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8_res`
+
+warning: unused variable: `pipe_q8_mbx16_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2266:13
+     |
+2266 |         let pipe_q8_mbx16_res      = &self.pipe_q8_mbx16_res.0;
+     |             ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_mbx16_res`
+
+warning: unused variable: `pipe_q8_large4t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2267:13
+     |
+2267 |         let pipe_q8_large4t_res    = &self.pipe_q8_large4t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large4t_res`
+
+warning: unused variable: `pipe_q8_large8t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2268:13
+     |
+2268 |         let pipe_q8_large8t_res    = &self.pipe_q8_large8t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8t_res`
+
+warning: unused variable: `pipe_q8_large16t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2269:13
+     |
+2269 |         let pipe_q8_large16t_res   = &self.pipe_q8_large16t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large16t_res`
+
+warning: unused variable: `pipe_q8_gus_nrm_mb64_r4`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2278:13
+     |
+2278 |         let pipe_q8_gus_nrm_mb64_r4 = &self.pipe_q8_gus_nrm_mb64_r4.0;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_gus_nrm_mb64_r4`
+
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/glia/run/tokenizer/loader.rs:219:9
+    |
+219 |     let mut add = |tokens: &mut Vec<(u32, String)>, id: u32, name: String| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `dbg_stats` is never used
+   --> /Users/master/cyber/glia/run/arch/decoder/forward.rs:666:4
+    |
+666 | fn dbg_stats(label: &str, v: &[f32]) { dbg_stats_l(0, label, v); }
+    |    ^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `matmul_f32_scalar` is never used
+  --> /Users/master/cyber/glia/run/backend/cpu/matmul.rs:90:8
+   |
+90 | pub fn matmul_f32_scalar(x: &Tensor, w: &Tensor) -> Result<Tensor, BackendError> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: field `device` is never read
+  --> /Users/master/cyber/glia/run/backend/wgpu/mod.rs:29:5
+   |
+27 | struct GpuBuffer {
+   |        --------- field in this struct
+28 |     buffer: wgpu::Buffer,
+29 |     device: Arc<Device>,
+   |     ^^^^^^
+
+warning: fields `pipe_qk_norm_rope` and `transposed_down_w` are never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:156:5
+    |
+131 | pub struct HoneycrispBackend {
+    |            ----------------- fields in this struct
+...
+156 |     pipe_qk_norm_rope: HcPipeline,
+    |     ^^^^^^^^^^^^^^^^^
+...
+234 |     transposed_down_w: std::sync::Mutex<TransposedCache>,
+    |     ^^^^^^^^^^^^^^^^^
+
+warning: field `0` is never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:244:24
+    |
+244 | struct TransposedCache(std::collections::HashMap<usize, Box<aruminium::Buffer>>);
+    |        --------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |        |
+    |        field in this struct
+    |
+    = help: consider removing this field
+
+warning: function `transpose_q8_blocks` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:252:4
+    |
+252 | fn transpose_q8_blocks(src: &[u8], n_rows: usize, n_blk: usize) -> Vec<u8> {
+    |    ^^^^^^^^^^^^^^^^^^^
+
+warning: methods `get_or_transpose_down_w` and `upload_tensor` are never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:594:8
+    |
+266 | impl HoneycrispBackend {
+    | ---------------------- methods in this implementation
+...
+594 |     fn get_or_transpose_down_w(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^
+...
+620 |     fn upload_tensor(&self, t: &Tensor) -> Result<aruminium::Buffer, BackendError> {
+    |        ^^^^^^^^^^^^^
+
+warning: field `down_w_t` is never read
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2144:13
+     |
+2126 |         struct LPtrs {
+     |                ----- field in this struct
+...
+2144 |             down_w_t:      *const aruminium::Buffer, // transposed; null if not needed
+     |             ^^^^^^^^
+
+warning: field `queue` is never read
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/device.rs:11:9
+   |
+ 9 | pub struct HoneycrispDevice {
+   |            ---------------- field in this struct
+10 |     pub gpu: aruminium::Gpu,
+11 |     pub queue: aruminium::Queue,
+   |         ^^^^^
+
+warning: constant `MAX_SEQ_SHARED` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:25:11
+   |
+25 | pub const MAX_SEQ_SHARED: u32 = 2048;
+   |           ^^^^^^^^^^^^^^
+
+warning: function `dispatch_silu_mul` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/elementwise.rs:89:8
+   |
+89 | pub fn dispatch_silu_mul(
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 18;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:180:8
+    |
+180 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+    |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:268:8
+    |
+268 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+    |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:658:8
+    |
+658 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `LANES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:17:11
+   |
+17 | pub const LANES: u32 = 32;
+   |           ^^^^^
+
+warning: constant `SCALE_MIN_HELPER` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:80:7
+   |
+80 | const SCALE_MIN_HELPER: &str = r#"
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `tg_count` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:453:8
+    |
+453 | pub fn tg_count(n_rows: u32, batch: u32) -> usize {
+    |        ^^^^^^^^
+
+warning: function `tg_size` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:458:8
+    |
+458 | pub fn tg_size() -> usize { (SIMDS_PER_GROUP * LANES) as usize }
+    |        ^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 34;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:94:8
+   |
+94 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+   |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:96:8
+   |
+96 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+   |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:644:8
+    |
+644 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `MSL_TEMPLATE` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:14:7
+   |
+14 | const MSL_TEMPLATE: &str = r#"
+   |       ^^^^^^^^^^^^
+
+warning: function `msl_for` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:226:8
+    |
+226 | pub fn msl_for(head_dim: usize) -> String {
+    |        ^^^^^^^
+
+warning: function `dispatch` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:271:8
+    |
+271 | pub fn dispatch(
+    |        ^^^^^^^^
+
+warning: function `softmax` is never used
+   --> /Users/master/cyber/glia/run/generate.rs:201:4
+    |
+201 | fn softmax(logits: &[f32]) -> Vec<f32> {
+    |    ^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:454:9
+    |
+454 |         &self,
+    |         ^^^^^ the lifetime is elided here
+...
+462 |     ) -> Result<std::sync::MutexGuard<Vec<AttnState>>, BackendError> {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+462 |     ) -> Result<std::sync::MutexGuard<'_, Vec<AttnState>>, BackendError> {
+    |                                       +++
+
+   Compiling soma-kernel v0.1.0 (/Users/master/cyber/soma/kernel)
+warning: `run` (lib) generated 47 warnings (run `cargo fix --lib -p run` to apply 20 suggestions)
+   Compiling cy v0.1.0 (/Users/master/cyber/cyb/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.36s
+     Running unittests src/main.rs (target/debug/deps/cy-08e01ea17eb4c1e4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/identity.rs (target/debug/deps/identity-3ce68cf3a969656f)
+
+running 1 test
+test help_and_explicit_creation_do_not_replace_missing_or_invalid_keys ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.13s
+
+     Running tests/registry.rs (target/debug/deps/registry-5b97696c05518ed9)
+
+running 5 tests
+test historical_claim_does_not_grant_a_new_signal_author ... ok
+test empty_repl_can_manage_attachments_without_an_ambient_identity ... ok
+test legacy_bootstrap_preserves_preseeded_selection_and_invalid_device_creates_no_key ... ok
+test local_wallet_actions_keep_the_captured_network_and_deny_watch_only ... ok
+test headless_attachments_drive_signed_authorship_and_watch_only_views_need_no_key ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.92s
+

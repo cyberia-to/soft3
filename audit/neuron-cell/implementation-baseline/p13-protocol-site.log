@@ -1,0 +1,9 @@
+protocol-only build → /Users/master/cyber/cyber/build
+full graph: cd ~/cyber/cyberia-blog && nu scripts/build.nu
+Building Cyber
+  Scan Discovered 161 pages, 0 journals, 10 media, 84 files
+  Parse Parsed 245 pages
+  IPFS Rewrote 0 media refs via /Users/master/cyber/cyber/ipfs-cache.json
+  Graph Built graph with 3516 links
+  Render Rendered 1486 pages
+Done! Built in 2.09s → /Users/master/cyber/cyber/build

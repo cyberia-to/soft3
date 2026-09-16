@@ -1,0 +1,552 @@
+Date: 2026-09-13; cwd: /Users/master/cyber/cyb
+Command: bash harness/build-node.sh --dry-run example.invalid 0.0.0-p12-local-check all
+Transport executables are local refusal stubs; no network command may execute.
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+{
+  "schema": "cyb/build-siblings/v1",
+  "scope": "workspace-local-resolution-inputs",
+  "workspace_manifest": "cyb/Cargo.toml",
+  "repositories": [
+    "bbg",
+    "cyb",
+    "cybergraph",
+    "evy",
+    "foculus",
+    "glia",
+    "hemera",
+    "honeycrisp",
+    "inf",
+    "lens",
+    "mir",
+    "mudra",
+    "neuron",
+    "nox",
+    "nu",
+    "prysm",
+    "rune",
+    "soft3",
+    "soma",
+    "strata",
+    "tape",
+    "tok",
+    "tru",
+    "zheng"
+  ],
+  "manifests": [
+    "bbg/rs/Cargo.toml",
+    "bbg/rs/vendor/fjall/Cargo.toml",
+    "cyb/Cargo.toml",
+    "cyb/cli/Cargo.toml",
+    "cyb/core/Cargo.toml",
+    "cyb/crates/cyb/Cargo.toml",
+    "cyb/shell/Cargo.toml",
+    "cybergraph/Cargo.toml",
+    "evy/forks/naga/Cargo.toml",
+    "foculus/Cargo.toml",
+    "glia/import/Cargo.toml",
+    "glia/run/Cargo.toml",
+    "hemera/rs/Cargo.toml",
+    "honeycrisp/acpu/Cargo.toml",
+    "honeycrisp/aruminium/Cargo.toml",
+    "honeycrisp/rane/Cargo.toml",
+    "honeycrisp/unimem/Cargo.toml",
+    "inf/rs/ast/Cargo.toml",
+    "inf/rs/eval/Cargo.toml",
+    "inf/rs/lex/Cargo.toml",
+    "inf/rs/parse/Cargo.toml",
+    "inf/rs/plan/Cargo.toml",
+    "inf/rs/source/Cargo.toml",
+    "inf/rs/value/Cargo.toml",
+    "lens/assayer/Cargo.toml",
+    "lens/binius/Cargo.toml",
+    "lens/brakedown/Cargo.toml",
+    "lens/core/Cargo.toml",
+    "lens/ikat/Cargo.toml",
+    "lens/porphyry/Cargo.toml",
+    "lens/src/Cargo.toml",
+    "mir/Cargo.toml",
+    "mudra/Cargo.toml",
+    "neuron/engine/Cargo.toml",
+    "neuron/id/Cargo.toml",
+    "neuron/model/Cargo.toml",
+    "neuron/node/Cargo.toml",
+    "neuron/rune/Cargo.toml",
+    "nox/rs/Cargo.toml",
+    "nu/crates/nu-cli/Cargo.toml",
+    "nu/crates/nu-cmd-base/Cargo.toml",
+    "nu/crates/nu-cmd-extra/Cargo.toml",
+    "nu/crates/nu-cmd-lang/Cargo.toml",
+    "nu/crates/nu-color-config/Cargo.toml",
+    "nu/crates/nu-command/Cargo.toml",
+    "nu/crates/nu-derive-value/Cargo.toml",
+    "nu/crates/nu-engine/Cargo.toml",
+    "nu/crates/nu-experimental/Cargo.toml",
+    "nu/crates/nu-glob/Cargo.toml",
+    "nu/crates/nu-json/Cargo.toml",
+    "nu/crates/nu-parser/Cargo.toml",
+    "nu/crates/nu-path/Cargo.toml",
+    "nu/crates/nu-plugin-engine/Cargo.toml",
+    "nu/crates/nu-pretty-hex/Cargo.toml",
+    "nu/crates/nu-protocol/Cargo.toml",
+    "nu/crates/nu-std/Cargo.toml",
+    "nu/crates/nu-system/Cargo.toml",
+    "nu/crates/nu-table/Cargo.toml",
+    "nu/crates/nu-term-grid/Cargo.toml",
+    "nu/crates/nu-test-support/Cargo.toml",
+    "nu/crates/nu-utils/Cargo.toml",
+    "nu/crates/nuon/Cargo.toml",
+    "prysm/Cargo.toml",
+    "rune/rs/ast/Cargo.toml",
+    "rune/rs/interp/Cargo.toml",
+    "rune/rs/lex/Cargo.toml",
+    "rune/rs/lower/Cargo.toml",
+    "rune/rs/parse-pure/Cargo.toml",
+    "rune/rs/parse/Cargo.toml",
+    "rune/rs/prysm/Cargo.toml",
+    "rune/rs/subject/Cargo.toml",
+    "soft3/crate/Cargo.toml",
+    "soma/agent/Cargo.toml",
+    "soma/kernel/Cargo.toml",
+    "strata/compute/Cargo.toml",
+    "strata/core/Cargo.toml",
+    "strata/ext/Cargo.toml",
+    "strata/genies/rs/Cargo.toml",
+    "strata/jali/rs/Cargo.toml",
+    "strata/kuro/rs/Cargo.toml",
+    "strata/nebu/rs/Cargo.toml",
+    "strata/proof/Cargo.toml",
+    "strata/trop/rs/Cargo.toml",
+    "tape/impl/rust/Cargo.toml",
+    "tok/rs/Cargo.toml",
+    "tru/rs/Cargo.toml",
+    "zheng/rs/Cargo.toml"
+  ],
+  "packages": [
+    {
+      "name": "bbg",
+      "version": "0.3.0",
+      "manifest": "bbg/rs/Cargo.toml"
+    },
+    {
+      "name": "fjall",
+      "version": "2.11.2",
+      "manifest": "bbg/rs/vendor/fjall/Cargo.toml"
+    },
+    {
+      "name": "cy",
+      "version": "0.1.0",
+      "manifest": "cyb/cli/Cargo.toml"
+    },
+    {
+      "name": "cyb-core",
+      "version": "0.1.0",
+      "manifest": "cyb/core/Cargo.toml"
+    },
+    {
+      "name": "cyb",
+      "version": "0.13.1",
+      "manifest": "cyb/shell/Cargo.toml"
+    },
+    {
+      "name": "cybergraph",
+      "version": "0.1.1",
+      "manifest": "cybergraph/Cargo.toml"
+    },
+    {
+      "name": "naga",
+      "version": "24.0.0",
+      "manifest": "evy/forks/naga/Cargo.toml"
+    },
+    {
+      "name": "foculus",
+      "version": "0.1.3",
+      "manifest": "foculus/Cargo.toml"
+    },
+    {
+      "name": "import",
+      "version": "0.1.0",
+      "manifest": "glia/import/Cargo.toml"
+    },
+    {
+      "name": "run",
+      "version": "0.1.0",
+      "manifest": "glia/run/Cargo.toml"
+    },
+    {
+      "name": "cyber-hemera",
+      "version": "0.3.1",
+      "manifest": "hemera/rs/Cargo.toml"
+    },
+    {
+      "name": "acpu",
+      "version": "0.2.0",
+      "manifest": "honeycrisp/acpu/Cargo.toml"
+    },
+    {
+      "name": "aruminium",
+      "version": "0.2.0",
+      "manifest": "honeycrisp/aruminium/Cargo.toml"
+    },
+    {
+      "name": "unimem",
+      "version": "0.2.0",
+      "manifest": "honeycrisp/unimem/Cargo.toml"
+    },
+    {
+      "name": "inf-ast",
+      "version": "0.1.0",
+      "manifest": "inf/rs/ast/Cargo.toml"
+    },
+    {
+      "name": "inf-eval",
+      "version": "0.1.0",
+      "manifest": "inf/rs/eval/Cargo.toml"
+    },
+    {
+      "name": "inf-lex",
+      "version": "0.1.0",
+      "manifest": "inf/rs/lex/Cargo.toml"
+    },
+    {
+      "name": "inf-parse",
+      "version": "0.1.0",
+      "manifest": "inf/rs/parse/Cargo.toml"
+    },
+    {
+      "name": "inf-plan",
+      "version": "0.1.0",
+      "manifest": "inf/rs/plan/Cargo.toml"
+    },
+    {
+      "name": "inf-source",
+      "version": "0.1.0",
+      "manifest": "inf/rs/source/Cargo.toml"
+    },
+    {
+      "name": "inf-value",
+      "version": "0.1.0",
+      "manifest": "inf/rs/value/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-assayer",
+      "version": "0.2.0",
+      "manifest": "lens/assayer/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-binius",
+      "version": "0.1.1",
+      "manifest": "lens/binius/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-brakedown",
+      "version": "0.2.0",
+      "manifest": "lens/brakedown/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-core",
+      "version": "0.1.2",
+      "manifest": "lens/core/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-ikat",
+      "version": "0.2.0",
+      "manifest": "lens/ikat/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens-porphyry",
+      "version": "0.2.0",
+      "manifest": "lens/porphyry/Cargo.toml"
+    },
+    {
+      "name": "cyber-lens",
+      "version": "0.2.0",
+      "manifest": "lens/src/Cargo.toml"
+    },
+    {
+      "name": "mir",
+      "version": "0.1.0",
+      "manifest": "mir/Cargo.toml"
+    },
+    {
+      "name": "cyber-mudra",
+      "version": "0.1.0",
+      "manifest": "mudra/Cargo.toml"
+    },
+    {
+      "name": "neuron-engine",
+      "version": "0.1.0",
+      "manifest": "neuron/engine/Cargo.toml"
+    },
+    {
+      "name": "neuron-id",
+      "version": "0.1.0",
+      "manifest": "neuron/id/Cargo.toml"
+    },
+    {
+      "name": "neuron-model",
+      "version": "0.1.0",
+      "manifest": "neuron/model/Cargo.toml"
+    },
+    {
+      "name": "neuron-node",
+      "version": "0.1.0",
+      "manifest": "neuron/node/Cargo.toml"
+    },
+    {
+      "name": "neuron-rune",
+      "version": "0.1.0",
+      "manifest": "neuron/rune/Cargo.toml"
+    },
+    {
+      "name": "cyber-nox",
+      "version": "0.3.0",
+      "manifest": "nox/rs/Cargo.toml"
+    },
+    {
+      "name": "nu-cli",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-cli/Cargo.toml"
+    },
+    {
+      "name": "nu-cmd-base",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-cmd-base/Cargo.toml"
+    },
+    {
+      "name": "nu-cmd-extra",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-cmd-extra/Cargo.toml"
+    },
+    {
+      "name": "nu-cmd-lang",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-cmd-lang/Cargo.toml"
+    },
+    {
+      "name": "nu-color-config",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-color-config/Cargo.toml"
+    },
+    {
+      "name": "nu-command",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-command/Cargo.toml"
+    },
+    {
+      "name": "nu-derive-value",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-derive-value/Cargo.toml"
+    },
+    {
+      "name": "nu-engine",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-engine/Cargo.toml"
+    },
+    {
+      "name": "nu-experimental",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-experimental/Cargo.toml"
+    },
+    {
+      "name": "nu-glob",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-glob/Cargo.toml"
+    },
+    {
+      "name": "nu-json",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-json/Cargo.toml"
+    },
+    {
+      "name": "nu-parser",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-parser/Cargo.toml"
+    },
+    {
+      "name": "nu-path",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-path/Cargo.toml"
+    },
+    {
+      "name": "nu-pretty-hex",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-pretty-hex/Cargo.toml"
+    },
+    {
+      "name": "nu-protocol",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-protocol/Cargo.toml"
+    },
+    {
+      "name": "nu-std",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-std/Cargo.toml"
+    },
+    {
+      "name": "nu-system",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-system/Cargo.toml"
+    },
+    {
+      "name": "nu-table",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-table/Cargo.toml"
+    },
+    {
+      "name": "nu-term-grid",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-term-grid/Cargo.toml"
+    },
+    {
+      "name": "nu-utils",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nu-utils/Cargo.toml"
+    },
+    {
+      "name": "nuon",
+      "version": "0.110.0",
+      "manifest": "nu/crates/nuon/Cargo.toml"
+    },
+    {
+      "name": "prysm",
+      "version": "0.1.0",
+      "manifest": "prysm/Cargo.toml"
+    },
+    {
+      "name": "rune-ast",
+      "version": "0.1.0",
+      "manifest": "rune/rs/ast/Cargo.toml"
+    },
+    {
+      "name": "rune-interp",
+      "version": "0.1.0",
+      "manifest": "rune/rs/interp/Cargo.toml"
+    },
+    {
+      "name": "rune-lex",
+      "version": "0.1.0",
+      "manifest": "rune/rs/lex/Cargo.toml"
+    },
+    {
+      "name": "rune-lower",
+      "version": "0.1.0",
+      "manifest": "rune/rs/lower/Cargo.toml"
+    },
+    {
+      "name": "rune-parse-pure",
+      "version": "0.1.0",
+      "manifest": "rune/rs/parse-pure/Cargo.toml"
+    },
+    {
+      "name": "rune-parse",
+      "version": "0.1.0",
+      "manifest": "rune/rs/parse/Cargo.toml"
+    },
+    {
+      "name": "rune-prysm",
+      "version": "0.1.0",
+      "manifest": "rune/rs/prysm/Cargo.toml"
+    },
+    {
+      "name": "rune-subject",
+      "version": "0.1.0",
+      "manifest": "rune/rs/subject/Cargo.toml"
+    },
+    {
+      "name": "soft3",
+      "version": "0.10.0",
+      "manifest": "soft3/crate/Cargo.toml"
+    },
+    {
+      "name": "soma-agent",
+      "version": "0.1.0",
+      "manifest": "soma/agent/Cargo.toml"
+    },
+    {
+      "name": "soma-kernel",
+      "version": "0.1.0",
+      "manifest": "soma/kernel/Cargo.toml"
+    },
+    {
+      "name": "strata-compute",
+      "version": "0.1.1",
+      "manifest": "strata/compute/Cargo.toml"
+    },
+    {
+      "name": "strata-core",
+      "version": "0.1.1",
+      "manifest": "strata/core/Cargo.toml"
+    },
+    {
+      "name": "strata-ext",
+      "version": "0.1.1",
+      "manifest": "strata/ext/Cargo.toml"
+    },
+    {
+      "name": "strata-genies",
+      "version": "0.1.1",
+      "manifest": "strata/genies/rs/Cargo.toml"
+    },
+    {
+      "name": "strata-jali",
+      "version": "0.1.1",
+      "manifest": "strata/jali/rs/Cargo.toml"
+    },
+    {
+      "name": "strata-kuro",
+      "version": "0.1.1",
+      "manifest": "strata/kuro/rs/Cargo.toml"
+    },
+    {
+      "name": "strata-nebu",
+      "version": "0.1.1",
+      "manifest": "strata/nebu/rs/Cargo.toml"
+    },
+    {
+      "name": "strata-proof",
+      "version": "0.1.1",
+      "manifest": "strata/proof/Cargo.toml"
+    },
+    {
+      "name": "strata-trop",
+      "version": "0.1.1",
+      "manifest": "strata/trop/rs/Cargo.toml"
+    },
+    {
+      "name": "cyber-tape",
+      "version": "0.1.0",
+      "manifest": "tape/impl/rust/Cargo.toml"
+    },
+    {
+      "name": "cyber-tok",
+      "version": "0.1.1",
+      "manifest": "tok/rs/Cargo.toml"
+    },
+    {
+      "name": "cyber-tru",
+      "version": "0.1.1",
+      "manifest": "tru/rs/Cargo.toml"
+    },
+    {
+      "name": "zheng",
+      "version": "0.4.0",
+      "manifest": "zheng/rs/Cargo.toml"
+    }
+  ],
+  "cargo_metadata": [
+    "cargo",
+    "metadata",
+    "--format-version",
+    "1",
+    "--locked",
+    "--offline"
+  ]
+}
+
+validated build plan: host=example.invalid version=0.0.0-p12-local-check platform=all
+artifact: cyb-0.0.0-p12-local-check-linux-x86_64.tar.gz
+artifact: cyb-0.0.0-p12-local-check-windows-x86_64.zip
+dry-run: no ssh, rsync, scp, build or artifact publication performed
+PASS: dry-run succeeded; zero transport invocations

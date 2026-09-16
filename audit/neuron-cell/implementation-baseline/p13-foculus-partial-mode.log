@@ -1,0 +1,35 @@
+Date: 2026-09-13
+Working directory: /Users/master/cyber/foculus
+Command: /opt/homebrew/bin/nu -c 'cargo test --lib live::tests --no-fail-fast'
+Scope: actual full/partial/light owner scenarios after NodeMode::Partial rename; no proof mathematics or codec change.
+
+     Locking 1 package to latest Rust 1.95.0 compatible version
+      Adding neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Blocking waiting for file lock on package cache
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+   Compiling cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+   Compiling cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+   Compiling cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+   Compiling cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.44s
+     Running unittests src/lib.rs (target/debug/deps/foculus-f52083bcbace6b5e)
+
+running 5 tests
+test live::tests::light_cannot_ingest ... ok
+test live::tests::mine_requires_beacon ... ok
+test live::tests::partial_mode_same_as_full_for_local_settle ... ok
+test live::tests::full_node_link_settle_and_mature ... ok
+test live::tests::multi_node_swarm_leaderless_settle ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 139 filtered out; finished in 2.99s
+

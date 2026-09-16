@@ -7,6 +7,7 @@ mod genesis;
 mod http;
 mod requests;
 mod routes;
+mod signed;
 
 use std::io;
 use std::net::TcpListener;
@@ -22,9 +23,11 @@ use crate::network::Network;
 
 /// Runtime adapter for one local spacepussy-test node.
 pub struct Node {
+    home: PathBuf,
     moniker: String,
     network: Network,
     genesis_unix: u64,
+    network_id: Particle,
     native: NativeNode,
     failed: bool,
 }
@@ -50,13 +53,21 @@ impl Node {
                 return Err(io::Error::other("legacy log differs from the imported source; explicit storage recovery is required"));
             }
         }
-        Ok(Self {
+        let node = Self {
+            home,
             moniker,
             network: Network::SpacePussyTest,
             genesis_unix: genesis.time,
+            network_id: hash32(&genesis.canonical),
             native,
             failed: false,
-        })
+        };
+        let authenticated = node.authenticated().map_err(|e| io::Error::other(e.message))?;
+        if genesis.retired && !authenticated {
+            return Err(io::Error::other("retired genesis requires authenticated database generation"));
+        }
+        if authenticated { genesis::retire(&node.home)?; }
+        Ok(node)
     }
 
     pub fn height(&self) -> u64 {
@@ -159,6 +170,12 @@ fn now_unix() -> u64 {
 pub fn default_home() -> PathBuf {
     let home = std::env::var("HOME").unwrap_or_else(|_| ".".into());
     PathBuf::from(home).join(".spacepussy-test")
+}
+
+/// Serve one already accepted connection with the same bounded HTTP adapter.
+/// Embedding hosts retain the single shared coordinator mutex and its lifetime.
+pub fn serve_connection(stream: std::net::TcpStream, node: &std::sync::Mutex<Node>) -> io::Result<()> {
+    http::handle_client(stream, node)
 }
 
 /// Validate and recover durable state before binding the listener.

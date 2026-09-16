@@ -1,0 +1,18 @@
+   Compiling trisha v0.3.0 (/Users/master/cyber/trisha/cli)
+   Compiling triton-vm v7.0.0 (/Users/master/cyber/trisha/.vendor/triton-vm)
+   Compiling trisha-honeycrisp v0.3.0 (/Users/master/cyber/trisha/honeycrisp)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.44s
+     Running tests/neptune_wallet.rs (target/debug/deps/neptune_wallet-4a16687c90b835cc)
+
+running 8 tests
+test removal_uses_upstream_wallet_path_without_guessing_platform_directory ... ok
+test indexed_addresses_are_offline_and_pass_key_network_and_data_directory ... ok
+test hidden_addresses_are_separate_by_network ... ok
+test removal_requires_confirmation_and_only_removes_the_selected_wallet ... ok
+test removal_rejects_wrong_network_and_symlink_paths ... ok
+test import_uses_inherited_stdin_without_seed_arguments_or_echo ... ok
+test listing_is_bounded_even_for_maximum_remote_counter_and_checks_network ... ok
+test create_checks_wallet_appearance_and_never_labels_status_as_a_seed ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.14s
+

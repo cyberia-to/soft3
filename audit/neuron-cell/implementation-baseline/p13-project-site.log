@@ -1,0 +1,68 @@
+root graph: /Users/master/cyber/cyberia-blog
+subgraphs: 53
+config: /tmp/optica-subgraphs.toml
+
+Building Blog
+  Scan Discovered 10 pages, 85 journals, 0 media, 16 files
+  Parse Parsed 111 pages
+  Config Loaded subgraphs from /tmp/optica-subgraphs.toml
+Warning: subgraph 'cyber': page 'cyber/roadmap' — /Users/master/cyber/cyber/roadmap/README.md shadowed by /Users/master/cyber/cyber/roadmap.md
+  Scan Subgraph 'cyber': 160 pages, 80 files
+  Scan Subgraph 'cyb': 121 pages, 170 files
+  Scan Subgraph 'honeycrisp': 109 pages, 689 files
+  Scan Subgraph 'wysm': 14 pages, 301 files
+  Scan Subgraph 'prysm': 60 pages, 36 files
+  Scan Subgraph 'evy': 22 pages, 867 files
+  Scan Subgraph 'optica': 7 pages, 65 files
+  Scan Subgraph 'cybics': 558 pages, 0 files
+  Scan Subgraph 'crystal': 552 pages, 1 files
+  Scan Subgraph 'episode-1': 1 pages, 60 files
+  Scan Subgraph 'bootloader': 17 pages, 1 files
+  Scan Subgraph 'bostrom': 77 pages, 10 files
+  Scan Subgraph 'soft3': 44 pages, 438 files
+  Scan Subgraph 'bbg': 47 pages, 67 files
+  Scan Subgraph 'lens': 13 pages, 40 files
+  Scan Subgraph 'mudra': 42 pages, 45 files
+  Scan Subgraph 'radio': 71 pages, 770 files
+  Scan Subgraph 'hemera': 58 pages, 77 files
+  Scan Subgraph 'strata': 96 pages, 148 files
+  Scan Subgraph 'zheng': 55 pages, 65 files
+  Scan Subgraph 'tru': 66 pages, 58 files
+  Scan Subgraph 'glia': 34 pages, 141 files
+  Scan Subgraph 'mir': 5 pages, 34 files
+  Scan Subgraph 'tok': 5 pages, 7 files
+Warning: subgraph 'nox': page 'soft3/nox/specs/jets' — /Users/master/cyber/nox/specs/jets/README.md shadowed by /Users/master/cyber/nox/specs/jets.md
+  Scan Subgraph 'nox': 78 pages, 67 files
+  Scan Subgraph 'cybergraph': 36 pages, 42 files
+  Scan Subgraph 'tape': 11 pages, 7 files
+  Scan Subgraph 'foculus': 31 pages, 46 files
+  Scan Subgraph 'soma': 10 pages, 16 files
+  Scan Subgraph 'neuron': 42 pages, 59 files
+  Scan Subgraph 'lytics': 3 pages, 40 files
+  Scan Subgraph 'neural': 16 pages, 8 files
+  Scan Subgraph 'trident': 168 pages, 416 files
+  Scan Subgraph 'eidos': 16 pages, 53 files
+  Scan Subgraph 'inf': 47 pages, 243 files
+  Scan Subgraph 'rs': 27 pages, 130 files
+  Scan Subgraph 'rune': 24 pages, 38 files
+  Scan Subgraph 'arc': 1 pages, 1 files
+  Scan Subgraph 'bt': 1 pages, 1 files
+  Scan Subgraph 'ren': 1 pages, 1 files
+  Scan Subgraph 'dif': 1 pages, 1 files
+  Scan Subgraph 'sym': 1 pages, 1 files
+  Scan Subgraph 'bel': 1 pages, 1 files
+  Scan Subgraph 'seq': 1 pages, 1 files
+  Scan Subgraph 'ten': 1 pages, 1 files
+  Scan Subgraph 'sec': 1 pages, 1 files
+  Scan Subgraph 'erga': 7 pages, 72 files
+  Scan Subgraph 'joy': 9 pages, 45 files
+  Scan Subgraph 'trisha': 84 pages, 1076 files
+  Scan Subgraph 'cyberia': 195 pages, 889 files
+  Scan Subgraph 'cyberia-my': 2 pages, 39 files
+  Scan Subgraph 'cve': 349 pages, 7 files
+  Scan Subgraph 'cyber-valley': 102 pages, 0 files
+  IPFS Rewrote 2 media refs via /Users/master/cyber/cyberia-blog/ipfs-cache.json
+  Graph Built graph with 40151 links
+  Filter 19162/19163 pages are public (set default_public = true or add public:: true to pages)
+  Render Rendered 22203 pages
+Done! Built in 115.35s → /Users/master/cyber/cyberia-blog/build

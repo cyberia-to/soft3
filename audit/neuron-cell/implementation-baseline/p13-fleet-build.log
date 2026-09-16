@@ -1,0 +1,1126 @@
+    Blocking waiting for file lock on artifact directory
+   Compiling unicode-ident v1.0.24
+   Compiling memchr v2.8.0
+   Compiling allocator-api2 v0.2.21
+   Compiling log v0.4.29
+   Compiling foldhash v0.2.0
+   Compiling smallvec v1.15.1
+   Compiling arrayvec v0.7.6
+   Compiling libc v0.2.180
+   Compiling serde_core v1.0.228
+   Compiling libm v0.2.16
+   Compiling core-foundation-sys v0.8.7
+   Compiling unicode-xid v0.2.6
+   Compiling objc2-encode v4.1.0
+   Compiling unicode-segmentation v1.12.0
+   Compiling pin-project-lite v0.2.16
+   Compiling proc-macro2 v1.0.106
+   Compiling typeid v1.0.3
+   Compiling aho-corasick v1.1.4
+   Compiling hashbrown v0.16.1
+   Compiling futures-core v0.3.32
+   Compiling either v1.15.0
+   Compiling winnow v0.7.14
+   Compiling inventory v0.3.22
+   Compiling objc2 v0.6.3
+   Compiling quote v1.0.44
+   Compiling convert_case v0.10.0
+   Compiling num-traits v0.2.19
+   Compiling getrandom v0.2.17
+   Compiling getrandom v0.4.1
+   Compiling errno v0.3.14
+   Compiling getrandom v0.3.4
+   Compiling indexmap v2.13.0
+   Compiling regex-automata v0.4.14
+   Compiling unicode-width v0.2.2
+   Compiling erased-serde v0.4.9
+   Compiling futures-io v0.3.32
+   Compiling syn v2.0.117
+   Compiling rand_core v0.6.4
+   Compiling slab v0.4.12
+   Compiling toml_parser v1.0.9+spec-1.1.0
+   Compiling scopeguard v1.2.0
+   Compiling rand_core v0.9.5
+   Compiling parking_lot_core v0.9.12
+   Compiling atomic-waker v1.1.2
+   Compiling nu-ansi-term v0.50.3
+   Compiling itertools v0.14.0
+   Compiling parking v2.2.1
+   Compiling concurrent-queue v2.5.0
+   Compiling crossbeam-queue v0.3.12
+   Compiling thread_local v1.1.9
+   Compiling sha1_smol v1.0.1
+   Compiling foldhash v0.1.5
+   Compiling lock_api v0.4.14
+   Compiling toml_edit v0.23.10+spec-1.0.0
+   Compiling typewit v1.14.2
+   Compiling block2 v0.6.2
+   Compiling simd-adler32 v0.3.8
+   Compiling tracing-core v0.1.36
+   Compiling event-listener v5.4.1
+   Compiling spin v0.10.0
+   Compiling heck v0.5.0
+   Compiling crc32fast v1.5.0
+   Compiling hashbrown v0.15.5
+   Compiling adler2 v2.0.1
+   Compiling bit-vec v0.8.0
+   Compiling futures-lite v2.6.1
+   Compiling glob v0.3.3
+   Compiling const_panic v0.2.15
+   Compiling async-task v4.7.1
+   Compiling fixedbitset v0.5.7
+   Compiling bevy_macro_utils v0.18.0
+   Compiling encase_derive_impl v0.12.0
+   Compiling event-listener-strategy v0.5.4
+   Compiling zlib-rs v0.6.2
+   Compiling futures-sink v0.3.34
+   Compiling disqualified v1.0.0
+   Compiling miniz_oxide v0.8.9
+   Compiling bit-set v0.8.0
+   Compiling bumpalo v3.20.2
+   Compiling minimal-lexical v0.2.1
+   Compiling slotmap v1.1.1
+   Compiling bevy_ptr v0.18.0
+   Compiling downcast-rs v2.0.2
+   Compiling parking_lot v0.12.5
+   Compiling bytemuck_derive v1.10.2
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v2.0.18
+   Compiling zeroize_derive v1.5.0
+   Compiling zerocopy-derive v0.8.39
+   Compiling derive_more-impl v2.1.1
+   Compiling encase_derive v0.12.0
+   Compiling tracing-attributes v0.1.31
+   Compiling bevy_reflect_derive v0.18.0
+   Compiling async-channel v2.5.0
+   Compiling variadics_please v1.1.0
+   Compiling assert_type_match v0.1.1
+   Compiling futures-channel v0.3.32
+   Compiling async-executor v1.14.0
+   Compiling nonmax v0.5.5
+   Compiling bevy_ecs_macros v0.18.0
+   Compiling zeroize v1.8.2
+   Compiling futures-macro v0.3.32
+   Compiling libloading v0.8.9
+   Compiling bytemuck v1.25.0
+   Compiling futures-task v0.3.32
+   Compiling serde_json v1.0.149
+   Compiling bevy_derive v0.18.0
+   Compiling thiserror v2.0.18
+   Compiling crossbeam-channel v0.5.15
+   Compiling zerocopy v0.8.39
+   Compiling fdeflate v0.3.7
+   Compiling tracing v0.1.44
+   Compiling futures-util v0.3.32
+   Compiling synstructure v0.13.2
+   Compiling raw-window-handle v0.6.2
+   Compiling serde v1.0.228
+   Compiling flate2 v1.1.9
+   Compiling clang-sys v1.8.1
+   Compiling quick-error v2.0.1
+   Compiling derive_more v2.1.1
+   Compiling generic-array v0.14.7
+   Compiling zune-core v0.4.12
+   Compiling weezl v0.1.12
+   Compiling regex v1.12.3
+   Compiling pxfm v0.1.27
+   Compiling zune-jpeg v0.4.21
+   Compiling color_quant v1.1.0
+   Compiling zerofrom-derive v0.1.6
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling fax v0.2.7
+   Compiling byteorder-lite v0.1.0
+   Compiling digest v0.10.7
+   Compiling zune-core v0.5.3
+   Compiling lazy_static v1.5.0
+   Compiling md-5 v0.10.6
+   Compiling image-webp v0.2.4
+   Compiling zune-jpeg v0.5.15
+   Compiling bitflags v2.11.0
+   Compiling atomic v0.6.1
+   Compiling zerofrom v0.1.6
+   Compiling gif v0.14.2
+   Compiling yoke-derive v0.8.1
+   Compiling moxcms v0.7.11
+   Compiling objc2-core-foundation v0.3.2
+   Compiling rustix v1.1.3
+   Compiling uuid v1.21.0
+   Compiling nix v0.31.1
+   Compiling dispatch2 v0.3.0
+   Compiling png v0.18.1
+   Compiling encase v0.12.0
+   Compiling nom v7.1.3
+   Compiling objc2-io-kit v0.3.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling ctrlc v3.5.2
+   Compiling piper v0.2.4
+   Compiling rustc-hash v1.1.0
+   Compiling terminal_size v0.4.3
+   Compiling blocking v1.6.2
+   Compiling async-lock v3.4.2
+   Compiling foreign-types-macros v0.2.3
+   Compiling zerovec-derive v0.11.2
+   Compiling sysinfo v0.37.2
+   Compiling constant_time_eq v0.4.2
+   Compiling foreign-types-shared v0.3.1
+   Compiling cexpr v0.6.0
+   Compiling arrayref v0.3.9
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling async-fs v2.2.0
+   Compiling foreign-types v0.5.0
+   Compiling bevy_asset_macros v0.18.0
+   Compiling blake3 v1.8.3
+   Compiling async-broadcast v0.7.2
+   Compiling displaydoc v0.2.5
+   Compiling stackfuture v0.3.1
+   Compiling mio v1.1.1
+   Compiling atomicow v1.1.0
+   Compiling termcolor v1.4.1
+   Compiling sys-locale v0.3.2
+   Compiling sharded-slab v0.1.7
+   Compiling tracing-log v0.2.0
+   Compiling matchers v0.2.0
+   Compiling iana-time-zone v0.1.65
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling unicode-linebreak v0.1.5
+   Compiling ryu v1.0.23
+   Compiling euclid v0.22.13
+   Compiling tracing-subscriber v0.3.22
+   Compiling svg_fmt v0.4.5
+   Compiling hexf-parse v0.2.1
+   Compiling rand_chacha v0.9.0
+   Compiling twox-hash v2.1.2
+   Compiling tiff v0.10.3
+   Compiling ktx2 v0.4.0
+   Compiling core-foundation v0.10.1
+   Compiling malloc_buf v0.0.6
+   Compiling rand v0.9.2
+   Compiling guillotiere v0.6.2
+   Compiling ruzstd v0.8.2
+   Compiling rectangle-pack v0.4.2
+   Compiling objc v0.2.7
+   Compiling unicode-width v0.1.14
+   Compiling image v0.25.9
+   Compiling rand_distr v0.5.1
+   Compiling block v0.1.6
+   Compiling const_soft_float v0.1.4
+   Compiling pure-rust-locales v0.8.2
+   Compiling nix v0.30.1
+   Compiling castaway v0.2.4
+   Compiling bevy_mikktspace v0.17.0-dev
+   Compiling profiling v1.0.17
+   Compiling constgebra v0.1.4
+   Compiling fnv v1.0.7
+   Compiling bitflags v1.3.2
+   Compiling memmap2 v0.9.10
+   Compiling unicase v2.9.0
+   Compiling core-foundation v0.9.4
+   Compiling vte v0.14.1
+   Compiling static_assertions v1.1.0
+   Compiling codespan-reporting v0.12.0
+   Compiling wgpu-types v27.0.1
+   Compiling smol_str v0.2.2
+   Compiling bevy_platform v0.18.0
+   Compiling petgraph v0.8.3
+   Compiling ron v0.12.0
+   Compiling tempfile v3.25.0
+   Compiling option-ext v0.2.0
+   Compiling chrono v0.4.43
+   Compiling lscolors v0.20.0
+   Compiling naga v27.0.3
+   Compiling signal-hook-registry v1.4.8
+   Compiling bevy_utils v0.18.0
+   Compiling dirs-sys v0.5.0
+   Compiling num-format v0.4.4
+   Compiling bevy_tasks v0.18.0
+   Compiling clap_builder v4.5.60
+   Compiling signal-hook v0.3.18
+   Compiling dirs v6.0.0
+   Compiling core-graphics-types v0.2.0
+   Compiling bindgen v0.72.1
+   Compiling clap_derive v4.5.55
+   Compiling percent-encoding v2.3.2
+   Compiling is_ci v1.2.0
+   Compiling signal-hook-mio v0.2.5
+   Compiling owo-colors v4.3.0
+   Compiling textwrap v0.16.2
+   Compiling font-types v0.10.1
+   Compiling supports-color v3.0.2
+   Compiling ref-cast-impl v1.0.25
+   Compiling typetag-impl v0.2.21
+   Compiling miette-derive v7.6.0
+   Compiling zerocopy v0.7.35
+   Compiling proc-macro-error-attr2 v2.0.0
+   Compiling yoke v0.8.1
+   Compiling mach2 v0.6.0
+   Compiling supports-unicode v3.0.0
+   Compiling supports-hyperlinks v3.2.0
+   Compiling siphasher v1.0.2
+   Compiling clap v4.5.60
+   Compiling web-time v1.1.0
+   Compiling proc-macro-error2 v2.0.1
+   Compiling ref-cast v1.0.25
+   Compiling crossterm v0.29.0
+   Compiling buf-trait v0.4.1
+   Compiling core-graphics-types v0.1.3
+   Compiling strip-ansi-escapes v0.2.1
+   Compiling core_maths v0.1.1
+   Compiling data-encoding v2.10.0
+   Compiling byteyarn v0.5.1
+   Compiling lean_string v0.5.1
+   Compiling fancy-regex v0.17.0
+   Compiling strum_macros v0.27.2
+   Compiling nu-glob v0.110.0 (/Users/master/cyber/nu/crates/nu-glob)
+   Compiling strum v0.27.2
+   Compiling serde_spanned v0.6.9
+   Compiling toml_datetime v0.6.3
+   Compiling radsort v0.1.1
+   Compiling nu-utils v0.110.0 (/Users/master/cyber/nu/crates/nu-utils)
+   Compiling naga_oil v0.20.0
+   Compiling toml_edit v0.20.2
+   Compiling read-fonts v0.36.0
+   Compiling read-fonts v0.35.0
+   Compiling offset-allocator v0.2.0
+   Compiling bevy_encase_derive v0.18.0
+   Compiling glam v0.30.10
+   Compiling bevy_render_macros v0.18.0
+   Compiling http v1.4.0
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling metal v0.32.0
+   Compiling toml v0.8.2
+   Compiling objc-sys v0.3.5
+   Compiling ttf-parser v0.25.1
+   Compiling miette v7.6.0
+   Compiling typetag v0.2.21
+   Compiling chrono-humanize v0.2.3
+   Compiling nu-experimental v0.110.0 (/Users/master/cyber/nu/crates/nu-experimental)
+   Compiling skrifa v0.37.0
+   Compiling der v0.7.10
+   Compiling zerovec v0.11.5
+   Compiling strum_macros v0.26.4
+   Compiling tokio-macros v2.6.1
+   Compiling wgpu-hal v27.0.4
+   Compiling bevy_reflect v0.18.0
+   Compiling hexasphere v16.0.0
+   Compiling lru v0.16.3
+   Compiling type-map v0.5.1
+   Compiling cpufeatures v0.2.17
+   Compiling wgpu-core-deps-apple v27.0.0
+   Compiling os_pipe v1.2.3
+   Compiling libproc v0.14.11
+   Compiling nu-derive-value v0.110.0 (/Users/master/cyber/nu/crates/nu-derive-value)
+   Compiling socket2 v0.6.2
+   Compiling writeable v0.6.2
+   Compiling yazi v0.2.1
+   Compiling litemap v0.8.1
+   Compiling zeno v0.3.3
+   Compiling strum v0.26.3
+   Compiling zerotrie v0.2.3
+   Compiling wgpu-core v27.0.3
+   Compiling fontdb v0.23.0
+   Compiling skrifa v0.39.0
+   Compiling tokio v1.50.0
+   Compiling harfrust v0.4.1
+   Compiling objc2 v0.5.2
+   Compiling swash v0.2.6
+   Compiling fluent-syntax v0.12.0
+   Compiling hmac v0.12.1
+   Compiling nu-path v0.110.0 (/Users/master/cyber/nu/crates/nu-path)
+   Compiling ff v0.13.1
+   Compiling num-integer v0.1.46
+   Compiling linebender_resource_handle v0.1.1
+   Compiling accesskit v0.21.1
+   Compiling unicode-script v0.5.8
+   Compiling rangemap v1.7.1
+   Compiling unicode-bidi v0.3.18
+   Compiling value-log v1.9.0
+   Compiling sec1 v0.7.3
+   Compiling num-bigint v0.4.6
+   Compiling cosmic-text v0.16.0
+   Compiling group v0.13.0
+   Compiling block2 v0.5.1
+   Compiling sha2 v0.10.9
+   Compiling coreaudio-sys v0.2.17
+   Compiling phf_shared v0.13.1
+   Compiling wgpu v27.0.1
+   Compiling crypto-bigint v0.5.5
+   Compiling enum_dispatch v0.3.13
+   Compiling quick_cache v0.6.24
+   Compiling dispatch v0.2.0
+   Compiling dashmap v6.1.0
+   Compiling objc2-foundation v0.2.2
+   Compiling phf v0.13.1
+   Compiling bigdecimal v0.4.10
+   Compiling icu_normalizer_data v2.1.1
+   Compiling lsm-tree v2.10.4
+   Compiling elliptic-curve v0.13.8
+   Compiling icu_properties_data v2.1.2
+   Compiling rfc6979 v0.4.0
+   Compiling spki v0.7.3
+   Compiling crossbeam-deque v0.8.6
+   Compiling xattr v1.6.1
+   Compiling signature v2.2.0
+   Compiling tinystr v0.8.2
+   Compiling potential_utf v0.1.4
+   Compiling thiserror-impl v1.0.69
+   Compiling os_display v0.1.4
+   Compiling uucore_procs v0.5.0
+   Compiling icu_collections v2.1.1
+   Compiling const_format_proc_macros v0.2.34
+   Compiling jiff-core v0.1.0
+   Compiling dpi v0.1.2
+   Compiling dunce v1.0.5
+   Compiling objc2-app-kit v0.2.2
+   Compiling ecdsa v0.16.9
+   Compiling thiserror v1.0.69
+   Compiling rayon-core v1.13.0
+   Compiling jiff v0.2.35
+   Compiling httparse v1.10.1
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+   Compiling http-body v1.1.0
+   Compiling neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+   Compiling form_urlencoded v1.2.2
+   Compiling codespan-reporting v0.11.1
+   Compiling rand_chacha v0.3.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling security-framework-sys v2.17.0
+   Compiling hex-conservative v0.2.2
+   Compiling encoding_rs v0.8.35
+   Compiling bytesize v2.3.1
+   Compiling nu-system v0.110.0 (/Users/master/cyber/nu/crates/nu-system)
+   Compiling gltf-derive v1.4.1
+   Compiling bitcoin_hashes v0.14.1
+   Compiling nu-protocol v0.110.0 (/Users/master/cyber/nu/crates/nu-protocol)
+   Compiling unimem v0.2.0 (/Users/master/cyber/honeycrisp/unimem)
+   Compiling darling_core v0.20.11
+   Compiling security-framework v3.7.0
+   Compiling naga v24.0.0 (/Users/master/cyber/evy/forks/naga)
+   Compiling rand v0.8.5
+   Compiling unic-langid-impl v0.9.6
+   Compiling icu_locale_core v2.1.1
+   Compiling cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+   Compiling rayon v1.11.0
+   Compiling k256 v0.13.4
+   Compiling unic-langid v0.9.6
+   Compiling bs58 v0.5.1
+   Compiling accesskit_consumer v0.31.0
+   Compiling icu_provider v2.1.1
+   Compiling fluent-langneg v0.13.1
+   Compiling intl_pluralrules v7.0.2
+   Compiling intl-memoizer v0.5.3
+   Compiling pbkdf2 v0.12.2
+   Compiling core-graphics v0.23.2
+   Compiling metal v0.31.0
+   Compiling icu_normalizer v2.1.1
+   Compiling icu_properties v2.1.2
+   Compiling prost-derive v0.13.5
+   Compiling fluent-bundle v0.16.0
+   Compiling wgpu-types v24.0.0
+   Compiling ripemd v0.1.3
+   Compiling ogg v0.8.0
+   Compiling console v0.16.2
+   Compiling fluent v0.17.0
+   Compiling mach2 v0.4.3
+   Compiling idna_adapter v1.2.1
+   Compiling vec_map v0.8.2
+   Compiling grid v1.0.0
+   Compiling uucore v0.5.0
+   Compiling dasp_sample v0.11.0
+   Compiling ucd-trie v0.1.7
+   Compiling cursor-icon v1.2.0
+   Compiling tower-service v0.3.3
+   Compiling try-lock v0.2.5
+   Compiling utf8_iter v1.0.4
+   Compiling taffy v0.9.2
+   Compiling pest v2.8.6
+   Compiling winit v0.30.12
+   Compiling gilrs-core v0.6.7
+   Compiling bip32 v0.5.3
+   Compiling idna v1.1.0
+   Compiling want v0.3.1
+   Compiling wgpu-hal v24.0.4
+   Compiling lewton v0.10.2
+   Compiling tokio-util v0.7.19
+   Compiling bip39 v2.2.2
+   Compiling darling_macro v0.20.11
+   Compiling accesskit_macos v0.22.2
+   Compiling native-tls v0.2.18
+   Compiling acpu v0.2.0 (/Users/master/cyber/honeycrisp/acpu)
+   Compiling fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+   Compiling h2 v0.4.19
+   Compiling inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+   Compiling coreaudio-rs v0.11.3
+   Compiling system-configuration-sys v0.6.0
+   Compiling gltf-json v1.4.1
+   Compiling portable-atomic v1.13.1
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+   Compiling neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling linked-hash-map v0.5.6
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling cpal v0.15.3
+   Compiling anstyle-parse v1.0.0
+   Compiling bevy_animation_macros v0.18.0
+   Compiling bevy_gizmos_macros v0.18.0
+   Compiling unit-prefix v0.5.2
+   Compiling untrusted v0.9.0
+   Compiling mime v0.3.17
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling indicatif v0.18.4
+   Compiling hyper v1.11.1
+   Compiling rodio v0.20.1
+   Compiling ring v0.17.14
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling anstream v1.0.0
+   Compiling neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+   Compiling nu-json v0.110.0 (/Users/master/cyber/nu/crates/nu-json)
+   Compiling system-configuration v0.7.0
+   Compiling aruminium v0.2.0 (/Users/master/cyber/honeycrisp/aruminium)
+   Compiling accesskit_winit v0.29.2
+   Compiling darling v0.20.11
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling wgpu-core v24.0.5
+   Compiling pest_meta v2.8.6
+   Compiling url v2.5.8
+   Compiling gilrs v0.11.1
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling prost v0.13.5
+   Compiling serde_urlencoded v0.7.1
+   Compiling ansitok v0.3.0
+   Compiling env_filter v2.0.0
+   Compiling objc2-core-graphics v0.3.2
+   Compiling objc2-foundation v0.3.2
+   Compiling safe_arch v0.7.4
+   Compiling inout v0.1.4
+   Compiling bevy_state_macros v0.18.0
+   Compiling approx v0.5.1
+   Compiling sync_wrapper v1.0.2
+   Compiling filetime v0.2.27
+   Compiling num_threads v0.1.7
+   Compiling ipnet v2.12.1
+   Compiling tower-layer v0.3.3
+   Compiling base64ct v1.8.3
+   Compiling petgraph v0.7.1
+   Compiling cipher v0.4.4
+   Compiling wide v0.7.33
+   Compiling time v0.3.47
+   Compiling tower v0.5.3
+   Compiling wgpu v24.0.5
+   Compiling pem-rfc7468 v1.0.0
+   Compiling hyper-util v0.1.20
+   Compiling env_logger v0.11.11
+   Compiling ansi-str v0.9.0
+   Compiling objc2-app-kit v0.3.2
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling pest_generator v2.8.6
+   Compiling rustls-webpki v0.103.15
+   Compiling tzdb v0.7.3
+   Compiling syn v1.0.109
+   Compiling prettyplease v0.2.37
+   Compiling tokio-native-tls v0.3.1
+   Compiling http-body-util v0.1.5
+   Compiling bevy_ecs v0.18.0
+   Compiling bevy_math v0.18.0
+   Compiling const_format v0.2.35
+   Compiling universal-hash v0.5.1
+   Compiling alloc-no-stdlib v2.0.4
+   Compiling base64 v0.23.1
+   Compiling bytecount v0.6.9
+   Compiling pollster v0.4.0
+   Compiling pest_consume_macros v1.1.0
+   Compiling alloc-stdlib v0.2.2
+   Compiling ureq-proto v0.6.1
+   Compiling papergrid v0.17.0
+   Compiling run v0.1.0 (/Users/master/cyber/glia/run)
+   Compiling poly1305 v0.8.0
+   Compiling hyper-tls v0.6.0
+   Compiling rustls v0.23.43
+   Compiling pest_derive v2.8.6
+   Compiling gltf v1.4.1
+warning: unused import: `crate::backend::BackendError`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:22:5
+   |
+22 | use crate::backend::BackendError;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::backend::honeycrisp::device::HoneycrispDevice`
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:23:5
+   |
+23 | use crate::backend::honeycrisp::device::HoneycrispDevice;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::backend::BackendError`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1954:13
+     |
+1954 |         use crate::backend::BackendError;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   Compiling onig_sys v69.9.3
+   Compiling soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+   Compiling der v0.8.1
+   Compiling bevy_color v0.18.0
+   Compiling tower-http v0.6.11
+   Compiling chacha20 v0.9.1
+warning: unused variable: `pipe_q`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:1996:13
+     |
+1996 |         let pipe_q = match kind {
+     |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `n_blk_inter_sz`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2156:13
+     |
+2156 |         let n_blk_inter_sz = inter_size / block_size as usize;
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_n_blk_inter_sz`
+
+warning: unused variable: `pipe_q_dual`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2210:13
+     |
+2210 |         let pipe_q_dual    = match kind {
+     |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual`
+
+warning: unused variable: `pipe_q_gus`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2214:13
+     |
+2214 |         let pipe_q_gus     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus`
+
+warning: unused variable: `pipe_q_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2219:13
+     |
+2219 |         let pipe_q_opt     = match kind {
+     |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_opt`
+
+warning: unused variable: `pipe_q_dual_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2223:13
+     |
+2223 |         let pipe_q_dual_opt = match kind {
+     |             ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_dual_opt`
+
+warning: unused variable: `pipe_q_gus_opt`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2227:13
+     |
+2227 |         let pipe_q_gus_opt = match kind {
+     |             ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q_gus_opt`
+
+warning: unused variable: `pipe_qk_rope`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2254:13
+     |
+2254 |         let pipe_qk_rope                = &self.pipe_qk_rope.0;
+     |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_qk_rope`
+
+warning: unused variable: `pipe_q8_large2_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2263:13
+     |
+2263 |         let pipe_q8_large2_res     = &self.pipe_q8_large2_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large2_res`
+
+warning: unused variable: `pipe_q8_large8_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2265:13
+     |
+2265 |         let pipe_q8_large8_res     = &self.pipe_q8_large8_res.0;
+     |             ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8_res`
+
+warning: unused variable: `pipe_q8_mbx16_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2266:13
+     |
+2266 |         let pipe_q8_mbx16_res      = &self.pipe_q8_mbx16_res.0;
+     |             ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_mbx16_res`
+
+warning: unused variable: `pipe_q8_large4t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2267:13
+     |
+2267 |         let pipe_q8_large4t_res    = &self.pipe_q8_large4t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large4t_res`
+
+warning: unused variable: `pipe_q8_large8t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2268:13
+     |
+2268 |         let pipe_q8_large8t_res    = &self.pipe_q8_large8t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large8t_res`
+
+warning: unused variable: `pipe_q8_large16t_res`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2269:13
+     |
+2269 |         let pipe_q8_large16t_res   = &self.pipe_q8_large16t_res.0;
+     |             ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_large16t_res`
+
+warning: unused variable: `pipe_q8_gus_nrm_mb64_r4`
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2278:13
+     |
+2278 |         let pipe_q8_gus_nrm_mb64_r4 = &self.pipe_q8_gus_nrm_mb64_r4.0;
+     |             ^^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pipe_q8_gus_nrm_mb64_r4`
+
+   Compiling webpki-roots v1.0.9
+   Compiling webpki-root-certs v1.0.9
+   Compiling phf_shared v0.11.3
+   Compiling phf_shared v0.12.1
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/glia/run/tokenizer/loader.rs:219:9
+    |
+219 |     let mut add = |tokens: &mut Vec<(u32, String)>, id: u32, name: String| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `dbg_stats` is never used
+   --> /Users/master/cyber/glia/run/arch/decoder/forward.rs:666:4
+    |
+666 | fn dbg_stats(label: &str, v: &[f32]) { dbg_stats_l(0, label, v); }
+    |    ^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `matmul_f32_scalar` is never used
+  --> /Users/master/cyber/glia/run/backend/cpu/matmul.rs:90:8
+   |
+90 | pub fn matmul_f32_scalar(x: &Tensor, w: &Tensor) -> Result<Tensor, BackendError> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: field `device` is never read
+  --> /Users/master/cyber/glia/run/backend/wgpu/mod.rs:29:5
+   |
+27 | struct GpuBuffer {
+   |        --------- field in this struct
+28 |     buffer: wgpu::Buffer,
+29 |     device: Arc<Device>,
+   |     ^^^^^^
+
+warning: fields `pipe_qk_norm_rope` and `transposed_down_w` are never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:156:5
+    |
+131 | pub struct HoneycrispBackend {
+    |            ----------------- fields in this struct
+...
+156 |     pipe_qk_norm_rope: HcPipeline,
+    |     ^^^^^^^^^^^^^^^^^
+...
+234 |     transposed_down_w: std::sync::Mutex<TransposedCache>,
+    |     ^^^^^^^^^^^^^^^^^
+
+warning: field `0` is never read
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:244:24
+    |
+244 | struct TransposedCache(std::collections::HashMap<usize, Box<aruminium::Buffer>>);
+    |        --------------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |        |
+    |        field in this struct
+    |
+    = help: consider removing this field
+
+warning: function `transpose_q8_blocks` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:252:4
+    |
+252 | fn transpose_q8_blocks(src: &[u8], n_rows: usize, n_blk: usize) -> Vec<u8> {
+    |    ^^^^^^^^^^^^^^^^^^^
+
+warning: methods `get_or_transpose_down_w` and `upload_tensor` are never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:594:8
+    |
+266 | impl HoneycrispBackend {
+    | ---------------------- methods in this implementation
+...
+594 |     fn get_or_transpose_down_w(
+    |        ^^^^^^^^^^^^^^^^^^^^^^^
+...
+620 |     fn upload_tensor(&self, t: &Tensor) -> Result<aruminium::Buffer, BackendError> {
+    |        ^^^^^^^^^^^^^
+
+warning: field `down_w_t` is never read
+    --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:2144:13
+     |
+2126 |         struct LPtrs {
+     |                ----- field in this struct
+...
+2144 |             down_w_t:      *const aruminium::Buffer, // transposed; null if not needed
+     |             ^^^^^^^^
+
+warning: field `queue` is never read
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/device.rs:11:9
+   |
+ 9 | pub struct HoneycrispDevice {
+   |            ---------------- field in this struct
+10 |     pub gpu: aruminium::Gpu,
+11 |     pub queue: aruminium::Queue,
+   |         ^^^^^
+
+warning: constant `MAX_SEQ_SHARED` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/attention.rs:25:11
+   |
+25 | pub const MAX_SEQ_SHARED: u32 = 2048;
+   |           ^^^^^^^^^^^^^^
+
+warning: function `dispatch_silu_mul` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/elementwise.rs:89:8
+   |
+89 | pub fn dispatch_silu_mul(
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 18;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:180:8
+    |
+180 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+    |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:268:8
+    |
+268 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+    |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4_matmul.rs:658:8
+    |
+658 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `LANES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:17:11
+   |
+17 | pub const LANES: u32 = 32;
+   |           ^^^^^
+
+warning: constant `SCALE_MIN_HELPER` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:80:7
+   |
+80 | const SCALE_MIN_HELPER: &str = r#"
+   |       ^^^^^^^^^^^^^^^^
+
+warning: function `tg_count` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:453:8
+    |
+453 | pub fn tg_count(n_rows: u32, batch: u32) -> usize {
+    |        ^^^^^^^^
+
+warning: function `tg_size` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q4k_matmul.rs:458:8
+    |
+458 | pub fn tg_size() -> usize { (SIMDS_PER_GROUP * LANES) as usize }
+    |        ^^^^^^^
+
+warning: constant `BLOCK_BYTES` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:19:11
+   |
+19 | pub const BLOCK_BYTES: usize = 34;
+   |           ^^^^^^^^^^^
+
+warning: function `msl_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:94:8
+   |
+94 | pub fn msl_nrm() -> String { msl_nrm_mb(128) }
+   |        ^^^^^^^
+
+warning: function `msl_dual_nrm` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:96:8
+   |
+96 | pub fn msl_dual_nrm() -> String { msl_dual_nrm_mb(128) }
+   |        ^^^^^^^^^^^^
+
+warning: function `msl_gus_nrm` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/q8_matmul.rs:644:8
+    |
+644 | pub fn msl_gus_nrm() -> String { msl_gus_nrm_mb(128) }
+    |        ^^^^^^^^^^^
+
+warning: constant `MSL_TEMPLATE` is never used
+  --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:14:7
+   |
+14 | const MSL_TEMPLATE: &str = r#"
+   |       ^^^^^^^^^^^^
+
+warning: function `msl_for` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:226:8
+    |
+226 | pub fn msl_for(head_dim: usize) -> String {
+    |        ^^^^^^^
+
+warning: function `dispatch` is never used
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/kernels/rope.rs:271:8
+    |
+271 | pub fn dispatch(
+    |        ^^^^^^^^
+
+warning: function `softmax` is never used
+   --> /Users/master/cyber/glia/run/generate.rs:201:4
+    |
+201 | fn softmax(logits: &[f32]) -> Vec<f32> {
+    |    ^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> /Users/master/cyber/glia/run/backend/honeycrisp/mod.rs:454:9
+    |
+454 |         &self,
+    |         ^^^^^ the lifetime is elided here
+...
+462 |     ) -> Result<std::sync::MutexGuard<Vec<AttnState>>, BackendError> {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+462 |     ) -> Result<std::sync::MutexGuard<'_, Vec<AttnState>>, BackendError> {
+    |                                       +++
+
+   Compiling mime_guess v2.0.5
+   Compiling keyboard-types v0.7.0
+   Compiling futures-executor v0.3.32
+   Compiling fd-lock v4.0.4
+   Compiling derive_builder_core v0.20.2
+   Compiling aead v0.5.2
+   Compiling zopfli v0.8.3
+   Compiling monostate-impl v0.1.18
+   Compiling socks v0.3.4
+   Compiling itertools v0.13.0
+   Compiling fsevent-sys v4.1.0
+   Compiling env_home v0.1.0
+   Compiling base64 v0.13.1
+   Compiling derive_builder_macro v0.20.2
+   Compiling debug_unsafe v0.1.4
+   Compiling utf8-zero v0.8.1
+   Compiling macro_rules_attribute v0.2.3
+   Compiling which v8.0.0
+   Compiling notify v6.1.1
+   Compiling prost-types v0.13.5
+   Compiling spm_precompiled v0.1.4
+   Compiling atoi_simd v0.16.1
+   Compiling derive_builder v0.20.2
+   Compiling ureq v3.4.0
+   Compiling reedline v0.45.0
+   Compiling monostate v0.1.18
+   Compiling zip v4.6.1
+   Compiling chacha20poly1305 v0.10.1
+   Compiling futures v0.3.32
+   Compiling prost-build v0.13.5
+   Compiling phf v0.12.1
+   Compiling phf v0.11.3
+   Compiling reqwest v0.12.28
+   Compiling onig v6.5.3
+   Compiling tabled v0.20.0
+   Compiling pest_consume v1.1.3
+   Compiling import v0.1.0 (/Users/master/cyber/glia/import)
+   Compiling shadow-rs v1.7.0
+   Compiling ahash v0.8.12
+   Compiling v_htmlescape v0.15.8
+   Compiling rust_decimal v1.40.0
+warning: `run` (lib) generated 47 warnings (run `cargo fix --lib -p run` to apply 20 suggestions)
+   Compiling brotli-decompressor v5.0.0
+   Compiling esaxx-rs v0.1.10
+   Compiling rayon-cond v0.4.0
+   Compiling codepage v0.1.2
+   Compiling quick-xml v0.38.4
+   Compiling parse_datetime v0.13.3
+   Compiling pori v0.0.0
+   Compiling compact_str v0.9.1
+   Compiling nu-cmd-lang v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-lang)
+   Compiling nu-engine v0.110.0 (/Users/master/cyber/nu/crates/nu-engine)
+   Compiling dary_heap v0.3.9
+   Compiling png v0.17.16
+   Compiling fuzzy-matcher v0.3.7
+   Compiling nu-pretty-hex v0.110.0 (/Users/master/cyber/nu/crates/nu-pretty-hex)
+   Compiling toml_datetime v0.7.5+spec-1.1.0
+   Compiling serde_spanned v1.0.4
+   Compiling itertools v0.11.0
+   Compiling platform-info v2.0.5
+   Compiling num_cpus v1.17.0
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling csv-core v0.1.13
+   Compiling is_debug v1.1.0
+   Compiling shell-words v1.1.1
+   Compiling file-id v0.2.3
+   Compiling unicode_categories v0.1.1
+   Compiling nu-parser v0.110.0 (/Users/master/cyber/nu/crates/nu-parser)
+   Compiling nu-color-config v0.110.0 (/Users/master/cyber/nu/crates/nu-color-config)
+   Compiling unsafe-libyaml v0.2.11
+   Compiling fast-float2 v0.2.3
+   Compiling fs_extra v1.3.0
+   Compiling linux-raw-sys v0.12.1
+   Compiling pathdiff v0.2.3
+   Compiling toml_writer v1.0.6+spec-1.1.0
+   Compiling notify-debouncer-full v0.3.2
+   Compiling bevy_app v0.18.0
+   Compiling serde_yaml v0.9.34+deprecated
+   Compiling uu_mv v0.5.0
+   Compiling uu_cp v0.5.0
+   Compiling open v5.3.3
+   Compiling toml v0.9.12+spec-1.1.0
+   Compiling nu-table v0.110.0 (/Users/master/cyber/nu/crates/nu-table)
+   Compiling calamine v0.32.0
+   Compiling nu-cmd-base v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-base)
+   Compiling nu-cmd-extra v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-extra)
+   Compiling nuon v0.110.0 (/Users/master/cyber/nu/crates/nuon)
+   Compiling dialoguer v0.12.0
+   Compiling wax v0.6.0
+   Compiling tokenizers v0.22.2
+   Compiling csv v1.4.0
+   Compiling hf-hub v0.5.0
+   Compiling uu_uname v0.5.0
+   Compiling muda v0.17.1
+   Compiling uu_touch v0.5.0
+   Compiling brotli v8.0.2
+   Compiling dtparse v2.0.1
+   Compiling oem_cp v2.1.2
+   Compiling chrono-tz v0.10.4
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+   Compiling soma-kernel v0.1.0 (/Users/master/cyber/soma/kernel)
+   Compiling uu_mktemp v0.5.0
+   Compiling uu_whoami v0.5.0
+   Compiling uu_mkdir v0.5.0
+   Compiling umask v2.1.0
+   Compiling chardetng v0.1.17
+   Compiling nu-term-grid v0.110.0 (/Users/master/cyber/nu/crates/nu-term-grid)
+   Compiling titlecase v3.6.0
+   Compiling devicons v0.6.12
+   Compiling rmp v0.8.15
+   Compiling print-positions v0.6.1
+   Compiling nucleo-matcher v0.3.1
+   Compiling is_executable v1.0.5
+   Compiling bracoxide v0.1.8
+   Compiling filesize v0.2.0
+   Compiling roxmltree v0.20.0
+   Compiling alphanumeric-sort v1.5.5
+   Compiling tray-icon v0.21.3
+   Compiling nu-std v0.110.0 (/Users/master/cyber/nu/crates/nu-std)
+   Compiling nu-cli v0.110.0 (/Users/master/cyber/nu/crates/nu-cli)
+   Compiling global-hotkey v0.7.0
+   Compiling arboard v3.6.1
+   Compiling rune-prysm v0.1.0 (/Users/master/cyber/rune/rs/prysm)
+   Compiling sha1 v0.10.7
+   Compiling base32 v0.5.1
+   Compiling bevy_time v0.18.0
+   Compiling bevy_log v0.18.0
+   Compiling bevy_input v0.18.0
+   Compiling bevy_a11y v0.18.0
+   Compiling bevy_state v0.18.0
+   Compiling bevy_transform v0.18.0
+   Compiling bevy_diagnostic v0.18.0
+   Compiling bevy_asset v0.18.0
+   Compiling cy v0.1.0 (/Users/master/cyber/cyb/cli)
+   Compiling bevy_gilrs v0.18.0
+   Compiling human-date-parser v0.3.1
+   Compiling nu-command v0.110.0 (/Users/master/cyber/nu/crates/nu-command)
+   Compiling bevy_image v0.18.0
+   Compiling bevy_shader v0.18.0
+   Compiling bevy_audio v0.18.0
+   Compiling bevy_mesh v0.18.0
+   Compiling bevy_window v0.18.0
+   Compiling bevy_text v0.18.0
+   Compiling bevy_camera v0.18.0
+   Compiling bevy_animation v0.18.0
+   Compiling bevy_render v0.18.0
+   Compiling bevy_picking v0.18.0
+   Compiling bevy_light v0.18.0
+   Compiling bevy_scene v0.18.0
+   Compiling bevy_gizmos v0.18.0
+   Compiling bevy_sprite v0.18.0
+   Compiling bevy_input_focus v0.18.0
+   Compiling bevy_winit v0.18.0
+   Compiling bevy_ui v0.18.0
+   Compiling bevy_core_pipeline v0.18.0
+   Compiling bevy_sprite_render v0.18.0
+   Compiling bevy_pbr v0.18.0
+   Compiling bevy_anti_alias v0.18.0
+   Compiling bevy_post_process v0.18.0
+   Compiling bevy_ui_render v0.18.0
+   Compiling bevy_gltf v0.18.0
+   Compiling bevy_gizmos_render v0.18.0
+   Compiling bevy_internal v0.18.0
+   Compiling bevy v0.18.0
+   Compiling prysm v0.1.0 (/Users/master/cyber/prysm)
+   Compiling mir v0.1.0 (/Users/master/cyber/mir)
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/mir/src/bevy/world.rs:177:9
+    |
+177 |     let mut lock = match epoch_res.inner.try_write() {
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `hsl_to_rgb` is never used
+   --> /Users/master/cyber/mir/src/epoch/mod.rs:101:4
+    |
+101 | fn hsl_to_rgb(h_rad: f32, s: f32, l: f32) -> [f32; 3] {
+    |    ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mir` (lib) generated 2 warnings (run `cargo fix --lib -p mir` to apply 1 suggestion)
+   Compiling cyb v0.13.1 (/Users/master/cyber/cyb/shell)
+warning: unused import: `SubjectRef`
+ --> shell/src/worlds/identity.rs:6:65
+  |
+6 | use cyb_core::robot::{self, BindingState, NetworkRef, Registry, SubjectRef, VaultKey};
+  |                                                                 ^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> shell/src/worlds/body/prover.rs:285:9
+    |
+285 |     let mut id = |index: &mut std::collections::HashMap<[u8; 32], usize>, p: [u8; 32]| {
+    |         ----^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `policy` is never used
+   --> shell/src/worlds/identity.rs:202:4
+    |
+202 | fn policy() -> [u8; 32] {
+    |    ^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `cyb` (lib) generated 3 warnings (run `cargo fix --lib -p cyb` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 45s

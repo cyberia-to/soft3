@@ -1,0 +1,74 @@
+     Locking 21 packages to latest Rust 1.95.0 compatible versions
+    Updating bbg v0.1.2 (/Users/master/cyber/bbg/rs) -> v0.3.0
+    Updating cyber-hemera v0.3.0 (/Users/master/cyber/hemera/rs) -> v0.3.1
+    Updating cyber-lens v0.1.2 (/Users/master/cyber/lens/src) -> v0.2.0
+    Updating cyber-lens-assayer v0.1.1 (/Users/master/cyber/lens/assayer) -> v0.2.0
+    Updating cyber-lens-brakedown v0.1.1 (/Users/master/cyber/lens/brakedown) -> v0.2.0
+    Updating cyber-lens-core v0.1.1 (/Users/master/cyber/lens/core) -> v0.1.2
+    Updating cyber-lens-ikat v0.1.1 (/Users/master/cyber/lens/ikat) -> v0.2.0
+    Updating cyber-lens-porphyry v0.1.1 (/Users/master/cyber/lens/porphyry) -> v0.2.0
+    Updating cyber-nox v0.1.2 (/Users/master/cyber/nox/rs) -> v0.3.0
+    Updating foculus v0.1.2 (/Users/master/cyber/foculus) -> v0.1.3
+      Adding neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Updating strata-compute v0.1.0 (/Users/master/cyber/strata/compute) -> v0.1.1
+    Updating strata-core v0.1.0 (/Users/master/cyber/strata/core) -> v0.1.1
+    Updating strata-ext v0.1.0 (/Users/master/cyber/strata/ext) -> v0.1.1
+    Updating strata-genies v0.1.0 (/Users/master/cyber/strata/genies/rs) -> v0.1.1
+    Updating strata-jali v0.1.0 (/Users/master/cyber/strata/jali/rs) -> v0.1.1
+    Updating strata-kuro v0.1.0 (/Users/master/cyber/strata/kuro/rs) -> v0.1.1
+    Updating strata-nebu v0.1.0 (/Users/master/cyber/strata/nebu/rs) -> v0.1.1
+    Updating strata-proof v0.1.0 (/Users/master/cyber/strata/proof) -> v0.1.1
+    Updating strata-trop v0.1.0 (/Users/master/cyber/strata/trop/rs) -> v0.1.1
+    Updating zheng v0.1.2 (/Users/master/cyber/zheng/rs) -> v0.4.0
+   Compiling neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling crypto-common v0.1.7
+   Compiling crypto-bigint v0.5.5
+   Compiling thiserror-impl v2.0.20
+   Compiling digest v0.10.7
+   Compiling hmac v0.12.1
+   Compiling signature v2.2.0
+   Compiling sha2 v0.10.9
+   Compiling ripemd v0.1.3
+   Compiling rfc6979 v0.4.0
+   Compiling thiserror v2.0.20
+   Compiling elliptic-curve v0.13.8
+   Compiling ecdsa v0.16.9
+   Compiling k256 v0.13.4
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling lytics-event v0.1.0 (/Users/master/cyber/lytics/rs/event)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.57s
+     Running unittests src/lib.rs (target/debug/deps/lytics_event-abcad4965748e4a4)
+
+running 22 tests
+test keys::tests::bech32_uses_hrp ... ok
+test keys::tests::mnemonic_encoding_matches_the_standard ... ok
+test canonical::tests::parity_full ... ok
+test hex::tests::decode_rejects_garbage ... ok
+test b64::tests::decode_roundtrip_and_parity ... ok
+test b64::tests::decode_rejects_garbage ... ok
+test canonical::tests::parity_kind_variants ... ok
+test canonical::tests::parity_escaping ... ok
+test hex::tests::encode_parity_with_the_crate ... ok
+test keys::tests::entropy_is_the_seed ... ok
+test canonical::tests::parity_minimal ... ok
+test keys::tests::generated_entropy_roundtrips_through_mnemonic ... ok
+test keys::tests::same_domain_same_neuron ... ok
+test b64::tests::encode_parity_with_the_crate ... ok
+test hex::tests::decode_roundtrip_and_case_insensitive ... ok
+test pow::tests::difficulty_maps_sanely ... ok
+test pow::tests::wrong_nonce_fails_hard_target ... ok
+test pow::tests::solve_then_verify ... ok
+test keys::tests::different_domains_different_neurons ... ok
+test sign::tests::wrong_neuron_field_fails ... ok
+test sign::tests::sign_verify_roundtrip ... ok
+test sign::tests::tampered_body_fails ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests lytics_event
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

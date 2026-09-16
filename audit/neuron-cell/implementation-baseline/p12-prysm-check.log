@@ -1,0 +1,51 @@
+    Blocking waiting for file lock on package cache
+     Locking 2 packages to latest Rust 1.95.0 compatible versions
+      Adding neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+      Adding neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Checking crossbeam-queue v0.3.12
+    Checking neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+    Checking cyber-tape v0.1.0 (/Users/master/cyber/tape/impl/rust)
+    Checking neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Checking bevy_tasks v0.18.1
+    Checking bevy_ecs v0.18.1
+    Checking bevy_app v0.18.1
+    Checking bevy_time v0.18.1
+    Checking bevy_log v0.18.1
+    Checking bevy_input v0.18.1
+    Checking bevy_a11y v0.18.1
+    Checking bevy_state v0.18.1
+    Checking bevy_transform v0.18.1
+    Checking bevy_diagnostic v0.18.1
+    Checking bevy_asset v0.18.1
+    Checking bevy_gilrs v0.18.1
+    Checking bevy_image v0.18.1
+    Checking bevy_shader v0.18.1
+    Checking bevy_audio v0.18.1
+    Checking bevy_mesh v0.18.1
+    Checking bevy_window v0.18.1
+    Checking bevy_text v0.18.1
+    Checking bevy_camera v0.18.1
+    Checking bevy_animation v0.18.1
+    Checking bevy_render v0.18.1
+    Checking bevy_picking v0.18.1
+    Checking bevy_light v0.18.1
+    Checking bevy_scene v0.18.1
+    Checking bevy_gizmos v0.18.1
+    Checking bevy_sprite v0.18.1
+    Checking bevy_input_focus v0.18.1
+    Checking bevy_winit v0.18.1
+    Checking bevy_ui v0.18.1
+    Checking bevy_core_pipeline v0.18.1
+    Checking bevy_pbr v0.18.1
+    Checking bevy_sprite_render v0.18.1
+    Checking bevy_anti_alias v0.18.1
+    Checking bevy_post_process v0.18.1
+    Checking bevy_ui_render v0.18.1
+    Checking bevy_gltf v0.18.1
+    Checking bevy_gizmos_render v0.18.1
+    Checking bevy_internal v0.18.1
+    Checking bevy v0.18.1
+    Checking prysm v0.1.0 (/Users/master/cyber/prysm)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 26.80s

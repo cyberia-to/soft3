@@ -1,0 +1,147 @@
+    Blocking waiting for file lock on artifact directory
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+   Compiling neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+   Compiling cy v0.1.0 (/Users/master/cyber/cyb/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.56s
+     Running unittests src/main.rs (target/debug/deps/cy-ee133d508660baa1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/identity.rs (target/debug/deps/identity-615bcd310d7436a3)
+
+running 1 test
+test help_and_explicit_creation_do_not_replace_missing_or_invalid_keys ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+
+     Running tests/registry.rs (target/debug/deps/registry-af997040b551352a)
+
+running 5 tests
+test historical_claim_does_not_grant_a_new_signal_author ... ok
+test empty_repl_can_manage_attachments_without_an_ambient_identity ... ok
+test legacy_bootstrap_preserves_preseeded_selection_and_invalid_device_creates_no_key ... ok
+test local_wallet_actions_keep_the_captured_network_and_deny_watch_only ... ok
+test headless_attachments_drive_signed_authorship_and_watch_only_views_need_no_key ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.01s
+
+     Running unittests src/lib.rs (target/debug/deps/cyb_core-b4a7cd3c0581a77b)
+
+running 26 tests
+test intent::tests::custom_intent_matches_builtin_naming ... ok
+test chroma::tests::every_chroma_has_unique_particle ... ok
+test chroma::tests::every_chroma_has_unique_grid_pos ... ok
+test intent::tests::builtin_intents_are_unique ... ok
+test money::tests::demo_join_still_works ... ok
+test money::tests::open_balance_requires_grade4 ... ok
+test graph_session::tests::session_holds_a_link_and_serves_it ... ok
+test money::tests::failed_private_payment_preserves_note_without_minting_change ... ok
+test sense::tests::maps_transfer_in_and_reward ... ok
+test signal::tests::builder_assembles_signal ... ok
+test signal::tests::bus_round_trips_signals ... ok
+test robot::custody::tests::exclusive_creation_and_invalid_reads_never_replace_existing_custody ... ok
+test graph_session::tests::links_chain_across_signals ... ok
+test money::tests::observe_rejects_bad_finality ... ok
+test money::tests::pay_attaches_verifiable_proof ... ok
+test graph_session::tests::durable_survives_reopen ... ok
+test money::tests::settle_receipt_mints_from_shapley ... ok
+test money::tests::send_receive_multi_payee_finality ... ok
+test money::tests::light_fold_tip_open_and_advance ... ok
+test money::tests::double_spend_nullifier_rejected ... ok
+test money::tests::private_note_spend_uses_nullifier ... ok
+test money::tests::auto_settle_on_finalize ... ok
+test money::tests::link_and_settle_auto_reward_after_link ... ok
+test graph_session::tests::frame_replicates_a_link_across_sessions ... ok
+test money::tests::settle_reward_matures_after_depth ... ok
+test graph_session::tests::gossip_is_idempotent_and_converges ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.67s
+
+     Running tests/graph_migration.rs (target/debug/deps/graph_migration-92acec71a43a3fc0)
+
+running 5 tests
+test native_and_neuron_publish_into_one_database_without_clobbering ... ok
+test durable_wallet_credit_retry_conflict_and_overflow_are_atomic ... ok
+test text_sidecar_moves_into_shared_database_and_retires_its_writer_path ... ok
+test signal_view_keeps_network_and_proof_and_reports_bad_batches ... ok
+test strict_legacy_import_preserves_source_multi_neuron_headers_and_rejects_damage ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.25s
+
+     Running tests/native_mirror.rs (target/debug/deps/native_mirror-464d12ef25ad1313)
+
+running 3 tests
+test malformed_tail_is_rejected_before_any_prefix_and_networks_have_independent_cursors ... ok
+test native_before_observation_crash_retries_exact_signal_and_keeps_cursor ... ok
+test full_history_preserves_signal_proof_and_payment_without_executing_host_credit ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.41s
+
+     Running tests/native_outbox.rs (target/debug/deps/native_outbox-ac76d09064b2a181)
+
+running 4 tests
+test legacy_marks_are_retained_without_manufacturing_delivery_receipts ... ok
+test exact_retransmission_is_scoped_and_never_grants_generic_or_revoked_work ... ok
+test payment_and_linking_share_one_sequence_and_wrong_receipts_cannot_advance_it ... ok
+test lost_result_restarts_and_revocation_allows_only_exact_read_only_resolution ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.93s
+
+     Running tests/robot_registry.rs (target/debug/deps/robot_registry-f3450c82f8af6e38)
+
+running 5 tests
+test current_grants_serialize_revocation_and_only_one_racer_dispatches ... ok
+test crash_after_claim_reopens_unknown_and_cannot_reexecute ... ok
+test canonical_signal_is_bound_to_selected_network_and_reconciles_from_native_history ... ok
+test attachments_selection_and_history_survive_restart_without_a_robot_key ... ok
+test legacy_name_import_is_once_only_and_foreign_or_forged_control_fails ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.90s
+
+   Doc-tests cyb_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

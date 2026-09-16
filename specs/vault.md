@@ -16,7 +16,7 @@ This is a specification contract, not a claim of implemented private sync.
 
 The stack MUST safely retain, privately synchronize and recover Vault records
 after loss of the primary device. Imported passwords, external authenticators,
-tokens and their use state require durable records; a neuron seed cannot
+tokens and their use state require durable records; a neuron spell cannot
 regenerate them. Retention and recovery are primary product requirements.
 
 The initial profile composes one active custody writer, a durable local store
@@ -65,7 +65,7 @@ receipt does not recreate missing data or force future provider availability.
    Custody restricts placement/disclosure; changing CPU/GPU/device creates no
    warrior or neuron and supplies no right to a private witness.
 9. Unlock/recovery must bootstrap through private local storage without needing
-   a signature from the locked seed. Headless and GUI hosts share the contract.
+   a signature from the locked spell. Headless and GUI hosts share the contract.
 
 The [Vault conformance matrix](https://github.com/cyberia-to/vault/blob/main/specs/conformance.md)
 is the cross-stack acceptance gate, including simultaneous loss of the writer

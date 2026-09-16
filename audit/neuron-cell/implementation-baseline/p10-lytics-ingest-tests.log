@@ -1,0 +1,57 @@
+   Compiling lytics-ingest v0.1.0 (/Users/master/cyber/lytics/rs/ingest)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.50s
+     Running unittests src/main.rs (target/debug/deps/lytics_ingest-87ed9380231d856c)
+
+running 49 tests
+test enrich::tests::utm_wins_over_referrer ... ok
+test enrich::tests::own_host_is_internal_and_none_is_direct ... ok
+test enrich::tests::assistant_referral_is_ai_channel ... ok
+test enrich::tests::gmail_is_email_channel_with_source_name ... ok
+test enrich::tests::parent_domain_walk_resolves_subdomains ... ok
+test geo::tests::open_nonexistent_path_errs ... ok
+test enrich::tests::google_is_search_even_with_cctld ... ok
+test inf_reports::tests::actors_matches_reference ... ok
+test inf_reports::tests::overview_counts_matches_reference ... ok
+test inf_reports::tests::overview_matches_reference_on_empty ... ok
+test inf_reports::tests::funnel_escapes_quotes_in_step_pathnames ... ok
+test inf_reports::tests::funnel_matches_reference ... ok
+test inf_reports::tests::particles_matches_reference ... ok
+test inf_reports::tests::countries_matches_reference ... ok
+test inf_reports::tests::channels_matches_reference ... ok
+test inf_reports::tests::passage_ids_groups_correctly_across_a_boundary_regardless_of_label ... ok
+test inf_reports::tests::overview_counts_matches_reference_on_empty ... ok
+test inf_reports::tests::passages_report_matches_reference ... ok
+test inf_reports::tests::devices_matches_reference ... ok
+test inf_reports::tests::particles_respects_limit_and_tie_order ... ok
+test inf_reports::tests::overview_matches_reference ... ok
+test inf_reports::tests::retention_matches_reference_on_empty ... ok
+test inf_reports::tests::returns_matches_reference ... ok
+test inf_reports::tests::retention_matches_reference_with_same_cell_multi_event_neuron ... ok
+test inf_reports::tests::returns_matches_reference_outside_horizon ... ok
+test inf_reports::tests::sites_splits_one_dataset_per_hostname ... ok
+test inf_reports::tests::timeseries_matches_reference ... ok
+test juice::tests::frequency_buckets_a_whale_and_a_one_timer ... ok
+test reports::tests::audience_splits_new_vs_returning_by_first_seen ... ok
+test reports::tests::attention_sums_into_overview ... ok
+test juice::tests::live_lists_recent_only ... ok
+test juice::tests::pathflow_records_entry_to_next ... ok
+test reports::tests::funnel_counts_ordered_prefixes ... ok
+test reports::tests::passages_split_on_arrivals_never_on_pauses ... ok
+test reports::tests::retention_places_neurons_in_cohorts ... ok
+test reports::tests::returns_counts_cohort_and_returned ... ok
+test reports::tests::utm_pageview_is_arrival ... ok
+test reports::tests::scroll_stats_use_max_reach_per_neuron_path ... ok
+test inf_reports::tests::sources_matches_reference ... ok
+test store::tests::append_replay_roundtrip ... ok
+test store::tests::shred_makes_frames_unreadable_and_reenrolls ... ok
+test geo::tests::open_real_db_if_present ... ok
+test tests::future_timestamp_rejected ... ok
+test tests::weak_pow_rejected_for_unseen_neuron ... ok
+test tests::forged_signature_rejected ... ok
+test inf_reports::tests::passage_ids_stays_fast_for_one_neuron_with_thousands_of_arrivals ... ok
+test tests::accept_then_duplicate_then_report ... ok
+test tests::replay_preserves_verified_native_key_sequence_and_legacy_foreign_history ... ok
+test tests::changed_readable_history_fails_before_replacing_the_existing_projection ... ok
+
+test result: ok. 49 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+

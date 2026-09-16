@@ -1,0 +1,20 @@
+     Locking 1 package to latest Rust 1.98.0 compatible version
+PASS id: 1 normal/build dependencies; WASM compiled
+     Locking 2 packages to latest Rust 1.98.0 compatible versions
+PASS model: 2 normal/build dependencies; WASM compiled
+    Blocking waiting for file lock on package cache
+     Locking 13 packages to latest Rust 1.98.0 compatible versions
+PASS model-serde: 13 normal/build dependencies; WASM compiled
+     Locking 35 packages to latest Rust 1.98.0 compatible versions
+      Adding crypto-common v0.1.6 (available: v0.1.7)
+PASS mudra: 33 normal/build dependencies; WASM compiled
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+     Locking 60 packages to latest Rust 1.98.0 compatible versions
+      Adding crypto-common v0.1.6 (available: v0.1.7)
+    Blocking waiting for file lock on package cache
+PASS lytics-event: 57 normal/build dependencies; WASM compiled
+     Locking 2 packages to latest Rust 1.98.0 compatible versions
+PASS inf-value: 2 normal/build dependencies; WASM compiled
+     Locking 3 packages to latest Rust 1.98.0 compatible versions
+PASS inf-source: 3 normal/build dependencies; WASM compiled

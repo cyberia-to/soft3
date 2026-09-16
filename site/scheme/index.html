@@ -150,7 +150,7 @@
                 font-family: "JetBrains Mono", ui-monospace, monospace;
                 font-size: 0.68rem; white-space: nowrap; text-align: right;
             }
-            #detail td.st.live { color: var(--mint); }
+            #detail td.st.live, #detail td.st.local { color: var(--mint); }
             #detail td.st.published, #detail td.st.unwired { color: rgba(255, 213, 128, 0.9); }
             #detail td.st.blocked, #detail td.st.dormant { color: rgba(255, 140, 120, 0.9); }
             #detail td.st.spec { color: rgba(255, 248, 240, 0.45); }
@@ -179,7 +179,7 @@
 <path d="M 13 2 L 24 13 L 13 24 L 2 13 Z" fill="none" stroke="rgba(255,248,240,0.75)" stroke-width="1.6"/>
 <path d="M 5.5 13 A 7.5 7.5 0 0 1 20.5 13" fill="none" stroke="#4000ff" stroke-width="2.2"/>
 <path d="M 20.5 13 A 7.5 7.5 0 0 1 5.5 13" fill="none" stroke="#2a332e" stroke-width="2.2"/>
-<circle cx="13" cy="13" r="2.6" fill="#2a332e"/></svg><b>1 · medium</b><span>shared</span><i class="ok">live</i></button>
+<circle cx="13" cy="13" r="2.6" fill="#2a332e"/></svg><b>1 · medium</b><span>shared</span><i class="ok">recorded</i></button>
             <button data-stage="2"><svg viewBox="0 0 26 26" width="24" height="24" aria-hidden="true">
 <path d="M 13 2 L 24 13 L 13 24 L 2 13 Z" fill="none" stroke="rgba(255,248,240,0.75)" stroke-width="1.6"/>
 <path d="M 5.5 13 A 7.5 7.5 0 0 1 20.5 13" fill="none" stroke="#4000ff" stroke-width="2.2"/>
@@ -192,7 +192,9 @@
 <circle cx="13" cy="13" r="2.6" fill="#8000ff"/></svg><b>3 · mind</b><span>one</span><i class="warn">undeployed</i></button>
         </nav>
         <p id="stageinfo" class="stageinfo"></p>
-        <p class="hint">click any seat — verb outside, components inside</p>
+        <p class="hint">click any seat — verb outside, components inside ·
+            <a href="/#neuron-profile" style="color:var(--mint)">local neuron profile</a><br />
+            stages describe architecture; local implementation and historical traffic carry separate evidence</p>
 
         <!-- ═══ 7 = 4 + 2 + 1, every verb from the registry ══════════════
              seats show the verb and the components; the internal
@@ -261,13 +263,13 @@
                 <rect x="395" y="163" width="250" height="86" rx="16" fill="#ff0000"/>
                 <text x="520" y="194" font-size="22" font-weight="700" fill="#fff8f0">LINK</text>
                 <text x="520" y="215" font-size="11.5" fill="rgba(255,248,240,0.88)">a thought becomes links</text>
-                <text x="520" y="233" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">cybergraph · hemera + languages</text>
+                <text x="520" y="233" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">neuron · cybergraph · hemera</text>
             </g>
             <g data-seat="transmit" class="seat" text-anchor="middle">
                 <rect x="740" y="427" width="240" height="86" rx="16" fill="#0000ff"/>
                 <text x="860" y="458" font-size="22" font-weight="700" fill="#fff8f0">TRANSMIT</text>
-                <text x="860" y="479" font-size="11.5" fill="rgba(255,248,240,0.88)">cells share one graph</text>
-                <text x="860" y="497" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">radio · cell · tape · fs</text>
+                <text x="860" y="479" font-size="11.5" fill="rgba(255,248,240,0.88)">nodes share one graph</text>
+                <text x="860" y="497" font-size="9.5" font-weight="700" fill="rgba(255,248,240,0.8)" class="mono">radio · tape · fs</text>
             </g>
             <g data-seat="render" class="seat" text-anchor="middle">
                 <rect x="400" y="657" width="240" height="86" rx="16" fill="#ffff00"/>
@@ -321,9 +323,67 @@
             <a href="/chart/">the chart</a>
         </p>
         <script>
-            const DETAILS = {"link": {"color": "#ff0000", "title": "LINK", "prop": "a thought becomes links", "flow": "thought \u2192 <i>mean</i> \u2192 sentence \u2192 <i>hash</i> \u2192 <b>particle</b> \u2192 <i>link</i> \u2192 <b>cyberlink</b> \u2192 sealed by encrypt, carried by transmit", "rows": "<tr><td class=\"c\">cybergraph</td><td class=\"v\">link</td><td>jets \u00b7 memos \u00b7 types \u2014 particles + neuron become a cyberlink</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">hemera</td><td class=\"v\">hash</td><td>Poseidon2 sponge \u2014 any bytes become a particle; the identity of everything</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">neural</td><td class=\"v\">mean</td><td>sigil \u2192 word \u2192 link \u2192 sentence \u2192 motif \u2192 dialect \u2014 meaning as graph structure</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">trident</td><td class=\"v\">compile</td><td>.tri \u2192 .nox \u2014 sentences that lower to provable bytecode</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">rune</td><td class=\"v\">eval</td><td>scripted, effectful saying</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">inf</td><td class=\"v\">query</td><td>datalog over bbg \u2014 asking is saying</td><td class=\"st live\">live</td></tr>", "note": "the languages are richer mouths for the same mouth: whatever is meant, compiled, evaluated or asked, it lowers to particles and cyberlinks \u2014 hemera names, cybergraph binds."}, "transmit": {"color": "#0000ff", "title": "TRANSMIT", "prop": "cells share one graph", "flow": "<b>cell</b> <i>holds</i> the slice \u2192 <b>tape</b> <i>frames</i> it \u2192 <b>radio</b> <i>transmits</i> QUIC \u21c4 the peer cell <i>absorbs</i> \u2014 routing is read from the graph itself: FOLLOW \u00b7 ANTENNA \u00b7 SOCKET links", "rows": "<tr><td class=\"c\">radio</td><td class=\"v\">transmit</td><td>QUIC \u00b7 BAO streaming \u00b7 gossip \u2014 carries cyb/sync</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">cell</td><td class=\"v\">hold</td><td>the local node: graph slice, signal chain, apply/prove loop \u2014 lives inside cyb today</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">tape</td><td class=\"v\">frame</td><td>typed particle framing over any byte stream</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">fs</td><td class=\"v\">mount</td><td>particles as files</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">sync</td><td>reconciliation beyond a pair \u2014 gossip fan-out is its seat, not a rebroadcast</td><td class=\"st unwired\">unwired</td></tr>", "note": "the wire obeys the graph: following is a cyberlink, the address is graph content, and the mechanism replicates the very links that route it \u2014 proven live 2026-09-01."}, "render": {"color": "#ffff00", "title": "RENDER", "prop": "the focus becomes world", "flow": "the focused graph \u2192 <b>mir</b> <i>renders</i> worlds \u00b7 <b>prysm</b> <i>paints</i> chunks \u2192 screens, sound, effects \u2014 and every effect that touches the world passes <b>ward</b> <i>authorize</i>", "rows": "<tr><td class=\"c\">mir</td><td class=\"v\">render</td><td>positions + features \u2192 an R-1.0 world</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">prysm</td><td class=\"v\">paint</td><td>tape dialect \u2014 chunks become UI; affect drawn as color</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">ward</td><td class=\"v\">authorize</td><td>effect router: emit / query / link / seal / host \u2014 no capability, no effect</td><td class=\"st spec\">spec</td></tr>", "note": "a payment or a motor is a render too \u2014 the focus embodied in a medium, gated by capability. discovery is what a human does inside a rendered world."}, "measure": {"color": "#00ff00", "title": "MEASURE", "prop": "the world becomes links", "flow": "the world responds \u2192 <b>lytics</b> <i>measures</i> signed events (PoW-priced) \u2192 links in the graph \u2192 <span style=\"color:#00ff00\">the measurement becomes the next link</span>", "rows": "<tr><td class=\"c\">lytics</td><td class=\"v\">measure</td><td>signed visitor events \u00b7 cohorts \u00b7 funnels \u2014 cybernetics is impossible without measurement</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">sigma</td><td class=\"v\">evaluate</td><td>scores and gradings become links \u2014 proposed, not yet a repo</td><td class=\"st spec\">spec</td></tr>", "note": "measurement is the loop's return path: without it render is a broadcast, not an act of a mind."}, "encrypt": {"color": "#4000ff", "title": "ENCRYPT", "prop": "every link owned", "flow": "<b>vault</b> <i>keeps</i> the seed \u2192 <b>mudra</b> derives the neuron and <i>seals</i> every link \u2192 <b>tok</b> makes some links <i>carry value</i>", "rows": "<tr><td class=\"c\">mudra</td><td class=\"v\">encrypt</td><td>KEM \u00b7 dCTIDH \u00b7 AEAD \u00b7 TFHE \u00b7 threshold \u2014 the neuron's keys</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">vault</td><td class=\"v\">keep</td><td>seeds, caps, sealed state \u2014 proposed seat</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">tok</td><td class=\"v\">pay</td><td>Coin \u00b7 Card \u00b7 conservation \u2014 value moves as links; no live economy yet</td><td class=\"st published\">published</td></tr>", "note": "ownership is not a step of the journey: linking is owned, rendering is owned, measuring is owned."}, "prove": {"color": "#ff8000", "title": "PROVE", "prop": "every claim checked &amp; kept", "flow": "trident LIR \u2192 <b>nox</b> <i>runs</i> (running is proving) \u2192 <b>zheng</b> <i>proves</i> succinctly \u2192 <b>bbg</b> <i>stores</i> provable state \u2192 <b>lens</b> <i>commits &amp; opens</i> \u2192 inf reads with proofs", "rows": "<tr><td class=\"c\">nox</td><td class=\"v\">run</td><td>18 patterns + jets \u2014 unconditional proof</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">zheng</td><td class=\"v\">prove</td><td>SuperSpartan \u00b7 Brakedown \u00b7 sumcheck \u2014 axis/hash/look openings open</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">bbg</td><td class=\"v\">store</td><td>1 polynomial \u00b7 10 dims \u00b7 ~200B proofs \u2014 storing is proving</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">lens</td><td class=\"v\">commit</td><td>5 PCS backends \u2014 the commitments zheng and bbg open</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">glia</td><td class=\"v\">infer</td><td>model inference, conditional</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">eidos</td><td class=\"v\">certify</td><td>theorems become links \u2014 zheng bridge is a stub</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">wysm</td><td class=\"v\">sandbox</td><td>any wasm, gas-metered</td><td class=\"st dormant\">dormant</td></tr><tr><td class=\"c\">kern</td><td class=\"v\">shade</td><td>gpu shaders, metered</td><td class=\"st spec\">spec</td></tr>", "note": "a proof-contract ladder: nox unconditional at the top, glia/wysm/kern conditional-on-host below \u2014 the long arc lowers every soul toward nox."}, "focus": {"color": "#8000ff", "title": "FOCUS", "prop": "one \u03c6* \u2014 the point the loop orbits", "flow": "<b>tru</b> <i>converges</i> \u03c6* over the whole graph \u2192 <b>foculus</b> <i>agrees</i>: final past \u03c4 \u2192 <b>soma</b> <i>thinks</i> with the focused graph", "rows": "<tr><td class=\"c\">tru</td><td class=\"v\">converge</td><td>\u03c6* \u00b7 eigenvectors \u00b7 cyberank</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">agree</td><td>collective focus theorem \u2192 finality \u00b7 VDF \u00b7 fork-choice never yet chosen a fork</td><td class=\"st unwired\">unwired</td></tr><tr><td class=\"c\">soma</td><td class=\"v\">think</td><td>four concurrent loops \u00b7 tiered models \u2014 phase 1 in cyb</td><td class=\"st live\">live</td></tr>", "note": "the centre is a noun: everything dances around it, and it lights last \u2014 the mind emerges when a proven, shared loop converges."}};
+            const DETAILS = {
+                "link": {
+                    "color": "#ff0000",
+                    "title": "LINK",
+                    "prop": "a thought becomes links",
+                    "flow": "<b>neuron</b> captures subject, network and request → <b>ward/vault</b> validate the current grant and custody → optional prog evaluation → complete signed action → <b>GraphSession/cybergraph</b> publish and retain history.",
+                    "rows": "<tr><td class=\"c\">neuron</td><td class=\"v\">act</td><td>One subject; optional durable progs/tasks, continuation and bounded work. Program IDs create no new signer.</td><td class=\"st local\">local</td></tr><tr><td class=\"c\">cybergraph</td><td class=\"v\">link</td><td>Exact Signals and runtime history under the declared publication contract.</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">hemera</td><td class=\"v\">hash</td><td>Content addressing; native NeuronId remains H(compressed pubkey). A hash alone grants no authority.</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">neural</td><td class=\"v\">mean</td><td>sigil → word → link → sentence → motif → dialect — meaning as graph structure</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">trident</td><td class=\"v\">compile</td><td>.tri → .nox — sentences that lower to provable bytecode</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">rune</td><td class=\"v\">eval</td><td>scripted, effectful saying</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">inf</td><td class=\"v\">query</td><td>datalog over bbg — asking is saying</td><td class=\"st live\">live</td></tr>",
+                    "note": "A robot attaches several neurons. Selection changes cannot retarget admitted work; GraphSession hosts many subjects and Log renders retained history. Identity-only consumers stay independent of the runtime."
+                },
+                "transmit": {
+                    "color": "#0000ff",
+                    "title": "TRANSMIT",
+                    "prop": "nodes share one graph",
+                    "flow": "Current native profile: <b>GraphSession</b> → signed <b>/v3/action</b> → native coordinator; <b>receipt/history</b> reconcile retained requests and observations. <b>Radio + tape</b> peer sync uses a separately declared dialect/admission profile.",
+                    "rows": "<tr><td class=\"c\">radio</td><td class=\"v\">transmit</td><td>QUIC · BAO streaming · gossip — carries cyb/sync</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">GraphSession</td><td class=\"v\">host</td><td>Local graph composition over cybergraph/BBG; explicit network/profile pins and bounded native history. Host placement supplies no signing identity.</td><td class=\"st local\">local</td></tr><tr><td class=\"c\">tape</td><td class=\"v\">frame</td><td>typed particle framing over any byte stream</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">fs</td><td class=\"v\">mount</td><td>particles as files</td><td class=\"st spec\">spec</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">sync</td><td>reconciliation beyond a pair — gossip fan-out is its seat, not a rebroadcast</td><td class=\"st unwired\">unwired</td></tr>",
+                    "note": "Historical wire evidence, 2026-09-01: three graph hosts discovered peers through FOLLOW, ANTENNA and SOCKET links. It preserves its original wire/author profile and does not establish signed-native admission over radio. Endpoint acceptance and consensus finality remain distinct."
+                },
+                "render": {
+                    "color": "#ffff00",
+                    "title": "RENDER",
+                    "prop": "the focus becomes world",
+                    "flow": "Focused graph → <b>mir</b> renders worlds and <b>prysm</b> paints chunks. Admitted external effects pass the subject's current <b>ward</b> policy; navigation and rendering alone grant no execution authority.",
+                    "rows": "<tr><td class=\"c\">mir</td><td class=\"v\">render</td><td>positions + features → an R-1.0 world</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">prysm</td><td class=\"v\">paint</td><td>tape dialect — chunks become UI; affect drawn as color</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">ward</td><td class=\"v\">authorize</td><td>Current subject/network/binding/grant checks and worker fences in the cyb host; publication holds its guard through commit.</td><td class=\"st local\">local</td></tr>",
+                    "note": "Host profiles define which effect can execute and how its outcome is reconciled. Local console and cooperative GPU limits remain explicit; a mutable capability value cannot grant itself permission."
+                },
+                "measure": {
+                    "color": "#00ff00",
+                    "title": "MEASURE",
+                    "prop": "the world becomes links",
+                    "flow": "the world responds → <b>lytics</b> <i>measures</i> signed events (PoW-priced) → links in the graph → <span style=\"color:#00ff00\">the measurement becomes the next link</span>",
+                    "rows": "<tr><td class=\"c\">lytics</td><td class=\"v\">measure</td><td>signed visitor events · cohorts · funnels — cybernetics is impossible without measurement</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">sigma</td><td class=\"v\">evaluate</td><td>scores and gradings become links — proposed, not yet a repo</td><td class=\"st spec\">spec</td></tr>",
+                    "note": "measurement is the loop's return path: without it render is a broadcast, not an act of a mind."
+                },
+                "encrypt": {
+                    "color": "#4000ff",
+                    "title": "ENCRYPT",
+                    "prop": "every link owned",
+                    "flow": "Explicit <b>vault</b> custody + current grant → <b>mudra</b> native key claim and NSIG1 action signature → exact subject/network action. <b>Tok</b> retains its declared value/conservation rules.",
+                    "rows": "<tr><td class=\"c\">mudra</td><td class=\"v\">encrypt</td><td>Current native secp256k1 H(pubkey), NSIG1 and original ADR-036 bytes; other cryptographic profiles retain their own contracts.</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">vault</td><td class=\"v\">keep</td><td>Scoped encrypted private state and custody in the cyb host; original ciphertext/keys preserved. No standalone release is implied.</td><td class=\"st local\">local</td></tr><tr><td class=\"c\">tok</td><td class=\"v\">pay</td><td>Coin · Card · conservation — value moves as links; no live economy yet</td><td class=\"st published\">published</td></tr>",
+                    "note": "Seeds and live grants remain host-owned. Native key changes change identity; foreign domain/address/network rules and signatures remain unchanged."
+                },
+                "prove": {
+                    "color": "#ff8000",
+                    "title": "PROVE",
+                    "prop": "every claim checked &amp; kept",
+                    "flow": "trident LIR → <b>nox</b> <i>runs</i> (running is proving) → <b>zheng</b> <i>proves</i> succinctly → <b>bbg</b> <i>stores</i> provable state → <b>lens</b> <i>commits &amp; opens</i> → inf reads with proofs",
+                    "rows": "<tr><td class=\"c\">nox</td><td class=\"v\">run</td><td>18 patterns + jets — unconditional proof</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">zheng</td><td class=\"v\">prove</td><td>SuperSpartan · Brakedown · sumcheck — axis/hash/look openings open</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">bbg</td><td class=\"v\">store</td><td>1 polynomial · 10 dims · ~200B proofs — storing is proving</td><td class=\"st live\">live</td></tr><tr><td class=\"c\">lens</td><td class=\"v\">commit</td><td>5 PCS backends — the commitments zheng and bbg open</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">glia</td><td class=\"v\">infer</td><td>Pinned local model, correlated observations and cooperative limits; stronger inference proofs require another profile.</td><td class=\"st local\">local</td></tr><tr><td class=\"c\">eidos</td><td class=\"v\">certify</td><td>theorems become links — zheng bridge is a stub</td><td class=\"st blocked\">blocked</td></tr><tr><td class=\"c\">wysm</td><td class=\"v\">sandbox</td><td>any wasm, gas-metered</td><td class=\"st dormant\">dormant</td></tr><tr><td class=\"c\">kern</td><td class=\"v\">shade</td><td>gpu shaders, metered</td><td class=\"st spec\">spec</td></tr>",
+                    "note": "Evidence is profile-specific: a verified nox statement, a native endpoint receipt and a trusted model/host observation establish different claims. Installing a prog or recording an output does not automatically prove its external effect."
+                },
+                "focus": {
+                    "color": "#8000ff",
+                    "title": "FOCUS",
+                    "prop": "one φ* — the point the loop orbits",
+                    "flow": "<b>Tru</b> computes the attention field; <b>foculus</b> owns the selected ordering/finality contract. <b>Soma</b> composes bounded tasks under a captured neuron and uses retained context.",
+                    "rows": "<tr><td class=\"c\">tru</td><td class=\"v\">converge</td><td>φ* · eigenvectors · cyberank</td><td class=\"st published\">published</td></tr><tr><td class=\"c\">foculus</td><td class=\"v\">agree</td><td>collective focus theorem → finality · VDF · fork-choice never yet chosen a fork</td><td class=\"st unwired\">unwired</td></tr><tr><td class=\"c\">soma</td><td class=\"v\">think</td><td>Durable tasks, pinned context/model, tools, children and schedules. Real local glia inference plus CLI/Bevy evidence.</td><td class=\"st local\">local</td></tr>",
+                    "note": "Local Soma implementation is separate from deployed consensus and complete agent-provider/channel parity. Unknown effects retain their original attempt and require reconciliation."
+                }
+            };
             const detail = document.getElementById("detail");
             function openSeat(id) {
+                if (!Object.hasOwn(DETAILS, id)) return;
                 const d = DETAILS[id];
                 if (!d) return;
                 detail.style.borderLeftColor = d.color;
@@ -345,14 +405,14 @@
                 el.addEventListener("click", () => openSeat(el.dataset.seat)),
             );
 
-            // stages follow the registry: live → + prove → + converge
+            // Architectural stages; historical traffic and local profile evidence differ.
             const STAGES = {
                 1: { on: ["encrypt"],
-                     info: "everything lit is live in the registry: link → transmit → render → measure circulates, every link owned. the wire, since 2026-09-01." },
+                     info: "Historical wire demonstration: 2026-09-01, three graph hosts and FOLLOW/ANTENNA/SOCKET routing. Current local neuron tasks and signed native HTTP have separate source tests; transport does not grant subject authority." },
                 2: { on: ["encrypt", "prove"],
-                     info: "prove joins: every claim carries a proof a stranger can check. building — zheng openings open." },
+                     info: "Proof profiles add their declared statements and verifiers. Current native HTTP receipts establish endpoint acceptance; recorded host/model observations retain their own evidence tier." },
                 3: { on: ["encrypt", "prove", "converge"],
-                     info: "the centre lights: the whole graph converges to one φ* and the mind emerges. undeployed — foculus has never chosen a fork." },
+                     info: "The convergence target remains a network contract. Soma's implemented local tasks and inference do not establish deployed consensus or complete provider/channel parity." },
             };
             function setStage(n) {
                 const cfg = STAGES[n];

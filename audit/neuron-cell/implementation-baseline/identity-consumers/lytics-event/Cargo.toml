@@ -1,0 +1,10 @@
+[package]
+name = "identity-check-lytics-event"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies.subject]
+package = "lytics-event"
+path = "/Users/master/cyber/lytics/rs/event"
+default-features = false
+features = []

@@ -1,0 +1,617 @@
+{
+  "cell": {
+    "kind": "implementation",
+    "packages": "P02 P03 P05 P06 P07 P12",
+    "action": "Эволюция в neuron: ID/model/progs, engine concurrency, authority, legacy migration; сохранить Git и immutable suite."
+  },
+  "cyb": {
+    "kind": "implementation",
+    "packages": "P01 P04 P06 P08 P09",
+    "action": "Одна subject model; Cell/SharedCell → graph session; identity registry, explicit author, typed navigation; удалить дублирование core."
+  },
+  "cybergraph": {
+    "kind": "implementation",
+    "packages": "P03 P04 P07",
+    "action": "Общий NeuronId; graph/session durability и imports; namespace остаётся адресом данных; согласовать claims/CAS."
+  },
+  "bbg": {
+    "kind": "implementation",
+    "packages": "P03 P04 P07",
+    "action": "Реэкспорт общего ID без runtime dependency; shared Database transactions и migration staging; DAS/unimem cells сохранить."
+  },
+  "foculus": {
+    "kind": "compatibility",
+    "packages": "P03 P04 P06",
+    "action": "Согласовать ID imports и writer/finality contract; сохранить signal bytes, per-neuron chain и отдельный network."
+  },
+  "mudra": {
+    "kind": "compatibility",
+    "packages": "P01 P03 P06 P10",
+    "action": "Зафиксировать derivation/identity profiles и proof boundary; claim/domain signatures сохраняются; не переносить crypto в engine."
+  },
+  "rune": {
+    "kind": "adapter",
+    "packages": "P02 P05",
+    "action": "run_cell → prog/event driver; checkpoint ABI и authority tests; Noun::Cell → Pair только отдельной terms миграцией."
+  },
+  "neural": {
+    "kind": "adapter",
+    "packages": "P04 P08",
+    "action": "CLI импортирует cyb_core::Cell: перейти на graph session и явный subject; поправить Cargo/docs/examples."
+  },
+  "prysm": {
+    "kind": "adapter",
+    "packages": "P08",
+    "action": "cyb-core dependency; active/pinned/launcher cell_id → typed destination; NeuronId в UI не равен bech32 format string."
+  },
+  "soma": {
+    "kind": "adapter",
+    "packages": "P01 P09",
+    "action": "Снять root Soul Neuron и neuron=cognitive worker; task/prog lineage, recovery и context. Комментарии kernel об identity/log cell исправить."
+  },
+  "rs": {
+    "kind": "adapter",
+    "packages": "P02 P05 P11",
+    "action": "Собственный cell! macro, Cell/CellMetadata и cyb-cell tutorial: bounded module, не subject. Перейти к module!/Module naming, сохранить codegen/lifecycle, состыковать с prog/worker contract."
+  },
+  "soft3": {
+    "kind": "composition",
+    "packages": "P00 P01 P10 P12 P13",
+    "action": "Shared contracts, roadmap precedence, adapters/release manifest/conformance, сайт и SDK entry points; не копировать engine."
+  },
+  "soft3/js": {
+    "kind": "compatibility",
+    "packages": "P10 P12",
+    "action": "Отдельный nested repository. Сохранить Bostrom/CosmJS addresses и wire; адаптировать лишь потребляемый новый API, без смены dependency versions."
+  },
+  "true-cyber": {
+    "kind": "adapter",
+    "packages": "P08 P10 P12",
+    "action": "Проверить product facade CLI/sync/link, help и документацию против soft3; не превращать node process в neuron."
+  },
+  "lytics": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Реальный mudra domain consumer: golden derivation/signature/ingest vectors, маленький build graph; std::cell и deployed identities оставить."
+  },
+  "cyberia-my": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Оба checkout: src/signal.rs domain key и ADR-036-style body, local storage/sequence; подтвердить один canonical source и сохранить wire."
+  },
+  "cyberia/research/cyberia-my": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Оба checkout: src/signal.rs domain key и ADR-036-style body, local storage/sequence; подтвердить один canonical source и сохранить wire."
+  },
+  "trisha": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Существующий cli/neuron.rs и Neptune wallet: native key/account lifecycle сохранить; при интеграции квалифицировать identity domain."
+  },
+  "inf": {
+    "kind": "compatibility",
+    "packages": "P03 P04 P10",
+    "action": "Neuron value/query scoping и BbgSource: subject не подменять произвольным Particle; добавить prog/task projections у владельцев schemas."
+  },
+  "radio": {
+    "kind": "compatibility",
+    "packages": "P06 P10",
+    "action": "Transport endpoint ≠ neuron; проверить discovery/auth adapters; iroh/Cid, draw.io mxCell и vendor storage vocabulary сохранить."
+  },
+  "tape": {
+    "kind": "compatibility",
+    "packages": "P04 P08",
+    "action": "Neuron molecule — reference/display, не runtime record; новый dialect для typed references по необходимости; framing/signatures неизменны."
+  },
+  "fs": {
+    "kind": "documentation",
+    "packages": "P01 P10",
+    "action": "Patch author/neuron namespace и scoped program access; per-neuron patch chain не смешивать с runtime commit index."
+  },
+  "glia": {
+    "kind": "integration",
+    "packages": "P06 P09",
+    "action": "Inference adapter получает bounded jobs/context; нейросетевые neurons и tensor layout не переименовывать."
+  },
+  "conformance": {
+    "kind": "integration",
+    "packages": "P00 P13",
+    "action": "Самостоятельный scaffold: согласовать owner harness с soft3/conformance; новые migration/identity scenarios без фиктивного PASS."
+  },
+  "cyber": {
+    "kind": "documentation",
+    "packages": "P01 P11 P12",
+    "action": "Cell ladder, hierarchy, 3c/oikos, node modes/product/ownership/CLI, roadmaps; shard/partial/service роли развести, generated copies перестроить."
+  },
+  "aos": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Building/runnable cells в README/apps и всех service pages → service/prog и явная governance; не создавать ключ каждой площадке."
+  },
+  "crystal": {
+    "kind": "documentation",
+    "packages": "P01 P11",
+    "action": "Canonical neuron/prog/soul/avatar/node vocabulary и ссылки; протокольные neuron statements сохранить, исправить конфликт поведения/soul."
+  },
+  "cyberia": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Foundation архитектура и protocol system/marketplace: service/shard governance; участник-neuron сохраняется; таблицы и биология KEEP."
+  },
+  "cybics": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Только software ontology references к архитектуре; biological/memory/data-structure cells и математические analogies сохраняются."
+  },
+  "ctx": {
+    "kind": "generated-source",
+    "packages": "P11 P12",
+    "action": "ctx.md — generated context. Обновить canonical inputs/pinned paths в build.nu, затем rebuild с provenance; не править bundle вручную."
+  },
+  "cybernode": {
+    "kind": "documentation",
+    "packages": "P10 P12",
+    "action": "Deployment/lytics storage docs и команды сверить с release; chain endpoints сохранить; сервера этой работой не менять."
+  },
+  "optica": {
+    "kind": "compatibility",
+    "packages": "P11 P12",
+    "action": "Проверить wiki alias resolution/root neuron и rebuild links; layout/table/spatial grid cells остаются."
+  },
+  "cyberia-blog": {
+    "kind": "publication",
+    "packages": "P11 P12",
+    "action": "Исторические blog posts не переписывать; обновить current subgraph links и regenerate build из canonical sources."
+  },
+  "cyber-valley": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Satoshi soul/agent docs: обновить software ontology links; физические/образовательные и biological cells сохранить."
+  },
+  "bootloader": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters."
+  },
+  "bostrom": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters."
+  },
+  "go-cyber": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters."
+  },
+  "space-pussy": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters."
+  },
+  "cybernet": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "CosmWasm neuron_uid/hotkey/coldkey/netuid — native protocol model; не заменять локальный UID на cyber NeuronId и не мигрировать contracts этим merge."
+  },
+  "hub": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "hub-skills хранит neuron/network/protocol/endpoint: сохранить contract storage/wire; bridge должен квалифицировать, а не переименовать поля."
+  },
+  "portal": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Cyber/Cosmos NeuronBandwidth и contract queries сохранить; new identity boundary только в adapters, не в deployed schema."
+  },
+  "midao": {
+    "kind": "compatibility",
+    "packages": "P10 P11",
+    "action": "DAO/collective authority ссылки согласовать; legal/contract/physical terminology и развёрнутые storage layouts сохранить."
+  },
+  "nox": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "hemera": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "lens": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "eidos": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "trident": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "zheng": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "zheng-pin": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename."
+  },
+  "tok": {
+    "kind": "compatibility",
+    "packages": "P03 P06 P13",
+    "action": "Протокольные NeuronId, stake/focus/karma/balances и accounting остаются; execution budgets не создают второй экономический ledger."
+  },
+  "tru": {
+    "kind": "compatibility",
+    "packages": "P03 P06 P13",
+    "action": "Протокольные NeuronId, stake/focus/karma/balances и accounting остаются; execution budgets не создают второй экономический ledger."
+  },
+  "honeycrisp": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать."
+  },
+  "honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать."
+  },
+  "honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать."
+  },
+  "wysm": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "WASM Cell(u64)/stack slots и std types остаются; worker integration следует execution-model, отдельного subject runtime здесь нет."
+  },
+  "mir": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Spatial rendering/сетка и чтение graph neurons; самостоятельного cell subject API не найдено, переименования не требуется."
+  },
+  "strata": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Математический substrate; найденные cells не runtime субъект. Нет основания менять алгебру или package ради merge."
+  },
+  "bita": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически."
+  },
+  "evy": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически."
+  },
+  "li": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически."
+  },
+  "mona": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически."
+  },
+  "nika": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически."
+  },
+  "cyberstates": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "cell_id в pages/map.rs — UI карта/DOM; совпадение не относится к runtime identity."
+  },
+  "superhuman": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Биология/медицина и общие graph ссылки; архитектурного CellId API нет, клетки и нейроны организма сохранить."
+  },
+  "uhash": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Viewing-economy references и UI/general cells; merge не меняет settlement/reward contract."
+  },
+  "warriors": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Execution/mining guidance сохраняется; worker — исполнитель, не neuron. Cell match — cancellation substring."
+  },
+  "sec": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Один концептуальный neuron privacy reference; crypto semantics менять не требуется."
+  },
+  "valkyra": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "README: lexical cell match; самостоятельных subject/API/Cargo consumers не обнаружено."
+  },
+  "cve": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Нет runtime CellId/identity API кандидатов; UI/dependency/общие слова сохранить. Legacy checkout не синхронизировать автоматически."
+  },
+  "cve-legacy-local": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Нет runtime CellId/identity API кандидатов; UI/dependency/общие слова сохранить. Legacy checkout не синхронизировать автоматически."
+  },
+  "cloud-forest": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "cyberia/research/events": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "cyberia/research/mimi": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "episode-1": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "erga": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "organiq": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "perla": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "quanta": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено."
+  },
+  "joy": {
+    "kind": "compatibility",
+    "packages": "P02 P05",
+    "action": "Cells в formula/state — substrate pairs и private-state positions; сохранить bytes/proofs и согласовать с terms-map, не переименовать в neuron."
+  },
+  "inf/rs/cozo": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "nika/.vendor/nockchain": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "midao/lib/forge-std": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "omi/refs/omi-local": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "omi/refs/parakeet.cpp": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "omi/refs/parakeet.cpp/third_party/ggml": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости."
+  },
+  "omi/refs/omi-upstream": {
+    "kind": "reference-partial",
+    "packages": "—",
+    "action": "Sparse/partial reference: доступные файлы и 55 index blobs прочитаны; 12 397 blobs отсутствуют локально. Нет вывода о содержимом непрочитанной части."
+  },
+  "nu": {
+    "kind": "broken-reference",
+    "packages": "—",
+    "action": "Git link сломан; исходники просканированы через filesystem fallback. Terminal/grid/std cells KEEP; repair Git metadata — отдельная работа."
+  },
+  ".github": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "arc": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "bel": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "bt": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cyberia-capital": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cyberia-to": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cybervalley-io": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cybland": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "dif": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "kadek": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "maker": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "opt": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "oxytocin": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "pure": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "qu": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "ren": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "rockets": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "seq": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "sym": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "ten": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "wav": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "xena": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "zoya": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cve-legacy-local/docs": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации."
+  },
+  "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  "cyberia-blog/build/cyberia/midao/lib/forge-std": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  "cyberia-blog/build/neural/nu": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог."
+  },
+  ".": {
+    "kind": "workspace",
+    "packages": "P00",
+    "action": "Root doctrine и non-Git files учтены; runtime subject references не обнаружены."
+  },
+  ".claude": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Локальная конфигурация вне Git учтена; целевой модели не касается."
+  },
+  ".grok": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Локальная конфигурация вне Git учтена; целевой модели не касается."
+  },
+  "omi": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Non-Git Rust source tree отдельно от refs; cell совпадения только Cargo.lock, прямого merge API нет."
+  },
+  "omi-scan": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Служебные source files вне Git; совпадений целевой модели нет."
+  },
+  "zheng-022": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Копия proof implementation вне Git; сохранить как version reference, canonical proof changes только в выбранном zheng revision."
+  }
+}

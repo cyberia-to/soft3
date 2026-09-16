@@ -1,0 +1,235 @@
+Date: 2026-09-13
+Working directory: /Users/master/cyber/cybergraph
+Command: /opt/homebrew/bin/nu -c 'cargo test --all-features --no-fail-fast'
+Profile: local-storage + legacy-redb-migration (all Cargo features), native debug tests and doctests; Homebrew Rust 1.95.0 aarch64-apple-darwin.
+Scope: complete cybergraph suite after public API atomicity repair and all migrated stack tests, including the new eight-case stack_api_atomicity suite.
+
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.19s
+     Running unittests src/lib.rs (target/debug/deps/cybergraph-1518b5e094809f49)
+
+running 24 tests
+test api::tests::subscribe_receives_matching_events ... ok
+test api::tests::seal_applies_cyberlinks_to_bbg_state ... ok
+test api::tests::query_runs_inf_over_bbg_state ... ok
+test api::tests::intend_persists_and_returns_key ... ok
+test legacy_file::tests::no_replace_rename_preserves_a_competing_path_and_its_contents ... ok
+test api::tests::query_parse_error_is_reported ... ok
+test api::tests::link_applies_cyberlinks_to_bbg_state ... ok
+test api::tests::seal_unknown_intent_fails ... ok
+test api::tests::intend_then_seal_succeeds ... ok
+test api::tests::link_atomic_path ... ok
+test api::tests::subscribe_by_neuron_filters ... ok
+test api::tests::link_accumulates_across_signals ... ok
+test api::tests::link_moves_the_root ... ok
+test source::tests::scan_axons_carries_weight ... ok
+test source::tests::scan_neurons_and_karma ... ok
+test source::tests::schema_known_and_unknown ... ok
+test source::tests::scan_particles_reflects_state ... ok
+test source::tests::unknown_relation_scans_empty ... ok
+test source::tests::snapshot_tracks_height ... ok
+test legacy_file::tests::retired_entry_preserves_bytes_and_refuses_old_append_open ... ok
+test legacy_file::tests::each_exposed_filesystem_boundary_resumes_the_same_source ... ok
+test native::tests::missing_live_history_or_block_is_corruption ... ok
+test native::tests::local_credit_staging_failure_rolls_back_and_retry_preserves_receipt ... ok
+test native::tests::staged_native_commit_error_restores_every_published_view_and_request_identity ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.72s
+
+     Running tests/applications.rs (target/debug/deps/applications-08c3cf3ad514d819)
+
+running 6 tests
+test noncanonical_atoms_and_child_particles_do_not_get_normalized ... ok
+test retained_application_references_are_required_and_fingerprint_binds_claims ... ok
+test application_views_share_one_database_owner_and_receipts ... ok
+test fresh_publication_allows_one_winner_even_after_both_preflight_reads ... ok
+test missing_closure_and_application_rejection_publish_nothing ... ok
+test corruption_is_reported_on_read_without_reinitializing_history ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.17s
+
+     Running tests/native_import.rs (target/debug/deps/native_import-306ea8a64451eabb)
+
+running 11 tests
+test unknown_uninitialized_records_are_preserved_without_writing_import_metadata ... ok
+test intent_import_respects_event_count_when_byte_budget_has_room ... ok
+test ordinary_operations_follow_import_without_changing_its_exact_prefix ... ok
+test imported_history_requires_its_source_marker ... ok
+test copied_completion_marker_cannot_claim_an_empty_store_imported_a_log ... ok
+test interrupted_import_rejects_different_exact_prefix_even_with_valid_chain_and_marker ... ok
+test wrong_genesis_import_preserves_readiness_of_existing_empty_store ... ok
+test interrupted_import_resumes_after_exact_committed_frames_without_rebatching_them ... ok
+test import_preserves_historical_bytes_and_resume_compares_representation_exactly ... ok
+test completed_marker_source_and_event_count_are_checked_against_history ... ok
+test aggregate_legacy_log_exceeding_operation_limit_is_split_into_valid_requests ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 39.99s
+
+     Running tests/native_storage.rs (target/debug/deps/native_storage-4c2b07eedb0a635b)
+
+running 10 tests
+test equal_commands_without_identity_are_distinct_operations ... ok
+test rejected_batch_restores_graph_ledger_chain_and_disk ... ok
+test economics_overflow_never_publishes_a_partial_batch ... ok
+test native_rewards_intents_and_networks_are_retained ... ok
+test multi_neuron_steps_have_distinct_global_records ... ok
+test original_payment_receipt_survives_other_commits_and_restart ... ok
+test authenticated_proof_bytes_and_commitment_survive_durable_recovery ... ok
+test legacy_import_keeps_bytes_and_requires_complete_input ... ok
+test extra_or_missing_records_are_not_silently_skipped ... ok
+test changed_genesis_or_corrupt_persisted_state_refuses_readiness ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.42s
+
+     Running tests/stack_api_atomicity.rs (target/debug/deps/stack_api_atomicity-01c8fd0a9494778d)
+
+running 8 tests
+test wrong_network_cannot_install_a_subject_chain_or_touch_bbg ... ok
+test repeated_nullifier_inside_one_signal_is_rejected_atomically ... ok
+test rejected_spend_does_not_create_an_empty_or_advanced_new_subject_chain ... ok
+test overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation ... ok
+test rejected_spend_preserves_existing_chain_and_allows_same_step_repair ... ok
+test rejected_seal_preserves_intent_chain_state_and_events ... ok
+test duplicate_and_bad_lineage_leave_graph_and_chain_unchanged ... ok
+test amount_preflight_preserves_ordered_debits_and_u64_boundary_values ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/stack_axis.rs (target/debug/deps/stack_axis-9e5b6b468997a441)
+
+running 2 tests
+test axis_identity_public_execution_and_native_opening ... ok
+test axis_nested_pair_public_execution_and_native_opening ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/stack_bbg_lifecycle.rs (target/debug/deps/stack_bbg_lifecycle-9867459d2b9fc9a5)
+
+running 4 tests
+test box_moves_nullifier_double_spend_rejected ... ok
+test checkpoint_tracks_state_after_finalize ... ok
+test finalize_block_updates_root_and_look_proof_consistent ... ok
+test multi_block_insert_finalize_cycle_then_look_proof ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.48s
+
+     Running tests/stack_call.rs (target/debug/deps/stack_call-b73d26bb3dbabcb4)
+
+running 3 tests
+test call_rejected_witness_returns_error ... ok
+test call_null_provider_halts ... ok
+test call_with_accepted_witness_roundtrip ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tests/stack_compute.rs (target/debug/deps/stack_compute-6049f1d380482138)
+
+running 4 tests
+test mul_field_full_proof_roundtrip ... ok
+test add_field_full_proof_roundtrip ... ok
+test sub_field_full_proof_roundtrip ... ok
+test xor_bitwise_full_proof_roundtrip ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+
+     Running tests/stack_hash.rs (target/debug/deps/stack_hash-09cc78241e7b08e3)
+
+running 2 tests
+test hash_poseidon2_single_atom_roundtrip ... ok
+test hash_two_independent_inputs_both_verify ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.83s
+
+     Running tests/stack_look.rs (target/debug/deps/stack_look-86c51e48d3cc3b4e)
+
+running 3 tests
+test look_neuron_entity_to_flat_index_and_public_state_proof ... ok
+test look_time_native_authentication_and_public_state_proof ... ok
+test inline_and_collected_openings_authenticate_the_same_state ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.53s
+
+     Running tests/stack_multi_pattern.rs (target/debug/deps/stack_multi_pattern-94b0cb5320dbb06b)
+
+running 2 tests
+test mixed_add_look_public_state_execution ... ok
+test mixed_add_hash_axis_public_execution ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.98s
+
+     Running tests/stack_rejection.rs (target/debug/deps/stack_rejection-93f427427b6b4178)
+
+running 6 tests
+test double_spend_bbg_insert_rejected ... ok
+test focus_bound_exceeded_commit_fails ... ok
+test input_hash_mismatch_commit_fails ... ok
+test look_absent_key_returns_unavailable_no_opening ... ok
+test proof_from_wrong_statement_fails_verify ... ok
+test look_openings_undercount_commit_fails ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.72s
+
+     Running tests/stack_signal.rs (target/debug/deps/stack_signal-f619e050de5b3f84)
+
+running 5 tests
+test vdf_different_challenges_produce_different_outputs ... ok
+test vdf_challenge_from_signal_hash_roundtrip ... ok
+test signal_chain_ordering_and_rejection ... ok
+test multiple_signals_same_neuron_bbg_state_consistent ... ok
+test signal_to_bbg_state_to_look_proof ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.32s
+
+     Running tests/text_archive.rs (target/debug/deps/text_archive-65459da923fe384f)
+
+running 3 tests
+test a_bad_late_line_or_truncated_tail_imports_no_prefix ... ok
+test legacy_lines_keep_duplicates_raw_bytes_and_unknown_dates_across_retry ... ok
+test durable_observations_keep_original_particles_dates_and_request_conflicts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.08s
+
+   Doc-tests cybergraph
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,87 @@
+    Blocking waiting for file lock on package cache
+    Checking zeroize v1.8.2
+    Checking serde v1.0.228
+   Compiling enum_dispatch v0.3.13
+    Checking thiserror v2.0.18
+    Checking clap v4.5.60
+    Checking generic-array v0.14.7
+    Checking der v0.7.10
+    Checking toml_datetime v0.6.3
+    Checking serde_spanned v0.6.9
+    Checking neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Checking bip39 v2.2.2
+    Checking lsm-tree v2.10.4
+    Checking crypto-common v0.1.7
+    Checking block-buffer v0.10.4
+    Checking crypto-bigint v0.5.5
+    Checking inout v0.1.4
+    Checking toml_edit v0.20.2
+    Checking sec1 v0.7.3
+    Checking spki v0.7.3
+    Checking universal-hash v0.5.1
+    Checking aead v0.5.2
+    Checking digest v0.10.7
+    Checking cipher v0.4.4
+    Checking neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+    Checking poly1305 v0.8.0
+    Checking hmac v0.12.1
+    Checking sha2 v0.10.9
+    Checking signature v2.2.0
+    Checking ripemd v0.1.3
+    Checking chacha20 v0.9.1
+    Checking neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+    Checking elliptic-curve v0.13.8
+    Checking rfc6979 v0.4.0
+    Checking pbkdf2 v0.12.2
+    Checking chacha20poly1305 v0.10.1
+    Checking bs58 v0.5.1
+    Checking toml v0.8.2
+    Checking ecdsa v0.16.9
+    Checking cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+    Checking k256 v0.13.4
+    Checking fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+    Checking bip32 v0.5.3
+    Checking cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+    Checking cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+    Checking bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+    Checking foculus v0.1.3 (/Users/master/cyber/foculus)
+    Checking cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Checking neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+    Checking cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.25s

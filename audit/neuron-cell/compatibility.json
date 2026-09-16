@@ -1,0 +1,29 @@
+{
+  "schema": "neuron/convergence-compatibility/1",
+  "date": "2026-09-13",
+  "source_move": {"from": "cell", "to": "neuron", "history": "same Git repository; original v1 content preserved"},
+  "runtime_shims": [
+    {"paths": ["rune/rs/interp/event.rs"], "symbols": ["run_cell"], "replacement": "run_events", "delegates": true, "creates_subject": false, "remove_in": "rune-interp 0.2"},
+    {"paths": ["rs/macros/src/lib.rs", "rs/core/src/lib.rs", "rs/core/src/core_types.rs", "rs/tests/macro-integration/tests/module_lifecycle.rs"], "symbols": ["cell!", "Cell", "CellMetadata"], "replacement": "module!, Module, ModuleMetadata", "delegates": true, "creates_subject": false, "remove_in": "Rs 0.2"}
+  ],
+  "retained_interfaces": [
+    {"paths": ["neuron/model/schema-suite-v1.txt", "neuron/model/src/records.rs", "neuron/engine/src/legacy.rs", "neuron/engine/src/legacy/*", "neuron/engine/src/migration.rs", "neuron/node/src/validation.rs", "neuron/node/tests/legacy*", "neuron/node/tests/support/legacy.rs", "neuron/cli/src/main.rs"], "terms": ["cell/*/1", "legacy-cell-v1", "legacy origin"], "lifetime": "indefinite archival reader", "reason": "immutable original schema/artifact/history/claim bytes; birth hash remains a data origin"},
+    {"paths": ["neuron/cli/src/main.rs"], "terms": ["cell.redb"], "lifetime": "while original local stores exist", "reason": "refuse accidental empty default store; explicit backend conversion before semantic import"},
+    {"paths": ["neuron/model/src/navigation.rs", "neuron/specs/navigation.md", "prysm/rs/navigation.rs", "cyb/shell/src/shell/chrome.rs", "cyb/shell/src/worlds/robot/mod.rs", "cyb/pages/landing.rune", "cyb/parts/cells.md", "cyb/reference/routing.md"], "terms": ["cell://landing", "cell", "landing"], "lifetime": "readable historical landing link", "reason": "typed view compatibility only; arbitrary legacy origins reject; navigation creates no account or grant"},
+    {"paths": ["soft3/site/chart/index.html"], "terms": ["?sel=cell"], "replacement": "GraphSession", "lifetime": "historical diagram selection link", "reason": "select the graph-host node in the diagram; no execution or account mutation"},
+    {"paths": ["cyber/cell.md", "cyber/shard.md", "cyber/research/spectral cell division.md", "cyber/research/oikos.md"], "terms": ["cell", "spectral cell division", "knowledge cell"], "lifetime": "historical graph aliases and research provenance", "reason": "current roles are neuron/prog, service, book and shard; original governance/conservation/finality obligations preserved"},
+    {"paths": ["neuron/docs/cell-convergence.md", "neuron/docs/foundations-agent-review.md", "neuron/docs/implementation.md", "neuron/docs/conformance-local.md", "neuron/audit/legacy-*.md", "soft3/roadmap/neuron-cell-convergence.md", "soft3/audit/neuron-cell/**", "cyb/.claude/plans/live-cell-runtime.md", "cyb/releases/v0.1.0.md", "rune/CHANGELOG.md"], "terms": ["cell", "CellId", "cell-*"], "lifetime": "dated design/release/migration evidence", "reason": "original proposal and original-binary test vectors remain identifiable; current docs point to accepted one-subject contract"}
+  ],
+  "retained_non_subject_meanings": [
+    {"terms": ["std::cell", "core::cell", "Noun::Cell", "Noun::cell", "nock cell", "pair"], "reason": "Rust interior mutability and VM data constructors; a separate VM terminology migration is outside this identity convergence"},
+    {"terms": ["table cell", "terminal cell", "layout cell", "mesh cell", "grid cell", "DAS cell", "unimem cell", "mxCell"], "reason": "spatial, display, storage or data-availability coordinates, with no runtime signing subject"},
+    {"terms": ["biological cell", "battery cell", "neural-network neuron", "memory cell", "geohash cell"], "reason": "biological, electrical, tensor or geographic models retain their own definitions"},
+    {"terms": ["Cosmos neuron", "CosmWasm neuron_uid", "Cybernet hotkey/coldkey/netuid", "Neptune account"], "reason": "foreign protocol identities, derivations, signatures and wire/storage bytes remain unchanged"}
+  ],
+  "snapshots": [
+    {"path": ".worktrees/soft3-thread-publication", "head": "4fc77ad335712915bd39714d72856ada1da0a52f", "reason": "separate clean publication branch; plan section10 forbids mass-editing parallel worktrees"},
+    {"path": "cyb/cell/target", "reason": "ignored old build cache without source or manifest; not a second component"},
+    {"path": "cyber/cyber/build", "reason": "inactive generated output from the former layout; current protocol build is cyber/build"}
+  ],
+  "verification": "Use final-dispositions.json and source-manifest.json for the exact checked source set; residual-review.md records semantic review. This allowlist does not waive unreviewed new runtime CellId APIs."
+}

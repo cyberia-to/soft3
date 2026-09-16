@@ -1,0 +1,15 @@
+=== compile-pass ===
+[32m  PASS: allow_attrs[0m
+[32m  PASS: btree_ok[0m
+[32m  PASS: clean_code[0m
+
+=== ui (expect errors) ===
+[32m  PASS: rs501_box (error produced, code RS501)[0m
+[32m  PASS: rs502_vec (error produced, code RS502)[0m
+[32m  PASS: rs503_string (error produced, code RS503)[0m
+[32m  PASS: rs504_dyn (error produced, code RS504)[0m
+[32m  PASS: rs505_arc (error produced, code RS505)[0m
+[32m  PASS: rs506_panic (error produced, code RS506)[0m
+[32m  PASS: rs507_hashmap (error produced, code RS507)[0m
+
+=== Results: 10 passed, 0 failed ===

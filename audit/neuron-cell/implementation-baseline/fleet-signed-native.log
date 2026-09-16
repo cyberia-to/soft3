@@ -1,0 +1,41 @@
+bash harness/fleet.sh
+fleet: 3 bodies, 45s; artifacts /var/folders/gc/64p7ymwx60144drqltvslckr0000gn/T/cyb-fleet.1gw9j5ez
+fleet: building GUI, headless host and native fixture
+  ok   real node advertises signed native profile
+fleet: observing bodies (10/45s)
+fleet: observing bodies (20/45s)
+fleet: observing bodies (30/45s)
+fleet: observing bodies (40/45s)
+fleet: observing bodies (45/45s)
+  ok   readonly beacon answered 10 probes despite blackhole
+  ok   unsigned readonly fixture received no relay writes
+  ok   real authenticated node retained 25 complete signals
+  ok   3 distinct explicitly created native identities
+  ok   env-1 rendered a screenshot
+  ok   env-1 uses explicit custody without a root mnemonic
+  ok   env-1 restored its BBG-backed graph: 13 nodes · 10 axons · 22 signals
+  ok   env-1 observed the signed native endpoint
+  ok   env-1 native root matches an actual history receipt
+  ok   env-1 readonly beacon root matches deterministic fixture
+  ok   env-1 blackhole produced no fake state
+  ok   env-1 verified prover tickets
+  ok   env-2 rendered a screenshot
+  ok   env-2 uses explicit custody without a root mnemonic
+  ok   env-2 restored its BBG-backed graph: 13 nodes · 10 axons · 21 signals
+  ok   env-2 observed the signed native endpoint
+  ok   env-2 native root matches an actual history receipt
+  ok   env-2 readonly beacon root matches deterministic fixture
+  ok   env-2 blackhole produced no fake state
+  ok   env-2 verified prover tickets
+  ok   env-3 rendered a screenshot
+  ok   env-3 uses explicit custody without a root mnemonic
+  ok   env-3 restored its BBG-backed graph: 13 nodes · 10 axons · 22 signals
+  ok   env-3 observed the signed native endpoint
+  ok   env-3 native root matches an actual history receipt
+  ok   env-3 readonly beacon root matches deterministic fixture
+  ok   env-3 blackhole produced no fake state
+  ok   env-3 verified prover tickets
+  ok   vault canary recovered from encrypted subject storage
+  ok   vault has no plaintext canary in files/logs (0 leaks)
+  ok   all owned processes stopped
+fleet: 32 passed, 0 failed; GREEN

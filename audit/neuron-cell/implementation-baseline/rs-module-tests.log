@@ -1,0 +1,236 @@
+   Compiling rs-lang-macros v0.1.0 (/Users/master/cyber/rs/macros)
+   Compiling rs-lang v0.1.0 (/Users/master/cyber/rs/core)
+   Compiling rs-macro-integration-tests v0.0.0 (/Users/master/cyber/rs/tests/macro-integration)
+warning: field `0` is never read
+   --> core/src/channel.rs:443:26
+    |
+443 |         struct Droppable(u32);
+    |                --------- ^^^
+    |                |
+    |                field in this struct
+    |
+    = help: consider removing this field
+    = note: `Droppable` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `rs_lang::prelude`
+ --> tests/macro-integration/src/lib.rs:7:5
+  |
+7 | use rs_lang::prelude::*;
+  |     ^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `SimpleRecord` is never constructed
+  --> tests/macro-integration/src/lib.rs:15:8
+   |
+15 | struct SimpleRecord {
+   |        ^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `WithOption` is never constructed
+  --> tests/macro-integration/src/lib.rs:22:8
+   |
+22 | struct WithOption {
+   |        ^^^^^^^^^^
+
+warning: struct `WithArray` is never constructed
+  --> tests/macro-integration/src/lib.rs:28:8
+   |
+28 | struct WithArray {
+   |        ^^^^^^^^^
+
+warning: enum `Status` is never used
+  --> tests/macro-integration/src/lib.rs:33:6
+   |
+33 | enum Status {
+   |      ^^^^^^
+
+warning: function `add_checked` is never used
+  --> tests/macro-integration/src/lib.rs:56:4
+   |
+56 | fn add_checked(a: u32, b: u32) -> Option<u32> {
+   |    ^^^^^^^^^^^
+
+warning: function `multiply_fixed` is never used
+  --> tests/macro-integration/src/lib.rs:61:4
+   |
+61 | fn multiply_fixed(a: u64, b: u64) -> u64 {
+   |    ^^^^^^^^^^^^^^
+
+warning: `rs-macro-integration-tests` (lib) generated 7 warnings
+warning: `rs-lang` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.82s
+     Running unittests src/lib.rs (target/debug/deps/rs_lang-6d0e71a45ce6b334)
+
+running 107 tests
+test arena::tests::arena_drop_runs ... ok
+test arena::tests::arena_alloc_basic ... ok
+test arena::tests::arena_iter_exact_size ... ok
+test bounded::map::tests::clear ... ok
+test arena::tests::arena_iter ... ok
+test arena::tests::arena_debug ... ok
+test arena::tests::arena_new_is_empty ... ok
+test arena::tests::arena_alloc_returns_mut ... ok
+test arena::tests::arena_full ... ok
+test arena::tests::arena_clear ... ok
+test bounded::map::tests::full ... ok
+test bounded::map::tests::contains_key ... ok
+test arena::tests::arena_zero_capacity ... ok
+test bounded::map::tests::insert_replaces ... ok
+test bounded::map::tests::new_is_empty ... ok
+test bounded::map::tests::insert_and_get ... ok
+test bounded::map::tests::remove ... ok
+test bounded::map::tests::sorted_order ... ok
+test bounded::map::tests::step_reset ... ok
+test bounded::string::tests::clear ... ok
+test bounded::string::tests::display ... ok
+test bounded::string::tests::new_is_empty ... ok
+test bounded::string::tests::ordering ... ok
+test bounded::string::tests::push_char ... ok
+test bounded::string::tests::push_str ... ok
+test bounded::string::tests::push_str_overflow ... ok
+test bounded::string::tests::step_reset ... ok
+test bounded::string::tests::try_from_str ... ok
+test bounded::string::tests::try_from_str_too_long ... ok
+test bounded::string::tests::unicode ... ok
+test bounded::vec::tests::buf_mut ... ok
+test bounded::vec::tests::buf_mut_overflow ... ok
+test bounded::vec::tests::clear ... ok
+test bounded::vec::tests::clone ... ok
+test bounded::vec::tests::get ... ok
+test bounded::vec::tests::insert_and_remove ... ok
+test bounded::vec::tests::iter ... ok
+test bounded::vec::tests::new_is_empty ... ok
+test bounded::vec::tests::push_and_pop ... ok
+test bounded::vec::tests::step_reset ... ok
+test bounded::vec::tests::truncate ... ok
+test channel::tests::channel_clone_receiver ... ok
+test channel::tests::channel_clone_sender ... ok
+test channel::tests::channel_debug ... ok
+test channel::tests::channel_drop_with_items ... ok
+test channel::tests::channel_empty ... ok
+test channel::tests::channel_fifo_order ... ok
+test channel::tests::channel_full ... ok
+test channel::tests::channel_len ... ok
+test channel::tests::channel_send_recv ... ok
+test channel::tests::channel_wrap_around ... ok
+test channel::tests::channel_zero_capacity ... ok
+test channel::tests::full_into_inner ... ok
+test core_types::tests::canonical_serialize_option ... ok
+test core_types::tests::canonical_serialize_u32 ... ok
+test core_types::tests::health_status_variants ... ok
+test core_types::tests::particle_empty_input ... ok
+test core_types::tests::particle_from_bytes_deterministic ... ok
+test core_types::tests::particle_from_bytes_distinct ... ok
+test core_types::tests::particle_from_canonical ... ok
+test core_types::tests::particle_ordering ... ok
+test core_types::tests::slice_buf_mut_overflow ... ok
+test core_types::tests::slice_buf_mut_basic ... ok
+test fixed_point::convert::tests::count_digits ... ok
+test fixed_point::convert::tests::frac_raw_correct ... ok
+test fixed_point::convert::tests::from_decimal_frac_too_large_u64 ... ok
+test fixed_point::convert::tests::from_decimal_u128 ... ok
+test fixed_point::convert::tests::from_decimal_u64 ... ok
+test fixed_point::convert::tests::from_decimal_zero_frac_u64 ... ok
+test fixed_point::convert::tests::from_integer_overflow_u64 ... ok
+test fixed_point::convert::tests::from_integer_u128 ... ok
+test fixed_point::convert::tests::from_integer_u64 ... ok
+test fixed_point::convert::tests::to_integer_truncates ... ok
+test fixed_point::fmt::tests::debug_u64 ... ok
+test fixed_point::fmt::tests::display_u128 ... ok
+test fixed_point::fmt::tests::display_u64_fractional ... ok
+test fixed_point::fmt::tests::display_u64_integer ... ok
+test fixed_point::fmt::tests::display_u64_zero ... ok
+test fixed_point::fmt::tests::display_zero_decimals ... ok
+test fixed_point::ops::tests::u128_checked_add ... ok
+test fixed_point::ops::tests::u128_checked_div ... ok
+test fixed_point::ops::tests::u128_checked_div_by_zero ... ok
+test fixed_point::ops::tests::u128_checked_mul ... ok
+test fixed_point::ops::tests::u128_checked_mul_fractional ... ok
+test fixed_point::ops::tests::u128_large_mul ... ok
+test fixed_point::ops::tests::u128_mul_by_one ... ok
+test fixed_point::ops::tests::u256_div_basic ... ok
+test fixed_point::ops::tests::u256_div_by_zero ... ok
+test fixed_point::ops::tests::u256_div_with_hi ... ok
+test fixed_point::ops::tests::u256_widening_mul_basic ... ok
+test fixed_point::ops::tests::u256_widening_mul_large ... ok
+test fixed_point::ops::tests::u64_checked_add ... ok
+test fixed_point::ops::tests::u64_checked_add_overflow ... ok
+test fixed_point::ops::tests::u64_checked_div ... ok
+test fixed_point::ops::tests::u64_checked_div_by_zero ... ok
+test fixed_point::ops::tests::u64_checked_mul ... ok
+test fixed_point::ops::tests::u64_checked_mul_fractional ... ok
+test fixed_point::ops::tests::u64_checked_sub ... ok
+test fixed_point::ops::tests::u64_checked_sub_underflow ... ok
+test fixed_point::ops::tests::u64_mul_by_one ... ok
+test fixed_point::ops::tests::u64_mul_by_zero ... ok
+test fixed_point::ops::tests::u64_saturating_add ... ok
+test fixed_point::ops::tests::u64_saturating_sub ... ok
+test fixed_point::ops::tests::u64_wrapping_add ... ok
+test fixed_point::tests::ordering ... ok
+test fixed_point::tests::scale_values ... ok
+test fixed_point::tests::zero_and_one ... ok
+
+test result: ok. 107 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/rs_lang_macros-6c915814b6572e5d)
+
+running 1 test
+test module::tests::unbounded_async_is_rejected_before_codegen ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/rs_macro_integration_tests-4bf0c5358c8e60a4)
+
+running 16 tests
+test tests::addressed_array_field ... ok
+test tests::addressed_enum_variants ... ok
+test tests::addressed_different_values_different_particles ... ok
+test tests::addressed_serialize_deterministic ... ok
+test tests::addressed_option_some_vs_none ... ok
+test tests::minimal_module ... ok
+test tests::deterministic_fn_works ... ok
+test tests::minimal_module_metadata ... ok
+test tests::module_constructor ... ok
+test tests::module_error_type_exists ... ok
+test tests::module_health_check ... ok
+test tests::module_increment_and_limit ... ok
+test tests::module_metadata_interface ... ok
+test tests::module_step_reset ... ok
+test tests::module_trait_constants ... ok
+test tests::step_reset_zeros_fields ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/module_lifecycle.rs (target/debug/deps/module_lifecycle-93d7f4d4d1ad8ade)
+
+running 2 tests
+test old_source::old_api_delegates_to_the_same_module_traits ... ok
+test state_upgrade_keeps_value_step_reset_and_deadline_metadata ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rs_lang
+
+running 2 tests
+test core/src/channel.rs - channel (line 7) ... ignored
+test core/src/fixed_point/mod.rs - fixed_point (line 6) ... ignored
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rs_lang_macros
+
+running 2 tests
+test macros/src/bounded_async.rs - bounded_async (line 4) ... ignored
+test macros/src/bounded_async.rs - bounded_async (line 9) ... ignored
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rs_macro_integration_tests
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

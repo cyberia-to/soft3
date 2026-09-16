@@ -1,0 +1,1 @@
+{"result": "passed-for-declared-local-profiles", "gates": 14, "sources": 12902, "dispositions": 122, "profiles": 17, "source_mismatches": 0, "context_mismatches": 0, "output": "/Users/master/cyber/soft3/audit/neuron-cell/validation-manifest.json"}

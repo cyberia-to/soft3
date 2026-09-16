@@ -1,0 +1,388 @@
+CC_aarch64_linux_android=/Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
+	CXX_aarch64_linux_android=/Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang++ \
+	AR_aarch64_linux_android=/Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar \
+	CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=/Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
+	/Users/master/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo build --release --target aarch64-linux-android --lib -p cyb
+    Blocking waiting for file lock on build directory
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:59:45
+   |
+59 |             capabilities: self.capabilities.recycle(),
+   |                                             ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+   = note: `#[warn(unstable_name_collisions)]` (part of `#[warn(future_incompatible)]`) on by default
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:60:41
+   |
+60 |             extensions: self.extensions.recycle(),
+   |                                         ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:61:53
+   |
+61 |             ext_inst_imports: self.ext_inst_imports.recycle(),
+   |                                                     ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:62:45
+   |
+62 |             memory_model: self.memory_model.recycle(),
+   |                                             ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:63:45
+   |
+63 |             entry_points: self.entry_points.recycle(),
+   |                                             ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:64:51
+   |
+64 |             execution_modes: self.execution_modes.recycle(),
+   |                                                   ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:65:33
+   |
+65 |             debugs: self.debugs.recycle(),
+   |                                 ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:66:43
+   |
+66 |             annotations: self.annotations.recycle(),
+   |                                           ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:67:45
+   |
+67 |             declarations: self.declarations.recycle(),
+   |                                             ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:68:63
+   |
+68 |             function_declarations: self.function_declarations.recycle(),
+   |                                                               ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+  --> /Users/master/cyber/evy/forks/naga/src/back/spv/layout.rs:69:61
+   |
+69 |             function_definitions: self.function_definitions.recycle(),
+   |                                                             ^^^^^^^
+   |
+   = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+   = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+   = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+   --> /Users/master/cyber/evy/forks/naga/src/back/spv/writer.rs:124:44
+    |
+124 |             debugs: take(&mut self.debugs).recycle(),
+    |                                            ^^^^^^^
+    |
+    = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+    = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+    = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+   --> /Users/master/cyber/evy/forks/naga/src/back/spv/writer.rs:125:54
+    |
+125 |             annotations: take(&mut self.annotations).recycle(),
+    |                                                      ^^^^^^^
+    |
+    = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+    = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+    = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: a method with this name may be added to the standard library in the future
+   --> /Users/master/cyber/evy/forks/naga/src/back/spv/writer.rs:133:50
+    |
+133 |             temp_list: take(&mut self.temp_list).recycle(),
+    |                                                  ^^^^^^^
+    |
+    = help: call with fully qualified syntax `Recyclable::recycle(...)` to keep using the current method
+    = warning: once this associated item is added to the standard library, the ambiguity may cause an error or change in behavior!
+    = note: for more information, see issue #48919 <https://github.com/rust-lang/rust/issues/48919>
+
+warning: `naga` (lib) generated 14 warnings
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/glia/run/tokenizer/loader.rs:219:9
+    |
+219 |     let mut add = |tokens: &mut Vec<(u32, String)>, id: u32, name: String| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `dbg_stats` is never used
+   --> /Users/master/cyber/glia/run/arch/decoder/forward.rs:666:4
+    |
+666 | fn dbg_stats(label: &str, v: &[f32]) { dbg_stats_l(0, label, v); }
+    |    ^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `matmul_f32_scalar` is never used
+  --> /Users/master/cyber/glia/run/backend/cpu/matmul.rs:90:8
+   |
+90 | pub fn matmul_f32_scalar(x: &Tensor, w: &Tensor) -> Result<Tensor, BackendError> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: field `device` is never read
+  --> /Users/master/cyber/glia/run/backend/wgpu/mod.rs:29:5
+   |
+27 | struct GpuBuffer {
+   |        --------- field in this struct
+28 |     buffer: wgpu::Buffer,
+29 |     device: Arc<Device>,
+   |     ^^^^^^
+
+warning: function `softmax` is never used
+   --> /Users/master/cyber/glia/run/generate.rs:201:4
+    |
+201 | fn softmax(logits: &[f32]) -> Vec<f32> {
+    |    ^^^^^^^
+
+   Compiling nu-cmd-lang v0.110.0 (/Users/master/cyber/nu/crates/nu-cmd-lang)
+warning: `run` (lib) generated 5 warnings (run `cargo fix --lib -p run` to apply 1 suggestion)
+warning: variable does not need to be mutable
+   --> /Users/master/cyber/mir/src/bevy/world.rs:177:9
+    |
+177 |     let mut lock = match epoch_res.inner.try_write() {
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `hsl_to_rgb` is never used
+   --> /Users/master/cyber/mir/src/epoch/mod.rs:101:4
+    |
+101 | fn hsl_to_rgb(h_rad: f32, s: f32, l: f32) -> [f32; 3] {
+    |    ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `mir` (lib) generated 2 warnings (run `cargo fix --lib -p mir` to apply 1 suggestion)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+   Compiling soma-kernel v0.1.0 (/Users/master/cyber/soma/kernel)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+   Compiling cyb v0.13.1 (/Users/master/cyber/cyb/shell)
+warning: unused import: `SubjectRef`
+ --> shell/src/worlds/identity.rs:6:65
+  |
+6 | use cyb_core::robot::{self, BindingState, NetworkRef, Registry, SubjectRef, VaultKey};
+  |                                                                 ^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: irrefutable `if let` pattern
+   --> shell/src/shell/chrome.rs:902:16
+    |
+902 |             if let Ok(text) = read_clipboard() {
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this pattern will always match, so the `if let` is useless
+    = help: consider replacing the `if let` with a `let`
+    = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: variable does not need to be mutable
+   --> shell/src/worlds/body/prover.rs:285:9
+    |
+285 |     let mut id = |index: &mut std::collections::HashMap<[u8; 32], usize>, p: [u8; 32]| {
+    |         ----^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: irrefutable `if let` pattern
+   --> shell/src/worlds/vault/mod.rs:380:8
+    |
+380 |     if let Ok(current) = crate::shell::clipboard::read_clipboard() {
+    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this pattern will always match, so the `if let` is useless
+    = help: consider replacing the `if let` with a `let`
+
+warning: function `policy` is never used
+   --> shell/src/worlds/identity.rs:202:4
+    |
+202 | fn policy() -> [u8; 32] {
+    |    ^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `hf_id` is never read
+  --> shell/src/worlds/models/mod.rs:66:5
+   |
+64 | struct FetchEntry {
+   |        ---------- field in this struct
+65 |     label: &'static str,
+66 |     hf_id: &'static str,
+   |     ^^^^^
+
+warning: field `0` is never read
+  --> shell/src/worlds/models/mod.rs:72:17
+   |
+72 | struct FetchRow(usize);
+   |        -------- ^^^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+
+warning: `cyb` (lib) generated 7 warnings (run `cargo fix --lib -p cyb` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 7m 18s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 2`
+/Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip --strip-debug \
+		-o shell/gen/android/app/src/main/jniLibs/arm64-v8a/libcyb.so \
+		target/aarch64-linux-android/release/libcyb.so
+cp /Users/master/Library/Android/sdk/ndk/27.3.13750724/toolchains/llvm/prebuilt/darwin-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android/libc++_shared.so \
+		shell/gen/android/app/src/main/jniLibs/arm64-v8a/
+cd shell/gen/android && ANDROID_HOME=/Users/master/Library/Android/sdk JAVA_HOME=/opt/homebrew/opt/openjdk@17 ./gradlew assembleRelease \
+		-PcybVersionCode=1301 -PcybVersionName=0.13.1
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:compileReleaseJavaWithJavac UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:generateReleaseLintVitalReportModel UP-TO-DATE
+> Task :app:lintVitalAnalyzeRelease UP-TO-DATE
+> Task :app:lintVitalReportRelease UP-TO-DATE
+> Task :app:lintVitalRelease
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:dexBuilderRelease UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics UP-TO-DATE
+> Task :app:compileReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:processReleaseJavaRes UP-TO-DATE
+> Task :app:mergeReleaseJavaResource UP-TO-DATE
+> Task :app:optimizeReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libcyb.so.
+
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 4s
+48 actionable tasks: 7 executed, 41 up-to-date
+APK: shell/gen/android/app/build/outputs/apk/release/app-release.apk
