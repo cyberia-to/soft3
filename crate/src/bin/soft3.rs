@@ -42,6 +42,7 @@ fn main() {
         }
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
+        "auth" => cmd_auth(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -198,6 +199,7 @@ fn print_help() {
     println!("  soft3 status              # alias of sync");
     println!("  soft3 network [name]      # print endpoints");
     println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+    println!("  soft3 auth enable [--home DIR] [--import-legacy]  # stop the node first");
     println!("  soft3 manifesto");
     println!("  soft3 version");
     println!();
@@ -206,4 +208,38 @@ fn print_help() {
     println!();
     println!("docs  https://cyber.page/soft3/docs/launch");
     println!("site  https://soft3.org");
+}
+
+fn cmd_auth(args: &[String]) {
+    let mut home = node::default_home();
+    let mut import = false;
+    let mut seen_home = false;
+    let parsed = (|| -> Result<(), &'static str> {
+        if args.first().map(String::as_str) != Some("enable") { return Err("expected enable"); }
+        let mut i = 1;
+        while i < args.len() {
+            match args[i].as_str() {
+                "--home" if !seen_home => {i += 1; home=PathBuf::from(args.get(i).ok_or("missing home")?); seen_home=true;},
+                "--import-legacy" if !import => import=true,
+                _ => return Err("unknown or duplicate argument"),
+            }
+            i += 1;
+        }
+        Ok(())
+    })();
+    if let Err(e) = parsed {
+        eprintln!("{e}; usage: soft3 auth enable [--home DIR] [--import-legacy] (stop the node first)");
+        std::process::exit(2);
+    }
+    let result = (|| -> std::io::Result<[u8;32]> {
+        std::fs::create_dir_all(&home)?;
+        let lock=std::fs::OpenOptions::new().read(true).write(true).create(true).truncate(false).open(home.join("auth-upgrade.lock"))?;
+        lock.try_lock().map_err(std::io::Error::other)?;
+        if import { node::import_legacy(&home)?; }
+        node::Node::open(home, "auth-upgrade".into())?.enable_authentication()
+    })();
+    match result {
+        Ok(network) => println!("authenticated native profile enabled; network {}", network.iter().map(|b|format!("{b:02x}")).collect::<String>()),
+        Err(e) => { eprintln!("authentication activation failed: {e}"); std::process::exit(1); }
+    }
 }
