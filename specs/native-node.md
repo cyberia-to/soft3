@@ -83,6 +83,15 @@ JSON bytes in the database and preserves the user's genesis file. Invalid
 existing genesis fails startup. A database whose genesis file is missing also
 fails startup.
 
+`soft3 genesis install --file PATH [--home DIR]` adopts an external genesis
+file as `$home/genesis.json` before the node's database exists, so an
+operator can boot a node from a real genesis candidate instead of only ever
+receiving the hardcoded spacepussy-test default. It fails if the home already
+has a `bbg` database or an existing `genesis.json`, and validates the file
+against the same chain, engine and protocol rules as node startup before
+writing it byte-for-byte. It does not itself widen which chains are accepted;
+that is the genesis validation contract above.
+
 An existing `$home/log` requires explicit `cyber storage import-legacy` before
 normal startup. Import uses the existing validated genesis and complete source
 log, preserves both files, and marks the imported source in the database.
