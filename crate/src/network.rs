@@ -245,4 +245,123 @@ mod tests {
         assert!(Network::parse("bostrom").is_none());
         assert!(Network::is_bootloader_name("space-pussy"));
     }
+
+    fn blank_status() -> SyncStatus {
+        SyncStatus {
+            network: Network::DEFAULT,
+            reachable: true,
+            http_status: Some(200),
+            chain_id: Network::DEFAULT.chain_id().into(),
+            moniker: String::new(),
+            latest_height: 0,
+            earliest_height: 0,
+            catching_up: false,
+            bbg_root: String::new(),
+            engine: String::new(),
+            signals: 0,
+            particles: 0,
+            axons: 0,
+            body_preview: String::new(),
+        }
+    }
+
+    #[test]
+    fn enrich_reads_full_status_json() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {
+                "node_info": {"network": "pussy-rc", "moniker": "beacon-1", "engine": "foculus/1"},
+                "sync_info": {
+                    "latest_block_height": 41000,
+                    "earliest_block_height": 1,
+                    "catching_up": true,
+                    "bbg_root": "abcd1234",
+                },
+                "soft3": {"signals": 12, "particles": 7, "axons": 3},
+            }
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.chain_id, "pussy-rc");
+        assert_eq!(st.moniker, "beacon-1");
+        assert_eq!(st.engine, "foculus/1");
+        assert_eq!(st.latest_height, 41000);
+        assert_eq!(st.earliest_height, 1);
+        assert!(st.catching_up);
+        assert_eq!(st.bbg_root, "abcd1234");
+        assert_eq!(st.signals, 12);
+        assert_eq!(st.particles, 7);
+        assert_eq!(st.axons, 3);
+    }
+
+    #[test]
+    fn enrich_falls_back_to_protocol_when_engine_absent() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {"node_info": {"protocol": "soft3/pussy-rc/v1"}}
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.engine, "soft3/pussy-rc/v1");
+    }
+
+    #[test]
+    fn enrich_prefers_engine_over_protocol_when_both_present() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {"node_info": {"engine": "foculus/1", "protocol": "soft3/pussy-rc/v1"}}
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.engine, "foculus/1");
+    }
+
+    #[test]
+    fn enrich_tolerates_missing_result_wrapper() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "node_info": {"moniker": "flat-1"},
+            "sync_info": {"latest_block_height": 5},
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.moniker, "flat-1");
+        assert_eq!(st.latest_height, 5);
+    }
+
+    #[test]
+    fn enrich_leaves_defaults_on_empty_object() {
+        let mut st = blank_status();
+        enrich_from_status_json(&mut st, "{}");
+        assert_eq!(st.moniker, "");
+        assert_eq!(st.latest_height, 0);
+        assert!(!st.catching_up);
+    }
+
+    #[test]
+    fn enrich_does_not_panic_on_malformed_json() {
+        let mut st = blank_status();
+        enrich_from_status_json(&mut st, "not json at all {{{");
+        assert_eq!(st.chain_id, Network::DEFAULT.chain_id());
+    }
+
+    #[test]
+    fn json_u64_reads_native_number() {
+        let v = serde_json::json!({"n": 42});
+        assert_eq!(json_u64(v.get("n")), Some(42));
+    }
+
+    #[test]
+    fn json_u64_reads_numeric_string() {
+        let v = serde_json::json!({"n": "42"});
+        assert_eq!(json_u64(v.get("n")), Some(42));
+    }
+
+    #[test]
+    fn json_u64_none_on_missing_or_non_numeric() {
+        let v = serde_json::json!({"n": "not-a-number"});
+        assert_eq!(json_u64(v.get("n")), None);
+        assert_eq!(json_u64(v.get("missing")), None);
+        assert_eq!(json_u64(None), None);
+    }
 }
