@@ -11,18 +11,10 @@ fn main() {
         return;
     }
 
+    let (names, rest) = extract_network_flags(&args);
     let mut net = Network::DEFAULT;
-    let mut rest = Vec::new();
-    let mut i = 0;
-    while i < args.len() {
-        if args[i] == "--network" || args[i] == "-n" {
-            i += 1;
-            let name = args.get(i).map(|s| s.as_str()).unwrap_or("");
-            net = parse_net(name);
-        } else {
-            rest.push(args[i].clone());
-        }
-        i += 1;
+    for name in &names {
+        net = parse_net(name);
     }
     args = rest;
 
@@ -49,6 +41,26 @@ fn main() {
             std::process::exit(2);
         }
     }
+}
+
+/// Split `--network`/`-n <value>` flags out of argv. Returns every requested
+/// value in the order given (an empty string if a flag had no following
+/// argument) alongside the remaining arguments, unvalidated — each name is
+/// checked by [`parse_net`] in `main`, last one wins, matching argv order.
+fn extract_network_flags(args: &[String]) -> (Vec<String>, Vec<String>) {
+    let mut names = Vec::new();
+    let mut rest = Vec::new();
+    let mut i = 0;
+    while i < args.len() {
+        if args[i] == "--network" || args[i] == "-n" {
+            i += 1;
+            names.push(args.get(i).cloned().unwrap_or_default());
+        } else {
+            rest.push(args[i].clone());
+        }
+        i += 1;
+    }
+    (names, rest)
 }
 
 fn parse_net(name: &str) -> Network {
@@ -206,4 +218,53 @@ fn print_help() {
     println!();
     println!("docs  https://cyber.page/soft3/docs/launch");
     println!("site  https://soft3.org");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::extract_network_flags;
+
+    fn v(items: &[&str]) -> Vec<String> {
+        items.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn no_flag_leaves_all_args_as_rest() {
+        let args = v(&["node", "--home", "/tmp/x"]);
+        let (names, rest) = extract_network_flags(&args);
+        assert_eq!(names, Vec::<String>::new());
+        assert_eq!(rest, args);
+    }
+
+    #[test]
+    fn long_flag_is_extracted_from_the_middle() {
+        let args = v(&["sync", "--network", "spacepussy-test", "--verbose"]);
+        let (names, rest) = extract_network_flags(&args);
+        assert_eq!(names, v(&["spacepussy-test"]));
+        assert_eq!(rest, v(&["sync", "--verbose"]));
+    }
+
+    #[test]
+    fn short_flag_form_is_equivalent() {
+        let args = v(&["sync", "-n", "pussy"]);
+        let (names, rest) = extract_network_flags(&args);
+        assert_eq!(names, v(&["pussy"]));
+        assert_eq!(rest, v(&["sync"]));
+    }
+
+    #[test]
+    fn flag_with_no_following_argument_yields_an_empty_name() {
+        let args = v(&["sync", "--network"]);
+        let (names, rest) = extract_network_flags(&args);
+        assert_eq!(names, v(&[""]));
+        assert_eq!(rest, v(&["sync"]));
+    }
+
+    #[test]
+    fn repeated_flags_are_all_returned_in_argv_order() {
+        let args = v(&["--network", "bostrom", "sync", "-n", "pussy"]);
+        let (names, rest) = extract_network_flags(&args);
+        assert_eq!(names, v(&["bostrom", "pussy"]));
+        assert_eq!(rest, v(&["sync"]));
+    }
 }
