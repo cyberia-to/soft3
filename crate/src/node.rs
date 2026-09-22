@@ -192,3 +192,55 @@ pub fn run(home: PathBuf, bind: &str, moniker: &str) -> io::Result<()> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn key32_passes_through_full_hex() {
+        let hex_str = "ab".repeat(32);
+        let expected: Vec<u8> = (0..32).map(|_| 0xab).collect();
+        assert_eq!(key32(&hex_str).as_slice(), expected.as_slice());
+    }
+
+    #[test]
+    fn key32_strips_0x_prefix() {
+        let hex_str = "ab".repeat(32);
+        assert_eq!(key32(&hex_str), key32(&format!("0x{hex_str}")));
+    }
+
+    #[test]
+    fn key32_left_pads_short_hex() {
+        assert_eq!(key32("ab"), key32(&format!("{}ab", "0".repeat(62))));
+    }
+
+    #[test]
+    fn key32_accepts_uppercase_hex() {
+        let hex_str = "ab".repeat(32);
+        assert_eq!(key32(&hex_str), key32(&hex_str.to_uppercase()));
+    }
+
+    #[test]
+    fn key32_falls_back_to_hash_for_non_hex_label() {
+        assert_eq!(key32("not-hex-zz"), hash32(b"not-hex-zz"));
+    }
+
+    #[test]
+    fn key32_falls_back_to_hash_when_longer_than_32_bytes() {
+        let too_long = "ab".repeat(33);
+        assert_eq!(key32(&too_long), hash32(too_long.as_bytes()));
+    }
+
+    #[test]
+    fn key32_falls_back_to_hash_for_empty_string() {
+        assert_eq!(key32(""), hash32(b""));
+        assert_eq!(key32("0x"), hash32(b"0x"));
+    }
+
+    #[test]
+    fn hash32_is_deterministic_and_distinct() {
+        assert_eq!(hash32(b"a"), hash32(b"a"));
+        assert_ne!(hash32(b"a"), hash32(b"b"));
+    }
+}
