@@ -114,47 +114,115 @@ fn cmd_sync(net: Network) {
     }
 }
 
-fn cmd_node(args: &[String]) {
-    let mut home = node::default_home();
-    let mut bind = Network::DEFAULT.local_bind().to_string();
-    let mut moniker = hostname_fallback();
+/// Parsed `soft3 node` flags, before `--home`/`--bind`/`--moniker` defaults
+/// are resolved into a running node.
+struct NodeArgs {
+    home: PathBuf,
+    bind: String,
+    moniker: String,
+    help: bool,
+}
+
+/// Why [`parse_node_args`] could not resolve a flag set.
+enum NodeArgError {
+    /// A flag that takes a value (named by its usage string) was the last
+    /// argument, with nothing after it.
+    MissingValue(&'static str),
+    /// An argument matched none of the known flags.
+    Unknown(String),
+}
+
+/// Parse `soft3 node`'s argv into [`NodeArgs`], starting from the caller's
+/// defaults. Pure and side-effect free — every error is returned, never a
+/// panic or a process exit, so the operator sees the same clean message a
+/// mistyped `--home`/`--bind`/`--moniker` already got before this refactor,
+/// instead of a panic unwind.
+fn parse_node_args(
+    args: &[String],
+    default_home: PathBuf,
+    default_bind: String,
+    default_moniker: String,
+) -> Result<NodeArgs, NodeArgError> {
+    let mut home = default_home;
+    let mut bind = default_bind;
+    let mut moniker = default_moniker;
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
             "--home" => {
                 i += 1;
-                home = PathBuf::from(args.get(i).expect("--home needs a path"));
+                home = PathBuf::from(
+                    args.get(i)
+                        .ok_or(NodeArgError::MissingValue("--home needs a path"))?,
+                );
             }
             "--bind" => {
                 i += 1;
-                bind = args.get(i).expect("--bind needs host:port").clone();
+                bind = args
+                    .get(i)
+                    .ok_or(NodeArgError::MissingValue("--bind needs host:port"))?
+                    .clone();
             }
             "--moniker" => {
                 i += 1;
-                moniker = args.get(i).expect("--moniker needs a name").clone();
+                moniker = args
+                    .get(i)
+                    .ok_or(NodeArgError::MissingValue("--moniker needs a name"))?
+                    .clone();
             }
             "-h" | "--help" => {
-                println!("soft3 node — run spacepussy-test (cybergraph + bbg)");
-                println!();
-                println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
-                println!();
-                println!("engine: cybergraph processor + authenticated bbg state");
-                println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
-                println!();
-                println!("defaults:");
-                println!("  --home    ~/.spacepussy-test");
-                println!("  --bind    {}", Network::DEFAULT.local_bind());
-                println!("  --moniker <hostname>");
-                return;
+                return Ok(NodeArgs {
+                    home,
+                    bind,
+                    moniker,
+                    help: true,
+                });
             }
-            other => {
-                eprintln!("unknown node flag `{other}`");
-                std::process::exit(2);
-            }
+            other => return Err(NodeArgError::Unknown(other.to_string())),
         }
         i += 1;
     }
-    if let Err(e) = node::run(home, &bind, &moniker) {
+    Ok(NodeArgs {
+        home,
+        bind,
+        moniker,
+        help: false,
+    })
+}
+
+fn cmd_node(args: &[String]) {
+    let parsed = parse_node_args(
+        args,
+        node::default_home(),
+        Network::DEFAULT.local_bind().to_string(),
+        hostname_fallback(),
+    );
+    let node_args = match parsed {
+        Ok(a) => a,
+        Err(NodeArgError::MissingValue(msg)) => {
+            eprintln!("{msg}");
+            std::process::exit(2);
+        }
+        Err(NodeArgError::Unknown(flag)) => {
+            eprintln!("unknown node flag `{flag}`");
+            std::process::exit(2);
+        }
+    };
+    if node_args.help {
+        println!("soft3 node — run spacepussy-test (cybergraph + bbg)");
+        println!();
+        println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+        println!();
+        println!("engine: cybergraph processor + authenticated bbg state");
+        println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
+        println!();
+        println!("defaults:");
+        println!("  --home    ~/.spacepussy-test");
+        println!("  --bind    {}", Network::DEFAULT.local_bind());
+        println!("  --moniker <hostname>");
+        return;
+    }
+    if let Err(e) = node::run(node_args.home, &node_args.bind, &node_args.moniker) {
         eprintln!("soft3 node failed: {e}");
         std::process::exit(1);
     }
@@ -211,9 +279,16 @@ fn cmd_genesis(args: &[String]) {
     }
 }
 
+/// Real-environment hostname fallback: `$HOSTNAME`, else `$HOST`, else the
+/// literal default. Thin wrapper over [`hostname_fallback_from`] so the
+/// fallback chain itself is testable without mutating process-wide env vars.
 fn hostname_fallback() -> String {
-    std::env::var("HOSTNAME")
-        .or_else(|_| std::env::var("HOST"))
+    hostname_fallback_from(|k: &str| std::env::var(k))
+}
+
+fn hostname_fallback_from<F: Fn(&str) -> Result<String, std::env::VarError>>(get: F) -> String {
+    get("HOSTNAME")
+        .or_else(|_| get("HOST"))
         .unwrap_or_else(|_| "soft3-node".into())
 }
 
@@ -259,4 +334,144 @@ fn print_help() {
     println!();
     println!("docs  https://cyber.page/soft3/docs/launch");
     println!("site  https://soft3.org");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    fn defaults() -> (PathBuf, String, String) {
+        (
+            PathBuf::from("/default/home"),
+            "127.0.0.1:1717".to_string(),
+            "default-moniker".to_string(),
+        )
+    }
+
+    #[test]
+    fn node_args_no_flags_keeps_every_default() {
+        let (home, bind, moniker) = defaults();
+        let parsed = parse_node_args(&[], home.clone(), bind.clone(), moniker.clone())
+            .ok()
+            .unwrap();
+        assert_eq!(parsed.home, home);
+        assert_eq!(parsed.bind, bind);
+        assert_eq!(parsed.moniker, moniker);
+        assert!(!parsed.help);
+    }
+
+    #[test]
+    fn node_args_all_three_flags_override_defaults() {
+        let (home, bind, moniker) = defaults();
+        let args = vec![
+            "--home".to_string(),
+            "/tmp/x".to_string(),
+            "--bind".to_string(),
+            "0.0.0.0:9000".to_string(),
+            "--moniker".to_string(),
+            "node-a".to_string(),
+        ];
+        let parsed = parse_node_args(&args, home, bind, moniker).ok().unwrap();
+        assert_eq!(parsed.home, PathBuf::from("/tmp/x"));
+        assert_eq!(parsed.bind, "0.0.0.0:9000");
+        assert_eq!(parsed.moniker, "node-a");
+        assert!(!parsed.help);
+    }
+
+    #[test]
+    fn node_args_help_flag_short_circuits() {
+        let (home, bind, moniker) = defaults();
+        let args = vec!["--help".to_string()];
+        let parsed = parse_node_args(&args, home, bind, moniker).ok().unwrap();
+        assert!(parsed.help);
+    }
+
+    #[test]
+    fn node_args_home_missing_value_errors_instead_of_panicking() {
+        let (home, bind, moniker) = defaults();
+        let args = vec!["--home".to_string()];
+        let err = parse_node_args(&args, home, bind, moniker).err().unwrap();
+        assert!(matches!(
+            err,
+            NodeArgError::MissingValue("--home needs a path")
+        ));
+    }
+
+    #[test]
+    fn node_args_bind_missing_value_errors_instead_of_panicking() {
+        let (home, bind, moniker) = defaults();
+        let args = vec!["--bind".to_string()];
+        let err = parse_node_args(&args, home, bind, moniker).err().unwrap();
+        assert!(matches!(
+            err,
+            NodeArgError::MissingValue("--bind needs host:port")
+        ));
+    }
+
+    #[test]
+    fn node_args_moniker_missing_value_errors_instead_of_panicking() {
+        let (home, bind, moniker) = defaults();
+        let args = vec!["--moniker".to_string()];
+        let err = parse_node_args(&args, home, bind, moniker).err().unwrap();
+        assert!(matches!(
+            err,
+            NodeArgError::MissingValue("--moniker needs a name")
+        ));
+    }
+
+    #[test]
+    fn node_args_unknown_flag_is_rejected() {
+        let (home, bind, moniker) = defaults();
+        let args = vec!["--bogus".to_string()];
+        let err = parse_node_args(&args, home, bind, moniker).err().unwrap();
+        match err {
+            NodeArgError::Unknown(flag) => assert_eq!(flag, "--bogus"),
+            _ => panic!("expected Unknown"),
+        }
+    }
+
+    #[test]
+    fn node_args_last_flag_wins_on_repeats() {
+        let (home, bind, moniker) = defaults();
+        let args = vec![
+            "--moniker".to_string(),
+            "first".to_string(),
+            "--moniker".to_string(),
+            "second".to_string(),
+        ];
+        let parsed = parse_node_args(&args, home, bind, moniker).ok().unwrap();
+        assert_eq!(parsed.moniker, "second");
+    }
+
+    #[test]
+    fn hostname_fallback_prefers_hostname_env() {
+        let mut env = HashMap::new();
+        env.insert("HOSTNAME", "from-hostname");
+        env.insert("HOST", "from-host");
+        let got = hostname_fallback_from(|k| {
+            env.get(k)
+                .map(|v| v.to_string())
+                .ok_or(std::env::VarError::NotPresent)
+        });
+        assert_eq!(got, "from-hostname");
+    }
+
+    #[test]
+    fn hostname_fallback_falls_back_to_host_env() {
+        let mut env = HashMap::new();
+        env.insert("HOST", "from-host");
+        let got = hostname_fallback_from(|k| {
+            env.get(k)
+                .map(|v| v.to_string())
+                .ok_or(std::env::VarError::NotPresent)
+        });
+        assert_eq!(got, "from-host");
+    }
+
+    #[test]
+    fn hostname_fallback_defaults_when_neither_env_is_set() {
+        let got = hostname_fallback_from(|_: &str| Err(std::env::VarError::NotPresent));
+        assert_eq!(got, "soft3-node");
+    }
 }
