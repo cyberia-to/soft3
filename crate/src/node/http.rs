@@ -18,6 +18,7 @@ pub(super) struct Request {
     pub body: Vec<u8>,
 }
 
+#[cfg_attr(test, derive(Debug))]
 pub(super) struct Response {
     status: &'static str,
     content_type: &'static str,
@@ -41,8 +42,15 @@ impl Response {
         write!(stream, "HTTP/1.1 {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\n\r\n", self.status, self.content_type, self.body.len())?;
         stream.write_all(&self.body)
     }
+
+    /// Inspect a response without a socket — routes.rs's dispatch tests.
+    #[cfg(test)]
+    pub(super) fn parts(&self) -> (&str, &str, &[u8]) {
+        (self.status, self.content_type, &self.body)
+    }
 }
 
+#[cfg_attr(test, derive(Debug))]
 pub(super) struct Error {
     pub status: &'static str,
     pub code: &'static str,

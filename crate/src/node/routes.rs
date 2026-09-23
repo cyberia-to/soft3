@@ -128,6 +128,230 @@ fn parameter(query: &str, name: &str) -> Result<Option<u64>, Error> {
 }
 
 #[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    use super::*;
+
+    /// A fresh `Node` in a scratch home directory under the OS temp dir,
+    /// uniquely named per call so parallel tests never collide.
+    struct TestNode {
+        node: Node,
+        _home: TestHome,
+    }
+
+    struct TestHome(PathBuf);
+
+    impl Drop for TestHome {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn test_node() -> TestNode {
+        static COUNTER: AtomicU64 = AtomicU64::new(0);
+        let id = COUNTER.fetch_add(1, Ordering::Relaxed);
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let home = std::env::temp_dir().join(format!(
+            "soft3-routes-test-{}-{nanos}-{id}",
+            std::process::id()
+        ));
+        let home = TestHome(home);
+        let node = Node::open(home.0.clone(), "test-moniker".into()).expect("node opens");
+        TestNode { node, _home: home }
+    }
+
+    fn get(path: &str, query: &str) -> Request {
+        Request {
+            method: "GET".into(),
+            path: path.into(),
+            query: query.into(),
+            idempotency_key: None,
+            body: Vec::new(),
+        }
+    }
+
+    fn post(path: &str, body: &[u8]) -> Request {
+        Request {
+            method: "POST".into(),
+            path: path.into(),
+            query: String::new(),
+            idempotency_key: None,
+            body: body.to_vec(),
+        }
+    }
+
+    fn text(body: &[u8]) -> &str {
+        std::str::from_utf8(body).expect("utf-8 body")
+    }
+
+    #[test]
+    fn health_returns_ok() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/health", "")).expect("ok");
+        let (status, content_type, body) = response.parts();
+        assert_eq!(status, "200 OK");
+        assert_eq!(content_type, "text/plain; charset=utf-8");
+        assert_eq!(body, b"ok\n");
+    }
+
+    #[test]
+    fn status_reports_chain_and_moniker() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/status", "")).expect("ok");
+        let (_, _, body) = response.parts();
+        let body = text(body);
+        assert!(body.contains("chain: spacepussy-test"), "{body}");
+        assert!(body.contains("moniker: test-moniker"), "{body}");
+        assert!(body.contains("denom: testpussy"), "{body}");
+    }
+
+    #[test]
+    fn root_matches_node_root_hex() {
+        let mut t = test_node();
+        let expected = format!("{}\n", t.node.root_hex());
+        let response = route_ready(&mut t.node, get("/root", "")).expect("ok");
+        let (_, _, body) = response.parts();
+        assert_eq!(text(body), expected);
+    }
+
+    #[test]
+    fn stats_reports_particle_stats() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/stats", "")).expect("ok");
+        let (_, _, body) = response.parts();
+        assert!(text(body).contains("particle: stats"));
+    }
+
+    #[test]
+    fn index_lists_moniker_and_routes() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/", "")).expect("ok");
+        let (_, _, body) = response.parts();
+        let body = text(body);
+        assert!(body.contains("moniker test-moniker"), "{body}");
+        assert!(body.contains("POST /v1/link"), "{body}");
+    }
+
+    #[test]
+    fn trailing_slashes_are_trimmed_before_dispatch() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/health///", "")).expect("ok");
+        let (_, _, body) = response.parts();
+        assert_eq!(body, b"ok\n");
+    }
+
+    #[test]
+    fn balance_reports_for_hex_neuron() {
+        let mut t = test_node();
+        let neuron = "0".repeat(64);
+        let response =
+            route_ready(&mut t.node, get(&format!("/balance/{neuron}"), "")).expect("ok");
+        let (_, _, body) = response.parts();
+        let body = text(body);
+        assert!(body.contains("particle: balance"), "{body}");
+        assert!(body.contains(&format!("neuron: {neuron}")), "{body}");
+    }
+
+    #[test]
+    fn log_defaults_to_offset_zero() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/log", "")).expect("ok");
+        let (status, content_type, _) = response.parts();
+        assert_eq!(status, "200 OK");
+        assert_eq!(content_type, "application/octet-stream");
+    }
+
+    #[test]
+    fn blocks_limit_is_clamped_not_rejected() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/blocks", "limit=99999")).expect("ok");
+        assert_eq!(response.parts().0, "200 OK");
+        let response = route_ready(&mut t.node, get("/blocks", "limit=0")).expect("ok");
+        assert_eq!(response.parts().0, "200 OK");
+    }
+
+    #[test]
+    fn history_limit_out_of_range_is_rejected() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, get("/v2/history", "limit=65")).unwrap_err();
+        assert_eq!(error.status, "400 Bad Request");
+        assert!(error.message.contains("1..64"), "{}", error.message);
+    }
+
+    #[test]
+    fn history_limit_in_range_is_accepted() {
+        let mut t = test_node();
+        let response = route_ready(&mut t.node, get("/v2/history", "limit=1")).expect("ok");
+        let (status, content_type, body) = response.parts();
+        assert_eq!(status, "200 OK");
+        assert_eq!(content_type, "application/json");
+        assert!(text(body).contains("cyber/native-history/v1"));
+    }
+
+    #[test]
+    fn block_not_found_is_404() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, get("/block/999999", "")).unwrap_err();
+        assert_eq!(error.status, "404 Not Found");
+        assert_eq!(error.code, "block_not_found");
+    }
+
+    #[test]
+    fn block_invalid_height_is_400() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, get("/block/not-a-number", "")).unwrap_err();
+        assert_eq!(error.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn unknown_get_path_is_404() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, get("/nope", "")).unwrap_err();
+        assert_eq!(error.status, "404 Not Found");
+        assert_eq!(error.code, "not_found");
+    }
+
+    #[test]
+    fn post_finalize_is_gone() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, post("/v1/finalize", b"{}")).unwrap_err();
+        assert_eq!(error.status, "410 Gone");
+        assert_eq!(error.code, "standalone_finalize_removed");
+    }
+
+    #[test]
+    fn post_link_dispatches_into_submit() {
+        let mut t = test_node();
+        // Malformed JSON never reaches a valid signal; a rejection here still
+        // proves dispatch reached `requests::submit` rather than falling
+        // through to the unmatched-route 404 below.
+        let error = route_ready(&mut t.node, post("/v1/link", b"not json")).unwrap_err();
+        assert_ne!(error.code, "not_found");
+    }
+
+    #[test]
+    fn unknown_post_path_is_404() {
+        let mut t = test_node();
+        let error = route_ready(&mut t.node, post("/nope", b"{}")).unwrap_err();
+        assert_eq!(error.status, "404 Not Found");
+        assert_eq!(error.code, "not_found");
+    }
+
+    #[test]
+    fn route_locks_and_delegates_to_route_ready() {
+        let t = test_node();
+        let lock = Mutex::new(t.node);
+        let response = route(&lock, get("/health", "")).expect("ok");
+        assert_eq!(response.parts().0, "200 OK");
+    }
+}
+
+#[cfg(test)]
 mod parameter_tests {
     use super::*;
 
