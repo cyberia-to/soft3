@@ -3,16 +3,6 @@
 version = 4
 
 [[package]]
-name = "aead"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d122413f284cf2d62fb1b7db97e02edb8cda96d769b16e443a4f6195e35662b0"
-dependencies = [
- "crypto-common 0.1.6",
- "generic-array",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -91,12 +81,6 @@ name = "anyhow"
 version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
-
-[[package]]
-name = "arrayvec"
-version = "0.7.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56"
 
 [[package]]
 name = "async-compat"
@@ -226,15 +210,28 @@ checksum = "2af50177e190e07a26ab74f8b1efbfe2ef87da2116221318cb1c2e82baf7de06"
 
 [[package]]
 name = "bbg"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86096162d9700999b1d8ee1ff38539bca583c5dc141035d0134cd809530b2e1f"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens 0.1.3",
+ "cyber-nox 0.1.2",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zheng 0.1.2",
+]
+
+[[package]]
+name = "bbg"
 version = "0.3.0"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens",
- "cyber-nox",
+ "cyber-lens 0.2.0",
+ "cyber-nox 0.3.0",
  "fjall",
  "neuron-id",
- "strata-nebu",
- "zheng",
+ "strata-nebu 0.1.1",
+ "zheng 0.4.0",
 ]
 
 [[package]]
@@ -242,47 +239,6 @@ name = "bech32"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32637268377fc7b10a8c6d51de3e7fba1ce5dd371a96e342b34e6078db558e7f"
-
-[[package]]
-name = "bip32"
-version = "0.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db40d3dfbeab4e031d78c844642fa0caa0b0db11ce1607ac9d2986dff1405c69"
-dependencies = [
- "bs58",
- "hmac",
- "k256",
- "once_cell",
- "pbkdf2",
- "rand_core 0.6.4",
- "ripemd",
- "secp256k1",
- "sha2 0.10.9",
- "subtle",
- "zeroize",
-]
-
-[[package]]
-name = "bip39"
-version = "2.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90dbd31c98227229239363921e60fcf5e558e43ec69094d46fc4996f08d1d5bc"
-dependencies = [
- "bitcoin_hashes",
- "rand 0.8.8",
- "rand_core 0.6.4",
- "serde",
- "unicode-normalization",
-]
-
-[[package]]
-name = "bitcoin_hashes"
-version = "0.14.101"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bca4c7abb40c8817d77403c880988cfd484f23ab2365726afb2f798363e2c4a2"
-dependencies = [
- "hex-conservative",
-]
 
 [[package]]
 name = "bitflags"
@@ -315,15 +271,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdeb9d870516001442e364c5220d3574d2da8dc765554b4a617230d33fa58ef5"
 dependencies = [
  "objc2",
-]
-
-[[package]]
-name = "bs58"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf88ba1141d185c399bee5288d850d63b8369520c1eafc32a0430b5b6c287bf4"
-dependencies = [
- "sha2 0.10.9",
 ]
 
 [[package]]
@@ -376,17 +323,6 @@ checksum = "f079e83a288787bcd14a6aea84cee5c87a67c5a3e660c30f557a3d24761b3527"
 
 [[package]]
 name = "chacha20"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3613f74bd2eac03dad61bd53dbe620703d4371614fe0bc3b9f04dd36fe4e818"
-dependencies = [
- "cfg-if",
- "cipher",
- "cpufeatures 0.2.17",
-]
-
-[[package]]
-name = "chacha20"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65c35e4b699c7e15ccbe7ee35c005e4fc0a278d22238a2857e6ce2dadeda1b06"
@@ -394,19 +330,6 @@ dependencies = [
  "cfg-if",
  "cpufeatures 0.3.1",
  "rand_core 0.10.1",
-]
-
-[[package]]
-name = "chacha20poly1305"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10cd79432192d1c0f4e1a0fef9527696cc039165d729fb41b3f4f4f354c2dc35"
-dependencies = [
- "aead",
- "chacha20 0.9.1",
- "cipher",
- "poly1305",
- "zeroize",
 ]
 
 [[package]]
@@ -419,17 +342,6 @@ dependencies = [
  "num-traits",
  "serde",
  "windows-link",
-]
-
-[[package]]
-name = "cipher"
-version = "0.4.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "773f3b9af64447d2ce9850330c473515014aa235e6a783b02db81ff39e4a3dad"
-dependencies = [
- "crypto-common 0.1.6",
- "inout",
- "zeroize",
 ]
 
 [[package]]
@@ -636,7 +548,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1bfb12502f3fc46cca1bb51ac28df9d618d813cdc3d2f25b9fe775a34af26bb3"
 dependencies = [
  "generic-array",
- "rand_core 0.6.4",
  "typenum",
 ]
 
@@ -683,39 +594,14 @@ name = "cyb"
 version = "0.2.1"
 dependencies = [
  "anyhow",
- "bbg",
- "cyb-core",
- "cyber-hemera 0.3.1",
+ "bbg 0.1.2",
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "cyber-radio",
- "cyber-tok",
- "cyber-tru",
- "cybergraph",
- "foculus",
+ "cyber-tok 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-tru 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cybergraph 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "foculus 0.1.2",
  "tokio",
-]
-
-[[package]]
-name = "cyb-core"
-version = "0.1.0"
-dependencies = [
- "bbg",
- "chacha20poly1305",
- "cyber-hemera 0.3.1",
- "cyber-mudra",
- "cyber-tok",
- "cyber-tru",
- "cybergraph",
- "foculus",
- "getrandom 0.2.17",
- "neuron-engine",
- "neuron-model",
- "neuron-node",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "soma-agent",
- "tempfile",
- "zeroize",
 ]
 
 [[package]]
@@ -730,24 +616,50 @@ checksum = "ebcf7ffcd69170adde7e792826d7cececda962ea220b9834c6535bbc71e5a6df"
 
 [[package]]
 name = "cyber-lens"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c28d66487c62df7a9c3418de2e58b6c619d1a6e695bc5f1cbcc869834e41a18"
+dependencies = [
+ "cyber-lens-assayer 0.1.1",
+ "cyber-lens-binius 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-brakedown 0.1.1",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-ikat 0.1.1",
+ "cyber-lens-porphyry 0.1.1",
+]
+
+[[package]]
+name = "cyber-lens"
 version = "0.2.0"
 dependencies = [
- "cyber-lens-assayer",
- "cyber-lens-binius",
- "cyber-lens-brakedown",
- "cyber-lens-core",
- "cyber-lens-ikat",
- "cyber-lens-porphyry",
+ "cyber-lens-assayer 0.2.0",
+ "cyber-lens-binius 0.1.1",
+ "cyber-lens-brakedown 0.2.0",
+ "cyber-lens-core 0.1.2",
+ "cyber-lens-ikat 0.2.0",
+ "cyber-lens-porphyry 0.2.0",
+]
+
+[[package]]
+name = "cyber-lens-assayer"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcf31eaa04fad5d4afa215ffd697468ea5be33003f0ed99d9ae38518d4d70c6e"
+dependencies = [
+ "cyber-lens-brakedown 0.1.1",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-trop 0.1.0",
 ]
 
 [[package]]
 name = "cyber-lens-assayer"
 version = "0.2.0"
 dependencies = [
- "cyber-lens-brakedown",
- "cyber-lens-core",
- "strata-nebu",
- "strata-trop",
+ "cyber-lens-brakedown 0.2.0",
+ "cyber-lens-core 0.1.2",
+ "strata-nebu 0.1.1",
+ "strata-trop 0.1.1",
 ]
 
 [[package]]
@@ -755,8 +667,30 @@ name = "cyber-lens-binius"
 version = "0.1.1"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens-core",
- "strata-kuro",
+ "cyber-lens-core 0.1.2",
+ "strata-kuro 0.1.1",
+]
+
+[[package]]
+name = "cyber-lens-binius"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "80a9f22853a6212ae2f78bb234f442b69990ec7607b446b6b9e72690a84333c1"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-kuro 0.1.0",
+]
+
+[[package]]
+name = "cyber-lens-brakedown"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "967b4886df08f31647326b42292b329f31d2d404b3fd75a7070f15b269b25870"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -764,8 +698,8 @@ name = "cyber-lens-brakedown"
 version = "0.2.0"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens-core",
- "strata-nebu",
+ "cyber-lens-core 0.1.2",
+ "strata-nebu 0.1.1",
 ]
 
 [[package]]
@@ -773,19 +707,54 @@ name = "cyber-lens-core"
 version = "0.1.2"
 dependencies = [
  "cyber-hemera 0.3.1",
- "strata-core",
- "strata-nebu",
- "strata-proof",
+ "strata-core 0.1.1",
+ "strata-nebu 0.1.1",
+ "strata-proof 0.1.1",
+]
+
+[[package]]
+name = "cyber-lens-core"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f66d6f64bede656b47c71f22e106c1dd9da6778f9a4b91b60057d293aca39e01"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-core 0.1.0",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-proof 0.1.0",
+]
+
+[[package]]
+name = "cyber-lens-ikat"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1faf991f301a1627308593ddac70280d24ce483e9145a403b9bf692135270c7a"
+dependencies = [
+ "cyber-lens-brakedown 0.1.1",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-jali 0.1.0",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "cyber-lens-ikat"
 version = "0.2.0"
 dependencies = [
- "cyber-lens-brakedown",
- "cyber-lens-core",
- "strata-jali",
- "strata-nebu",
+ "cyber-lens-brakedown 0.2.0",
+ "cyber-lens-core 0.1.2",
+ "strata-jali 0.1.1",
+ "strata-nebu 0.1.1",
+]
+
+[[package]]
+name = "cyber-lens-porphyry"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c89fb3fe2b58fb0bc9b0704aae5b47a6280972052962f8a54b03a49dcb0f1571"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-genies 0.1.0",
 ]
 
 [[package]]
@@ -793,8 +762,8 @@ name = "cyber-lens-porphyry"
 version = "0.2.0"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens-core",
- "strata-genies",
+ "cyber-lens-core 0.1.2",
+ "strata-genies 0.1.1",
 ]
 
 [[package]]
@@ -803,8 +772,6 @@ version = "0.1.0"
 dependencies = [
  "base64",
  "bech32",
- "bip32",
- "bip39",
  "cyber-hemera 0.3.1",
  "k256",
  "neuron-id",
@@ -814,12 +781,24 @@ dependencies = [
 
 [[package]]
 name = "cyber-nox"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cad2ab2a013633241515c4680a9bc1c2d589cd908387b2cf0dddb19cc042307e"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens-brakedown 0.1.1",
+ "cyber-lens-core 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "cyber-nox"
 version = "0.3.0"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens-brakedown",
- "cyber-lens-core",
- "strata-nebu",
+ "cyber-lens-brakedown 0.2.0",
+ "cyber-lens-core 0.1.2",
+ "strata-nebu 0.1.1",
 ]
 
 [[package]]
@@ -1076,6 +1055,8 @@ dependencies = [
 [[package]]
 name = "cyber-tape"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ee4ab8db4edbd842945ee91b11794ffa832bef9cfa707e358a445ec700ae876"
 dependencies = [
  "bytes",
 ]
@@ -1085,8 +1066,18 @@ name = "cyber-tok"
 version = "0.1.1"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-tru",
+ "cyber-tru 0.1.1",
  "neuron-id",
+]
+
+[[package]]
+name = "cyber-tok"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8bec5200547e90f9d73bafed0b802fc04c3844d4c33f42685e03c4363e4f0f1"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-tru 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1096,7 +1087,21 @@ dependencies = [
  "cyber-hemera 0.3.1",
  "memmap2",
  "serde",
- "strata-nebu",
+ "strata-nebu 0.1.1",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
+name = "cyber-tru"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2099dfa76d4ff1c31f30fa665d6f2620b031a3577ac36925bdad2b476032938b"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memmap2",
+ "serde",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "thiserror",
  "toml",
 ]
@@ -1105,21 +1110,39 @@ dependencies = [
 name = "cybergraph"
 version = "0.1.1"
 dependencies = [
- "bbg",
+ "bbg 0.3.0",
  "cyber-hemera 0.3.1",
- "cyber-nox",
- "foculus",
- "inf-eval",
- "inf-parse",
- "inf-plan",
- "inf-source",
- "inf-value",
+ "cyber-nox 0.3.0",
+ "foculus 0.1.3",
+ "inf-eval 0.1.0",
+ "inf-parse 0.1.0",
+ "inf-plan 0.1.0",
+ "inf-source 0.1.0",
+ "inf-value 0.1.0",
  "rustix",
  "serde",
  "serde_json",
- "strata-nebu",
+ "strata-nebu 0.1.1",
  "tempfile",
- "zheng",
+ "zheng 0.4.0",
+]
+
+[[package]]
+name = "cybergraph"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "063bdbbfab501a80473f35467c3ebbe11f8ea9ebbc69088ba88f474ca749ffe9"
+dependencies = [
+ "bbg 0.1.2",
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "foculus 0.1.2",
+ "inf-eval 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-parse 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-plan 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-source 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-value 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zheng 0.1.2",
 ]
 
 [[package]]
@@ -1534,21 +1557,42 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "foculus"
-version = "0.1.3"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fe398b367e8b36244a0b4bfb78bba0e2b4acb3497a22d21717b92258651b7f8"
 dependencies = [
  "anyhow",
- "bbg",
+ "bbg 0.1.2",
  "clap",
- "cyber-hemera 0.3.1",
- "cyber-lens",
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens 0.1.3",
  "cyber-tape",
- "cyber-tok",
- "cyber-tru",
+ "cyber-tok 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-tru 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.9.5",
  "serde",
  "serde_json",
- "strata-nebu",
- "zheng",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zheng 0.1.2",
+]
+
+[[package]]
+name = "foculus"
+version = "0.1.3"
+dependencies = [
+ "anyhow",
+ "bbg 0.3.0",
+ "clap",
+ "cyber-hemera 0.3.1",
+ "cyber-lens 0.2.0",
+ "cyber-tok 0.1.1",
+ "cyber-tru 0.1.1",
+ "rand 0.9.5",
+ "serde",
+ "serde_json",
+ "strata-nebu 0.1.1",
+ "tade",
+ "zheng 0.4.0",
 ]
 
 [[package]]
@@ -1852,15 +1896,6 @@ name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-
-[[package]]
-name = "hex-conservative"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db3fef046dca3ca91ee1408a8c1b80ab777e80a4d308d1bf4e7adb3fcb047e08"
-dependencies = [
- "arrayvec",
-]
 
 [[package]]
 name = "hickory-proto"
@@ -2215,12 +2250,31 @@ name = "inf-ast"
 version = "0.1.0"
 
 [[package]]
+name = "inf-ast"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "740fffe75859f108f5c9fc71eb7fa859d66891e86163b295edfbe43ee6e71505"
+
+[[package]]
 name = "inf-eval"
 version = "0.1.0"
 dependencies = [
- "inf-ast",
- "inf-source",
- "inf-value",
+ "inf-ast 0.1.0",
+ "inf-source 0.1.0",
+ "inf-value 0.1.0",
+ "regex",
+ "serde_json",
+]
+
+[[package]]
+name = "inf-eval"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "adfd914d2be4e19bbb24e60c908fc32b78ce2890906f1495128d92b02d0a8c79"
+dependencies = [
+ "inf-ast 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-source 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-value 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex",
  "serde_json",
 ]
@@ -2230,25 +2284,59 @@ name = "inf-lex"
 version = "0.1.0"
 
 [[package]]
+name = "inf-lex"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0b30383caf5216a8e1daca219ae1460fcad3a498eadcb003c0c9f3c9bd86d69"
+
+[[package]]
 name = "inf-parse"
 version = "0.1.0"
 dependencies = [
- "inf-ast",
- "inf-lex",
+ "inf-ast 0.1.0",
+ "inf-lex 0.1.0",
+]
+
+[[package]]
+name = "inf-parse"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "527b619a169d13f12c5f4e1377a195098e6e94f0fa4d069b50e8ff44a2ee3b4b"
+dependencies = [
+ "inf-ast 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inf-lex 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "inf-plan"
 version = "0.1.0"
 dependencies = [
- "inf-ast",
+ "inf-ast 0.1.0",
+]
+
+[[package]]
+name = "inf-plan"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b13c451106c65299ed178d6388548a212c272196c941b3ec926f5f74096f92dd"
+dependencies = [
+ "inf-ast 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "inf-source"
 version = "0.1.0"
 dependencies = [
- "inf-value",
+ "inf-value 0.1.0",
+]
+
+[[package]]
+name = "inf-source"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb24d5a53f1aa79772afe6dad915a4f280ffffdf5e0a734cb4d8d39ee8665f71"
+dependencies = [
+ "inf-value 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2259,13 +2347,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "inout"
-version = "0.1.4"
+name = "inf-value"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "879f10e63c20629ecabbb64a8010319738c66a5cd0c29b02d63d272b03751d01"
-dependencies = [
- "generic-array",
-]
+checksum = "ef0be25abc975d91948831deb2755cb90b8ab6d7dbc54ce12013e9b340d0e7d7"
 
 [[package]]
 name = "interval-heap"
@@ -2720,13 +2805,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "neuron-engine"
-version = "0.1.0"
-dependencies = [
- "neuron-model",
-]
-
-[[package]]
 name = "neuron-id"
 version = "0.1.0"
 
@@ -2734,34 +2812,9 @@ version = "0.1.0"
 name = "neuron-model"
 version = "0.1.0"
 dependencies = [
- "cyber-hemera 0.3.1",
- "cyber-nox",
  "neuron-id",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "neuron-node"
-version = "0.1.0"
-dependencies = [
- "cyber-mudra",
- "cybergraph",
- "neuron-engine",
- "neuron-model",
- "neuron-rune",
-]
-
-[[package]]
-name = "neuron-rune"
-version = "0.1.0"
-dependencies = [
- "neuron-engine",
- "rune-ast",
- "rune-interp",
- "rune-lower",
- "rune-parse",
- "rune-subject",
 ]
 
 [[package]]
@@ -2904,12 +2957,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
-name = "opaque-debug"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
-
-[[package]]
 name = "openssl-probe"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2976,16 +3023,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07ba0ad7e047712414213ff67533e6dd477af0a4e1d14fb52343e53d30ea9397"
 dependencies = [
  "once_cell",
-]
-
-[[package]]
-name = "pbkdf2"
-version = "0.12.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8ed6a7761f76e3b9f92dfb0a60a6a6477c61024b775147ff0973a02653abaf2"
-dependencies = [
- "digest 0.10.7",
- "hmac",
 ]
 
 [[package]]
@@ -3107,17 +3144,6 @@ dependencies = [
  "quick-xml",
  "serde",
  "time",
-]
-
-[[package]]
-name = "poly1305"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8159bd90725d2df49889a078b54f4f79e87f1f8a8444194cdca81d38f5393abf"
-dependencies = [
- "cpufeatures 0.2.17",
- "opaque-debug",
- "universal-hash",
 ]
 
 [[package]]
@@ -3295,22 +3321,11 @@ checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
 
 [[package]]
 name = "rand"
-version = "0.8.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e058c7de0b26af77780c769414d6257830bb240f3c38477dbc2c16e5f54d6d4c"
-dependencies = [
- "libc",
- "rand_chacha 0.3.1",
- "rand_core 0.6.4",
-]
-
-[[package]]
-name = "rand"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9ef1d0d795eb7d84685bca4f72f3649f064e6641543d3a8c415898726a57b41"
 dependencies = [
- "rand_chacha 0.9.0",
+ "rand_chacha",
  "rand_core 0.9.5",
 ]
 
@@ -3320,19 +3335,9 @@ version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7f5fa3a058cd35567ef9bfa5e75732bee0f9e4c55fa90477bef2dfcdbc4be80"
 dependencies = [
- "chacha20 0.10.2",
+ "chacha20",
  "getrandom 0.4.3",
  "rand_core 0.10.1",
-]
-
-[[package]]
-name = "rand_chacha"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
-dependencies = [
- "ppv-lite86",
- "rand_core 0.6.4",
 ]
 
 [[package]]
@@ -3350,9 +3355,6 @@ name = "rand_core"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
-dependencies = [
- "getrandom 0.2.17",
-]
 
 [[package]]
 name = "rand_core"
@@ -3532,57 +3534,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rune-ast"
-version = "0.1.0"
-
-[[package]]
-name = "rune-interp"
-version = "0.1.0"
-dependencies = [
- "cyber-hemera 0.3.1",
- "rune-ast",
-]
-
-[[package]]
-name = "rune-lex"
-version = "0.1.0"
-
-[[package]]
-name = "rune-lower"
-version = "0.1.0"
-dependencies = [
- "rune-ast",
- "rune-subject",
-]
-
-[[package]]
-name = "rune-parse"
-version = "0.1.0"
-dependencies = [
- "cyber-hemera 0.3.1",
- "rune-ast",
- "rune-lex",
- "rune-parse-pure",
-]
-
-[[package]]
-name = "rune-parse-pure"
-version = "0.1.0"
-dependencies = [
- "cyber-hemera 0.3.1",
- "rune-ast",
- "rune-lex",
-]
-
-[[package]]
-name = "rune-subject"
-version = "0.1.0"
-dependencies = [
- "cyber-hemera 0.3.1",
- "rune-ast",
-]
-
-[[package]]
 name = "rustc-hash"
 version = "2.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3741,24 +3692,6 @@ dependencies = [
  "pkcs8 0.10.2",
  "subtle",
  "zeroize",
-]
-
-[[package]]
-name = "secp256k1"
-version = "0.27.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25996b82292a7a57ed3508f052cfff8640d38d32018784acd714758b43da9c8f"
-dependencies = [
- "secp256k1-sys",
-]
-
-[[package]]
-name = "secp256k1-sys"
-version = "0.8.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4473013577ec77b4ee3668179ef1186df3146e2cf2d927bd200974c6fe60fd99"
-dependencies = [
- "cc",
 ]
 
 [[package]]
@@ -4011,28 +3944,12 @@ dependencies = [
  "cyb",
  "cyber-hemera 0.3.1",
  "cyber-mudra",
- "cybergraph",
- "foculus",
+ "cybergraph 0.1.1",
+ "foculus 0.1.3",
  "neuron-model",
  "serde",
  "serde_json",
  "ureq",
-]
-
-[[package]]
-name = "soma-agent"
-version = "0.1.0"
-dependencies = [
- "cyber-hemera 0.3.1",
- "cybergraph",
- "neuron-engine",
- "neuron-id",
- "neuron-model",
- "neuron-node",
- "neuron-rune",
- "rustix",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -4101,10 +4018,25 @@ checksum = "33ae9eec00137a8eed469fb4148acd9fc6ac8c3f9b110f52cd34698c8b5bfa0e"
 
 [[package]]
 name = "strata-compute"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ab90c2503498e0fbe164faa5759939aec3a8c243e0b8ce69494100d820eca03"
+dependencies = [
+ "strata-core 0.1.0",
+]
+
+[[package]]
+name = "strata-compute"
 version = "0.1.1"
 dependencies = [
- "strata-core",
+ "strata-core 0.1.1",
 ]
+
+[[package]]
+name = "strata-core"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3624cd7fd9c8523ba12de1d41094e0b8f69bbc7fb6c1ebd44c90191f25ac548b"
 
 [[package]]
 name = "strata-core"
@@ -4112,59 +4044,130 @@ version = "0.1.1"
 
 [[package]]
 name = "strata-ext"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20ac54b5b133acd40ca636f7cce39cc2169e4299f03ee44aaf04f6eb73d5a36c"
+dependencies = [
+ "strata-core 0.1.0",
+]
+
+[[package]]
+name = "strata-ext"
 version = "0.1.1"
 dependencies = [
- "strata-core",
+ "strata-core 0.1.1",
+]
+
+[[package]]
+name = "strata-genies"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5449069eae034a5fe3ecc1ee220442072e1b5949e2993af6420f5a222b0eaa36"
+dependencies = [
+ "strata-core 0.1.0",
+ "strata-ext 0.1.0",
+ "strata-proof 0.1.0",
 ]
 
 [[package]]
 name = "strata-genies"
 version = "0.1.1"
 dependencies = [
- "strata-core",
- "strata-ext",
- "strata-proof",
+ "strata-core 0.1.1",
+ "strata-ext 0.1.1",
+ "strata-proof 0.1.1",
+]
+
+[[package]]
+name = "strata-jali"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfd7d6fd536266ff058f55cd21801faee54b48cb22cec70696a16bd083b5e495"
+dependencies = [
+ "strata-core 0.1.0",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "strata-jali"
 version = "0.1.1"
 dependencies = [
- "strata-core",
- "strata-nebu",
+ "strata-core 0.1.1",
+ "strata-nebu 0.1.1",
+]
+
+[[package]]
+name = "strata-kuro"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1c9f6022f963a205e6892ffa1136ffae7efa22f18e92f3b85a5e81f9bc973dd"
+dependencies = [
+ "strata-core 0.1.0",
+ "strata-ext 0.1.0",
+ "strata-proof 0.1.0",
 ]
 
 [[package]]
 name = "strata-kuro"
 version = "0.1.1"
 dependencies = [
- "strata-core",
- "strata-ext",
- "strata-proof",
+ "strata-core 0.1.1",
+ "strata-ext 0.1.1",
+ "strata-proof 0.1.1",
 ]
 
 [[package]]
 name = "strata-nebu"
 version = "0.1.1"
 dependencies = [
- "strata-compute",
- "strata-core",
- "strata-ext",
- "strata-proof",
+ "strata-compute 0.1.1",
+ "strata-core 0.1.1",
+ "strata-ext 0.1.1",
+ "strata-proof 0.1.1",
+]
+
+[[package]]
+name = "strata-nebu"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4a881cdb3622cd6b38333246f516c70e3e5c63d2bc0c0e48344d8e7b0392766"
+dependencies = [
+ "strata-compute 0.1.0",
+ "strata-core 0.1.0",
+ "strata-ext 0.1.0",
+ "strata-proof 0.1.0",
+]
+
+[[package]]
+name = "strata-proof"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76a6a73314f271ae56d4d27574c3489e801870cd70cf8c40db37415d511e90e8"
+dependencies = [
+ "strata-core 0.1.0",
 ]
 
 [[package]]
 name = "strata-proof"
 version = "0.1.1"
 dependencies = [
- "strata-core",
+ "strata-core 0.1.1",
+]
+
+[[package]]
+name = "strata-trop"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e16c1e90e552f986a4b3e60260ac4444428e272b4d698fc83b17e9776d2f6c1a"
+dependencies = [
+ "strata-core 0.1.0",
 ]
 
 [[package]]
 name = "strata-trop"
 version = "0.1.1"
 dependencies = [
- "strata-core",
+ "strata-core 0.1.1",
 ]
 
 [[package]]
@@ -4243,6 +4246,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "tade"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+]
+
+[[package]]
 name = "tagptr"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4255,7 +4265,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
@@ -4631,15 +4641,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
-name = "unicode-normalization"
-version = "0.1.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fd4f6878c9cb28d874b009da9e8d183b5abc80117c40bbd187a1fde336be6e8"
-dependencies = [
- "tinyvec",
-]
-
-[[package]]
 name = "unicode-segmentation"
 version = "1.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4650,16 +4651,6 @@ name = "unicode-xid"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
-
-[[package]]
-name = "universal-hash"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc1de2c688dc15305988b563c3854064043356019f97a4b46276fe734c4f07ea"
-dependencies = [
- "crypto-common 0.1.6",
- "subtle",
-]
 
 [[package]]
 name = "untrusted"
@@ -5409,12 +5400,24 @@ dependencies = [
 
 [[package]]
 name = "zheng"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b635af047c664a4abe9f33607c1775c4603dd82a3281b460b3a425e5ba03d040"
+dependencies = [
+ "cyber-hemera 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cyber-lens 0.1.3",
+ "cyber-nox 0.1.2",
+ "strata-nebu 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "zheng"
 version = "0.4.0"
 dependencies = [
  "cyber-hemera 0.3.1",
- "cyber-lens",
- "cyber-nox",
- "strata-nebu",
+ "cyber-lens 0.2.0",
+ "cyber-nox 0.3.0",
+ "strata-nebu 0.1.1",
 ]
 
 [[package]]
