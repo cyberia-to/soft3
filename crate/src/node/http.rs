@@ -26,10 +26,12 @@ pub(super) struct Response {
 }
 
 impl Response {
+    /// Inspect a response body without a socket — requests.rs's submit() tests.
     #[cfg(test)]
     pub(super) fn json(&self) -> serde_json::Value {
         serde_json::from_slice(&self.body).unwrap()
     }
+
     pub fn text(body: impl Into<String>) -> Self {
         Self::bytes("text/plain; charset=utf-8", body.into().into_bytes())
     }
@@ -45,6 +47,12 @@ impl Response {
     fn write(self, stream: &mut TcpStream) -> io::Result<()> {
         write!(stream, "HTTP/1.1 {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\n\r\n", self.status, self.content_type, self.body.len())?;
         stream.write_all(&self.body)
+    }
+
+    /// Inspect a response without a socket — routes.rs's dispatch tests.
+    #[cfg(test)]
+    pub(super) fn parts(&self) -> (&str, &str, &[u8]) {
+        (self.status, self.content_type, &self.body)
     }
 }
 
