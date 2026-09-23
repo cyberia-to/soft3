@@ -15,7 +15,7 @@ instances, explicit proof profiles and independently placed workers.
 | specification | scope |
 |---|---|
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
-| [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
+| [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds, legacy import and legacy-key claims |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |
 | [languages](languages.md) | language contracts |
