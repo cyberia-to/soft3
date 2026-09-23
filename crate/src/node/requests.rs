@@ -268,9 +268,16 @@ mod tests {
     /// A fresh `Node` in a scratch home directory under the OS temp dir,
     /// uniquely named per call so parallel tests never collide.
     struct TestNode {
-        #[allow(dead_code)]
-        home: PathBuf,
         node: Node,
+        _home: TestHome,
+    }
+
+    struct TestHome(PathBuf);
+
+    impl Drop for TestHome {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
     }
 
     fn test_node() -> TestNode {
@@ -284,8 +291,9 @@ mod tests {
             "soft3-requests-test-{}-{nanos}-{id}",
             std::process::id()
         ));
-        let node = Node::open(home.clone(), "test-moniker".into()).expect("node opens");
-        TestNode { home, node }
+        let home = TestHome(home);
+        let node = Node::open(home.0.clone(), "test-moniker".into()).expect("node opens");
+        TestNode { node, _home: home }
     }
 
     fn post(body: &[u8]) -> Request {
