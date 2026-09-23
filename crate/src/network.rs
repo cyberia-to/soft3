@@ -245,4 +245,72 @@ mod tests {
         assert!(Network::parse("bostrom").is_none());
         assert!(Network::is_bootloader_name("space-pussy"));
     }
+
+    #[test]
+    fn every_spacepussy_test_alias_parses() {
+        for alias in [
+            "spacepussy-test",
+            "space-pussy-test",
+            "spacepussy_test",
+            "sptest",
+            "soft3-test",
+            "soft3",
+            "test",
+            "default",
+        ] {
+            assert_eq!(
+                Network::parse(alias),
+                Some(Network::SpacePussyTest),
+                "alias {alias:?} should parse"
+            );
+        }
+    }
+
+    #[test]
+    fn parse_is_case_insensitive_and_trims_whitespace() {
+        assert_eq!(Network::parse("SPACEPUSSY-TEST"), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("  soft3  "), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("  SpTest  "), Some(Network::SpacePussyTest));
+    }
+
+    #[test]
+    fn parse_rejects_unknown_names() {
+        assert!(Network::parse("").is_none());
+        assert!(Network::parse("mainnet").is_none());
+        assert!(Network::parse("spacepussy-test-typo").is_none());
+    }
+
+    #[test]
+    fn every_bootloader_name_is_recognized_and_rejected() {
+        for name in ["space-pussy", "spacepussy", "pussy", "sp", "bostrom", "boot"] {
+            assert!(Network::is_bootloader_name(name), "{name:?} should be a bootloader name");
+            assert!(Network::parse(name).is_none(), "{name:?} should not parse as a soft3 network");
+        }
+        assert!(!Network::is_bootloader_name("soft3"));
+    }
+
+    #[test]
+    fn is_bootloader_name_is_case_insensitive_and_trims_whitespace() {
+        assert!(Network::is_bootloader_name("  BOSTROM  "));
+        assert!(Network::is_bootloader_name("Space-Pussy"));
+    }
+
+    #[test]
+    fn accessors_describe_spacepussy_test() {
+        let n = Network::SpacePussyTest;
+        assert_eq!(n.chain_id(), "spacepussy-test");
+        assert_eq!(n.bech32_prefix(), "pussy");
+        assert_eq!(n.denom(), "testpussy");
+        assert_eq!(n.rpc(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.lcd(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.index(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.websocket(), "wss://cyb.ai/spacepussy-test/ws");
+        assert_eq!(n.local_bind(), "127.0.0.1:7780");
+        assert_eq!(n.role(), "soft3 chaosnet (product default)");
+    }
+
+    #[test]
+    fn display_matches_chain_id() {
+        assert_eq!(Network::SpacePussyTest.to_string(), "spacepussy-test");
+    }
 }
