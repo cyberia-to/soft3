@@ -61,6 +61,111 @@ fn identity(header: Option<&str>, body: Option<&str>) -> Result<Option<[u8; 32]>
     Ok(Some(hash32(&input)))
 }
 
+#[cfg(test)]
+mod identity_tests {
+    use super::*;
+
+    fn ok(r: Result<Option<[u8; 32]>, Error>) -> Option<[u8; 32]> {
+        match r {
+            Ok(v) => v,
+            Err(e) => panic!("expected Ok, got error: {}", e.message),
+        }
+    }
+
+    fn err_message(r: Result<Option<[u8; 32]>, Error>) -> String {
+        match r {
+            Err(e) => e.message,
+            Ok(_) => panic!("expected an error, got Ok"),
+        }
+    }
+
+    #[test]
+    fn absent_header_and_body_yields_no_identity() {
+        assert_eq!(ok(identity(None, None)), None);
+    }
+
+    #[test]
+    fn header_alone_is_accepted() {
+        assert!(ok(identity(Some("req-1"), None)).is_some());
+    }
+
+    #[test]
+    fn body_alone_is_accepted() {
+        assert!(ok(identity(None, Some("req-1"))).is_some());
+    }
+
+    #[test]
+    fn matching_header_and_body_are_accepted() {
+        assert!(ok(identity(Some("req-1"), Some("req-1"))).is_some());
+    }
+
+    #[test]
+    fn mismatched_header_and_body_are_rejected() {
+        let message = err_message(identity(Some("req-1"), Some("req-2")));
+        assert_eq!(message, "Idempotency-Key and request_id must match");
+    }
+
+    #[test]
+    fn empty_identity_is_rejected() {
+        let message = err_message(identity(Some(""), None));
+        assert!(message.contains("1..128 visible ASCII bytes"));
+    }
+
+    #[test]
+    fn identity_over_128_bytes_is_rejected() {
+        let long = "a".repeat(129);
+        let message = err_message(identity(Some(&long), None));
+        assert!(message.contains("1..128 visible ASCII bytes"));
+    }
+
+    #[test]
+    fn identity_at_128_bytes_is_accepted() {
+        let boundary = "a".repeat(128);
+        assert!(ok(identity(Some(&boundary), None)).is_some());
+    }
+
+    #[test]
+    fn non_ascii_graphic_identity_is_rejected() {
+        assert!(err_message(identity(Some("req 1"), None)).contains("1..128 visible ASCII bytes"));
+        assert!(err_message(identity(Some("req\t1"), None)).contains("1..128 visible ASCII bytes"));
+        assert!(err_message(identity(Some("naïve"), None)).contains("1..128 visible ASCII bytes"));
+    }
+
+    #[test]
+    fn sixty_four_hex_digits_pass_through_as_the_raw_key() {
+        let hex_id = "ab".repeat(32);
+        assert_eq!(hex_id.len(), 64);
+        let id = ok(identity(Some(&hex_id), None)).unwrap();
+        assert_eq!(id, key32(&hex_id));
+    }
+
+    #[test]
+    fn sixty_four_char_non_hex_identity_is_hashed_not_treated_as_a_key() {
+        let non_hex = "z".repeat(64);
+        let id = ok(identity(Some(&non_hex), None)).unwrap();
+        assert_ne!(id, key32(&non_hex));
+        let mut input = b"soft3/native-request/v1\0".to_vec();
+        input.extend_from_slice(non_hex.as_bytes());
+        assert_eq!(id, hash32(&input));
+    }
+
+    #[test]
+    fn arbitrary_identity_is_domain_separated_hashed() {
+        let raw = "client-chosen-id";
+        let id = ok(identity(Some(raw), None)).unwrap();
+        let mut input = b"soft3/native-request/v1\0".to_vec();
+        input.extend_from_slice(raw.as_bytes());
+        assert_eq!(id, hash32(&input));
+    }
+
+    #[test]
+    fn distinct_identities_hash_to_distinct_keys() {
+        let a = ok(identity(Some("client-a"), None)).unwrap();
+        let b = ok(identity(Some("client-b"), None)).unwrap();
+        assert_ne!(a, b);
+    }
+}
+
 pub(super) fn submit(node: &mut Node, request: &Request, path: &str) -> Result<Response, Error> {
     let header = request.idempotency_key.as_deref();
     let (request_id, operation, json) = match path {

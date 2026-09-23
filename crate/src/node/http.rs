@@ -238,3 +238,132 @@ fn read_request(stream: &mut impl Read) -> Result<Request, Error> {
         body: raw.split_off(header_end),
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn ok(raw: &[u8]) -> Request {
+        read_request(&mut &raw[..])
+            .unwrap_or_else(|e| panic!("expected ok, got {} {}", e.status, e.message))
+    }
+
+    fn err(raw: &[u8]) -> Error {
+        read_request(&mut &raw[..]).err().expect("expected error")
+    }
+
+    #[test]
+    fn parses_simple_get() {
+        let req = ok(b"GET /v1/link HTTP/1.1\r\nHost: x\r\n\r\n");
+        assert_eq!(req.method, "GET");
+        assert_eq!(req.path, "/v1/link");
+        assert_eq!(req.query, "");
+        assert!(req.idempotency_key.is_none());
+        assert!(req.body.is_empty());
+    }
+
+    #[test]
+    fn splits_path_and_query() {
+        let req = ok(b"GET /v2/history?after=5&limit=10 HTTP/1.1\r\n\r\n");
+        assert_eq!(req.path, "/v2/history");
+        assert_eq!(req.query, "after=5&limit=10");
+    }
+
+    #[test]
+    fn parses_post_with_body() {
+        let raw = b"POST /v1/link HTTP/1.1\r\nContent-Length: 5\r\n\r\nhello";
+        let req = ok(raw);
+        assert_eq!(req.method, "POST");
+        assert_eq!(req.body, b"hello");
+    }
+
+    #[test]
+    fn captures_idempotency_key() {
+        let raw = b"POST /v1/pay HTTP/1.1\r\nContent-Length: 0\r\nIdempotency-Key: abc-123\r\n\r\n";
+        let req = ok(raw);
+        assert_eq!(req.idempotency_key.as_deref(), Some("abc-123"));
+    }
+
+    #[test]
+    fn post_without_content_length_is_rejected() {
+        let e = err(b"POST /v1/link HTTP/1.1\r\n\r\n");
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_unsupported_http_version() {
+        let e = err(b"GET / HTTP/2.0\r\n\r\n");
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_lowercase_method() {
+        let e = err(b"get / HTTP/1.1\r\n\r\n");
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_extra_token_in_request_line() {
+        let e = err(b"GET / HTTP/1.1 extra\r\n\r\n");
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_non_graphic_byte_in_target() {
+        let e = err(b"GET /a\tb HTTP/1.1\r\n\r\n");
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_duplicate_content_length() {
+        let raw = b"POST / HTTP/1.1\r\nContent-Length: 0\r\nContent-Length: 0\r\n\r\n";
+        let e = err(raw);
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_duplicate_idempotency_key() {
+        let raw =
+            b"POST / HTTP/1.1\r\nContent-Length: 0\r\nIdempotency-Key: a\r\nIdempotency-Key: b\r\n\r\n";
+        let e = err(raw);
+        assert_eq!(e.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn rejects_transfer_encoding() {
+        let raw = b"POST / HTTP/1.1\r\nTransfer-Encoding: chunked\r\nContent-Length: 0\r\n\r\n";
+        let e = err(raw);
+        assert_eq!(
+            e.message,
+            "transfer encoding is unsupported; use Content-Length"
+        );
+    }
+
+    #[test]
+    fn rejects_content_length_over_max_body() {
+        let raw = format!("POST / HTTP/1.1\r\nContent-Length: {}\r\n\r\n", MAX_BODY + 1);
+        let e = err(raw.as_bytes());
+        assert_eq!(e.status, "413 Content Too Large");
+    }
+
+    #[test]
+    fn rejects_unexpected_bytes_after_body() {
+        let raw = b"POST / HTTP/1.1\r\nContent-Length: 2\r\n\r\nhello";
+        let e = err(raw);
+        assert_eq!(e.message, "unexpected bytes after request body");
+    }
+
+    #[test]
+    fn rejects_incomplete_headers() {
+        let e = err(b"GET / HTTP/1.1\r\n");
+        assert_eq!(e.message, "incomplete request headers");
+    }
+
+    #[test]
+    fn rejects_headers_exceeding_max_size() {
+        let mut raw = b"GET / HTTP/1.1\r\n".to_vec();
+        raw.extend(std::iter::repeat_n(b'a', MAX_HEADERS + 10));
+        let e = err(&raw);
+        assert_eq!(e.message, "headers exceed 64 KiB");
+    }
+}

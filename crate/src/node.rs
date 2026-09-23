@@ -209,3 +209,70 @@ pub fn run(home: PathBuf, bind: &str, moniker: &str) -> io::Result<()> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod legacy_guard_tests {
+    use super::*;
+
+    fn temp_home(label: &str) -> PathBuf {
+        let mut dir = std::env::temp_dir();
+        dir.push(format!(
+            "soft3-node-open-test-{label}-{}-{}",
+            std::process::id(),
+            now_unix()
+        ));
+        dir
+    }
+
+    #[test]
+    fn open_rejects_legacy_log_without_database() {
+        let home = temp_home("legacy-only");
+        std::fs::create_dir_all(&home).unwrap();
+        std::fs::write(home.join("log"), b"legacy-signal-log").unwrap();
+
+        let error = match Node::open(home.clone(), "test".into()) {
+            Err(error) => error,
+            Ok(_) => panic!("expected the legacy-migration guard to reject this home"),
+        };
+        assert_eq!(
+            error.to_string(),
+            "legacy log requires cyber storage import-legacy"
+        );
+
+        std::fs::remove_dir_all(&home).ok();
+    }
+
+    #[test]
+    fn open_skips_legacy_guard_once_database_exists() {
+        let home = temp_home("legacy-and-db");
+        std::fs::create_dir_all(&home).unwrap();
+        std::fs::write(home.join("log"), b"legacy-signal-log").unwrap();
+        std::fs::create_dir_all(home.join("bbg")).unwrap();
+
+        // The database directory already exists, so the migration guard must not
+        // fire; the failure past it comes from genesis load, not the guard.
+        let error = match Node::open(home.clone(), "test".into()) {
+            Err(error) => error,
+            Ok(_) => panic!("expected genesis load to fail on a database with no genesis.json"),
+        };
+        assert_ne!(
+            error.to_string(),
+            "legacy log requires cyber storage import-legacy"
+        );
+
+        std::fs::remove_dir_all(&home).ok();
+    }
+
+    #[test]
+    fn open_succeeds_on_a_fresh_home_without_a_legacy_log() {
+        let home = temp_home("fresh");
+
+        let node = match Node::open(home.clone(), "test".into()) {
+            Ok(node) => node,
+            Err(error) => panic!("expected a fresh home to open cleanly: {error}"),
+        };
+        assert_eq!(node.height(), 0);
+
+        std::fs::remove_dir_all(&home).ok();
+    }
+}
