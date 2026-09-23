@@ -26,6 +26,12 @@ pub(super) struct Response {
 }
 
 impl Response {
+    /// Inspect a response body without a socket — requests.rs's submit() tests.
+    #[cfg(test)]
+    pub(super) fn json(&self) -> serde_json::Value {
+        serde_json::from_slice(&self.body).unwrap()
+    }
+
     pub fn text(body: impl Into<String>) -> Self {
         Self::bytes("text/plain; charset=utf-8", body.into().into_bytes())
     }
