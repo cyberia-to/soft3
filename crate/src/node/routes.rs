@@ -350,3 +350,81 @@ mod tests {
         assert_eq!(response.parts().0, "200 OK");
     }
 }
+
+#[cfg(test)]
+mod parameter_tests {
+    use super::*;
+
+    fn ok(r: Result<Option<u64>, Error>) -> Option<u64> {
+        match r {
+            Ok(v) => v,
+            Err(e) => panic!("expected Ok, got error: {}", e.message),
+        }
+    }
+
+    fn err_message(r: Result<Option<u64>, Error>) -> String {
+        match r {
+            Err(e) => e.message,
+            Ok(v) => panic!("expected an error, got Ok({v:?})"),
+        }
+    }
+
+    #[test]
+    fn empty_query_yields_none() {
+        assert_eq!(ok(parameter("", "limit")), None);
+    }
+
+    #[test]
+    fn absent_key_yields_none() {
+        assert_eq!(ok(parameter("from=1&before=2", "limit")), None);
+    }
+
+    #[test]
+    fn present_key_is_parsed() {
+        assert_eq!(ok(parameter("limit=50", "limit")), Some(50));
+    }
+
+    #[test]
+    fn key_among_others_is_found() {
+        assert_eq!(ok(parameter("from=1&limit=50&before=2", "limit")), Some(50));
+    }
+
+    #[test]
+    fn duplicate_key_is_rejected() {
+        let message = err_message(parameter("limit=1&limit=2", "limit"));
+        assert_eq!(message, "duplicate limit");
+    }
+
+    #[test]
+    fn non_numeric_value_is_rejected() {
+        let message = err_message(parameter("limit=abc", "limit"));
+        assert_eq!(message, "invalid limit");
+    }
+
+    #[test]
+    fn empty_value_is_rejected() {
+        let message = err_message(parameter("limit=", "limit"));
+        assert_eq!(message, "invalid limit");
+    }
+
+    #[test]
+    fn negative_value_is_rejected() {
+        let message = err_message(parameter("limit=-1", "limit"));
+        assert_eq!(message, "invalid limit");
+    }
+
+    #[test]
+    fn key_without_equals_is_ignored() {
+        assert_eq!(ok(parameter("flag&limit=7", "limit")), Some(7));
+    }
+
+    #[test]
+    fn unrelated_key_with_same_prefix_does_not_match() {
+        assert_eq!(ok(parameter("limits=99", "limit")), None);
+    }
+
+    #[test]
+    fn zero_is_a_valid_value() {
+        assert_eq!(ok(parameter("from=0", "from")), Some(0));
+    }
+}
