@@ -152,3 +152,160 @@ fn frame_receipt(receipt: &Receipt) -> Response {
         hex(&receipt.root), receipt.signals, receipt.supply, receipt.weight, receipt.timestamp,
     ))
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    use super::*;
+
+    /// A fresh `Node` in a scratch home directory under the OS temp dir,
+    /// uniquely named per call so parallel tests never collide.
+    struct TestNode {
+        #[allow(dead_code)]
+        home: PathBuf,
+        node: Node,
+    }
+
+    fn test_node() -> TestNode {
+        static COUNTER: AtomicU64 = AtomicU64::new(0);
+        let id = COUNTER.fetch_add(1, Ordering::Relaxed);
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let home = std::env::temp_dir().join(format!(
+            "soft3-requests-test-{}-{nanos}-{id}",
+            std::process::id()
+        ));
+        let node = Node::open(home.clone(), "test-moniker".into()).expect("node opens");
+        TestNode { home, node }
+    }
+
+    fn post(body: &[u8]) -> Request {
+        Request {
+            method: "POST".into(),
+            path: String::new(),
+            query: String::new(),
+            idempotency_key: None,
+            body: body.to_vec(),
+        }
+    }
+
+    fn post_with_key(key: &str, body: &[u8]) -> Request {
+        Request {
+            method: "POST".into(),
+            path: String::new(),
+            query: String::new(),
+            idempotency_key: Some(key.into()),
+            body: body.to_vec(),
+        }
+    }
+
+    #[test]
+    fn link_dispatches_and_returns_a_receipt() {
+        let mut t = test_node();
+        let request = post(br#"{"neuron":"1","from":"2","to":"3"}"#);
+        let response = submit(&mut t.node, &request, "/v1/link").expect("accepted");
+        let value = response.json();
+        assert_eq!(value["applied"], 1);
+        assert_eq!(value["request_id"].as_str().unwrap().len(), 64);
+    }
+
+    #[test]
+    fn link_defaults_token_and_amount_when_omitted() {
+        let mut t = test_node();
+        let request = post(br#"{"neuron":"1","from":"2","to":"3"}"#);
+        let response = submit(&mut t.node, &request, "/v1/link").expect("accepted");
+        // token defaults to "0", amount to 1 (default_token/default_amount);
+        // acceptance alone (no deserialize error) proves both defaults filled in.
+        assert_eq!(response.json()["applied"], 1);
+    }
+
+    #[test]
+    fn link_rejects_an_unknown_field() {
+        let mut t = test_node();
+        let request = post(br#"{"neuron":"1","from":"2","to":"3","bogus":true}"#);
+        let error = submit(&mut t.node, &request, "/v1/link").unwrap_err();
+        assert_eq!(error.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn pay_rejects_zero_amount() {
+        let mut t = test_node();
+        let request = post(br#"{"neuron":"1","to":"2","amount":0}"#);
+        let error = submit(&mut t.node, &request, "/v1/pay").unwrap_err();
+        assert!(
+            error.message.contains("zero payment or insufficient funds"),
+            "{}",
+            error.message
+        );
+    }
+
+    #[test]
+    fn pay_rejects_an_unfunded_sender() {
+        let mut t = test_node();
+        let request = post(br#"{"neuron":"1","to":"2","amount":5}"#);
+        let error = submit(&mut t.node, &request, "/v1/pay").unwrap_err();
+        assert!(
+            error.message.contains("zero payment or insufficient funds"),
+            "{}",
+            error.message
+        );
+    }
+
+    #[test]
+    fn frame_v1_rejects_an_empty_batch() {
+        let mut t = test_node();
+        let request = post(b"");
+        let error = submit(&mut t.node, &request, "/v1/frame").unwrap_err();
+        assert!(
+            error.message.contains("1..64 events"),
+            "{}",
+            error.message
+        );
+    }
+
+    #[test]
+    fn frame_v1_rejects_unparseable_bytes() {
+        let mut t = test_node();
+        let request = post(b"not a tade frame");
+        let error = submit(&mut t.node, &request, "/v1/frame").unwrap_err();
+        assert_eq!(error.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn frame_v2_rejects_unparseable_bytes() {
+        let mut t = test_node();
+        let request = post(b"not a signal");
+        let error = submit(&mut t.node, &request, "/v2/frame").unwrap_err();
+        assert_eq!(error.status, "400 Bad Request");
+    }
+
+    #[test]
+    fn unsupported_route_is_rejected() {
+        let mut t = test_node();
+        let request = post(b"{}");
+        let error = submit(&mut t.node, &request, "/v1/nope").unwrap_err();
+        assert_eq!(error.message, "unsupported submission route");
+    }
+
+    #[test]
+    fn idempotency_key_becomes_the_receipts_request_id() {
+        let mut t = test_node();
+        let request = post_with_key("my-client-key", br#"{"neuron":"1","from":"2","to":"3"}"#);
+        let response = submit(&mut t.node, &request, "/v1/link").expect("accepted");
+        let expected = identity(Some("my-client-key"), None).unwrap().unwrap();
+        assert_eq!(response.json()["request_id"], hex(&expected));
+    }
+
+    #[test]
+    fn a_64_hex_idempotency_key_passes_through_as_the_request_id() {
+        let mut t = test_node();
+        let key = "a".repeat(64);
+        let request = post_with_key(&key, br#"{"neuron":"1","from":"2","to":"3"}"#);
+        let response = submit(&mut t.node, &request, "/v1/link").expect("accepted");
+        assert_eq!(response.json()["request_id"], key);
+    }
+}
