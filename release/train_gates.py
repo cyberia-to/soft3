@@ -70,7 +70,8 @@ def source_gates(gates, directory, sources, checkouts, component):
         try:
             dependency = tomllib.loads(contract.read_text())["soft3"]
             actual = tomllib.loads((directory / "soft3/crate/Cargo.toml").read_text())["package"]["version"]
-            valid = dependency["revision"] == soft3["revision"] and dependency["version"] == actual
+            valid = (dependency["revision"] == soft3["revision"] == sources["manager_revision"] and
+                     dependency["version"] == actual and dependency["repository"] == PRODUCTS["soft3"][0])
             gates.record("soft3-dependency", "green" if valid else "red", expected=dependency,
                          actual={"version": actual, "revision": soft3["revision"]})
         except (OSError, KeyError, tomllib.TOMLDecodeError) as error:
@@ -125,7 +126,8 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
     if stack:
         # The stack owns the hard gates; products consume this verdict and source set.
         owners = {"hemera": "rs", "bbg": "rs", "lens": ".", "nox": "rs", "zheng": "rs",
-                  "cybergraph": ".", "foculus": ".", "tru": "rs", "tok": "rs", "mudra": ".", "vault": "."}
+                  "cybergraph": ".", "foculus": ".", "tru": "rs", "tok": "rs", "mudra": ".", "vault": ".",
+                  "neuron": ".", "file": ".", "radio": "."}
         for owner, path in owners.items():
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)

@@ -40,10 +40,10 @@ sets, altered artifacts, incomplete inventories and missing platform receipts.
 | owner | gates |
 |---|---|
 | soft3 | `origin-checkouts`, `phase1-pins`, `package-resolution`, `source-inputs-unchanged` |
-| soft3 | `stack-{hemera,bbg,lens,nox,zheng,cybergraph,foculus,tru,tok,mudra,vault}`: `cargo test --locked` in each component |
+| soft3 | `stack-{hemera,bbg,lens,nox,zheng,cybergraph,foculus,tru,tok,mudra,vault,neuron,file,radio}`: `cargo test --locked` in each component |
 | soft3 | `conformance-snapshot`: `cargo conformance --check`; snapshot validation must be implemented for this gate to pass |
 | soft3 | `soft3-tests`, `soft3-release`: locked Cargo tests/build; `node-status`: fresh-home boot and HTTP status |
-| cyber, cyb | `soft3-dependency`: source revision and version match the pinned stack contract |
+| cyber, cyb | `soft3-dependency`: source revision, qualifier revision and version match the pinned stack contract |
 | cyber | `cyber-tests`, `cyber-release`: locked tests and `nu scripts/release.nu --locked-sources`; `optica-build`, `protocol-graph` |
 | cyb | `cyb-check`, `cyb-tests`, `cyb-fleet`: locked check/tests and `make fleet`; platform build gates |
 | cyb macOS | `wasm-toolchain`, `trunk-tool`, `cyb-dmg`: install build tools and `make dmg` |

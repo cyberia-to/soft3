@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates
+from train_gates import Gates, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -101,6 +101,23 @@ class ReleaseTests(unittest.TestCase):
         with patch("train_sources.command", return_value="ref: refs/heads/main\tHEAD\n" + "a" * 40 + "\tHEAD"):
             source = resolve({"name": "test", "repo": "cyberia-to/test", "rev": "b" * 40})
         self.assertFalse(source["pin_matches"])
+
+    def test_qualifier_revision_must_match_consumed_soft3(self):
+        (self.root / "cyber/release").mkdir(parents=True)
+        (self.root / "soft3/crate").mkdir(parents=True)
+        (self.root / "soft3/crate/Cargo.toml").write_text('[package]\nversion = "0.10.0"\n')
+        revision = "c" * 40
+        (self.root / "cyber/release/soft3.toml").write_text(
+            f'[soft3]\nrepository = "cyberia-to/soft3"\nversion = "0.10.0"\nrevision = "{revision}"\n')
+        self.sources["repositories"].append({"name": "soft3", "revision": revision})
+        self.sources["phase1_sha256"] = "fixture"
+        gates = Gates(self.root, self.sources, "stack")
+        source_gates(gates, self.root, self.sources, [], "cyber")
+        self.assertEqual(gates.rows[-1]["name"], "soft3-dependency")
+        self.assertEqual(gates.rows[-1]["result"], "red")
+        self.sources["manager_revision"] = revision
+        source_gates(gates, self.root, self.sources, [], "cyber")
+        self.assertEqual(gates.rows[-1]["result"], "green")
 
     def test_warning_is_red_even_with_zero_exit(self):
         gates = Gates(self.root, self.sources, "stack")
