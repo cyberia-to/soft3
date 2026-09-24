@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network; layer = the rung on soft3.org/layers (0 substrate … 5 network), absent = outside phase 1;
+# name = the word used everywhere; kind = crate | product | network; layer = the rung on soft3.org/layers (0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body), absent = outside phase 1;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -209,7 +209,7 @@ kind = "crate"
 repo = "file"
 verb = "name"
 facet = "mass"
-layer = 4
+layer = 5
 phase = "1"
 state = "local"
 
@@ -219,7 +219,7 @@ kind = "crate"
 repo = "spark"
 verb = "open"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "local"
 
@@ -229,7 +229,7 @@ kind = "crate"
 repo = "prysm"
 verb = "paint"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -239,7 +239,7 @@ kind = "crate"
 repo = "mir"
 verb = "render"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -249,7 +249,7 @@ kind = "crate"
 repo = "rune"
 verb = "eval"
 facet = "word"
-layer = 4
+layer = 5
 phase = "1"
 state = "published"
 
@@ -259,7 +259,7 @@ kind = "crate"
 repo = "evy"
 verb = "draw"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "local"
 
@@ -269,7 +269,7 @@ kind = "crate"
 repo = "soma"
 verb = "think"
 facet = "life"
-layer = 4
+layer = 5
 phase = "1"
 state = "local"
 
@@ -279,7 +279,7 @@ kind = "crate"
 repo = "glia"
 verb = "infer"
 facet = "work"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -289,7 +289,7 @@ kind = "crate"
 repo = "honeycrisp"
 verb = "accelerate"
 facet = "form"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -299,7 +299,7 @@ kind = "crate"
 repo = "nu"
 verb = "console"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "local"
 
@@ -309,7 +309,7 @@ kind = "product"
 repo = "optica"
 verb = "publish"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -319,7 +319,7 @@ kind = "product"
 repo = "cyb"
 verb = "embody"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -329,7 +329,7 @@ kind = "product"
 repo = "cyb"
 verb = "embody"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "live"
 
@@ -339,7 +339,7 @@ kind = "product"
 repo = "true-cyber"
 verb = "embody"
 facet = "play"
-layer = 4
+layer = 5
 phase = "1"
 state = "published"
 
@@ -349,7 +349,7 @@ kind = "network"
 repo = "bostrom"
 verb = "root"
 facet = "play"
-layer = 5
+layer = 4
 phase = "1"
 state = "reborn 2026-11-05"
 
@@ -359,7 +359,7 @@ kind = "network"
 repo = "space-pussy"
 verb = "root"
 facet = "play"
-layer = 5
+layer = 4
 phase = "1"
 state = "reborn 2026-11-05"
 
