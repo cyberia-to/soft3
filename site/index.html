@@ -2578,7 +2578,7 @@
                 const y =
                     (b.y + Math.cos(t * b.speed * 0.8 + b.phase) * 0.08) * H;
                 const s = b.s * 8;
-                const flap = 0.45 + 0.55 * Math.sin(t * 8 * b.speed + b.phase);
+                const flap = Math.abs(0.45 + 0.55 * Math.sin(t * 8 * b.speed + b.phase));
                 const hue = b.hue + organHue * 0.5 + t * 20;
                 ctx.save();
                 ctx.translate(x, y);
