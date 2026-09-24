@@ -14,7 +14,8 @@ same interfaces.
 [Architecture](../../specs/storage.md) ·
 [[bbg/specs/content-storage|BBG contract]] ·
 [Identity decision](identity.md) · [Acceptance matrix](acceptance.md) ·
-[Baseline audit](../../audit/file-storage-2026-09-24/README.md)
+[Baseline audit](../../audit/file-storage-2026-09-24/README.md) ·
+[Local content implementation](../../audit/storage/content-2026-09-24.md)
 
 ## committed direction
 
@@ -27,9 +28,9 @@ same interfaces.
   library or revision cap.
 - Keep private persistence separate from public graph disclosure.
 
-The algorithm/input definition of particle is pending S1. The interfaces in
-the specs are behavioral contracts; concrete API signatures are pending S2.
-Runtime conformity is pending the work packages below. Existing backend
+The algorithm/input definition of particle is pending S1. The local BBG and
+Cybergraph APIs implement the first S2/S3 slice with existing Blob identity;
+FS, transport, replication and reclamation interfaces remain open. Existing backend
 reliability work in [[bbg/roadmap/storage-reliability]] remains a prerequisite
 for declaring the node reliable.
 
@@ -69,12 +70,12 @@ its exit criteria. Repository names identify implementation ownership.
 |---|---|---|---|---|
 | S0 | soft3, bbg | documented | — | Shared ownership and local persistence contracts, navigable indexes and this tracker; runtime qualification remains separate |
 | S1 | hemera, file, lens, nox; soft3 coordinates | decision required | S0 | Close [identity questions](identity.md); one normative construction, reference implementation and cross-component vectors including authenticated ranges |
-| S2 | fs, bbg, cybergraph, foculus, radio | planned | S0 | Specify contextual name/path resolution, namespace patches, source/sink, coverage, publication, retention and receipt interfaces; ownership/dependency map; no network inside storage transactions or Radio-owned persistence |
-| S3 | bbg, cybergraph | planned | S1, S2; existing BBG reliability gates | Streamed parts, paged descriptors/coverage, crash-safe seal and bounded atomic publication on both profiles; A1–A4 |
-| S4 | bbg, cybergraph | planned | S3 | Durable retention roots, active read protection, resumable GC, history traversal and device migration; A3, A5, A8 |
+| S2 | fs, bbg, cybergraph, foculus, radio | implementing | S0 | Specify contextual name/path resolution, namespace patches, source/sink, coverage, publication, retention and receipt interfaces; ownership/dependency map; no network inside storage transactions or Radio-owned persistence |
+| S3 | bbg, cybergraph | implementing | S1, S2; existing BBG reliability gates | Streamed parts, paged descriptors/coverage, crash-safe seal and bounded atomic publication on both profiles; A1–A4 |
+| S4 | bbg, cybergraph | implementing | S3 | Durable retention roots, active read protection, resumable GC, history traversal and device migration; A3, A5, A8 |
 | S5 | radio, hemera, foculus | planned | S1, S2, S3 | Existing Radio uses injected BBG sources/sinks; authenticated ranges and resume; all filesystem/DB ownership accounted for; remove obsolete BAO/store path only after migration; A1, A4, A10 |
 | S6 | foculus, cybergraph, radio, bbg | planned | S4, S5 | Authenticated replication obligations and complete durable acknowledgements; explicit failure domains, retry, partition and stale-replica handling; A6, A7 |
-| S7 | fs, file, cybergraph, cyb, neuron, cyber, soft3 | planned | S3, S2 | Consumers share content/history APIs; FS names, channels and patches persist through Cybergraph/BBG; import existing JSONL, application blobs and Radio stores; exact-byte validation, provenance and resumable reconciliation; A8, A10–A12 |
+| S7 | fs, file, cybergraph, cyb, neuron, cyber, soft3 | implementing | S3, S2 | Consumers share content/history APIs; FS names, channels and patches persist through Cybergraph/BBG; import existing JSONL, application blobs and Radio stores; exact-byte validation, provenance and resumable reconciliation; A8, A10–A12 |
 | S8 | vault, mudra, neuron, cybergraph, foculus | planned | S6, S7 | Existing sealed-record semantics over the generic service; device-loss restore, protected-use state and freshness/fencing; A6, A7, A9 and Vault conformance |
 | S9 | soft3, all owning repositories | planned | S4, S5, S6, S7, S8 | Cross-consumer/profile acceptance, measured scaling, privacy review and pinned release evidence; A1–A12 |
 
@@ -96,6 +97,28 @@ conflict behavior before S7 freezes these APIs. Reconcile
 [[fs/patch/spec|the existing patch design]] with canonical particle and BBG
 ownership; preserve its graph/patch model without adopting a parallel blob
 store. Recovery must reconstruct retained names and views together with content.
+
+## local implementation progress
+
+The [implementation receipt](../../audit/storage/content-2026-09-24.md) links
+source revisions, executable checks and the remaining acceptance gaps.
+
+- S2: `ContentStore` defines bounded write, resume, verification, read and
+  cancellation operations. `Files` supplies the trusted Blob verifier and
+  stream adapter. FS and Radio-facing contracts remain to implement.
+- S3: parts, checksums, progress and sealed descriptors share the selected
+  BBG Database. Both profiles exercise restart and interrupted work.
+- S4: publication atomically records retention roots; cancellation reclaims
+  staging incrementally. Sealed content remains protected indefinitely until
+  release, read protection and resumable GC are implemented together.
+- S7: `ApplicationGraph::commit_with_blobs` binds file references into request
+  identity and publishes them with the head. Product consumers, FS names and
+  legacy content imports remain pending. Existing application-only migration
+  refuses content it cannot preserve.
+
+S1, S5, S6 and S8 remain open. Local checksum validation supplies no transferable
+range proof, and these checks establish neither transport integration nor
+physical power-loss qualification. No complete A row is promoted by this slice.
 
 ## interface map for S2
 

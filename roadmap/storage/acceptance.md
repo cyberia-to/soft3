@@ -5,7 +5,7 @@ status: planned
 ---
 # storage acceptance matrix
 
-These are required gates to implement, with no implied passing result.
+These are complete delivery gates; partial local evidence does not qualify a row.
 The [project](README.md) tracks owners and dependencies; the
 [baseline audit](../../audit/file-storage-2026-09-24/README.md) records existing
 behavior separately. Each future receipt gives the command, complete source
@@ -63,3 +63,19 @@ work visibly but cannot silently cap a catalog, truncate history or release
 protected data. Every test receipt links its S package and A rows. Soft3's
 release validation references these receipts for the exact pinned component
 revisions; unimplemented or failing rows remain visible.
+
+## current local evidence
+
+The [local content receipt](../../audit/storage/content-2026-09-24.md) pins the
+commands and implementation revisions for this subset. All complete rows above
+remain open.
+
+| rows | demonstrated locally | still required |
+|---|---|---|
+| A1 | Existing Blob identities survive part-size changes and binary boundaries; malformed stored parts fail | S1 construction, File/Radio agreement and authenticated range proofs |
+| A2 | Streamed import/read exceeds the old inline limit; cancelled sparse uploads reclaim only stored parts | Memory and backpressure measurements, slow remote streams |
+| A3 | Subprocess exit after durable part/seal/head boundaries on both profiles; injected redb write/sync failure and shared uncertainty handling | Interrupted physical writes, disk-full and power-loss campaigns; equivalent content-specific Fjall fault injection |
+| A5 | Competing heads retain only the winner; retention and publication roll back together | Release, active reads and concurrent interrupted GC |
+| A8 | Paged upload discovery and coverage; no total-file allocation in the exercised stream adapter | Scale curves for independent file/history growth and cross-device content migration |
+| A10 | Application-only archive/migration refuses streamed content and preserves active uploads | Actual resumable content imports and writer cutover |
+| A11 | Cybergraph library and BBG share one owner and both disk profiles | SDK/CLI/node consumers, Vault and FS workflows |
