@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network; layer = the rung on soft3.org/layers (0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body) — the architecture in principle; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body) — the architecture in principle; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -461,4 +461,14 @@ verb = "sign"
 facet = "play"
 layer = 5
 phase = "grown"
+state = "live"
+
+[[component]]
+name = "cybernode"
+kind = "ops"
+repo = "cybernode"
+verb = "host"
+facet = "space"
+layer = 4
+phase = "1"
 state = "live"
