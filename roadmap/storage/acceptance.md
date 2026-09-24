@@ -26,6 +26,7 @@ revisions, backend configuration, inputs and observed outcome.
 | A9 | Private Vault/application data beside public files in one owner; unauthorized enumeration, dedup probes, logs and public projections | Namespace authorization holds; private storage facts do not enter public indexes/advertisements; document and review remaining size/timing/access-pattern leakage |
 | A10 | Import legacy JSONL, application blobs and Radio stores on copies; restart imports, inject mismatched identities/missing bytes | Validate source content, preserve provenance and recoverable mappings, report incomplete inputs; no silent relabeling or deletion; one authoritative writer after cutover |
 | A11 | All consumer classes below through SDK/CLI/node boundaries | Same storage/retention semantics and truthful status; no alternate product database or hidden fallback writer |
+| A12 | Rename/move, aliases, concurrent rename/edit, channel fork/merge, historical lookup and device-loss restore; remove one name while other roots retain content | Rename preserves target particle; conflicts remain visible under the chosen policy; checked paths cannot redirect an operation; restore reconstructs names/views and bytes; private names stay private; GC respects surviving bindings and retained channels |
 
 Run every applicable local gate on both Fjall/SSD and redb/HDD profiles. Include
 cross-profile replication and migration. Separate simulated/process-failure
@@ -36,6 +37,7 @@ cannot qualify crash durability.
 
 | consumer | fixture and required workflow | additional contract |
 |---|---|---|
+| FS | Named directories, aliases, channels and patches; offline divergent edits, historical views and complete namespace restore | [Storage names and patches](../../specs/storage.md#names-filesystem-views-and-patches), [[cyb/parts/fs]] and [[fs/patch/spec]] |
 | Vault | Synthetic typed secrets, encrypted revisions and protected-use records; offline changes, replica repair and device-loss restore | [Vault composition](../../specs/vault.md) and [[vault/specs/conformance]] |
 | Neuron / Cybergraph | Application history and native action receipts sharing the owner with content; conditional publication and retry | [[cybergraph/specs/applications]] and [native node](../../specs/native-node.md) |
 | Cyb | Public text, private documents and arbitrary binary attachments; streaming fetch, offline reopen and explicit retention | File identity and storage contracts |

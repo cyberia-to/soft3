@@ -8,7 +8,7 @@ status: active
 Deliver one storage system for the stack: canonical file identity, all durable
 bytes in BBG, Radio as transport, and recovery that survives process and device
 loss under an explicit replication policy. Vault is the first full integration;
-public files, Cyb content, application history and large artifacts qualify the
+FS names/channels, public files, Cyb content, application history and large artifacts qualify the
 same interfaces.
 
 [Architecture](../../specs/storage.md) ·
@@ -69,14 +69,14 @@ its exit criteria. Repository names identify implementation ownership.
 |---|---|---|---|---|
 | S0 | soft3, bbg | documented | — | Shared ownership and local persistence contracts, navigable indexes and this tracker; runtime qualification remains separate |
 | S1 | hemera, file, lens, nox; soft3 coordinates | decision required | S0 | Close [identity questions](identity.md); one normative construction, reference implementation and cross-component vectors including authenticated ranges |
-| S2 | bbg, cybergraph, foculus, radio | planned | S0 | Specify and exercise source/sink, coverage, publication, retention and receipt interfaces; ownership/dependency map; no network inside storage transactions or Radio-owned persistence |
+| S2 | fs, bbg, cybergraph, foculus, radio | planned | S0 | Specify contextual name/path resolution, namespace patches, source/sink, coverage, publication, retention and receipt interfaces; ownership/dependency map; no network inside storage transactions or Radio-owned persistence |
 | S3 | bbg, cybergraph | planned | S1, S2; existing BBG reliability gates | Streamed parts, paged descriptors/coverage, crash-safe seal and bounded atomic publication on both profiles; A1–A4 |
 | S4 | bbg, cybergraph | planned | S3 | Durable retention roots, active read protection, resumable GC, history traversal and device migration; A3, A5, A8 |
 | S5 | radio, hemera, foculus | planned | S1, S2, S3 | Existing Radio uses injected BBG sources/sinks; authenticated ranges and resume; all filesystem/DB ownership accounted for; remove obsolete BAO/store path only after migration; A1, A4, A10 |
 | S6 | foculus, cybergraph, radio, bbg | planned | S4, S5 | Authenticated replication obligations and complete durable acknowledgements; explicit failure domains, retry, partition and stale-replica handling; A6, A7 |
-| S7 | file, cybergraph, cyb, neuron, cyber, soft3 | planned | S3, S2 | Consumers share content/history APIs; import existing JSONL, application blobs and Radio stores; exact-byte validation, provenance and resumable reconciliation; A8, A10, A11 |
+| S7 | fs, file, cybergraph, cyb, neuron, cyber, soft3 | planned | S3, S2 | Consumers share content/history APIs; FS names, channels and patches persist through Cybergraph/BBG; import existing JSONL, application blobs and Radio stores; exact-byte validation, provenance and resumable reconciliation; A8, A10–A12 |
 | S8 | vault, mudra, neuron, cybergraph, foculus | planned | S6, S7 | Existing sealed-record semantics over the generic service; device-loss restore, protected-use state and freshness/fencing; A6, A7, A9 and Vault conformance |
-| S9 | soft3, all owning repositories | planned | S4, S5, S6, S7, S8 | Cross-consumer/profile acceptance, measured scaling, privacy review and pinned release evidence; A1–A11 |
+| S9 | soft3, all owning repositories | planned | S4, S5, S6, S7, S8 | Cross-consumer/profile acceptance, measured scaling, privacy review and pinned release evidence; A1–A12 |
 
 S7 import code may develop earlier; imported identities remain explicitly legacy
 until S1 defines their relation to the canonical representation. Old references
@@ -89,10 +89,19 @@ service. Preserve import visibility and retry semantics. The baseline audit
 provides the pinned source paths; cosmetic adapter wrapping cannot close this
 package while an independent writer or total-history cap remains.
 
+FS integration includes contextual name resolution, paged directory views,
+aliases, channel selection and attributed namespace patches. S2 must settle
+normalization/case rules, binding identity under concurrent rename/edit and
+conflict behavior before S7 freezes these APIs. Reconcile
+[[fs/patch/spec|the existing patch design]] with canonical particle and BBG
+ownership; preserve its graph/patch model without adopting a parallel blob
+store. Recovery must reconstruct retained names and views together with content.
+
 ## interface map for S2
 
 | boundary | carries | persistent owner |
 |---|---|---|
+| FS → Cybergraph | Namespace/channel/state, path operations, binding preconditions, patch dependencies and authorization | BBG for bindings, patches, channel heads and derived indexes |
 | File / application → Cybergraph | Namespace, content stream, expected head, request identity, retention intent | BBG through validated application operations |
 | Cybergraph → BBG | Parts, verified closure, conditional publication, receipts and retention | Shared Database owner |
 | Foculus → BBG | Missing-range queries, staged arrivals, sync jobs and replica obligations | Shared Database owner |

@@ -18,6 +18,7 @@ The exact particle construction remains an explicit [decision gate](../roadmap/s
 | [[hemera]] | Sponge primitives, canonical identity rules and structural verification algorithms | Identity and proof algorithms with shared test vectors |
 | [[lens]] | Polynomial commitments and openings where the selected construction requires them | Commitment/proof primitives with an explicit binding to the canonical particle |
 | [[file]] | Immutable file abstraction, content interpretation and composition of the selected identity primitives | Descriptors, streams and ranges |
+| [[fs]] | Names, paths, filesystem views, channels and patch semantics over the graph | Contextual resolution, namespace edits and historical views |
 | [[bbg]] | All durable content, parts, indexes, retention roots, staging and recovery records | Local storage handles under the shared Database owner |
 | [[cybergraph]] | Validated application history, content references and conditional publication | Authorized application operations over BBG |
 | [[foculus]] | Reconciliation, missing-content scheduling, replication and provider acknowledgements | Local BBG operations and Radio transport sessions |
@@ -85,6 +86,52 @@ Until it closes, new storage machinery can use an injected identity verifier;
 canonical format freeze and replacement of the public transfer path wait for
 the agreed construction and vectors. Identity compatibility and cryptographic
 security qualification are separate release obligations.
+
+## names, filesystem views and patches
+
+[[cyb/parts/fs|The filesystem model]] exposes the graph through names, paths
+and patch-based views. [Shared terms](terms.md) separates a file's content
+identity from names and metadata expressed as cyberlinks.
+[[fs/patch/spec|Patch semantics]] defines channels and changes to these views. FS owns their meaning;
+Cybergraph validates their publication and BBG persists their data and indexes.
+
+Resolution has an explicit context: neuron namespace, selected channel/view,
+path and committed state. It returns a bound particle, absence or an explicit
+unresolved conflict under the selected resolution policy. The resulting
+particle is then read through the content service. A mutable path used for an
+authorized operation MUST be bound to the checked state/particle so a concurrent
+rename or edit cannot silently redirect that operation.
+
+- Renaming or moving a path changes its graph binding while preserving the
+  target file's particle. Several names may refer to the same content.
+- Editing creates new content and updates the selected binding through an
+  attributed patch. Earlier content remains addressable by particle, with
+  physical availability governed by retention obligations.
+- A directory manifest or `.cyb` container that includes entry names commits
+  those names as its own content. Renaming an entry changes that enclosing
+  object's particle while preserving an unchanged child's particle.
+- Channels select views over patch history and share immutable content.
+  Concurrent changes preserve the information needed to represent and resolve
+  conflicts; synchronization cannot silently erase a competing name binding.
+- Removing a name changes its view. Content reclamation preserves every retained
+  namespace revision, channel and other live obligation. Removing one alias
+  cannot release content protected by another obligation.
+
+A protected filesystem revision includes its namespace bindings, channel/patch
+state, required history and referenced content closure. Restore MUST recover
+that view with its bytes. Name updates, selected heads, retention transitions
+and request receipts share the conditional publication boundary below.
+
+Private paths, directory membership, channel names and patch metadata follow
+the same disclosure policy as private content. A BBG authorization namespace
+and an FS path namespace have explicit mappings; a path prefix alone grants
+no storage access. Local indexes and caches remain paged BBG-owned projections.
+
+S2 specifies path encoding/normalization, case rules, alias behavior,
+rename/edit concurrency and conflict resolution; S7 integrates the FS consumer.
+The [acceptance matrix](../roadmap/storage/acceptance.md) qualifies this layer
+alongside payload storage. Existing FS blob-store and identity descriptions
+must be reconciled with this contract during those work packages.
 
 ## local write and publication
 

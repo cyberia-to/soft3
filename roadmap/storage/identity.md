@@ -53,6 +53,12 @@ Relevant owner documents:
 decision here. [Coordinated migration](../migration.md) owns the wider value-model
 sequence; this workstream owns the file/transfer acceptance criteria.
 
+FS path bindings are external to the target file's content. A rename preserves
+that target's particle. When an enclosing directory manifest or `.cyb` container
+includes entry names, those names are part of its own content: renaming changes
+the enclosing particle. Include both cases in the canonical vectors so path
+metadata and semantic container fields cannot be confused.
+
 ## closure evidence
 
 1. One normative owner document defines the construction and its relation to
