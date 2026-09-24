@@ -22,6 +22,7 @@ instances, explicit proof profiles and independently placed workers.
 | [languages](languages.md) | language contracts |
 | [filenames](filenames.md) | portable source-tree paths |
 | [vault composition](vault.md) | first storage/sync use case; secret custody, complete replicas and device-loss recovery |
+| [kadek composition](kadek.md) | the media codec stack; pure-Rust video/audio decode and encode, containers, conformance |
 
 Soft3 owns composition invariants. Trident, warriors, proof systems and node
 products own their specialized interfaces. [Foundations](../docs/README.md)
