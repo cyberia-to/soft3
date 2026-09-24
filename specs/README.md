@@ -11,11 +11,14 @@ alias: soft3 specs, stack contracts
 Start with the [execution model](execution-model.md), the foundational
 execution architecture: reusable VM/OS support, open-ended compatible network
 instances, explicit proof profiles and independently placed workers.
+The [storage architecture](storage.md) defines the other foundation: canonical
+file identity, BBG persistence, Radio transport and recoverable content.
 
 | specification | scope |
 |---|---|
 | [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
+| [storage architecture](storage.md) | shared ownership, file identity, durable publication, retention and recovery |
 | [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |

@@ -11,6 +11,10 @@ component. Its [product](https://github.com/cyberia-to/vault/blob/main/README.md
 and [component specifications](https://github.com/cyberia-to/vault/blob/main/specs/README.md)
 have one home in that repository. Soft3 owns the composition invariants here.
 This is a specification contract, not a claim of implemented private sync.
+The [storage architecture](storage.md) owns the common content, persistence and
+transport boundaries. The [storage project](../roadmap/storage/README.md)
+qualifies those interfaces across applications, with Vault as the first full
+recovery slice.
 
 ## First end-to-end use case
 

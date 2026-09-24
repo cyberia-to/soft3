@@ -8,7 +8,11 @@ status: draft
 
 # stack completeness — coverage, gaps, and the deep overlaps
 
-a map of the whole [[soft3]] stack as layers, a verdict on what it covers end to end, and the gaps and overlaps that remain once the new components ([[eidos]], [[honeycrisp]], [[wysm]], [[neural]]) and the cyb-resident pieces ([[cyb/root/ward|ward]], cell) are placed. the network-tier borders are settled separately in [[component-boundaries]]; this document takes the full-stack view.
+a map of the whole [[soft3]] stack as layers, a verdict on what it covers end to end, and the gaps and overlaps that remain once the new components ([[eidos]], [[honeycrisp]], [[wysm]], [[neural]]) and the cyb-resident pieces ([[cyb/parts/ward|ward]], cell) are placed. the network-tier borders are tracked separately in [[component-boundaries]]; this document takes the full-stack view.
+
+The [storage project](storage/README.md) owns implementation and qualification
+of file identity, BBG persistence, Radio transport and recovery. Architectural
+coverage in this map does not establish passing runtime acceptance gates.
 
 ## the layered model
 

@@ -8,13 +8,18 @@ alias: soft3 stack, cyb stack, software stack, proof pipeline
 ---
 soft3 is the substrate for planetary superintelligence: signed staked [[cyberlinks]] between [[files]], authenticated state in [[bbg]], proofs via [[zheng]] / [[nox]]. the product chaosnet is **spacepussy-test**.
 
-## first storage use case: vault
+## storage foundation
 
-[Vault](https://github.com/cyberia-to/vault) is the first end-to-end use case for
-safe storage and private synchronization: retain typed secrets, replicate their
-encrypted state and recover after device loss. Its product and specifications
-have a dedicated repository; soft3 owns the [composition contract](specs/vault.md).
-This is the next implementation target, not an already shipped custody service.
+[Storage architecture](specs/storage.md) defines one file identity, durable
+content and history under BBG, and transmission through Radio. The
+[storage project](roadmap/storage/README.md) tracks interfaces, implementation,
+migration and qualification across the stack.
+
+[Vault](https://github.com/cyberia-to/vault) is the first full recovery use case:
+retain typed secrets, replicate their encrypted state and recover after device
+loss under its [composition contract](specs/vault.md). Public files, Cyb content,
+application history and large artifacts qualify the same storage interfaces.
+Implementation status and remaining decisions are explicit in the project.
 
 ## architectural foundation
 
@@ -26,7 +31,8 @@ process, or remotely. CPU/GPU selection changes the backend, not the warrior.
 Machine, environment, proof profile, network instance and executor are
 separate selections with explicit compatibility rules.
 
-[All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md)
+[All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md) ·
+[Roadmap](roadmap/README.md)
 
 ## releases
 

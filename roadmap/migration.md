@@ -13,6 +13,11 @@ careful execution plan; the *what* lives in four source docs, this is the
 *how* and the *order*. it touches every repo, and a subset of it changes
 particle identities — so it must be sequenced, not done piecemeal.
 
+Coordinate identity-changing steps with [storage S1](storage/identity.md).
+That decision owns file/transfer identity and import criteria; the
+[storage project](storage/README.md) owns runtime cutover. A vocabulary rename
+alone supplies no equivalence between sponge, tree and polynomial identities.
+
 ## source of truth
 
 - `soft3/specs/types.md` — the type theory (five mechanisms; two open

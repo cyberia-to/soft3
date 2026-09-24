@@ -7,6 +7,10 @@ language libraries, MCP server, CLI and wire format adapters. Component
 algorithms remain in their owning repositories.
 
 `specs/execution-model.md` is the normative execution architecture.
+`specs/storage.md` is the normative storage composition contract; its
+implementation project is `roadmap/storage/README.md`. BBG owns all durable
+content and transfer state; Radio transmits through injected interfaces.
+Canonical file identity is gated by that project's S1 decision.
 A warrior supports a VM/OS family across an open-ended set of compatible
 network instances; workers and hardware backends are independent deployment
 choices. `specs/README.md` indexes contracts. Keep the root README and site

@@ -8,9 +8,11 @@ alias: soft3 whitepaper, foundational soft3 methods, soft3 foundations
 ---
 # soft3 — foundations
 
-Architecture contract: [execution model](../specs/execution-model.md).
-It defines VM/OS ownership, open-ended network instances, proof-profile
-selection and worker placement. The substrate explanation follows below.
+Architecture contracts: [execution model](../specs/execution-model.md) and
+[storage](../specs/storage.md). They define VM/OS and worker composition,
+canonical file identity, BBG persistence and Radio transport. The
+[storage project](../roadmap/storage/README.md) tracks implementation and
+qualification. The substrate explanation follows below.
 
 soft3 is thirty-one components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
 
@@ -267,6 +269,7 @@ building a new component is specializing the same substrate to a new job. it com
 |------|------|
 | this page | foundations whitepaper — methods under the stack |
 | [execution model](../specs/execution-model.md) | normative execution architecture and composition invariants |
+| [storage](../specs/storage.md) | normative persistence, content identity, transport and recovery composition |
 | [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
 | [[soft3/docs/polynomial-proof-system\|polynomial proof system]] | the technical companion to "one form/one proof" above — the five operations (commit, open, verify, fold, identify), the numbers behind them, and what they make possible |
