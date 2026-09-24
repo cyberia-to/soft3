@@ -41,17 +41,24 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
     repo = f'https://github.com/cyberia-to/{component}'
     assets = {a['name']: a['browser_download_url'] for a in (metadata or {}).get('assets', [])}
 
+    def asset_url(filename):
+        # Draft download URLs rotate when GitHub updates the intended tag.
+        # Committed receipt copies give current draft pages durable links.
+        if audit_url:
+            suffix = '?raw=true' if filename.endswith('.tar.gz') else ''
+            return f'{audit_url}/{quote(filename)}{suffix}'
+        return assets.get(filename, f'{repo}/releases')
+
     def asset(filename, label=None):
-        url = assets.get(filename, f'{repo}/releases/download/{quote(name)}/{quote(filename)}')
-        return link(label or filename, url)
+        return link(label or filename, asset_url(filename))
 
     def evidence(platform, gate=None):
         if audit_url and gate and gate.get('log'):
             path = f"logs/{platform['target']}/{Path(gate['log']).name}"
             return f'{audit_url}/{quote(path, safe="/")}'
         if platform.get('archive'):
-            return assets.get(platform['archive'], f'{repo}/releases/download/{quote(name)}/{quote(platform["archive"])}')
-        return assets.get('release-validation.json', f'{repo}/releases/download/{quote(name)}/release-validation.json')
+            return asset_url(platform['archive'])
+        return asset_url('release-validation.json')
 
     platforms = validation['platforms']
     has_binaries = bool(candidate.get('available_binaries'))
@@ -156,7 +163,7 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
             gate = next((g for g in platform.get('gates', []) if g['name'] == gate_name), None)
             cells.append(link(LABELS.get(gate['result'], '⚪ Unknown'), evidence(platform, gate)) if gate else ('➖' if platform.get('archive') else '⚪'))
         lines.append(f'| `{cell(gate_name)}` | ' + ' | '.join(cells) + ' |')
-    lines += ['', 'Cell links open the corresponding log or receipt. ➖ means the gate was not selected for that job; ⚪ means its platform receipt is missing.', '', '</details>', '',
+    lines += ['', 'Cell links open recorded logs or release downloads. ➖ means the gate was not selected for that job; ⚪ means its platform receipt is missing.', '', '</details>', '',
               '<details>', '<summary>📚 Full soft3 source inventory</summary>', '',
               'Pin status compares source revisions only. Component test results are in the qualification matrix above.', '',
               '| Component | Captured revision | Source pin | Primary declared package |', '|---|---|---|---|']
@@ -171,7 +178,10 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
         packages = '; '.join(cell(p['name']) + (' @ ' + cell(p['version']) if isinstance(p.get('version'), str) else ' · workspace version') for p in primary)
         lines.append(f'| {link(cell(row["name"]), "https://github.com/" + repository)} | {commit} | {pin} | {packages or asset("soft3-dependencies.json", "Declarations ↗")} |')
     lines += ['', 'Declared versions come from source manifests. Resolved package closure, resolution failures and all nested declarations are retained in ' + asset('soft3-dependencies.json') + '.', '', '</details>', '',
-              '## 📎 Evidence and downloads', '', '| Asset | Contents |', '|---|---|']
+              '## 📎 Evidence and downloads', '',
+              f'{link("GitHub release assets", repo + "/releases")} · linked audit copies retain the original checksums.' if audit_url else
+              f'Download the named files from {link("GitHub release assets", repo + "/releases")}.',
+              '', '| Asset | Contents |', '|---|---|']
     for filename, description in [('SHA256SUMS', 'Checksums for the original candidate assets'),
                                   ('candidate.json', 'Product versions, exact source revisions and available binaries'),
                                   ('sources.json', 'Origin source capture, pins and change attribution'),

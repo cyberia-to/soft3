@@ -2,7 +2,7 @@
 
 Verdict: RED. The full macOS/Linux ARM64/x64 matrix and stack qualification ran
 in [Actions run 35975316739](https://github.com/cyberia-to/soft3/actions/runs/35975316739).
-[GitHub draft candidate](https://github.com/cyberia-to/soft3/releases/tag/untagged-47fb822e14af390dd809)
+[GitHub draft candidate](https://github.com/cyberia-to/soft3/releases)
 retains the generated assets. No executable was produced; no version tag or
 public promotion was performed.
 
