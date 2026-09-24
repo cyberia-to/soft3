@@ -69,6 +69,7 @@ Before changing the engine, run:
 `python3 -m unittest discover -s release -p 'test_*.py' -v`.
 Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `package-resolution`,
 `source-inputs-unchanged`, `stack-*`, `conformance-snapshot`, `soft3-tests`,
-`soft3-release`, and `node-status`. Products add `soft3-dependency` and their
+`soft3-release`, and `node-status`. Products consume one checksummed build via `release/soft3.toml`, inherit
+`soft3-build` qualification, and add `soft3-dependency`, `component-bindings` and their
 application gates. Missing implementations and failed gates remain red evidence.
 Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`.

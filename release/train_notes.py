@@ -73,6 +73,12 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
     revision = candidate.get('source_revisions', {}).get(component)
     commit = link(f'`{revision[:8]}`', f'{repo}/commit/{revision}') if revision else '⚪ Unavailable'
     lines += [f'{link(component, repo)} {cell(versions.get(component) or "unresolved")} · {commit}', '']
+    if candidate.get('soft3_build'):
+        dependency = candidate['soft3_build']
+        pin = dependency['contract']
+        lines += [f"📦 soft3 {cell(pin['version'])} · {cell(pin['build'])} · "
+                  + link(LABELS[dependency['result']], asset_url('soft3-build.tar.gz')),
+                  f"Build pin: {asset('soft3-build.json')}. Component revisions and qualification are inherited from this build.", '']
     component_position = len(lines)
     lines += ['## ✨ Changes at the captured revision', '']
     changes = [c for c in sources.get('changes', []) if c['component'] == component]
@@ -239,7 +245,7 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
             # A concrete failure takes precedence over a blocked prerequisite.
             if gate['name'] not in selected or selected[gate['name']][1]['result'] == 'blocked':
                 selected[gate['name']] = (platform, gate)
-    priority = ['origin-checkouts', 'soft3-dependency', 'cyber-release', 'cyb-check',
+    priority = ['origin-checkouts', 'soft3-dependency', 'soft3-build', 'cyber-release', 'cyb-check',
                 'soft3-release', 'conformance-snapshot', 'stack-hemera', 'optica-build']
     highlighted = [selected[key] for key in priority if key in selected]
     lines += ['', '## 🧱 Main blockers', '', '| Check | Finding | Evidence |', '|---|---|---|']
@@ -270,6 +276,8 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
                                   ('soft3-dependencies.md', 'Original readable dependency inventory'),
                                   ('release-notes.md', 'Original generated notes captured with this candidate')]:
         lines.append(f'| {asset(filename)} | {description} |')
+    if candidate.get('soft3_build'):
+        lines.append(f'| {asset("soft3-build.json")} · {asset("soft3-build.tar.gz")} | Selected soft3 build pin and original upstream evidence |')
     if component_inputs:
         lines.append(f'| {asset("component-inputs.json")} | Product-scoped manifest trace; supplementary evidence |')
     if audit_url:

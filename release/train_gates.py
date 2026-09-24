@@ -66,18 +66,28 @@ def source_gates(gates, directory, sources, checkouts, component):
                  manifest_sha256=sources["phase1_sha256"])
     gates.record("release-notes-source", "red" if sources.get("change_errors") else "green",
                  errors=sources.get("change_errors", []))
+    if component == "soft3":
+        actual = next((r.get("revision") for r in sources["repositories"] if r["name"] == "soft3"), None)
+        gates.record("soft3-manager", "green" if actual == sources["manager_revision"] else "red",
+                     expected=actual, actual=sources["manager_revision"])
     if component != "soft3":
         contract = directory / component / "release/soft3.toml"
         soft3 = next(r for r in sources["repositories"] if r["name"] == "soft3")
         try:
             dependency = tomllib.loads(contract.read_text())["soft3"]
             actual = tomllib.loads((directory / "soft3/crate/Cargo.toml").read_text())["package"]["version"]
-            valid = (dependency["revision"] == soft3["revision"] == sources["manager_revision"] and
+            inherited = sources["soft3_build"]
+            valid = (dependency == inherited["contract"] and
+                     dependency["revision"] == soft3["revision"] and
                      dependency["version"] == actual and dependency["repository"] == PRODUCTS["soft3"][0])
             gates.record("soft3-dependency", "green" if valid else "red", expected=dependency,
                          actual={"version": actual, "revision": soft3["revision"]})
         except (OSError, KeyError, tomllib.TOMLDecodeError) as error:
             gates.record("soft3-dependency", "red", error=str(error))
+        inherited = sources.get("soft3_build", {})
+        gates.record("soft3-build", inherited.get("result", "red"),
+                     reason=inherited.get("reason", "No authenticated soft3 build receipt."),
+                     expected=inherited.get("contract"))
 
 
 def boot_status(binary, gates):
@@ -133,6 +143,10 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         for owner, path in owners.items():
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
+        gates.run("stack-nu", ["cargo", "test", "--locked",
+                  *[arg for package in ["nu-protocol", "nu-engine", "nu-parser", "nu-command", "nu-cmd-lang",
+                                        "nu-cmd-extra", "nu-cli", "nu-std", "nu-utils"] for arg in ["-p", package]]],
+                  directory / "nu", timeout=1800)
         # This gate requires the real snapshot command. A scaffold cannot pass it.
         gates.run("conformance-snapshot", ["cargo", "conformance", "--check"], directory / "soft3", timeout=120)
     if component == "soft3":
@@ -145,7 +159,16 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             artifacts.append(binary)
     elif component == "cyber":
         gates.run("cyber-tests", ["cargo", "test", "--locked"], root)
-        gates.run("cyber-release", ["nu", "scripts/release.nu", "--locked-sources"], root)
+        # The shared build receipt owns dependency provenance. The standalone
+        # development sources.lock.json must not replace the selected soft3 build.
+        gates.run("cyber-format", ["cargo", "fmt", "--check"], root)
+        built = gates.run("cyber-release", ["cargo", "build", "--release", "--locked"], root)
+        binary = root / "target/release/cyber"
+        if built:
+            gates.run("cyber-acceptance", ["cargo", "test", "--locked", "--test", "node"], root,
+                      env={"CYBER_TEST_BINARY": str(binary)})
+        else:
+            gates.blocked("cyber-acceptance", "release executable was not built")
         # Graph compilation is a separate product gate, with an origin-pinned builder.
         optica = directory / "optica"
         built = gates.run("optica-build", ["cargo", "build", "--release", "--locked"], optica)
@@ -153,7 +176,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             gates.run("protocol-graph", [str(optica / "target/release/optica"), "build", str(root)], root)
         else:
             gates.blocked("protocol-graph", "optica builder failed")
-        binary = root / "dist/cyber"
+        binary = root / "target/release/cyber"
         if binary.is_file():
             artifacts.append(binary)
     elif target == "aarch64-linux-android":

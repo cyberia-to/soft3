@@ -18,8 +18,8 @@ class ReleaseTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        self.sources = {"component": "cyber", "candidate": "candidate-20260924.1", "manager_revision": "a" * 40,
-                        "repositories": [{"name": "cyber", "revision": "b" * 40}]}
+        self.sources = {"component": "soft3", "candidate": "candidate-20260924.1", "manager_revision": "a" * 40,
+                        "repositories": [{"name": "soft3", "revision": "b" * 40}]}
         self.snapshot = self.root / "snapshot.json"
         write_json(self.snapshot, self.sources)
         self.artifacts = self.root / "artifacts"
@@ -34,9 +34,9 @@ class ReleaseTests(unittest.TestCase):
             (directory / "soft3-dependencies.md").write_text("synthetic fixture\n")
         (directory / "cyber").write_bytes(b"synthetic executable fixture")
         write_json(directory / "candidate.json", {
-            "name": self.sources["candidate"], "component": "cyber", "target": target,
+            "name": self.sources["candidate"], "component": "soft3", "target": target,
             "versions": {"cyber": "0.8.0", "soft3": "0.10.0", "cyb": "0.15.1"},
-            "source_revisions": {"cyber": "b" * 40},
+            "source_revisions": {"soft3": "b" * 40},
             "source_snapshot_sha256": snapshot_hash or digest(self.snapshot),
             "artifacts": [{"name": "cyber", "sha256": digest(directory / "cyber")}]})
         write_json(directory / "release-validation.json", {"result": "green", "complete": True,
@@ -44,7 +44,7 @@ class ReleaseTests(unittest.TestCase):
         train.checksums(directory)
         if corrupt:
             (directory / "cyber").write_bytes(b"changed after qualification")
-        archive = self.artifacts / f"cyber-{self.sources['candidate']}-{target}.tar.gz"
+        archive = self.artifacts / f"soft3-{self.sources['candidate']}-{target}.tar.gz"
         with tarfile.open(archive, "w:gz") as tar:
             for path in directory.iterdir():
                 tar.add(path, arcname=path.name)
@@ -102,22 +102,25 @@ class ReleaseTests(unittest.TestCase):
             source = resolve({"name": "test", "repo": "cyberia-to/test", "rev": "b" * 40})
         self.assertFalse(source["pin_matches"])
 
-    def test_qualifier_revision_must_match_consumed_soft3(self):
+    def test_product_dependency_matches_build_not_current_manager_head(self):
         (self.root / "cyber/release").mkdir(parents=True)
         (self.root / "soft3/crate").mkdir(parents=True)
         (self.root / "soft3/crate/Cargo.toml").write_text('[package]\nversion = "0.10.0"\n')
-        revision = "c" * 40
-        (self.root / "cyber/release/soft3.toml").write_text(
-            f'[soft3]\nrepository = "cyberia-to/soft3"\nversion = "0.10.0"\nrevision = "{revision}"\n')
-        self.sources["repositories"].append({"name": "soft3", "revision": revision})
+        pin = {"repository": "cyberia-to/soft3", "version": "0.10.0", "revision": "c" * 40,
+               "build": "candidate-20260924.1", "release_id": 42, "checksums_sha256": "d" * 64}
+        body = '[soft3]\n' + ''.join(f'{key} = {json.dumps(value)}\n' for key, value in pin.items())
+        (self.root / "cyber/release/soft3.toml").write_text(body)
+        self.sources["repositories"] = [{"name": "soft3", "revision": pin["revision"]}]
+        self.sources["soft3_build"] = {"contract": pin, "result": "red", "reason": "Stack failed"}
         self.sources["phase1_sha256"] = "fixture"
         gates = Gates(self.root, self.sources, "stack")
         source_gates(gates, self.root, self.sources, [], "cyber")
-        self.assertEqual(gates.rows[-1]["name"], "soft3-dependency")
+        self.assertEqual(gates.rows[-2]["name"], "soft3-dependency")
+        self.assertEqual(gates.rows[-2]["result"], "green")
         self.assertEqual(gates.rows[-1]["result"], "red")
-        self.sources["manager_revision"] = revision
+        self.sources["soft3_build"]["contract"] = {**pin, "checksums_sha256": "e" * 64}
         source_gates(gates, self.root, self.sources, [], "cyber")
-        self.assertEqual(gates.rows[-1]["result"], "green")
+        self.assertEqual(gates.rows[-2]["result"], "red")
 
     def test_warning_is_red_even_with_zero_exit(self):
         gates = Gates(self.root, self.sources, "stack")
