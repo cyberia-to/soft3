@@ -157,8 +157,11 @@ rev = "9593c7218e14e2b5b816d9008b45ab60b9580cf3"
 
 [[sibling]]
 name = "nu"
-repo = "cyberia-to/nu"
-note = "local checkout has no git remote; cyber/launch.md decisions log, 2026-09-18 — needs a remote before it needs a pin"
+repo = "nushell/nushell"
+branch = "main"
+rev = "d40e191d8efad32a174d85b2a45f7ba4796cff84"
+source = "upstream"
+note = "Embedded Nushell 0.110.0, matching Cyb's former vendor/nushell input; pinned in upstream default-branch history."
 
 [[sibling]]
 name = "evy"
