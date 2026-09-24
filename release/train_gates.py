@@ -143,10 +143,16 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         for owner, path in owners.items():
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
-        gates.run("stack-nu", ["cargo", "test", "--locked",
-                  *[arg for package in ["nu-protocol", "nu-engine", "nu-parser", "nu-command", "nu-cmd-lang",
-                                        "nu-cmd-extra", "nu-cli", "nu-std", "nu-utils"] for arg in ["-p", package]]],
-                  directory / "nu", timeout=1800)
+        # Some library tests invoke target/debug/nu through nu-test-support.
+        if gates.run("stack-nu-build", ["cargo", "build", "--locked", "--bin", "nu"],
+                     directory / "nu", timeout=1800):
+            # Upstream CLI integration fixtures include the optional plugin-path.
+            gates.run("stack-nu", ["cargo", "test", "--locked", "--features", "nu-cli/plugin",
+                      *[arg for package in ["nu-protocol", "nu-engine", "nu-parser", "nu-command", "nu-cmd-lang",
+                                            "nu-cmd-extra", "nu-cli", "nu-std", "nu-utils"] for arg in ["-p", package]]],
+                      directory / "nu", timeout=1800)
+        else:
+            gates.blocked("stack-nu", "Nu test executable was not built; see stack-nu-build log")
         # This gate requires the real snapshot command. A scaffold cannot pass it.
         gates.run("conformance-snapshot", ["cargo", "conformance", "--check"], directory / "soft3", timeout=120)
     if component == "soft3":

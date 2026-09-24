@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, source_gates
+from train_gates import Gates, run_gates, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -125,6 +125,19 @@ class ReleaseTests(unittest.TestCase):
     def test_warning_is_red_even_with_zero_exit(self):
         gates = Gates(self.root, self.sources, "stack")
         self.assertFalse(gates.run("warning", ["python3", "-c", "print('warning: fixture')"], self.root))
+
+    def test_nu_tests_are_blocked_when_their_shell_cannot_build(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.boot_status"), \
+                patch.object(Gates, "run", return_value=False) as run:
+            run_gates(self.root, self.root, self.sources, [], "soft3", "stack", stack=True)
+        names = [call.args[0] for call in run.call_args_list]
+        self.assertIn("stack-nu-build", names)
+        self.assertNotIn("stack-nu", names)
+        receipt = json.loads((self.root / "release-validation.json").read_text())
+        self.assertEqual(receipt["result"], "red")
+        self.assertEqual(receipt["gates"][-1]["name"], "stack-nu")
+        self.assertEqual(receipt["gates"][-1]["result"], "blocked")
 
     def test_candidate_identifier_cannot_be_a_version_tag(self):
         for name in ["v0.8.0", "candidate-20269999.1", "../escape", "candidate-20260924.0"]:

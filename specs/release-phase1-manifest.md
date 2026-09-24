@@ -19,8 +19,9 @@ resolve only their own product source, as defined in [[specs/releases]].
 Owned repositories use their default-branch HEAD at a new soft3 cut and must
 match the declared pin. `source = "upstream"` selects an exact reviewed upstream
 commit and checks that it belongs to the upstream default-branch history.
-Nu is Nushell from `nushell/nushell`; its embedded library version is controlled
-here independently of the CI command runner version.
+Nu is the Nushell source maintained in `cyberia-to/nu`, with upstream history
+from `nushell/nushell`. It follows the owned-repository rule. Its embedded library
+version is controlled here independently of the CI command runner version.
 
 Changing pins requires review. Existing assembly bytes and evidence remain fixed.
 Local source edits and feature-branch work require a new qualified assembly before

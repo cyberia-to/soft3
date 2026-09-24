@@ -157,11 +157,10 @@ rev = "9593c7218e14e2b5b816d9008b45ab60b9580cf3"
 
 [[sibling]]
 name = "nu"
-repo = "nushell/nushell"
+repo = "cyberia-to/nu"
 branch = "main"
-rev = "d40e191d8efad32a174d85b2a45f7ba4796cff84"
-source = "upstream"
-note = "Embedded Nushell 0.110.0, matching Cyb's former vendor/nushell input; pinned in upstream default-branch history."
+rev = "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e"
+note = "Public Nushell 0.110.0 source for Cyb's embedded libraries; upstream history preserved."
 
 [[sibling]]
 name = "evy"

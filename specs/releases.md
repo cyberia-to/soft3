@@ -49,9 +49,10 @@ remain governed by Cargo.lock.
 
 Owned component pins are compared with origin/default HEAD when soft3 cuts a
 new build. An upstream dependency marked `source = "upstream"` instead fixes a
-reviewed commit in its upstream default-branch history. Nu uses this rule:
-soft3 supplies the pinned Nushell crates embedded by Cyb. CI's Nushell command
-runner is an independently pinned build tool.
+reviewed commit in its upstream default-branch history. Nu is maintained in
+`cyberia-to/nu` and follows the owned-component rule: soft3 supplies the pinned
+Nushell crates embedded by Cyb. CI's Nushell command runner is an independently
+pinned build tool.
 
 A working directory, unpublished source or changed source tree cannot become a
 release input. Product builds preserve the stack's original source evidence;
