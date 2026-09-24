@@ -159,7 +159,7 @@ rev = "9593c7218e14e2b5b816d9008b45ab60b9580cf3"
 name = "nu"
 repo = "cyberia-to/nu"
 branch = "main"
-rev = "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e"
+rev = "1e58416ef0501675ef503dd86f80dc1236dfc2a4"
 note = "Public Nushell 0.110.0 source for Cyb's embedded libraries; upstream history preserved."
 
 [[sibling]]

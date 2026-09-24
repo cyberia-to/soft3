@@ -1,0 +1,57 @@
+{
+  "repository": "cyberia-to/nu",
+  "revision": "1e58416ef0501675ef503dd86f80dc1236dfc2a4",
+  "origin": {
+    "name": "nu",
+    "repo": "cyberia-to/nu",
+    "branch": "main",
+    "rev": "1e58416ef0501675ef503dd86f80dc1236dfc2a4",
+    "note": "Public Nushell 0.110.0 source for Cyb's embedded libraries; upstream history preserved.",
+    "url": "https://github.com/cyberia-to/nu.git",
+    "revision": "1e58416ef0501675ef503dd86f80dc1236dfc2a4",
+    "available": true,
+    "pin_matches": true
+  },
+  "fix": "Tail error expression in the non-SQLite history branch; identical error behavior",
+  "anonymous_source_sha256": "cdc2a776074a9fdc320ae86984812edc437547700fdf91a0109b5a3b4b8949be",
+  "source": "crates/nu-cli/src/commands/history/history_.rs",
+  "platform": "aarch64-apple-darwin",
+  "checks": [
+    {
+      "command": "nu -c 'use toolkit.nu; toolkit fmt --check; toolkit clippy'",
+      "rustc": "1.90.0",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": "cargo clippy --locked --lib -p nu-protocol -p nu-engine -p nu-parser -p nu-command -p nu-cmd-lang -p nu-cmd-extra -p nu-cli -p nu-std -p nu-utils -- -D warnings -D clippy::unwrap_used -D clippy::unchecked_duration_subtraction",
+      "rustc": "1.90.0",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": "cargo build --locked --bin nu",
+      "rustc": "1.95.0",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": "cargo test --locked --lib -p nu-protocol -p nu-engine -p nu-parser -p nu-command -p nu-cmd-lang -p nu-cmd-extra -p nu-cli -p nu-std -p nu-utils",
+      "rustc": "1.95.0",
+      "result": "green",
+      "warnings": false,
+      "passed": 714,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --locked --features nu-cli/plugin -p nu-protocol -p nu-engine -p nu-parser -p nu-command -p nu-cmd-lang -p nu-cmd-extra -p nu-cli -p nu-std -p nu-utils",
+      "rustc": "1.95.0",
+      "result": "green",
+      "warnings": false,
+      "passed": 3359,
+      "failed": 0,
+      "ignored": 44
+    }
+  ]
+}

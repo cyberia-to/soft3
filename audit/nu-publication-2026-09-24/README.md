@@ -1,15 +1,17 @@
 # Public Nu source — 2026-09-24
 
 [cyberia-to/nu](https://github.com/cyberia-to/nu) is public. Its default `main`
-revision is [`f3962d5fb`](https://github.com/cyberia-to/nu/commit/f3962d5fbfc25e3a4cbfb673d9d1356730b4700e).
+revision is [`1e58416ef`](https://github.com/cyberia-to/nu/commit/1e58416ef0501675ef503dd86f80dc1236dfc2a4).
 `release/phase1.toml` selects that revision as an owned component.
 Cyb receives it through the selected soft3 assembly. This update belongs to
 release-train PR #30; existing candidate evidence remains unchanged.
 
 The base is Nushell 0.110.0 at `d40e191d8efad32a174d85b2a45f7ba4796cff84`.
-Git history, MIT license, Rust source and Cargo lockfile are preserved. The
-published change adds Cyb/soft3 context and replaces upstream release automation
-with embedded-library CI for Linux and macOS. The upstream runtime has no patch.
+Git history, MIT license and Cargo lockfile are preserved. The initial publication
+at `f3962d5fb` adds Cyb/soft3 context and replaces upstream release automation
+with embedded-library CI for Linux and macOS. CI exposed a Clippy warning in the
+non-SQLite history branch. The follow-up changes its tail return to an error
+expression, preserving command behavior and keeping both library profiles clean.
 
 The local workspace additionally contains an uncommitted Sugarloaf renderer,
 its workspace/lockfile edits, and a missing test-fixture symlink. Cyb's committed
@@ -18,8 +20,9 @@ base and preserves the symlink. The original working directories remain intact.
 
 ## Verification
 
-Commands, exact source revisions, toolchains and output summaries are in
-[checks.json](checks.json). On the published source:
+The initial publication evidence is in [checks.json](checks.json). The final
+pin, anonymous source download and repeated build, test and lint checks are in
+[final-checks.json](final-checks.json). On the final source:
 
 | Check | Result |
 | --- | --- |
