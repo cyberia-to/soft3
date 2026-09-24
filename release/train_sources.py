@@ -69,7 +69,19 @@ def snapshot(manager, output, component, candidate):
     rows.sort(key=lambda row: row["name"])
     result = {"component": component, "candidate": candidate,
               "manager_revision": command(["git", "rev-parse", "HEAD"], cwd=manager),
-              "phase1_sha256": digest(manifest), "repositories": rows}
+              "phase1_sha256": digest(manifest), "repositories": rows,
+              "changes": [], "change_errors": []}
+    for row in rows:
+        if row["name"] not in PRODUCTS or not row["available"]:
+            continue
+        try:
+            changes = json.loads(command(["gh", "api", f"repos/{row['repo']}/commits/{row['revision']}/pulls",
+                                          "--jq", '[.[] | select(.merged_at != null) | {title, html_url}]']))
+            if not changes:
+                raise ValueError("captured product HEAD has no merged pull request")
+            result["changes"].extend({"component": row["name"], **change} for change in changes)
+        except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+            result["change_errors"].append({"component": row["name"], "error": str(error)})
     write_json(output / "sources.json", result)
     return result
 

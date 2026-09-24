@@ -64,6 +64,8 @@ def source_gates(gates, directory, sources, checkouts, component):
     drift = [r["name"] for r in sources["repositories"] if r["name"] not in PRODUCTS and r.get("pin_matches") is not True]
     gates.record("phase1-pins", "red" if drift else "green", drift=drift,
                  manifest_sha256=sources["phase1_sha256"])
+    gates.record("release-notes-source", "red" if sources.get("change_errors") else "green",
+                 errors=sources.get("change_errors", []))
     if component != "soft3":
         contract = directory / component / "release/soft3.toml"
         soft3 = next(r for r in sources["repositories"] if r["name"] == "soft3")

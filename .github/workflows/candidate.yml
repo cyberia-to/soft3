@@ -40,6 +40,7 @@ jobs:
       - name: Capture default branches and immutable inputs
         id: capture
         env:
+          GH_TOKEN: ${{ github.token }}
           COMPONENT: ${{ inputs.component }}
           CANDIDATE: ${{ inputs.candidate }}
         run: |
