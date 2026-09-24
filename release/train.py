@@ -11,6 +11,7 @@ import tarfile
 
 from train_sources import PRODUCTS, TARGETS, command, digest, inventory, materialize, snapshot, write_json
 from train_gates import run_gates
+from train_notes import render as render_notes
 
 
 def candidate_name(value):
@@ -152,27 +153,7 @@ def collect(args):
                "result": verdict, "source_revisions": source_revisions, "available_binaries": binaries,
                "manager_revision": sources["manager_revision"], "promotion": "owner only"})
     (output / "soft3-dependencies.md").write_text("\n".join(details or ["Source capture is in sources.json; no platform resolved a package inventory."]) + "\n")
-    body = [f"# {component} {name} — {verdict.upper()}", "",
-            "Draft candidate. The owner records the verdict and selects promotion.", "",
-            "Input updates at the captured product revisions:", ""]
-    for index, change in enumerate(sources.get("changes", []), start=1):
-        title = change["title"].replace("\n", " ").replace("[", "(").replace("]", ")")
-        body.append(f"{index}. {change['component']}: [{title}]({change['html_url']})")
-    for error in sources.get("change_errors", []):
-        body.append(f"Unresolved change attribution: {error['component']} — {error['error']}")
-    body += ["", "Exact gate commands and results are in release-validation.json. Available binaries are inside platform archives.",
-             "", "| target | verdict | binaries |", "|---|---|---|"]
-    for row in results:
-        body.append(f"| {row['target']} | {row['result'].upper()} | {', '.join(a['name'] for a in row.get('artifacts', [])) or 'unavailable; see receipt'} |")
-    body += ["", "## failures", ""]
-    for row in results:
-        for gate in row.get("gates", []):
-            if gate["result"] != "green":
-                body.append(f"- {row['target']}: {gate['name']} — {gate.get('error', gate.get('reason', gate['result']))}")
-        if row.get("error"):
-            body.append(f"- {row['target']}: {row['error']}")
-    body += ["", *(details or ["See sources.json for the captured default-branch revisions."])]
-    (output / "release-notes.md").write_text("\n".join(body) + "\n")
+    (output / "release-notes.md").write_text(render_notes(output))
     checksums(output)
     print(f"{verdict.upper()} {component} {name}")
 
@@ -184,10 +165,11 @@ def draft(args):
     component = candidate["component"]
     repo = PRODUCTS[component][0]
     assets = [str(path) for path in sorted(output.iterdir()) if path.is_file()]
+    marker = "🟢" if candidate["result"] == "green" else "🔴"
     # gh keeps this tag name in draft metadata. No tag is pushed or published.
     result = command(["gh", "release", "create", name, *assets, "--repo", repo, "--draft", "--prerelease",
                       "--target", candidate["source_revisions"][component], "--latest=false",
-                      "--title", f"{component} {name} — {candidate['result'].upper()}",
+                      "--title", f"{marker} {component} {name} — {candidate['result'].upper()}",
                       "--notes-file", str(output / "release-notes.md")], timeout=300)
     print(result)
 
