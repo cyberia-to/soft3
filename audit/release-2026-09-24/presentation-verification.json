@@ -1,8 +1,8 @@
 {
-  "verified_at": "2026-09-24T08:58:09.621089+00:00",
-  "renderer_revision": "301c238296da0ed38e2ad429557be63b492443f1",
+  "verified_at": "2026-09-24T09:28:34.532931+00:00",
+  "renderer_revision": "0650cb7596033adefb0c7b754f15a4cd12e81e41",
   "candidate_source": "c5cc2077df510610abb7b5bd69675af6048ed724",
-  "release_url": "https://github.com/cyberia-to/soft3/releases/tag/untagged-6bf11402a4f960420656",
+  "release_url": "https://github.com/cyberia-to/soft3/releases/tag/untagged-7f0abcccdaeaa3b61a5e",
   "release_id": 395482953,
   "command": [
     "gh",
@@ -23,8 +23,11 @@
     "draft",
     "prerelease"
   ],
-  "body_sha256": "10a4d0851b75e946db0864894fa324b3c86403ea67558ac4bafa7143889b6f0c",
-  "github_markdown_render": "7 tables and 2 expandable sections verified through POST /markdown",
+  "body_sha256": "e9fc995d5c6c15a803edd7c7ef21e3f6dc4b7587ac959f027b18c5d4d9758439",
+  "github_markdown_render": "6 tables and 1 expandable section verified through POST /markdown",
+  "component_inputs_sha256": "75d14cec4a2b85e8804ace265b544441351daade56859c25945913750429e81e",
+  "component_count": 28,
+  "product_scoped_components_verified": true,
   "draft_preserved": true,
   "source_and_tag_preserved": true,
   "git_tag_exists": false,
