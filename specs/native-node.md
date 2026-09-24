@@ -77,11 +77,15 @@ when the source log did not record them.
 
 ## home and recovery
 
-The native database is `$home/bbg`. Genesis is strict JSON with the supported
-chain, engine, protocol and integer genesis time. The adapter pins canonical
-JSON bytes in the database and preserves the user's genesis file. Invalid
-existing genesis fails startup. A database whose genesis file is missing also
-fails startup.
+The native database is `$home/bbg`. Genesis is strict JSON with a supported
+chain, engine, protocol and integer genesis time. Auto-create on an empty
+database defaults to `spacepussy-test`; loading an existing genesis also
+accepts `pussy-rc`, `pussy` and `bostrom`, each pinned to its own protocol
+string (`soft3/<chain_id>/v1`, `spacepussy-test` alone keeping its v1/v2
+grandfather), so a chain's genesis cannot validate under another chain's
+protocol tag. The adapter pins canonical JSON bytes in the database and
+preserves the user's genesis file. Invalid existing genesis fails startup. A
+database whose genesis file is missing also fails startup.
 
 An existing `$home/log` requires explicit `cyber storage import-legacy` before
 normal startup. Import uses the existing validated genesis and complete source
