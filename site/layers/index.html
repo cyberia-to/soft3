@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>soft3 — the layers</title>
+        <meta name="description" content="soft3 as a ladder: 0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body. a layer knows only the layers below it; a substrate enters once; each layer ships alone." />
+        <meta name="theme-color" content="#08140c" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+        <link href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" rel="icon" />
+        <style>
+            :root { --cream: #fff8f0; --mint: #7dffc4; --bg: #06100a; }
+            * { box-sizing: border-box; }
+            html, body { height: 100%; }
+            body { margin: 0; background: var(--bg); background-image: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(125,255,196,0.10), transparent); color: var(--cream); font-family: Play, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
+            header { width: min(96vw, 1080px); display: flex; align-items: baseline; gap: 1rem; padding: 1rem 0 0.2rem; }
+            header h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
+            header h1 em { color: var(--mint); font-style: normal; }
+            header nav { margin-left: auto; font-size: 0.72rem; }
+            header nav a { color: var(--mint); text-decoration: none; }
+            header nav a:hover { text-decoration: underline; }
+            .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
+            main { width: min(96vw, 1080px); display: flex; flex-direction: column; gap: 0.45rem; padding-bottom: 1rem; flex: 1; }
+            .band { display: grid; grid-template-columns: 3.2rem 1fr 1.1fr; gap: 0.9rem; align-items: center; padding: 0.55rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(4% + var(--k) * 1.2%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
+            .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2.1rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
+            .who h2 { margin: 0; font-size: 1.15rem; line-height: 1.1; }
+            .who .prod { margin: 0.1rem 0 0; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; color: var(--mint); }
+            .who .does { margin: 0.25rem 0 0; font-size: 0.74rem; line-height: 1.35; color: rgba(255,248,240,0.72); }
+            .deps { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
+            .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
+            i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
+            i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
+            i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
+            i[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
+            i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
+            i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
+            i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
+            footer { width: min(96vw, 1080px); display: flex; gap: 0.7rem; justify-content: center; padding: 0 0 0.9rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
+            footer i { font-style: normal; width: 0.55rem; height: 0.55rem; border-radius: 999px; display: inline-block; background: var(--fc); margin-right: 0.25rem; vertical-align: middle; }
+            @media (max-width: 760px) { .band { grid-template-columns: 2.4rem 1fr; } .deps { grid-column: 1 / -1; justify-content: flex-start; } html, body { height: auto; } }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>soft3 · the <em>layers</em></h1>
+            <nav><a href="/">home</a> · <a href="/scheme/">scheme</a> · <a href="/chart/">chart</a></nav>
+        </header>
+        <p class="law">a layer knows only the layers below it · a substrate enters once · each layer ships alone</p>
+        <main>
+            <section class="band" style="--k:5">
+                <div class="num">5</div>
+                <div class="who"><h2>body</h2><p class="prod">cyb · cy · true-cyber · optica</p><p class="does">read · write · render — a neuron born as a record in a root: holds keys, talks to a node, shows what is linked, publishes the graph</p></div>
+                <div class="deps"><i data-f="mass">file</i><i data-f="play">spark</i><i data-f="play">prysm</i><i data-f="play">mir</i><i data-f="word">rune</i><i data-f="play">evy</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="form">honeycrisp</i><i data-f="play">nu</i><i data-f="play">optica</i><i data-f="mass">fs</i><i data-f="space">ward</i><i data-f="word">neural</i><i data-f="life">sigma</i><i data-f="work">wysm</i><i data-f="work">kern</i><i data-f="play">lytics</i></div>
+            </section><section class="band" style="--k:4">
+                <div class="num">4</div>
+                <div class="who"><h2>network</h2><p class="prod">bostrom · pussy</p><p class="does">a root book with a token that other books register into, the nodes that agree on its root, and the proofs that the rules are sound</p></div>
+                <div class="deps"><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="space">cybernode</i><i data-f="work">eidos</i></div>
+            </section><section class="band" style="--k:3">
+                <div class="num">3</div>
+                <div class="who"><h2>node</h2><p class="prod">soft3 node — the composition of layers 0–3; one neuron, one book</p><p class="does">admit · order · finalize · settle · keep — signals become state, focus becomes reward, keys in custody</p></div>
+                <div class="deps"><i data-f="mass">neuron</i><i data-f="mass">cybergraph</i><i data-f="life">foculus</i><i data-f="life">tru</i><i data-f="mass">tok</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="space">tade</i><i data-f="space">radio</i><i data-f="word">inf</i></div>
+            </section><section class="band" style="--k:2">
+                <div class="num">2</div>
+                <div class="who"><h2>warrior</h2><p class="prod">joy</p><p class="does">run · prove · verify — executes the formula on nox, proves it with zheng; one warrior per machine</p></div>
+                <div class="deps"><i data-f="word">trident</i><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
+            </section><section class="band" style="--k:1">
+                <div class="num">1</div>
+                <div class="who"><h2>language</h2><p class="prod">trident · silicon</p><p class="does">compile · audit · hash · equiv — .tri → .nox with the cost report before you run</p></div>
+                <div class="deps"><i data-f="form">nebu</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
+            </section><section class="band" style="--k:0">
+                <div class="num">0</div>
+                <div class="who"><h2>substrate</h2><p class="prod">strata · hemera · nox</p><p class="does">field · hash · machine — what every layer computes in</p></div>
+                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
+            </section>
+        </main>
+        <footer>
+            <span><i data-f="form"></i>form</span><span><i data-f="mass"></i>mass</span><span><i data-f="space"></i>space</span><span><i data-f="life"></i>life</span><span><i data-f="word"></i>word</span><span><i data-f="work"></i>work</span><span><i data-f="play"></i>play</span>
+            <span style="margin-left:1rem;text-transform:none;letter-spacing:0">registry: release/components.toml</span>
+        </footer>
+    </body>
+</html>

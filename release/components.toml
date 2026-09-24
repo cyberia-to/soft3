@@ -1,0 +1,454 @@
+# soft3 component registry — the one list every surface is checked against.
+# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body) — the architecture in principle; phase says what ships when;
+# facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
+# checked by site/check-components.py; edit here first, then the surfaces.
+
+[[component]]
+name = "strata"
+kind = "crate"
+repo = "strata"
+verb = "math"
+facet = "form"
+layer = 0
+phase = "1"
+state = "live"
+
+[[component]]
+name = "hemera"
+kind = "crate"
+repo = "hemera"
+verb = "hash"
+facet = "form"
+layer = 0
+phase = "1"
+state = "live"
+
+[[component]]
+name = "nox"
+kind = "crate"
+repo = "nox"
+verb = "run"
+facet = "work"
+layer = 0
+phase = "1"
+state = "live"
+
+[[component]]
+name = "trident"
+kind = "crate"
+repo = "trident"
+verb = "compile"
+facet = "word"
+layer = 1
+phase = "1"
+state = "live"
+
+[[component]]
+name = "silicon"
+kind = "crate"
+repo = "trident"
+verb = "emit"
+facet = "work"
+layer = 1
+phase = "after"
+state = "unpublished"
+
+[[component]]
+name = "joy"
+kind = "crate"
+repo = "joy"
+verb = "prove"
+facet = "work"
+layer = 2
+phase = "1"
+state = "published"
+
+[[component]]
+name = "lens"
+kind = "crate"
+repo = "lens"
+verb = "commit"
+facet = "form"
+layer = 2
+phase = "1"
+state = "published"
+
+[[component]]
+name = "zheng"
+kind = "crate"
+repo = "zheng"
+verb = "prove"
+facet = "work"
+layer = 2
+phase = "1"
+state = "live"
+
+[[component]]
+name = "bbg"
+kind = "crate"
+repo = "bbg"
+verb = "store"
+facet = "mass"
+layer = 2
+phase = "1"
+state = "live"
+
+[[component]]
+name = "neuron"
+kind = "crate"
+repo = "neuron"
+verb = "act"
+facet = "mass"
+layer = 3
+phase = "1"
+state = "local"
+
+[[component]]
+name = "cybergraph"
+kind = "crate"
+repo = "cybergraph"
+verb = "link"
+facet = "mass"
+layer = 3
+phase = "1"
+state = "live"
+
+[[component]]
+name = "foculus"
+kind = "crate"
+repo = "foculus"
+verb = "agree"
+facet = "life"
+layer = 3
+phase = "1"
+state = "unwired"
+
+[[component]]
+name = "tru"
+kind = "crate"
+repo = "tru"
+verb = "converge"
+facet = "life"
+layer = 3
+phase = "1"
+state = "published"
+
+[[component]]
+name = "tok"
+kind = "crate"
+repo = "tok"
+verb = "pay"
+facet = "mass"
+layer = 3
+phase = "1"
+state = "published"
+
+[[component]]
+name = "mudra"
+kind = "crate"
+repo = "mudra"
+verb = "encrypt"
+facet = "space"
+layer = 3
+phase = "1"
+state = "live"
+
+[[component]]
+name = "vault"
+kind = "crate"
+repo = "vault"
+verb = "keep"
+facet = "space"
+layer = 3
+phase = "1"
+state = "local"
+
+[[component]]
+name = "tade"
+kind = "crate"
+repo = "tade"
+verb = "frame"
+facet = "space"
+layer = 3
+phase = "1"
+state = "published"
+
+[[component]]
+name = "radio"
+kind = "crate"
+repo = "radio"
+verb = "transmit"
+facet = "space"
+layer = 3
+phase = "1"
+state = "live"
+
+[[component]]
+name = "inf"
+kind = "crate"
+repo = "inf"
+verb = "query"
+facet = "word"
+layer = 3
+phase = "1"
+state = "live"
+
+[[component]]
+name = "soft3"
+kind = "product"
+repo = "soft3"
+verb = "compose"
+facet = "play"
+layer = 3
+phase = "1"
+state = "live"
+
+[[component]]
+name = "file"
+kind = "crate"
+repo = "file"
+verb = "name"
+facet = "mass"
+layer = 5
+phase = "1"
+state = "local"
+
+[[component]]
+name = "spark"
+kind = "crate"
+repo = "spark"
+verb = "open"
+facet = "play"
+layer = 5
+phase = "1"
+state = "local"
+
+[[component]]
+name = "prysm"
+kind = "crate"
+repo = "prysm"
+verb = "paint"
+facet = "play"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "mir"
+kind = "crate"
+repo = "mir"
+verb = "render"
+facet = "play"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "rune"
+kind = "crate"
+repo = "rune"
+verb = "eval"
+facet = "word"
+layer = 5
+phase = "1"
+state = "published"
+
+[[component]]
+name = "evy"
+kind = "crate"
+repo = "evy"
+verb = "draw"
+facet = "play"
+layer = 5
+phase = "1"
+state = "local"
+
+[[component]]
+name = "soma"
+kind = "crate"
+repo = "soma"
+verb = "think"
+facet = "life"
+layer = 5
+phase = "1"
+state = "local"
+
+[[component]]
+name = "glia"
+kind = "crate"
+repo = "glia"
+verb = "infer"
+facet = "work"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "honeycrisp"
+kind = "crate"
+repo = "honeycrisp"
+verb = "accelerate"
+facet = "form"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "nu"
+kind = "crate"
+repo = "nu"
+verb = "console"
+facet = "play"
+layer = 5
+phase = "1"
+state = "local"
+
+[[component]]
+name = "optica"
+kind = "product"
+repo = "optica"
+verb = "publish"
+facet = "play"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "cyb"
+kind = "product"
+repo = "cyb"
+verb = "embody"
+facet = "play"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "cy"
+kind = "product"
+repo = "cyb"
+verb = "embody"
+facet = "play"
+layer = 5
+phase = "1"
+state = "live"
+
+[[component]]
+name = "true-cyber"
+kind = "product"
+repo = "true-cyber"
+verb = "embody"
+facet = "play"
+layer = 5
+phase = "1"
+state = "published"
+
+[[component]]
+name = "bostrom"
+kind = "network"
+repo = "bostrom"
+verb = "root"
+facet = "play"
+layer = 4
+phase = "1"
+state = "reborn 2026-11-05"
+
+[[component]]
+name = "pussy"
+kind = "network"
+repo = "space-pussy"
+verb = "root"
+facet = "play"
+layer = 4
+phase = "1"
+state = "reborn 2026-11-05"
+
+[[component]]
+name = "fs"
+kind = "crate"
+repo = "fs"
+verb = "mount"
+facet = "mass"
+layer = 5
+phase = "after"
+state = "spec"
+
+[[component]]
+name = "ward"
+kind = "crate"
+repo = "cyb"
+verb = "authorize"
+facet = "space"
+layer = 5
+phase = "after"
+state = "local"
+
+[[component]]
+name = "neural"
+kind = "crate"
+repo = "neural"
+verb = "mean"
+facet = "word"
+layer = 5
+phase = "after"
+state = "spec"
+
+[[component]]
+name = "sigma"
+kind = "crate"
+repo = "sigma"
+verb = "evaluate"
+facet = "life"
+layer = 5
+phase = "after"
+state = "spec"
+
+[[component]]
+name = "eidos"
+kind = "crate"
+repo = "eidos"
+verb = "certify"
+facet = "work"
+layer = 4
+phase = "after"
+state = "blocked"
+
+[[component]]
+name = "wysm"
+kind = "crate"
+repo = "wysm"
+verb = "sandbox"
+facet = "work"
+layer = 5
+phase = "after"
+state = "dormant"
+
+[[component]]
+name = "kern"
+kind = "crate"
+repo = "kern"
+verb = "shade"
+facet = "work"
+layer = 5
+phase = "after"
+state = "spec"
+
+[[component]]
+name = "lytics"
+kind = "crate"
+repo = "lytics"
+verb = "measure"
+facet = "play"
+layer = 5
+phase = "after"
+state = "live"
+
+[[component]]
+name = "cybernode"
+kind = "ops"
+repo = "cybernode"
+verb = "host"
+facet = "space"
+layer = 4
+phase = "1"
+state = "live"

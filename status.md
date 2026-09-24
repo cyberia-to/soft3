@@ -9,7 +9,9 @@ alias: stack, soft3 registry, component registry, stack registry, soft3 status
 
 the component registry and its honest state: every repo, its verb, its release, and where it actually stands. soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally it unfolds the same seven-triad spiral that [[cybics]] uses for all knowledge. form defines the primitive rules. mass is what knowledge is literally made of. space is where it exists at scale. life is where it becomes intelligent. word is what it means. work is how it runs. play is where we act together.
 
-each component is in one of six states. **live** — carries real traffic today. **published** — released and correct, but not yet in the live loop. **unwired** — built, released, and not connected to the thing that needs it. **spec** — paper only. **dormant** — no commits in months while holding a named seat. **blocked** — waiting on another component's gap.
+each component has a readiness state. **live** — carries real traffic today. **published** — released and correct, but not yet in the live loop. **unwired** — built, released, and not connected to the thing that needs it. **spec** — paper only. **dormant** — no commits in months while holding a named seat. **blocked** — waiting on another component's gap.
+
+`local` in [the component registry](release/components.toml) identifies source awaiting stack release qualification. Repository visibility is independent of this state.
 
 | repo | verb | state | release | crates | what it does |
 |---|---|---|---|---|---|
@@ -22,14 +24,15 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/mass|mass]] |  |  |  |  |  |
 | [[soft3/cybergraph\|cybergraph]] | link | live | [0.1.1](https://github.com/cyberia-to/cybergraph/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
 | [[soft3/bbg\|bbg]] | store | live | [0.2.1](https://github.com/cyberia-to/bbg/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs · QueryProof serde |
-| [[cell]] | hold | spec | — | — | local node · graph slice · signal chain · apply/prove loop · overlaps cyb-core, to converge |
+| [[neuron]] | act | local | — | — | neuron identity and runtime · source in [neuron](https://github.com/cyberia-to/neuron) |
+| [[file]] | name | local | — | — | file identity and representation · source in [file](https://github.com/cyberia-to/file) |
 | [[fs]] | mount | spec | — | — | particles · patches · sync · repo is empty |
 | [[tok]] | pay | published | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation · no live economy yet |
 | [[cybics/space|space]] |  |  |  |  |  |
 | [[vault]] | keep | spec | — | — | secret storage: seeds, caps, sealed state — a seat proposed, not yet a repo |
 | [[mudra]] | encrypt | live | [0.1.0](https://github.com/cyberia-to/mudra/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-mudra) | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | live | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip · carries `cyb/sync/0` |
-| [[tape]] | frame | published | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
+| [[tade]] | frame | published | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
 | [[foculus]] | sync | unwired | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT · engine partial, never deployed |
 | [[cyb/root/ward\|ward]] | authorize | spec | — | — | effect router · emit/query/link/seal/host |
 | [[cybics/life|life]] |  |  |  |  |  |
@@ -52,6 +55,9 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/play|play]] |  |  |  |  |  |
 | [[mir]] | render | live | — | — | positions + features → [[R-1.0]] world |
 | [[prysm]] | paint | live | — | — | tape dialect · chunks → UI |
+| [[spark]] | open | local | — | — | file decoding · source in [spark](https://github.com/cyberia-to/spark) |
+| [[evy]] | draw | local | — | — | rendering · source in [evy](https://github.com/cyberia-to/evy) |
+| [[nu]] | console | local | — | — | embedded Nushell libraries · source in [nu](https://github.com/cyberia-to/nu) |
 | [[lytics]] | measure | live | — | — | signed visitor events · PoW-priced · cohorts · funnels — cybernetics is impossible without measurement |
 
 **the stack has a heart, and products grow on its skin.** at the centre sits the trinity the whole stack exists to turn: [[cyb]] the body, [[cyber]] the mind, [[cyberia]] the state — a cycle (bodies feed the mind, the mind guides the state, citizens embody). they are not seats in the registry; the registry is what they are made of. listing cyb inside the stack it depends on was a structural error, corrected 2026-09-02. [[lytics]] however IS a seat — measurement is how cybernetics closes its loop — and returned to play. the stack's own top-tier seats are [[cell]] (hold), [[cyb/parts/ward|ward]] (authorize), [[vault]] (keep) and [[sigma]] (evaluate). the full interaction graph, with every concrete input and output, is drawn at [soft3.org/chart](https://soft3.org/chart); the boundary rule and the loop — four motions, two guarantees, one attractor, every verb from this table — live in [[crystallization]] and are drawn at [soft3.org/scheme](https://soft3.org/scheme).
