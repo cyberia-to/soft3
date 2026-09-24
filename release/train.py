@@ -154,9 +154,14 @@ def collect(args):
     (output / "soft3-dependencies.md").write_text("\n".join(details or ["Source capture is in sources.json; no platform resolved a package inventory."]) + "\n")
     body = [f"# {component} {name} — {verdict.upper()}", "",
             "Draft candidate. The owner records the verdict and selects promotion.", "",
-            "1. Run the common soft3 source and qualification contract; exact commands and results are in release-validation.json.",
-            "2. Run the product gates for each required platform; every available binary is attached inside its platform archive.", "",
-            "| target | verdict | binaries |", "|---|---|---|"]
+            "Input updates at the captured product revisions:", ""]
+    for index, change in enumerate(sources.get("changes", []), start=1):
+        title = change["title"].replace("\n", " ").replace("[", "(").replace("]", ")")
+        body.append(f"{index}. {change['component']}: [{title}]({change['html_url']})")
+    for error in sources.get("change_errors", []):
+        body.append(f"Unresolved change attribution: {error['component']} — {error['error']}")
+    body += ["", "Exact gate commands and results are in release-validation.json. Available binaries are inside platform archives.",
+             "", "| target | verdict | binaries |", "|---|---|---|"]
     for row in results:
         body.append(f"| {row['target']} | {row['result'].upper()} | {', '.join(a['name'] for a in row.get('artifacts', [])) or 'unavailable; see receipt'} |")
     body += ["", "## failures", ""]

@@ -39,7 +39,7 @@ sets, altered artifacts, incomplete inventories and missing platform receipts.
 
 | owner | gates |
 |---|---|
-| soft3 | `origin-checkouts`, `phase1-pins`, `package-resolution`, `source-inputs-unchanged` |
+| soft3 | `origin-checkouts`, `phase1-pins`, `release-notes-source`, `package-resolution`, `source-inputs-unchanged` |
 | soft3 | `stack-{hemera,bbg,lens,nox,zheng,cybergraph,foculus,tru,tok,mudra,vault,neuron,file,radio}`: `cargo test --locked` in each component |
 | soft3 | `conformance-snapshot`: `cargo conformance --check`; snapshot validation must be implemented for this gate to pass |
 | soft3 | `soft3-tests`, `soft3-release`: locked Cargo tests/build; `node-status`: fresh-home boot and HTTP status |

@@ -67,7 +67,7 @@ creates drafts only. Product workflows pin this implementation by full revision.
 
 Before changing the engine, run:
 `python3 -m unittest discover -s release -p 'test_*.py' -v`.
-Candidate gates are `origin-checkouts`, `phase1-pins`, `package-resolution`,
+Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `package-resolution`,
 `source-inputs-unchanged`, `stack-*`, `conformance-snapshot`, `soft3-tests`,
 `soft3-release`, and `node-status`. Products add `soft3-dependency` and their
 application gates. Missing implementations and failed gates remain red evidence.
