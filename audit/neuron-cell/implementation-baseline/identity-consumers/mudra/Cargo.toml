@@ -1,0 +1,10 @@
+[package]
+name = "identity-check-mudra"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies.subject]
+package = "cyber-mudra"
+path = "/Users/master/cyber/mudra"
+default-features = false
+features = []

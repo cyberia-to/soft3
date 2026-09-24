@@ -1,0 +1,156 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling cyberia v0.1.0 (/Users/master/cyber/cyberia-my)
+warning: variable does not need to be mutable
+   --> tests/../src/signal.rs:575:9
+    |
+575 |     let mut resolve = |s: &str, idmap: &std::collections::HashMap<String, String>| -> String {
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `cyberia` (test "domain_compat") generated 1 warning (run `cargo fix --test "domain_compat" -p cyberia` to apply 1 suggestion)
+warning: variable does not need to be mutable
+   --> src/signal.rs:575:9
+    |
+575 |     let mut resolve = |s: &str, idmap: &std::collections::HashMap<String, String>| -> String {
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `site`, `center`, and `source` are never read
+  --> src/console.rs:24:5
+   |
+23 | struct MapData {
+   |        ------- fields in this struct
+24 |     site: String,
+   |     ^^^^
+25 |     center: [f64; 2],
+   |     ^^^^^^
+...
+37 |     source: String,
+   |     ^^^^^^
+   |
+   = note: `MapData` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `class` and `blurb` are never read
+  --> src/economy.rs:22:9
+   |
+17 | pub struct GoodDef {
+   |            ------- fields in this struct
+...
+22 |     pub class: &'static str, // energy | matter | labor | digital | food | kit | stay
+   |         ^^^^^
+23 |     pub blurb: &'static str,
+   |         ^^^^^
+   |
+   = note: `GoodDef` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: function `market_buy` is never used
+   --> src/economy.rs:515:8
+    |
+515 | pub fn market_buy(order_id: u64, qty: f64) -> Result<String, String> {
+    |        ^^^^^^^^^^
+
+warning: function `market_list_sell` is never used
+   --> src/economy.rs:550:8
+    |
+550 | pub fn market_list_sell(good_id: &str, qty: f64, price_cx: f64) -> Result<String, String> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: function `market_cancel` is never used
+   --> src/economy.rs:590:8
+    |
+590 | pub fn market_cancel(order_id: u64) -> Result<String, String> {
+    |        ^^^^^^^^^^^^^
+
+warning: field `view_id` is never read
+   --> src/erp.rs:143:9
+    |
+142 | pub struct ViewProjection {
+    |            -------------- field in this struct
+143 |     pub view_id: String,
+    |         ^^^^^^^
+    |
+    = note: `ViewProjection` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: fields `site`, `stats`, `districts`, and `domains` are never read
+  --> src/land.rs:10:9
+   |
+ 9 | pub struct MapData {
+   |            ------- fields in this struct
+10 |     pub site: String,
+   |         ^^^^
+11 |     #[serde(default)]
+12 |     pub stats: MapStats,
+   |         ^^^^^
+...
+15 |     pub districts: Vec<LandFlat>,
+   |         ^^^^^^^^^
+...
+19 |     pub domains: Vec<DomainPoint>,
+   |         ^^^^^^^
+   |
+   = note: `MapData` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: fields `plot_count`, `plot_ha`, and `district_ha` are never read
+  --> src/land.rs:54:9
+   |
+52 | pub struct MapStats {
+   |            -------- fields in this struct
+53 |     #[serde(default)]
+54 |     pub plot_count: u32,
+   |         ^^^^^^^^^^
+55 |     #[serde(default)]
+56 |     pub plot_ha: f64,
+   |         ^^^^^^^
+57 |     #[serde(default)]
+58 |     pub district_ha: f64,
+   |         ^^^^^^^^^^^
+   |
+   = note: `MapStats` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: variant `FloatDesc` is never constructed
+   --> src/states.rs:141:5
+    |
+135 | enum SortKey {
+    |      ------- variant in this enum
+...
+141 |     FloatDesc,
+    |     ^^^^^^^^^
+    |
+    = note: `SortKey` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: fields `region`, `currency`, and `cap_b_usd` are never read
+   --> src/states.rs:158:5
+    |
+152 | struct SpokeMock {
+    |        --------- fields in this struct
+...
+158 |     region: String,
+    |     ^^^^^^
+159 |     currency: String,
+    |     ^^^^^^^^
+...
+172 |     cap_b_usd: f64,
+    |     ^^^^^^^^^
+    |
+    = note: `SpokeMock` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `cyberia` (bin "cyberia") generated 11 warnings (run `cargo fix --bin "cyberia" -p cyberia` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.94s
+     Running tests/domain_compat.rs (target/debug/deps/domain_compat-5ab5d21451910f29)
+
+running 1 test
+test existing_browser_envelope_retains_identity_signature_and_storage_names ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

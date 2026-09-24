@@ -1,0 +1,4 @@
+PASS: original executable opens and writes its pre-BBG flat log
+PASS: explicit activation preserves original genesis bytes
+PASS: original flat-log executable rejects the retired genesis reader path
+PASS: current executable reopens and all unsigned mutation routes reject

@@ -1,0 +1,10 @@
+[package]
+name = "identity-check-id"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies.subject]
+package = "neuron-id"
+path = "/Users/master/cyber/neuron/id"
+default-features = false
+features = []

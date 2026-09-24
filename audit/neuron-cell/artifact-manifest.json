@@ -1,0 +1,51 @@
+{
+  "schema": "neuron/local-artifact-verification/1",
+  "version": "0.13.1",
+  "macos": {
+    "image_checksum": "passed",
+    "readonly_bundle_binary_match": "passed",
+    "bundle_version": "0.13.1",
+    "web_index_match": "passed",
+    "owned_mount_detached": true
+  },
+  "android": {
+    "zip_integrity": "passed",
+    "packaged_staged_library_match": "passed",
+    "signature_verification": "passed",
+    "package": "ai.cyb.app",
+    "version_name": "0.13.1",
+    "version_code": 1301
+  },
+  "artifacts": [
+    {
+      "path": "cyb/target/release/cyb",
+      "bytes": 104228752,
+      "sha256": "fe8f78b97a1f04797feed54af3975423042e196040ed13b4705ba5f8ad7a015f"
+    },
+    {
+      "path": "cyb/target/release/cyb.dmg",
+      "bytes": 39964832,
+      "sha256": "88bdff10b8c533a83433d1df5cc42bfeb4a95c79b07a241e9acc88da45321a85"
+    },
+    {
+      "path": "cyb/shell/gen/android/app/build/outputs/apk/release/app-release.apk",
+      "bytes": 40691645,
+      "sha256": "6c01d509dff2b8edf00cce36493a6a2e4c2489c3beaac124c65e54f71fcc0951"
+    },
+    {
+      "path": "cyb/shell/gen/android/app/src/main/jniLibs/arm64-v8a/libcyb.so",
+      "bytes": 130681088,
+      "sha256": "f7a2b9aea80ce7ce2c0b614d0211fa152aff90be12e8a13f7992a6cc7c88d014"
+    },
+    {
+      "path": "cyb/apps/dist/index.html",
+      "bytes": 1204,
+      "sha256": "b9683f44a1d8ad57eb3488889e914b40df4abc15e719a542a3c5f1de1eb68778"
+    }
+  ],
+  "limits": [
+    "local build; no publication or installation",
+    "Android APK build/signature verified; no device execution claim",
+    "DMG contents verified; no notarization claim"
+  ]
+}

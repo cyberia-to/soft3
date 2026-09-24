@@ -28,6 +28,14 @@ separate selections with explicit compatibility rules.
 
 [All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md)
 
+[Neuron + cell convergence roadmap](roadmap/neuron-cell-convergence.md) —
+one subject identity, durable program execution, and explicit legacy migration.
+The local implementation now uses [neuron](specs/neuron.md), progs and a shared
+GraphSession. The [implementation ledger](audit/neuron-cell/implementation.md)
+records completed packages and remaining acceptance gates; the
+[inventory](audit/neuron-cell/README.md) preserves the original scan. This is
+source-checkout evidence, separate from published releases and deployed nodes.
+
 ## releases
 
 [Release train](specs/releases.md) owns stack qualification for soft3, cyber and
@@ -36,30 +44,55 @@ candidates with source inventories, platform binaries and gate receipts.
 
 ## install
 
-```bash
-cargo install soft3          # stack CLI + real node
-cargo install true-cyber     # product face (binary: cyber)
+Build the migration from compatible sibling checkouts with Rust 1.95+:
+
+```nu
+cargo install --path ~/cyber/soft3/crate --locked
 ```
+
+Registry releases (`cargo install soft3` / `cargo install true-cyber`) retain
+their published contents. They do not acquire these workspace changes until a
+new release. The [headless client](../true-cyber/README.md) and
+[product node launcher](../cyber/specs/cli.md) both name their binary `cyber`;
+select the intended source explicitly when building or invoking them.
 
 ## run a node
 
-```bash
+For a fresh local home, activate authenticated publication explicitly before
+starting the node:
+
+```nu
+soft3 auth enable --home ~/.spacepussy-test
 soft3 node --home ~/.spacepussy-test --bind 127.0.0.1:7780 --moniker dev-1
 ```
 
-engine: **cybergraph + bbg**. not a status stub.
+The engine is cybergraph + BBG. Stop old writers before upgrading a legacy home;
+use `soft3 auth enable --home DIR --import-legacy` to import retained log bytes
+and activate the monotonic authenticated generation. Original genesis/log
+history remains available. Activation creates no neuron key or attachment.
 
-```bash
-# submit a cyberlink (labels hemera-hashed, or hex ids)
-curl -sS -X POST http://127.0.0.1:7780/v1/link \
-  -H 'content-type: application/json' \
-  -d '{"neuron":"01","from":"0a","to":"0b","amount":1}'
+In another terminal, inspect `http://127.0.0.1:7780/capabilities` and compare the
+reported network with the activation output or trusted genesis. `NETWORK_HEX`
+below is that complete 64-hex native ID. Use a separate client home:
 
-soft3 sync                   # public edge on cybernode
-cyber sync                   # same via true-cyber
+```nu
+cargo run --manifest-path ~/cyber/true-cyber/Cargo.toml --locked -- --home ~/.cyber/native-client neuron create desktop NETWORK_HEX
+cargo run --manifest-path ~/cyber/true-cyber/Cargo.toml --locked -- --home ~/.cyber/native-client link topic answer --network NETWORK_HEX --rpc http://127.0.0.1:7780
 ```
 
-public chaosnet: `https://cyb.ai/spacepussy-test` (cyberproxy).
+`neuron attach KEY_FILE NETWORK_HEX` reuses existing custody. Submission uses
+`POST /v3/action`; receipt lookup and bounded history use `/v3/receipt/...` and
+`/v3/history`. Retain the printed request ID for exact retry or reconciliation.
+Endpoint acceptance is distinct from consensus finality. Authenticated clients
+require matching capabilities and never fall back to author-label writes.
+See the [signed adapter](specs/signed-native-adapter.md),
+[consumer boundaries](specs/identity-consumers.md) and
+[launcher evidence](../cyber/audit/neuron-launcher.md).
+
+The configured public chaosnet endpoint is `https://cyb.ai/spacepussy-test`
+(cyberproxy). Its deployed profile must be observed separately; local migration
+tests do not establish a remote upgrade. `soft3 sync` probes status; the native
+client's explicit `sync --network NETWORK_HEX` mirrors the declared history.
 
 launch manual: [[soft3/docs/launch|launch spacepussy-test]].
 

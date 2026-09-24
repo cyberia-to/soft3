@@ -1,0 +1,958 @@
+{
+  "schema": "soft3/neuron-convergence-release-validation/1",
+  "verified_utc": "2026-09-13T02:55:29.906308+00:00",
+  "result": "passed-for-declared-local-profiles",
+  "evaluation": "G01–G14 are the manual contract/scenario review in release.md; this script rechecks retained evidence, source/artifact/context hashes and binary input freshness. It does not rerun tests or prove semantic correctness from log text.",
+  "inputs": [
+    {
+      "path": "soft3/audit/neuron-cell/source-manifest.json",
+      "bytes": 4961295,
+      "sha256": "4a6bab413cc7e9bff031937ec6f55c90e2e1c46eceb66628a223e171087caf70"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/final-dispositions.json",
+      "bytes": 146103,
+      "sha256": "5438e15fc5cd53616470ff9388307c805c7d61cf880a2d78c231bf616be1ef71"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/artifact-manifest.json",
+      "bytes": 1601,
+      "sha256": "876855ae6290378527b4f84684b803920dc3671290227768fba8db2f346107b4"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/compatibility.json",
+      "bytes": 4762,
+      "sha256": "88ff1bd6293ce4b4ccdcf84af4f8a30c41102185ad336e8115922e6503995d47"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/release.md",
+      "bytes": 13281,
+      "sha256": "7f74ac0a2a8f887998ea3d98f45674a5bb49088d3d5193cf54dd5b5b0b3eb826"
+    },
+    {
+      "path": "soft3/roadmap/neuron-cell-convergence.md",
+      "bytes": 48999,
+      "sha256": "8449435160c3a6934850f846624fb3a57981696eeaf490d1255dc6c2523f04bd"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/validate_release.py",
+      "bytes": 12189,
+      "sha256": "506cc89e555bc19d2a0d8c86c0e946ebbd67ef82ee0b0cbab928093986890f12"
+    }
+  ],
+  "verified_sources": 12902,
+  "dispositions": 122,
+  "required_build_manifests": 87,
+  "context": {
+    "manifest": {
+      "path": "ctx/ctx.sources.json",
+      "bytes": 16449,
+      "sha256": "f1ea4aec5694465e29f2c265946b4f6e5a18c23eaaaab92f3def50dfbe5e0f98"
+    },
+    "output": {
+      "path": "ctx/ctx.md",
+      "bytes": 224184,
+      "sha256": "b92d7147b4000a744c7a790073170cb5560497cb7aa7814ca29d83aad7bd49ca"
+    },
+    "verified_inputs": 43,
+    "stale_inputs": 0
+  },
+  "gates": [
+    {
+      "gate": "G01",
+      "package": "P00",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G02",
+      "package": "P01",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G03",
+      "package": "P02",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G04",
+      "package": "P03",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G05",
+      "package": "P04",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G06",
+      "package": "P05",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G07",
+      "package": "P06",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G08",
+      "package": "P07",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G09",
+      "package": "P08",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G10",
+      "package": "P09",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G11",
+      "package": "P10",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G12",
+      "package": "P11",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G13",
+      "package": "P12",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    },
+    {
+      "gate": "G14",
+      "package": "P13",
+      "result": "passed-for-declared-local-profiles",
+      "review": "release.md#plan-closure-matrix"
+    }
+  ],
+  "actual_profiles": [
+    {
+      "name": "neuron",
+      "cwd": "neuron",
+      "command": "cargo test --workspace --all-features --offline",
+      "profile": "rustc 1.95.0; NEURON_LEGACY_BINARY=retained original binary",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-neuron-all.log",
+        "bytes": 10674,
+        "sha256": "177a9a4e2a27b5f1615eb0ced6d2f1a5c0627d07bd544e4143481d8877b08dde"
+      },
+      "rust_test_totals": {
+        "passed": 48,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "name": "neuron-clippy",
+      "cwd": "neuron",
+      "command": "cargo clippy --workspace --all-targets --all-features --offline --no-deps -- -D warnings",
+      "profile": "rustc 1.95.0",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-neuron-clippy.log",
+        "bytes": 2112,
+        "sha256": "97460823a067066551237805bced474af06f29db79fd0092233c968f618695ec"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "bbg",
+      "cwd": "bbg/rs",
+      "command": "cargo test --all-features --offline --no-fail-fast",
+      "profile": "rustc 1.95.0",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bbg-all.log",
+        "bytes": 17357,
+        "sha256": "080e38193ec7ca3e569035bbaf23a72d9f5f4e4b5e9034688c6f93a204a7bef1"
+      },
+      "rust_test_totals": {
+        "passed": 162,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "name": "cyb-core",
+      "cwd": "cyb",
+      "command": "cargo test -p cyb-core --offline",
+      "profile": "rustc 1.95.0; package default features",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cyb-core-all.log",
+        "bytes": 14208,
+        "sha256": "29d98d86c390c0a79eaa141b7d709a873501c72de54778ded7f17091ceb57ae3"
+      },
+      "rust_test_totals": {
+        "passed": 52,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "name": "cyb-bodies",
+      "cwd": "cyb",
+      "command": "cargo build --locked --offline -p cyb -p cy",
+      "profile": "rustc 1.95.0; package default features; native debug",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cyb-build-source-final.log",
+        "bytes": 17511,
+        "sha256": "af3cefbdd91b881d180e105597489c85e617c2397790fc911abbc937adeb96ad"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "soft3-node",
+      "cwd": "soft3/crate",
+      "command": "cargo build --locked --offline --bin soft3",
+      "profile": "rustc 1.95.0; package default features; native debug",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-soft3-build-source-final.log",
+        "bytes": 1961,
+        "sha256": "18abd77e1bdd7f048f3cb0d0077bcafe486c7d986dc73888ab313b28a7ac19c3"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "cyber-launcher",
+      "cwd": "cyber",
+      "command": "cargo build --release --locked --offline",
+      "profile": "rustc 1.95.0; default features; native release",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cyber-launcher-release.log",
+        "bytes": 2183,
+        "sha256": "11788d9d043f5066b36d42e3d131ad0c85cb30d44aede84e8678f173a101f5f6"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "cyber-release-processes",
+      "cwd": "cyber",
+      "command": "cargo test --locked --offline --all-targets",
+      "profile": "rustc 1.95.0; CYBER_TEST_BINARY=cyber/target/release/cyber",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cyber-launcher-release-tests.log",
+        "bytes": 3084,
+        "sha256": "09fa890c63ba67b50fdb99ea037ab246b5984c559d418ec43c80bbd295ae6a5b"
+      },
+      "rust_test_totals": {
+        "passed": 7,
+        "failed": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "name": "fleet",
+      "cwd": "cyb",
+      "command": "FLEET_SKIP_BUILD=1 FLEET_KEEP=1 python3 harness/fleet.py",
+      "profile": "fresh cy/cyb/soft3 native debug executables",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-fleet-source-final.log",
+        "bytes": 2117,
+        "sha256": "4592aa9c1b3151c2e0433676c91d41e040ab342600d353871784dd586330fae4"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "actual-model-bodies",
+      "cwd": "cyb",
+      "command": "SOMA_TEST_MODEL=/Users/master/llm/qwen3-0.6b-abl.model CYB_TASK_GUI=/Users/master/cyber/cyb/target/release/cyb python3 harness/tasks.py",
+      "profile": "fresh native debug CLI + release Bevy; actual pinned local model",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-real-tasks-source-final.log",
+        "bytes": 529,
+        "sha256": "386f2298dc78dda803e85a579743b826399ff3794b0e08b313e6fe7e9b0655b7"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "identity-wasm",
+      "cwd": ".",
+      "command": "python3 soft3/audit/neuron-cell/check_identity_consumers.py --out soft3/audit/neuron-cell/implementation-baseline/identity-consumers",
+      "profile": "rustc 1.98.0; seven isolated no-default-feature roots; exact features in identity-consumers/results.json",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-identity-consumers.log",
+        "bytes": 563,
+        "sha256": "214b169f0d0cd4c9b0f8810e2701946aaa32455b22f1c91299dfd5b4fe30644e"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "macos",
+      "cwd": "cyb",
+      "command": "make dmg; make -o release -o apps dmg",
+      "profile": "rustc 1.98.0; aarch64-apple-darwin release; default features; second invocation only final version metadata packaging",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-dmg-verified.log",
+        "bytes": 19467,
+        "sha256": "f501759f99c5f0c86d709c55cb0cfdad40641acfaaa5d24b3d2ee0aec04f8ce2"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "web",
+      "cwd": "cyb",
+      "command": "make apps",
+      "profile": "Trunk release; rustc 1.98.0 wasm32-unknown-unknown; NO_COLOR=true",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-apps.log",
+        "bytes": 663,
+        "sha256": "e76239a24c38de57373cd461471e0c6aa4a32bbd153c2de14cc9e520399e9311"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "android",
+      "cwd": "cyb",
+      "command": "make android",
+      "profile": "rustc 1.98.0; aarch64-linux-android release; default features; Gradle release APK",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-android-final.log",
+        "bytes": 19739,
+        "sha256": "5b67e25e08f6469626be85db44b3a73ee0abc0a501e99bbf6495cbd760bff7a4"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "artifact-validation",
+      "cwd": ".",
+      "command": "python3 soft3/audit/neuron-cell/verify_artifacts.py",
+      "profile": "readonly DMG verification/mount/detach; APK zip/library/signature/package checks",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-artifact-verification.log",
+        "bytes": 140,
+        "sha256": "9cc5bc46bafb69ebee0626392191cb0bf4f853bb6c5861e636eb61c3a9e4e729"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "protocol-site",
+      "cwd": "cyber",
+      "command": "nu scripts/build.nu --output /Users/master/cyber/cyber/build",
+      "profile": "local optica source build",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-protocol-site.log",
+        "bytes": 411,
+        "sha256": "8c662c496292bb104e98dfb0b6c219237ced3b3bdb596f4bdcec3e06828b88ec"
+      },
+      "rust_test_totals": null
+    },
+    {
+      "name": "project-site",
+      "cwd": "cyberia-blog",
+      "command": "nu scripts/build.nu --public-only",
+      "profile": "local public optica source build",
+      "result": "passed",
+      "log": {
+        "path": "soft3/audit/neuron-cell/implementation-baseline/p13-project-site.log",
+        "bytes": 3179,
+        "sha256": "c02a47a985de523c5d1fafe69e7f4e71dbb4f3cb7f7b872b5745feeaa6efd93f"
+      },
+      "rust_test_totals": null
+    }
+  ],
+  "supporting_owner_evidence": [
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p07-archive-process-tests.log",
+      "bytes": 2586,
+      "sha256": "74565815932edc0151c443764acf9749dab2933e4018186fb9af0f0038c0d45b"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p07-archive-bbg-tests.log",
+      "bytes": 2842,
+      "sha256": "25714357c4377c21be908d982de6208cbd4c81da5d34a3620ba84353da2b0cd9"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p07-archive-migration-tests.log",
+      "bytes": 3089,
+      "sha256": "98938a507cf1b3d252bd231bbe083530761bb2f99a8a2464633552e8b46259ee"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p07-archive-storage-faults.log",
+      "bytes": 2209,
+      "sha256": "a9e8d9a051efe748d7d4636f23f4b919ea89d4c5fb7da3eeaf78047d181cd882"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p04-text-archive-boundaries.log",
+      "bytes": 2244,
+      "sha256": "a3f40512d2c8d9ed1256bf96222800911bb0d519563441b9141ca1e61e00901f"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p04-text-archive-boundaries-existing.log",
+      "bytes": 2227,
+      "sha256": "048a739a5e064bed5435d2412d83f8263da13672c359920efd5a2573638cb66e"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p04-text-archive-boundaries-cyb.log",
+      "bytes": 2837,
+      "sha256": "135fcc479776c486160fff85370a2d149d2cfa2b8b1946e44b8f324bebe31d29"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cybergraph-stack-default-final.log",
+      "bytes": 8609,
+      "sha256": "ac14b65eaada77a9d33e52415a115cec995c101bf949f5563008f1419c99f6be"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-cybergraph-stack-all-features.log",
+      "bytes": 11386,
+      "sha256": "92e296aeb3827d4c7dab4e8f1d43c0a870a8ef18403eb230482a9a750998a53d"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p12-rune-events.log",
+      "bytes": 4814,
+      "sha256": "0c111a4a2372007f027de4c34a78652d2ead4f67e4df916290022a4deeeb80a3"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p12-cyb-cli-final.log",
+      "bytes": 17437,
+      "sha256": "a6752fcad8f5916830ccc3161821a9c838cc54cf601454468e8a939c5030f84e"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p12-cyb-build-closure-tests.log",
+      "bytes": 1319,
+      "sha256": "21b54c83e5614e5e7b677ba3ecf85a7237abd1c4507d1b82d22ce812c12d0997"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p12-cyb-build-dry-run.log",
+      "bytes": 13374,
+      "sha256": "f6465d7c183131dd8079757100a32834d81c30a161bf09f3df14a02bb115d26b"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-foculus-partial-mode.log",
+      "bytes": 1955,
+      "sha256": "4570f5aa904510ba21d874f5c2a6f7cf21324e407d8d06632942cc52f6b2537c"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p09-composition-tests.log",
+      "bytes": 26920,
+      "sha256": "6405616832a7db6567cf7ba2f47bd4aeb1379b3620830c299e63dfa014af3588"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-agent-final.log",
+      "bytes": 3711,
+      "sha256": "2e1b0b6cbfbc83e5047fa50fb106d9eb195aec01e4f0e8ae8886fcf460a01ba9"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-real-provider-tests.log",
+      "bytes": 16729,
+      "sha256": "c19a650eb151c4e727f3c7a9e47fe12e908038cad346133141d12517269c9232"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-child-receipt-tests.log",
+      "bytes": 1971,
+      "sha256": "df378ff7609c52008db373084ecb536ae053571031aca0b76f10455eaf147f8e"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-bevy-correlation-tests.log",
+      "bytes": 16737,
+      "sha256": "f20673dab6c1c8172cb2565102c5393c58fae12b5ef4bdaf49a13071449abcf3"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-agent-runtime-seam.log",
+      "bytes": 2300,
+      "sha256": "d40d7210d29998f543b442c494cb139f9bf255f088dbcb0204df43a71c22d681"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/soma-kernel-final.log",
+      "bytes": 16460,
+      "sha256": "aa4ad2a1d870788ac08a3a1903b26267a380fc37efb8b57b58eea1157dd73b9f"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-mudra-final.log",
+      "bytes": 2652,
+      "sha256": "2aa0f4a321eb4f6e3f05a399427cc91a9b7e068a545c24268f9d58d489306f02"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-lytics-event-final.log",
+      "bytes": 2087,
+      "sha256": "2b597ce02fd91f2b51c0e8c10dcc044121b4eb2aa5b154da8767e4b3cae545e1"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-lytics-ingest-tests.log",
+      "bytes": 3511,
+      "sha256": "88346613feb283310ff4c84ec86328e3ef202d91096bbd08b8a47d2068009277"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-cyberia-my-domain.log",
+      "bytes": 5465,
+      "sha256": "2eed26c8859849640294aba548104d8b246c138e72c8d9eee2e3ebb96d52391b"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-cyberia-research-domain.log",
+      "bytes": 5852,
+      "sha256": "6033cb08a3dc14f7bb64b9f17f55ada31b3e0aa4962b7c3febbeb9a5763a8690"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-cyberia-wasm.log",
+      "bytes": 11369,
+      "sha256": "190de905780cf201dc03130053acf84ac785b7b42969495ad894c457497ffeac"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-cyberia-research-wasm.log",
+      "bytes": 11386,
+      "sha256": "f3c0bfe99322b8644ed2a8b9e3ac27c7fffb797c470a9af376ab8d10a822ba1e"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-js-build.log",
+      "bytes": 46,
+      "sha256": "ae227ff15639723ebb1dc874f93f05c8d987617d56465cfc191c3b949bff1e4f"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-js-compat-tests.log",
+      "bytes": 493,
+      "sha256": "c1c8204ee95ea7bb9d06f3dfea3dd812b5f16a72a35216eb873c6cb51edbb71d"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-neptune-wallet-tests.log",
+      "bytes": 1077,
+      "sha256": "96eb2f085127a0def6ee2ef30eb2875e2e589442336ff3bd0675a74d447a700a"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-true-cyber-tests.log",
+      "bytes": 2206,
+      "sha256": "664ee00d5b39b68371bb28f6343b89350e4bcad531201d28daeefdf792d2a7e1"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-inf-workspace-tests.log",
+      "bytes": 8516,
+      "sha256": "e2b9bdc1db23b229cbea5b04202c8d1a9cd502c1b4fdda532da16b178ac07b0c"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-neuron-query-tests.log",
+      "bytes": 2438,
+      "sha256": "2417831373d261ecdee3c6954636b40e865735e9faf3ca98b70637975c07ae2d"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p10-soft3-stack-check.log",
+      "bytes": 25493,
+      "sha256": "65efd132ed6e2c7f8d413a1447c880b2fd27fb6620ed4366b9c7e1fc69464132"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-dmg-package-final.log",
+      "bytes": 1524,
+      "sha256": "841c087a70cad3004a35e76674dc32d1b775b6e830563f33ac868cd1f85e76ce"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-diffcheck.log",
+      "bytes": 138,
+      "sha256": "c68485a043c51cf89a6a903df024c66172d26e23362ac9cabcbd09ee3c0b7a09"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-residual-api-check.log",
+      "bytes": 142,
+      "sha256": "29cdab1c1f61a1e386391009a4f3ce01f0666fdd23ba7ba912f62742b26580d7"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-final-doc-links.log",
+      "bytes": 34,
+      "sha256": "df9ebd636a514235074b214fdee38931bfd740b7f404fe6b18b30df0fed88e1f"
+    }
+  ],
+  "identity_wasm_profiles": {
+    "schema": "neuron/identity-consumer-audit/1",
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profiles": [
+      {
+        "profile": "id",
+        "package": "neuron-id",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "identity-check-id",
+          "neuron-id"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "model",
+        "package": "neuron-model",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "identity-check-model",
+          "neuron-id",
+          "neuron-model"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "model-serde",
+        "package": "neuron-model",
+        "features": [
+          "serde"
+        ],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "identity-check-model-serde",
+          "itoa",
+          "memchr",
+          "neuron-id",
+          "neuron-model",
+          "proc-macro2",
+          "quote",
+          "serde",
+          "serde_core",
+          "serde_derive",
+          "serde_json",
+          "syn",
+          "unicode-ident",
+          "zmij"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "mudra",
+        "package": "cyber-mudra",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "base16ct",
+          "base64",
+          "base64ct",
+          "bech32",
+          "block-buffer",
+          "cfg-if",
+          "const-oid",
+          "crypto-bigint",
+          "crypto-common",
+          "cyber-hemera",
+          "cyber-mudra",
+          "der",
+          "digest",
+          "ecdsa",
+          "elliptic-curve",
+          "ff",
+          "generic-array",
+          "group",
+          "hmac",
+          "identity-check-mudra",
+          "k256",
+          "neuron-id",
+          "pkcs8",
+          "rand_core",
+          "rfc6979",
+          "ripemd",
+          "sec1",
+          "sha2",
+          "signature",
+          "spki",
+          "subtle",
+          "typenum",
+          "version_check",
+          "zeroize"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "lytics-event",
+        "package": "lytics-event",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "base16ct",
+          "base64",
+          "base64ct",
+          "bech32",
+          "block-buffer",
+          "bumpalo",
+          "cfg-if",
+          "const-oid",
+          "crypto-bigint",
+          "crypto-common",
+          "cyber-hemera",
+          "cyber-mudra",
+          "der",
+          "digest",
+          "ecdsa",
+          "elliptic-curve",
+          "ff",
+          "futures-core",
+          "futures-task",
+          "futures-util",
+          "generic-array",
+          "getrandom",
+          "group",
+          "hmac",
+          "identity-check-lytics-event",
+          "js-sys",
+          "k256",
+          "lytics-event",
+          "neuron-id",
+          "once_cell",
+          "pin-project-lite",
+          "pkcs8",
+          "proc-macro2",
+          "quote",
+          "rand_core",
+          "rfc6979",
+          "ripemd",
+          "rustversion",
+          "sec1",
+          "serde",
+          "serde_core",
+          "serde_derive",
+          "sha2",
+          "signature",
+          "slab",
+          "spki",
+          "subtle",
+          "syn",
+          "thiserror",
+          "thiserror-impl",
+          "typenum",
+          "unicode-ident",
+          "version_check",
+          "wasm-bindgen",
+          "wasm-bindgen-macro",
+          "wasm-bindgen-macro-support",
+          "wasm-bindgen-shared",
+          "zeroize"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "inf-value",
+        "package": "inf-value",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "identity-check-inf-value",
+          "inf-value",
+          "neuron-id"
+        ],
+        "result": "passed"
+      },
+      {
+        "profile": "inf-source",
+        "package": "inf-source",
+        "features": [],
+        "target": "wasm32-unknown-unknown",
+        "dependencies": [
+          "identity-check-inf-source",
+          "inf-source",
+          "inf-value",
+          "neuron-id"
+        ],
+        "result": "passed"
+      }
+    ]
+  },
+  "local_model": {
+    "path": "/Users/master/llm/qwen3-0.6b-abl.model",
+    "bytes": 430237651,
+    "sha256": "699a960034a9256e1e97e0c45ccb9062b21d31ee8ceebfbef5ae94406505082f"
+  },
+  "original_legacy_executable": {
+    "path": "soft3/audit/neuron-cell/implementation-baseline/legacy-cell-binary",
+    "bytes": 10372248,
+    "sha256": "7644974d4acea66acf772c9f24f03f1b733d12f2b4244712341420b4dcd5504b"
+  },
+  "selected_body_evidence": [
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/fleet-1.png",
+      "bytes": 180397,
+      "sha256": "7ed97709be23d6014d5ec4b8263b695cf5d09be1513f309862f7f5d1997d42eb"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/fleet-2.png",
+      "bytes": 180401,
+      "sha256": "c5ff9416f294b504f86283a11c72eb192c7d06d9611ba4985af966dc1008e73d"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/fleet-3.png",
+      "bytes": 181019,
+      "sha256": "57479f022e4d01bf94c03459c212eddf2b2665057b91231c1cd1c846e69f9dd1"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/release-bevy-task.json",
+      "bytes": 7432,
+      "sha256": "7c6a876625dc57d5932eb8d5083635d20eca4e9ae7aa0ce60ca7f74d3fba7402"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/release-bevy.png",
+      "bytes": 126871,
+      "sha256": "51aa61d8c42b402ed68bfa1f2e18cbc0a13b8106518d8f09425fff314dba974f"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/release-cli-answer.txt",
+      "bytes": 22,
+      "sha256": "8da5b3c3aab1103fa6f0d1c52dd412e3086de69a5fbd1aa38ed6831480b93567"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/release-cli-task.json",
+      "bytes": 7452,
+      "sha256": "b61440e58217db1ed6a089cd9f2dcf490a469854a331aedac44b4ed19626e42b"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/task-bevy.json",
+      "bytes": 7424,
+      "sha256": "c4c18eb9da133f40c655f77e4043d69a94929b9b41f031e0cdf350a87b47abce"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/task-bevy.png",
+      "bytes": 126638,
+      "sha256": "fdb6786b72e4b9e74d0ea9357d336186f5a639a376385662f910a2b0aabfa547"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/task-cli-answer.txt",
+      "bytes": 26,
+      "sha256": "a6e8b8376413d46240f6702ef6e11611057308f3302bfb19561a06f6042c3894"
+    },
+    {
+      "path": "soft3/audit/neuron-cell/implementation-baseline/p13-bodies/task-cli.json",
+      "bytes": 7416,
+      "sha256": "0585968243fe1d8f292ec8c575b9f08e678764f8f10ec3e03e0c934a6969842a"
+    }
+  ],
+  "binaries": [
+    {
+      "path": "cyb/target/release/cyb",
+      "bytes": 104228752,
+      "sha256": "fe8f78b97a1f04797feed54af3975423042e196040ed13b4705ba5f8ad7a015f",
+      "depfile": {
+        "path": "cyb/target/release/cyb.d",
+        "bytes": 88363,
+        "sha256": "3137ca4825c777225339c1b5230d1b1c010fcba944b1994aa371bcd448e6dc83"
+      },
+      "input_count": 1535,
+      "newer_or_missing_inputs": 0
+    },
+    {
+      "path": "cyb/target/debug/cyb",
+      "bytes": 422656584,
+      "sha256": "c89e05b1525a32fa9c936e26d7f0f7c2683ace85bfb914f122eaeb20e944b95d",
+      "depfile": {
+        "path": "cyb/target/debug/cyb.d",
+        "bytes": 88355,
+        "sha256": "26a82b777582cfd226aac31035ceffa479c37357b4c1b3a940062953af66c4a2"
+      },
+      "input_count": 1535,
+      "newer_or_missing_inputs": 0
+    },
+    {
+      "path": "cyb/target/debug/cy",
+      "bytes": 54383632,
+      "sha256": "040024a8e6ad4367a1d8dad12aa2490908575ff1be5bdb3e959b091d214fac68",
+      "depfile": {
+        "path": "cyb/target/debug/cy.d",
+        "bytes": 29588,
+        "sha256": "d7f289d723cee90b46cca117780192d1cd434bb88358d57442f0892888dab6d6"
+      },
+      "input_count": 595,
+      "newer_or_missing_inputs": 0
+    },
+    {
+      "path": "soft3/crate/target/debug/soft3",
+      "bytes": 17503176,
+      "sha256": "42af131235e6f6469eacd9be6f2256b1a8eec28a0b52895370c312c5c798e372",
+      "depfile": {
+        "path": "soft3/crate/target/debug/soft3.d",
+        "bytes": 17772,
+        "sha256": "c63c63c67044f46c0d5d60016a5741512674d24f3792583fd182d1f4e2c1e350"
+      },
+      "input_count": 369,
+      "newer_or_missing_inputs": 0
+    },
+    {
+      "path": "cyber/target/release/cyber",
+      "bytes": 5788480,
+      "sha256": "f3974bccc72122e4d71e0ff91703fe43c3e295f5fdfd1f35ab5363f92c21d297",
+      "depfile": {
+        "path": "cyber/target/release/cyber.d",
+        "bytes": 17801,
+        "sha256": "da65e0a9d862195416be66c5fd5c60f99bc31efb0d2bf0443e27b49e577e3120"
+      },
+      "input_count": 370,
+      "newer_or_missing_inputs": 0
+    }
+  ],
+  "artifact_verification": {
+    "schema": "neuron/local-artifact-verification/1",
+    "version": "0.13.1",
+    "macos": {
+      "image_checksum": "passed",
+      "readonly_bundle_binary_match": "passed",
+      "bundle_version": "0.13.1",
+      "web_index_match": "passed",
+      "owned_mount_detached": true
+    },
+    "android": {
+      "zip_integrity": "passed",
+      "packaged_staged_library_match": "passed",
+      "signature_verification": "passed",
+      "package": "ai.cyb.app",
+      "version_name": "0.13.1",
+      "version_code": 1301
+    },
+    "artifacts": [
+      {
+        "path": "cyb/target/release/cyb",
+        "bytes": 104228752,
+        "sha256": "fe8f78b97a1f04797feed54af3975423042e196040ed13b4705ba5f8ad7a015f"
+      },
+      {
+        "path": "cyb/target/release/cyb.dmg",
+        "bytes": 39964832,
+        "sha256": "88bdff10b8c533a83433d1df5cc42bfeb4a95c79b07a241e9acc88da45321a85"
+      },
+      {
+        "path": "cyb/shell/gen/android/app/build/outputs/apk/release/app-release.apk",
+        "bytes": 40691645,
+        "sha256": "6c01d509dff2b8edf00cce36493a6a2e4c2489c3beaac124c65e54f71fcc0951"
+      },
+      {
+        "path": "cyb/shell/gen/android/app/src/main/jniLibs/arm64-v8a/libcyb.so",
+        "bytes": 130681088,
+        "sha256": "f7a2b9aea80ce7ce2c0b614d0211fa152aff90be12e8a13f7992a6cc7c88d014"
+      },
+      {
+        "path": "cyb/apps/dist/index.html",
+        "bytes": 1204,
+        "sha256": "b9683f44a1d8ad57eb3488889e914b40df4abc15e719a542a3c5f1de1eb68778"
+      }
+    ],
+    "limits": [
+      "local build; no publication or installation",
+      "Android APK build/signature verified; no device execution claim",
+      "DMG contents verified; no notarization claim"
+    ]
+  },
+  "limits": [
+    "Non-atomic local working-copy observation, with explicit dirty source hashes; no commit/publication/deployment claim.",
+    "Prior owner regression logs have their own dates/profile bounds; this is not a claim that every historical suite ran on every file hash in the final inventory.",
+    "Binary dependency mtimes are a freshness check, not a reproducible-build proof.",
+    "Source gaps and retained worktrees/vendor/generated/foreign meanings follow final-dispositions and compatibility; no unseen Omi content is certified.",
+    "Scope follows accepted roadmap section 11; complete Hermes integration/provider/channel parity is subsequent work."
+  ]
+}

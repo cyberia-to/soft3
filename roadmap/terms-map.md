@@ -13,6 +13,11 @@ truth is [[terms]]. every repo follows this exactly; nothing here is
 discretionary. when a word is context-dependent (`cell`, `Cid`), the KEEP
 rules below decide — do not guess.
 
+The [neuron + cell convergence plan](neuron-cell-convergence.md) governs domain
+cells, graph sessions, Rs module declarations and UI destinations. It supersedes
+the former blanket KEEP for domain cells. This document still governs substrate
+`cell → pair`; neither plan permits rewriting immutable historical schema bytes.
+
 ## rename (everywhere — texts and code)
 
 | old | new | notes |
@@ -45,7 +50,9 @@ and `Word` (a `field` proven in `[0, 2³²)`) is a value refinement, unrelated t
 - **`cell` (WASM stack):** wysm `Cell(u64)`, `CellError`, `Cells` — all ~100.
 - **`cell` (DAS / erasure / polynomial grid):** hemera, bbg, zheng, mir.
 - **`cell` (memory/storage):** bbg `unimem` cells.
-- **`cell` (hierarchy/shard):** cyber `hierarchy.md` / `cell.md` / `3c.md` — a first-class domain entity.
+- **Domain `cell`:** outside the substrate-to-pair sweep; follow the convergence
+  plan's subject/prog/shard/service/partial-node mapping. Do not replace every
+  domain occurrence with `neuron`.
 - **`Cid` (external IPFS / iroh / CAR):** radio's 26 `Cid` — the `cid` crate, not a cyber identity.
 - **`digest` / `Digest`:** at trident's target boundary (`[Field; D]`) — stays `digest`; core uses `particle`.
 - **`subject` / `object`:** actor (neuron) and data — never repurposed as the two halves of a pair/link.
@@ -59,7 +66,7 @@ and `Word` (a `field` proven in `[0, 2³²)`) is a value refinement, unrelated t
 | trident | 281 | 457 | – | `Noun::cell`, `order.cell` |
 | rune | 487 | – | – | `Noun::cell/Cell` |
 | eidos | 80 | 10 | – | `Noun::cell` |
-| cyber (docs) | 57 | – | – | keep hierarchy cells |
+| cyber (docs) | 57 | – | – | hierarchy handled by convergence plan |
 | soft3 | 32 | 9 | 8 | – |
 | cyb | 19 | – | 4 | – |
 | crystal | 17 | – | 4 | – |

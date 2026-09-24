@@ -1,0 +1,88 @@
+warning: unused import: `k256::ecdsa::SigningKey`
+ --> src/main.rs:2:5
+  |
+2 | use k256::ecdsa::SigningKey;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `BIND_TAG` is never used
+  --> src/claim.rs:32:7
+   |
+32 | const BIND_TAG: &str = "cyber:migrate:v1:";
+   |       ^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `Claim` is never constructed
+  --> src/claim.rs:36:12
+   |
+36 | pub struct Claim {
+   |            ^^^^^
+
+warning: associated items `encode` and `decode` are never used
+  --> src/claim.rs:50:12
+   |
+47 | impl Claim {
+   | ---------- associated items in this implementation
+...
+50 |     pub fn encode(&self) -> String {
+   |            ^^^^^^
+...
+62 |     pub fn decode(s: &str) -> Option<Claim> {
+   |            ^^^^^^
+
+warning: function `to_hex` is never used
+  --> src/claim.rs:75:4
+   |
+75 | fn to_hex(bytes: &[u8]) -> String {
+   |    ^^^^^^
+
+warning: function `from_hex` is never used
+  --> src/claim.rs:79:4
+   |
+79 | fn from_hex(s: &str) -> Option<Vec<u8>> {
+   |    ^^^^^^^^
+
+warning: function `bind_message` is never used
+  --> src/claim.rs:97:8
+   |
+97 | pub fn bind_message(neuron: &[u8; 32]) -> Vec<u8> {
+   |        ^^^^^^^^^^^^
+
+warning: function `verify_arbitrary` is never used
+   --> src/claim.rs:137:8
+    |
+137 | pub fn verify_arbitrary(pubkey: &[u8; 33], signer: &str, data: &[u8], signature: &[u8; 64]) -> bool {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: function `create` is never used
+   --> src/claim.rs:145:8
+    |
+145 | pub fn create(key: &SigningKey, hrp: &str, neuron: [u8; 32]) -> Result<Claim, Error> {
+    |        ^^^^^^
+
+warning: function `verify` is never used
+   --> src/claim.rs:155:8
+    |
+155 | pub fn verify(claim: &Claim, hrp: &str) -> bool {
+    |        ^^^^^^
+
+warning: constant `PUSSY` is never used
+  --> src/cosmos.rs:20:11
+   |
+20 | pub const PUSSY: &str = "pussy";
+   |           ^^^^^
+
+warning: constant `BOSTROM` is never used
+  --> src/cosmos.rs:22:11
+   |
+22 | pub const BOSTROM: &str = "bostrom";
+   |           ^^^^^^^
+
+warning: function `compressed` is never used
+  --> src/cosmos.rs:25:8
+   |
+25 | pub fn compressed(vk: &VerifyingKey) -> [u8; 33] {
+   |        ^^^^^^^^^^
+

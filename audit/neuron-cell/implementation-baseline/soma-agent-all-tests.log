@@ -1,0 +1,76 @@
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling soma-agent v0.1.0 (/Users/master/cyber/soma/agent)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running unittests src/lib.rs (target/debug/deps/soma_agent-e9b464cbe0ba09f1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/runtime_seam.rs (target/debug/deps/runtime_seam-f626c2154e0bc0dd)
+
+running 1 test
+test actual_rune_task_loop_suspends_restores_and_terminates_without_a_new_vm ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/tasks.rs (target/debug/deps/tasks-2d163d2176e91823)
+
+running 12 tests
+test memory_is_pinned_and_disclosure_is_checked_before_provider_or_child_admission ... ok
+test cancellation_unknown_result_revocation_and_no_retry ... ok
+test adapter_panic_is_unknown_and_does_not_poison_other_work ... ok
+test observation_before_engine_commit_survives_restart_without_model_reexecution ... ok
+test steering_during_pending_final_requires_a_new_model_boundary ... ok
+test context_change_and_steering_preserve_old_result_then_use_admitted_model ... ok
+test tool_schema_scope_output_bounds_and_symlinks_fail_as_observed_results ... ok
+test admission_and_schedule_receipt_faults_recover_exactly_once ... ok
+test schedule_restart_one_occurrence_exact_admission_then_disable ... ok
+test tool_suspend_restart_exact_observation_completion_and_independent_prog ... ok
+test required_join_failure_and_parent_cancel_stop_remaining_children ... ok
+test all_join_policies_keep_lineage_budget_and_recover_children has been running for over 60 seconds
+test all_join_policies_keep_lineage_budget_and_recover_children ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 68.96s
+
+   Doc-tests soma_agent
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

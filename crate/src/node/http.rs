@@ -18,7 +18,7 @@ pub(super) struct Request {
     pub body: Vec<u8>,
 }
 
-#[cfg_attr(test, derive(Debug))]
+#[derive(Debug)]
 pub(super) struct Response {
     status: &'static str,
     content_type: &'static str,
@@ -56,7 +56,7 @@ impl Response {
     }
 }
 
-#[cfg_attr(test, derive(Debug))]
+#[derive(Debug)]
 pub(super) struct Error {
     pub status: &'static str,
     pub code: &'static str,
@@ -130,6 +130,9 @@ impl From<io::Error> for Error {
 }
 
 pub(super) fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> io::Result<()> {
+    // macOS can inherit O_NONBLOCK from an embedding host's listener. This
+    // adapter uses blocking Read/Write with explicit socket deadlines.
+    stream.set_nonblocking(false)?;
     stream.set_read_timeout(Some(Duration::from_secs(30)))?;
     stream.set_write_timeout(Some(Duration::from_secs(30)))?;
     let response = read_request(&mut stream)

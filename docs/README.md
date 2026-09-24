@@ -10,9 +10,15 @@ alias: soft3 whitepaper, foundational soft3 methods, soft3 foundations
 
 Architecture contract: [execution model](../specs/execution-model.md).
 It defines VM/OS ownership, open-ended network instances, proof-profile
-selection and worker placement. The substrate explanation follows below.
+selection and worker placement. [Neuron](../specs/neuron.md) and
+[cyb architecture](../../cyb/specs/architecture.md) define the current subject,
+robot and prog boundaries. The substrate explanation below is an architectural
+vision; concrete codec, authority, proof and deployment claims follow the
+declared profiles and [implementation evidence](../audit/neuron-cell/implementation.md).
 
-soft3 is thirty-one components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
+Soft3's [component registry](../status.md) assigns each mechanism a job. The
+foundation relates those jobs through shared mathematical and composition
+contracts. Its three architectural claims are:
 
 soft3 is **one mind**, reachable in **many languages**, growing into an **open world**.
 
@@ -30,23 +36,24 @@ many languages
 open world
    it holds     —  one fabric, planet scale
    it composes  —  add a cyberlink, not an API
-   it admits    —  no schema, no gatekeeper, no closed set
+   it admits    —  open formats, explicit authority, bounded work
 ```
 
 - **one mind** — where every other stack sprawls, soft3 is one. one form: everything is a single polynomial over a single field. one proof: the prover proves the prover. one focus: the whole graph converges into one collective thought.
 - **many languages** — where every other stack locks you in, soft3 is plural at the surface. you *write* in one language, *compute* in a family of them, and *mean* in a third — and all of them lower to the same substrate.
 - **open world** — where every other stack builds walls, soft3 stays open. it holds at planet scale, composes without glue, and admits anything that lowers to [[nox]].
 
-learn those three and the thirty-one repos stop being thirty-one things to memorize — they become three ideas applied many times. this is the whitepaper for those ideas.
+These ideas organize the component registry. Repository count, host-resident
+roles and publication status remain separate from the foundation.
 
 ```svgbob
    +------------------------------------------------------------------------+
-   | the 31 components  —  each a specialization of the substrate below     |
+   | components and shared contracts over the substrate                    |
    +------------------------------------------------------------------------+
-   | honeycrisp . strata . hemera . lens . cybergraph . bbg . cell . fs     |
-   | tok . mudra . radio . tape . foculus . ward . tru . soma . neural      |
+   | honeycrisp . strata . hemera . lens . cybergraph . bbg . neuron . fs   |
+   | tok . mudra . radio . tade . foculus . ward . tru . soma . neural      |
    | rune . inf . trident . nox . wysm . glia . kern . zheng . eidos        |
-   | mir . prysm . cyb . lytics . conformance                               |
+   | mir . prysm . vault . lytics . conformance                             |
    +------------------------------------------------------------------------+
                                         |
                                         | each component, the same mind
@@ -68,7 +75,7 @@ learn those three and the thirty-one repos stop being thirty-one things to memor
    +------------------------------------------------------------------------+
    | it holds    five-layer sync . bounded locality . planet scale          |
    | it composes add a cyberlink, not an API . nothing to translate         |
-   | it admits   no schema . no gatekeeper . ZK+FHE+MPC over one field      |
+   | it admits   open formats . subject authority . bounded execution       |
    +------------------------------------------------------------------------+
 ```
 
@@ -76,9 +83,40 @@ learn those three and the thirty-one repos stop being thirty-one things to memor
 
 every foundational method in soft3 has the same shape. it takes something other systems build as many separate mechanisms and collapses it into one universal primitive.
 
-other systems assign every object an id from a registry; soft3 gives every object one [[hemera]] hash, and the hash *is* the identity. other systems pick a hash tree here, a commitment scheme there, a proof system somewhere else; soft3 commits everything as one polynomial under one [[lens]]. other systems run a vote for consensus, a separate algorithm for ranking, and a third for rewards; soft3 settles all three — plus meaning — onto one equilibrium φ*.
+Content uses hemera addressing; compatible state and proof profiles reuse lens
+commitments. Native subject identity is H(compressed public key), while foreign
+subjects retain their domain-qualified addresses. These typed identities name
+different roles even when represented by 32 bytes. The focus design relates
+ranking, rewards and consensus, each under its declared network rules.
 
-the collapse is why soft3 is a stack and not a pile. when [[bbg]] needs authenticated state, [[zheng]] needs a commitment, [[radio]] needs availability, and [[fs]] needs identity, each reaches for the same primitive. composition is free because there is nothing to translate between. the three claims below — one mind, many languages, open world — are each a family of these collapses.
+BBG, zheng, radio and fs reuse common primitives where their profiles match.
+Composition preserves exact codecs, network domains, current authority and
+evidence semantics at every boundary. The three claims below organize that reuse.
+
+## subjects, progs and the implemented local profile
+
+One robot attaches several neurons for keys, networks and devices. A neuron can
+run several progs and invocations with independent state and retained work IDs.
+The hierarchy ends at the subject: progs, tasks, operations, workers and graph
+hosts introduce no additional signer. Native and foreign identity rules are
+specified by [consumer boundaries](../specs/identity-consumers.md).
+
+| Role | Current ownership |
+|---|---|
+| Neuron | Subject identity; optional bounded prog execution, continuation and recovery |
+| GraphSession / node | Multi-neuron graph hosting, retained native coordinator and network observations |
+| Ward / vault | Current binding/grant checks, captured subject/network, custody and scoped encrypted state |
+| Soma | Durable tasks, context/model capture, tools, children, schedules and proposal-only learning |
+| Rune / worker | Evaluation and admitted effects under declared machine/evidence/resource profiles |
+| Cybergraph / BBG / Log | Authoritative history, durable publication/storage, rendered history view |
+
+The [Soma composition audit](../../soma/audit/neuron-composition.md) includes actual
+local glia inference and CLI/Bevy processes. Unknown effects retain the original
+attempt and do not automatically execute again. A selection change cannot
+retarget pending work. Local model/host observations, graph commits, signed
+Signals, endpoint receipts and finalized network facts are distinct evidence.
+The implemented local profile has trusted host adapters and cooperative GPU
+limits; broader providers, hard isolation and consensus require their own work.
 
 ---
 
@@ -88,27 +126,40 @@ a mind has three parts: a substance it is made of, a conscience that knows what 
 
 ### one form — everything is one polynomial over one field
 
-this looks like bookkeeping; it is the deepest unification in the stack. soft3 has exactly one mathematical object — the multilinear polynomial over the [[Goldilocks field]] (`p = 2⁶⁴ − 2³² + 1`). in algebra a multilinear polynomial is literally a multilinear *form*, so the name is exact, not a metaphor: identity, value, state, computation, and proof are not separate things that happen to agree on a format — they all take that one form, seen from different sides.
+The field-native design centers the multilinear polynomial over the
+[[Goldilocks field]] (`p = 2⁶⁴ − 2³² + 1`). In algebra this is a multilinear
+form. Data, state and proofs can share its machinery while preserving their
+specific codecs and validation rules. Current native signing uses secp256k1;
+foreign addresses and original signed history retain their native bytes.
 
-- **one field.** every value is an element of the [[Goldilocks field]]. the field is the alphabet, chosen so that proofs, [[FHE]], and secret-sharing all operate inside it — cryptography is intrinsic, and there is no boundary between running a computation and proving it.
+- **one field.** compatible field-native computation/proof profiles share the Goldilocks alphabet. Host observations, native key signatures and foreign protocol adapters retain their separately declared cryptography and evidence.
 - **one object.** all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree, and cross-index consistency is structural rather than proven: there is one polynomial, so there is nothing to keep in sync.
 - **five algebras.** the one field hosts five algebraic regimes ([[strata]]) — truth, efficiency, encryption, optimization, privacy. a type picks its regime; the substance is the same in all of them, so a value can move between regimes without changing what it is.
-- **particle identity.** a [[file]]'s particle is the [[hemera]] hash of its content, which is itself a polynomial commitment — so content is identity, the same bytes always produce the same address, and the graph needs no registry.
+- **particle identity.** a [[file]]'s particle is the [[hemera]] hash of its content under the exact content/codec profile. Native NeuronId remains H(compressed pubkey); prog and invocation IDs refer to data under that subject. A content hash alone supplies no signing authority.
 
-this is why composition is free: when [[zheng]] hands [[bbg]] a commitment, or [[cybergraph]] hands [[hemera]] some content, they pass the same kind of object. there is nothing to serialize, because there is nothing to translate between. one field, one polynomial; everything else is a view of it.
+Compatible zheng/BBG commitments and cybergraph/hemera content share primitives.
+Serialization, domain separation and schema versions preserve their exact
+meaning. Immutable legacy cell suites and foreign signing formats remain readable
+under their original profiles throughout migration.
 
 ### one proof — the prover proves the prover
 
-soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run. it is, as far as we know, the first proof system that proves at three levels at once — that a computation ran, that a program is correct, and that the prover itself is correct — all in one field, one kernel, with no trusted setup.
+The proof design relates three levels: execution correctness, program/theorem
+correctness and recursive verification. Each completed path must name the exact
+statement, verifier and parameters. These are architectural targets whose
+implementation status belongs to the relevant component and proof profile.
 
 - **proof-native execution.** running a program and proving it ran correctly are the same act. the [[nox]] execution trace *is* the constraint system, with no separate arithmetization step; every computation emits its witness as a byproduct.
-- **recursive closure.** proofs verify proofs. each step folds into an accumulator at ~30 field ops, and the entire history collapses to one constant-size proof behind a single final check. a light client validates all of history in roughly 100 nanoseconds.
-- **transparent.** trust bottoms out on hash collision resistance alone — no trusted setup, no elliptic curves, no pairings. the proofs are post-quantum and verification stays stable for decades.
+- **recursive closure.** a supported folding profile can accumulate its declared transition statements. Size, cost and security require that profile's measurements and assumptions; a local native receipt is not such a folded history proof.
+- **transparent.** transparent proof profiles avoid a trusted setup under their stated assumptions. This does not change the implemented native subject's secp256k1 signature scheme or establish post-quantum custody.
 - **conformance.** every canonical mechanism output is fingerprinted with [[hemera]] ([[conformance]]). drift surfaces at commit time, so the protocol cannot shift underneath you silently.
-- **eidos.** [[eidos]] is a proof assistant — full CIC type theory, [[Curry-Howard]] scaled to all of mathematics — whose type checker is itself a [[nox]] program that emits a [[zheng]] certificate. [[zheng]] proves that a computation ran; eidos proves that a program is correct. every proved theorem becomes a [[cyberlink]] in the graph.
+- **eidos.** the proof assistant checks theorem terms. Its intended zheng certificate/cyberlink path still has an explicit bridge gap in [stack completeness](../roadmap/stack-completeness.md); term checking alone does not publish a settled proof.
 - **self-hosting.** the [[zheng]] verifier is itself a [[nox]] program, so the system proves its own verification — recursively, to arbitrary depth, at constant proof size. the prover proves the prover. the system closes on itself.
 
-these have never been unified before. transparent recursive STARKs exist; formal proof assistants exist. neither has been self-hosting on the very VM it proves, sharing one field and one kernel with the other. by carrying its prover, its program-logic, and its own verifier in the same [[nox]] algebra, soft3 is a proof system closed under its own verification — with civilization-grade mathematics living inside it. that closure is the unprecedented part, and it is what lets the whole [[cybergraph]] be proven once, as a single artifact.
+The desired closure reuses the same nox algebra across execution, program logic
+and verification. A complete graph-wide claim must also cover external effects,
+network transitions, availability and the selected checkpoint/finality rules.
+Those obligations survive composition and are not supplied by a shared runtime ID.
 
 ### one focus — the graph settles into one thought
 
@@ -157,14 +208,19 @@ the fabric is what keeps the other two claims true across an untrusted network.
 
 ### it composes — add a cyberlink, not an API
 
-because everything is one object in one field, extension is linking, not integrating. in other stacks a new capability means a new API, an adapter, a serialization boundary, a version negotiation. here a new capability is a new [[cyberlink]] or a new component that speaks the same substrate. when [[zheng]] hands [[bbg]] a commitment they pass the same kind of object; there is nothing to serialize, because there is nothing to translate between. building a new component is specializing the same form, proof, and focus to a new job — and it composes with everything already in the stack for free, the moment it exists. composition is not a feature of soft3; it is the absence of the seams other stacks spend themselves maintaining.
+A new cyberlink can reference code, content, a schema or a supported capability.
+Executing the referenced work requires a compatible prog/worker profile and
+current authority. Common primitives reduce adapter work; exact interfaces,
+codecs, resource bounds and evidence still define each composition boundary.
 
-### it admits — no schema, no gatekeeper, no closed set
+### it admits — open formats and explicit authority
 
-the world is open in the strong sense: anyone may enter, anything may join, and nothing is gated.
+Anyone can address content and implement a compatible component. Reading a page
+or naming a prog is separate from permission to execute, spend, disclose or
+publish. These effects pass the subject's current host and network policies.
 
-- **no schema, no registry.** content is identity — a particle's address is the hash of its bytes — so there is no central table that must grant a name, and no fixed schema a new kind of thing must fit. the same bytes always produce the same address, anywhere, with no coordination.
-- **no closed set.** any program that lowers to [[nox]] joins the stack; any language that compiles to that VM is a first-class citizen. the set of things soft3 can do is not enumerated in advance — it is whatever the field and the VM admit, which is everything computable.
+- **open content.** a compatible content-addressing profile can name arbitrary bytes without central allocation. Protocol actions and retained runtime records use explicit schemas; adding another schema does not change existing hashes or signatures.
+- **extensible computation.** new languages and progs can target supported machines. Admission captures subject/network/grant and a finite resource allowance; interpreter support alone grants no external authority.
 - **open yet private.** the [[privacy trilateral]] — [[ZK]] proves correctness, [[FHE]] hides data, [[MPC]] distributes trust — composes over the shared [[Goldilocks field]] into correctness without exposure and without a single point of failure ([[mudra]]). the world admits you without forcing you to reveal yourself; aggregate truth stays public while individual contribution stays private.
 
 ### the stack as dataflow
@@ -175,7 +231,7 @@ the bedrock diagram shows soft3 as a substrate — three principles stacked unde
    +----------------------------------------------------------------------------------+
    | cyb : the robot                                                                  |
    +----------------------------------------------------------------------------------+
-   | soma : mind     pipeline : infer     worlds : face     honeycrisp : silicon      |
+   | soma : mind     glia : infer     worlds : face     honeycrisp : silicon          |
    +----------------------------------------------------------------------------------+
                                                            |
                                                            v neurons write
@@ -186,7 +242,7 @@ the bedrock diagram shows soft3 as a substrate — three principles stacked unde
                                        | the markup is the graph              |
                                        +--------------------------------------+
                                                            |
-                                                           | soma : intend . seal . link . subscribe . query
+                                                           | neuron context -> ward/vault -> admit/publish
                                                            v
    +--------------------+               +------------------------------------+      +--------------+
    | cyberia : social   |               | cybergraph                         |      | fs           |
@@ -195,14 +251,14 @@ the bedrock diagram shows soft3 as a substrate — three principles stacked unde
    | . service          |-------------->| the  spine                         |      +--------------+
    | mimi  midao  my    |  focus . karma|                                    |
    +--------------------+               |                                    |
-    mudra -----keys ------------------->|                                    |
+    mudra -----public evidence--------->|                                    |
     tok -------value ------------------>|                                    |
                                         +-------+-----------+-----------+----+
                                                 |           |           |
                                                 |store      |sync       |transmit
                                                 v           v           v
                                             +-------+   +-------+   +-------+
-                                            |  bbg  |   |foculus|   | tape  |
+                                            |  bbg  |   |foculus|   | tade  |
                                             +-------+   +-------+   +-------+
                                             |:store |   | :sync |   |:frame |
                                             +-------+   |:agree |   +-------+

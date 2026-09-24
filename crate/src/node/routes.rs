@@ -27,6 +27,11 @@ fn route_ready(node: &mut Node, request: Request) -> Result<Response, Error> {
         request.path.trim_end_matches('/')
     };
     match (request.method.as_str(), path) {
+        ("GET", "/capabilities") => super::signed::capabilities(node),
+        ("GET", "/v3/history") => super::signed::history(node, parameter(&request.query,"after")?,
+            usize::try_from(parameter(&request.query,"limit")?.unwrap_or(4)).map_err(|_|Error::bad("history limit"))?),
+        ("GET", path) if path.starts_with("/v3/receipt/") => super::signed::lookup(node,path),
+        ("POST", "/v3/action") => super::signed::submit(node,&request),
         ("GET", "/health") => Ok(Response::text("ok\n")),
         ("GET", "/status") => Ok(Response::text(node.status_cybermark())),
         ("GET", "/root") => Ok(Response::text(format!("{}\n", node.root_hex()))),
@@ -98,6 +103,10 @@ fn route_ready(node: &mut Node, request: Request) -> Result<Response, Error> {
             Ok(Response::text(text))
         }
         ("POST", "/v1/link" | "/v1/pay" | "/v1/frame" | "/v2/frame") => {
+            if node.authenticated()? {
+                return Err(Error { status: "401 Unauthorized", code: "authentication_required",
+                    message: "unsigned mutation is disabled; use the signed native profile".into() });
+            }
             super::requests::submit(node, &request, path)
         }
         ("POST", "/v1/finalize") => Err(Error {

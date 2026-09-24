@@ -1,0 +1,47 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling lytics-event v0.1.0 (/Users/master/cyber/lytics/rs/event)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.81s
+     Running unittests src/lib.rs (target/debug/deps/lytics_event-abcad4965748e4a4)
+
+running 22 tests
+test keys::tests::mnemonic_encoding_matches_the_standard ... ok
+test hex::tests::decode_rejects_garbage ... ok
+test hex::tests::encode_parity_with_the_crate ... ok
+test b64::tests::decode_rejects_garbage ... ok
+test hex::tests::decode_roundtrip_and_case_insensitive ... ok
+test b64::tests::decode_roundtrip_and_parity ... ok
+test canonical::tests::parity_minimal ... ok
+test canonical::tests::parity_escaping ... ok
+test canonical::tests::parity_kind_variants ... ok
+test canonical::tests::parity_full ... ok
+test pow::tests::difficulty_maps_sanely ... ok
+test b64::tests::encode_parity_with_the_crate ... ok
+test pow::tests::wrong_nonce_fails_hard_target ... ok
+test pow::tests::solve_then_verify ... ok
+test keys::tests::bech32_uses_hrp ... ok
+test keys::tests::different_domains_different_neurons ... ok
+test keys::tests::entropy_is_the_seed ... ok
+test keys::tests::same_domain_same_neuron ... ok
+test keys::tests::generated_entropy_roundtrips_through_mnemonic ... ok
+test sign::tests::wrong_neuron_field_fails ... ok
+test sign::tests::tampered_body_fails ... ok
+test sign::tests::sign_verify_roundtrip ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_compat.rs (target/debug/deps/domain_compat-6b85a23966869b9d)
+
+running 1 test
+test tracker_identity_and_signature_retain_the_frozen_domain_profile ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests lytics_event
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

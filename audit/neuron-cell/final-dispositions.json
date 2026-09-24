@@ -1,0 +1,4213 @@
+{
+  ".": {
+    "kind": "workspace",
+    "packages": "P00",
+    "action": "Root doctrine и non-Git files учтены; runtime subject references не обнаружены.",
+    "category": "non-git-source-group",
+    "rationale": "Separately enumerated non-Git source group; no repository revision can be inferred. See inherited scope.",
+    "baseline_path": ".",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 5,
+      "binary_files_excluded": 2,
+      "text_files_scanned": 3,
+      "text_bytes_scanned": 2009
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  ".claude": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Локальная конфигурация вне Git учтена; целевой модели не касается.",
+    "category": "non-git-source-group",
+    "rationale": "Separately enumerated non-Git source group; no repository revision can be inferred. See inherited scope.",
+    "baseline_path": ".claude",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1037
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  ".github": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": ".github",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 4,
+      "text_files_scanned": 4,
+      "text_bytes_scanned": 6109
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e0c5c629641df69ac7d3c3ec5c6b240eeff7a26c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "e0c5c629641df69ac7d3c3ec5c6b240eeff7a26c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  ".grok": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Локальная конфигурация вне Git учтена; целевой модели не касается.",
+    "category": "non-git-source-group",
+    "rationale": "Separately enumerated non-Git source group; no repository revision can be inferred. See inherited scope.",
+    "baseline_path": ".grok",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 100
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  ".worktrees/mudra-private-retrieval": {
+    "kind": "new-source",
+    "packages": "—",
+    "action": "No action assigned by the immutable baseline.",
+    "category": "preserved-worktree",
+    "rationale": "Separate docs/private-recovery-contract branch; preserve its Git state and contents under plan §10. Main-checkout migration does not rewrite this branch.",
+    "baseline_path": null,
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 86,
+      "text_files_scanned": 86,
+      "text_bytes_scanned": 564364,
+      "neuron_files": 31,
+      "neuron_lines": 206,
+      "identity_files": 23,
+      "identity_lines": 81,
+      "cell_files": 5,
+      "cell_lines": 10
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "348c46195388ac009667144987511a0e33bdc859",
+      "branch": "docs/private-recovery-contract",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "348c46195388ac009667144987511a0e33bdc859",
+      "branch": "docs/private-recovery-contract",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  ".worktrees/soft3-thread-publication": {
+    "kind": "new-source",
+    "packages": "—",
+    "action": "No action assigned by the immutable baseline.",
+    "category": "preserved-worktree",
+    "rationale": "Separate docs/thread-publication branch; preserve its Git state and contents under plan §10. Main-checkout migration does not rewrite this branch.",
+    "baseline_path": null,
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 61,
+      "text_files_scanned": 60,
+      "text_bytes_scanned": 530088,
+      "neuron_files": 22,
+      "neuron_lines": 61,
+      "cell_files": 15,
+      "cell_lines": 89,
+      "identity_files": 9,
+      "identity_lines": 18,
+      "missing_or_gitlink": 1,
+      "dependency_files": 1,
+      "dependency_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "4fc77ad335712915bd39714d72856ada1da0a52f",
+      "branch": "docs/thread-publication",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "4fc77ad335712915bd39714d72856ada1da0a52f",
+      "branch": "docs/thread-publication",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "aos": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Building/runnable cells в README/apps и всех service pages → service/prog и явная governance; не создавать ключ каждой площадке.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "aos",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 18,
+      "text_files_scanned": 18,
+      "text_bytes_scanned": 73832,
+      "neuron_files": 15,
+      "neuron_lines": 66,
+      "identity_files": 13,
+      "identity_lines": 18
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9ea98613baf62801f832b19d693032e676946105",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 15
+    },
+    "current_git": {
+      "head": "9ea98613baf62801f832b19d693032e676946105",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 15,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "arc": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "arc",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1468
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "7f10855296c6838c5e81ad47e1f3f71fcbe538e6",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "7f10855296c6838c5e81ad47e1f3f71fcbe538e6",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bbg": {
+    "kind": "implementation",
+    "packages": "P03 P04 P07",
+    "action": "Реэкспорт общего ID без runtime dependency; shared Database transactions и migration staging; DAS/unimem cells сохранить.",
+    "category": "implementation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bbg",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 176,
+      "text_files_scanned": 176,
+      "text_bytes_scanned": 1258005,
+      "neuron_files": 56,
+      "neuron_lines": 338,
+      "identity_files": 30,
+      "identity_lines": 99,
+      "cell_files": 26,
+      "cell_lines": 182,
+      "dependency_files": 1,
+      "dependency_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "a25039d54d0671c70c11aed2c9efc8266c371e8b",
+      "branch": "feat/atomic-application-storage",
+      "dirty": true,
+      "status_entries": 37
+    },
+    "current_git": {
+      "head": "a25039d54d0671c70c11aed2c9efc8266c371e8b",
+      "branch": "feat/atomic-application-storage",
+      "dirty": true,
+      "status_entries": 37,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bel": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bel",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1173
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9668806709587314bf95dc5e61dd5c07dcfbadda",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "9668806709587314bf95dc5e61dd5c07dcfbadda",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bita": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bita",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 229,
+      "text_files_scanned": 223,
+      "text_bytes_scanned": 4707983,
+      "binary_files_excluded": 6,
+      "cell_files": 9,
+      "cell_lines": 56,
+      "domain_files": 3,
+      "domain_lines": 10
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "cff2b0af4dd0c24c996cdde7283fff04d7e3c6e7",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "cff2b0af4dd0c24c996cdde7283fff04d7e3c6e7",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bootloader": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bootloader",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 18,
+      "text_files_scanned": 18,
+      "text_bytes_scanned": 30983,
+      "neuron_files": 5,
+      "neuron_lines": 9
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "d7e3ac029b553987cec322e632f76a785b054576",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "d7e3ac029b553987cec322e632f76a785b054576",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bostrom": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bostrom",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 89,
+      "text_files_scanned": 88,
+      "text_bytes_scanned": 368429,
+      "neuron_files": 28,
+      "neuron_lines": 79,
+      "cell_files": 1,
+      "cell_lines": 4,
+      "identity_files": 1,
+      "identity_lines": 1,
+      "binary_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "8301165ac08eb2817dbfadcf3eba34a7318c1f67",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "8301165ac08eb2817dbfadcf3eba34a7318c1f67",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "bt": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "bt",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1201
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "7d52d029be6929dc70bf56697b471301e981ccd3",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "7d52d029be6929dc70bf56697b471301e981ccd3",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cloud-forest": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cloud-forest",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 54,
+      "text_files_scanned": 54,
+      "text_bytes_scanned": 132073,
+      "cell_files": 3,
+      "cell_lines": 3
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "5e2c0256a5e052721ec15b3cde98f0ff12c6a557",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "5e2c0256a5e052721ec15b3cde98f0ff12c6a557",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "conformance": {
+    "kind": "integration",
+    "packages": "P00 P13",
+    "action": "Самостоятельный scaffold: согласовать owner harness с soft3/conformance; новые migration/identity scenarios без фиктивного PASS.",
+    "category": "integration",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "conformance",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 287
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ff726be5453cd1246b719da6b6a06128a8e8674a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ff726be5453cd1246b719da6b6a06128a8e8674a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "crystal": {
+    "kind": "documentation",
+    "packages": "P01 P11",
+    "action": "Canonical neuron/prog/soul/avatar/node vocabulary и ссылки; протокольные neuron statements сохранить, исправить конфликт поведения/soul.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "crystal",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 553,
+      "text_files_scanned": 553,
+      "text_bytes_scanned": 1124865,
+      "cell_files": 24,
+      "cell_lines": 38,
+      "neuron_files": 158,
+      "neuron_lines": 395,
+      "identity_files": 34,
+      "identity_lines": 48
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9b5baff90762fd3107d72ffe95fa6a23d921b3b9",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 6
+    },
+    "current_git": {
+      "head": "9b5baff90762fd3107d72ffe95fa6a23d921b3b9",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 6,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "ctx": {
+    "kind": "generated-source",
+    "packages": "P11 P12",
+    "action": "ctx.md — generated context. Обновить canonical inputs/pinned paths в build.nu, затем rebuild с provenance; не править bundle вручную.",
+    "category": "generated-source",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "ctx",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 6,
+      "binary_files_excluded": 1,
+      "text_files_scanned": 5,
+      "text_bytes_scanned": 248026,
+      "neuron_files": 5,
+      "neuron_lines": 251,
+      "identity_files": 4,
+      "identity_lines": 34,
+      "cell_files": 2,
+      "cell_lines": 35,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "688d859ffbd2851f3b6976fae73975966a808176",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "688d859ffbd2851f3b6976fae73975966a808176",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 4,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cve": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Нет runtime CellId/identity API кандидатов; UI/dependency/общие слова сохранить. Legacy checkout не синхронизировать автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cve",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 357,
+      "binary_files_excluded": 1,
+      "text_files_scanned": 356,
+      "text_bytes_scanned": 1219832,
+      "neuron_files": 3,
+      "neuron_lines": 4,
+      "cell_files": 10,
+      "cell_lines": 14
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "727eec0074394bdde806dc9273aa889e38d6d26f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "727eec0074394bdde806dc9273aa889e38d6d26f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyb": {
+    "kind": "implementation",
+    "packages": "P01 P04 P06 P08 P09",
+    "action": "Одна subject model; Cell/SharedCell → graph session; identity registry, explicit author, typed navigation; удалить дублирование core.",
+    "category": "implementation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyb",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 282,
+      "text_files_scanned": 264,
+      "text_bytes_scanned": 1965069,
+      "cell_files": 44,
+      "cell_lines": 308,
+      "neuron_files": 104,
+      "neuron_lines": 681,
+      "domain_files": 10,
+      "domain_lines": 18,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "identity_files": 43,
+      "identity_lines": 143,
+      "missing_or_gitlink": 3,
+      "build_or_metadata_files_excluded": 1,
+      "binary_files_excluded": 14
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "1b62676ce07a24768005eac47ea9fcb154d8d224",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 86
+    },
+    "current_git": {
+      "head": "1b62676ce07a24768005eac47ea9fcb154d8d224",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 114,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyber": {
+    "kind": "documentation",
+    "packages": "P01 P11 P12",
+    "action": "Cell ladder, hierarchy, 3c/oikos, node modes/product/ownership/CLI, roadmaps; shard/partial/service роли развести, generated copies перестроить.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyber",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 231,
+      "text_files_scanned": 231,
+      "text_bytes_scanned": 1921210,
+      "cell_files": 41,
+      "cell_lines": 127,
+      "neuron_files": 130,
+      "neuron_lines": 765,
+      "identity_files": 56,
+      "identity_lines": 118,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "domain_files": 3,
+      "domain_lines": 7
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "c13607275f8c8a8cd868ed9a4b892f92a36acf22",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 32
+    },
+    "current_git": {
+      "head": "c13607275f8c8a8cd868ed9a4b892f92a36acf22",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 32,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyber-valley": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Satoshi soul/agent docs: обновить software ontology links; физические/образовательные и biological cells сохранить.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyber-valley",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 102,
+      "text_files_scanned": 102,
+      "text_bytes_scanned": 479820,
+      "neuron_files": 15,
+      "neuron_lines": 32,
+      "cell_files": 11,
+      "cell_lines": 18,
+      "identity_files": 1,
+      "identity_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "79b5849d8fcb11e2a6345a7f226ee5532639eb73",
+      "branch": "dzin-corporate-pack",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "79b5849d8fcb11e2a6345a7f226ee5532639eb73",
+      "branch": "dzin-corporate-pack",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог.",
+    "category": "generated-copy",
+    "rationale": "Generated Git marker in publication output; canonical source owner and rebuild provenance apply, not edits to this marker.",
+    "baseline_path": "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "generated-git-marker",
+    "scan_counts": {
+      "listed_files": 293,
+      "text_files_scanned": 293,
+      "text_bytes_scanned": 33960004,
+      "cell_files": 29,
+      "cell_lines": 140,
+      "neuron_files": 13,
+      "neuron_lines": 14,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "generated-git-marker"
+    }
+  },
+  "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог.",
+    "category": "generated-copy",
+    "rationale": "Generated Git marker in publication output; canonical source owner and rebuild provenance apply, not edits to this marker.",
+    "baseline_path": "cyber/cyber/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "generated-git-marker",
+    "scan_counts": {
+      "listed_files": 314,
+      "text_files_scanned": 314,
+      "text_bytes_scanned": 36222197,
+      "cell_files": 32,
+      "cell_lines": 143,
+      "neuron_files": 13,
+      "neuron_lines": 14,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "generated-git-marker"
+    }
+  },
+  "cybergraph": {
+    "kind": "implementation",
+    "packages": "P03 P04 P07",
+    "action": "Общий NeuronId; graph/session durability и imports; namespace остаётся адресом данных; согласовать claims/CAS.",
+    "category": "implementation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybergraph",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 80,
+      "text_files_scanned": 80,
+      "text_bytes_scanned": 462976,
+      "cell_files": 11,
+      "cell_lines": 34,
+      "neuron_files": 49,
+      "neuron_lines": 383,
+      "identity_files": 29,
+      "identity_lines": 135,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "fa289ea46e7bafe46daea9319ad6531b31ace2cd",
+      "branch": "feat/durable-applications",
+      "dirty": true,
+      "status_entries": 38
+    },
+    "current_git": {
+      "head": "fa289ea46e7bafe46daea9319ad6531b31ace2cd",
+      "branch": "feat/durable-applications",
+      "dirty": true,
+      "status_entries": 39,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Foundation архитектура и protocol system/marketplace: service/shard governance; участник-neuron сохраняется; таблицы и биология KEEP.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberia",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 182,
+      "binary_files_excluded": 4,
+      "text_files_scanned": 178,
+      "text_bytes_scanned": 548232,
+      "cell_files": 18,
+      "cell_lines": 38,
+      "neuron_files": 16,
+      "neuron_lines": 50,
+      "identity_files": 8,
+      "identity_lines": 11
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "bacb7a378b9381b7d3df684d1ceedef73cbe5c79",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "bacb7a378b9381b7d3df684d1ceedef73cbe5c79",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia-blog": {
+    "kind": "publication",
+    "packages": "P11 P12",
+    "action": "Исторические blog posts не переписывать; обновить current subgraph links и regenerate build из canonical sources.",
+    "category": "publication",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberia-blog",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 111,
+      "text_files_scanned": 111,
+      "text_bytes_scanned": 182360,
+      "neuron_files": 12,
+      "neuron_lines": 22,
+      "cell_files": 3,
+      "cell_lines": 4,
+      "identity_files": 3,
+      "identity_lines": 3
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "798f2998cb3e8d08e9863d82c663d4e1a5af1ae1",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "798f2998cb3e8d08e9863d82c663d4e1a5af1ae1",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог.",
+    "category": "generated-copy",
+    "rationale": "Generated Git marker in publication output; canonical source owner and rebuild provenance apply, not edits to this marker.",
+    "baseline_path": "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "generated-git-marker",
+    "scan_counts": {
+      "listed_files": 293,
+      "text_files_scanned": 293,
+      "text_bytes_scanned": 34255569,
+      "cell_files": 29,
+      "cell_lines": 140,
+      "neuron_files": 13,
+      "neuron_lines": 18,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "generated-git-marker"
+    }
+  },
+  "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "generated-copy",
+    "packages": "P12",
+    "action": "Ложный Git root в build copy; исходники учтены отдельно, править canonical repository и regenerate, не этот каталог.",
+    "category": "generated-copy",
+    "rationale": "Generated Git marker in publication output; canonical source owner and rebuild provenance apply, not edits to this marker.",
+    "baseline_path": "cyberia-blog/build/cyb/honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "generated-git-marker",
+    "scan_counts": {
+      "listed_files": 314,
+      "text_files_scanned": 314,
+      "text_bytes_scanned": 36535075,
+      "cell_files": 32,
+      "cell_lines": 143,
+      "neuron_files": 13,
+      "neuron_lines": 18,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "generated-git-marker"
+    }
+  },
+  "cyberia-capital": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberia-capital",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 3,
+      "text_files_scanned": 3,
+      "text_bytes_scanned": 14872
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ba7a4f77890745ac9e9fe1593ed52807dde38405",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ba7a4f77890745ac9e9fe1593ed52807dde38405",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia-my": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Оба checkout: src/signal.rs domain key и ADR-036-style body, local storage/sequence; подтвердить один canonical source и сохранить wire.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberia-my",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 43,
+      "text_files_scanned": 43,
+      "text_bytes_scanned": 974785,
+      "cell_files": 7,
+      "cell_lines": 30,
+      "neuron_files": 14,
+      "neuron_lines": 69,
+      "identity_files": 11,
+      "identity_lines": 25,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "04361c0d7c08b6a136d97452dead4bdd7c4e1ec8",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "04361c0d7c08b6a136d97452dead4bdd7c4e1ec8",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 5,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia-to": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberia-to",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 3,
+      "text_files_scanned": 3,
+      "text_bytes_scanned": 11486
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "d587b7d016f5fe96a596b3237fba3681ba7b41b2",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "d587b7d016f5fe96a596b3237fba3681ba7b41b2",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia/research/cyberia-my": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Оба checkout: src/signal.rs domain key и ADR-036-style body, local storage/sequence; подтвердить один canonical source и сохранить wire.",
+    "category": "nested-independent-repository",
+    "rationale": "Independent nested Git root, with its own disposition/revision; parent checkout does not cover its contents.",
+    "baseline_path": "cyberia/research/cyberia-my",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 43,
+      "text_files_scanned": 43,
+      "text_bytes_scanned": 975093,
+      "cell_files": 7,
+      "cell_lines": 30,
+      "neuron_files": 14,
+      "neuron_lines": 69,
+      "identity_files": 11,
+      "identity_lines": 25,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b33a7e75c2011416596313c7929082f2511c9025",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "b33a7e75c2011416596313c7929082f2511c9025",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 5,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia/research/events": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "nested-independent-repository",
+    "rationale": "Independent nested Git root, with its own disposition/revision; parent checkout does not cover its contents.",
+    "baseline_path": "cyberia/research/events",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 786,
+      "credential_files_excluded": 2,
+      "text_files_scanned": 680,
+      "text_bytes_scanned": 11232190,
+      "cell_files": 29,
+      "cell_lines": 58,
+      "binary_files_excluded": 104
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "7e394be9288ac8deb87b97cfa754e63091ec1849",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "7e394be9288ac8deb87b97cfa754e63091ec1849",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberia/research/mimi": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "nested-independent-repository",
+    "rationale": "Independent nested Git root, with its own disposition/revision; parent checkout does not cover its contents.",
+    "baseline_path": "cyberia/research/mimi",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 79,
+      "text_files_scanned": 77,
+      "text_bytes_scanned": 3326647,
+      "credential_files_excluded": 1,
+      "binary_files_excluded": 1,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "1a3eec42b585a4e1f34023090fde6351103dff36",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "1a3eec42b585a4e1f34023090fde6351103dff36",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cybernet": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "CosmWasm neuron_uid/hotkey/coldkey/netuid — native protocol model; не заменять локальный UID на cyber NeuronId и не мигрировать contracts этим merge.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybernet",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 258,
+      "text_files_scanned": 255,
+      "text_bytes_scanned": 2558557,
+      "neuron_files": 86,
+      "neuron_lines": 1311,
+      "identity_files": 28,
+      "identity_lines": 127,
+      "cell_files": 11,
+      "cell_lines": 48,
+      "binary_files_excluded": 3
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e7ba0351f9fd23ff6c68ed4773ad979a07bfcab5",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "e7ba0351f9fd23ff6c68ed4773ad979a07bfcab5",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cybernode": {
+    "kind": "documentation",
+    "packages": "P10 P12",
+    "action": "Deployment/lytics storage docs и команды сверить с release; chain endpoints сохранить; сервера этой работой не менять.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybernode",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 166,
+      "text_files_scanned": 165,
+      "text_bytes_scanned": 1446915,
+      "neuron_files": 3,
+      "neuron_lines": 3,
+      "credential_files_excluded": 1,
+      "cell_files": 4,
+      "cell_lines": 4,
+      "identity_files": 1,
+      "identity_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "d689247885e2511f5382a316779f15984b54e25c",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "d689247885e2511f5382a316779f15984b54e25c",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cyberstates": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "cell_id в pages/map.rs — UI карта/DOM; совпадение не относится к runtime identity.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cyberstates",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 343,
+      "text_files_scanned": 342,
+      "text_bytes_scanned": 4022615,
+      "cell_files": 7,
+      "cell_lines": 31,
+      "binary_files_excluded": 1,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "fa4ec20d21167c5b4c76d9aa82e6ae97d3ee9a1c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "fa4ec20d21167c5b4c76d9aa82e6ae97d3ee9a1c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cybervalley-io": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybervalley-io",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 3,
+      "text_files_scanned": 3,
+      "text_bytes_scanned": 12073
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "61592d341feeb1f112e155dc08a5145e81fe1bf4",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "61592d341feeb1f112e155dc08a5145e81fe1bf4",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cybics": {
+    "kind": "documentation",
+    "packages": "P11",
+    "action": "Только software ontology references к архитектуре; biological/memory/data-structure cells и математические analogies сохраняются.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybics",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 558,
+      "text_files_scanned": 558,
+      "text_bytes_scanned": 1093696,
+      "neuron_files": 82,
+      "neuron_lines": 169,
+      "identity_files": 14,
+      "identity_lines": 15,
+      "cell_files": 90,
+      "cell_lines": 152
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e39086850f513541625744dcdffb8c2eef2e868b",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "e39086850f513541625744dcdffb8c2eef2e868b",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "cybland": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "cybland",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 75
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b1a212fe538e3ed3aedfa0f308e9dae4f0f7df7f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "b1a212fe538e3ed3aedfa0f308e9dae4f0f7df7f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "dif": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "dif",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1186
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "75673ab9a3e8a03039df0305ca60b72faf04e075",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "75673ab9a3e8a03039df0305ca60b72faf04e075",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "eidos": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "eidos",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 70,
+      "text_files_scanned": 70,
+      "text_bytes_scanned": 465403,
+      "cell_files": 2,
+      "cell_lines": 40,
+      "neuron_files": 2,
+      "neuron_lines": 5,
+      "identity_files": 1,
+      "identity_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "585354c1fb9caec5757961fe660f29a2a4973ffa",
+      "branch": "feat/strict-hemera-checking",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "585354c1fb9caec5757961fe660f29a2a4973ffa",
+      "branch": "feat/strict-hemera-checking",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "episode-1": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "episode-1",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 65,
+      "text_files_scanned": 34,
+      "text_bytes_scanned": 473045,
+      "binary_files_excluded": 31,
+      "cell_files": 2,
+      "cell_lines": 5,
+      "neuron_files": 1,
+      "neuron_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "db69b1bdc221108b61024e367082c80ab9566b74",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "db69b1bdc221108b61024e367082c80ab9566b74",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "erga": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "erga",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 80,
+      "text_files_scanned": 74,
+      "text_bytes_scanned": 621956,
+      "cell_files": 5,
+      "cell_lines": 35,
+      "binary_files_excluded": 6
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "848e17e2522db2f6225ad72d9b1797f8735d26d0",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "848e17e2522db2f6225ad72d9b1797f8735d26d0",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "evy": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "evy",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 906,
+      "text_files_scanned": 899,
+      "text_bytes_scanned": 14371226,
+      "neuron_files": 4,
+      "neuron_lines": 13,
+      "cell_files": 90,
+      "cell_lines": 1077,
+      "binary_files_excluded": 7,
+      "domain_files": 3,
+      "domain_lines": 4,
+      "identity_files": 1,
+      "identity_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "c29fed9e29914105f69fbfc9769b2da50ee06474",
+      "branch": "fix/fallible-bbg-storage",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "c29fed9e29914105f69fbfc9769b2da50ee06474",
+      "branch": "fix/fallible-bbg-storage",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "foculus": {
+    "kind": "compatibility",
+    "packages": "P03 P04 P06",
+    "action": "Согласовать ID imports и writer/finality contract; сохранить signal bytes, per-neuron chain и отдельный network.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "foculus",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 78,
+      "text_files_scanned": 78,
+      "text_bytes_scanned": 916709,
+      "neuron_files": 46,
+      "neuron_lines": 326,
+      "identity_files": 17,
+      "identity_lines": 57,
+      "cell_files": 4,
+      "cell_lines": 24
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "27e284cc3ddedb5c10a18166d1e7cf4bc2339bc3",
+      "branch": "fix/shared-storage-dependencies",
+      "dirty": true,
+      "status_entries": 6
+    },
+    "current_git": {
+      "head": "27e284cc3ddedb5c10a18166d1e7cf4bc2339bc3",
+      "branch": "fix/shared-storage-dependencies",
+      "dirty": true,
+      "status_entries": 6,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "fs": {
+    "kind": "documentation",
+    "packages": "P01 P10",
+    "action": "Patch author/neuron namespace и scoped program access; per-neuron patch chain не смешивать с runtime commit index.",
+    "category": "documentation",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "fs",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 5,
+      "text_files_scanned": 5,
+      "text_bytes_scanned": 49199,
+      "neuron_files": 3,
+      "neuron_lines": 56,
+      "identity_files": 3,
+      "identity_lines": 33
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "370182b8ae89b907225213c82e758cbc3269288e",
+      "branch": "docs/foculus-links",
+      "dirty": true,
+      "status_entries": 3
+    },
+    "current_git": {
+      "head": "370182b8ae89b907225213c82e758cbc3269288e",
+      "branch": "docs/foculus-links",
+      "dirty": true,
+      "status_entries": 3,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "glia": {
+    "kind": "integration",
+    "packages": "P06 P09",
+    "action": "Inference adapter получает bounded jobs/context; нейросетевые neurons и tensor layout не переименовывать.",
+    "category": "integration",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "glia",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 175,
+      "text_files_scanned": 175,
+      "text_bytes_scanned": 1640991,
+      "neuron_files": 3,
+      "neuron_lines": 11,
+      "cell_files": 2,
+      "cell_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "dad2c6a5fafd6696e54bac3afd50851e2eafd49d",
+      "branch": "feat/glia-cli",
+      "dirty": true,
+      "status_entries": 2
+    },
+    "current_git": {
+      "head": "dad2c6a5fafd6696e54bac3afd50851e2eafd49d",
+      "branch": "feat/glia-cli",
+      "dirty": true,
+      "status_entries": 2,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "go-cyber": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "go-cyber",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1351,
+      "text_files_scanned": 1329,
+      "text_bytes_scanned": 15729684,
+      "neuron_files": 109,
+      "neuron_lines": 963,
+      "binary_files_excluded": 21,
+      "cell_files": 19,
+      "cell_lines": 43,
+      "identity_files": 8,
+      "identity_lines": 24,
+      "credential_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "cdf00d88bfd89444e517f6a0a88fc874116b1d00",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "cdf00d88bfd89444e517f6a0a88fc874116b1d00",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "hemera": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "hemera",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 135,
+      "text_files_scanned": 135,
+      "text_bytes_scanned": 792975,
+      "neuron_files": 6,
+      "neuron_lines": 8,
+      "identity_files": 4,
+      "identity_lines": 4,
+      "cell_files": 8,
+      "cell_lines": 29,
+      "domain_files": 2,
+      "domain_lines": 7
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "fef673fd8e1bee37e8267d4bac43b88db0e57cfa",
+      "branch": "feat/eidos-hemera-proofs",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "fef673fd8e1bee37e8267d4bac43b88db0e57cfa",
+      "branch": "feat/eidos-hemera-proofs",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "honeycrisp": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "honeycrisp",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 307,
+      "text_files_scanned": 307,
+      "text_bytes_scanned": 2215219,
+      "cell_files": 16,
+      "cell_lines": 123,
+      "domain_files": 3,
+      "domain_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9a32c93bdd1e679127506c460eb057bb69641fe4",
+      "branch": "feat/tip5",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "9a32c93bdd1e679127506c460eb057bb69641fe4",
+      "branch": "feat/tip5",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать.",
+    "category": "preserved-worktree",
+    "rationale": "Separate branch/worktree retained under plan §10; no bulk rewrite or claim that another checkout's edits are present here.",
+    "baseline_path": "honeycrisp/.claude/worktrees/agent-aa1259cb10112b22a",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 248,
+      "text_files_scanned": 248,
+      "text_bytes_scanned": 1668996,
+      "cell_files": 14,
+      "cell_lines": 119,
+      "domain_files": 3,
+      "domain_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "52feff78558096e7b9a6cffc45eafe8caadadf80",
+      "branch": "worktree-agent-aa1259cb10112b22a",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "52feff78558096e7b9a6cffc45eafe8caadadf80",
+      "branch": "worktree-agent-aa1259cb10112b22a",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Unimem cell_id_distinct — память/allocator, не субъект; самостоятельные worktrees учтены, не массово переписывать.",
+    "category": "preserved-worktree",
+    "rationale": "Separate branch/worktree retained under plan §10; no bulk rewrite or claim that another checkout's edits are present here.",
+    "baseline_path": "honeycrisp/.claude/worktrees/agent-ad6c77c38e86bc291",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 266,
+      "text_files_scanned": 266,
+      "text_bytes_scanned": 1752050,
+      "cell_files": 14,
+      "cell_lines": 119,
+      "domain_files": 3,
+      "domain_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "41766033fa22eb91d82ae11d5857311e6d458b45",
+      "branch": "worktree-agent-ad6c77c38e86bc291",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "41766033fa22eb91d82ae11d5857311e6d458b45",
+      "branch": "worktree-agent-ad6c77c38e86bc291",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "hub": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "hub-skills хранит neuron/network/protocol/endpoint: сохранить contract storage/wire; bridge должен квалифицировать, а не переименовать поля.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "hub",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 109,
+      "text_files_scanned": 109,
+      "text_bytes_scanned": 219203,
+      "neuron_files": 8,
+      "neuron_lines": 31,
+      "identity_files": 1,
+      "identity_lines": 10
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "88b8e7cd22e0d3960bdfdaadcc7bb01609caf2ff",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "88b8e7cd22e0d3960bdfdaadcc7bb01609caf2ff",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "inf": {
+    "kind": "compatibility",
+    "packages": "P03 P04 P10",
+    "action": "Neuron value/query scoping и BbgSource: subject не подменять произвольным Particle; добавить prog/task projections у владельцев schemas.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "inf",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 64,
+      "text_files_scanned": 64,
+      "text_bytes_scanned": 529057,
+      "neuron_files": 26,
+      "neuron_lines": 197,
+      "identity_files": 11,
+      "identity_lines": 17,
+      "cell_files": 5,
+      "cell_lines": 8
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "a92eddff1a92c818dc58c9a19090486a26dcaa1e",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 6
+    },
+    "current_git": {
+      "head": "a92eddff1a92c818dc58c9a19090486a26dcaa1e",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 6,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "inf/rs/cozo": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "inf/rs/cozo",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 230,
+      "text_files_scanned": 228,
+      "text_bytes_scanned": 5795443,
+      "cell_files": 7,
+      "cell_lines": 29,
+      "missing_or_gitlink": 1,
+      "binary_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "481af058abac9444ea8c9c52c78f096ed4b5bfc4",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "481af058abac9444ea8c9c52c78f096ed4b5bfc4",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "joy": {
+    "kind": "compatibility",
+    "packages": "P02 P05",
+    "action": "Cells в formula/state — substrate pairs и private-state positions; сохранить bytes/proofs и согласовать с terms-map, не переименовать в neuron.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "joy",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 53,
+      "text_files_scanned": 53,
+      "text_bytes_scanned": 304734,
+      "cell_files": 9,
+      "cell_lines": 26,
+      "neuron_files": 2,
+      "neuron_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "d065814258f4d2fd86c3132c0435b5a2c99f9727",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 41
+    },
+    "current_git": {
+      "head": "d065814258f4d2fd86c3132c0435b5a2c99f9727",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 45,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "kadek": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "kadek",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 33,
+      "text_files_scanned": 33,
+      "text_bytes_scanned": 101369
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "162ad62f18c5f8e951d8203a922ed91f9e608fae",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "162ad62f18c5f8e951d8203a922ed91f9e608fae",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "lens": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "lens",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 53,
+      "text_files_scanned": 53,
+      "text_bytes_scanned": 305373,
+      "cell_files": 2,
+      "cell_lines": 4
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9b134c4cc90c051bc3bafb330e1f7a7db9be9a98",
+      "branch": "fix/public-execution-pcs",
+      "dirty": true,
+      "status_entries": 17
+    },
+    "current_git": {
+      "head": "9b134c4cc90c051bc3bafb330e1f7a7db9be9a98",
+      "branch": "fix/public-execution-pcs",
+      "dirty": true,
+      "status_entries": 17,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "li": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "li",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 124,
+      "text_files_scanned": 123,
+      "text_bytes_scanned": 702270,
+      "cell_files": 1,
+      "cell_lines": 6,
+      "domain_files": 1,
+      "domain_lines": 6,
+      "binary_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "93eef22a7cd4116ea445850454a81b910bd0ae47",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "93eef22a7cd4116ea445850454a81b910bd0ae47",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "lytics": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Реальный mudra domain consumer: golden derivation/signature/ingest vectors, маленький build graph; std::cell и deployed identities оставить.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "lytics",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 42,
+      "text_files_scanned": 42,
+      "text_bytes_scanned": 623004,
+      "neuron_files": 28,
+      "neuron_lines": 651,
+      "identity_files": 19,
+      "identity_lines": 77,
+      "cell_files": 7,
+      "cell_lines": 50
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "02f6cc9bec0ca123a33b9ccb8ce6046c75cc0783",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 17
+    },
+    "current_git": {
+      "head": "02f6cc9bec0ca123a33b9ccb8ce6046c75cc0783",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 18,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "maker": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "maker",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 23,
+      "text_files_scanned": 23,
+      "text_bytes_scanned": 159464
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "6e28681419d6d41c036eae8cf85969e3cc91c7dd",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "6e28681419d6d41c036eae8cf85969e3cc91c7dd",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "midao": {
+    "kind": "compatibility",
+    "packages": "P10 P11",
+    "action": "DAO/collective authority ссылки согласовать; legal/contract/physical terminology и развёрнутые storage layouts сохранить.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "midao",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 96,
+      "credential_files_excluded": 1,
+      "text_files_scanned": 94,
+      "text_bytes_scanned": 1556423,
+      "cell_files": 6,
+      "cell_lines": 21,
+      "neuron_files": 6,
+      "neuron_lines": 20,
+      "identity_files": 4,
+      "identity_lines": 4,
+      "missing_or_gitlink": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "85ffdd56add3b8e65e989b0bbc20867a9be365ee",
+      "branch": "audit/security-fixes",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "85ffdd56add3b8e65e989b0bbc20867a9be365ee",
+      "branch": "audit/security-fixes",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "midao/lib/forge-std": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "midao/lib/forge-std",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 68,
+      "text_files_scanned": 68,
+      "text_bytes_scanned": 1072433,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "8e40513d678f392f398620b3ef2b418648b33e89",
+      "branch": "(detached)",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "8e40513d678f392f398620b3ef2b418648b33e89",
+      "branch": null,
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "mir": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Spatial rendering/сетка и чтение graph neurons; самостоятельного cell subject API не найдено, переименования не требуется.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "mir",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 40,
+      "text_files_scanned": 40,
+      "text_bytes_scanned": 498479,
+      "cell_files": 5,
+      "cell_lines": 38,
+      "neuron_files": 11,
+      "neuron_lines": 20
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b9c832d5011d5a719bec6021afef123be35490ab",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "b9c832d5011d5a719bec6021afef123be35490ab",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "mona": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "mona",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 27,
+      "text_files_scanned": 27,
+      "text_bytes_scanned": 364009,
+      "cell_files": 2,
+      "cell_lines": 6,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ddb62bae26219a584f38f1dadcfa517c2f8dd324",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ddb62bae26219a584f38f1dadcfa517c2f8dd324",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "mudra": {
+    "kind": "compatibility",
+    "packages": "P01 P03 P06 P10",
+    "action": "Зафиксировать derivation/identity profiles и proof boundary; claim/domain signatures сохраняются; не переносить crypto в engine.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "mudra",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 90,
+      "text_files_scanned": 90,
+      "text_bytes_scanned": 572282,
+      "neuron_files": 35,
+      "neuron_lines": 226,
+      "identity_files": 25,
+      "identity_lines": 96,
+      "cell_files": 5,
+      "cell_lines": 10
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "348c46195388ac009667144987511a0e33bdc859",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 10
+    },
+    "current_git": {
+      "head": "348c46195388ac009667144987511a0e33bdc859",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 10,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "neural": {
+    "kind": "adapter",
+    "packages": "P04 P08",
+    "action": "CLI импортирует cyb_core::Cell: перейти на graph session и явный subject; поправить Cargo/docs/examples.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "neural",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 25,
+      "text_files_scanned": 25,
+      "text_bytes_scanned": 202830,
+      "cell_files": 9,
+      "cell_lines": 61,
+      "neuron_files": 17,
+      "neuron_lines": 102,
+      "identity_files": 8,
+      "identity_lines": 15
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "6623a8e9cddcb83c6e9a81cab4fb2b74d32d1961",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "6623a8e9cddcb83c6e9a81cab4fb2b74d32d1961",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "neuron": {
+    "kind": "implementation",
+    "packages": "P02 P03 P05 P06 P07 P12",
+    "action": "Эволюция в neuron: ID/model/progs, engine concurrency, authority, legacy migration; сохранить Git и immutable suite.",
+    "category": "renamed-owner",
+    "rationale": "Current neuron checkout inherits cell disposition; directory rename preserves repository history. Git observation below records this checkout.",
+    "baseline_path": "cell",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 106,
+      "text_files_scanned": 101,
+      "text_bytes_scanned": 609301,
+      "cell_files": 55,
+      "cell_lines": 329,
+      "neuron_files": 90,
+      "neuron_lines": 936,
+      "domain_files": 18,
+      "domain_lines": 55,
+      "identity_files": 48,
+      "identity_lines": 157,
+      "dependency_files": 3,
+      "dependency_lines": 11,
+      "missing_or_gitlink": 4,
+      "binary_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "34bbff9dbf36421a45c5c283e6c1336dcafc997a",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 93
+    },
+    "current_git": {
+      "head": "34bbff9dbf36421a45c5c283e6c1336dcafc997a",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 97,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "nika": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Кандидаты domain regex оказались std::cell::Cell/fork APIs; их сохранять. Native Bitcoin/chain/runtime типы не становятся neuron автоматически.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "nika",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 37,
+      "text_files_scanned": 32,
+      "text_bytes_scanned": 369264,
+      "binary_files_excluded": 4,
+      "missing_or_gitlink": 1,
+      "cell_files": 3,
+      "cell_lines": 47,
+      "domain_files": 1,
+      "domain_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "3dfb67415a1b2420300d6f114fad64286f22cc3e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "3dfb67415a1b2420300d6f114fad64286f22cc3e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "nika/.vendor/nockchain": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "nika/.vendor/nockchain",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 876,
+      "text_files_scanned": 839,
+      "text_bytes_scanned": 9845685,
+      "credential_files_excluded": 2,
+      "cell_files": 169,
+      "cell_lines": 3434,
+      "binary_files_excluded": 34,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "symlink_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "3dee0d5d3d6e6aba3f9304216ee60c548582059a",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "3dee0d5d3d6e6aba3f9304216ee60c548582059a",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "nox": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "nox",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 148,
+      "text_files_scanned": 148,
+      "text_bytes_scanned": 873322,
+      "cell_files": 19,
+      "cell_lines": 88,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "neuron_files": 15,
+      "neuron_lines": 25,
+      "identity_files": 2,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "2612673cae64239cb3511b13027d9ffaba77f48e",
+      "branch": "fix/jet-input-admission",
+      "dirty": true,
+      "status_entries": 16
+    },
+    "current_git": {
+      "head": "2612673cae64239cb3511b13027d9ffaba77f48e",
+      "branch": "fix/jet-input-admission",
+      "dirty": true,
+      "status_entries": 16,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "nu": {
+    "kind": "broken-reference",
+    "packages": "—",
+    "action": "Git link сломан; исходники просканированы через filesystem fallback. Terminal/grid/std cells KEEP; repair Git metadata — отдельная работа.",
+    "category": "source-without-git-metadata",
+    "rationale": "Available source can be checksummed, but HEAD/branch/dirty are unknown; broken Git metadata is not a clean checkout.",
+    "baseline_path": "nu",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "broken-git-checkout",
+    "scan_counts": {
+      "listed_files": 2334,
+      "text_files_scanned": 2305,
+      "text_bytes_scanned": 14957776,
+      "build_or_metadata_files_excluded": 1,
+      "cell_files": 248,
+      "cell_lines": 2115,
+      "binary_files_excluded": 28
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "broken-git-checkout"
+    }
+  },
+  "omi": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Non-Git Rust source tree отдельно от refs; cell совпадения только Cargo.lock, прямого merge API нет.",
+    "category": "non-git-source-group",
+    "rationale": "Separately enumerated non-Git source group; no repository revision can be inferred. See inherited scope.",
+    "baseline_path": "omi",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 41,
+      "text_files_scanned": 40,
+      "text_bytes_scanned": 187284,
+      "cell_files": 1,
+      "cell_lines": 9,
+      "binary_files_excluded": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  "omi-scan": {
+    "kind": "workspace",
+    "packages": "—",
+    "action": "Служебные source files вне Git; совпадений целевой модели нет.",
+    "category": "non-git-source-group",
+    "rationale": "Separately enumerated non-Git source group; no repository revision can be inferred. See inherited scope.",
+    "baseline_path": "omi-scan",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 4089
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  "omi/refs/omi-local": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "omi/refs/omi-local",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 3896,
+      "text_files_scanned": 3614,
+      "text_bytes_scanned": 70543029,
+      "cell_files": 276,
+      "cell_lines": 1855,
+      "credential_files_excluded": 7,
+      "binary_files_excluded": 275
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ca588d97cfead832bc5b3f58fc9b1e8c63ec5c10",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ca588d97cfead832bc5b3f58fc9b1e8c63ec5c10",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "omi/refs/omi-upstream": {
+    "kind": "reference-partial",
+    "packages": "—",
+    "action": "Sparse/partial reference: доступные файлы и 55 index blobs прочитаны; 12 397 blobs отсутствуют локально. Нет вывода о содержимом непрочитанной части.",
+    "category": "source-gap",
+    "rationale": "Sparse upstream reference; locally unavailable blobs remain an explicit gap. No conclusion about their unread contents.",
+    "baseline_path": "omi/refs/omi-upstream",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 13413,
+      "missing_or_gitlink": 12478,
+      "text_files_scanned": 952,
+      "text_bytes_scanned": 15793863,
+      "credential_files_excluded": 22,
+      "cell_files": 24,
+      "cell_lines": 62,
+      "binary_files_excluded": 33,
+      "neuron_files": 2,
+      "neuron_lines": 6,
+      "symlink_files_excluded": 1,
+      "build_or_metadata_files_excluded": 8,
+      "sparse_index_blobs_read": 55
+    },
+    "scan_error_counts": {
+      "sparse_index_blob_unavailable": 12397
+    },
+    "scan_git": {
+      "head": "06e031a77c64d2465459688068a2a152646f776a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "06e031a77c64d2465459688068a2a152646f776a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "omi/refs/parakeet.cpp": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "omi/refs/parakeet.cpp",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 407,
+      "text_files_scanned": 382,
+      "text_bytes_scanned": 8807694,
+      "binary_files_excluded": 24,
+      "cell_files": 7,
+      "cell_lines": 14,
+      "missing_or_gitlink": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e75de9b6b9b688fd293aa22f7e27aa724ea286f8",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "e75de9b6b9b688fd293aa22f7e27aa724ea286f8",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "omi/refs/parakeet.cpp/third_party/ggml": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Отдельный embedded/reference Git root: upstream API/vocabulary сохранять; менять собственный adapter только при доказанной зависимости.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "omi/refs/parakeet.cpp/third_party/ggml",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 1962,
+      "text_files_scanned": 1201,
+      "text_bytes_scanned": 18017004,
+      "cell_files": 13,
+      "cell_lines": 21,
+      "binary_files_excluded": 761
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e705c5fed490514458bdd2eaddc43bd098fcce9b",
+      "branch": "(detached)",
+      "dirty": true,
+      "status_entries": 9
+    },
+    "current_git": {
+      "head": "e705c5fed490514458bdd2eaddc43bd098fcce9b",
+      "branch": null,
+      "dirty": true,
+      "status_entries": 9,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "opt": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "opt",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1929
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b5dcfe8464440ef08b74f15cbe6ef528d986241e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "b5dcfe8464440ef08b74f15cbe6ef528d986241e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "optica": {
+    "kind": "compatibility",
+    "packages": "P11 P12",
+    "action": "Проверить wiki alias resolution/root neuron и rebuild links; layout/table/spatial grid cells остаются.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "optica",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 74,
+      "text_files_scanned": 69,
+      "text_bytes_scanned": 724716,
+      "cell_files": 5,
+      "cell_lines": 27,
+      "neuron_files": 5,
+      "neuron_lines": 8,
+      "binary_files_excluded": 5
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "organiq": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "organiq",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 510,
+      "text_files_scanned": 510,
+      "text_bytes_scanned": 382997,
+      "cell_files": 17,
+      "cell_lines": 33
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "955fbd86bdd60eae08bb96fb38c0e1aa8ccd7eaf",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "955fbd86bdd60eae08bb96fb38c0e1aa8ccd7eaf",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "oxytocin": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "oxytocin",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 214
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "44e2843a65333d37bea3d1467a2f2eaf5e91e877",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "44e2843a65333d37bea3d1467a2f2eaf5e91e877",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "perla": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "perla",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 23,
+      "text_files_scanned": 23,
+      "text_bytes_scanned": 158646,
+      "cell_files": 1,
+      "cell_lines": 3
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "d06b980d3f29ee829ba0fd264d67581cf79b75f6",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "d06b980d3f29ee829ba0fd264d67581cf79b75f6",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "portal": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Cyber/Cosmos NeuronBandwidth и contract queries сохранить; new identity boundary только в adapters, не в deployed schema.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "portal",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 100,
+      "text_files_scanned": 99,
+      "text_bytes_scanned": 711791,
+      "cell_files": 5,
+      "cell_lines": 125,
+      "neuron_files": 11,
+      "neuron_lines": 39,
+      "credential_files_excluded": 1,
+      "identity_files": 1,
+      "identity_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "51b849835099b431ca791ba3124fcb99f47be593",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "51b849835099b431ca791ba3124fcb99f47be593",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "prysm": {
+    "kind": "adapter",
+    "packages": "P08",
+    "action": "cyb-core dependency; active/pinned/launcher cell_id → typed destination; NeuronId в UI не равен bech32 format string.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "prysm",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 99,
+      "binary_files_excluded": 2,
+      "text_files_scanned": 97,
+      "text_bytes_scanned": 503285,
+      "cell_files": 16,
+      "cell_lines": 53,
+      "neuron_files": 49,
+      "neuron_lines": 155,
+      "domain_files": 6,
+      "domain_lines": 8,
+      "identity_files": 14,
+      "identity_lines": 19
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "652e83e036d4140a86bd9a1da3456a73f0a4a8c6",
+      "branch": "feat/cli",
+      "dirty": true,
+      "status_entries": 29
+    },
+    "current_git": {
+      "head": "652e83e036d4140a86bd9a1da3456a73f0a4a8c6",
+      "branch": "feat/cli",
+      "dirty": true,
+      "status_entries": 29,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "pure": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "pure",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 52982
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "f219cb5a3b5de9d5c20f965feac24c93fef46c21",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "f219cb5a3b5de9d5c20f965feac24c93fef46c21",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "qu": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "qu",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 6609
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "a3820d6cc1008634547897cdaf33181fa9e7ad5b",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "a3820d6cc1008634547897cdaf33181fa9e7ad5b",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "quanta": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Текстовые/UI/dependency/предметные совпадения; direct runtime subject или identity dependency не выявлены. Изменений по этому merge не назначено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "quanta",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 105,
+      "binary_files_excluded": 1,
+      "text_files_scanned": 104,
+      "text_bytes_scanned": 954280,
+      "cell_files": 13,
+      "cell_lines": 83
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "220712c8d73c539474c9c8b955972b2a8f559dd6",
+      "branch": "(detached)",
+      "dirty": true,
+      "status_entries": 5
+    },
+    "current_git": {
+      "head": "220712c8d73c539474c9c8b955972b2a8f559dd6",
+      "branch": null,
+      "dirty": true,
+      "status_entries": 12,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "radio": {
+    "kind": "compatibility",
+    "packages": "P06 P10",
+    "action": "Transport endpoint ≠ neuron; проверить discovery/auth adapters; iroh/Cid, draw.io mxCell и vendor storage vocabulary сохранить.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "radio",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 4390,
+      "text_files_scanned": 843,
+      "text_bytes_scanned": 9229416,
+      "cell_files": 82,
+      "cell_lines": 677,
+      "neuron_files": 11,
+      "neuron_lines": 14,
+      "identity_files": 3,
+      "identity_lines": 4,
+      "domain_files": 1,
+      "domain_lines": 36,
+      "binary_files_excluded": 6,
+      "build_or_metadata_files_excluded": 3535,
+      "symlink_files_excluded": 6
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "f2b1298daa9f635c821d53996c4d1dc4f1042b3d",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 2
+    },
+    "current_git": {
+      "head": "f2b1298daa9f635c821d53996c4d1dc4f1042b3d",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 2,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "ren": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "ren",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1180
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b791f6b54063932a00bc353d6709063cc7fc288c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "b791f6b54063932a00bc353d6709063cc7fc288c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "rockets": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "rockets",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 103
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "02f30f6f48935ef67993d41226ed4326357eacf7",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "02f30f6f48935ef67993d41226ed4326357eacf7",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "rs": {
+    "kind": "adapter",
+    "packages": "P02 P05 P11",
+    "action": "Собственный cell! macro, Cell/CellMetadata и cyb-cell tutorial: bounded module, не subject. Перейти к module!/Module naming, сохранить codegen/lifecycle, состыковать с prog/worker contract.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "rs",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 159,
+      "text_files_scanned": 156,
+      "text_bytes_scanned": 881731,
+      "cell_files": 12,
+      "cell_lines": 46,
+      "missing_or_gitlink": 3,
+      "neuron_files": 1,
+      "neuron_lines": 2,
+      "identity_files": 1,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ae11518dcafe1c6fb6a6cea390fd6acda6b3e23a",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 32
+    },
+    "current_git": {
+      "head": "ae11518dcafe1c6fb6a6cea390fd6acda6b3e23a",
+      "branch": "master",
+      "dirty": true,
+      "status_entries": 34,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "rune": {
+    "kind": "adapter",
+    "packages": "P02 P05",
+    "action": "run_cell → prog/event driver; checkpoint ABI и authority tests; Noun::Cell → Pair только отдельной terms миграцией.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "rune",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 62,
+      "text_files_scanned": 62,
+      "text_bytes_scanned": 370823,
+      "neuron_files": 21,
+      "neuron_lines": 56,
+      "cell_files": 23,
+      "cell_lines": 237,
+      "domain_files": 4,
+      "domain_lines": 5,
+      "identity_files": 2,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "cc186f38f670339dd8dbd7ef49aeb8f3d48fb3ed",
+      "branch": "feat/resumable-authority-bound-runtime",
+      "dirty": true,
+      "status_entries": 3
+    },
+    "current_git": {
+      "head": "cc186f38f670339dd8dbd7ef49aeb8f3d48fb3ed",
+      "branch": "feat/resumable-authority-bound-runtime",
+      "dirty": true,
+      "status_entries": 3,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "sec": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Один концептуальный neuron privacy reference; crypto semantics менять не требуется.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "sec",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 2056,
+      "neuron_files": 1,
+      "neuron_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "99e076daa928ceb927ad8dc42ba8e02dc9334a2d",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "99e076daa928ceb927ad8dc42ba8e02dc9334a2d",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "seq": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "seq",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1241
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "575898a50ddecadad8f3dab225cc69323575337e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "575898a50ddecadad8f3dab225cc69323575337e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "simulation": {
+    "kind": "new-source",
+    "packages": "—",
+    "action": "No action assigned by the immutable baseline.",
+    "category": "new-independent-source",
+    "rationale": "New emergence-simulation repository. The observed cell match is an orthogonalization benchmark label; no runtime subject rename is assigned. Source: simulation/README.md and examples/bench_kernels.rs.",
+    "baseline_path": null,
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 26,
+      "text_files_scanned": 26,
+      "text_bytes_scanned": 84730,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "a1063bcbf4c645bb16722ad47fd5362d02f71efe",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "a1063bcbf4c645bb16722ad47fd5362d02f71efe",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "soft3": {
+    "kind": "composition",
+    "packages": "P00 P01 P10 P12 P13",
+    "action": "Shared contracts, roadmap precedence, adapters/release manifest/conformance, сайт и SDK entry points; не копировать engine.",
+    "category": "composition",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "soft3",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 421,
+      "text_files_scanned": 328,
+      "text_bytes_scanned": 13588496,
+      "cell_files": 90,
+      "cell_lines": 11001,
+      "neuron_files": 189,
+      "neuron_lines": 7512,
+      "identity_files": 53,
+      "identity_lines": 157,
+      "domain_files": 14,
+      "domain_lines": 107,
+      "dependency_files": 9,
+      "dependency_lines": 38,
+      "audit_output_excluded": 2,
+      "binary_files_excluded": 90,
+      "missing_or_gitlink": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "4fc77ad335712915bd39714d72856ada1da0a52f",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 29
+    },
+    "current_git": {
+      "head": "4fc77ad335712915bd39714d72856ada1da0a52f",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 397,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "soft3/js": {
+    "kind": "compatibility",
+    "packages": "P10 P12",
+    "action": "Отдельный nested repository. Сохранить Bostrom/CosmJS addresses и wire; адаптировать лишь потребляемый новый API, без смены dependency versions.",
+    "category": "nested-independent-repository",
+    "rationale": "Independent nested Git root, with its own disposition/revision; parent checkout does not cover its contents.",
+    "baseline_path": "soft3/js",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 59,
+      "text_files_scanned": 59,
+      "text_bytes_scanned": 659725,
+      "neuron_files": 16,
+      "neuron_lines": 138,
+      "identity_files": 2,
+      "identity_lines": 4,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "f796d97e84637a9d343f1b19c5333bdc3152f434",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 4
+    },
+    "current_git": {
+      "head": "f796d97e84637a9d343f1b19c5333bdc3152f434",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 5,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "soma": {
+    "kind": "adapter",
+    "packages": "P01 P09",
+    "action": "Снять root Soul Neuron и neuron=cognitive worker; task/prog lineage, recovery и context. Комментарии kernel об identity/log cell исправить.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "soma",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 27,
+      "text_files_scanned": 27,
+      "text_bytes_scanned": 320943,
+      "cell_files": 12,
+      "cell_lines": 65,
+      "neuron_files": 19,
+      "neuron_lines": 143,
+      "identity_files": 4,
+      "identity_lines": 16
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "312177028abeecaf252e0c72d25f8e3fc1dc8985",
+      "branch": "docs/foculus-links",
+      "dirty": true,
+      "status_entries": 14
+    },
+    "current_git": {
+      "head": "312177028abeecaf252e0c72d25f8e3fc1dc8985",
+      "branch": "docs/foculus-links",
+      "dirty": true,
+      "status_entries": 24,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "space-pussy": {
+    "kind": "legacy-compatibility",
+    "packages": "P10",
+    "action": "Исторические chain identities, account keys, protobuf/JSON и snapshot data сохранить; миграция только через explicit bridge/adapters.",
+    "category": "legacy-compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "space-pussy",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1694,
+      "text_files_scanned": 1591,
+      "text_bytes_scanned": 16730282,
+      "binary_files_excluded": 103,
+      "neuron_files": 133,
+      "neuron_lines": 608,
+      "cell_files": 27,
+      "cell_lines": 201,
+      "identity_files": 12,
+      "identity_lines": 14
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "fbe53dd93fc78bc18651af8b1b2b5199a3f19a4f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "fbe53dd93fc78bc18651af8b1b2b5199a3f19a4f",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "strata": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Математический substrate; найденные cells не runtime субъект. Нет основания менять алгебру или package ради merge.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "strata",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 244,
+      "text_files_scanned": 244,
+      "text_bytes_scanned": 1156966,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "7f6864abd2d989cfade7ffd0c13890de1f4b0c4e",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "7f6864abd2d989cfade7ffd0c13890de1f4b0c4e",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "superhuman": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Биология/медицина и общие graph ссылки; архитектурного CellId API нет, клетки и нейроны организма сохранить.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "superhuman",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 214,
+      "text_files_scanned": 214,
+      "text_bytes_scanned": 137106,
+      "cell_files": 31,
+      "cell_lines": 62,
+      "neuron_files": 5,
+      "neuron_lines": 9
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "386c311c90be827c6f592ccbfa03001938784d7c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "386c311c90be827c6f592ccbfa03001938784d7c",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "sym": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "sym",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1133
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "446865716d2fa5cea66aded13112ec3f9b741a6e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "446865716d2fa5cea66aded13112ec3f9b741a6e",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "tape": {
+    "kind": "compatibility",
+    "packages": "P04 P08",
+    "action": "Neuron molecule — reference/display, не runtime record; новый dialect для typed references по необходимости; framing/signatures неизменны.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "tape",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 20,
+      "text_files_scanned": 20,
+      "text_bytes_scanned": 139405,
+      "cell_files": 4,
+      "cell_lines": 23,
+      "neuron_files": 7,
+      "neuron_lines": 13,
+      "identity_files": 3,
+      "identity_lines": 3
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "a9e26cb5bbd597a7f96c3bfc1400c7f4575f5635",
+      "branch": "feat/cli",
+      "dirty": true,
+      "status_entries": 1
+    },
+    "current_git": {
+      "head": "a9e26cb5bbd597a7f96c3bfc1400c7f4575f5635",
+      "branch": "feat/cli",
+      "dirty": true,
+      "status_entries": 1,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "ten": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "ten",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1187
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "b4418cf182b6b5f726662b0e07a9053652798bfe",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "b4418cf182b6b5f726662b0e07a9053652798bfe",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "tok": {
+    "kind": "compatibility",
+    "packages": "P03 P06 P13",
+    "action": "Протокольные NeuronId, stake/focus/karma/balances и accounting остаются; execution budgets не создают второй экономический ledger.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "tok",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 13,
+      "text_files_scanned": 13,
+      "text_bytes_scanned": 55815,
+      "neuron_files": 6,
+      "neuron_lines": 41,
+      "identity_files": 3,
+      "identity_lines": 14
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "118058fee410e6417491b20fb56c92a37b8cfce9",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 2
+    },
+    "current_git": {
+      "head": "118058fee410e6417491b20fb56c92a37b8cfce9",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 2,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "trident": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "trident",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 603,
+      "text_files_scanned": 583,
+      "text_bytes_scanned": 4820782,
+      "cell_files": 36,
+      "cell_lines": 218,
+      "neuron_files": 25,
+      "neuron_lines": 112,
+      "identity_files": 11,
+      "identity_lines": 18,
+      "symlink_files_excluded": 8,
+      "binary_files_excluded": 4,
+      "build_or_metadata_files_excluded": 7,
+      "domain_files": 2,
+      "domain_lines": 2,
+      "missing_or_gitlink": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "180b8f155a27f905f49ce19770415f382ee6504e",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 147
+    },
+    "current_git": {
+      "head": "180b8f155a27f905f49ce19770415f382ee6504e",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 147,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "trisha": {
+    "kind": "compatibility",
+    "packages": "P03 P10",
+    "action": "Существующий cli/neuron.rs и Neptune wallet: native key/account lifecycle сохранить; при интеграции квалифицировать identity domain.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "trisha",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 5687,
+      "text_files_scanned": 613,
+      "text_bytes_scanned": 38771217,
+      "neuron_files": 13,
+      "neuron_lines": 74,
+      "identity_files": 1,
+      "identity_lines": 1,
+      "cell_files": 21,
+      "cell_lines": 84,
+      "build_or_metadata_files_excluded": 5074
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "e97b5439bf45bde1e4804c6c2cb6b217000495bb",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 214
+    },
+    "current_git": {
+      "head": "e97b5439bf45bde1e4804c6c2cb6b217000495bb",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 5585,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "tru": {
+    "kind": "compatibility",
+    "packages": "P03 P06 P13",
+    "action": "Протокольные NeuronId, stake/focus/karma/balances и accounting остаются; execution budgets не создают второй экономический ledger.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "tru",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 122,
+      "text_files_scanned": 122,
+      "text_bytes_scanned": 6911727,
+      "neuron_files": 69,
+      "neuron_lines": 345,
+      "cell_files": 6,
+      "cell_lines": 7,
+      "identity_files": 20,
+      "identity_lines": 26
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "56ceca79fb7d16b7725673a2f0fbb1409a76ca1c",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "56ceca79fb7d16b7725673a2f0fbb1409a76ca1c",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "true-cyber": {
+    "kind": "adapter",
+    "packages": "P08 P10 P12",
+    "action": "Проверить product facade CLI/sync/link, help и документацию против soft3; не превращать node process в neuron.",
+    "category": "adapter",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "true-cyber",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 12,
+      "text_files_scanned": 12,
+      "text_bytes_scanned": 99603,
+      "cell_files": 2,
+      "cell_lines": 13,
+      "neuron_files": 8,
+      "neuron_lines": 52,
+      "identity_files": 5,
+      "identity_lines": 9
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "6cd1d8e6ffc325c7d2da744121a862a72d75f358",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 9
+    },
+    "current_git": {
+      "head": "6cd1d8e6ffc325c7d2da744121a862a72d75f358",
+      "branch": "main",
+      "dirty": true,
+      "status_entries": 9,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "uhash": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Viewing-economy references и UI/general cells; merge не меняет settlement/reward contract.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "uhash",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 70,
+      "text_files_scanned": 70,
+      "text_bytes_scanned": 617028,
+      "cell_files": 1,
+      "cell_lines": 19,
+      "neuron_files": 1,
+      "neuron_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ff8b3bf04355856db31746fe776b463c3b73e4e7",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ff8b3bf04355856db31746fe776b463c3b73e4e7",
+      "branch": "master",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "valkyra": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "README: lexical cell match; самостоятельных subject/API/Cargo consumers не обнаружено.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "valkyra",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 1,
+      "text_files_scanned": 1,
+      "text_bytes_scanned": 29776,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "fda590497d7a680bed810a40255f04152d7564d1",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "fda590497d7a680bed810a40255f04152d7564d1",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "warriors": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "Execution/mining guidance сохраняется; worker — исполнитель, не neuron. Cell match — cancellation substring.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "warriors",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 5,
+      "text_files_scanned": 5,
+      "text_bytes_scanned": 15584,
+      "cell_files": 1,
+      "cell_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "27872352a6e692d5fdf5ffeb53445b6b22ab9ba0",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "27872352a6e692d5fdf5ffeb53445b6b22ab9ba0",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "wav": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "wav",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 2,
+      "text_files_scanned": 2,
+      "text_bytes_scanned": 1436
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "3c47ffea54edf16aa3728c8352fdfc8a5ea1f91a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "3c47ffea54edf16aa3728c8352fdfc8a5ea1f91a",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "wysm": {
+    "kind": "keep",
+    "packages": "—",
+    "action": "WASM Cell(u64)/stack slots и std types остаются; worker integration следует execution-model, отдельного subject runtime здесь нет.",
+    "category": "keep",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "wysm",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 339,
+      "text_files_scanned": 319,
+      "text_bytes_scanned": 2647766,
+      "cell_files": 30,
+      "cell_lines": 543,
+      "missing_or_gitlink": 3,
+      "binary_files_excluded": 17,
+      "dependency_files": 1,
+      "dependency_lines": 1,
+      "neuron_files": 1,
+      "neuron_lines": 3,
+      "identity_files": 1,
+      "identity_lines": 1
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "bde62d57e4ed2a89fae475ea9e216aeffbd6deb8",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "bde62d57e4ed2a89fae475ea9e216aeffbd6deb8",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "xena": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "xena",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 48,
+      "text_files_scanned": 48,
+      "text_bytes_scanned": 180495
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "6ea943a2ea3c613e071543cf712287dd087532ba",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "6ea943a2ea3c613e071543cf712287dd087532ba",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "zheng": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "compatibility",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "zheng",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 121,
+      "text_files_scanned": 121,
+      "text_bytes_scanned": 992550,
+      "cell_files": 11,
+      "cell_lines": 38,
+      "neuron_files": 7,
+      "neuron_lines": 24,
+      "identity_files": 1,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "0670d3416b413550487344acd7bfd2c5e732546b",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 31
+    },
+    "current_git": {
+      "head": "0670d3416b413550487344acd7bfd2c5e732546b",
+      "branch": "fix/warrior-release",
+      "dirty": true,
+      "status_entries": 38,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "zheng-022": {
+    "kind": "reference",
+    "packages": "—",
+    "action": "Копия proof implementation вне Git; сохранить как version reference, canonical proof changes только в выбранном zheng revision.",
+    "category": "vendor-reference",
+    "rationale": "Independent embedded/vendor/reference root. Preserve upstream semantics and original bytes; not a migrated subject owner.",
+    "baseline_path": "zheng-022",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "non-git-source-tree",
+    "scan_counts": {
+      "listed_files": 81,
+      "text_files_scanned": 81,
+      "text_bytes_scanned": 649131,
+      "neuron_files": 7,
+      "neuron_lines": 24,
+      "cell_files": 3,
+      "cell_lines": 7,
+      "identity_files": 1,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null
+    },
+    "current_git": {
+      "head": null,
+      "branch": null,
+      "dirty": null,
+      "status_entries": null,
+      "observation": "not-readable-git-root",
+      "scanner_kind": "non-git-source-tree"
+    }
+  },
+  "zheng-pin": {
+    "kind": "compatibility",
+    "packages": "P02 P03 P05 P13",
+    "action": "Pin data/hash/checkpoint/proof boundary и проверить затронутые consumers. Substrate pair/DAS/VM/crypto terms — отдельные контракты, не neuron rename.",
+    "category": "preserved-worktree",
+    "rationale": "Separate branch/worktree retained under plan §10; no bulk rewrite or claim that another checkout's edits are present here.",
+    "baseline_path": "zheng-pin",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "worktree",
+    "scan_counts": {
+      "listed_files": 82,
+      "text_files_scanned": 82,
+      "text_bytes_scanned": 698349,
+      "neuron_files": 7,
+      "neuron_lines": 24,
+      "cell_files": 4,
+      "cell_lines": 9,
+      "identity_files": 1,
+      "identity_lines": 2
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "0452894c5cb4f329cdeb46678fed0658479ea903",
+      "branch": "chore/dev-doctrine-link-fix",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "0452894c5cb4f329cdeb46678fed0658479ea903",
+      "branch": "chore/dev-doctrine-link-fix",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  },
+  "zoya": {
+    "kind": "no-hits",
+    "packages": "—",
+    "action": "В доступных текстовых исходниках cell/neuron совпадений нет; прямой задачи миграции не выявлено, scaffold не требует новой реализации.",
+    "category": "no-hits",
+    "rationale": "Inherited baseline scope; assigned action is not evidence of completion.",
+    "baseline_path": "zoya",
+    "evidence_status": "provenance-only; gates evaluated separately",
+    "scanner_kind": "repository",
+    "scan_counts": {
+      "listed_files": 21,
+      "text_files_scanned": 21,
+      "text_bytes_scanned": 117379
+    },
+    "scan_error_counts": {},
+    "scan_git": {
+      "head": "ef8f582f2562a61c1e5f4adb46f0651aa6b86bbf",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0
+    },
+    "current_git": {
+      "head": "ef8f582f2562a61c1e5f4adb46f0651aa6b86bbf",
+      "branch": "main",
+      "dirty": false,
+      "status_entries": 0,
+      "observation": "current-read-only",
+      "errors": []
+    }
+  }
+}

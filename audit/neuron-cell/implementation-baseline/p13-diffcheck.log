@@ -1,0 +1,3 @@
+nu 128 fatal: not a git repository: /Users/master/cyber/nu/../../.git/modules/vendor/nushell
+
+{"checked": 56, "passed": 55, "nonzero": 1}

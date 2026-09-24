@@ -9,7 +9,13 @@ alias: stack, soft3 registry, component registry, stack registry, soft3 status
 
 the component registry and its honest state: every repo, its verb, its release, and where it actually stands. soft3 is the [[cyber]] component of the [[cybics]] WORK triad — and internally it unfolds the same seven-triad spiral that [[cybics]] uses for all knowledge. form defines the primitive rules. mass is what knowledge is literally made of. space is where it exists at scale. life is where it becomes intelligent. word is what it means. work is how it runs. play is where we act together.
 
-each component is in one of six states. **live** — carries real traffic today. **published** — released and correct, but not yet in the live loop. **unwired** — built, released, and not connected to the thing that needs it. **spec** — paper only. **dormant** — no commits in months while holding a named seat. **blocked** — waiting on another component's gap.
+States distinguish evidence: **local** — implemented and tested in the current
+checkout, with its supported profile declared; **live** — recorded deployed
+traffic; **published** — a recorded package release; **unwired** — built but
+awaiting integration; **spec** — paper only; **dormant** — inactive work;
+**blocked** — waiting on another component. Release/crates columns preserve the
+recorded release links. The 2026-09-13 neuron migration updates local source
+evidence; it neither republishes those releases nor establishes remote upgrades.
 
 | repo | verb | state | release | crates | what it does |
 |---|---|---|---|---|---|
@@ -22,21 +28,21 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[cybics/mass|mass]] |  |  |  |  |  |
 | [[soft3/cybergraph\|cybergraph]] | link | live | [0.1.1](https://github.com/cyberia-to/cybergraph/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
 | [[soft3/bbg\|bbg]] | store | live | [0.2.1](https://github.com/cyberia-to/bbg/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs · QueryProof serde |
-| [[cell]] | hold | spec | — | — | local node · graph slice · signal chain · apply/prove loop · overlaps cyb-core, to converge |
+| [neuron](../neuron/README.md) | act | local | — | — | one subject · identity-only library · durable progs/invocations · bounded Rune execution · continuation/recovery; [evidence](audit/neuron-cell/implementation.md) |
 | [[fs]] | mount | spec | — | — | particles · patches · sync · repo is empty |
 | [[tok]] | pay | published | [0.1.1](https://github.com/cyberia-to/plumb/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tok) | Coin · Card · conservation · no live economy yet |
 | [[cybics/space|space]] |  |  |  |  |  |
-| [[vault]] | keep | spec | — | — | secret storage: seeds, caps, sealed state — a seat proposed, not yet a repo |
+| [vault](../cyb/specs/private-vault.md) | keep | local | — | — | cyb custody and encrypted private state · subject/network namespaces · legacy ciphertext preserved; host-owned role, no standalone release |
 | [[mudra]] | encrypt | live | [0.1.0](https://github.com/cyberia-to/mudra/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-mudra) | KEM · dCTIDH · AEAD · TFHE · threshold |
 | [[radio]] | transmit | live | [0.1.0](https://github.com/cyberia-to/radio/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-radio) | QUIC · BAO streaming · gossip · carries `cyb/sync/0` |
-| [[tape]] | frame | published | [0.1.0](https://github.com/cyberia-to/tape/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/cyber-tape) | typed particle framing over any byte stream |
+| [[tade]] | frame | published | [0.1.0](https://github.com/cyberia-to/tade/releases/tag/v0.1.0) | [0.1.0](https://crates.io/crates/tade) | typed particle framing over any byte stream |
 | [[foculus]] | sync | unwired | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | chain · VDF · equivocation · DAS · erasure · CRDT · engine partial, never deployed |
-| [[cyb/root/ward\|ward]] | authorize | spec | — | — | effect router · emit/query/link/seal/host |
+| [ward](../cyb/specs/runtime-authority.md) | authorize | local | — | — | current binding/grant checks at admission and dispatch · captured subject/network · revocation and worker generation fences; cyb host role |
 | [[cybics/life|life]] |  |  |  |  |  |
 | [[tru]] | converge | published | [0.1.1](https://github.com/cyberia-to/tru/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-tru) | φ* · eigenvectors · cyberank |
 | [[foculus]] | agree | spec | [0.1.2](https://github.com/cyberia-to/foculus/releases/tag/v0.1.2) | [0.1.2](https://crates.io/crates/foculus) | [[collective focus theorem]] → finality · fork-choice unproven in the wild |
 | [[sigma]] | evaluate | spec | — | — | assessment: scores and gradings become links — a seat proposed, not yet a repo |
-| [[soft3/soma\|soma]] | think | live | — | — | four concurrent loops · tiered model stack · phase 1 in [[cyb]] |
+| [soma](../soma/README.md) | think | local | — | — | durable tasks · context/model capture · tools/children/schedules · real local glia provider and CLI/Bevy bodies; [evidence](../soma/audit/neuron-composition.md) |
 | [[cybics/word|word]] |  |  |  |  |  |
 | [[neural]] | mean | spec | — | — | sigil → word → link → sentence → motif → dialect |
 | [[trident]] | compile | live | [0.2.0](https://github.com/cyberia-to/trident/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/trident-lang) | .tri → .nox by default — the full chain build → prove → verify runs through [[joy]] (verified 2026-09-08) |
@@ -51,10 +57,21 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[kern]] | shade | spec | — | — | Metal/Vulkan/WebGPU shaders · cond/host |
 | [[cybics/play|play]] |  |  |  |  |  |
 | [[mir]] | render | live | — | — | positions + features → [[R-1.0]] world |
-| [[prysm]] | paint | live | — | — | tape dialect · chunks → UI |
+| [[prysm]] | paint | live | — | — | tade dialect · chunks → UI |
 | [[lytics]] | measure | live | — | — | signed visitor events · PoW-priced · cohorts · funnels — cybernetics is impossible without measurement |
 
-**the stack has a heart, and products grow on its skin.** at the centre sits the trinity the whole stack exists to turn: [[cyb]] the body, [[cyber]] the mind, [[cyberia]] the state — a cycle (bodies feed the mind, the mind guides the state, citizens embody). they are not seats in the registry; the registry is what they are made of. listing cyb inside the stack it depends on was a structural error, corrected 2026-09-02. [[lytics]] however IS a seat — measurement is how cybernetics closes its loop — and returned to play. the stack's own top-tier seats are [[cell]] (hold), [[cyb/parts/ward|ward]] (authorize), [[vault]] (keep) and [[sigma]] (evaluate). the full interaction graph, with every concrete input and output, is drawn at [soft3.org/chart](https://soft3.org/chart); the boundary rule and the loop — four motions, two guarantees, one attractor, every verb from this table — live in [[crystallization]] and are drawn at [soft3.org/scheme](https://soft3.org/scheme).
+[[Cyb]] is the robot product, [[cyber]] the protocol, and [[cyberia]] the state.
+The robot attaches neurons for keys, networks and devices. A neuron may execute
+several progs; prog/task/operation IDs identify retained work and introduce no
+additional signer. Ward authorizes, vault keeps custody, and Soma composes the
+mind's tasks under that same subject. GraphSession hosts many neurons over
+cybergraph/BBG; Log renders retained history. Sigma presents identities, holdings
+and actions. Repository extraction and release status are separate decisions
+from these ownership boundaries. The current contract is
+[neuron](specs/neuron.md), with [cyb architecture](../cyb/specs/architecture.md)
+and [component evidence](audit/neuron-cell/implementation.md). The chart and
+scheme at [soft3.org](https://soft3.org) are publication surfaces whose deployed
+revision must be checked independently.
 
 | grown on soft3 | verb | what it is |
 |---|---|---|
@@ -64,20 +81,44 @@ each component is in one of six states. **live** — carries real traffic today.
 | [[joy]] | prove | the cyber warrior — runs, proves, verifies trident programs on nox; `cargo install cyber-joy` ([0.3.0](https://github.com/cyberia-to/joy/releases/tag/v0.3.0)) |
 | [[warriors/zoya|zoya]] · [[warriors/mona|mona]] · [[warriors/xena|xena]] | mine | the other warriors, each a physics question answered |
 
-the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[kern]] — form a proof-contract ladder from unconditional down to conditional-on-host; the long-term arc lowers every soul toward nox through trident LIR. [[kern]] wraps wgpu into an authored component; [[nu]] (vendored Nushell) is the external piece outside the authored-verb table. the layered map and the five architectural gaps live in [[stack-completeness]]; the network-tier borders in [[component-boundaries]].
+The four execution families — [[soft3/nox|nox]], [[glia]], [[wysm]], [[kern]] —
+have distinct supported machine and evidence profiles. Neuron reuses Rune and
+worker adapters; a recorded host result is an observation, while a proof must
+identify its statement and verifier. Soul is retained configuration, and its
+progs can target compatible workers. The trusted Nu console and cooperative
+GPU driver declare their own limits. The [execution model](specs/execution-model.md)
+and [stack completeness](roadmap/stack-completeness.md) define these boundaries.
 
 ## the verdict
 
-**the stack is complete in principle and peer-pair in fact.** [[lytics]] remains the strongest single-node evidence: cybergraph + bbg + hemera + mudra + inf holding real, adversarial-facing traffic in production. and as of 2026-09-01 **the wire exists, and the graph routes it**: `cy wire up` converges cells over [[radio]] QUIC with no cybernode between them — and *following is a cyberlink*. `FOLLOW → neuron` on my chain is the subscription; `ANTENNA → endpoint` and `SOCKET → ip:port` on a node's own chain are its address record; the wire obeys those links, syncing exactly the followed chains and dialing any followed neuron whose antenna the cell holds. proven with three nodes on one machine: a cell that knew only one peer followed a stranger's neuron, received its chain through the friend, unpacked the address *from graph content*, and dialed the stranger directly — discovery, subscription and routing as signals, replicated by the mechanism they route.
+The current local implementation closes one subject and execution model across
+neuron, cyb, Soma and native clients. Signed native publication pins network,
+subject, request and complete payload; retained unknown outcomes reconcile the
+original request. The [consumer audit](audit/neuron-cell/consumers.md) records
+unchanged mudra/domain/ADR-036 bytes, identity-only dependency profiles, foreign
+adapter boundaries and migrated SDK consumers. The [launcher audit](../cyber/audit/neuron-launcher.md)
+covers explicit legacy import/authentication and real process restart tests.
+These checks establish local behavior. Full Hermes provider/channel parity,
+remote consensus and production rollout require their own evidence.
 
-**milestone №1 is crossed in its first form; the next three are named:** the same wire across two machines (relay / hole-punching, which radio already carries); gossip beyond a pair (fan-out is [[foculus]]'s reconciliation seat, not a pair's rebroadcast); and the [[cyb]] shell app speaking the protocol its own `cy` already speaks — with [[mudra]] keys instead of endpoint-derived neurons. the fork-choice has still never chosen a fork; that remains foculus's unproven half.
+Historical evidence, 2026-09-01: the [[wire]] demonstration used `cy wire up`
+and three graph hosts on one machine. FOLLOW, ANTENNA and SOCKET links supplied
+subscription and endpoint discovery; a host discovered a third peer through an
+existing peer. Its original transport/author profile remains the evidence for
+that run. It does not establish the current signed-native profile over radio.
+Likewise, the recorded lytics deployment is historical traffic evidence; its
+current source replay/provenance fixes are assessed by the consumer audit.
+Cross-machine radio integration, broader gossip and consensus fork-choice remain
+separate network acceptance work.
 
 ## critical, and out of scope
 
-seven questions no roadmap in the stack currently owns. each one is ignorable today and existential at the first real scale.
+Broader network questions extend beyond the local migration. Existing local
+controls resolve parts of them; the remaining network/economic work needs its
+own acceptance evidence.
 
 1. **the economics of writing.** φ* ranks particles, but who may write, and at what cost? lytics prices a signal at 0.042 s of PoW — one app's local answer. an open cybergraph with free writes drowns in spam on day one. [[tok]] is published; a live economy, and the bridge from the [[bostrom]] snapshot to it, is nowhere.
-2. **key lifecycle.** [[mudra]] derives and claims; nothing recovers, rotates, or revokes. a lost seed is a lost neuron forever, and one person on two devices is formally two neurons. for a state whose citizens are keys, identity loss is not a bug — it is a constitutional crisis without a constitution.
+2. **key lifecycle.** Current custody can reopen or explicitly attach existing keys; bindings/devices can be changed or revoked and private state recovered with its retained key material. One neuron can be attached across devices. Changing the key changes H(compressed pubkey) in the native profile. Stable-subject key rotation, recovery without retained custody and network-wide revocation require an explicit versioned authority protocol; local binding revocation alone cannot provide them.
 3. **protocol upgrade.** foculus's parameters are derived and documented; the procedure for *changing* them on a running network does not exist. a hard fork of a φ*-converged network is undefined behavior.
 4. **deletion and liability.** an append-only content-addressed graph will be handed illegal bytes — every such network has been. right-to-be-forgotten versus content addressing, moderation versus censorship: the hardest political question, currently unasked.
 5. **storage economics.** state grows forever; bbg makes reads provable but gives nobody a reason to hold the bytes. a filecoin-shaped hole between [[soft3/bbg|bbg]] and [[tok]].
@@ -90,27 +131,34 @@ seven questions no roadmap in the stack currently owns. each one is ignorable to
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` stack CLI + node [0.10.0](https://crates.io/crates/soft3) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
+| [cli/](cli/) | recorded releases: `soft3` [0.10.0](https://crates.io/crates/soft3), `true-cyber` [0.7.0](https://crates.io/crates/true-cyber); current [native client](../true-cyber/README.md) and [node launcher](../cyber/specs/cli.md) use compatible sibling sources | published snapshot + local migration |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 
-every SDK exposes the same five operations regardless of language:
+The common adapter vocabulary targets these operations. Implemented native and
+foreign profiles expose their actual supported subset; scaffolds do not acquire
+an implementation from this table:
 
 ```text
 particle(content)              → particle     hemera hash of bytes
-cyberlink(from, to, neuron)    → signal       construct + sign a cyberlink
+cyberlink(context, from, to)  → action       bind subject/network/grant and exact content
 query(particle, dimension)     → value+proof  BBG Lens opening
 verify(root, proof)            → bool         proof verification
-submit(signal)                 → receipt      send signal to network
+submit(signed_action)          → receipt      declared network/profile; endpoint receipt or proof tier
 ```
 
 ```ts
 import { CyberClient } from '@cybercongress/cyber-js'
 
 const client = await CyberClient.connect('https://rpc.bostrom.cybernode.ai')
-const result = await client.rank.search('cyber')
+const result = await client.search('PARTICLE_CID') // use the chain's original particle encoding
 ```
 
-dependencies not yet stabilised — full implementation is blocked on wire format finalisation (`schema/`), BBG proof serialisation (lens `Commitment`/`Opening` serde), and the query RPC protocol. the scaffold is in place; implementations land per component as deps stabilise.
+BBG/lens proof serde has a versioned implementation; generic query RPC and schema
+adoption still require their declared profile. The native signed adapter and
+tested Cosmos SDK are separate wire contracts. Preserve foreign chain IDs,
+addresses and signing bytes, and use [identity consumer boundaries](specs/identity-consumers.md)
+when connecting another SDK. A native Hash or transport key supplies no authority
+by itself.
 
 see [[soft3/docs|the whitepaper]] for the foundations — the methods behind one mind, many languages, open world.

@@ -1,0 +1,10 @@
+PASS id: 1 normal/build dependencies; WASM compiled
+PASS model: 2 normal/build dependencies; WASM compiled
+PASS model-serde: 13 normal/build dependencies; WASM compiled
+PASS mudra: 33 normal/build dependencies; WASM compiled
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+PASS lytics-event: 57 normal/build dependencies; WASM compiled
+PASS inf-value: 2 normal/build dependencies; WASM compiled
+PASS inf-source: 3 normal/build dependencies; WASM compiled

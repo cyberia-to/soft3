@@ -1,0 +1,37 @@
+   Compiling neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running unittests src/lib.rs (target/debug/deps/neuron_model-f0819155cd3933db)
+
+running 2 tests
+test navigation::tests::retired_ids_require_exact_mapping_and_malformed_routes_fail ... ok
+test navigation::tests::destinations_round_trip_without_changing_foreign_bytes_or_making_subjects ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/data.rs (target/debug/deps/data-9bf8ad7796efa76b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/execution.rs (target/debug/deps/execution-dec60be77f626bcf)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/identity.rs (target/debug/deps/identity-c0d2b826fb331511)
+
+running 3 tests
+test admitted_context_keeps_subject_network_and_revision_after_selection_and_revoke ... ok
+test malformed_or_unproven_bindings_are_rejected_before_projection ... ok
+test foreign_identity_is_domain_qualified_and_remains_observable_without_execution ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_model
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

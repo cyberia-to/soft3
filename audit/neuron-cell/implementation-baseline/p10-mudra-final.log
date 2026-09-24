@@ -1,0 +1,62 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.93s
+     Running unittests src/lib.rs (target/debug/deps/mudra-573fc7436a66ed1d)
+
+running 19 tests
+test claim::tests::decode_rejects_malformed ... ok
+test domain::tests::domain_scalar_is_deterministic_and_domain_bound ... ok
+test cosmos::tests::address_matches_cosmos_sdk_known_vector ... ok
+test cosmos::tests::pussy_prefix_is_applied ... ok
+test cosmos::tests::same_key_different_chains_share_account_id ... ok
+test domain::tests::bech32_uses_hrp ... ok
+test domain::tests::native_id_matches_the_bridge_formula ... ok
+test seed::tests::bad_mnemonic_is_rejected ... ok
+test domain::tests::same_entropy_same_domain_same_key ... ok
+test domain::tests::different_domains_different_keys ... ok
+test claim::tests::neuron_of_is_deterministic ... ok
+test claim::tests::wrong_hrp_is_rejected ... ok
+test claim::tests::swapped_pubkey_is_rejected ... ok
+test claim::tests::tampered_neuron_is_rejected ... ok
+test claim::tests::round_trip_claim_verifies ... ok
+test claim::tests::claim_encodes_and_decodes_round_trip ... ok
+test neuron::tests::native_subject_message_domain_and_exact_envelope_are_bound ... ok
+test seed::tests::derivation_is_deterministic ... ok
+test seed::tests::passphrase_changes_the_key ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/bin/mudra.rs (target/debug/deps/mudra-e0f94f3b95077566)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_compat.rs (target/debug/deps/domain_compat-1355ecba21cb2ccc)
+
+running 1 test
+test domain_addresses_native_ids_adr036_docs_and_signatures_match_legacy_bytes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/vectors.rs (target/debug/deps/vectors-12d2cad71a757496)
+
+running 2 tests
+test abandon_mnemonic_derives_the_verified_pussy_account ... ok
+test full_bridge_round_trips ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests mudra
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

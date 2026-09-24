@@ -1,0 +1,107 @@
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.24s
+     Running tests/stack_api_atomicity.rs (target/debug/deps/stack_api_atomicity-a3c36230705c28d4)
+
+running 6 tests
+test rejected_spend_does_not_create_an_empty_or_advanced_new_subject_chain ... FAILED
+test repeated_nullifier_inside_one_signal_is_rejected_atomically ... FAILED
+test rejected_spend_preserves_existing_chain_and_allows_same_step_repair ... FAILED
+test rejected_seal_preserves_intent_chain_state_and_events ... FAILED
+test duplicate_and_bad_lineage_leave_graph_and_chain_unchanged ... FAILED
+test overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation ... FAILED
+
+failures:
+
+---- rejected_spend_does_not_create_an_empty_or_advanced_new_subject_chain stdout ----
+
+thread 'rejected_spend_does_not_create_an_empty_or_advanced_new_subject_chain' (26652907) panicked at tests/stack_api_atomicity.rs:48:5:
+assertion `left == right` failed
+  left: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])]), ([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], [(0, [159, 41, 231, 17, 210, 232, 187, 139, 196, 52, 106, 243, 6, 104, 53, 195, 180, 70, 36, 231, 111, 188, 225, 52, 87, 87, 215, 219, 160, 41, 211, 118])])], 1)
+ right: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])])], 1)
+
+---- repeated_nullifier_inside_one_signal_is_rejected_atomically stdout ----
+
+thread 'repeated_nullifier_inside_one_signal_is_rejected_atomically' (26652909) panicked at tests/stack_api_atomicity.rs:69:5:
+assertion failed: matches!(graph.link(signal(first.neuron, 1, first.hash(), &[44,44])),
+    Err(ApiError::BbgRejected(bbg::InsertError::DoubleSpend)))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- rejected_spend_preserves_existing_chain_and_allows_same_step_repair stdout ----
+
+thread 'rejected_spend_preserves_existing_chain_and_allows_same_step_repair' (26652908) panicked at tests/stack_api_atomicity.rs:36:5:
+assertion `left == right` failed
+  left: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121]), (1, [212, 16, 26, 81, 243, 105, 239, 102, 184, 22, 94, 30, 176, 156, 204, 49, 205, 104, 27, 42, 136, 173, 124, 33, 51, 193, 125, 200, 203, 189, 133, 110])])], 1)
+ right: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])])], 1)
+
+---- rejected_seal_preserves_intent_chain_state_and_events stdout ----
+
+thread 'rejected_seal_preserves_intent_chain_state_and_events' (26652906) panicked at tests/stack_api_atomicity.rs:97:5:
+assertion `left == right` failed
+  left: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121]), (1, [212, 16, 26, 81, 243, 105, 239, 102, 184, 22, 94, 30, 176, 156, 204, 49, 205, 104, 27, 42, 136, 173, 124, 33, 51, 193, 125, 200, 203, 189, 133, 110])])], 2)
+ right: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])])], 2)
+
+---- duplicate_and_bad_lineage_leave_graph_and_chain_unchanged stdout ----
+
+thread 'duplicate_and_bad_lineage_leave_graph_and_chain_unchanged' (26652904) panicked at tests/stack_api_atomicity.rs:61:9:
+assertion `left == right` failed
+  left: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])]), ([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], [])], 1)
+ right: ([231, 204, 25, 39, 180, 233, 133, 72, 153, 162, 238, 15, 216, 153, 36, 251, 65, 235, 64, 7, 112, 96, 19, 205, 152, 81, 17, 140, 196, 158, 128, 200], [([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [(0, [87, 144, 189, 170, 41, 25, 168, 137, 95, 30, 185, 70, 36, 103, 127, 81, 214, 195, 70, 102, 166, 241, 90, 146, 122, 77, 155, 3, 235, 209, 24, 121])])], 1)
+
+---- overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation stdout ----
+
+thread 'overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation' (26652905) panicked at /Users/master/cyber/bbg/rs/src/state.rs:297:13:
+attempt to add with overflow
+
+thread 'overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation' (26652905) panicked at tests/stack_api_atomicity.rs:83:5:
+unrepresentable amount must be a rejected operation, not a panic
+
+
+failures:
+    duplicate_and_bad_lineage_leave_graph_and_chain_unchanged
+    overflowing_batch_amount_is_rejected_before_any_public_or_private_mutation
+    rejected_seal_preserves_intent_chain_state_and_events
+    rejected_spend_does_not_create_an_empty_or_advanced_new_subject_chain
+    rejected_spend_preserves_existing_chain_and_allows_same_step_repair
+    repeated_nullifier_inside_one_signal_is_rejected_atomically
+
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--test stack_api_atomicity`
+error: 1 target failed:
+    `--test stack_api_atomicity`

@@ -1,0 +1,18 @@
+Date: 2026-09-13
+Working directory: /Users/master/cyber/cyb
+Command: python3 harness/build-siblings.py --self-test
+Scope: local fixtures; actual remote Bash body executed locally with a deliberately failing fake compiler. No ssh/rsync/scp.
+
+test_invalid_remote_arguments_fail_before_metadata_or_transport (__main__.ClosureTests.test_invalid_remote_arguments_fail_before_metadata_or_transport) ... ok
+test_local_optional_and_nested_closure_is_sorted_and_deduplicated (__main__.ClosureTests.test_local_optional_and_nested_closure_is_sorted_and_deduplicated) ... ok
+test_missing_manifest_refused (__main__.ClosureTests.test_missing_manifest_refused) ... ok
+test_other_workspace_refused (__main__.ClosureTests.test_other_workspace_refused) ... ok
+test_outside_workspace_refused (__main__.ClosureTests.test_outside_workspace_refused) ... ok
+test_remote_build_body_propagates_compiler_failure_locally (__main__.ClosureTests.test_remote_build_body_propagates_compiler_failure_locally) ... ok
+test_symlink_dependency_refused_even_if_inside_workspace (__main__.ClosureTests.test_symlink_dependency_refused_even_if_inside_workspace) ... ok
+test_unsafe_repo_name_refused (__main__.ClosureTests.test_unsafe_repo_name_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.332s
+
+OK

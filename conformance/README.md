@@ -33,4 +33,12 @@ conformance sits beneath every other [[soft3]] component except [[hemera]] itsel
 
 scaffold. trait surface drafted. snapshot harness lands after [[hemera]] reaches stable output. `cargo conformance` subcommand follows.
 
+For neuron convergence the executed owner suites, compatibility vectors and
+source/build evidence are linked from the
+[migration audit](../audit/neuron-cell/implementation.md). This scaffold's
+`hemera_hash` still returns a constant placeholder; its unit tests provide no
+encoding-stability or release-fingerprint evidence. The migration release audit
+must use the actual owner codecs/hashes and record source/log checksums
+independently. Wiring a universal snapshot harness is a separate component task.
+
 see [[soft3]] for the surrounding stack and [[hemera]] for the underlying fingerprint primitive.

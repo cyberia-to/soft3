@@ -1,0 +1,15 @@
+
+> @cybercongress/cyber-js@0.4.1 test:compat
+> node --test tests/neuron-compat.cjs
+
+✔ CosmJS independently verifies frozen mudra domain addresses and ADR-036 bytes (26.691708ms)
+✔ existing Cosmos account derivation and graph neuron field remain native to the old SDK (11.3405ms)
+✔ CosmWasm sender contract funds and payload keep their independent wire schema (0.372959ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154.185666

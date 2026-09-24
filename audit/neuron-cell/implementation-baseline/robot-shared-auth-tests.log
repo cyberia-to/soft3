@@ -1,0 +1,62 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.35s
+     Running tests/robot_registry.rs (target/debug/deps/robot_registry-0237a80c3519c222)
+
+running 5 tests
+test current_grants_serialize_revocation_and_only_one_racer_dispatches ... ok
+test crash_after_claim_reopens_unknown_and_cannot_reexecute ... ok
+test canonical_signal_is_bound_to_selected_network_and_reconciles_from_native_history ... ok
+test attachments_selection_and_history_survive_restart_without_a_robot_key ... ok
+test legacy_name_import_is_once_only_and_foreign_or_forged_control_fails ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.36s
+

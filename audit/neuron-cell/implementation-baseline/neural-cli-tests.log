@@ -1,0 +1,198 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+     Locking 60 packages to latest compatible versions
+    Updating bbg v0.1.1 (/Users/master/cyber/bbg/rs) -> v0.3.0
+      Adding bitflags v2.13.2
+      Adding byteorder v1.5.0
+      Adding byteview v0.6.1
+      Adding compare v0.0.6
+      Adding crossbeam-epoch v0.9.21
+      Adding crossbeam-skiplist v0.1.3
+      Adding crossbeam-utils v0.8.23
+    Updating cyber-hemera v0.3.0 (/Users/master/cyber/hemera/rs) -> v0.3.1
+      Adding cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+      Adding cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+      Adding cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+      Adding cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+      Adding cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+      Adding cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+      Adding cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+    Updating cyber-nox v0.1.1 (/Users/master/cyber/nox/rs) -> v0.3.0
+      Adding dashmap v6.2.1
+      Adding double-ended-peekable v0.1.0
+      Adding enum_dispatch v0.3.13
+      Adding errno v0.3.14
+      Adding fastrand v2.5.0
+      Adding fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+    Updating foculus v0.1.1 (/Users/master/cyber/foculus) -> v0.1.3
+      Adding guardian v1.3.0
+      Adding hashbrown v0.14.5
+      Adding hashbrown v0.16.1
+      Adding interval-heap v0.0.5
+      Adding linux-raw-sys v0.12.1
+      Adding lock_api v0.4.14
+      Adding log v0.4.34
+      Adding lsm-tree v2.10.4
+      Adding lz4_flex v0.11.6
+      Adding neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+      Adding once_cell v1.21.4
+      Adding parking_lot_core v0.9.12
+      Adding path-absolutize v3.1.1
+      Adding path-dedot v3.1.1
+      Adding quick_cache v0.6.24
+      Adding redox_syscall v0.5.18
+      Adding rustc-hash v2.1.3
+      Adding rustix v1.1.4
+      Adding scopeguard v1.2.0
+      Adding self_cell v1.3.0
+      Adding smallvec v1.16.1
+      Adding std-semaphore v0.1.0
+    Updating strata-compute v0.1.0 (/Users/master/cyber/strata/compute) -> v0.1.1
+    Updating strata-core v0.1.0 (/Users/master/cyber/strata/core) -> v0.1.1
+    Updating strata-ext v0.1.0 (/Users/master/cyber/strata/ext) -> v0.1.1
+    Updating strata-genies v0.1.0 (/Users/master/cyber/strata/genies/rs) -> v0.1.1
+    Updating strata-jali v0.1.0 (/Users/master/cyber/strata/jali/rs) -> v0.1.1
+    Updating strata-kuro v0.1.0 (/Users/master/cyber/strata/kuro/rs) -> v0.1.1
+    Updating strata-nebu v0.1.0 (/Users/master/cyber/strata/nebu/rs) -> v0.1.1
+    Updating strata-proof v0.1.0 (/Users/master/cyber/strata/proof) -> v0.1.1
+    Updating strata-trop v0.1.0 (/Users/master/cyber/strata/trop/rs) -> v0.1.1
+      Adding tempfile v3.27.0
+      Adding value-log v1.9.0
+      Adding varint-rs v2.2.1
+      Adding xxhash-rust v0.8.18
+    Updating zheng v0.1.1 (/Users/master/cyber/zheng/rs) -> v0.4.0
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling strata-core v0.1.1 (/Users/master/cyber/strata/core)
+   Compiling proc-macro2 v1.0.106
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/hemera/rs)
+   Compiling once_cell v1.21.4
+   Compiling crossbeam-utils v0.8.23
+   Compiling rustix v1.1.4
+   Compiling crossbeam-epoch v0.9.21
+   Compiling bitflags v2.13.2
+   Compiling fastrand v2.5.0
+   Compiling compare v0.0.6
+   Compiling parking_lot_core v0.9.12
+   Compiling rustc-hash v2.1.3
+   Compiling smallvec v1.16.1
+   Compiling errno v0.3.14
+   Compiling varint-rs v2.2.1
+   Compiling byteview v0.6.1
+   Compiling strata-ext v0.1.1 (/Users/master/cyber/strata/ext)
+   Compiling strata-proof v0.1.1 (/Users/master/cyber/strata/proof)
+   Compiling strata-compute v0.1.1 (/Users/master/cyber/strata/compute)
+   Compiling strata-kuro v0.1.1 (/Users/master/cyber/strata/kuro/rs)
+   Compiling path-dedot v3.1.1
+   Compiling strata-nebu v0.1.1 (/Users/master/cyber/strata/nebu/rs)
+   Compiling strata-genies v0.1.1 (/Users/master/cyber/strata/genies/rs)
+   Compiling interval-heap v0.0.5
+   Compiling strata-trop v0.1.1 (/Users/master/cyber/strata/trop/rs)
+   Compiling path-absolutize v3.1.1
+   Compiling log v0.4.34
+   Compiling xxhash-rust v0.8.18
+   Compiling scopeguard v1.2.0
+   Compiling byteorder v1.5.0
+   Compiling hashbrown v0.16.1
+   Compiling lock_api v0.4.14
+   Compiling guardian v1.3.0
+   Compiling double-ended-peekable v0.1.0
+   Compiling hashbrown v0.14.5
+   Compiling lz4_flex v0.11.6
+   Compiling self_cell v1.3.0
+   Compiling thiserror v2.0.18
+   Compiling std-semaphore v0.1.0
+   Compiling neuron-id v0.1.0 (/Users/master/cyber/neuron/id)
+   Compiling strata-jali v0.1.1 (/Users/master/cyber/strata/jali/rs)
+   Compiling inf-ast v0.1.0 (/Users/master/cyber/inf/rs/ast)
+   Compiling anyhow v1.0.103
+   Compiling cyber-tape v0.1.0 (/Users/master/cyber/tape/impl/rust)
+   Compiling inf-source v0.1.0 (/Users/master/cyber/inf/rs/source)
+   Compiling inf-lex v0.1.0 (/Users/master/cyber/inf/rs/lex)
+   Compiling inf-plan v0.1.0 (/Users/master/cyber/inf/rs/plan)
+   Compiling inf-parse v0.1.0 (/Users/master/cyber/inf/rs/parse)
+   Compiling inf-eval v0.1.0 (/Users/master/cyber/inf/rs/eval)
+   Compiling quote v1.0.46
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/lens/core)
+   Compiling cyber-lens-brakedown v0.2.0 (/Users/master/cyber/lens/brakedown)
+   Compiling syn v2.0.118
+   Compiling cyber-lens-porphyry v0.2.0 (/Users/master/cyber/lens/porphyry)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/lens/binius)
+   Compiling quick_cache v0.6.24
+   Compiling neural-sigil v0.1.0 (/Users/master/cyber/neural/rs/sigil)
+   Compiling cyber-lens-ikat v0.2.0 (/Users/master/cyber/lens/ikat)
+   Compiling cyber-lens-assayer v0.2.0 (/Users/master/cyber/lens/assayer)
+   Compiling cyber-nox v0.3.0 (/Users/master/cyber/nox/rs)
+   Compiling cyber-lens v0.2.0 (/Users/master/cyber/lens/src)
+   Compiling dashmap v6.2.1
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+   Compiling crossbeam-skiplist v0.1.3
+   Compiling tempfile v3.27.0
+   Compiling value-log v1.9.0
+   Compiling serde_derive v1.0.228
+   Compiling enum_dispatch v0.3.13
+   Compiling thiserror-impl v2.0.18
+   Compiling clap_derive v4.6.1
+   Compiling lsm-tree v2.10.4
+   Compiling clap v4.6.1
+   Compiling serde v1.0.228
+   Compiling fjall v2.11.2 (/Users/master/cyber/bbg/rs/vendor/fjall)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling toml_edit v0.22.27
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling neural-dialect v0.1.0 (/Users/master/cyber/neural/rs/dialect)
+   Compiling toml v0.8.23
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/tru/rs)
+   Compiling cyber-tok v0.1.1 (/Users/master/cyber/tok/rs)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+   Compiling neu v0.1.0 (/Users/master/cyber/neural/rs/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.39s
+     Running unittests src/main.rs (target/debug/deps/neu-d816968081586a66)
+
+running 3 tests
+test tests::ill_formed_sentence_is_rejected ... ok
+test tests::sentence_is_one_atomic_signal ... ok
+test tests::speak_lands_a_typed_relation ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.94s
+

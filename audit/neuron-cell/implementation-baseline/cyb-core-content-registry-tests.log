@@ -1,0 +1,98 @@
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling cyb-core v0.1.0 (/Users/master/cyber/cyb/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.28s
+     Running unittests src/lib.rs (target/debug/deps/cyb_core-0d6b1873c75a74e8)
+
+running 26 tests
+test intent::tests::custom_intent_matches_builtin_naming ... ok
+test chroma::tests::every_chroma_has_unique_particle ... ok
+test chroma::tests::every_chroma_has_unique_grid_pos ... ok
+test intent::tests::builtin_intents_are_unique ... ok
+test money::tests::demo_join_still_works ... ok
+test money::tests::open_balance_requires_grade4 ... ok
+test graph_session::tests::session_holds_a_link_and_serves_it ... ok
+test graph_session::tests::links_chain_across_signals ... ok
+test sense::tests::maps_transfer_in_and_reward ... ok
+test signal::tests::builder_assembles_signal ... ok
+test signal::tests::bus_round_trips_signals ... ok
+test money::tests::failed_private_payment_preserves_note_without_minting_change ... ok
+test robot::custody::tests::exclusive_creation_and_invalid_reads_never_replace_existing_custody ... ok
+test graph_session::tests::durable_survives_reopen ... ok
+test money::tests::observe_rejects_bad_finality ... ok
+test money::tests::pay_attaches_verifiable_proof ... ok
+test money::tests::settle_receipt_mints_from_shapley ... ok
+test money::tests::send_receive_multi_payee_finality ... ok
+test money::tests::light_fold_tip_open_and_advance ... ok
+test money::tests::private_note_spend_uses_nullifier ... ok
+test money::tests::double_spend_nullifier_rejected ... ok
+test money::tests::auto_settle_on_finalize ... ok
+test money::tests::link_and_settle_auto_reward_after_link ... ok
+test graph_session::tests::frame_replicates_a_link_across_sessions ... ok
+test money::tests::settle_reward_matures_after_depth ... ok
+test graph_session::tests::gossip_is_idempotent_and_converges ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.52s
+
+     Running tests/graph_migration.rs (target/debug/deps/graph_migration-eaa0ac036b3fca74)
+
+running 5 tests
+test native_and_neuron_publish_into_one_database_without_clobbering ... ok
+test durable_wallet_credit_retry_conflict_and_overflow_are_atomic ... ok
+test text_sidecar_moves_into_shared_database_and_retires_its_writer_path ... ok
+test signal_view_keeps_network_and_proof_and_reports_bad_batches ... ok
+test strict_legacy_import_preserves_source_multi_neuron_headers_and_rejects_damage ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.37s
+
+     Running tests/robot_registry.rs (target/debug/deps/robot_registry-a0e09eb33cae8aff)
+
+running 5 tests
+test current_grants_serialize_revocation_and_only_one_racer_dispatches ... ok
+test crash_after_claim_reopens_unknown_and_cannot_reexecute ... ok
+test canonical_signal_is_bound_to_selected_network_and_reconciles_from_native_history ... ok
+test attachments_selection_and_history_survive_restart_without_a_robot_key ... ok
+test legacy_name_import_is_once_only_and_foreign_or_forged_control_fails ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.60s
+
+   Doc-tests cyb_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

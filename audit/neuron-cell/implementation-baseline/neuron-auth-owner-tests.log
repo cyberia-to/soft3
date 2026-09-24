@@ -1,0 +1,234 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on artifact directory
+   Compiling neuron-model v0.1.0 (/Users/master/cyber/neuron/model)
+   Compiling zheng v0.4.0 (/Users/master/cyber/zheng/rs)
+warning: field `journal_recovery_mode` is never read
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/config.rs:49:16
+   |
+14 | pub struct Config {
+   |            ------ field in this struct
+...
+49 |     pub(crate) journal_recovery_mode: RecoveryMode,
+   |                ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `outstanding_flushes` is never used
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/stats.rs:26:12
+   |
+25 | impl Stats {
+   | ---------- method in this implementation
+26 |     pub fn outstanding_flushes(&self) -> usize {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> /Users/master/cyber/bbg/rs/vendor/fjall/src/tx/keyspace.rs:42:21
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction {
+   |                     ^^^^^     ^^^^^^^^^^^^^^^^ the same lifetime is hidden here
+   |                     |
+   |                     the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+42 |     pub fn write_tx(&self) -> WriteTransaction<'_> {
+   |                                               ++++
+
+warning: `fjall` (lib) generated 3 warnings (run `cargo fix --lib -p fjall` to apply 1 suggestion)
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/mudra)
+   Compiling neuron-engine v0.1.0 (/Users/master/cyber/neuron/engine)
+   Compiling bbg v0.3.0 (/Users/master/cyber/bbg/rs)
+   Compiling neuron-rune v0.1.0 (/Users/master/cyber/neuron/rune)
+   Compiling foculus v0.1.3 (/Users/master/cyber/foculus)
+   Compiling cybergraph v0.1.1 (/Users/master/cyber/cybergraph)
+   Compiling neuron-node v0.1.0 (/Users/master/cyber/neuron/node)
+   Compiling neuron-cli v0.1.0 (/Users/master/cyber/neuron/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.82s
+     Running unittests src/main.rs (target/debug/deps/neuron-f2a552fbedd1d318)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/process.rs (target/debug/deps/process-1bc8e28ff1b2406f)
+
+running 7 tests
+test keys_are_explicit_and_existing_files_are_never_overwritten ... ok
+test declared_emit_is_rendered_from_a_durable_operation ... ok
+test legacy_import_is_available_through_the_real_cli_and_retains_provenance ... ok
+test definite_failure_closes_attempt_and_retains_diagnostic ... ok
+test one_identity_two_programs_and_receipts_survive_separate_processes ... ok
+test executor_recovery_requires_correlated_outcome_and_pause_retains_it ... ok
+test separate_source_staging_is_resumable_through_process_commands ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.87s
+
+     Running tests/storage.rs (target/debug/deps/storage-0236a5c399f150ba)
+
+running 3 tests
+test normal_open_refuses_an_existing_file_without_replacing_it ... ok
+test default_store_is_a_bbg_directory ... ok
+test legacy_default_requires_explicit_store_selection ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.59s
+
+     Running unittests src/lib.rs (target/debug/deps/neuron_engine-27491863e6db47dc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/neuron_id-d25b4ed10281d40d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/neuron_model-f0d03addefb67fd6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/data.rs (target/debug/deps/data-a21b3a5c98cddbee)
+
+running 2 tests
+test full_width_uint_and_balanced_particle_round_trip ... ok
+test malformed_collection_schema_and_forged_bytes_are_rejected ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/execution.rs (target/debug/deps/execution-b003e47eda4965db)
+
+running 2 tests
+test budgets_and_parent_cycles_cannot_be_encoded_as_valid_state ... ok
+test unknown_effect_cannot_be_mislabeled_as_terminal_or_already_resolved ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/identity.rs (target/debug/deps/identity-3dcb8f36755e0680)
+
+running 3 tests
+test admitted_context_keeps_subject_network_and_revision_after_selection_and_revoke ... ok
+test foreign_identity_is_domain_qualified_and_remains_observable_without_execution ... ok
+test malformed_or_unproven_bindings_are_rejected_before_projection ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/neuron_node-4190c1b24a0e537d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/authority_boundary.rs (target/debug/deps/authority_boundary-278fbee6b9c2650a)
+
+running 2 tests
+test engine_adapter_cannot_publish_with_fabricated_authorization_evidence ... ok
+test valid_signature_cannot_be_reused_for_a_different_canonical_root ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.85s
+
+     Running tests/legacy_capture.rs (target/debug/deps/legacy_capture-4f2a26cd28032141)
+
+running 1 test
+test unmodified_v1_contents_heads_claims_and_unknown_attempt_remain_readable ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.09s
+
+     Running tests/legacy_integrity.rs (target/debug/deps/legacy_integrity-4af6398458db3f17)
+
+running 1 test
+test valid_live_head_does_not_hide_a_missing_historical_state_artifact ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.85s
+
+     Running tests/neuron_migration.rs (target/debug/deps/neuron_migration-1cf6b4c6f58c7b59)
+
+running 3 tests
+test revocation_between_prepare_and_activate_keeps_origins_writable ... ok
+test stale_target_or_source_heads_publish_neither_mapping_nor_fences ... ok
+test three_legacy_origins_converge_preserving_history_claims_unknown_effect_and_reserved_work ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.04s
+
+     Running tests/neuron_runtime.rs (target/debug/deps/neuron_runtime-6e6b3d6ded96f455)
+
+running 5 tests
+test supported_signatures_bind_subject_network_policy_and_current_revocation ... ok
+test child_allowances_are_transferred_and_parent_waits_without_double_holding ... ok
+test upgrade_retains_admitted_code_and_stale_result_cannot_replace_new_state ... ok
+test one_subject_multiple_programs_concurrent_results_and_archived_claims ... ok
+test unknown_tool_does_not_block_other_program_and_outcome_is_consumed_once ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.01s
+
+     Running tests/recovery.rs (target/debug/deps/recovery-19b1773c4d727577)
+
+running 4 tests
+test lost_admission_receipt_resolves_without_second_invocation ... ok
+test interrupted_slice_charges_reservation_after_reopen_and_cannot_reset_subject_budget ... ok
+test each_sequential_act_has_its_own_consumption_and_retained_charge ... ok
+test activation_failure_or_lost_receipt_resumes_without_partial_fences ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.04s
+
+     Running tests/transfer.rs (target/debug/deps/transfer-d30d435f8be80898)
+
+running 2 tests
+test denied_or_busy_source_cannot_begin_transfer ... ok
+test separate_store_resumes_every_page_and_preserves_history_unknowns_and_other_namespaces ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.99s
+
+     Running tests/worker_dispatch.rs (target/debug/deps/worker_dispatch-cd1f8f4c91509d32)
+
+running 5 tests
+test unsupported_profile_wrong_network_and_tampered_input_fail_before_dispatch ... ok
+test current_revocation_and_replaced_boot_prevent_adapter_calls ... ok
+test claimed_effect_panic_survives_restart_without_redispatch ... ok
+test guarded_tool_round_trip_and_unknown_recovery_do_not_repeat ... ok
+test new_policy_can_reconcile_and_cancel_revoked_act_or_explicitly_rebind ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.99s
+
+     Running unittests src/lib.rs (target/debug/deps/neuron_rune-9525ff9154f7b009)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_engine
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_id
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_model
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_node
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests neuron_rune
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
