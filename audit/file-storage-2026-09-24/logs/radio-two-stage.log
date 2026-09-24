@@ -1,0 +1,43 @@
+    Blocking waiting for file lock on package cache
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/encode.rs:19:7
+   |
+19 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/outboard.rs:15:7
+   |
+15 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/slice.rs:18:7
+   |
+18 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+
+warning: `cyber-bao` (lib) generated 3 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running unittests src/lib.rs (target/debug/deps/iroh_blobs-2dc1a2284e09234b)
+
+running 1 test
+test store::fs::tests::test_import_bao_persistence_two_stages ... FAILED
+
+failures:
+
+---- store::fs::tests::test_import_bao_persistence_two_stages stdout ----
+
+thread 'store::fs::tests::test_import_bao_persistence_two_stages' (7999970) panicked at iroh-blobs/src/store/fs.rs:1871:21:
+failed to import size=0: inner error: Error::Io
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    store::fs::tests::test_import_bao_persistence_two_stages
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 98 filtered out; finished in 0.12s
+
+error: test failed, to rerun pass `-p iroh-blobs --lib`

@@ -1,0 +1,114 @@
+{
+  "checks": [
+    {
+      "id": "cybergraph-debug",
+      "command": "cargo test --locked --features local-storage --test applications --test text_archive --test text_archive_boundaries",
+      "cwd": "cybergraph",
+      "revision": "0eae7ae9fa116ae51fc4ec6d2cd0941c12e86212",
+      "dependencies": "sources.json contains the pinned local dependency closure",
+      "exit_code": 101,
+      "tests_completed_and_passed": 12,
+      "result": "Applications 6/6 and text_archive 3/3 passed. Three boundary cases passed. The remaining large capacity/concurrency case was CPU-active in debug and was deliberately stopped with SIGTERM for a separate optimized run; this exit is an audit interruption, not an assertion failure.",
+      "log": "logs/cybergraph-debug.log",
+      "log_sha256": "f574b5c180bc880446b9229eaac5d08c78944f72ad3d051a8169831ec0da2b43"
+    },
+    {
+      "id": "cybergraph-capacity-release",
+      "command": "cargo test --locked --release --features local-storage --test text_archive_boundaries multi_transaction_source_preflights_projection_and_fences_concurrent_capacity -- --exact",
+      "cwd": "cybergraph",
+      "revision": "0eae7ae9fa116ae51fc4ec6d2cd0941c12e86212",
+      "dependencies": "sources.json contains the pinned local dependency closure",
+      "exit_code": 0,
+      "tests_passed": 1,
+      "result": "Remaining capacity/concurrency case passed. Together with the debug run, all 13 selected Cybergraph cases passed. This is correctness coverage, not a throughput benchmark.",
+      "log": "logs/cybergraph-capacity-release.log",
+      "log_sha256": "eec8be71aa3b42750cc46f3b07064abdc69f81cb92b7b81c1fd1d105ff1fafe5",
+      "captured_log_sha256": "19a8f870e5aa1f1116aee42907e54dcb35eddf02d8a3db7d4cecf817a4b67adc",
+      "log_normalization": "Removed surplus final LF bytes only; diagnostic content is unchanged."
+    },
+    {
+      "id": "probe",
+      "command": "CARGO_TARGET_DIR=/tmp/cyber-file-storage-audit-20260924/reproduced/target python3 soft3/audit/file-storage-2026-09-24/reproduce.py --source-root /tmp/cyber-file-storage-audit-20260924 --output /tmp/cyber-file-storage-audit-20260924/verified-script",
+      "source_revisions": {
+        "cyb": "6c20559206d90f0474379e48706ba00db9630a37",
+        "file": "fc666a5880ff874adae655150414b3a45832baf0",
+        "hemera": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+        "radio": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d"
+      },
+      "exit_code": 0,
+      "result": "Expected negative observations reproduced: five File/BAO identity mismatches, accepted substituted content, swallowed I/O error, malformed-hash panic and JSON escape corruption. Normal roundtrip passed.",
+      "log": "logs/probe.log",
+      "log_sha256": "9aa70e413b5ff27bccc76950b123c4697d7c441ea58e7d2a740d852b8bf6ef25"
+    },
+    {
+      "id": "radio-full-reopen",
+      "command": "cargo test --locked -p iroh-blobs --lib store::fs::tests::test_import_bytes_persistence_full -- --exact",
+      "cwd": "radio",
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "dependency_hemera_revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "exit_code": 0,
+      "tests_passed": 1,
+      "log": "logs/radio-full-reopen.log",
+      "log_sha256": "ea1e889fdad8eb7466b2b6628fc6fc8035aeebad11581bd4e92999df14edba4d",
+      "captured_log_sha256": "edb3c2f3fa7dba17204b920fb086576fd2ac7e2327d9fa2a5455b3ed63616171",
+      "log_normalization": "Removed surplus final LF bytes only; diagnostic content is unchanged."
+    },
+    {
+      "id": "radio-two-stage",
+      "command": "cargo test --locked -p iroh-blobs --lib store::fs::tests::test_import_bao_persistence_two_stages -- --exact",
+      "cwd": "radio",
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "dependency_hemera_revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "exit_code": 101,
+      "tests_failed": 1,
+      "first_error": "failed to import size=0: inner error: Error::Io",
+      "log": "logs/radio-two-stage.log",
+      "log_sha256": "91de918a9145a0dcd4f74d1c55abf501691bd8bbd219e18b1b64a9ff0608eb6c"
+    },
+    {
+      "id": "radio-minimal",
+      "command": "cargo test --locked -p iroh-blobs --lib store::fs::tests::test_import_bao_minimal -- --exact",
+      "cwd": "radio",
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "dependency_hemera_revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "exit_code": 0,
+      "tests_passed": 1,
+      "log": "logs/radio-minimal.log",
+      "log_sha256": "8bbed778c719800be2c3b335bb3f7f6713b07d2df9616778879804b5a1c55a6c",
+      "captured_log_sha256": "342bd7993a4086c2685f77a091649274d2b9e314eb8d9078b07e7382730d89a8",
+      "log_normalization": "Removed surplus final LF bytes only; diagnostic content is unchanged."
+    },
+    {
+      "id": "radio-ranges",
+      "command": "cargo test --locked -p iroh-blobs --lib store::fs::tests::test_import_bao_ranges -- --exact",
+      "cwd": "radio",
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "dependency_hemera_revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "exit_code": 101,
+      "result": "Actor panicked during partial-file persistence; test remained pending and the audit terminated its exact child process with SIGTERM. Not a passing test.",
+      "log": "logs/radio-ranges.log",
+      "log_sha256": "aaf12ca0dc3b7cbe64214a780a69511ca8cc10d2a96ba343e139e1cd871c7e80"
+    },
+    {
+      "id": "radio-range-backtrace",
+      "command": "RUST_BACKTRACE=1 radio/target/debug/deps/iroh_blobs-2dc1a2284e09234b store::fs::tests::test_import_bao_ranges --exact --nocapture",
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "dependency_hemera_revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "timeout_seconds": 15,
+      "exit_code": 124,
+      "result": "Bounded diagnostic rerun confirmed write_checksummed at iroh-blobs/src/store/util.rs:227; runner stopped process group with SIGTERM at its timeout.",
+      "log": "logs/radio-range-backtrace.log",
+      "log_sha256": "2cefb5b33837655b8c00e0504f424a1672b8e86498fb0746615ac31c606bcfc7"
+    },
+    {
+      "id": "integration-search",
+      "command": "rg -n 'impl.*NetworkStore|\\.with_network\\(|\\.fetch_content\\(|iroh_blobs|FsStore|MemStore|BlobStore|TextArchive' bbg/rs/src cybergraph/src cyber/src cyb/core/src cyb/shell/src neuron/node/src soft3/crate/src foculus/src radio/iroh/src --glob '*.rs'",
+      "source_manifest": "sources.json",
+      "exit_code": 0,
+      "result": "Only mock NetworkStore implementation found. No Cyb caller of TextArchive and no product FsStore binding in searched runtime sources.",
+      "log": "logs/integration-search.log",
+      "log_sha256": "175fc08aac95c5dd9d59f78135d0af02daf17f44ad2f5cec227a3a33b42431cb"
+    }
+  ],
+  "qualification": "RED: reproducible Radio partial-import failures; existing dependency warnings retained. No production readiness claim."
+}

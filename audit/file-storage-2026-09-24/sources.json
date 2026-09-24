@@ -1,0 +1,345 @@
+{
+  "captured_utc": "2026-09-24T12:11:09.382997+00:00",
+  "scope": "Local source audit, not a release qualification. Test inputs are detached committed worktrees. Cyb content module is unchanged from its HEAD; unrelated owner edits are not test inputs.",
+  "repositories": {
+    "file": {
+      "revision": "fc666a5880ff874adae655150414b3a45832baf0",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/file.git"
+    },
+    "hemera": {
+      "revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "branch": "feat/eidos-hemera-proofs",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/hemera.git"
+    },
+    "radio": {
+      "revision": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/radio.git"
+    },
+    "cybergraph": {
+      "revision": "0eae7ae9fa116ae51fc4ec6d2cd0941c12e86212",
+      "branch": "feat/durable-applications",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/cybergraph.git"
+    },
+    "bbg": {
+      "revision": "c75b68574dd8291311a9a6e9a61fe96b1f5781e0",
+      "branch": "feat/atomic-application-storage",
+      "status": [
+        "?? bbg"
+      ],
+      "origin": "https://github.com/cyberia-to/bbg.git"
+    },
+    "neuron": {
+      "revision": "c87541120caae4fb5d5bb401653d1cbcbeffeb7d",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/neuron.git"
+    },
+    "vault": {
+      "revision": "f3fe2e4ae3168a3de8441285430f3552218eb7fb",
+      "branch": "feat/spell-cli",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/vault.git"
+    },
+    "soft3": {
+      "revision": "9784d92eb507207f96faa886fcc44886707e0db2",
+      "branch": "docs/vault-spell",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/soft3.git"
+    },
+    "cyber": {
+      "revision": "d7eeff42db1a27cb8ceabcc82c459448a35a7267",
+      "branch": "master",
+      "status": [
+        "M core.md",
+        " M neuron.md",
+        "?? block.md",
+        "?? epoch.md",
+        "?? step.md"
+      ],
+      "origin": "https://github.com/cyberia-to/cyber.git"
+    },
+    "cyb": {
+      "revision": "6c20559206d90f0474379e48706ba00db9630a37",
+      "branch": "master",
+      "status": [
+        "M Cargo.lock",
+        " M cells/body.rune",
+        " M cells/log.rune",
+        " M cells/memory.rune",
+        " M cells/models.rune",
+        " M parts/log.md",
+        " M shell/Cargo.toml",
+        " M shell/src/app.rs",
+        " M shell/src/main.rs",
+        " M shell/src/now.rs",
+        " M shell/src/shell/chrome.rs",
+        " M shell/src/worlds/attention.rs",
+        " M shell/src/worlds/body/mod.rs",
+        " M shell/src/worlds/body/networks.rs",
+        " M shell/src/worlds/cell.rs",
+        " M shell/src/worlds/com/chronicle.rs",
+        " M shell/src/worlds/com/mod.rs",
+        " M shell/src/worlds/file.rs",
+        " M shell/src/worlds/graph.rs",
+        " M shell/src/worlds/identity.rs",
+        " M shell/src/worlds/memory/mod.rs",
+        " M shell/src/worlds/mod.rs",
+        " M shell/src/worlds/models/mod.rs",
+        " M shell/src/worlds/oracle/mod.rs",
+        " M shell/src/worlds/particle_page.rs",
+        " M shell/src/worlds/scroll.rs",
+        " M shell/src/worlds/sigma/mod.rs",
+        " M shell/src/worlds/soma_bridge.rs",
+        " M shell/src/worlds/vault/mod.rs",
+        " M shell/src/worlds/viewer.rs",
+        "?? cells/oracle.rune",
+        "?? cyb",
+        "?? shell/src/worlds/nav.rs",
+        "?? shell/src/worlds/page.rs",
+        "?? shell/src/worlds/windowed.rs"
+      ],
+      "origin": "https://github.com/cyberia-to/cyb.git"
+    },
+    "fs": {
+      "revision": "75d438014eded7b71ad7d2411bcc36205d30e94d",
+      "branch": "docs/foculus-links",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/fs.git"
+    },
+    "soma": {
+      "revision": "b0d5d4203af2a1ba40f1f209ee5089f54e259a7b",
+      "branch": "docs/foculus-links",
+      "status": [
+        "M kernel/src/agent.rs",
+        " M kernel/src/lib.rs"
+      ],
+      "origin": "https://github.com/cyberia-to/soma.git"
+    },
+    "strata": {
+      "revision": "56aedb2d12b3126c601eb333419136d403614dbb",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/strata.git"
+    },
+    "lens": {
+      "revision": "b921e9ea589be99441a7e8afcf4a70148f1a8449",
+      "branch": "fix/public-execution-pcs",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/lens.git"
+    },
+    "nox": {
+      "revision": "bf83009581ed1e8e034a536b32a88f75bf9299cf",
+      "branch": "fix/jet-input-admission",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/nox.git"
+    },
+    "zheng": {
+      "revision": "3db59040070ee66eb7449e47b3bf13a00f5d632b",
+      "branch": "fix/warrior-release",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/zheng.git"
+    },
+    "foculus": {
+      "revision": "9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744",
+      "branch": "fix/shared-storage-dependencies",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/foculus.git"
+    },
+    "inf": {
+      "revision": "bf379879b60d724cb34fead91d703e0090acc08e",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/inf.git"
+    },
+    "tade": {
+      "revision": "c1d81c75725df0a666c36d81ef33c3a60eb007f3",
+      "branch": "feat/cli",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/tade.git"
+    },
+    "tru": {
+      "revision": "6b25e4e93defe22a08168c46224bc2bf44cef1a8",
+      "branch": "master",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/tru.git"
+    },
+    "tok": {
+      "revision": "e27da0dff72b948418a5e40a5ed6290c0fd167f3",
+      "branch": "main",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/plumb.git"
+    },
+    "honeycrisp": {
+      "revision": "9d7412627873b3b34023f317f133d64635703d39",
+      "branch": "feat/tip5",
+      "status": [],
+      "origin": "https://github.com/cyberia-to/honeycrisp.git"
+    }
+  },
+  "report_base": {
+    "revision": "434244e9f3ffd5850188dddb5ac4c5eceb6aa49c",
+    "ref": "origin/main",
+    "note": "Also inspected this node route table; it differs from the local soft3 branch, and neither has generic file storage routes."
+  },
+  "inspected_files": {
+    "cyb/shell/src/worlds/content.rs": {
+      "sha256": "a5bfc5f627f9c994f1056cf31dc266bb21e499334ef8994d4ff588e75158da59",
+      "matches_head": true
+    },
+    "cyb/shell/src/now.rs": {
+      "sha256": "84b438a59c227d12596eb06a7f45768c3e90eaf875d46abea6e1b43e5b3fceb5",
+      "matches_head": false
+    },
+    "cyb/shell/src/worlds/file.rs": {
+      "sha256": "960d06006a18cfb20318d60a3f444f2d41cec1081232db710e7806f5b24a4d31",
+      "matches_head": false
+    },
+    "cyb/shell/src/worlds/attention.rs": {
+      "sha256": "876ea0db1a1d7d94b6580eb08065f38ff073fed88b1ca0f8059505c57084f53a",
+      "matches_head": false
+    },
+    "cyb/core/src/cell.rs": {
+      "sha256": "68ed401c4bd1b6643b3d37a73f45a5e2ff951cb1a2ebb86facf998f03c8f2f36",
+      "matches_head": true
+    },
+    "soft3/crate/src/node/routes.rs": {
+      "sha256": "566d90a77fc032c86dbbcbb1ba3e7a90afc3dfdd67ae6c44d323295ce8124270",
+      "matches_head": true
+    },
+    "soft3/crate/src/node/signed.rs": {
+      "sha256": "daa6d81f9c06ec332fec0e0013a2be566b3fcb3f9204db1255a8617c335c4932",
+      "matches_head": true
+    },
+    "soft3/crate/src/node.rs": {
+      "sha256": "263dcec58f370f37512d28690f0fc59c73716f806825334a6de74be77bb7e969",
+      "matches_head": true
+    },
+    "file/src/lib.rs": {
+      "sha256": "8dc7c72466ba43c34edc57485472ae7bb9e497f1f32b5da25469e02fa9402140",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/hash.rs": {
+      "sha256": "f0f9418fa65da3b6b2a63b4eff6a0ca42752125b06b5b27f6167f8037711a24a",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/fs.rs": {
+      "sha256": "572f234c8adf8367b3493c77a5e95e4346972cdfbaf307234fd89b761ae37996",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/fs/options.rs": {
+      "sha256": "9908fc44f9bcb29ed5fe10eef2a654874ef2da378a8be1c7986584d4e89f9064",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/fs/meta.rs": {
+      "sha256": "7da8876a77f7dfd67488f65582ffb45816fe13ddc8f056ea16daac7a47e4bb96",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/fs/import.rs": {
+      "sha256": "5449de443f04ae6699505c1ea0b0e3ac737dfe570a8e513a13ee447d38c833ed",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/gc.rs": {
+      "sha256": "952027c84165bba9c8f45206b6bcc4a9d5994de893bcab11c20674268c060321",
+      "matches_head": true
+    },
+    "cybergraph/src/content.rs": {
+      "sha256": "ecabbdcf2e2d28acc3b079ae16537cdbc4d66f5a2dd68fe70acb7f45504aad19",
+      "matches_head": true
+    },
+    "cybergraph/src/application.rs": {
+      "sha256": "a6767629504d880347bc2784175882da4e00dfd5860810d0685804773d1a4087",
+      "matches_head": true
+    },
+    "cybergraph/src/text_archive.rs": {
+      "sha256": "78d5ee26d4cd03ec8d6ecdf4c67f4382abfb9e777be4a8f90ee6961c5416987a",
+      "matches_head": true
+    },
+    "bbg/rs/src/storage/application.rs": {
+      "sha256": "b93d56e51f6580818130c068b5d11412968292a0ed2e23232eb887dd5764d614",
+      "matches_head": true
+    },
+    "bbg/rs/src/storage/database/backend_fjall.rs": {
+      "sha256": "cb7dad2429f37f162985431890ca2971a3f71ba71eb68ebd137c272d68a098a4",
+      "matches_head": true
+    },
+    "bbg/rs/src/storage/tiered.rs": {
+      "sha256": "66ca2a2ce2d6815f6d6040ec815de1a9c76093f70cefd8ba5e65634a99eec7e9",
+      "matches_head": true
+    },
+    "bbg/rs/src/types.rs": {
+      "sha256": "b52cf2e9721ffbdee079e07d2bd542e107573b7dc827568debbec3289d261336",
+      "matches_head": true
+    },
+    "vault/src/replication.rs": {
+      "sha256": "ea753b288ae85f0f7304510dce68d974f6a45c52bf3b359c582233a1ca78aab4",
+      "matches_head": true
+    },
+    "neuron/node/src/lib.rs": {
+      "sha256": "023a86c85ff8c144d8222911b83b0742f30a41df5c7264984e06edc849d3d8d7",
+      "matches_head": true
+    },
+    "hemera/rs/src/lib.rs": {
+      "sha256": "47986a4df82615818bab7dd23d1d47ae3c38d1a8dfb56bd59cbb3e4502da57f0",
+      "matches_head": true
+    },
+    "hemera/rs/src/tree.rs": {
+      "sha256": "90c644339baf539cec150ae0b69b0250191cd730b3925036eae87cad92c2715a",
+      "matches_head": true
+    },
+    "cyber/particle.md": {
+      "sha256": "2279b73b79869310b94225ff4e17751e2165be7a3c3ba095b011a7409be3dcdf",
+      "matches_head": true
+    },
+    "cyber/file.md": {
+      "sha256": "eaf5468a9e8da3f75cc3ba909e1c1edce09aa7fdde08aa2725c9e2cb16ed45f0",
+      "matches_head": true
+    },
+    "bbg/specs/storage.md": {
+      "sha256": "8fc9a2134bbe0b7513482326d4aaaa6bc39c1625582ab1a7ad0ad8f6da3f6c62",
+      "matches_head": true
+    },
+    "cyb/reference/particle.md": {
+      "sha256": "922984b152c2b0fbad35e076b4fa3f90a96077b183a74dde7904207e6eeb98b5",
+      "matches_head": true
+    },
+    "cybergraph/specs/particle.md": {
+      "sha256": "35d6ae5344a5a8a3dc5b1c71b96819d342fae1e0ae6d78413e90d967e49529f2",
+      "matches_head": true
+    },
+    "radio/docs/blob.md": {
+      "sha256": "3b105b40253bb46a1a1d69e8fb5022cc6f59c1b9ee701f6296e12fd3c5fc6c34",
+      "matches_head": true
+    },
+    "fs/sync.md": {
+      "sha256": "e72095d160b32e8c4f6a53ae93f639320d6df1c340fffaad598372126d3d3c50",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/util.rs": {
+      "sha256": "fecfdb0ab37a6dd336623fd5488c7ffffd5c8f3ce3204d9010e74449b00bb473",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/util/partial_mem_storage.rs": {
+      "sha256": "3628eb6334b9543da0386343cc41a75ec0c41b4f7d657ceb2081f2151351cc7b",
+      "matches_head": true
+    },
+    "radio/iroh-blobs/src/store/fs/bao_file.rs": {
+      "sha256": "192b90bb35d603397dcfa6ab9740d0a8f00ec5ab7309d0bb02e30ca5b90ca49f",
+      "matches_head": true
+    }
+  },
+  "provenance_commands": [
+    "git -C REPO rev-parse HEAD",
+    "git -C REPO status --short",
+    "git -C REPO show HEAD:PATH",
+    "sha256(read_bytes(PATH))",
+    "rg -n PATTERN PATH",
+    "nl -ba PATH"
+  ],
+  "toolchain": "rustc 1.95.0 (59807616e 2026-04-14) (Homebrew)"
+}

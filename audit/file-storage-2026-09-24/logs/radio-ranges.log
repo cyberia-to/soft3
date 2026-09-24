@@ -1,0 +1,31 @@
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/encode.rs:19:7
+   |
+19 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/outboard.rs:15:7
+   |
+15 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+
+warning: constant `PAIR_SIZE` is never used
+  --> cyber-bao/src/io/slice.rs:18:7
+   |
+18 | const PAIR_SIZE: usize = OUTPUT_BYTES * 2;
+   |       ^^^^^^^^^
+
+warning: `cyber-bao` (lib) generated 3 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running unittests src/lib.rs (target/debug/deps/iroh_blobs-2dc1a2284e09234b)
+
+running 1 test
+2026-09-24T12:12:18.590006Z ERROR iroh_blobs::store::fs: task failed: task 20 panicked with message "copy_from_slice: source slice length (32) does not match destination slice length (64)"
+test store::fs::tests::test_import_bao_ranges has been running for over 60 seconds
+error: test failed, to rerun pass `-p iroh-blobs --lib`
+
+Caused by:
+  process didn't exit successfully: `/private/tmp/cyber-file-storage-audit-20260924/radio/target/debug/deps/iroh_blobs-2dc1a2284e09234b 'store::fs::tests::test_import_bao_ranges' --exact` (signal: 15, SIGTERM: termination signal)

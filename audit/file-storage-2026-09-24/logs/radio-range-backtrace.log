@@ -1,0 +1,141 @@
+
+running 1 test
+
+thread 'iroh-blob-store-15' (8036935) panicked at iroh-blobs/src/store/util.rs:227:22:
+copy_from_slice: source slice length (32) does not match destination slice length (64)
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+   1: core::panicking::panic_fmt
+   2: core::slice::copy_from_slice_impl::len_mismatch_fail
+   3: core::slice::copy_from_slice_impl::<u8>
+   4: core::slice::<impl [T]>::copy_from_slice
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/slice/mod.rs:4325:18
+   5: iroh_blobs::store::util::fs::write_checksummed
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/util.rs:227:22
+   6: iroh_blobs::store::fs::bao_file::PartialFileStorage::sync_all
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs/bao_file.rs:155:9
+   7: <iroh_blobs::store::fs::util::entity_manager::entity_actor::State<iroh_blobs::store::fs::EmParams> as iroh_blobs::store::fs::EntityApi>::persist::{{closure}}::{{closure}}::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs.rs:997:36
+   8: tokio::sync::watch::Sender<T>::send_if_modified::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/sync/watch.rs:1180:73
+   9: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:274:9
+  10: std::panicking::catch_unwind::do_call
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:581:40
+  11: ___rust_try
+  12: std::panicking::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:544:19
+  13: std::panic::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+  14: tokio::sync::watch::Sender<T>::send_if_modified
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/sync/watch.rs:1180:26
+  15: <iroh_blobs::store::fs::util::entity_manager::entity_actor::State<iroh_blobs::store::fs::EmParams> as iroh_blobs::store::fs::EntityApi>::persist::{{closure}}::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs.rs:990:20
+  16: <iroh_blobs::store::fs::util::entity_manager::entity_actor::State<iroh_blobs::store::fs::EmParams> as iroh_blobs::store::fs::EntityApi>::persist::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs.rs:988:5
+  17: <iroh_blobs::store::fs::EmParams as iroh_blobs::store::fs::util::entity_manager::Params>::on_shutdown::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs.rs:233:25
+  18: iroh_blobs::store::fs::util::entity_manager::entity_actor::Actor<P>::recycle_state::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs/util/entity_manager.rs:216:69
+  19: iroh_blobs::store::fs::util::entity_manager::entity_actor::Actor<P>::run::{{closure}}
+             at /private/tmp/cyber-file-storage-audit-20260924/radio/iroh-blobs/src/store/fs/util/entity_manager.rs:176:42
+  20: tokio::runtime::task::core::Core<T,S>::poll::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/core.rs:374:24
+  21: tokio::loom::std::unsafe_cell::UnsafeCell<T>::with_mut
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/loom/std/unsafe_cell.rs:16:9
+  22: tokio::runtime::task::core::Core<T,S>::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/core.rs:363:30
+  23: tokio::runtime::task::harness::poll_future::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:535:30
+  24: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:274:9
+  25: std::panicking::catch_unwind::do_call
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:581:40
+  26: ___rust_try
+  27: std::panicking::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:544:19
+  28: std::panic::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+  29: tokio::runtime::task::harness::poll_future
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:523:18
+  30: tokio::runtime::task::harness::Harness<T,S>::poll_inner
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:210:27
+  31: tokio::runtime::task::harness::Harness<T,S>::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:155:20
+  32: tokio::runtime::task::raw::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/raw.rs:337:13
+  33: tokio::runtime::task::raw::RawTask::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/raw.rs:267:18
+  34: tokio::runtime::task::LocalNotified<S>::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/mod.rs:515:13
+  35: tokio::runtime::scheduler::multi_thread::worker::Context::run_task::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:643:18
+  36: tokio::task::coop::with_budget
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/task/coop/mod.rs:167:5
+  37: tokio::task::coop::budget
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/task/coop/mod.rs:133:5
+  38: tokio::runtime::scheduler::multi_thread::worker::Context::run_task
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:634:9
+  39: tokio::runtime::scheduler::multi_thread::worker::Context::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:567:29
+  40: tokio::runtime::scheduler::multi_thread::worker::run::{{closure}}::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:532:24
+  41: tokio::runtime::context::scoped::Scoped<T>::set
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/context/scoped.rs:40:9
+  42: tokio::runtime::context::set_scheduler::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/context.rs:176:38
+  43: std::thread::local::LocalKey<T>::try_with
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/thread/local.rs:513:12
+  44: std::thread::local::LocalKey<T>::with
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/thread/local.rs:477:20
+  45: tokio::runtime::context::set_scheduler
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/context.rs:176:17
+  46: tokio::runtime::scheduler::multi_thread::worker::run::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:527:9
+  47: tokio::runtime::context::runtime::enter_runtime
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/context/runtime.rs:65:16
+  48: tokio::runtime::scheduler::multi_thread::worker::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:519:5
+  49: tokio::runtime::scheduler::multi_thread::worker::Launch::launch::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/scheduler/multi_thread/worker.rs:485:45
+  50: <tokio::runtime::blocking::task::BlockingTask<T> as core::future::future::Future>::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/blocking/task.rs:42:21
+  51: tokio::runtime::task::core::Core<T,S>::poll::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/core.rs:374:24
+  52: tokio::loom::std::unsafe_cell::UnsafeCell<T>::with_mut
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/loom/std/unsafe_cell.rs:16:9
+  53: tokio::runtime::task::core::Core<T,S>::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/core.rs:363:30
+  54: tokio::runtime::task::harness::poll_future::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:535:30
+  55: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:274:9
+  56: std::panicking::catch_unwind::do_call
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:581:40
+  57: ___rust_try
+  58: std::panicking::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panicking.rs:544:19
+  59: std::panic::catch_unwind
+             at /opt/homebrew/Cellar/rust/1.95.0/lib/rustlib/src/rust/library/std/src/panic.rs:359:14
+  60: tokio::runtime::task::harness::poll_future
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:523:18
+  61: tokio::runtime::task::harness::Harness<T,S>::poll_inner
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:210:27
+  62: tokio::runtime::task::harness::Harness<T,S>::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/harness.rs:155:20
+  63: tokio::runtime::task::raw::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/raw.rs:337:13
+  64: tokio::runtime::task::raw::RawTask::poll
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/raw.rs:267:18
+  65: tokio::runtime::task::UnownedTask<S>::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/task/mod.rs:552:13
+  66: tokio::runtime::blocking::pool::Task::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/blocking/pool.rs:161:19
+  67: tokio::runtime::blocking::pool::Inner::run
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/blocking/pool.rs:516:22
+  68: tokio::runtime::blocking::pool::Spawner::spawn_thread::{{closure}}
+             at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.49.0/src/runtime/blocking/pool.rs:474:47
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+2026-09-24T12:15:31.576408Z ERROR iroh_blobs::store::fs: task failed: task 20 panicked with message "copy_from_slice: source slice length (32) does not match destination slice length (64)"
+
+Audit bounded rerun result: 124 (124 = stopped after 15 seconds).

@@ -1,0 +1,33 @@
+bbg/rs/src/storage/mem.rs:8:pub struct MemStore {
+bbg/rs/src/storage/mem.rs:12:impl MemStore {
+bbg/rs/src/storage/mem.rs:18:impl ShardStore for MemStore {
+cybergraph/src/text_archive.rs:41:pub struct TextArchive {
+cybergraph/src/text_archive.rs:49:impl TextArchive {
+bbg/rs/src/storage/tiered.rs:290:        Self::new(Box::new(super::mem::MemStore::new()))
+cybergraph/src/text_archive/legacy.rs:64:impl TextArchive {
+bbg/rs/src/storage/mod.rs:51:pub use mem::MemStore;
+bbg/rs/src/storage/redb_tests.rs:197:    use super::super::{MemStore, TieredStore};
+bbg/rs/src/storage/redb_tests.rs:200:    let mut store = TieredStore::new(Box::new(MemStore::new()))
+bbg/rs/src/storage/tiered_tests.rs:3:use crate::storage::mem::MemStore;
+bbg/rs/src/storage/tiered_tests.rs:15:impl NetworkStore for MockNetworkStore {
+bbg/rs/src/storage/tiered_tests.rs:28:    let store = TieredStore::new(Box::new(MemStore::new()))
+bbg/rs/src/storage/tiered_tests.rs:29:        .with_network(Box::new(MockNetworkStore(content.clone())));
+bbg/rs/src/storage/tiered_tests.rs:30:    assert_eq!(store.fetch_content(&particle), Some(content));
+bbg/rs/src/storage/tiered_tests.rs:36:    let store = TieredStore::new(Box::new(MemStore::new()))
+bbg/rs/src/storage/tiered_tests.rs:37:        .with_network(Box::new(MockNetworkStore(b"hello world!".to_vec())));
+bbg/rs/src/storage/tiered_tests.rs:38:    assert_eq!(store.fetch_content(&particle), None);
+bbg/rs/src/storage/tiered_tests.rs:43:    let store = TieredStore::new(Box::new(MemStore::new()));
+bbg/rs/src/storage/tiered_tests.rs:44:    assert_eq!(store.fetch_content(&[0; 32]), None);
+bbg/rs/src/storage/tiered_tests.rs:49:    let hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:50:    let warm = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:51:    let warm_ptr = &*warm as *const MemStore as usize;
+bbg/rs/src/storage/tiered_tests.rs:68:    let hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:69:    let mut warm = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:80:    let mut hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:81:    let mut warm = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:92:    let hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:93:    let mut warm = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:106:    let hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:107:    let warm = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:139:    let hot = Box::new(MemStore::new());
+bbg/rs/src/storage/tiered_tests.rs:140:    let warm = Box::new(MemStore::new());
