@@ -80,4 +80,5 @@ remain open.
 | A5 | Competing heads retain only the winner; retention and publication roll back together | Release, active reads and concurrent interrupted GC |
 | A8 | Paged upload discovery and coverage; no total-file allocation in the exercised stream adapter | Scale curves for independent file/history growth and cross-device content migration |
 | A10 | Application-only archive/migration refuses streamed content and preserves active uploads | Actual resumable content imports and writer cutover |
-| A11 | Cybergraph library and BBG share one owner; Radio source/sink adapter exercises same-profile and cross-profile transfers | SDK/CLI/node consumers, Vault and FS workflows |
+| A11 | Cybergraph library and BBG share one owner; Radio source/sink adapter and real CLI exercise file transfer, names and offline reopen ([receipt](../../audit/storage/cli-catalog-2026-09-24.md)) | SDK/node consumers, Vault and full FS workflows |
+| A12 | Local Catalog and CLI preserve historical names/bytes, atomic rename and explicit stale-write conflicts ([receipt](../../audit/storage/cli-catalog-2026-09-24.md)) | Aliases, signed patch sync, channel fork/merge, complete device-loss restore and GC |

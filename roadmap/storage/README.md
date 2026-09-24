@@ -14,9 +14,11 @@ same interfaces.
 [Architecture](../../specs/storage.md) ·
 [[bbg/specs/content-storage|BBG contract]] ·
 [Identity decision](identity.md) · [Acceptance matrix](acceptance.md) ·
+[Radio removal milestone](radio-removal.md) ·
 [Baseline audit](../../audit/file-storage-2026-09-24/README.md) ·
 [Local content implementation](../../audit/storage/content-2026-09-24.md) ·
-[Radio integration](../../audit/storage/radio-2026-09-24.md)
+[Radio integration](../../audit/storage/radio-2026-09-24.md) ·
+[CLI and names](../../audit/storage/cli-catalog-2026-09-24.md)
 
 ## committed direction
 
@@ -28,6 +30,9 @@ same interfaces.
 - Use bounded operations and paged structures with no arbitrary total file,
   library or revision cap.
 - Keep private persistence separate from public graph disclosure.
+- Complete Radio extraction by physically removing its storage implementations
+  and their dependency closure after behavior and migration qualify. An optional
+  BBG path alone does not complete this milestone.
 
 The algorithm/input definition of particle is pending S1. The local BBG and
 Cybergraph APIs implement the first S2/S3 slice with existing Blob identity;
@@ -116,10 +121,14 @@ source revisions, executable checks and the remaining acceptance gaps.
 - S5: the opt-in Radio file-stream protocol uses host-authorized readers and
   durable sinks through `cybergraph-radio`. Live interrupted transfers resume from
   BBG coverage; both same-profile and cross-profile paths have linked evidence.
+  The Radio CLI now uses this path; descriptor lookup preserves retrieval by
+  particle and peer. Its production closure excludes legacy blob/docs stores.
   The legacy BAO/store path and public protocol cutover remain pending S1/migration.
 - S7: `ApplicationGraph::commit_with_blobs` binds file references into request
-  identity and publishes them with the head. Product consumers, FS names and
-  legacy content imports remain pending. Existing application-only migration
+  identity and publishes them with the head. `Catalog` and Radio name commands
+  provide local conditional names, atomic rename and retained historical views.
+  Product node/Cyb assembly, full FS patches/channels and legacy content imports
+  remain pending. Existing application-only migration
   refuses content it cannot preserve.
 
 S1, S6 and S8 remain open; S5 has a working opt-in transport slice. Local checksum validation supplies no transferable
