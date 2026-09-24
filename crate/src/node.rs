@@ -3,6 +3,7 @@
 //! Acceptance, economics and recovery are owned by Cybergraph and BBG.
 //! See `soft3/specs/native-node.md` for the HTTP and storage lifecycle contract.
 
+mod claim;
 mod genesis;
 mod http;
 mod requests;
@@ -116,6 +117,12 @@ pub fn import_legacy(home: &Path) -> io::Result<ImportReport> {
     let genesis = genesis::load(home, false)?;
     let log = genesis::read_bounded(&home.join("log"), genesis::MAX_LEGACY_LOG)?;
     NativeNode::import_legacy(&home.join("bbg"), &genesis.canonical, &log).map_err(io::Error::other)
+}
+
+/// Verify a legacy-key claim under `hrp` and bind it to a neuron at `home`.
+/// See [`claim::claim_account`] and `specs/native-node.md`'s "claim" section.
+pub fn claim_account(home: &Path, encoded: &str, hrp: &str) -> io::Result<String> {
+    claim::claim_account(home, encoded, hrp)
 }
 
 /// Preserve the existing hex/label identity convention.
