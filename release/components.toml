@@ -444,26 +444,6 @@ phase = "after"
 state = "live"
 
 [[component]]
-name = "erga"
-kind = "product"
-repo = "erga"
-verb = "mine"
-facet = "play"
-layer = 5
-phase = "grown"
-state = "live"
-
-[[component]]
-name = "studio"
-kind = "product"
-repo = "cyberia-my"
-verb = "sign"
-facet = "play"
-layer = 5
-phase = "grown"
-state = "live"
-
-[[component]]
 name = "cybernode"
 kind = "ops"
 repo = "cybernode"
