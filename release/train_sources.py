@@ -8,6 +8,8 @@ import re
 import subprocess
 import tomllib
 
+from train_components import capture as component_inputs
+
 PRODUCTS = {
     "soft3": ("cyberia-to/soft3", "crate/Cargo.toml"),
     "cyber": ("cyberia-to/cyber", "Cargo.toml"),
@@ -129,6 +131,7 @@ def inventory(sources, directory, output):
         if row.get("manifest") and (root / row["manifest"]).is_file():
             package = tomllib.loads((root / row["manifest"]).read_text()).get("package", {})
             row["version"] = package.get("version")
+    result["component_inputs"] = component_inputs(sources, directory)
     # Preserve failed package resolution explicitly; source inventory always exists.
     component = sources["component"]
     manifest = directory / component / PRODUCTS[component][1]

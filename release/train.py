@@ -153,6 +153,9 @@ def collect(args):
                "result": verdict, "source_revisions": source_revisions, "available_binaries": binaries,
                "manager_revision": sources["manager_revision"], "promotion": "owner only"})
     (output / "soft3-dependencies.md").write_text("\n".join(details or ["Source capture is in sources.json; no platform resolved a package inventory."]) + "\n")
+    declarations = [data["component_inputs"] for data in inventories.values() if "component_inputs" in data]
+    if declarations:
+        write_json(output / "component-inputs.json", declarations[0])
     (output / "release-notes.md").write_text(render_notes(output))
     checksums(output)
     print(f"{verdict.upper()} {component} {name}")

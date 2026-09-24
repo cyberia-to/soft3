@@ -68,23 +68,21 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
              f'| {headline} | 📝 Draft prerelease |',
              f'| {"📦 Binaries available" if has_binaries else "⛔ No installable binary in this candidate"} | Promotion: owner decision |', '',
              '🟢 Pass · 🔴 Fail · 🟠 Blocked by a prerequisite · ⚪ No receipt · ➖ Gate not selected.', '',
-             '## 🔗 Versions and sources', '', '| Product | Version | Captured source |', '|---|---|---|']
+             ]
     versions = candidate.get('versions') or {}
-    for product in ['soft3', 'cyber', 'cyb']:
-        revision = candidate.get('source_revisions', {}).get(product)
-        source = link(f'`{revision[:8]}`', f'https://github.com/cyberia-to/{product}/commit/{revision}') if revision else '⚪ Unavailable'
-        lines.append(f'| {link(product, f"https://github.com/cyberia-to/{product}")} | {cell(versions.get(product) or "unresolved")} | {source} |')
-    manager = candidate.get('manager_revision')
-    if manager:
-        lines += ['', f'Qualifier: {link("soft3 " + manager[:8], f"https://github.com/cyberia-to/soft3/tree/{manager}/release")}. '
-                  f'Exact versions and revisions: {asset("candidate.json")}.']
-    lines += ['', '## ✨ Changes at the captured revisions', '']
-    for index, change in enumerate(sources.get('changes', []), 1):
-        lines.append(f'{index}. {cell(change["component"])}: {link(cell(change["title"]), change["html_url"])}.')
-    if not sources.get('changes'):
+    revision = candidate.get('source_revisions', {}).get(component)
+    commit = link(f'`{revision[:8]}`', f'{repo}/commit/{revision}') if revision else '⚪ Unavailable'
+    lines += [f'{link(component, repo)} {cell(versions.get(component) or "unresolved")} · {commit}', '']
+    component_position = len(lines)
+    lines += ['## ✨ Changes at the captured revision', '']
+    changes = [c for c in sources.get('changes', []) if c['component'] == component]
+    for index, change in enumerate(changes, 1):
+        lines.append(f'{index}. {link(cell(change["title"]), change["html_url"])}.')
+    if not changes:
         lines.append('⚪ No attributed pull requests in the source receipt.')
     for error in sources.get('change_errors', []):
-        lines += ['', f'🟠 {cell(error["component"])}: {cell(error["error"])}.']
+        if error['component'] == component:
+            lines += ['', f'🟠 {cell(error["error"])}.']
     lines += ['', '## 💻 Platforms', '', '| Platform | Qualification | Binary | Evidence |', '|---|---|---|---|']
     for platform in platforms:
         status = LABELS.get(platform['result'], '⚪ Unknown') if platform.get('archive') else LABELS['missing']
@@ -137,6 +135,102 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
             message = message.replace(str(Path(cwd).parent), '<source>')
         return message[:180] or 'See the recorded command and log.'
 
+    component_file = directory / 'component-inputs.json'
+    component_inputs = json.loads(component_file.read_text()) if component_file.is_file() else None
+    if component_inputs:
+        if (component_inputs['component'] != component or component_inputs['candidate'] != name
+                or component_inputs['source_revisions'] != candidate['source_revisions']):
+            raise ValueError('component declarations differ from captured candidate sources')
+    # Older receipts lack the declaration graph. Never invent a product closure.
+    if component_inputs:
+        component_rows = component_inputs['components']
+    elif component == 'soft3':
+        declared = {r['name']: r for data in inventory.get('platforms', {}).values()
+                    for r in data.get('repositories', [])}
+        component_rows = [{**r, 'packages': declared.get(r['name'], {}).get('declared_packages', []),
+                           'relations': [], 'captured': bool(r.get('revision'))}
+                          for r in sources.get('repositories', []) if r['name'] not in PRODUCTS]
+    else:
+        component_rows = []
+    declarations_file = 'component-inputs.json' if component_inputs else 'soft3-dependencies.json'
+    component_lines = ['## 🧩 Stack components' if component == 'soft3' else '## 🧩 Product components', '']
+    if component == 'soft3':
+        component_lines += ['Components in the phase-1 stack, with their recorded checks. Cyber and Cyb are downstream products.', '']
+    else:
+        component_lines += ['Components referenced by this product’s captured manifests, including transitive, optional, target, test and patch declarations.', '']
+    component_lines += ['| Component | Package / version | Captured revision | Referenced by | Check |', '|---|---|---|---|---|']
+    for row in component_rows:
+        owner = row['name']
+        repository = 'https://github.com/' + row['repo'] if row.get('repo') else None
+        label = link(cell(owner), repository) if repository else cell(owner)
+        revision = row.get('revision')
+        source = link(f'`{revision[:8]}`', f'{repository}/commit/{revision}') if revision and repository else '🔴 Not captured'
+        packages = row.get('packages', [])
+        if component == 'soft3':
+            primary = [p for p in packages if p['name'] in {owner, 'cyber-' + owner}]
+            packages = primary or packages
+        declared_versions = sorted({p['version'] for p in packages if isinstance(p.get('version'), str)})
+        if len(packages) == 1 and declared_versions:
+            version = cell(packages[0]['name']) + ' ' + cell(declared_versions[0])
+        elif declared_versions:
+            version = ', '.join(cell(v) for v in declared_versions[:3])
+            if len(declared_versions) > 3:
+                version += ', …'
+            version += ' · ' + asset(declarations_file, f'{len(packages)} crates')
+        else:
+            registry = {(r['package'], r['requirement']) for r in row.get('relations', [])
+                        if r['binding'] == 'registry' and r.get('requirement')}
+            version = '; '.join(cell(pkg + ' ' + req) + ' (registry)' for pkg, req in sorted(registry)) or '—'
+        relations = row.get('relations', [])
+        references = {}
+        for relation in relations:
+            parent = relation['from'].split('/')[0]
+            if parent == owner:
+                continue
+            conditions = ['target-specific' if c.startswith('cfg(') else c for c in relation['conditions']]
+            suffix = ' · ' + ', '.join(conditions) if conditions else ''
+            if relation['binding'] != 'path':
+                suffix += ' · ' + relation['binding']
+            # Prefer an unconditional reference when both conditional and normal uses exist.
+            previous = references.get(parent)
+            if previous is None or len(suffix) < len(previous[0]):
+                references[parent] = (suffix, relation['url'])
+        use = ', '.join(link(cell(parent + suffix), url) for parent, (suffix, url) in list(references.items())[:3])
+        if len(references) > 3:
+            use += ' · ' + asset(declarations_file, f'+{len(references) - 3}')
+        if not use:
+            use = link('phase-1 inventory', f'https://github.com/cyberia-to/soft3/blob/{candidate["manager_revision"]}/release/phase1.toml') if component == 'soft3' else 'See declarations'
+        matches = [(p, g) for p in platforms for g in p.get('gates', [])
+                   if g['name'] in {f'stack-{owner}', f'{owner}-tests', f'{owner}-build'}]
+        matches.sort(key=lambda item: {'red': 0, 'blocked': 1, 'green': 2}.get(item[1]['result'], 3))
+        if row.get('missing_manifests'):
+            status = asset(declarations_file, '🔴 Missing manifest')
+        elif not row.get('captured'):
+            status = asset(declarations_file, '🔴 Source unavailable')
+        elif matches:
+            platform, gate = matches[0]
+            status = link(LABELS.get(gate['result'], '⚪ Unknown'), evidence(platform, gate))
+        else:
+            status = '⚪ No component check'
+        component_lines.append(f'| {label} | {version} | {source} | {use} | {status} |')
+    if not component_rows:
+        component_lines.append('| ⚪ Declaration graph unavailable | — | — | — | No inferred dependencies |')
+    component_lines += ['', 'Versions and revisions describe captured source. Registry selection and product integration require successful Cargo resolution. '
+                        'A component check is the linked recorded gate; ⚪ means no such check in this candidate. '
+                        'Missing manifests are detected from the captured Git trees.', '']
+    if component_inputs:
+        component_lines += [asset('component-inputs.json', '🔎 Exact package requirements, conditional declarations and manifest links') + '.', '']
+    if component_inputs and component_inputs.get('errors'):
+        component_lines += ['🟠 Some declarations could not be traced; unresolved workspace references are listed in ' + asset('component-inputs.json') + '.', '']
+    if component != 'soft3':
+        manager = candidate.get('manager_revision')
+        component_lines += ['Stack qualification: ' + link('soft3 candidate and component checks',
+                            audit_url.replace(f'cyberia-to/{component}/', 'cyberia-to/soft3/') + '/release-page.md#-stack-components' if audit_url
+                            else 'https://github.com/cyberia-to/soft3/releases') +
+                            (f' · {link("qualifier " + manager[:8], f"https://github.com/cyberia-to/soft3/tree/{manager}/release")}' if manager else '') +
+                            '. Separate stack results do not establish this product’s integration.', '']
+    lines[component_position:component_position] = component_lines
+
     selected = {}
     for platform in platforms:
         for gate in platform.get('gates', []):
@@ -164,20 +258,6 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
             cells.append(link(LABELS.get(gate['result'], '⚪ Unknown'), evidence(platform, gate)) if gate else ('➖' if platform.get('archive') else '⚪'))
         lines.append(f'| `{cell(gate_name)}` | ' + ' | '.join(cells) + ' |')
     lines += ['', 'Cell links open recorded logs or release downloads. ➖ means the gate was not selected for that job; ⚪ means its platform receipt is missing.', '', '</details>', '',
-              '<details>', '<summary>📚 Full soft3 source inventory</summary>', '',
-              'Pin status compares source revisions only. Component test results are in the qualification matrix above.', '',
-              '| Component | Captured revision | Source pin | Primary declared package |', '|---|---|---|---|']
-    platform_inventories = inventory.get('platforms', {})
-    declared = {r['name']: r for data in platform_inventories.values() for r in data.get('repositories', [])}
-    for row in sources.get('repositories', []):
-        revision = row.get('revision')
-        repository = row.get('repo', f'cyberia-to/{row["name"]}')
-        commit = link(f'`{revision[:8]}`', f'https://github.com/{repository}/commit/{revision}') if revision else '⚪ Unavailable'
-        pin = '📌 Product source' if row['name'] in PRODUCTS else ('🟢 Matches' if row.get('pin_matches') else '🔴 Missing / drifted')
-        primary = [p for p in declared.get(row['name'], {}).get('declared_packages', []) if p['manifest'] in ['Cargo.toml', 'rs/Cargo.toml', 'crate/Cargo.toml']]
-        packages = '; '.join(cell(p['name']) + (' @ ' + cell(p['version']) if isinstance(p.get('version'), str) else ' · workspace version') for p in primary)
-        lines.append(f'| {link(cell(row["name"]), "https://github.com/" + repository)} | {commit} | {pin} | {packages or asset("soft3-dependencies.json", "Declarations ↗")} |')
-    lines += ['', 'Declared versions come from source manifests. Resolved package closure, resolution failures and all nested declarations are retained in ' + asset('soft3-dependencies.json') + '.', '', '</details>', '',
               '## 📎 Evidence and downloads', '',
               f'{link("GitHub release assets", repo + "/releases")} · linked audit copies retain the original checksums.' if audit_url else
               f'Download the named files from {link("GitHub release assets", repo + "/releases")}.',
@@ -190,6 +270,8 @@ def render(directory, metadata=None, audit_url=None, run_url=None):
                                   ('soft3-dependencies.md', 'Original readable dependency inventory'),
                                   ('release-notes.md', 'Original generated notes captured with this candidate')]:
         lines.append(f'| {asset(filename)} | {description} |')
+    if component_inputs:
+        lines.append(f'| {asset("component-inputs.json")} | Product-scoped manifest trace; supplementary evidence |')
     if audit_url:
         lines += ['', f'🗂️ {link("Audit and reproduction commands", audit_url + "/README.md")}']
     lines += ['', 'The verdict, source revisions and qualification data above come from the linked candidate receipts. This presentation does not change their results.', '']
