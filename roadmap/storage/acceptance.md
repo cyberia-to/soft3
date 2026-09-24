@@ -66,7 +66,8 @@ revisions; unimplemented or failing rows remain visible.
 
 ## current local evidence
 
-The [local content receipt](../../audit/storage/content-2026-09-24.md) pins the
+The [local content receipt](../../audit/storage/content-2026-09-24.md) and
+[Radio integration receipt](../../audit/storage/radio-2026-09-24.md) pin the
 commands and implementation revisions for this subset. All complete rows above
 remain open.
 
@@ -75,7 +76,8 @@ remain open.
 | A1 | Existing Blob identities survive part-size changes and binary boundaries; malformed stored parts fail | S1 construction, File/Radio agreement and authenticated range proofs |
 | A2 | Streamed import/read exceeds the old inline limit; cancelled sparse uploads reclaim only stored parts | Memory and backpressure measurements, slow remote streams |
 | A3 | Subprocess exit after durable part/seal/head boundaries on both profiles; injected redb write/sync failure and shared uncertainty handling | Interrupted physical writes, disk-full and power-loss campaigns; equivalent content-specific Fjall fault injection |
+| A4 | Live QUIC transfer interrupted, endpoints stopped, both BBG owners reopened; only missing parts fetched through the opt-in protocol | Product path cutover, legacy store migration and S1 authenticated ranges |
 | A5 | Competing heads retain only the winner; retention and publication roll back together | Release, active reads and concurrent interrupted GC |
 | A8 | Paged upload discovery and coverage; no total-file allocation in the exercised stream adapter | Scale curves for independent file/history growth and cross-device content migration |
 | A10 | Application-only archive/migration refuses streamed content and preserves active uploads | Actual resumable content imports and writer cutover |
-| A11 | Cybergraph library and BBG share one owner and both disk profiles | SDK/CLI/node consumers, Vault and FS workflows |
+| A11 | Cybergraph library and BBG share one owner; Radio source/sink adapter exercises same-profile and cross-profile transfers | SDK/CLI/node consumers, Vault and FS workflows |

@@ -15,7 +15,8 @@ same interfaces.
 [[bbg/specs/content-storage|BBG contract]] ·
 [Identity decision](identity.md) · [Acceptance matrix](acceptance.md) ·
 [Baseline audit](../../audit/file-storage-2026-09-24/README.md) ·
-[Local content implementation](../../audit/storage/content-2026-09-24.md)
+[Local content implementation](../../audit/storage/content-2026-09-24.md) ·
+[Radio integration](../../audit/storage/radio-2026-09-24.md)
 
 ## committed direction
 
@@ -73,7 +74,7 @@ its exit criteria. Repository names identify implementation ownership.
 | S2 | fs, bbg, cybergraph, foculus, radio | implementing | S0 | Specify contextual name/path resolution, namespace patches, source/sink, coverage, publication, retention and receipt interfaces; ownership/dependency map; no network inside storage transactions or Radio-owned persistence |
 | S3 | bbg, cybergraph | implementing | S1, S2; existing BBG reliability gates | Streamed parts, paged descriptors/coverage, crash-safe seal and bounded atomic publication on both profiles; A1–A4 |
 | S4 | bbg, cybergraph | implementing | S3 | Durable retention roots, active read protection, resumable GC, history traversal and device migration; A3, A5, A8 |
-| S5 | radio, hemera, foculus | planned | S1, S2, S3 | Existing Radio uses injected BBG sources/sinks; authenticated ranges and resume; all filesystem/DB ownership accounted for; remove obsolete BAO/store path only after migration; A1, A4, A10 |
+| S5 | radio, hemera, foculus, cybergraph | implementing | S1, S2, S3 | Existing Radio uses injected BBG sources/sinks; authenticated ranges and resume; all filesystem/DB ownership accounted for; remove obsolete BAO/store path only after migration; A1, A4, A10 |
 | S6 | foculus, cybergraph, radio, bbg | planned | S4, S5 | Authenticated replication obligations and complete durable acknowledgements; explicit failure domains, retry, partition and stale-replica handling; A6, A7 |
 | S7 | fs, file, cybergraph, cyb, neuron, cyber, soft3 | implementing | S3, S2 | Consumers share content/history APIs; FS names, channels and patches persist through Cybergraph/BBG; import existing JSONL, application blobs and Radio stores; exact-byte validation, provenance and resumable reconciliation; A8, A10–A12 |
 | S8 | vault, mudra, neuron, cybergraph, foculus | planned | S6, S7 | Existing sealed-record semantics over the generic service; device-loss restore, protected-use state and freshness/fencing; A6, A7, A9 and Vault conformance |
@@ -105,19 +106,24 @@ source revisions, executable checks and the remaining acceptance gaps.
 
 - S2: `ContentStore` defines bounded write, resume, verification, read and
   cancellation operations. `Files` supplies the trusted Blob verifier and
-  stream adapter. FS and Radio-facing contracts remain to implement.
+  stream adapter. Radio now consumes per-file Provider/Source/Sink capabilities;
+  FS contracts remain to implement.
 - S3: parts, checksums, progress and sealed descriptors share the selected
   BBG Database. Both profiles exercise restart and interrupted work.
 - S4: publication atomically records retention roots; cancellation reclaims
   staging incrementally. Sealed content remains protected indefinitely until
   release, read protection and resumable GC are implemented together.
+- S5: the opt-in Radio file-stream protocol uses host-authorized readers and
+  durable sinks through `cybergraph-radio`. Live interrupted transfers resume from
+  BBG coverage; both same-profile and cross-profile paths have linked evidence.
+  The legacy BAO/store path and public protocol cutover remain pending S1/migration.
 - S7: `ApplicationGraph::commit_with_blobs` binds file references into request
   identity and publishes them with the head. Product consumers, FS names and
   legacy content imports remain pending. Existing application-only migration
   refuses content it cannot preserve.
 
-S1, S5, S6 and S8 remain open. Local checksum validation supplies no transferable
-range proof, and these checks establish neither transport integration nor
+S1, S6 and S8 remain open; S5 has a working opt-in transport slice. Local checksum validation supplies no transferable
+range proof. Loopback transport checks and injected failures remain distinct from
 physical power-loss qualification. No complete A row is promoted by this slice.
 
 ## interface map for S2
