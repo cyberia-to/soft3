@@ -14,6 +14,7 @@ instances, explicit proof profiles and independently placed workers.
 
 | specification | scope |
 |---|---|
+| [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
 | [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
 | [terms](terms.md) | shared vocabulary |
