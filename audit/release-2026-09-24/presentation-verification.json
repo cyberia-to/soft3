@@ -1,0 +1,110 @@
+{
+  "verified_at": "2026-09-24T09:28:34.532931+00:00",
+  "renderer_revision": "0650cb7596033adefb0c7b754f15a4cd12e81e41",
+  "candidate_source": "c5cc2077df510610abb7b5bd69675af6048ed724",
+  "release_url": "https://github.com/cyberia-to/soft3/releases/tag/untagged-7f0abcccdaeaa3b61a5e",
+  "release_id": 395482953,
+  "command": [
+    "gh",
+    "api",
+    "--method",
+    "PATCH",
+    "repos/cyberia-to/soft3/releases/395482953",
+    "--input",
+    "/tmp/soft3-draft-presentation.json"
+  ],
+  "changed_fields": [
+    "name",
+    "body"
+  ],
+  "preserved_fields": [
+    "tag_name",
+    "target_commitish",
+    "draft",
+    "prerelease"
+  ],
+  "body_sha256": "e9fc995d5c6c15a803edd7c7ef21e3f6dc4b7587ac959f027b18c5d4d9758439",
+  "github_markdown_render": "6 tables and 1 expandable section verified through POST /markdown",
+  "component_inputs_sha256": "75d14cec4a2b85e8804ace265b544441351daade56859c25945913750429e81e",
+  "component_count": 28,
+  "product_scoped_components_verified": true,
+  "draft_preserved": true,
+  "source_and_tag_preserved": true,
+  "git_tag_exists": false,
+  "asset_identity_and_bytes_unchanged": true,
+  "original_checksums_verified": true,
+  "asset_fingerprints": [
+    {
+      "id": 585507360,
+      "name": "SHA256SUMS",
+      "size": 1109,
+      "digest": "sha256:ae01a7b5edb8aef5cc194f7cf0095d3eac39653de26647daf1b1d998f1a36baf"
+    },
+    {
+      "id": 585507362,
+      "name": "candidate.json",
+      "size": 1980,
+      "digest": "sha256:d5671f389d3865dc42463a946552d8d67ed1b4549ba0a0dbd6b25c66c0254881"
+    },
+    {
+      "id": 585507363,
+      "name": "release-notes.md",
+      "size": 12974,
+      "digest": "sha256:e0ae974442e54375af3388df1742d1aaf10f4ef2ebb43021764a720b039d3023"
+    },
+    {
+      "id": 585507367,
+      "name": "release-validation.json",
+      "size": 21944,
+      "digest": "sha256:43990a901ec341a9583f5c92578b2bd9fc90d37acd5ac442a9ab183e36039809"
+    },
+    {
+      "id": 585507368,
+      "name": "soft3-candidate-20260924.1-aarch64-apple-darwin.tar.gz",
+      "size": 10667,
+      "digest": "sha256:8b5e5528cb4ec985b96dd1c538a7da6f94e241fd66952232afdfd7caaa53b0de"
+    },
+    {
+      "id": 585507379,
+      "name": "soft3-candidate-20260924.1-aarch64-unknown-linux-gnu.tar.gz",
+      "size": 10672,
+      "digest": "sha256:f5d9f34ddbfb2b648a75fb4a317e64cf8a1e8402f5a9ea2d9abad9b271e6768b"
+    },
+    {
+      "id": 585507380,
+      "name": "soft3-candidate-20260924.1-stack.tar.gz",
+      "size": 25158,
+      "digest": "sha256:780e7ee88904e14af022b6767f274eb3b9923fd401e0e85c0517d4b13342b8bb"
+    },
+    {
+      "id": 585507382,
+      "name": "soft3-candidate-20260924.1-x86_64-apple-darwin.tar.gz",
+      "size": 10673,
+      "digest": "sha256:ce07176bf9b91ac31accbb10ee4bb61d6fa8a4c80f4e881248b6284e8359e9f4"
+    },
+    {
+      "id": 585507383,
+      "name": "soft3-dependencies.json",
+      "size": 209552,
+      "digest": "sha256:877f49435433651b7ae5f8eb9f325b1c0bb2b8c8fc777d61683f56d81b1d6be4"
+    },
+    {
+      "id": 585507384,
+      "name": "soft3-candidate-20260924.1-x86_64-unknown-linux-gnu.tar.gz",
+      "size": 10666,
+      "digest": "sha256:1b188fbb3fece6ea031cc66251f7fbe58cade69f39716d10684947b61a1d1698"
+    },
+    {
+      "id": 585507406,
+      "name": "soft3-dependencies.md",
+      "size": 7327,
+      "digest": "sha256:5ff710c5c268634d0a161927334b01ffb1663b9fa3dab00c998417d22616ef43"
+    },
+    {
+      "id": 585507407,
+      "name": "sources.json",
+      "size": 10403,
+      "digest": "sha256:22a03d8e40ec6f255980c7802e23e15b285a073060269e3d52d3a4b69d688f00"
+    }
+  ]
+}

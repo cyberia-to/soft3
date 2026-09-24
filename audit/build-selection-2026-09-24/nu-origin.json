@@ -1,0 +1,87 @@
+{
+  "source": {
+    "name": "nu",
+    "repo": "nushell/nushell",
+    "branch": "main",
+    "rev": "d40e191d8efad32a174d85b2a45f7ba4796cff84",
+    "source": "upstream",
+    "note": "Embedded Nushell 0.110.0, matching Cyb's former vendor/nushell input; pinned in upstream default-branch history.",
+    "url": "https://github.com/nushell/nushell.git",
+    "origin_head_revision": "d7cb4e589ea53bd1a0bb29dd78d63b76fcb59862",
+    "revision": "d40e191d8efad32a174d85b2a45f7ba4796cff84",
+    "available": true,
+    "pin_matches": true
+  },
+  "checkout": "/var/folders/gc/64p7ymwx60144drqltvslckr0000gn/T/soft3-nu-origin-1weph886/sources/nu",
+  "materialize": [
+    {
+      "name": "nu",
+      "result": "green"
+    }
+  ],
+  "manifest_command": [
+    "cargo",
+    "metadata",
+    "--no-deps",
+    "--locked",
+    "--format-version",
+    "1"
+  ],
+  "manifest_exit_code": 0,
+  "manifest_stderr": "",
+  "embedded_packages": [
+    {
+      "name": "nu-engine",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-protocol",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-utils",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-cmd-lang",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-parser",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-command",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-cli",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-std",
+      "version": "0.110.0"
+    },
+    {
+      "name": "nu-cmd-extra",
+      "version": "0.110.0"
+    }
+  ],
+  "engine_revision": "838450ae972740fd2564319bb23ab869d79d92dd",
+  "source_commands": [
+    [
+      "git",
+      "ls-remote",
+      "--symref",
+      "https://github.com/nushell/nushell.git",
+      "HEAD"
+    ],
+    [
+      "gh",
+      "api",
+      "repos/nushell/nushell/compare/d40e191d8efad32a174d85b2a45f7ba4796cff84...d7cb4e589ea53bd1a0bb29dd78d63b76fcb59862",
+      "--jq",
+      ".status"
+    ]
+  ]
+}

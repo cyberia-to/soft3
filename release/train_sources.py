@@ -1,4 +1,5 @@
 """Capture and materialize origin-only release inputs."""
+import base64
 import concurrent.futures
 import hashlib
 import json
@@ -7,6 +8,9 @@ from pathlib import Path
 import re
 import subprocess
 import tomllib
+
+from train_components import capture as component_inputs
+from train_build import contract as build_contract, fetch as fetch_build, stack_sources
 
 PRODUCTS = {
     "soft3": ("cyberia-to/soft3", "crate/Cargo.toml"),
@@ -38,7 +42,7 @@ def write_json(path, value):
 
 def resolve(entry):
     name, repo = entry["name"], entry["repo"]
-    if not re.fullmatch(r"[a-z][a-z0-9_-]*", name) or not re.fullmatch(r"cyberia-to/[\w.-]+", repo):
+    if not re.fullmatch(r"[a-z][a-z0-9_-]*", name) or not re.fullmatch(r"[\w.-]+/[\w.-]+", repo):
         raise ValueError("invalid source repository")
     row = {**entry, "url": f"https://github.com/{repo}.git"}
     try:
@@ -47,8 +51,19 @@ def resolve(entry):
         revision = re.search(r"^([0-9a-f]{40})\s+HEAD$", remote, re.M)
         if not branch or not revision:
             raise ValueError("origin has no default-branch HEAD")
-        row.update(branch=branch[1], revision=revision[1], available=True)
-        row["pin_matches"] = (entry.get("rev") == revision[1] and
+        actual = revision[1]
+        if entry.get("source") == "upstream":
+            # An upstream release is pinned in default-branch history, not updated
+            # whenever its maintainers advance HEAD.
+            if not re.fullmatch(r"[0-9a-f]{40}", entry.get("rev", "")):
+                raise ValueError("upstream source requires a full revision")
+            status = command(["gh", "api", f"repos/{repo}/compare/{entry['rev']}...{actual}", "--jq", ".status"])
+            if status not in {"ahead", "identical"}:
+                raise ValueError("upstream pin is not in default-branch history")
+            row["origin_head_revision"] = actual
+            actual = entry["rev"]
+        row.update(branch=branch[1], revision=actual, available=True)
+        row["pin_matches"] = (entry.get("rev") == actual and
                               entry.get("branch", branch[1]) == branch[1]) if "rev" in entry else None
     except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
         row.update(available=False, error=str(error), pin_matches=False)
@@ -59,20 +74,39 @@ def snapshot(manager, output, component, candidate):
     if command(["git", "status", "--porcelain"], cwd=manager):
         raise ValueError("release manager must use committed clean inputs")
     manifest = manager / "release/phase1.toml"
-    entries = tomllib.loads(manifest.read_text())["sibling"]
-    entries += [{"name": name, "repo": repo, "manifest": path} for name, (repo, path) in PRODUCTS.items()]
-    names = [entry["name"] for entry in entries]
-    if len(names) != len(set(names)):
-        raise ValueError("duplicate source name")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        rows = list(pool.map(resolve, entries))
+    inherited = None
+    if component == "soft3":
+        entries = tomllib.loads(manifest.read_text())["sibling"]
+        repo, path = PRODUCTS["soft3"]
+        entries += [{"name": "soft3", "repo": repo, "manifest": path}]
+        names = [entry["name"] for entry in entries]
+        if len(names) != len(set(names)):
+            raise ValueError("duplicate source name")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            rows = list(pool.map(resolve, entries))
+        phase1_sha256 = digest(manifest)
+    else:
+        # Capture only this product. The stack is inherited byte-for-byte from
+        # one authenticated build; no component origin HEAD is resolved again.
+        repo, path = PRODUCTS[component]
+        product = resolve({"name": component, "repo": repo, "manifest": path})
+        if not product["available"]:
+            raise ValueError(product["error"])
+        encoded = command(["gh", "api", f"repos/{repo}/contents/release/soft3.toml?ref={product['revision']}",
+                           "--jq", ".content"])
+        pin = build_contract(base64.b64decode(encoded).decode())
+        inherited, upstream = fetch_build(pin, output / "soft3-build")
+        rows = [*stack_sources(upstream), product]
+        phase1_sha256 = upstream["phase1_sha256"]
     rows.sort(key=lambda row: row["name"])
     result = {"component": component, "candidate": candidate,
               "manager_revision": command(["git", "rev-parse", "HEAD"], cwd=manager),
-              "phase1_sha256": digest(manifest), "repositories": rows,
+              "phase1_sha256": phase1_sha256, "repositories": rows,
               "changes": [], "change_errors": []}
+    if inherited:
+        result["soft3_build"] = inherited
     for row in rows:
-        if row["name"] not in PRODUCTS or not row["available"]:
+        if row["name"] != component or not row["available"]:
             continue
         try:
             changes = json.loads(command(["gh", "api", f"repos/{row['repo']}/commits/{row['revision']}/pulls",
@@ -110,6 +144,14 @@ def materialize(sources, destination):
         return list(pool.map(fetch, sources["repositories"]))
 
 
+def component_bindings(metadata, repositories):
+    owned = {p["name"]: row["name"] for row in repositories
+             if row["name"] not in {"cyber", "cyb"} for p in row["declared_packages"]}
+    escaped = [{"component": owned[p["name"]], "package": p["name"], "version": p["version"], "source": p["source"]}
+               for p in metadata["packages"] if p["source"] is not None and p["name"] in owned]
+    return {"result": "red" if escaped else "green", "outside_build": escaped}
+
+
 def inventory(sources, directory, output):
     result = json.loads(json.dumps(sources))
     for row in result["repositories"]:
@@ -129,6 +171,7 @@ def inventory(sources, directory, output):
         if row.get("manifest") and (root / row["manifest"]).is_file():
             package = tomllib.loads((root / row["manifest"]).read_text()).get("package", {})
             row["version"] = package.get("version")
+    result["component_inputs"] = component_inputs(sources, directory)
     # Preserve failed package resolution explicitly; source inventory always exists.
     component = sources["component"]
     manifest = directory / component / PRODUCTS[component][1]
@@ -136,6 +179,7 @@ def inventory(sources, directory, output):
         metadata = json.loads(command(["cargo", "metadata", "--locked", "--format-version", "1",
                                        "--manifest-path", str(manifest)], timeout=180))
         by_name = {row["name"]: row for row in result["repositories"]}
+        result["component_bindings"] = component_bindings(metadata, result["repositories"])
         for package in metadata["packages"]:
             if package["source"] is not None:
                 continue

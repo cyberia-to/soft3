@@ -1,0 +1,148 @@
+{
+  "repository": "https://github.com/cyberia-to/nu",
+  "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+  "upstream": {
+    "repository": "https://github.com/nushell/nushell",
+    "revision": "d40e191d8efad32a174d85b2a45f7ba4796cff84"
+  },
+  "public_access": {
+    "command": "Unauthenticated HTTPS GET api.github.com/repos/cyberia-to/nu and raw.githubusercontent.com/cyberia-to/nu/<revision>/crates/nu-protocol/Cargo.toml",
+    "private": false,
+    "default_branch": "main",
+    "manifest_version": "0.110.0"
+  },
+  "origin_resolution": {
+    "name": "nu",
+    "repo": "cyberia-to/nu",
+    "branch": "main",
+    "rev": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "note": "Public Nushell 0.110.0 source for Cyb's embedded libraries; upstream history preserved.",
+    "url": "https://github.com/cyberia-to/nu.git",
+    "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "available": true,
+    "pin_matches": true
+  },
+  "materialization": {
+    "command": "train_sources.materialize with the Nu row from release/phase1.toml; cargo metadata --locked --no-deps --format-version 1",
+    "repository": "cyberia-to/nu",
+    "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "materialize": [
+      {
+        "name": "nu",
+        "result": "green"
+      }
+    ],
+    "embedded_libraries": {
+      "nu-engine": "0.110.0",
+      "nu-protocol": "0.110.0",
+      "nu-utils": "0.110.0",
+      "nu-cmd-lang": "0.110.0",
+      "nu-parser": "0.110.0",
+      "nu-command": "0.110.0",
+      "nu-cli": "0.110.0",
+      "nu-std": "0.110.0",
+      "nu-cmd-extra": "0.110.0"
+    }
+  },
+  "build": {
+    "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "command": "cargo build --locked --bin nu",
+    "result": "green",
+    "rustc": "1.95.0",
+    "warnings": false
+  },
+  "smoke": {
+    "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "commands": [
+      "target/debug/nu --version",
+      "target/debug/nu --no-config-file -c '[1 2 3] | math sum'"
+    ],
+    "output": [
+      "0.110.0",
+      "6"
+    ]
+  },
+  "lint": {
+    "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+    "command": "nu -c 'use toolkit.nu; toolkit fmt --check; toolkit clippy'",
+    "rustc": "1.90.0",
+    "result": "green",
+    "warnings": false
+  },
+  "tests": [
+    {
+      "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+      "command": "cargo test --locked --lib -p nu-protocol -p nu-engine -p nu-parser -p nu-command -p nu-cmd-lang -p nu-cmd-extra -p nu-cli -p nu-std -p nu-utils",
+      "result": "green",
+      "passed": 714,
+      "failed": 0,
+      "ignored": 0,
+      "output_summary": [
+        "test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 459 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.62s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 122 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "revision": "f3962d5fbfc25e3a4cbfb673d9d1356730b4700e",
+      "command": "cargo test --locked --features nu-cli/plugin -p nu-protocol -p nu-engine -p nu-parser -p nu-command -p nu-cmd-lang -p nu-cmd-extra -p nu-cli -p nu-std -p nu-utils",
+      "result": "green",
+      "passed": 3359,
+      "failed": 0,
+      "ignored": 44,
+      "output_summary": [
+        "test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+        "test result: ok. 144 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.14s",
+        "test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s",
+        "test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 459 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s",
+        "test result: ok. 2093 passed; 0 failed; 35 ignored; 0 measured; 0 filtered out; finished in 17.98s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 239 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 127 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+        "test result: ok. 7 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    }
+  ],
+  "platform": "aarch64-apple-darwin",
+  "release_engine": {
+    "base_revision": "145a3a2ca8319e29461cf559ca286d7e8d91c59a",
+    "scope": "Changes committed with this receipt",
+    "command": "python3 -m unittest discover -s release -p 'test_*.py' -v",
+    "passed": 35,
+    "source_sha256": {
+      "release/train_gates.py": "932b5822aa6d8df6e1a84d2d1d0e086e78b3dbcd0ac8ab8ff5482f3da49ff659",
+      "release/test_train.py": "47a53472635eba0a5795f07b06e028f8cfef260dfa9d0d42e201e63bcb68f1be"
+    }
+  }
+}
