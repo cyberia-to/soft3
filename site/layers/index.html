@@ -4,198 +4,81 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>soft3 — the layers</title>
-        <meta name="description" content="soft3 as a ladder: 0 substrate (strata, hemera, nox), 1 language (trident), 2 warrior (joy), 3 node (one neuron, one book), 4 network (with eidos), 5 body — each layer knows only the layers below it, each substrate enters once, each layer ships alone" />
+        <meta name="description" content="soft3 as a ladder: 0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body. a layer knows only the layers below it; a substrate enters once; each layer ships alone." />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
         <link href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" rel="icon" />
         <style>
-            :root { --cream: #fff8f0; --mint: #7dffc4; }
+            :root { --cream: #fff8f0; --mint: #7dffc4; --bg: #06100a; }
             * { box-sizing: border-box; }
-            body {
-                margin: 0;
-                background: #06100a;
-                color: var(--cream);
-                font-family: Play, system-ui, sans-serif;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            header {
-                width: 100%;
-                max-width: 1080px;
-                display: flex;
-                align-items: baseline;
-                gap: 1rem;
-                padding: 1.1rem 1.4rem 0;
-                flex-wrap: wrap;
-            }
-            header a { color: var(--mint); text-decoration: none; }
-            header a:hover { text-decoration: underline; }
-            h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
-            h1 em { color: var(--mint); font-style: normal; }
-            .sub { font-size: 0.72rem; color: rgba(255, 248, 240, 0.6); }
-            svg[role="img"] { width: min(96vw, 1040px); height: auto; display: block; }
-            .seat { cursor: pointer; }
-            .seat:hover rect { filter: brightness(1.18); }
-            .seat:hover { filter: brightness(1.12); }
-            .stages {
-                width: 100%;
-                max-width: 1080px;
-                display: flex;
-                justify-content: center;
-                gap: 0.7rem;
-                padding: 0.9rem 1.4rem 0;
-                flex-wrap: wrap;
-            }
-            .stages button {
-                font-family: Play, system-ui, sans-serif;
-                display: flex;
-                align-items: center;
-                gap: 0.55rem;
-                background: rgba(255, 248, 240, 0.04);
-                border: 1px solid rgba(255, 248, 240, 0.22);
-                color: var(--cream);
-                border-radius: 999px;
-                padding: 0.45rem 1.05rem;
-                font-size: 0.85rem;
-                cursor: pointer;
-                transition: border-color 0.15s ease, background 0.15s ease;
-            }
-            .stages button:hover { border-color: rgba(255, 248, 240, 0.55); }
-            .stages button[aria-selected="true"] {
-                border-color: var(--mint);
-                background: rgba(125, 255, 196, 0.1);
-            }
-            .stages svg { flex: none; }
-            .stages b { font-weight: 700; }
-            .stages span {
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.66rem;
-                color: rgba(255, 248, 240, 0.55);
-            }
-            .stages i {
-                font-style: normal;
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.62rem;
-            }
-            .stages .ok { color: var(--mint); }
-            .stages .warn { color: rgba(255, 178, 120, 0.9); }
-            .stageinfo {
-                margin: 0.45rem 0 0;
-                font-size: 0.74rem;
-                color: rgba(255, 248, 240, 0.62);
-                text-align: center;
-                max-width: 44rem;
-                padding: 0 1.4rem;
-            }
-            .hint {
-                margin: 0.2rem 0 0;
-                font-size: 0.68rem;
-                color: rgba(125, 255, 196, 0.55);
-                text-align: center;
-            }
-            text { font-family: Play, system-ui, sans-serif; }
-            .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
-            #detail {
-                width: min(96vw, 980px);
-                margin: 0.4rem 0 1rem;
-                background: rgba(255, 248, 240, 0.035);
-                border: 1px solid rgba(255, 248, 240, 0.12);
-                border-left-width: 4px;
-                border-radius: 14px;
-                padding: 1rem 1.3rem 1.1rem;
-            }
-            #detail header { padding: 0; display: flex; align-items: baseline; gap: 0.9rem; max-width: none; }
-            #detail h2 { margin: 0; font-size: 1.15rem; letter-spacing: 0.08em; }
-            #detail .prop { font-size: 0.8rem; color: rgba(255, 248, 240, 0.7); }
-            #detail .x {
-                margin-left: auto; background: none; border: none; color: rgba(255,248,240,0.5);
-                font-size: 1rem; cursor: pointer; font-family: inherit;
-            }
-            #detail .x:hover { color: var(--cream); }
-            #detail .flow {
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.74rem; line-height: 1.7;
-                color: rgba(255, 248, 240, 0.8);
-                margin: 0.7rem 0;
-            }
-            #detail .flow b { color: var(--cream); }
-            #detail .flow i { font-style: normal; color: var(--mint); }
-            #detail table {
-                width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 0.3rem 0 0.5rem;
-            }
-            #detail td {
-                padding: 0.32rem 0.6rem 0.32rem 0;
-                border-top: 1px solid rgba(255, 248, 240, 0.08);
-                color: rgba(255, 248, 240, 0.75); vertical-align: top;
-            }
-            #detail td.c { font-weight: 700; color: var(--cream); white-space: nowrap; }
-            #detail td.v {
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                color: var(--mint); white-space: nowrap;
-            }
-            #detail td.st {
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.68rem; white-space: nowrap; text-align: right;
-            }
-            #detail td.st.live { color: var(--mint); }
-            #detail td.st.published, #detail td.st.unwired { color: rgba(255, 213, 128, 0.9); }
-            #detail td.st.blocked, #detail td.st.dormant { color: rgba(255, 140, 120, 0.9); }
-            #detail td.st.spec { color: rgba(255, 248, 240, 0.45); }
-            #detail .note { font-size: 0.74rem; color: rgba(255, 248, 240, 0.6); margin: 0.4rem 0 0; line-height: 1.55; }
-            .foot {
-                padding: 0 1.4rem 1.4rem;
-                font-size: 0.68rem;
-                color: rgba(255, 248, 240, 0.5);
-                text-align: center;
-                max-width: 46rem;
-                line-height: 1.5;
-            }
-            .foot a { color: var(--mint); }
-        </style>
-        <style>
-
-            .ladder { width: min(96vw, 1040px); display: flex; flex-direction: column; gap: 0.35rem; padding-top: 0.6rem; }
-            .law { margin: 0 0 0.6rem; text-align: center; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mint); }
-            .band { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.2rem; padding: 0.9rem 1.2rem; border: 1px solid rgba(125,255,196,0.45); border-radius: 14px; background: rgba(125,255,196, calc(0.04 + 0.025 * (5 - var(--k)))); color: var(--cream); text-decoration: none; }
-            .band:hover { filter: brightness(1.15); }
-            .left { display: flex; gap: 1rem; align-items: flex-start; }
-            .num { font-family: "JetBrains Mono", monospace; font-size: 2rem; color: var(--mint); line-height: 1; min-width: 2.2rem; }
-            .name { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
-            .prod { font-family: "JetBrains Mono", monospace; font-size: 0.86rem; color: var(--mint); margin-top: 0.15rem; }
-            .does { font-size: 0.84rem; color: rgba(255,248,240,0.8); margin-top: 0.35rem; line-height: 1.45; }
-            .note { font-size: 0.74rem; color: rgba(255,248,240,0.5); margin-top: 0.3rem; }
-            .right { font-size: 0.8rem; }
-            .intro { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,248,240,0.5); margin-bottom: 0.3rem; }
-            .right { display: flex; flex-wrap: wrap; gap: 0.35rem 0.5rem; align-content: flex-start; } .right .intro { width: 100%; } .right div:not(.intro) { border: 1px solid rgba(125,255,196,0.35); border-radius: 999px; padding: 0.1rem 0.55rem; line-height: 1.5; }
-            .right code { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: var(--cream); }
-            .right span { color: rgba(255,248,240,0.6); }
-            .arrow { text-align: right; padding-right: 1.4rem; color: var(--mint); font-size: 0.8rem; line-height: 0.9; }
-            @media (max-width: 720px) { .band { grid-template-columns: 1fr; } .right div:not(.intro) { grid-template-columns: 8rem 1fr; } }
-
-            .state { width: min(96vw, 1040px); margin-top: 1.4rem; padding: 1rem 1.2rem; border: 1px dashed rgba(125,255,196,0.4); border-radius: 14px; }
-            .state-title { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mint); margin-bottom: 0.7rem; }
-            .state-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.6rem; }
-            .state-row div { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.72rem; line-height: 1.4; color: rgba(255,248,240,0.75); position: relative; }
-            .state-row div b { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: var(--cream); font-weight: 400; }
-            .state-row div code { font-family: "JetBrains Mono", monospace; color: var(--cream); font-size: 0.7rem; }
-            .state-row div:not(:last-child)::after { content: "→"; position: absolute; right: -0.55rem; top: 0; color: var(--mint); }
-            .state-note { margin: 0.8rem 0 0; font-size: 0.78rem; color: rgba(255,248,240,0.7); line-height: 1.5; }
-            @media (max-width: 900px) { .state-row { grid-template-columns: 1fr 1fr; } .state-row div::after { content: "" !important; } }
-            .rules { max-width: 1040px; padding: 1rem 1.4rem 2rem; font-size: 0.88rem; line-height: 1.6; color: rgba(255,248,240,0.8); }
-            .rules b { color: var(--mint); font-weight: 400; }
-            .rules code { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; color: var(--cream); }
+            html, body { height: 100%; }
+            body { margin: 0; background: var(--bg); background-image: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(125,255,196,0.10), transparent); color: var(--cream); font-family: Play, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
+            header { width: min(96vw, 1080px); display: flex; align-items: baseline; gap: 1rem; padding: 1rem 0 0.2rem; }
+            header h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
+            header h1 em { color: var(--mint); font-style: normal; }
+            header nav { margin-left: auto; font-size: 0.72rem; }
+            header nav a { color: var(--mint); text-decoration: none; }
+            header nav a:hover { text-decoration: underline; }
+            .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
+            main { width: min(96vw, 1080px); display: flex; flex-direction: column; gap: 0.45rem; padding-bottom: 1rem; flex: 1; }
+            .band { display: grid; grid-template-columns: 3.2rem 1fr 1.1fr; gap: 0.9rem; align-items: center; padding: 0.55rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(4% + var(--k) * 1.2%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
+            .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2.1rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
+            .who h2 { margin: 0; font-size: 1.15rem; line-height: 1.1; }
+            .who .prod { margin: 0.1rem 0 0; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; color: var(--mint); }
+            .who .does { margin: 0.25rem 0 0; font-size: 0.74rem; line-height: 1.35; color: rgba(255,248,240,0.72); }
+            .deps { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
+            .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
+            i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
+            i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
+            i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
+            i[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
+            i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
+            i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
+            i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
+            footer { width: min(96vw, 1080px); display: flex; gap: 0.7rem; justify-content: center; padding: 0 0 0.9rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
+            footer i { font-style: normal; width: 0.55rem; height: 0.55rem; border-radius: 999px; display: inline-block; background: var(--fc); margin-right: 0.25rem; vertical-align: middle; }
+            @media (max-width: 760px) { .band { grid-template-columns: 2.4rem 1fr; } .deps { grid-column: 1 / -1; justify-content: flex-start; } html, body { height: auto; } }
         </style>
     </head>
     <body>
         <header>
             <h1>soft3 · the <em>layers</em></h1>
-                        <span class="sub" style="margin-left:auto"><a href="/">home</a> · <a href="/scheme/">scheme</a> · <a href="/chart/">chart</a></span>
+            <nav><a href="/">home</a> · <a href="/scheme/">scheme</a> · <a href="/chart/">chart</a></nav>
         </header>
-        
-        <div class="ladder"><p class="law">a layer knows only the layers below it · a substrate enters once · each layer ships alone</p><a class="band" href="https://cyber.page/cyb/" style="--k:5"><div class="left"><div class="num">5</div><div><div class="name">body</div><div class="prod">cyb · cy · true-cyber · optica</div><div class="does">read · write · render — a neuron born as a record in a root network: it holds keys, talks to a node, shows what is linked, publishes the graph</div></div></div><div class="right"><div class="intro">introduces</div><div><code>file · spark</code></div><div><code>prysm · mir · rune</code></div><div><code>evy</code></div><div><code>soma · glia</code></div><div><code>honeycrisp</code></div><div><code>nu</code></div><div><code>optica</code></div><div><code>fs</code></div><div><code>ward</code></div><div><code>neural</code></div><div><code>sigma</code></div><div><code>wysm</code></div><div><code>kern</code></div><div><code>lytics</code></div></div></a><div class="arrow">▼</div><a class="band" href="https://cyber.page/launch/" style="--k:4"><div class="left"><div class="num">4</div><div><div class="name">network</div><div class="prod">bostrom · pussy</div><div class="does">a root book with a token that other books register into, the nodes that agree on its root, and the proofs that the rules they agree on are sound</div></div></div><div class="right"><div class="intro">introduces</div><div><code>bostrom</code></div><div><code>space-pussy</code></div><div><code>cybernode</code></div><div><code>eidos</code></div></div></a><div class="arrow">▼</div><a class="band" href="https://cyber.page/soft3/" style="--k:3"><div class="left"><div class="num">3</div><div><div class="name">node</div><div class="prod">soft3 node — the composition of layers 0–3; one neuron, one book</div><div class="does">admit · order · finalize · settle · keep — a chain from its first block: the neuron's own genesis, its signals as state, its focus as reward, its keys in custody</div></div></div><div class="right"><div class="intro">introduces</div><div><code>neuron</code></div><div><code>cybergraph</code></div><div><code>foculus</code></div><div><code>tru</code></div><div><code>tok</code></div><div><code>mudra</code></div><div><code>vault</code></div><div><code>tade</code></div><div><code>radio</code></div><div><code>inf</code></div></div></a><div class="arrow">▼</div><a class="band" href="https://cyber.page/cyb/joy/" style="--k:2"><div class="left"><div class="num">2</div><div><div class="name">warrior</div><div class="prod">joy</div><div class="does">run · prove · verify — executes the formula on nox and proves it with zheng; one warrior per machine</div></div></div><div class="right"><div class="intro">introduces</div><div><code>trident</code></div><div><code>lens</code></div><div><code>zheng</code></div><div><code>bbg</code></div></div></a><div class="arrow">▼</div><a class="band" href="https://cyber.page/neural/trident/" style="--k:1"><div class="left"><div class="num">1</div><div><div class="name">language</div><div class="prod">trident · silicon</div><div class="does">compile · audit · hash · equiv — .tri → .nox with the cost report before you run; silicon emits the same formula for hardware</div></div></div><div class="right"><div class="intro">introduces</div><div><code>substrate</code></div></div></a><div class="arrow">▼</div><a class="band" href="https://cyber.page/soft3/nox/" style="--k:0"><div class="left"><div class="num">0</div><div><div class="name">substrate</div><div class="prod">strata · hemera · nox</div><div class="does">field · hash · machine — what every layer computes in</div></div></div><div class="right"><div class="intro">introduces</div><div><code>strata-nebu</code></div><div><code>cyber-hemera</code></div><div><code>cyber-nox</code></div></div></a></div>
-            </body>
+        <p class="law">a layer knows only the layers below it · a substrate enters once · each layer ships alone</p>
+        <main>
+            <section class="band" style="--k:5">
+                <div class="num">5</div>
+                <div class="who"><h2>body</h2><p class="prod">cyb · cy · true-cyber · optica</p><p class="does">read · write · render — a neuron born as a record in a root: holds keys, talks to a node, shows what is linked, publishes the graph</p></div>
+                <div class="deps"><i data-f="mass">file</i><i data-f="play">spark</i><i data-f="play">prysm</i><i data-f="play">mir</i><i data-f="word">rune</i><i data-f="play">evy</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="form">honeycrisp</i><i data-f="play">nu</i><i data-f="play">optica</i><i data-f="mass">fs</i><i data-f="space">ward</i><i data-f="word">neural</i><i data-f="life">sigma</i><i data-f="work">wysm</i><i data-f="work">kern</i><i data-f="play">lytics</i></div>
+            </section><section class="band" style="--k:4">
+                <div class="num">4</div>
+                <div class="who"><h2>network</h2><p class="prod">bostrom · pussy</p><p class="does">a root book with a token that other books register into, the nodes that agree on its root, and the proofs that the rules are sound</p></div>
+                <div class="deps"><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="space">cybernode</i><i data-f="work">eidos</i></div>
+            </section><section class="band" style="--k:3">
+                <div class="num">3</div>
+                <div class="who"><h2>node</h2><p class="prod">soft3 node — the composition of layers 0–3; one neuron, one book</p><p class="does">admit · order · finalize · settle · keep — signals become state, focus becomes reward, keys in custody</p></div>
+                <div class="deps"><i data-f="mass">neuron</i><i data-f="mass">cybergraph</i><i data-f="life">foculus</i><i data-f="life">tru</i><i data-f="mass">tok</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="space">tade</i><i data-f="space">radio</i><i data-f="word">inf</i></div>
+            </section><section class="band" style="--k:2">
+                <div class="num">2</div>
+                <div class="who"><h2>warrior</h2><p class="prod">joy</p><p class="does">run · prove · verify — executes the formula on nox, proves it with zheng; one warrior per machine</p></div>
+                <div class="deps"><i data-f="word">trident</i><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
+            </section><section class="band" style="--k:1">
+                <div class="num">1</div>
+                <div class="who"><h2>language</h2><p class="prod">trident · silicon</p><p class="does">compile · audit · hash · equiv — .tri → .nox with the cost report before you run</p></div>
+                <div class="deps"><i data-f="form">nebu</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
+            </section><section class="band" style="--k:0">
+                <div class="num">0</div>
+                <div class="who"><h2>substrate</h2><p class="prod">strata · hemera · nox</p><p class="does">field · hash · machine — what every layer computes in</p></div>
+                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
+            </section>
+        </main>
+        <footer>
+            <span><i data-f="form"></i>form</span><span><i data-f="mass"></i>mass</span><span><i data-f="space"></i>space</span><span><i data-f="life"></i>life</span><span><i data-f="word"></i>word</span><span><i data-f="work"></i>work</span><span><i data-f="play"></i>play</span>
+            <span style="margin-left:1rem;text-transform:none;letter-spacing:0">registry: release/components.toml</span>
+        </footer>
+    </body>
 </html>
