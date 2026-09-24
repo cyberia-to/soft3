@@ -270,5 +270,6 @@ building a new component is specializing the same substrate to a new job. it com
 | [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
 | [[soft3/docs/polynomial-proof-system\|polynomial proof system]] | the technical companion to "one form/one proof" above — the five operations (commit, open, verify, fold, identify), the numbers behind them, and what they make possible |
+| [[soft3/docs/polynomial-state-across-the-stack\|polynomial state across the stack]] | the March 2026 cascade of the one-polynomial decision through the three trinity pillars — quantum, privacy, AI — kept whole as an explainer, each projection marked measured, refuted as stated, or open |
 
 see [[soft3]] for the component stack and the troika compass.
