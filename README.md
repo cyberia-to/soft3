@@ -28,6 +28,12 @@ separate selections with explicit compatibility rules.
 
 [All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md)
 
+## releases
+
+[Release train](specs/releases.md) owns stack qualification for soft3, cyber and
+cyb. [GitHub Releases](https://github.com/cyberia-to/soft3/releases) holds draft
+candidates with source inventories, platform binaries and gate receipts.
+
 ## install
 
 ```bash

@@ -58,3 +58,17 @@ tracked paths must be valid on NTFS. never use `<>:"/\|?*`, trailing `.` or spac
 3. zheng accumulator size not yet stabilised (blocks checkpoint format)
 
 scaffold readmes and command stubs are welcome. full implementations wait for blockers to resolve.
+
+## release gates
+
+The shared contract is `specs/releases.md`. `release/phase1.toml` owns sibling
+pins; `release/train.py` executes the gates listed there. The Friday workflow
+creates drafts only. Product workflows pin this implementation by full revision.
+
+Before changing the engine, run:
+`python3 -m unittest discover -s release -p 'test_*.py' -v`.
+Candidate gates are `origin-checkouts`, `phase1-pins`, `package-resolution`,
+`source-inputs-unchanged`, `stack-*`, `conformance-snapshot`, `soft3-tests`,
+`soft3-release`, and `node-status`. Products add `soft3-dependency` and their
+application gates. Missing implementations and failed gates remain red evidence.
+Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`.
