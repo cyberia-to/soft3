@@ -1,0 +1,17 @@
+name: Release engine
+on:
+  pull_request:
+    paths: ['release/**', '.github/workflows/candidate.yml', '.github/workflows/release-*.yml']
+  push:
+    branches: [main]
+    paths: ['release/**', '.github/workflows/candidate.yml', '.github/workflows/release-*.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s release -p 'test_*.py' -v

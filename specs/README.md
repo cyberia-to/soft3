@@ -14,6 +14,7 @@ instances, explicit proof profiles and independently placed workers.
 
 | specification | scope |
 |---|---|
+| [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
 | [neuron](neuron.md) | one subject identity, installed programs, authority and compatibility |
 | [identity consumers](identity-consumers.md) | native/foreign SDK, transport and historical compatibility boundaries |

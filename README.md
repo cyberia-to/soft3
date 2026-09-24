@@ -36,6 +36,12 @@ records completed packages and remaining acceptance gates; the
 [inventory](audit/neuron-cell/README.md) preserves the original scan. This is
 source-checkout evidence, separate from published releases and deployed nodes.
 
+## releases
+
+[Release train](specs/releases.md) owns stack qualification for soft3, cyber and
+cyb. [GitHub Releases](https://github.com/cyberia-to/soft3/releases) holds draft
+candidates with source inventories, platform binaries and gate receipts.
+
 ## install
 
 Build the migration from compatible sibling checkouts with Rust 1.95+:
