@@ -42,6 +42,7 @@ fn main() {
         }
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
+        "genesis" => cmd_genesis(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -227,6 +228,57 @@ fn cmd_node(args: &[String]) {
     }
 }
 
+fn cmd_genesis(args: &[String]) {
+    let mut home = node::default_home();
+    let mut file: Option<PathBuf> = None;
+    let mut seen_file = false;
+    let mut seen_home = false;
+    let parsed = (|| -> Result<(), &'static str> {
+        if args.first().map(String::as_str) != Some("install") {
+            return Err("expected install");
+        }
+        let mut i = 1;
+        while i < args.len() {
+            match args[i].as_str() {
+                "--file" if !seen_file => {
+                    i += 1;
+                    file = Some(PathBuf::from(args.get(i).ok_or("missing file")?));
+                    seen_file = true;
+                }
+                "--home" if !seen_home => {
+                    i += 1;
+                    home = PathBuf::from(args.get(i).ok_or("missing home")?);
+                    seen_home = true;
+                }
+                _ => return Err("unknown or duplicate argument"),
+            }
+            i += 1;
+        }
+        Ok(())
+    })();
+    let file = match (parsed, file) {
+        (Ok(()), Some(file)) => file,
+        (Ok(()), None) => {
+            eprintln!("missing --file; usage: soft3 genesis install --file PATH [--home DIR]");
+            std::process::exit(2);
+        }
+        (Err(e), _) => {
+            eprintln!("{e}; usage: soft3 genesis install --file PATH [--home DIR]");
+            std::process::exit(2);
+        }
+    };
+    match node::install_genesis(&home, &file) {
+        Ok(chain_id) => println!(
+            "genesis installed; chain_id {chain_id}; home {}",
+            home.display()
+        ),
+        Err(e) => {
+            eprintln!("genesis install failed: {e}");
+            std::process::exit(1);
+        }
+    }
+}
+
 /// Real-environment hostname fallback: `$HOSTNAME`, else `$HOST`, else the
 /// literal default. Thin wrapper over [`hostname_fallback_from`] so the
 /// fallback chain itself is testable without mutating process-wide env vars.
@@ -273,6 +325,7 @@ fn print_help() {
     println!("  soft3 status              # alias of sync");
     println!("  soft3 network [name]      # print endpoints");
     println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+    println!("  soft3 genesis install --file PATH [--home DIR]  # adopt a genesis before first boot");
     println!("  soft3 manifesto");
     println!("  soft3 version");
     println!();
