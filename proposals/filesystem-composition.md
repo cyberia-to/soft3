@@ -15,8 +15,8 @@ and replicas. [[bbg]] stores the data, [[radio]] transports it.
 This is the proposed composition. Implementation findings are in the
 [source audit](../audit/storage/filesystem-composition-2026-09-27/README.md).
 
-Owner contracts: [[soft3/file/specs/readme|File specification]] and
-[[soft3/fs/specs/readme|FS specification]]. The
+Owner contracts: [[soft3/file/specs|File specification]] and
+[[soft3/fs/specs|FS specification]]. The
 [[soft3/fs/roadmap/extraction|extraction plan]] maps existing code to its owner
 and defines when the replaced implementation must be deleted.
 
