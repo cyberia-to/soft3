@@ -31,6 +31,8 @@ separate selections with explicit compatibility rules.
 [Filesystem composition — proposal](proposals/filesystem-composition.md):
 FS as a reusable component embedded in Cyb, shared BBG storage, optional Cyber
 hosting and Radio transport. Includes the source audit and delivery sequence.
+Owner contracts: [[soft3/file/specs/readme|File]] · [[soft3/fs/specs/readme|FS]] ·
+[[soft3/fs/roadmap/extraction|Move and delete plan]].
 
 ## releases
 

@@ -15,6 +15,11 @@ and replicas. [[bbg]] stores the data, [[radio]] transports it.
 This is the proposed composition. Implementation findings are in the
 [source audit](../audit/storage/filesystem-composition-2026-09-27/README.md).
 
+Owner contracts: [[soft3/file/specs/readme|File specification]] and
+[[soft3/fs/specs/readme|FS specification]]. The
+[[soft3/fs/roadmap/extraction|extraction plan]] maps existing code to its owner
+and defines when the replaced implementation must be deleted.
+
 ## File, FS and Hemera
 
 | Repository | Owns |
@@ -160,9 +165,10 @@ Continue the existing
 4. Qualify synchronization, retention, restore and patches/channels; complete
    Radio storage removal after consumer and migration parity.
 
-The current catalog provides local serialized history. Patch/channel merge,
-complete replication and canonical file identity/range-proof selection remain
-open. Crypto qualification and filesystem semantics retain their separate owners.
+The owner specs now define names, versions, conservative patch/channel behavior
+and migration compatibility. The current catalog provides local serialized
+history; implementing the wider contract, complete replication and canonical
+identity/range-proof qualification remain delivery work.
 
 Acceptance: import a file, rename, edit, inspect earlier versions, retry after
 an interrupted response, restart, replicate and restore names plus content after
