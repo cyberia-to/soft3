@@ -50,30 +50,30 @@ continues to govern worker placement and proof profiles.
 ## Ownership and dependency direction
 
 ```svgbob
- +------------------------------------------------------------------+
- | Cyb: Memory / Brain / Now / Com / cy                              |
- | Neuron file acts / scoped SDK calls                              |
- +--------------------------------+---------------------------------+
++------------------------------------------------------------------+
+| Cyb: Memory, Brain, Now, Com, cy                                 |
+| Neuron file acts, scoped SDK calls                               |
++---------------------------------+--------------------------------+
                                   |
                                   v
- +------------------------------------------------------------------+
- | FS: names / channels / patches / revisions                       |
- | Current authority: Ward grants / Vault operations / Mudra        |
- +------------------+-----------------------------+-----------------+
-                    |                             |
-                    v                             v
- +------------------------------------+  +--------------------------+
- | Cybergraph                         |  | Foculus                  |
- | validate / publish / history       |  | reconcile / availability |
- | query / Inf views at pinned state  |<-+ shared content ports     |
- +------------------+-----------------+  +------------+-------------+
-                    |                                 |
-                    v                                 v
- +------------------------------------+  +--------------------------+
- | BBG                                |  | Radio                    |
- | one database owner per store       |  | authorized transport     |
- | content / indexes / retention      |  | injected sources / sinks |
- +------------------------------------+  +--------------------------+
++------------------------------------------------------------------+
+| FS: names, channels, patches, revisions                          |
+| Current authority: Ward grants, Vault operations, Mudra          |
++------------------+---------------------------------+-------------+
+                   |                                 |
+                   v                                 v
++------------------------------------+  +--------------------------+
+| Cybergraph                         |  | Foculus                  |
+| validate, publish, history         |  | reconcile, availability  |
+| query, Inf views at pinned state   |<-+ shared content ports     |
++------------------------------------+  +--------------------------+
+                   |                                 |
+                   v                                 v
++------------------------------------+  +--------------------------+
+| BBG                                |  | Radio                    |
+| one database owner per store       |  | authorized transport     |
+| content, indexes, retention        |  | injected sources, sinks  |
++------------------------------------+  +--------------------------+
 ```
 
 Arrows show service use, not a requirement for each module to depend on every
