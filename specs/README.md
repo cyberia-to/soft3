@@ -22,6 +22,7 @@ instances, explicit proof profiles and independently placed workers.
 | [languages](languages.md) | language contracts |
 | [filenames](filenames.md) | portable source-tree paths |
 | [vault composition](vault.md) | first storage/sync use case; secret custody, complete replicas and device-loss recovery |
+| [routing](routing.md) | the wire obeys the graph: greedy forwarding by locus over FOLLOW links, gravity-pressure fallback; radio stays transport, tru never dials |
 
 Soft3 owns composition invariants. Trident, warriors, proof systems and node
 products own their specialized interfaces. [Foundations](../docs/README.md)
