@@ -49,18 +49,31 @@ continues to govern worker placement and proof profiles.
 
 ## Ownership and dependency direction
 
-```mermaid
-flowchart TD
-    views["Cyb: Memory · Brain · Now · Com · cy"] --> fs["FS: names · channels · patches · revisions"]
-    acts["Neuron file acts · scoped SDK calls"] --> fs
-    authority["Ward grants · Vault operations · Mudra verification"] --> fs
-    fs --> graph["Cybergraph: validate · publish · history · query"]
-    fs --> sync["Foculus: reconciliation and availability mechanisms"]
-    graph --> bbg["BBG: one database owner per store"]
-    sync --> ports["Shared application/content ports"]
-    ports --> graph
-    sync --> radio["Radio: authorized transport"]
-    inf["Inf: queries over the selected FS state"] --> graph
+```svgbob
+ +------------------------------------------------------------------+
+ | Cyb: Memory / Brain / Now / Com / cy                              |
+ | Neuron file acts / scoped SDK calls                              |
+ +--------------------------------+---------------------------------+
+                                  |
+                                  v
+ +------------------------------------------------------------------+
+ | FS: names / channels / patches / revisions                       |
+ | Current authority: Ward grants / Vault operations / Mudra        |
+ +------------------+-----------------------------+-----------------+
+                    |                             |
+                    v                             v
+ +------------------------------------+  +--------------------------+
+ | Cybergraph                         |  | Foculus                  |
+ | validate / publish / history       |  | reconcile / availability |
+ | query / Inf views at pinned state  |<-+ shared content ports     |
+ +------------------+-----------------+  +------------+-------------+
+                    |                                 |
+                    v                                 v
+ +------------------------------------+  +--------------------------+
+ | BBG                                |  | Radio                    |
+ | one database owner per store       |  | authorized transport     |
+ | content / indexes / retention      |  | injected sources / sinks |
+ +------------------------------------+  +--------------------------+
 ```
 
 Arrows show service use, not a requirement for each module to depend on every
