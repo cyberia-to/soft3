@@ -719,12 +719,12 @@ state = "files rendered as a file system: table or tiles, tap to read — cyb/pa
 name = "voice"
 kind = "part"
 repo = "cyb"
-verb = "speak"
-facet = "play"
-layer = 8
-part_of = "cyb"
+verb = "utter"
+facet = "life"
+layer = 6
+part_of = "cy"
 phase = "1"
-state = "speech: the robot heard and speaking — cyb/parts/voice.md"
+state = "the ability to form a signal and hand it to sense to send; not sound — cyb/parts/voice.md"
 
 [[component]]
 name = "vision"
@@ -765,10 +765,10 @@ kind = "part"
 repo = "cyb"
 verb = "define"
 facet = "life"
-layer = 6
-part_of = "cy"
+layer = 4
+part_of = "cybergraph"
 phase = "1"
-state = "the main config: which model, which dialect, what it may do unasked — cyb/parts/soul.md"
+state = "the declaration attached to the name: which model answers, in which dialects, what it may do unasked; a file in the book that soma executes and ward enforces — cyb/parts/soul.md"
 
 [[component]]
 name = "sense"
