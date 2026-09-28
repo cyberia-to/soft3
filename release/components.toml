@@ -219,8 +219,8 @@ kind = "crate"
 repo = "mudra"
 verb = "encrypt"
 facet = "space"
-layer = 4
-part_of = "cybergraph"
+layer = 5
+part_of = "neural"
 phase = "1"
 state = "live"
 
@@ -263,8 +263,8 @@ kind = "crate"
 repo = "inf"
 verb = "query"
 facet = "word"
-layer = 4
-part_of = "cybergraph"
+layer = 5
+part_of = "neural"
 phase = "1"
 state = "live"
 
