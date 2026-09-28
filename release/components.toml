@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung on soft3.org/layers — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (graph) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (browser) · 9 cyber (supernet) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host, drawn outlined; infrastructure = ops drawn the same way; a component with no layer is off the ladder; the law: no component depends on a rung above its own; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung on soft3.org/layers — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (graph) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (browser) · 9 cyber (supernet) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -519,8 +519,8 @@ kind = "crate"
 repo = "sigma"
 verb = "evaluate"
 facet = "life"
-layer = 6
-part_of = "cy"
+layer = 4
+part_of = "cybergraph"
 phase = "after"
 state = "spec"
 
@@ -541,7 +541,9 @@ kind = "crate"
 repo = "wysm"
 verb = "sandbox"
 facet = "work"
-off_ladder = "legacy web compatibility; not a soft3 need"
+layer = 8
+part_of = "cyb"
+machinery = "cyb"
 phase = "after"
 state = "dormant"
 

@@ -23,7 +23,7 @@
             header nav a:hover { text-decoration: underline; }
             .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
             main { width: min(96vw, 1080px); display: flex; flex-direction: column; justify-content: space-evenly; gap: 0.4rem; padding-bottom: 0.5rem; flex: 1; }
-            .band { display: grid; grid-template-columns: 3rem 3.6rem 1fr 1.3fr; gap: 1rem; align-items: center; min-height: 4.4rem; padding: 0.5rem 1.1rem 0.5rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(3% + var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .band { display: grid; grid-template-columns: 3rem 3.6rem 1fr 1.3fr; gap: 1rem; align-items: center; min-height: 4.4rem; padding: 0.5rem 1.1rem 0.5rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(14% - var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
             .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
             .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2rem; align-self: center; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
             .ico { font-size: 2rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); } .ico .glyph { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif; color: var(--mint); font-size: 2.6rem; }
@@ -32,7 +32,6 @@
             .who .does { margin: 0.3rem 0 0; font-size: 0.82rem; line-height: 1.3; color: rgba(255,248,240,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .deps { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: flex-end; align-content: center; }
             .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
-            .deps i.m { background: transparent; color: color-mix(in srgb, var(--fc) 55%, white); border: 1px solid color-mix(in srgb, var(--fc) 55%, white); }
             i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
             i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
             i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
@@ -51,56 +50,65 @@
             <nav><a href="/">home</a> · <a href="/scheme/">scheme</a> · <a href="/chart/">chart</a></nav>
         </header>
         <main>
+            <section class="band" style="--k:1">
+                <div class="num">1</div>
+                <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
+                <div class="who"><h2>nox <small>· machine</small></h2><p class="does">the VM as a product: field, hash, run</p></div>
+                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="form">honeycrisp</i></div>
+            </section>
+            <section class="band" style="--k:2">
+                <div class="num">2</div>
+                <div class="ico" aria-hidden="true">🔱</div>
+                <div class="who"><h2>trident <small>· weapon</small></h2><p class="does">compiles to the machine with the cost known before it runs</p></div>
+                <div class="deps"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="word">atlas</i><i data-f="play">lsp</i></div>
+            </section>
+            <section class="band" style="--k:3">
+                <div class="num">3</div>
+                <div class="ico" aria-hidden="true">💋</div>
+                <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runs the formula, proves it, keeps the state; one per target family</p></div>
+                <div class="deps"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
+            </section>
+            <section class="band" style="--k:4">
+                <div class="num">4</div>
+                <div class="ico" aria-hidden="true">🕸️</div>
+                <div class="who"><h2>cybergraph <small>· graph</small></h2><p class="does">signals, files, links, focus and the ledger: the book as a product</p></div>
+                <div class="deps"><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="word">inf</i><i data-f="life">sigma</i></div>
+            </section>
+            <section class="band" style="--k:5">
+                <div class="num">5</div>
+                <div class="ico" aria-hidden="true">🧠</div>
+                <div class="who"><h2>neural <small>· language</small></h2><p class="does">what can be said over the graph: languages and dialects</p></div>
+                <div class="deps"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="mass">fs</i><i data-f="mass">tok</i><i data-f="play">nu</i></div>
+            </section>
+            <section class="band" style="--k:6">
+                <div class="num">6</div>
+                <div class="ico" aria-hidden="true">🧬</div>
+                <div class="who"><h2>cy <small>· agent</small></h2><p class="does">one neuron and a mind; reads its balance from the book; headless anywhere</p></div>
+                <div class="deps"><i data-f="mass">neuron</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="space">ward</i></div>
+            </section>
+            <section class="band" style="--k:7">
+                <div class="num">7</div>
+                <div class="ico" aria-hidden="true">👙</div>
+                <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files and links by particle, epochs agreed on the wire</p></div>
+                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="space">tade</i><i data-f="space">cybernode</i></div>
+            </section>
+            <section class="band" style="--k:8">
+                <div class="num">8</div>
+                <div class="ico" aria-hidden="true">🤖</div>
+                <div class="who"><h2>cyb <small>· browser</small></h2><p class="does">cy with a face: the eyes, the voice, the pictures</p></div>
+                <div class="deps"><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="play">lytics</i><i data-f="play">optica</i><i data-f="work">kern</i><i data-f="play">evy</i><i data-f="work">wysm</i></div>
+            </section>
+            <section class="band" style="--k:9">
+                <div class="num">9</div>
+                <div class="ico" aria-hidden="true">🟢</div>
+                <div class="who"><h2>cyber <small>· supernet</small></h2><p class="does">the network of networks: its client and its roots</p></div>
+                <div class="deps"><i data-f="play">true-cyber</i><i data-f="play">bostrom</i><i data-f="play">space-pussy</i></div>
+            </section>
             <section class="band" style="--k:10">
                 <div class="num">10</div>
                 <div class="ico" aria-hidden="true">🌏</div>
                 <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: land, citizens and money</p></div>
                 <div class="deps"><i data-f="mass">cx</i><i data-f="space">midao</i><i data-f="play">capital</i><i data-f="play">cyberstates</i><i data-f="play">my</i><i data-f="space">cyber-valley</i><i data-f="work">cve</i></div>
-            </section>            <section class="band" style="--k:9">
-                <div class="num">9</div>
-                <div class="ico" aria-hidden="true">🟢</div>
-                <div class="who"><h2>cyber <small>· supernet</small></h2><p class="does">the network of networks: its client and its roots</p></div>
-                <div class="deps"><i data-f="play">true-cyber</i><i data-f="play">bostrom</i><i data-f="play">space-pussy</i></div>
-            </section>            <section class="band" style="--k:8">
-                <div class="num">8</div>
-                <div class="ico" aria-hidden="true">🤖</div>
-                <div class="who"><h2>cyb <small>· browser</small></h2><p class="does">cy with a face: the eyes, the voice, the pictures</p></div>
-                <div class="deps"><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="play">lytics</i><i data-f="play">optica</i><i class="m" data-f="work" title="machinery: wgpu under mir">kern</i><i class="m" data-f="play" title="machinery: the engine mir runs in">evy</i></div>
-            </section>            <section class="band" style="--k:7">
-                <div class="num">7</div>
-                <div class="ico" aria-hidden="true">👙</div>
-                <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files and links by particle, epochs agreed on the wire</p></div>
-                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="space">tade</i><i class="m" data-f="space" title="infrastructure: the machines that serve the network">cybernode</i></div>
-            </section>            <section class="band" style="--k:6">
-                <div class="num">6</div>
-                <div class="ico" aria-hidden="true">🧬</div>
-                <div class="who"><h2>cy <small>· agent</small></h2><p class="does">one neuron, a mind and a balance; headless anywhere</p></div>
-                <div class="deps"><i data-f="mass">neuron</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="life">sigma</i><i data-f="life">soma</i><i data-f="work">glia</i><i class="m" data-f="space" title="machinery: the enforcer of the soul">ward</i></div>
-            </section>            <section class="band" style="--k:5">
-                <div class="num">5</div>
-                <div class="ico" aria-hidden="true">🧠</div>
-                <div class="who"><h2>neural <small>· language</small></h2><p class="does">what can be said over the graph: languages and dialects</p></div>
-                <div class="deps"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="mass">fs</i><i data-f="mass">tok</i><i data-f="play">nu</i></div>
-            </section>            <section class="band" style="--k:4">
-                <div class="num">4</div>
-                <div class="ico" aria-hidden="true">🕸️</div>
-                <div class="who"><h2>cybergraph <small>· graph</small></h2><p class="does">signals, files, links and the focus over them: the graph as a product</p></div>
-                <div class="deps"><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="word">inf</i></div>
-            </section>            <section class="band" style="--k:3">
-                <div class="num">3</div>
-                <div class="ico" aria-hidden="true">💋</div>
-                <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runs the formula, proves it, keeps the state; one per target family</p></div>
-                <div class="deps"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
-            </section>            <section class="band" style="--k:2">
-                <div class="num">2</div>
-                <div class="ico" aria-hidden="true">🔱</div>
-                <div class="who"><h2>trident <small>· weapon</small></h2><p class="does">compiles to the machine with the cost known before it runs</p></div>
-                <div class="deps"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="word">atlas</i><i data-f="play">lsp</i></div>
-            </section>            <section class="band" style="--k:1">
-                <div class="num">1</div>
-                <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
-                <div class="who"><h2>nox <small>· machine</small></h2><p class="does">the VM as a product: field, hash, run</p></div>
-                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i class="m" data-f="form" title="machinery: apple silicon compute">honeycrisp</i></div>
             </section>
         </main>
         <footer>
