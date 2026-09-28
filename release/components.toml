@@ -614,7 +614,7 @@ phase = "after"
 state = "cyberia on ethereum: the consulate, the citizenship token and its DAO"
 
 [[component]]
-name = "cyberia-capital"
+name = "capital"
 kind = "part"
 repo = "cyberia-capital"
 verb = "admit"
@@ -636,7 +636,7 @@ phase = "after"
 state = "the sovereignty terminal: every state ranked by freedom and openness — cyberstates.net"
 
 [[component]]
-name = "cyberia-my"
+name = "my"
 kind = "part"
 repo = "cyberia-my"
 verb = "settle"
@@ -667,38 +667,3 @@ layer = 10
 part_of = "cyberia"
 phase = "after"
 state = "the estate: the operational and legal home of the genesis city"
-
-[[component]]
-name = "endeka"
-kind = "part"
-repo = "endeka"
-verb = "kin"
-facet = "life"
-layer = 10
-part_of = "cyberia"
-phase = "after"
-state = "the family and the clan: how the state is peopled"
-
-[[component]]
-name = "valkyra"
-kind = "part"
-repo = "valkyra"
-verb = "school"
-facet = "life"
-layer = 10
-part_of = "cyberia"
-phase = "after"
-state = "the empress school: the formation path of the clan"
-
-[[component]]
-name = "maker"
-kind = "part"
-repo = "maker"
-verb = "trade"
-facet = "work"
-layer = 10
-part_of = "cyberia"
-infrastructure = "cyberia"
-phase = "after"
-state = "the market maker for the state's treasury on the bootloader DEXes"
-
