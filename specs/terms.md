@@ -19,6 +19,8 @@ Normative definitions and compatibility rules: [execution model](execution-model
 - `backend` — concrete software/hardware implementation of an operation; CPU/GPU selection preserves warrior identity.
 - `proof profile` — exact statement semantics, proof format, verifier parameters, disclosure and supported operation limits.
 - `network instance` — identified OS/protocol instance with genesis/domain and rule versions; endpoints locate it, and roots identify snapshots within it.
+- `book` — layer 4 of the ladder: one neuron, one book, complete with the cable unplugged — keys and custody (mudra, vault), the graph (cybergraph), the measures over it (tru), conservation (tok), queries (inf), the canonical bytes a particle is the hash of (tade). the library and the offline CLI.
+- `wire` — layer 5: the same book talking — transport (radio), routing by locus over follow links, reconciliation, epochs agreed between nodes and the beacon (foculus). `soft3 node` is the book with the wire attached.
 - `node` — network participant owning state, synchronization and admission/finality policy; it may use local or remote workers.
 
 ## substrate — the data model
