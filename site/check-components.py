@@ -18,7 +18,7 @@ for c in reg:
 # status.md: every crate/product row exists
 st = (root/'status.md').read_text()
 for c in reg:
-    if c['kind'] in ('crate','product') and c['name'] not in ('silicon','cy','cyb','true-cyber','trident') and not (re.search(r'\[\[(?:[^\]]*\|)?%s\]\] \|' % re.escape(c['name']), st) or re.search(r'\| \[%s\]\(' % re.escape(c['name']), st)):
+    if c['kind'] in ('crate','product') and c['name'] not in ('silicon','cy','cyb','true-cyber','trident','cyberia') and not (re.search(r'\[\[(?:[^\]]*\|)?%s\]\] \|' % re.escape(c['name']), st) or re.search(r'\| \[%s\]\(' % re.escape(c['name']), st)):
         errs.append(f'status.md has no row for: {c["name"]}')
 # phase1.toml: every phase-1 crate is a sibling; every sibling is a phase-1 component
 p1 = tomllib.loads((root/'release/phase1.toml').read_text())
