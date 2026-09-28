@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (1 substrate · 2 language · 3 warrior · 4 book · 5 network · 6 sense · 7 mind); machinery = a backend or host that occupies no rung and is listed under the component that uses it — the architecture in principle; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (1 substrate · 2 language · 3 warrior · 4 book · 5 network · 6 sense · 7 mind) — a chip on a rung means the component is part of that rung, never a dependency; machinery = a backend or host that occupies no rung and is listed under the component that uses it; infrastructure = ops that serve a rung without being part of it — the architecture in principle; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -344,6 +344,16 @@ phase = "1"
 state = "published"
 
 [[component]]
+name = "cyber"
+kind = "network"
+repo = "cyber"
+verb = "root"
+facet = "play"
+layer = 5
+phase = "3"
+state = "spec — the protocol pages and the tracker; $CYB after the canary"
+
+[[component]]
 name = "bostrom"
 kind = "network"
 repo = "bostrom"
@@ -449,6 +459,6 @@ kind = "ops"
 repo = "cybernode"
 verb = "host"
 facet = "space"
-layer = 5
+infrastructure = "network"
 phase = "1"
 state = "live"
