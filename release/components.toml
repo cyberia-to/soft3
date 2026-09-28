@@ -92,7 +92,7 @@ phase = "1"
 state = "tir → .nox, hash and equiv — trident/src/import (mir2nox) and the nox emitter"
 
 [[component]]
-name = "catalog"
+name = "atlas"
 kind = "part"
 repo = "trident"
 verb = "package"
