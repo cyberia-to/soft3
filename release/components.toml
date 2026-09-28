@@ -44,16 +44,6 @@ phase = "1"
 state = "live"
 
 [[component]]
-name = "silicon"
-kind = "crate"
-repo = "trident"
-verb = "emit"
-facet = "work"
-layer = 2
-phase = "after"
-state = "unpublished"
-
-[[component]]
 name = "joy"
 kind = "crate"
 repo = "joy"
