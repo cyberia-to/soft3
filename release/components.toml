@@ -688,10 +688,10 @@ kind = "part"
 repo = "cyb"
 verb = "ask"
 facet = "play"
-layer = 8
-part_of = "cyb"
+layer = 6
+part_of = "cy"
 phase = "1"
-state = "the commander: the one line where the user types; reads the soul on every ask — cyb/parts/com.md"
+state = "the commander: the one input of the agent — a line with completion, on a cli or under a screen; reads the soul on every ask — cyb/parts/com.md"
 
 [[component]]
 name = "brain"
