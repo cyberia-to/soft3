@@ -97,10 +97,10 @@ kind = "part"
 repo = "trident"
 verb = "package"
 facet = "word"
-layer = 2
-part_of = "trident"
+layer = 5
+part_of = "neural"
 phase = "1"
-state = "packages written in trident: lib/std (compiler, crypto, fhe, io, math), lib/vm (core, crypto, io), catalog/os, catalog/vm"
+state = "the dialect of packages: what is written in trident and shared — lib/std (compiler, crypto, fhe, io, math), lib/vm (core, crypto, io), catalog/os, catalog/vm"
 
 [[component]]
 name = "lsp"
@@ -428,7 +428,7 @@ state = "live"
 [[component]]
 name = "cy"
 kind = "product"
-repo = "cyb"
+repo = "cy"
 verb = "embody"
 facet = "play"
 layer = 6
@@ -836,3 +836,14 @@ layer = 6
 part_of = "cy"
 phase = "1"
 state = "the history of every interaction; graph.log is the log — cyb/parts/log.md"
+
+[[component]]
+name = "rs"
+kind = "crate"
+repo = "rs"
+verb = "systems"
+facet = "form"
+layer = 5
+part_of = "neural"
+phase = "after"
+state = "research"
