@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (1 substrate · 2 language · 3 warrior · 4 book · 5 network · 6 sense · 7 mind) — a chip on a rung means the component is part of that rung, never a dependency; machinery = a backend or host, drawn outlined on the rung it serves, with the component that uses it; infrastructure = ops drawn the same way — the architecture in principle; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers — eight products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 neuron (agent) · 5 soft3 (network) · 6 neural (language) · 7 cyb (browser) · 8 cyber (supernet); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host, drawn outlined; infrastructure = ops drawn the same way; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -10,6 +10,7 @@ repo = "strata"
 verb = "math"
 facet = "form"
 layer = 1
+part_of = "nox"
 phase = "1"
 state = "live"
 
@@ -20,6 +21,7 @@ repo = "hemera"
 verb = "hash"
 facet = "form"
 layer = 1
+part_of = "nox"
 phase = "1"
 state = "live"
 
@@ -30,6 +32,7 @@ repo = "nox"
 verb = "run"
 facet = "work"
 layer = 1
+role = "machine"
 phase = "1"
 state = "live"
 
@@ -40,6 +43,7 @@ repo = "trident"
 verb = "compile"
 facet = "word"
 layer = 2
+role = "weapon"
 phase = "1"
 state = "live"
 
@@ -50,6 +54,7 @@ repo = "joy"
 verb = "prove"
 facet = "work"
 layer = 3
+role = "warrior"
 phase = "1"
 state = "published"
 
@@ -60,6 +65,7 @@ repo = "lens"
 verb = "commit"
 facet = "form"
 layer = 3
+part_of = "joy"
 phase = "1"
 state = "published"
 
@@ -70,6 +76,7 @@ repo = "zheng"
 verb = "prove"
 facet = "work"
 layer = 3
+part_of = "joy"
 phase = "1"
 state = "live"
 
@@ -80,6 +87,7 @@ repo = "bbg"
 verb = "store"
 facet = "mass"
 layer = 3
+part_of = "joy"
 phase = "1"
 state = "live"
 
@@ -90,6 +98,7 @@ repo = "neuron"
 verb = "act"
 facet = "mass"
 layer = 4
+role = "agent"
 phase = "1"
 state = "local"
 
@@ -100,6 +109,7 @@ repo = "cybergraph"
 verb = "link"
 facet = "mass"
 layer = 4
+part_of = "neuron"
 phase = "1"
 state = "live"
 
@@ -110,6 +120,7 @@ repo = "foculus"
 verb = "agree"
 facet = "life"
 layer = 5
+part_of = "soft3"
 phase = "1"
 state = "unwired"
 
@@ -120,6 +131,7 @@ repo = "tru"
 verb = "converge"
 facet = "life"
 layer = 4
+part_of = "neuron"
 phase = "1"
 state = "published"
 
@@ -129,7 +141,8 @@ kind = "crate"
 repo = "tok"
 verb = "pay"
 facet = "mass"
-layer = 4
+layer = 6
+part_of = "neural"
 phase = "1"
 state = "published"
 
@@ -140,6 +153,7 @@ repo = "mudra"
 verb = "encrypt"
 facet = "space"
 layer = 4
+part_of = "neuron"
 phase = "1"
 state = "live"
 
@@ -150,6 +164,7 @@ repo = "vault"
 verb = "keep"
 facet = "space"
 layer = 4
+part_of = "neuron"
 phase = "1"
 state = "local"
 
@@ -159,7 +174,8 @@ kind = "crate"
 repo = "tade"
 verb = "frame"
 facet = "space"
-layer = 4
+layer = 1
+part_of = "nox"
 phase = "1"
 state = "published"
 
@@ -170,6 +186,7 @@ repo = "radio"
 verb = "transmit"
 facet = "space"
 layer = 5
+part_of = "soft3"
 phase = "1"
 state = "live"
 
@@ -180,6 +197,7 @@ repo = "inf"
 verb = "query"
 facet = "word"
 layer = 4
+part_of = "neuron"
 phase = "1"
 state = "live"
 
@@ -190,6 +208,7 @@ repo = "soft3"
 verb = "compose"
 facet = "play"
 layer = 5
+role = "network"
 phase = "1"
 state = "live"
 
@@ -199,7 +218,8 @@ kind = "crate"
 repo = "file"
 verb = "name"
 facet = "mass"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "local"
 
@@ -209,7 +229,8 @@ kind = "crate"
 repo = "spark"
 verb = "open"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "local"
 
@@ -219,7 +240,8 @@ kind = "crate"
 repo = "prysm"
 verb = "paint"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "live"
 
@@ -229,7 +251,8 @@ kind = "crate"
 repo = "mir"
 verb = "render"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "live"
 
@@ -239,7 +262,8 @@ kind = "crate"
 repo = "rune"
 verb = "eval"
 facet = "word"
-layer = 6
+layer = 4
+part_of = "neuron"
 phase = "1"
 state = "published"
 
@@ -249,7 +273,8 @@ kind = "crate"
 repo = "evy"
 verb = "draw"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 machinery = "mir"
 phase = "1"
 state = "local"
@@ -261,6 +286,7 @@ repo = "soma"
 verb = "think"
 facet = "life"
 layer = 7
+part_of = "cyb"
 phase = "1"
 state = "local"
 
@@ -271,6 +297,7 @@ repo = "glia"
 verb = "infer"
 facet = "work"
 layer = 7
+part_of = "cyb"
 phase = "1"
 state = "live"
 
@@ -281,6 +308,7 @@ repo = "honeycrisp"
 verb = "accelerate"
 facet = "form"
 layer = 1
+part_of = "nox"
 machinery = "mir, soma"
 phase = "1"
 state = "live"
@@ -291,7 +319,8 @@ kind = "crate"
 repo = "nu"
 verb = "console"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 machinery = "cyb"
 phase = "1"
 state = "local"
@@ -303,6 +332,7 @@ repo = "optica"
 verb = "publish"
 facet = "play"
 layer = 7
+part_of = "cyb"
 phase = "1"
 state = "live"
 
@@ -312,7 +342,8 @@ kind = "product"
 repo = "cyb"
 verb = "embody"
 facet = "play"
-layer = 6
+layer = 7
+role = "browser"
 phase = "1"
 state = "live"
 
@@ -322,7 +353,8 @@ kind = "product"
 repo = "cyb"
 verb = "embody"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "live"
 
@@ -332,7 +364,8 @@ kind = "product"
 repo = "true-cyber"
 verb = "embody"
 facet = "play"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "1"
 state = "published"
 
@@ -342,7 +375,8 @@ kind = "network"
 repo = "cyber"
 verb = "root"
 facet = "play"
-layer = 5
+layer = 8
+role = "supernet"
 phase = "3"
 state = "spec — the protocol pages and the tracker; $CYB after the canary"
 
@@ -352,7 +386,8 @@ kind = "network"
 repo = "bostrom"
 verb = "root"
 facet = "play"
-layer = 5
+layer = 8
+part_of = "cyber"
 phase = "1"
 state = "reborn 2026-11-05"
 
@@ -362,7 +397,8 @@ kind = "network"
 repo = "space-pussy"
 verb = "root"
 facet = "play"
-layer = 5
+layer = 8
+part_of = "cyber"
 phase = "1"
 state = "reborn 2026-11-05"
 
@@ -373,6 +409,7 @@ repo = "fs"
 verb = "mount"
 facet = "mass"
 layer = 6
+part_of = "neural"
 phase = "after"
 state = "spec"
 
@@ -382,7 +419,8 @@ kind = "crate"
 repo = "cyb"
 verb = "authorize"
 facet = "space"
-layer = 6
+layer = 4
+part_of = "neuron"
 machinery = "cyb"
 phase = "after"
 state = "local"
@@ -393,7 +431,8 @@ kind = "crate"
 repo = "neural"
 verb = "mean"
 facet = "word"
-layer = 7
+layer = 6
+role = "language"
 phase = "after"
 state = "spec"
 
@@ -403,7 +442,8 @@ kind = "crate"
 repo = "sigma"
 verb = "evaluate"
 facet = "life"
-layer = 6
+layer = 7
+part_of = "cyb"
 phase = "after"
 state = "spec"
 
@@ -413,7 +453,8 @@ kind = "crate"
 repo = "eidos"
 verb = "certify"
 facet = "work"
-layer = 5
+layer = 8
+part_of = "cyber"
 phase = "after"
 state = "blocked"
 
@@ -424,6 +465,7 @@ repo = "wysm"
 verb = "sandbox"
 facet = "work"
 layer = 7
+part_of = "cyb"
 machinery = "glia"
 phase = "after"
 state = "dormant"
@@ -434,7 +476,8 @@ kind = "crate"
 repo = "kern"
 verb = "shade"
 facet = "work"
-layer = 6
+layer = 7
+part_of = "cyb"
 machinery = "mir"
 phase = "after"
 state = "spec"
@@ -446,6 +489,7 @@ repo = "lytics"
 verb = "measure"
 facet = "play"
 layer = 7
+part_of = "cyb"
 phase = "after"
 state = "live"
 
@@ -456,6 +500,7 @@ repo = "cybernode"
 verb = "host"
 facet = "space"
 layer = 5
+part_of = "soft3"
 infrastructure = "network"
 phase = "1"
 state = "live"
