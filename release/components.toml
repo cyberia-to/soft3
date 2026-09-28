@@ -210,6 +210,7 @@ verb = "pay"
 facet = "mass"
 layer = 4
 part_of = "cybergraph"
+note = "the plumb repo is tok's value operations (pay, lock, mint, burn): the same component, one name — tok"
 phase = "1"
 state = "published"
 
@@ -856,15 +857,3 @@ layer = 4
 part_of = "cybergraph"
 phase = "1"
 state = "the history of every interaction; graph.log is the log — cyb/parts/log.md"
-
-[[component]]
-name = "plumb"
-kind = "part"
-repo = "plumb"
-verb = "operate"
-facet = "mass"
-layer = 4
-part_of = "cybergraph"
-phase = "1"
-state = "the value operations of tok: pay, lock, mint, burn; one thing under two names with tok"
-
