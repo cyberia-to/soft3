@@ -605,28 +605,6 @@ phase = "after"
 state = "the century index: the land-rent index the state prices in — cyberia/protocol/century-index.md"
 
 [[component]]
-name = "midao"
-kind = "part"
-repo = "midao"
-verb = "consul"
-facet = "space"
-layer = 10
-part_of = "cyberia"
-phase = "after"
-state = "cyberia on ethereum: the consulate, the citizenship token and its DAO"
-
-[[component]]
-name = "capital"
-kind = "part"
-repo = "cyberia-capital"
-verb = "admit"
-facet = "play"
-layer = 10
-part_of = "cyberia"
-phase = "after"
-state = "the consulate landing: citizenship of the first cyberstate"
-
-[[component]]
 name = "cyberstates"
 kind = "part"
 repo = "cyberstates"
@@ -669,3 +647,224 @@ layer = 10
 part_of = "cyberia"
 phase = "after"
 state = "the estate: the operational and legal home of the genesis city"
+
+[[component]]
+name = "blog"
+kind = "part"
+repo = "cyberia-blog"
+verb = "chronicle"
+facet = "play"
+layer = 10
+part_of = "cyberia"
+phase = "1"
+state = "the chronicle and the graph assembler: news, the daily beat, the published graph — cyberia.blog"
+
+[[component]]
+name = "kadek"
+kind = "part"
+repo = "kadek"
+verb = "decode"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "pure rust media: decode what a file renders to; specs aligned with soft3 2026-09-25"
+
+[[component]]
+name = "avatar"
+kind = "part"
+repo = "cyb"
+verb = "show"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "the robot's visualization, the creature others see — cyb/parts/avatar.md"
+
+[[component]]
+name = "com"
+kind = "part"
+repo = "cyb"
+verb = "ask"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "the commander: the one line where the user types; reads the soul on every ask — cyb/parts/com.md"
+
+[[component]]
+name = "brain"
+kind = "part"
+repo = "cyb"
+verb = "paint"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "the rendered book; the world once named graph — cyb/parts/brain.md"
+
+[[component]]
+name = "memory"
+kind = "part"
+repo = "cyb"
+verb = "browse"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "files rendered as a file system: table or tiles, tap to read — cyb/parts/memory.md"
+
+[[component]]
+name = "voice"
+kind = "part"
+repo = "cyb"
+verb = "speak"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "speech: the robot heard and speaking — cyb/parts/voice.md"
+
+[[component]]
+name = "vision"
+kind = "part"
+repo = "cyb"
+verb = "see"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "sight: camera, screen, world — cyb/parts/vision.md"
+
+[[component]]
+name = "time"
+kind = "part"
+repo = "cyb"
+verb = "show"
+facet = "play"
+layer = 8
+part_of = "cyb"
+phase = "1"
+state = "one screen: log ← now → plan — cyb/parts/time.md"
+
+[[component]]
+name = "seer"
+kind = "part"
+repo = "seer"
+verb = "propose"
+facet = "life"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the proposer: finds the cyberlink worth making next and hands it to the neuron to sign"
+
+[[component]]
+name = "soul"
+kind = "part"
+repo = "cyb"
+verb = "define"
+facet = "life"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the main config: which model, which dialect, what it may do unasked — cyb/parts/soul.md"
+
+[[component]]
+name = "sense"
+kind = "part"
+repo = "cyb"
+verb = "message"
+facet = "space"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the messenger: interaction with other neurons, files, robots — inbox and outbox — cyb/parts/sense.md"
+
+[[component]]
+name = "state"
+kind = "part"
+repo = "cyb"
+verb = "verify"
+facet = "space"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "verified perception of external networks: every answer is a value plus a tier — cyb/parts/state.md"
+
+[[component]]
+name = "now"
+kind = "part"
+repo = "cyb"
+verb = "stand"
+facet = "life"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the context: the file the robot stands on; what com acts on, what soma packs into the window — cyb/parts/now.md"
+
+[[component]]
+name = "plan"
+kind = "part"
+repo = "cyb"
+verb = "schedule"
+facet = "life"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the schedule: standing orders and deferred intents — cyb/parts/plan.md"
+
+[[component]]
+name = "body"
+kind = "part"
+repo = "cyb"
+verb = "measure"
+facet = "form"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "the physical body: silicon, sensors, energy, mining — telemetry of the machine the mind lives on — cyb/parts/body.md"
+
+[[component]]
+name = "cells"
+kind = "part"
+repo = "cyb"
+verb = "grow"
+facet = "word"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "organ-extensions: live-loaded rune programs that grow a new ability — cyb/parts/cells.md"
+
+[[component]]
+name = "name"
+kind = "part"
+repo = "cyb"
+verb = "resolve"
+facet = "mass"
+layer = 4
+part_of = "cybergraph"
+phase = "1"
+state = "the name: resolves through the graph, owned like a token, never set in a config — cyb/parts/name.md"
+
+[[component]]
+name = "log"
+kind = "part"
+repo = "cyb"
+verb = "remember"
+facet = "mass"
+layer = 4
+part_of = "cybergraph"
+phase = "1"
+state = "the history of every interaction; graph.log is the log — cyb/parts/log.md"
+
+[[component]]
+name = "plumb"
+kind = "part"
+repo = "plumb"
+verb = "operate"
+facet = "mass"
+layer = 4
+part_of = "cybergraph"
+phase = "1"
+state = "the value operations of tok: pay, lock, mint, burn; one thing under two names with tok"
+
