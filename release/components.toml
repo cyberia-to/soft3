@@ -826,17 +826,6 @@ phase = "1"
 state = "the physical body: silicon, sensors, energy, mining — telemetry of the machine the mind lives on — cyb/parts/body.md"
 
 [[component]]
-name = "cells"
-kind = "part"
-repo = "cyb"
-verb = "grow"
-facet = "word"
-layer = 6
-part_of = "cy"
-phase = "1"
-state = "organ-extensions: live-loaded rune programs that grow a new ability — cyb/parts/cells.md"
-
-[[component]]
 name = "name"
 kind = "part"
 repo = "cyb"
