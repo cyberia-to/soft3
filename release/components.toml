@@ -208,8 +208,8 @@ kind = "crate"
 repo = "tok"
 verb = "pay"
 facet = "mass"
-layer = 5
-part_of = "neural"
+layer = 4
+part_of = "cybergraph"
 phase = "1"
 state = "published"
 
@@ -519,8 +519,8 @@ kind = "crate"
 repo = "sigma"
 verb = "evaluate"
 facet = "life"
-layer = 4
-part_of = "cybergraph"
+layer = 5
+part_of = "neural"
 phase = "after"
 state = "spec"
 
