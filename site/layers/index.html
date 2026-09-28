@@ -15,14 +15,18 @@
             * { box-sizing: border-box; }
             html, body { height: 100%; }
             body { margin: 0; background: var(--bg); background-image: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(125,255,196,0.10), transparent); color: var(--cream); font-family: Play, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
-            header { width: min(96vw, 1080px); display: flex; align-items: baseline; gap: 1rem; padding: 1.1rem 0 0.6rem; }
+            header { width: min(96vw, 1140px); display: flex; align-items: baseline; gap: 1rem; padding: 1.1rem 0 0.6rem; }
             header h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
             header h1 em { color: var(--mint); font-style: normal; }
             header nav { margin-left: auto; font-size: 0.72rem; }
             header nav a { color: var(--mint); text-decoration: none; }
             header nav a:hover { text-decoration: underline; }
             .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
-            main { width: min(96vw, 1080px); display: flex; flex-direction: column; justify-content: space-evenly; gap: 0.35rem; padding-bottom: 0.3rem; flex: 1; }
+            main { width: min(96vw, 1140px); display: flex; flex-direction: column; justify-content: space-evenly; gap: 0.7rem; padding-bottom: 0.3rem; flex: 1; }
+            .group { display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.6rem; }
+            .rail { position: relative; border-right: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); }
+            .rail span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); writing-mode: vertical-rl; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--mint); text-shadow: 0 0 14px rgba(125,255,196,0.45); white-space: nowrap; }
+            .rungs { display: flex; flex-direction: column; gap: 0.35rem; }
             .band { display: grid; grid-template-columns: 2.8rem 3.2rem minmax(0, 1fr) fit-content(58%); gap: 0.8rem; align-items: center; min-height: 4rem; padding: 0.5rem 1.1rem 0.5rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(14% - var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
             .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
             .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2rem; align-self: center; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
@@ -39,9 +43,9 @@
             i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
             i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
             i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
-            footer { width: min(96vw, 1080px); display: flex; gap: 1.1rem; justify-content: center; padding: 0.2rem 0 1rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
+            footer { width: min(96vw, 1140px); display: flex; gap: 1.1rem; justify-content: center; padding: 0.2rem 0 1rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
             footer i { font-style: normal; width: 0.55rem; height: 0.55rem; border-radius: 999px; display: inline-block; background: var(--fc); margin-right: 0.25rem; vertical-align: middle; }
-            @media (max-width: 760px) { .band { grid-template-columns: 2.4rem 2.6rem 1fr; min-height: 0; } .deps { grid-column: 1 / -1; align-items: flex-start; } .deps .row { flex-wrap: wrap; justify-content: flex-start; } .who .does { white-space: normal; } html, body { height: auto; } }
+            @media (max-width: 760px) { .group { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.4rem; } .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .band { grid-template-columns: 2.4rem 2.6rem 1fr; min-height: 0; } .deps { grid-column: 1 / -1; align-items: flex-start; } .deps .row { flex-wrap: wrap; justify-content: flex-start; } .who .does { white-space: normal; } html, body { height: auto; } }
         </style>
     </head>
     <body>
@@ -50,6 +54,9 @@
             <nav><a href="/">home</a> · <a href="/scheme/">scheme</a> · <a href="/chart/">chart</a></nav>
         </header>
         <main>
+            <section class="group" data-g="kernel">
+                <div class="rail"><span>kernel</span></div>
+                <div class="rungs">
             <section class="band" style="--k:1">
                 <div class="num">1</div>
                 <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
@@ -68,6 +75,11 @@
                 <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runs the formula, proves it, keeps the state</p></div>
                 <div class="deps"><span class="row"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></span></div>
             </section>
+                </div>
+            </section>
+            <section class="group" data-g="core">
+                <div class="rail"><span>core</span></div>
+                <div class="rungs">
             <section class="band" style="--k:4">
                 <div class="num">4</div>
                 <div class="ico" aria-hidden="true">🕸️</div>
@@ -92,10 +104,15 @@
                 <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
                 <div class="deps"><span class="row"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="space">tade</i></span></div>
             </section>
+                </div>
+            </section>
+            <section class="group" data-g="apps">
+                <div class="rail"><span>apps</span></div>
+                <div class="rungs">
             <section class="band" style="--k:8">
                 <div class="num">8</div>
                 <div class="ico" aria-hidden="true">🤖</div>
-                <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: the eyes, the ears, the pictures</p></div>
+                <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures</p></div>
                 <div class="deps"><span class="row"><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="play">lytics</i><i data-f="play">optica</i><i data-f="play">kadek</i><i data-f="play">avatar</i><i data-f="play">brain</i><i data-f="play">vision</i><i data-f="play">time</i><i data-f="work">kern</i><i data-f="play">evy</i><i data-f="work">wysm</i></span></div>
             </section>
             <section class="band" style="--k:9">
@@ -109,6 +126,8 @@
                 <div class="ico" aria-hidden="true">🌏</div>
                 <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
                 <div class="deps"><span class="row"><i data-f="space">cybernode</i><i data-f="mass">cx</i><i data-f="play">blog</i><i data-f="play">cyberstates</i><i data-f="play">my</i><i data-f="space">cyber-valley</i><i data-f="work">cve</i></span></div>
+            </section>
+                </div>
             </section>
         </main>
         <footer>
