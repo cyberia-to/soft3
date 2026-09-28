@@ -230,8 +230,8 @@ kind = "crate"
 repo = "vault"
 verb = "keep"
 facet = "space"
-layer = 6
-part_of = "cy"
+layer = 5
+part_of = "neural"
 phase = "1"
 state = "local"
 
