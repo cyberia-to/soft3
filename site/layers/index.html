@@ -31,6 +31,7 @@
             .who .does { margin: 0.2rem 0 0; font-size: 0.72rem; line-height: 1.3; color: rgba(255,248,240,0.6); }
             .deps { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
             .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
+            .deps i.m { background: transparent; color: var(--fc); border: 1px solid var(--fc); opacity: 0.85; }
             i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
             i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
             i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
@@ -53,15 +54,15 @@
             <section class="band" style="--k:7">
                 <div class="num">7</div>
                 <div class="who"><h2>mind</h2><p class="prod">ask · infer · publish</p><p class="does">what runs on the loop and writes links back</p></div>
-                <div class="deps"><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="word">neural</i><i data-f="play">lytics</i><i data-f="play">optica</i></div>
+                <div class="deps"><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="word">neural</i><i data-f="play">lytics</i><i data-f="play">optica</i><i class="m" data-f="work" title="machinery: the runtime for foreign code under glia">wysm</i></div>
             </section>            <section class="band" style="--k:6">
                 <div class="num">6</div>
                 <div class="who"><h2>sense</h2><p class="prod">read · render · observe · link</p><p class="does">the loop a neuron lives in; sigma is the feedback</p></div>
-                <div class="deps"><i data-f="mass">file</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="word">rune</i><i data-f="life">sigma</i><i data-f="play">cyb</i><i data-f="play">cy</i><i data-f="play">true-cyber</i></div>
+                <div class="deps"><i data-f="mass">file</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="word">rune</i><i data-f="life">sigma</i><i data-f="play">cyb</i><i data-f="play">cy</i><i data-f="play">true-cyber</i><i class="m" data-f="work" title="machinery: wgpu for mir">kern</i><i class="m" data-f="play" title="machinery: the engine mir runs in">evy</i><i class="m" data-f="play" title="machinery: the vendored shell in cyb">nu</i><i class="m" data-f="space" title="machinery: the sandbox in cyb">ward</i></div>
             </section>            <section class="band" style="--k:5">
                 <div class="num">5</div>
                 <div class="who"><h2>network</h2><p class="prod">transmit · sync · route · agree · root</p><p class="does">the book talking; the root books others register into</p></div>
-                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="play">cyber</i><i data-f="work">eidos</i></div>
+                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="play">cyber</i><i data-f="work">eidos</i><i class="m" data-f="space" title="infrastructure: the machines that serve the roots">cybernode</i></div>
             </section>            <section class="band" style="--k:4">
                 <div class="num">4</div>
                 <div class="who"><h2>book</h2><p class="prod">link · measure · mint · keep · query</p><p class="does">one neuron, one book; complete with the cable unplugged</p></div>
@@ -77,12 +78,12 @@
             </section>            <section class="band" style="--k:1">
                 <div class="num">1</div>
                 <div class="who"><h2>substrate</h2><p class="prod">field · hash · machine</p><p class="does">what every layer computes in</p></div>
-                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
+                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="work">nox</i><i class="m" data-f="form" title="machinery: apple silicon compute for the field, the hash and nox">honeycrisp</i></div>
             </section>
         </main>
         <footer>
             <span><i data-f="form"></i>form</span><span><i data-f="mass"></i>mass</span><span><i data-f="space"></i>space</span><span><i data-f="life"></i>life</span><span><i data-f="word"></i>word</span><span><i data-f="work"></i>work</span><span><i data-f="play"></i>play</span>
-            <span style="margin-left:1rem;text-transform:none;letter-spacing:0">machinery, no rung: honeycrisp (mir, soma) · kern (mir) · evy (mir) · wysm (glia) · nu (cyb) · ward (cyb) · infrastructure: cybernode (network) · registry: release/components.toml</span>
+            <span style="margin-left:1rem;text-transform:none;letter-spacing:0">outlined = machinery and infrastructure: a backend or host drawn on the rung it serves · registry: release/components.toml</span>
         </footer>
     </body>
 </html>

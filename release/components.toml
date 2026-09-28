@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (1 substrate · 2 language · 3 warrior · 4 book · 5 network · 6 sense · 7 mind) — a chip on a rung means the component is part of that rung, never a dependency; machinery = a backend or host that occupies no rung and is listed under the component that uses it; infrastructure = ops that serve a rung without being part of it — the architecture in principle; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops; layer = the rung on soft3.org/layers (1 substrate · 2 language · 3 warrior · 4 book · 5 network · 6 sense · 7 mind) — a chip on a rung means the component is part of that rung, never a dependency; machinery = a backend or host, drawn outlined on the rung it serves, with the component that uses it; infrastructure = ops drawn the same way — the architecture in principle; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -249,6 +249,7 @@ kind = "crate"
 repo = "evy"
 verb = "draw"
 facet = "play"
+layer = 6
 machinery = "mir"
 phase = "1"
 state = "local"
@@ -279,6 +280,7 @@ kind = "crate"
 repo = "honeycrisp"
 verb = "accelerate"
 facet = "form"
+layer = 1
 machinery = "mir, soma"
 phase = "1"
 state = "live"
@@ -289,6 +291,7 @@ kind = "crate"
 repo = "nu"
 verb = "console"
 facet = "play"
+layer = 6
 machinery = "cyb"
 phase = "1"
 state = "local"
@@ -379,6 +382,7 @@ kind = "crate"
 repo = "cyb"
 verb = "authorize"
 facet = "space"
+layer = 6
 machinery = "cyb"
 phase = "after"
 state = "local"
@@ -419,6 +423,7 @@ kind = "crate"
 repo = "wysm"
 verb = "sandbox"
 facet = "work"
+layer = 7
 machinery = "glia"
 phase = "after"
 state = "dormant"
@@ -429,6 +434,7 @@ kind = "crate"
 repo = "kern"
 verb = "shade"
 facet = "work"
+layer = 6
 machinery = "mir"
 phase = "after"
 state = "spec"
@@ -449,6 +455,7 @@ kind = "ops"
 repo = "cybernode"
 verb = "host"
 facet = "space"
+layer = 5
 infrastructure = "network"
 phase = "1"
 state = "live"
