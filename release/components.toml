@@ -453,8 +453,8 @@ kind = "crate"
 repo = "eidos"
 verb = "certify"
 facet = "work"
-layer = 8
-part_of = "cyber"
+layer = 5
+part_of = "neural"
 phase = "after"
 state = "blocked"
 
