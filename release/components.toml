@@ -437,24 +437,14 @@ phase = "1"
 state = "live"
 
 [[component]]
-name = "true-cyber"
-kind = "product"
-repo = "true-cyber"
-verb = "embody"
-facet = "play"
-layer = 9
-part_of = "cyber"
-phase = "1"
-state = "published"
-
-[[component]]
 name = "cyber"
 kind = "network"
-repo = "cyber"
+repo = "true-cyber"
 verb = "root"
 facet = "play"
 layer = 9
 role = "superintelligence"
+note = "true-cyber is the product's own repo (the `cyber` binary); the cyber repo holds the protocol pages and the launch tracker"
 phase = "3"
 state = "spec — the protocol pages and the tracker; $CYB after the canary"
 
