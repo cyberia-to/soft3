@@ -23,12 +23,13 @@
             header nav a:hover { text-decoration: underline; }
             .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
             main { width: min(96vw, 1080px); display: flex; flex-direction: column; justify-content: space-evenly; gap: 0.35rem; padding-bottom: 1rem; flex: 1; }
-            .band { display: grid; grid-template-columns: 3.2rem 1fr 1.2fr; gap: 0.9rem; align-items: center; padding: 0.45rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(3% + var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .band { display: grid; grid-template-columns: 3rem 3.6rem 1fr 1.2fr; gap: 0.9rem; align-items: center; padding: 0.45rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(3% + var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
             .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
             .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2.1rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
-            .who h2 { margin: 0; font-size: 1.25rem; line-height: 1.1; } .who h2 small { font-size: 0.72rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
+            .ico { font-size: 2.2rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); }
+            .who h2 { margin: 0; font-size: 1.35rem; line-height: 1.1; } .who h2 small { font-size: 0.72rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
             .who .prod { margin: 0.15rem 0 0; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.8rem; color: var(--mint); }
-            .who .does { margin: 0.2rem 0 0; font-size: 0.72rem; line-height: 1.3; color: rgba(255,248,240,0.6); }
+            .who .does { margin: 0.25rem 0 0; font-size: 0.8rem; line-height: 1.3; color: rgba(255,248,240,0.75); }
             .deps { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
             .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
             .deps i.m { background: transparent; color: color-mix(in srgb, var(--fc) 55%, white); border: 1px solid color-mix(in srgb, var(--fc) 55%, white); }
@@ -41,7 +42,7 @@
             i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
             footer { width: min(96vw, 1080px); display: flex; gap: 0.7rem; justify-content: center; padding: 0 0 0.9rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
             footer i { font-style: normal; width: 0.55rem; height: 0.55rem; border-radius: 999px; display: inline-block; background: var(--fc); margin-right: 0.25rem; vertical-align: middle; }
-            @media (max-width: 760px) { .band { grid-template-columns: 2.4rem 1fr; } .deps { grid-column: 1 / -1; justify-content: flex-start; } html, body { height: auto; } }
+            @media (max-width: 760px) { .band { grid-template-columns: 2.4rem 2.6rem 1fr; } .deps { grid-column: 1 / -1; justify-content: flex-start; } html, body { height: auto; } }
         </style>
     </head>
     <body>
@@ -53,36 +54,44 @@
         <main>
             <section class="band" style="--k:8">
                 <div class="num">8</div>
-                <div class="who"><h2>cyber <small>· supernet</small></h2><p class="prod">root · register · certify</p><p class="does">the network of networks; the roots other books register into; the rules proven sound</p></div>
+                <div class="ico" aria-hidden="true">🔵</div>
+                <div class="who"><h2>cyber <small>· supernet</small></h2><p class="does">the network of networks: roots that other books register into, rules proven sound</p></div>
                 <div class="deps"><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="work">eidos</i></div>
             </section>            <section class="band" style="--k:7">
                 <div class="num">7</div>
-                <div class="who"><h2>cyb <small>· browser</small></h2><p class="prod">read · render · observe · think</p><p class="does">the body: what a neuron sees and says through; cy and true-cyber are its other faces</p></div>
-                <div class="deps"><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="life">sigma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="play">lytics</i><i data-f="play">optica</i><i data-f="play">cy</i><i data-f="play">true-cyber</i><i class="m" data-f="work" title="machinery: wgpu under mir">kern</i><i class="m" data-f="play" title="machinery: the engine mir runs in">evy</i><i class="m" data-f="play" title="machinery: the vendored shell">nu</i><i class="m" data-f="work" title="machinery: the runtime for foreign code under glia">wysm</i></div>
+                <div class="ico" aria-hidden="true">🤖</div>
+                <div class="who"><h2>cyb <small>· browser</small></h2><p class="does">the body a neuron sees and speaks through</p></div>
+                <div class="deps"><i data-f="play">spark</i><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="life">sigma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="play">lytics</i><i data-f="play">optica</i><i data-f="play">cy</i><i data-f="play">true-cyber</i><i class="m" data-f="work" title="machinery: wgpu under mir">kern</i><i class="m" data-f="play" title="machinery: the engine mir runs in">evy</i><i class="m" data-f="play" title="machinery: the vendored shell">nu</i><i class="m" data-f="work" title="machinery: the runtime for foreign code">wysm</i></div>
             </section>            <section class="band" style="--k:6">
                 <div class="num">6</div>
-                <div class="who"><h2>neural <small>· language</small></h2><p class="prod">say · name · mean</p><p class="does">what agents speak to each other by linking: sentences, motifs, dialects — files and value are dialects</p></div>
+                <div class="ico" aria-hidden="true">🗣</div>
+                <div class="who"><h2>neural <small>· language</small></h2><p class="does">the language agents speak by linking; files and value are dialects</p></div>
                 <div class="deps"><i data-f="mass">fs</i><i data-f="mass">tok</i></div>
             </section>            <section class="band" style="--k:5">
                 <div class="num">5</div>
-                <div class="who"><h2>soft3 <small>· network</small></h2><p class="prod">transmit · sync · route · agree · settle</p><p class="does">the node: agents connected — files and links carried by particle, routing by locus, epochs agreed, the beacon</p></div>
-                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i class="m" data-f="space" title="infrastructure: the machines that serve the network">cybernode</i></div>
+                <div class="ico" aria-hidden="true">👙</div>
+                <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files and links carried by particle, epochs agreed on the wire</p></div>
+                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i><i data-f="space">tade</i><i class="m" data-f="space" title="infrastructure: the machines that serve the network">cybernode</i></div>
             </section>            <section class="band" style="--k:4">
                 <div class="num">4</div>
-                <div class="who"><h2>neuron <small>· agent</small></h2><p class="prod">sign · link · measure · keep · query</p><p class="does">one neuron, one book: the files it keeps and the links between them; complete with the cable unplugged</p></div>
-                <div class="deps"><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="mass">file</i><i data-f="mass">cybergraph</i><i data-f="life">tru</i><i data-f="word">inf</i><i data-f="word">rune</i><i class="m" data-f="space" title="machinery: the sandbox and host adapters of the agent">ward</i></div>
+                <div class="ico" aria-hidden="true">🧠</div>
+                <div class="who"><h2>neuron <small>· agent</small></h2><p class="does">one neuron, one book; complete with the cable unplugged</p></div>
+                <div class="deps"><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="mass">file</i><i data-f="mass">cybergraph</i><i data-f="life">tru</i><i data-f="word">inf</i><i data-f="word">rune</i><i class="m" data-f="space" title="machinery: sandbox and host adapters">ward</i></div>
             </section>            <section class="band" style="--k:3">
                 <div class="num">3</div>
-                <div class="who"><h2>joy <small>· warrior</small></h2><p class="prod">run · prove · verify · store</p><p class="does">executes the formula, proves it, keeps the state; one per target family, any number of workers per machine</p></div>
+                <div class="ico" aria-hidden="true">⚔️</div>
+                <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runs the formula, proves it, keeps the state; one per target family</p></div>
                 <div class="deps"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
             </section>            <section class="band" style="--k:2">
                 <div class="num">2</div>
-                <div class="who"><h2>trident <small>· weapon</small></h2><p class="prod">compile · audit · hash · equiv</p><p class="does">.tri → .nox with the cost report before you run; parts: the language, lib std, lib vm, the lsp</p></div>
+                <div class="ico" aria-hidden="true">🔱</div>
+                <div class="who"><h2>trident <small>· weapon</small></h2><p class="does">the language that compiles to the machine with its cost known before it runs</p></div>
                 <div class="deps"></div>
             </section>            <section class="band" style="--k:1">
                 <div class="num">1</div>
-                <div class="who"><h2>nox <small>· machine</small></h2><p class="prod">field · hash · run</p><p class="does">the machine everything computes in — a VM as a product</p></div>
-                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="space">tade</i><i class="m" data-f="form" title="machinery: apple silicon compute for the field, the hash and nox">honeycrisp</i></div>
+                <div class="ico" aria-hidden="true">⚙️</div>
+                <div class="who"><h2>nox <small>· machine</small></h2><p class="does">the VM as a product: field, hash, run</p></div>
+                <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i class="m" data-f="form" title="machinery: apple silicon compute">honeycrisp</i></div>
             </section>
         </main>
         <footer>
