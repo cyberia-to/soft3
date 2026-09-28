@@ -218,8 +218,8 @@ kind = "crate"
 repo = "file"
 verb = "name"
 facet = "mass"
-layer = 7
-part_of = "cyb"
+layer = 4
+part_of = "neuron"
 phase = "1"
 state = "local"
 
