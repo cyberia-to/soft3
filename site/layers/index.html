@@ -31,7 +31,7 @@
             .who .does { margin: 0.2rem 0 0; font-size: 0.72rem; line-height: 1.3; color: rgba(255,248,240,0.6); }
             .deps { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
             .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.16rem 0.5rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
-            .deps i.m { background: transparent; color: var(--fc); border: 1px solid var(--fc); opacity: 0.85; }
+            .deps i.m { background: transparent; color: color-mix(in srgb, var(--fc) 55%, white); border: 1px solid color-mix(in srgb, var(--fc) 55%, white); }
             i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
             i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
             i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
