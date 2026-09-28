@@ -231,8 +231,8 @@ kind = "crate"
 repo = "vault"
 verb = "keep"
 facet = "space"
-layer = 5
-part_of = "neural"
+layer = 6
+part_of = "cy"
 phase = "1"
 state = "local"
 
@@ -520,8 +520,8 @@ kind = "crate"
 repo = "sigma"
 verb = "evaluate"
 facet = "life"
-layer = 5
-part_of = "neural"
+layer = 6
+part_of = "cy"
 phase = "after"
 state = "spec"
 
