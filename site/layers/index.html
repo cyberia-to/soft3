@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>soft3 — the layers</title>
-        <meta name="description" content="soft3 as a ladder: 0 substrate · 1 language · 2 warrior · 3 node · 4 network · 5 body. a layer knows only the layers below it; a substrate enters once; each layer ships alone." />
+        <meta name="description" content="soft3 as a ladder: 1 substrate · 2 language · 3 warrior · 4 book · 5 wire · 6 network · 7 body. a layer knows only the layers below it; a substrate enters once; each layer ships alone." />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
             header nav a:hover { text-decoration: underline; }
             .law { width: min(96vw, 1080px); margin: 0.2rem 0 0.6rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(125,255,196,0.75); text-align: center; }
             main { width: min(96vw, 1080px); display: flex; flex-direction: column; gap: 0.45rem; padding-bottom: 1rem; flex: 1; }
-            .band { display: grid; grid-template-columns: 3.2rem 1fr 1.1fr; gap: 0.9rem; align-items: center; padding: 0.55rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(4% + var(--k) * 1.2%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .band { display: grid; grid-template-columns: 3.2rem 1fr 1.1fr; gap: 0.9rem; align-items: center; padding: 0.55rem 0.9rem; border-radius: 0.8rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(3% + var(--k) * 1%), rgba(6,16,10,0.7)); box-shadow: 0 0 0 0 transparent; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
             .band:hover { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
             .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 2.1rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
             .who h2 { margin: 0; font-size: 1.15rem; line-height: 1.1; }
@@ -50,28 +50,32 @@
         </header>
         <p class="law">a layer knows only the layers below it · a substrate enters once · each layer ships alone</p>
         <main>
-            <section class="band" style="--k:5">
-                <div class="num">5</div>
+            <section class="band" style="--k:7">
+                <div class="num">7</div>
                 <div class="who"><h2>body</h2><p class="prod">cyb · cy · true-cyber · optica</p><p class="does">read · write · render — a neuron born as a record in a root: holds keys, talks to a node, shows what is linked, publishes the graph</p></div>
                 <div class="deps"><i data-f="mass">file</i><i data-f="play">spark</i><i data-f="play">prysm</i><i data-f="play">mir</i><i data-f="word">rune</i><i data-f="play">evy</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="form">honeycrisp</i><i data-f="play">nu</i><i data-f="play">optica</i><i data-f="mass">fs</i><i data-f="space">ward</i><i data-f="word">neural</i><i data-f="life">sigma</i><i data-f="work">wysm</i><i data-f="work">kern</i><i data-f="play">lytics</i></div>
+            </section><section class="band" style="--k:6">
+                <div class="num">6</div>
+                <div class="who"><h2>network</h2><p class="prod">bostrom · pussy</p><p class="does">root · register · checkpoint · certify — a root book with a token that other books register into, the machines that serve it, and the proofs that the rules are sound</p></div>
+                <div class="deps"><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="space">cybernode</i><i data-f="work">eidos</i></div>
+            </section><section class="band" style="--k:5">
+                <div class="num">5</div>
+                <div class="who"><h2>wire</h2><p class="prod">soft3 node — the book with the wire attached; layers 1–5</p><p class="does">transmit · sync · gossip · route · agree — the same book talking: transport, routing by locus over follow links, reconciliation, epochs agreed between nodes, the beacon</p></div>
+                <div class="deps"><i data-f="space">radio</i><i data-f="life">foculus</i></div>
             </section><section class="band" style="--k:4">
                 <div class="num">4</div>
-                <div class="who"><h2>network</h2><p class="prod">bostrom · pussy</p><p class="does">a root book with a token that other books register into, the nodes that agree on its root, and the proofs that the rules are sound</p></div>
-                <div class="deps"><i data-f="play">bostrom</i><i data-f="play">space-pussy</i><i data-f="space">cybernode</i><i data-f="work">eidos</i></div>
+                <div class="who"><h2>book</h2><p class="prod">soft3 — the library and the offline CLI; one neuron, one book</p><p class="does">link · measure · mint · keep · query — complete with the cable unplugged: keys, custody, the graph, φ* and locus over it, conservation, the bytes a particle is the hash of</p></div>
+                <div class="deps"><i data-f="mass">neuron</i><i data-f="mass">cybergraph</i><i data-f="life">tru</i><i data-f="mass">tok</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="space">tade</i><i data-f="word">inf</i></div>
             </section><section class="band" style="--k:3">
                 <div class="num">3</div>
-                <div class="who"><h2>node</h2><p class="prod">soft3 node — the composition of layers 0–3; one neuron, one book</p><p class="does">admit · order · finalize · settle · keep — signals become state, focus becomes reward, keys in custody</p></div>
-                <div class="deps"><i data-f="mass">neuron</i><i data-f="mass">cybergraph</i><i data-f="life">foculus</i><i data-f="life">tru</i><i data-f="mass">tok</i><i data-f="space">mudra</i><i data-f="space">vault</i><i data-f="space">tade</i><i data-f="space">radio</i><i data-f="word">inf</i></div>
-            </section><section class="band" style="--k:2">
-                <div class="num">2</div>
                 <div class="who"><h2>warrior</h2><p class="prod">joy</p><p class="does">run · prove · verify — executes the formula on nox, proves it with zheng; one warrior per machine</p></div>
                 <div class="deps"><i data-f="word">trident</i><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></div>
-            </section><section class="band" style="--k:1">
-                <div class="num">1</div>
+            </section><section class="band" style="--k:2">
+                <div class="num">2</div>
                 <div class="who"><h2>language</h2><p class="prod">trident · silicon</p><p class="does">compile · audit · hash · equiv — .tri → .nox with the cost report before you run</p></div>
                 <div class="deps"><i data-f="form">nebu</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
-            </section><section class="band" style="--k:0">
-                <div class="num">0</div>
+            </section><section class="band" style="--k:1">
+                <div class="num">1</div>
                 <div class="who"><h2>substrate</h2><p class="prod">strata · hemera · nox</p><p class="does">field · hash · machine — what every layer computes in</p></div>
                 <div class="deps"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="work">nox</i></div>
             </section>
