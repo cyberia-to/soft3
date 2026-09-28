@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung on soft3.org/layers — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (graph) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (browser) · 9 cyber (supernet) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung on soft3.org/layers — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -176,7 +176,7 @@ repo = "cybergraph"
 verb = "link"
 facet = "mass"
 layer = 4
-role = "graph"
+role = "brain"
 phase = "1"
 state = "live"
 
@@ -219,8 +219,8 @@ kind = "crate"
 repo = "mudra"
 verb = "encrypt"
 facet = "space"
-layer = 6
-part_of = "cy"
+layer = 4
+part_of = "cybergraph"
 phase = "1"
 state = "live"
 
@@ -420,7 +420,7 @@ repo = "cyb"
 verb = "embody"
 facet = "play"
 layer = 8
-role = "browser"
+role = "robot"
 phase = "1"
 state = "live"
 
@@ -453,7 +453,7 @@ repo = "cyber"
 verb = "root"
 facet = "play"
 layer = 9
-role = "supernet"
+role = "superintelligence"
 phase = "3"
 state = "spec — the protocol pages and the tracker; $CYB after the canary"
 
@@ -576,9 +576,9 @@ kind = "ops"
 repo = "cybernode"
 verb = "host"
 facet = "space"
-layer = 7
-part_of = "soft3"
-infrastructure = "soft3"
+layer = 10
+part_of = "cyberia"
+infrastructure = "cyberia"
 phase = "1"
 state = "live"
 
