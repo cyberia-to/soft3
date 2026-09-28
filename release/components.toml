@@ -165,7 +165,7 @@ verb = "act"
 facet = "mass"
 layer = 6
 part_of = "cy"
-note = "the identity crate neuron-id is consumed by cybergraph and sits with the graph; the runtime is the agent"
+note = "the subject of a signal is a neuron by definition: the identity crate neuron-id is part of the graph rung; the runtime, the mind and the balance are the agent"
 phase = "1"
 state = "local"
 
@@ -278,6 +278,17 @@ layer = 7
 role = "network"
 phase = "1"
 state = "live"
+
+[[component]]
+name = "signal"
+kind = "part"
+repo = "cybergraph"
+verb = "commit"
+facet = "mass"
+layer = 4
+part_of = "cybergraph"
+phase = "1"
+state = "the broadcast unit a subject commits: (subject, net, links, Δφ*, proof, h₀, h₁) — cybergraph/specs/signal.md; the graph is built from signals, a signal is built from cyberlinks"
 
 [[component]]
 name = "file"
