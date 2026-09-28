@@ -308,8 +308,8 @@ kind = "crate"
 repo = "spark"
 verb = "open"
 facet = "play"
-layer = 8
-part_of = "cyb"
+layer = 5
+part_of = "neural"
 phase = "1"
 state = "local"
 
