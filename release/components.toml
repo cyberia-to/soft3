@@ -163,9 +163,9 @@ kind = "crate"
 repo = "neuron"
 verb = "act"
 facet = "mass"
-layer = 6
-part_of = "cy"
-note = "the subject of a signal is a neuron by definition: the identity crate neuron-id is part of the graph rung; the runtime, the mind and the balance are the agent"
+layer = 4
+part_of = "cybergraph"
+note = "the subject of a signal is a neuron by definition; neuron and cybergraph are inseparable, so the whole crate sits with the brain"
 phase = "1"
 state = "local"
 
