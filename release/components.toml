@@ -364,8 +364,8 @@ kind = "product"
 repo = "true-cyber"
 verb = "embody"
 facet = "play"
-layer = 4
-part_of = "cy"
+layer = 8
+part_of = "cyber"
 phase = "1"
 state = "published"
 
