@@ -513,7 +513,7 @@ facet = "life"
 layer = 6
 part_of = "cy"
 phase = "after"
-state = "spec"
+state = "own repo 2026-09-29: the sum — a token registry with three measurements (price, balance, supply), one method each; live as a world in cyb"
 
 [[component]]
 name = "eidos"
