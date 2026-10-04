@@ -28,6 +28,10 @@ separate selections with explicit compatibility rules.
 
 [All specifications](specs/README.md) · [Shared vocabulary](specs/terms.md)
 
+[Verified bootstrap: development and ceremony](docs/verified-bootstrap.md)
+records the open path from a reviewed native nox seed through Trident and our
+own Rs toolchain to the complete paired stack.
+
 ## releases
 
 [Release train](specs/releases.md) owns stack qualification for soft3, cyber and

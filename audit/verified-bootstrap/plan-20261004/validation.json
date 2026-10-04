@@ -1,0 +1,77 @@
+{
+  "status": "passed-documentation-validation",
+  "command": [
+    "python3",
+    "/Users/master/cyber/.worktrees/verified-bootstrap-plan-20261004/soft3/audit/verified-bootstrap/plan-20261004/check-docs.py",
+    "--soft3",
+    "/Users/master/cyber/.worktrees/verified-bootstrap-plan-20261004/soft3",
+    "--rs",
+    "/Users/master/cyber/.worktrees/verified-bootstrap-plan-20261004/rs",
+    "--trident",
+    "/Users/master/cyber/.worktrees/selfhost-0.4-finalization-20261002/whole-proof-helper-v4/trident"
+  ],
+  "base_revision": "4820c3d032c3c336d725f18e7b3fb13816eeb128",
+  "head_at_validation": "4820c3d032c3c336d725f18e7b3fb13816eeb128",
+  "documents_sha256": {
+    "docs/verified-bootstrap.md": "bd207c1a021bc89031aa47eb2803386b4caa6a42a205b06b6e3cc5b8275f12ec",
+    "README.md": "82c0328f9c7a72e5b652245c5e7b6185a94992e1953156ba7c65de816b65d990",
+    "docs/README.md": "49338ca4817d7081f52d7832d97dddcd3dc4d1b183248755c6a6a6182450bf36"
+  },
+  "checks": [
+    "whitespace",
+    "documentation-and-audit-only diff",
+    "new local links and coordinated branch targets resolve locally",
+    "accepted design with all implementation gates open",
+    "agent memory within 1000 lines"
+  ],
+  "resolved_links": [
+    {
+      "document": "docs/verified-bootstrap.md",
+      "link": "https://github.com/cyberia-to/trident/blob/docs/0.4-dual-implementation-bootstrap/roadmap/verified-bootstrap.md"
+    },
+    {
+      "document": "docs/verified-bootstrap.md",
+      "link": "https://github.com/cyberia-to/rs/blob/docs/verified-bootstrap-rs/roadmap/verified-bootstrap.md"
+    },
+    {
+      "document": "README.md",
+      "link": "specs/vault.md"
+    },
+    {
+      "document": "README.md",
+      "link": "specs/execution-model.md"
+    },
+    {
+      "document": "README.md",
+      "link": "specs/README.md"
+    },
+    {
+      "document": "README.md",
+      "link": "specs/terms.md"
+    },
+    {
+      "document": "README.md",
+      "link": "docs/verified-bootstrap.md"
+    },
+    {
+      "document": "README.md",
+      "link": "specs/releases.md"
+    },
+    {
+      "document": "docs/README.md",
+      "link": "../specs/execution-model.md"
+    },
+    {
+      "document": "docs/README.md",
+      "link": "verified-bootstrap.md"
+    },
+    {
+      "document": "docs/README.md",
+      "link": "../specs/execution-model.md"
+    }
+  ],
+  "inherited_missing_links_unchanged": [],
+  "claude_markdown_lines": 0,
+  "new_cargo_build_or_test_run": false,
+  "bootstrap_acceptance": "none; this validates planning documents only"
+}
