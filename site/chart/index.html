@@ -48,7 +48,7 @@
             </header>
             <main class="chart-stage">
                 <aside class="side glass" id="inp"><div class="dir">in — what arrives</div><p class="hint">click a product or a component. the apps built on soft3 sit at the centre; the seven kernel and core products around them wear the colours of the flag, in order; every component rides the outer ring in its product's colour.</p></aside>
-                <section class="board glass"><svg id="stage" viewBox="0 0 2200 2200" aria-label="the chart"></svg></section>
+                <section class="board glass"><svg id="stage" viewBox="0 0 1600 1600" aria-label="the chart"></svg></section>
                 <aside class="side glass" id="outp"><div class="dir">out — what it feeds</div><p class="hint">the seven questions of the flag are the seven products: rules · made of · where · alive · meaning · made · coordinate.</p></aside>
             </main>
             <footer class="foot">
@@ -79,14 +79,34 @@
             // ── layout: the apps at the centre; every component on ONE outer ring, evenly
             //    spaced, grouped by product in ladder order clockwise from the top; each
             //    product's hub sits on the inner ring at the middle of its group ──
-            const CX = 1100, CY = 1100, HUB_R = 540, RING_R = 940, WOBBLE = 44;
+            const CX = 800, CY = 800, HUB_R = 352, RING_R = 598, WOBBLE = 74;
             const byLayer = {}; NODES.forEach((n) => (byLayer[n.layer] ||= []).push(n));
             const ringList = [];
             for (let k = 1; k <= 7; k++) byLayer[k].filter((n) => n.id !== LADDER[k - 1]).forEach((n) => ringList.push(n));
-            const slot = (2 * Math.PI) / ringList.length;
+            // pills are laid around the ring by their real width: two interleaved rows,
+            // a pill may not touch its same-row neighbour; the whole circle is then
+            // scaled to close exactly, and the type shrinks a notch if it must
+            const PILL = (n) => 44 + n.id.length * 25.5, GAP = 26;
+            let K = 1, angles = [];
+            for (let tries = 0; tries < 6; tries++) {
+                const rowR = [RING_R - WOBBLE, RING_R + WOBBLE];
+                const lastA = [null, null], lastW = [0, 0];
+                let prev = -Infinity; angles = [];
+                ringList.forEach((n, i) => {
+                    const row = i % 2, w = PILL(n) * K, r = rowR[row];
+                    let a = prev === -Infinity ? 0 : prev + 0.02;
+                    if (lastA[row] !== null) a = Math.max(a, lastA[row] + ((lastW[row] + w) / 2 + GAP) / r);
+                    angles.push(a); lastA[row] = a; lastW[row] = w; prev = a;
+                });
+                const n0 = ringList[0], nl = ringList[ringList.length - 1];
+                const close = angles[angles.length - 1] + ((PILL(nl) + PILL(n0)) * K / 2 + GAP) / (RING_R - WOBBLE);
+                const s = (2 * Math.PI) / close;
+                if (s >= 0.98) { angles = angles.map((x) => x * Math.min(s, 1.08)); break; }
+                K *= Math.sqrt(s);
+            }
             const pos = {}, hubPos = {}, groupAngles = {};
             ringList.forEach((n, i) => {
-                const a = -Math.PI / 2 + (i + 0.5) * slot;
+                const a = -Math.PI / 2 + angles[i] + 0.06;
                 const r = RING_R + (i % 2 ? WOBBLE : -WOBBLE);
                 pos[n.id] = { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a), a };
                 (groupAngles[n.layer] ||= []).push(a);
@@ -99,7 +119,7 @@
                 hubPos[LADDER[k - 1]] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 };
             }
             Object.assign(pos, hubPos);
-            pos["cyb"] = { x: CX, y: CY - 110 }; pos["cyber"] = { x: CX - 150, y: CY + 80 }; pos["cyberia"] = { x: CX + 160, y: CY + 80 };
+            pos["cyb"] = { x: CX, y: CY - 80 }; pos["cyber"] = { x: CX - 104, y: CY + 56 }; pos["cyberia"] = { x: CX + 110, y: CY + 56 };
 
             const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
             const el = (t, at, parent) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); (parent || svg).appendChild(e); return e; };
@@ -107,21 +127,21 @@
             Object.entries(FACETS).forEach(([f, v]) => { const m = el("marker", { id: "arr-" + f, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 8, markerHeight: 8, orient: "auto-start-reverse" }, defs); el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m); });
             const edgeLayer = el("g", {}), hubLayer = el("g", {}), nodeLayer = el("g", {});
 
-            el("circle", { cx: CX, cy: CY, r: 270, fill: "#06100a", "fill-opacity": 0.35, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.4 }, hubLayer);
-            el("circle", { cx: CX, cy: CY, r: 270, fill: "#7dffc4", "fill-opacity": 0.04, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
-            el("text", { x: CX, y: CY + 200, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 26 }, hubLayer).textContent = "built on soft3 — the point of the whole stack";
+            el("circle", { cx: CX, cy: CY, r: 196, fill: "#06100a", "fill-opacity": 0.35, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.4 }, hubLayer);
+            el("circle", { cx: CX, cy: CY, r: 196, fill: "#7dffc4", "fill-opacity": 0.04, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
+            el("text", { x: CX, y: CY + 150, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 20 }, hubLayer).textContent = "built on soft3 — the point of the whole stack";
             el("circle", { cx: CX, cy: CY, r: HUB_R, fill: "none", stroke: "rgba(255,248,240,0.12)", "stroke-width": 1.2, "stroke-dasharray": "4 8" }, hubLayer);
             el("circle", { cx: CX, cy: CY, r: RING_R, fill: "none", stroke: "rgba(255,248,240,0.09)", "stroke-width": 1.2 }, hubLayer);
             NODES.filter((n) => n.hub).forEach((n) => {
                 const { x, y } = hubPos[n.id], c = FACETS[n.f].c;
                 const g = el("g", { class: "hub", "data-id": n.id }, hubLayer);
-                el("circle", { cx: x, cy: y, r: 128, fill: "#06100a", "fill-opacity": 0.8 }, g);
-                el("circle", { cx: x, cy: y, r: 128, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
-                el("text", { x, y: y - 14, "text-anchor": "middle", fill: c, "font-size": 40, class: "hub-label" }, g).textContent = n.id.toUpperCase();
-                el("text", { x, y: y + 20, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 24 }, g).textContent = n.layer + " · " + n.role;
-                el("text", { x, y: y + 52, "text-anchor": "middle", fill: c, "fill-opacity": 0.95, "font-size": 24 }, g).textContent = FACETS[n.f].q;
+                el("circle", { cx: x, cy: y, r: 112, fill: "#06100a", "fill-opacity": 0.82 }, g);
+                el("circle", { cx: x, cy: y, r: 112, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
+                el("text", { x, y: y - 12, "text-anchor": "middle", fill: c, "font-size": n.id.length > 7 ? 26 : 32, class: "hub-label" }, g).textContent = n.id.toUpperCase();
+                el("text", { x, y: y + 20, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 22 }, g).textContent = n.layer + " · " + n.role;
+                el("text", { x, y: y + 52, "text-anchor": "middle", fill: c, "fill-opacity": 0.95, "font-size": 20 }, g).textContent = FACETS[n.f].q;
             });
-            NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.3, y1: h.y + (p.y - h.y) * 0.3, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.2, "stroke-width": 1.2 }, hubLayer); });
+            NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.45, y1: h.y + (p.y - h.y) * 0.45, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.2, "stroke-width": 1.2 }, hubLayer); });
 
             const edgeEls = [];
             EDGES.forEach(([a, b, label]) => {
@@ -135,10 +155,10 @@
 
             const nodeEls = {};
             NODES.filter((n) => !n.hub).forEach((n) => {
-                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = (apps ? 60 : 40) + n.id.length * (apps ? 28 : 21);
+                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = apps ? 56 + n.id.length * 26 : PILL(n) * K;
                 const g = el("g", { class: "node", "data-id": n.id }, nodeLayer);
-                el("rect", { x: x - w / 2, y: y - (apps ? 36 : 30), width: w, height: apps ? 72 : 60, rx: 30, fill: apps ? "rgba(6,16,10,0.85)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
-                el("text", { x, y: y + (apps ? 13 : 12), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 40 : 34, "font-weight": 700 }, g).textContent = n.id;
+                el("rect", { x: x - w / 2, y: y - (apps ? 34 : 34 * K), width: w, height: apps ? 68 : 68 * K, rx: 34, fill: apps ? "rgba(6,16,10,0.85)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
+                el("text", { x, y: y + (apps ? 13 : 16 * K), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 38 : 44 * K, "font-weight": 700 }, g).textContent = n.id;
                 nodeEls[n.id] = g;
             });
 
@@ -147,7 +167,7 @@
             const inp = document.getElementById("inp"), outp = document.getElementById("outp");
             const labelLayer = el("g", {});
             const clearLabels = () => { while (labelLayer.firstChild) labelLayer.firstChild.remove(); };
-            function labelEdge(e) { const x = (e.A.x + 2 * e.cx + e.B.x) / 4, y = (e.A.y + 2 * e.cy + e.B.y) / 4; el("text", { x, y: y - 8, "text-anchor": "middle", "font-size": 28, fill: "#fff8f0", "paint-order": "stroke", stroke: "#06100a", "stroke-width": 8 }, labelLayer).textContent = e.label; }
+            function labelEdge(e) { const x = (e.A.x + 2 * e.cx + e.B.x) / 4, y = (e.A.y + 2 * e.cy + e.B.y) / 4; el("text", { x, y: y - 8, "text-anchor": "middle", "font-size": 26, fill: "#fff8f0", "paint-order": "stroke", stroke: "#06100a", "stroke-width": 7 }, labelLayer).textContent = e.label; }
             const inDefault = inp.innerHTML, outDefault = outp.innerHTML;
             function tint(f) { const v = FACETS[f] || FACETS.apps; document.documentElement.style.setProperty("--facet", v.c); document.documentElement.style.setProperty("--accent-h", v.h); if (window.worldHue) worldHue(v.h - 150); }
             function release() { edgeEls.forEach((e) => { e.path.setAttribute("stroke-opacity", 0.32); e.path.setAttribute("stroke-width", 2.4); }); Object.values(nodeEls).forEach((g) => (g.style.opacity = 1)); hubLayer.querySelectorAll(".hub").forEach((g) => (g.style.opacity = 1)); clearLabels(); inp.innerHTML = inDefault; outp.innerHTML = outDefault; tint("apps"); history.replaceState(null, "", location.pathname); }
