@@ -137,9 +137,10 @@
                 const g = el("g", { class: "hub", "data-id": n.id }, hubLayer);
                 el("circle", { cx: x, cy: y, r: 112, fill: "#06100a", "fill-opacity": 0.82 }, g);
                 el("circle", { cx: x, cy: y, r: 112, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
-                el("text", { x, y: y - 12, "text-anchor": "middle", fill: c, "font-size": n.id.length > 7 ? 26 : 32, class: "hub-label" }, g).textContent = n.id.toUpperCase();
-                el("text", { x, y: y + 20, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 22 }, g).textContent = n.layer + " · " + n.role;
-                el("text", { x, y: y + 52, "text-anchor": "middle", fill: c, "fill-opacity": 0.95, "font-size": 20 }, g).textContent = FACETS[n.f].q;
+                // the hub says only what it is: the name and the role; the number and the
+                // question stay on the ladder and in the side panel
+                el("text", { x, y: y + 2, "text-anchor": "middle", fill: c, "font-size": n.id.length > 7 ? 28 : 34, class: "hub-label" }, g).textContent = n.id.toUpperCase();
+                el("text", { x, y: y + 34, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 22 }, g).textContent = n.role;
             });
             NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.45, y1: h.y + (p.y - h.y) * 0.45, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.2, "stroke-width": 1.2 }, hubLayer); });
 
