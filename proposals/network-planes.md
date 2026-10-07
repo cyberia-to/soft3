@@ -82,6 +82,6 @@ this proposal closes only when all of the following hold:
 
 ## sequencing
 
-specification first: this page, the certificate format in `foculus/specs/epoch.md`, the module map above as `foculus/README.md`. implementation after the harness work in flight — not before, not interleaved — in the order sync → foculus → solong, since each cut only frees the next. the ladder already reads in planes ([soft3.org/layers](https://soft3.org/layers), rung 7).
+specification first: this page, the certificate format in `foculus/specs/epoch.md`, the module map above as `foculus/README.md`. implementation after the harness work in flight — not before, not interleaved — in the order sync → foculus → solong, since each cut only frees the next. the ladder already reads in planes ([soft3.org](https://soft3.org), rung 7).
 
 [[radio]] · [[foculus]] · [[tade]] · [[tok]] · [[tru]] · [[cybergraph]] · [[soft3/proposals/tade-one-exchange|tade — one exchange format]]

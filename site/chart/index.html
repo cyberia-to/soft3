@@ -4,510 +4,157 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>soft3 — the chart</title>
-        <meta
-            name="description"
-            content="the principled interaction chart of the soft3 stack: seven facet hubs, every component, every concrete input and output"
-        />
+        <meta name="description" content="the soft3 stack as one chart: the three apps at the centre, the seven kernel and core products around them, every component on the outer ring; click anything to read what flows in and what flows out" />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
-            rel="icon"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+        <link href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" rel="icon" />
         <style>
-            :root {
-                --cream: #fff8f0;
-                --mint: #7dffc4;
-            }
+            :root { --cream: #fff8f0; --mint: #7dffc4; }
             * { box-sizing: border-box; }
-            body {
-                margin: 0;
-                background: #06100a;
-                color: var(--cream);
-                font-family: Play, system-ui, sans-serif;
-                min-height: 100vh;
-            }
-            header {
-                display: flex;
-                align-items: baseline;
-                gap: 1rem;
-                padding: 1rem 1.4rem 0.4rem;
-                flex-wrap: wrap;
-            }
-            header a { color: var(--mint); text-decoration: none; }
-            header a:hover { text-decoration: underline; }
-            h1 {
-                margin: 0;
-                font-size: 1rem;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-            }
-            h1 em { color: var(--mint); font-style: normal; }
-            .sub {
-                font-size: 0.72rem;
-                color: rgba(255, 248, 240, 0.6);
-            }
-            .wrap {
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) 300px;
-                gap: 0.6rem;
-                padding: 0 1rem 1rem;
-                align-items: start;
-            }
-            @media (max-width: 900px) {
-                .wrap { grid-template-columns: 1fr; }
-            }
-            #stage {
-                width: 100%;
-                aspect-ratio: 1;
-                max-height: 92vh;
-                display: block;
-            }
-            .panel {
-                position: sticky;
-                top: 0.6rem;
-                border: 1px solid rgba(255, 255, 255, 0.14);
-                border-radius: 0.8rem;
-                background: rgba(6, 16, 10, 0.72);
-                padding: 0.9rem 1rem;
-                font-size: 0.78rem;
-                line-height: 1.45;
-                min-height: 12rem;
-            }
-            .panel h2 {
-                margin: 0 0 0.1rem;
-                font-size: 0.95rem;
-                letter-spacing: 0.04em;
-            }
-            .panel .facet-tag {
-                font-size: 0.6rem;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                opacity: 0.85;
-            }
-            .panel .io {
-                margin: 0.6rem 0 0;
-                padding: 0;
-                list-style: none;
-            }
-            .panel .io li {
-                margin: 0.22rem 0;
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.66rem;
-                color: rgba(255, 248, 240, 0.82);
-            }
-            .panel .io b {
-                font-weight: 700;
-                color: var(--cream);
-            }
-            .panel .hint {
-                color: rgba(255, 248, 240, 0.55);
-                font-size: 0.7rem;
-            }
-            .panel .dir {
-                margin-top: 0.55rem;
-                font-size: 0.6rem;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: rgba(255, 248, 240, 0.5);
-            }
-            /* svg text */
+            body { margin: 0; background: #06100a; color: var(--cream); font-family: Play, system-ui, sans-serif; min-height: 100vh; }
+            header { display: flex; align-items: baseline; gap: 1rem; padding: 1rem 1.4rem 0.4rem; flex-wrap: wrap; }
+            header a { color: var(--mint); text-decoration: none; } header a:hover { text-decoration: underline; }
+            h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; } h1 em { color: var(--mint); font-style: normal; }
+            .sub { font-size: 0.72rem; color: rgba(255,248,240,0.6); }
+            .wrap { display: grid; grid-template-columns: 250px minmax(0, 1fr) 250px; gap: 0.6rem; padding: 0 1rem 1rem; align-items: start; }
+            @media (max-width: 1000px) { .wrap { grid-template-columns: 1fr; } .side { position: static; } }
+            #stage { width: 100%; aspect-ratio: 1; max-height: 92vh; display: block; }
+            .side { position: sticky; top: 0.6rem; border: 1px solid rgba(255,255,255,0.14); border-radius: 0.8rem; background: rgba(6,16,10,0.72); padding: 0.8rem 0.9rem; font-size: 0.76rem; line-height: 1.45; min-height: 10rem; }
+            .side h2 { margin: 0 0 0.1rem; font-size: 0.95rem; letter-spacing: 0.04em; }
+            .side .tag { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; }
+            .side .dir { margin: 0.1rem 0 0.4rem; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
+            .side .io { margin: 0; padding: 0; list-style: none; }
+            .side .io li { margin: 0.22rem 0; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.64rem; color: rgba(255,248,240,0.82); }
+            .side .io b { font-weight: 700; color: var(--cream); }
+            .side .hint { color: rgba(255,248,240,0.55); font-size: 0.68rem; }
+            .side .q { color: var(--mint); font-size: 0.9rem; margin: 0.2rem 0 0.3rem; }
             text { font-family: "JetBrains Mono", ui-monospace, monospace; }
-            .hub-label {
-                font-family: Play, system-ui, sans-serif;
-                font-weight: 700;
-                letter-spacing: 0.18em;
-            }
-            .node { cursor: pointer; }
-            .foot {
-                padding: 0 1.4rem 1.2rem;
-                font-size: 0.66rem;
-                color: rgba(255, 248, 240, 0.45);
-            }
+            .hub-label { font-family: Play, system-ui, sans-serif; font-weight: 700; letter-spacing: 0.12em; }
+            .node, .hub { cursor: pointer; }
+            .foot { padding: 0 1.4rem 1.2rem; font-size: 0.66rem; color: rgba(255,248,240,0.45); display: flex; gap: 1rem; flex-wrap: wrap; }
+            .foot i { font-style: normal; width: 0.5rem; height: 0.5rem; border-radius: 999px; display: inline-block; background: var(--fc); margin-right: 0.25rem; vertical-align: middle; }
         </style>
     </head>
     <body>
         <header>
             <h1><a href="/">soft3</a> · the <em>chart</em></h1>
-            <span class="sub">
-                every component, every concrete input and output — click a
-                component and its wires say what flows. the one-glance idea:
-                <a href="/scheme/" style="color: var(--mint)">/scheme</a>
-            </span>
+            <span class="sub">the apps at the centre, the seven kernel and core products around them — each coloured by the question it answers — every component on the outer ring. click anything: what arrives on the left, what it feeds on the right. the one-glance idea: <a href="/scheme/">/scheme</a></span>
         </header>
         <div class="wrap">
-            <svg id="stage" viewBox="0 0 1500 1160"></svg>
-            <aside class="panel" id="panel">
-                <h2>the whole stack</h2>
-                <p class="hint">
-                    seven facets as hubs, arranged as the cyberia flag; every
-                    arrow a real flow from one component's output into
-                    another's input. at the centre, the point of it all —
-                    <b>cyb</b> the body, <b>cyber</b> the mind,
-                    <b>cyberia</b> the state — a cycle the stack exists to
-                    turn. above, products keep growing on it. click any node
-                    for its exact inputs and outputs.
-                </p>
-                <p class="hint">
-                    dashed nodes — <b>vault</b> (keep secrets) and
-                    <b>sigma</b> (evaluate) — are proposed seats, not yet
-                    repos.
-                </p>
-            </aside>
+            <aside class="side" id="inp"><div class="dir">in — what arrives</div><p class="hint">click a product or a component.</p></aside>
+            <svg id="stage" viewBox="0 0 1500 1500"></svg>
+            <aside class="side" id="outp"><div class="dir">out — what it feeds</div><p class="hint">the seven questions of the flag are the seven kernel and core products: rules · made of · where · alive · meaning · made · coordinate.</p></aside>
         </div>
         <p class="foot">
-            drawn from component-boundaries and the status registry ·
-            <a style="color: var(--mint)" href="https://cyber.page/soft3/">docs</a>
+            <span><i style="--fc:#00ff00"></i>form</span><span><i style="--fc:#0000ff"></i>mass</span><span><i style="--fc:#4000ff"></i>space</span><span><i style="--fc:#8000ff"></i>life</span><span><i style="--fc:#ff0000"></i>word</span><span><i style="--fc:#ff8000"></i>work</span><span><i style="--fc:#ffff00"></i>play</span>
+            <span>drawn from release/components.toml and the proposals · <a style="color: var(--mint)" href="https://cyber.page/soft3/">docs</a></span>
         </p>
         <script>
-            // ── the data: facets, components, and the concrete flows ─────
             const FACETS = {
-                form: { c: "#00ff00", t: "#0a120e" },
-                mass: { c: "#0000ff", t: "#0a120e" },
-                space: { c: "#4000ff", t: "#fff8f0" },
-                life: { c: "#8000ff", t: "#fff8f0" },
-                word: { c: "#ff0000", t: "#fff8f0" },
-                work: { c: "#ff8000", t: "#0a120e" },
-                play: { c: "#ffff00", t: "#0a120e" },
-                apps: { c: "#fff8f0", t: "#0a120e" },
-                core: { c: "#7dffc4", t: "#0a120e" },
+                form: { c: "#00ff00", t: "#0a120e", q: "what are the rules?" },
+                mass: { c: "#0000ff", t: "#fff8f0", q: "what is it made of?" },
+                space: { c: "#4000ff", t: "#fff8f0", q: "where does it happen?" },
+                life: { c: "#8000ff", t: "#fff8f0", q: "who is alive?" },
+                word: { c: "#ff0000", t: "#fff8f0", q: "what does it mean?" },
+                work: { c: "#ff8000", t: "#0a120e", q: "how is it made?" },
+                play: { c: "#ffff00", t: "#0a120e", q: "how do we coordinate?" },
+                apps: { c: "#fff8f0", t: "#0a120e", q: "" },
             };
-            // order around the ring, exactly as the flag: form at the top,
-            // clockwise. apps ride above the crown.
-            const RING = ["form", "mass", "space", "life", "word", "work", "play"];
-            const NODES = [
-                { id: "honeycrisp", f: "form" },
-                { id: "strata", f: "form" },
-                { id: "lens", f: "form" },
-                { id: "hemera", f: "form" },
-                { id: "cybergraph", f: "mass" },
-                { id: "bbg", f: "mass" },
-                { id: "fs", f: "mass" },
-                { id: "tok", f: "mass" },
-                { id: "cell", f: "mass" },
-                { id: "mudra", f: "space" },
-                { id: "vault", f: "space", ghost: true },
-                { id: "radio", f: "space" },
-                { id: "tape", f: "space" },
-                { id: "ward", f: "space" },
-                { id: "foculus", f: "life" },
-                { id: "tru", f: "life" },
-                { id: "sigma", f: "life", ghost: true },
-                { id: "soma", f: "life" },
-                { id: "neural", f: "word" },
-                { id: "inf", f: "word" },
-                { id: "rune", f: "word" },
-                { id: "trident", f: "word" },
-                { id: "nox", f: "work" },
-                { id: "zheng", f: "work" },
-                { id: "glia", f: "work" },
-                { id: "eidos", f: "work" },
-                { id: "wysm", f: "work" },
-                { id: "kern", f: "work" },
-                { id: "mir", f: "play" },
-                { id: "prysm", f: "play" },
-                { id: "lytics", f: "play" },
-                { id: "cyb", f: "core" },
-                { id: "cyber", f: "core" },
-                { id: "cyberia", f: "core" },
-                { id: "erga", f: "apps" },
-                { id: "optica", f: "apps" },
-                { id: "studio", f: "apps" },
-                { id: "zoya", f: "apps" },
-                { id: "mona", f: "apps" },
-                { id: "xena", f: "apps" },
-            ];
-            // [from, to, what flows] — producer feeds consumer
-            const EDGES = [
-                ["honeycrisp", "strata", "NEON · AMX · Metal kernels"],
-                ["honeycrisp", "glia", "ANE inference"],
-                ["honeycrisp", "erga", "the silicon"],
-                ["honeycrisp", "zoya", "the silicon"],
-                ["honeycrisp", "mona", "the silicon"],
-                ["honeycrisp", "xena", "the silicon"],
-                ["strata", "hemera", "𝔽_p arithmetic"],
-                ["strata", "lens", "three algebras"],
-                ["strata", "nox", "field ops"],
-                ["hemera", "cybergraph", "particle ids"],
-                ["hemera", "mudra", "identity hashing"],
-                ["hemera", "radio", "verified streams"],
-                ["hemera", "foculus", "NMT trees"],
-                ["lens", "bbg", "commitments · openings"],
-                ["lens", "zheng", "Brakedown PCS"],
-                ["cybergraph", "bbg", "state writes"],
-                ["cybergraph", "tru", "the link graph"],
-                ["cybergraph", "neural", "motifs"],
-                ["cybergraph", "mir", "positions + features"],
-                ["cybergraph", "lytics", "events"],
-                ["mudra", "lytics", "visitor identity"],
-                ["lytics", "cybergraph", "measured attention as links"],
-                ["cybergraph", "optica", "the graph, published"],
-                ["cell", "studio", "signed signals"],
-                ["bbg", "inf", "reads with proofs"],
-                ["bbg", "foculus", "state roots"],
-                ["cell", "cybergraph", "applied signals"],
-                ["cell", "radio", "cast frames"],
-                ["cell", "cyb", "the local node"],
-                ["ward", "cyb", "permissions"],
-                ["fs", "cell", "mounted patches"],
-                ["tok", "cybergraph", "value moves"],
-                ["mudra", "cell", "signatures"],
-                ["mudra", "radio", "transport crypto"],
-                ["mudra", "foculus", "VDF"],
-                ["vault", "mudra", "sealed keys"],
-                ["radio", "cell", "peer frames"],
-                ["tape", "radio", "wire framing"],
-                ["tape", "prysm", "dialect chunks"],
-                ["ward", "cybergraph", "gated writes"],
-                ["tru", "foculus", "φ* fork-choice"],
-                ["tru", "tok", "Δφ* rewards"],
-                ["tru", "sigma", "scores"],
-                ["foculus", "cell", "signal-frame codec"],
-                ["soma", "cell", "thought links"],
-                ["soma", "cyb", "the mind"],
-                ["sigma", "cybergraph", "evaluations as links"],
-                ["neural", "soma", "meaning"],
-                ["trident", "nox", ".nox programs"],
-                ["rune", "nox", "lowered eval"],
-                ["rune", "ward", "effects + caps"],
-                ["inf", "bbg", "datalog queries"],
-                ["inf", "sigma", "query results"],
-                ["inf", "lytics", "reports"],
-                ["nox", "zheng", "execution traces"],
-                ["zheng", "cybergraph", "proof particles"],
-                ["zheng", "eidos", "certificates"],
-                ["eidos", "cybergraph", "theorem links"],
-                ["glia", "soma", "inference"],
-                ["glia", "rune", "model witness"],
-                ["wysm", "nox", "souls via trident LIR"],
-                ["wysm", "rune", "host witness"],
-                ["kern", "rune", "shader witness"],
-                ["mir", "cyb", "the rendered world"],
-                ["prysm", "cyb", "the painted surface"],
-                ["cybergraph", "cyber", "the shared graph"],
-                ["tru", "cyber", "one focus"],
-                ["foculus", "cyber", "finality"],
-                ["tok", "cyberia", "the economy"],
-                ["sigma", "cyberia", "civil evaluation"],
-                ["cyb", "cyber", "bodies feed the mind"],
-                ["cyber", "cyberia", "guides the state"],
-                ["cyberia", "cyb", "citizens embody"],
-            ];
+            const NODES = [{"id": "nox", "f": "form", "layer": 1, "hub": true, "role": "machine", "thesis": "virtual machine: field, hash, run", "q": "what are the rules?"}, {"id": "trident", "f": "work", "layer": 2, "hub": true, "role": "weapon", "thesis": "compiler: .tri to .nox, cost known before it runs", "q": "how is it made?"}, {"id": "joy", "f": "space", "layer": 3, "hub": true, "role": "warrior", "thesis": "runtime: runs, proves and stores", "q": "where does it happen?"}, {"id": "cybergraph", "f": "mass", "layer": 4, "hub": true, "role": "brain", "thesis": "the book: neuron, tokens, signals, files, links, focus", "q": "what is it made of?"}, {"id": "neural", "f": "word", "layer": 5, "hub": true, "role": "language", "thesis": "what can be said over the book: languages and dialects", "q": "what does it mean?"}, {"id": "cy", "f": "life", "layer": 6, "hub": true, "role": "agent", "thesis": "the mind over the book: one chroma, headless anywhere", "q": "who is alive?"}, {"id": "soft3", "f": "play", "layer": 7, "hub": true, "role": "network", "thesis": "agents connected: files by particle, epochs agreed", "q": "how do we coordinate?"}, {"id": "cyb", "f": "apps", "layer": 8, "hub": false, "role": "robot", "thesis": "cy with a body: eyes, ears, pictures — paints the chroma", "q": ""}, {"id": "cyber", "f": "apps", "layer": 9, "hub": false, "role": "superintelligence", "thesis": "the network of networks thinking as one", "q": ""}, {"id": "cyberia", "f": "apps", "layer": 10, "hub": false, "role": "state", "thesis": "the cyberstate: machines, land, citizens and money", "q": ""}, {"id": "strata", "f": "form", "layer": 1, "hub": false, "verb": "math", "note": ""}, {"id": "hemera", "f": "form", "layer": 1, "hub": false, "verb": "hash", "note": ""}, {"id": "tine", "f": "word", "layer": 2, "hub": false, "verb": "parse", "note": ""}, {"id": "tir", "f": "word", "layer": 2, "hub": false, "verb": "represent", "note": ""}, {"id": "toll", "f": "work", "layer": 2, "hub": false, "verb": "audit", "note": ""}, {"id": "forge", "f": "work", "layer": 2, "hub": false, "verb": "lower", "note": ""}, {"id": "atlas", "f": "word", "layer": 5, "hub": false, "verb": "package", "note": ""}, {"id": "lsp", "f": "play", "layer": 2, "hub": false, "verb": "edit", "note": ""}, {"id": "lens", "f": "form", "layer": 3, "hub": false, "verb": "commit", "note": ""}, {"id": "zheng", "f": "work", "layer": 3, "hub": false, "verb": "prove", "note": ""}, {"id": "bbg", "f": "mass", "layer": 3, "hub": false, "verb": "store", "note": ""}, {"id": "neuron", "f": "mass", "layer": 4, "hub": false, "verb": "act", "note": "the subject of a signal is a neuron by definition; neuron and cybergraph are inseparable, so the whole crate sits with the brain"}, {"id": "foculus", "f": "life", "layer": 7, "hub": false, "verb": "agree", "note": ""}, {"id": "tru", "f": "life", "layer": 4, "hub": false, "verb": "converge", "note": ""}, {"id": "tok", "f": "mass", "layer": 4, "hub": false, "verb": "pay", "note": "the plumb repo is tok's value operations (pay, lock, mint, burn): the same component, one name — tok"}, {"id": "mudra", "f": "space", "layer": 4, "hub": false, "verb": "encrypt", "note": ""}, {"id": "vault", "f": "space", "layer": 6, "hub": false, "verb": "keep", "note": ""}, {"id": "tade", "f": "space", "layer": 4, "hub": false, "verb": "frame", "note": ""}, {"id": "radio", "f": "space", "layer": 7, "hub": false, "verb": "transmit", "note": ""}, {"id": "inf", "f": "word", "layer": 5, "hub": false, "verb": "query", "note": ""}, {"id": "signal", "f": "mass", "layer": 4, "hub": false, "verb": "commit", "note": ""}, {"id": "file", "f": "mass", "layer": 4, "hub": false, "verb": "name", "note": ""}, {"id": "spark", "f": "play", "layer": 5, "hub": false, "verb": "open", "note": ""}, {"id": "prysm", "f": "play", "layer": 8, "hub": false, "verb": "paint", "note": ""}, {"id": "mir", "f": "play", "layer": 8, "hub": false, "verb": "render", "note": ""}, {"id": "rune", "f": "word", "layer": 5, "hub": false, "verb": "eval", "note": ""}, {"id": "evy", "f": "play", "layer": 8, "hub": false, "verb": "draw", "note": ""}, {"id": "soma", "f": "life", "layer": 6, "hub": false, "verb": "think", "note": ""}, {"id": "glia", "f": "work", "layer": 6, "hub": false, "verb": "infer", "note": ""}, {"id": "honeycrisp", "f": "form", "layer": 1, "hub": false, "verb": "accelerate", "note": ""}, {"id": "nu", "f": "play", "layer": 5, "hub": false, "verb": "console", "note": ""}, {"id": "optica", "f": "play", "layer": 8, "hub": false, "verb": "publish", "note": ""}, {"id": "bostrom", "f": "play", "layer": 9, "hub": false, "verb": "root", "note": ""}, {"id": "pussy", "f": "play", "layer": 9, "hub": false, "verb": "root", "note": ""}, {"id": "fs", "f": "mass", "layer": 5, "hub": false, "verb": "mount", "note": ""}, {"id": "ward", "f": "space", "layer": 6, "hub": false, "verb": "authorize", "note": ""}, {"id": "eidos", "f": "work", "layer": 5, "hub": false, "verb": "certify", "note": ""}, {"id": "wysm", "f": "work", "layer": 8, "hub": false, "verb": "sandbox", "note": ""}, {"id": "kern", "f": "work", "layer": 8, "hub": false, "verb": "shade", "note": ""}, {"id": "lytics", "f": "play", "layer": 8, "hub": false, "verb": "measure", "note": ""}, {"id": "cybernode", "f": "space", "layer": 10, "hub": false, "verb": "host", "note": ""}, {"id": "cx", "f": "mass", "layer": 10, "hub": false, "verb": "index", "note": ""}, {"id": "cyberstates", "f": "play", "layer": 10, "hub": false, "verb": "rank", "note": ""}, {"id": "my", "f": "play", "layer": 10, "hub": false, "verb": "settle", "note": ""}, {"id": "cyber-valley", "f": "space", "layer": 10, "hub": false, "verb": "build", "note": ""}, {"id": "cve", "f": "work", "layer": 10, "hub": false, "verb": "manage", "note": ""}, {"id": "blog", "f": "play", "layer": 10, "hub": false, "verb": "chronicle", "note": ""}, {"id": "kadek", "f": "play", "layer": 8, "hub": false, "verb": "decode", "note": ""}, {"id": "avatar", "f": "play", "layer": 8, "hub": false, "verb": "show", "note": ""}, {"id": "brain", "f": "play", "layer": 8, "hub": false, "verb": "paint", "note": ""}, {"id": "vision", "f": "play", "layer": 8, "hub": false, "verb": "see", "note": ""}, {"id": "seer", "f": "life", "layer": 6, "hub": false, "verb": "propose", "note": ""}, {"id": "soul", "f": "life", "layer": 6, "hub": false, "verb": "define", "note": ""}, {"id": "state", "f": "space", "layer": 6, "hub": false, "verb": "verify", "note": ""}, {"id": "body", "f": "form", "layer": 6, "hub": false, "verb": "measure", "note": ""}, {"id": "name", "f": "mass", "layer": 4, "hub": false, "verb": "resolve", "note": ""}, {"id": "rs", "f": "form", "layer": 5, "hub": false, "verb": "systems", "note": ""}, {"id": "chroma", "f": "life", "layer": 6, "hub": false, "verb": "show", "note": "one component: the eight organs that show — now · voice · name · sense · sigma · memory · com · time — on a 3×3 grid; cy/chroma"}, {"id": "sync", "f": "mass", "layer": 7, "hub": false, "verb": "reconcile", "note": "the data plane of foculus — ordering, availability, local merge, history trust; soft3/proposals/network-planes"}, {"id": "solong", "f": "work", "layer": 7, "hub": false, "verb": "reward", "note": "the incentive plane of foculus — tickets, fold-mining, Shapley settlement; named after Shapley's So Long Sucker; soft3/proposals/network-planes"}];
+            const ORGANS = ["sigma", "com", "memory", "voice", "time", "sense", "now", "plan", "log"];
+            const EDGES = [["honeycrisp", "strata", "NEON · AMX · Metal kernels"], ["honeycrisp", "glia", "ANE inference"], ["strata", "hemera", "𝔽_p arithmetic"], ["strata", "lens", "three algebras"], ["strata", "nox", "field ops"], ["hemera", "cybergraph", "particle ids"], ["hemera", "mudra", "identity hashing"], ["hemera", "radio", "verified streams"], ["hemera", "sync", "NMT node rule"], ["lens", "bbg", "commitments · openings"], ["lens", "zheng", "Brakedown PCS"], ["nox", "joy", "the machine it runs"], ["trident", "joy", ".nox bundles"], ["zheng", "joy", "proofs"], ["bbg", "joy", "state"], ["tine", "trident", "syntax"], ["tir", "trident", "the IR"], ["toll", "trident", "cost before it runs"], ["forge", "trident", "lowering to nox"], ["lsp", "trident", "editor"], ["cybergraph", "bbg", "state writes"], ["cybergraph", "tru", "the link graph"], ["cybergraph", "neural", "motifs"], ["cybergraph", "mir", "positions + features"], ["cybergraph", "lytics", "events"], ["cybergraph", "optica", "the graph, published"], ["lytics", "cybergraph", "measured attention as links"], ["bbg", "inf", "reads with proofs"], ["bbg", "sync", "state roots"], ["neuron", "cybergraph", "signed signals"], ["neuron", "cyb", "the local subject"], ["signal", "cybergraph", "the broadcast unit"], ["file", "cybergraph", "the bytes a neuron keeps"], ["name", "cybergraph", "naming links"], ["ward", "cyb", "permissions"], ["ward", "cybergraph", "gated writes"], ["fs", "neuron", "mounted patches"], ["tok", "cybergraph", "value moves"], ["mudra", "neuron", "seal · quorum for the subject"], ["mudra", "vault", "sealed keys"], ["vault", "neuron", "signed actions"], ["radio", "sync", "peer frames"], ["sync", "radio", "frames to carry"], ["tade", "radio", "wire framing"], ["tade", "sync", "sync-protocol frames"], ["tade", "prysm", "dialect chunks"], ["tade", "cyb", "the durable log"], ["tru", "foculus", "φ* fork-choice"], ["tru", "solong", "Δφ* · Shapley marginals"], ["tru", "chroma", "scores for sigma"], ["sync", "foculus", "chain · vdf · tip"], ["sync", "cybergraph", "signal codec · frames"], ["foculus", "solong", "beacon · epoch certificate"], ["solong", "cyb", "settled tickets · pay receipts"], ["foculus", "cyber", "finality"], ["soma", "neuron", "thought links"], ["soma", "cy", "the mind"], ["glia", "soma", "inference"], ["glia", "rune", "model witness"], ["seer", "neuron", "the next cyberlink"], ["soul", "soma", "what to run"], ["state", "chroma", "graded answers for sense and sigma"], ["body", "chroma", "energy and work as rows of sigma"], ["chroma", "cybergraph", "evaluations as links"], ["chroma", "cy", "the shape of the agent"], ["chroma", "cyb", "the shape to paint"], ["cy", "cyb", "the agent, embodied"], ["neural", "soma", "meaning"], ["trident", "nox", ".nox programs"], ["rune", "nox", "lowered eval"], ["rune", "ward", "effects + caps"], ["inf", "bbg", "datalog queries"], ["inf", "chroma", "query results for sigma"], ["inf", "lytics", "reports"], ["spark", "prysm", "what a file renders to"], ["spark", "chroma", "what to show in cells"], ["atlas", "trident", "packages as cards"], ["rs", "trident", "reference implementations"], ["nu", "chroma", "the shell com speaks"], ["nox", "zheng", "execution traces"], ["zheng", "cybergraph", "proof particles"], ["zheng", "eidos", "certificates"], ["eidos", "trident", "self-verification"], ["eidos", "cybergraph", "theorem links"], ["wysm", "nox", "souls via trident LIR"], ["wysm", "rune", "host witness"], ["kern", "rune", "shader witness"], ["mir", "cyb", "the rendered world"], ["prysm", "cyb", "the painted surface"], ["optica", "cyb", "published pages"], ["kadek", "cyb", "the images"], ["avatar", "cyb", "the face of the name"], ["brain", "cyb", "memory, rendered"], ["vision", "cyb", "sight"], ["evy", "cyb", "the engine"], ["cybergraph", "cyber", "the shared graph"], ["tru", "cyber", "one focus"], ["bostrom", "cyber", "the first network"], ["pussy", "cyber", "the second network"], ["tok", "cyberia", "the economy"], ["cx", "cyberia", "the century index"], ["cybernode", "cyberia", "the machines"], ["blog", "cyberia", "the voice"], ["cyberstates", "cyberia", "the map of states"], ["my", "cyberia", "the citizen's page"], ["cyber-valley", "cyberia", "the land"], ["cve", "cyberia", "the venture"], ["cyb", "cyber", "bodies feed the mind"], ["cyber", "cyberia", "guides the state"], ["cyberia", "cyb", "citizens embody"]];
+            const LADDER = ["nox","trident","joy","cybergraph","neural","cy","soft3","cyb","cyber","cyberia"];
 
-            // ── layout: hubs on the flag heptagon, components on an outer
-            //    arc around their hub, apps in a crown above ──────────────
-            const CX = 750, CY = 640, HUB_R = 240, NODE_R = 455, APP_R = 580;
-            const pos = {};
-            const hubPos = {};
-            RING.forEach((f, i) => {
-                const a = -Math.PI / 2 + (i * 2 * Math.PI) / 7;
-                hubPos[f] = { x: CX + HUB_R * Math.cos(a), y: CY + HUB_R * Math.sin(a), a };
-            });
-            RING.forEach((f) => {
-                const members = NODES.filter((n) => n.f === f);
-                const spread = 0.19; // radians between siblings
+            // ── layout: apps at the centre; ten sectors clockwise from the top in ladder
+            //    order; hubs (1–7) on the inner ring at their sector; every component on
+            //    the outer ring inside its product's sector ─────────────────────────
+            const CX = 750, CY = 750, HUB_R = 300, NODE_R = 560;
+            const byLayer = {};
+            NODES.forEach((n) => (byLayer[n.layer] ||= []).push(n));
+            const SECTORS = 10, step = (2 * Math.PI) / SECTORS;
+            const secAngle = (k) => -Math.PI / 2 + (k - 1) * step;
+            const pos = {}, hubPos = {};
+            for (let k = 1; k <= 10; k++) {
+                const prod = NODES.find((n) => n.id === LADDER[k - 1]);
+                const members = byLayer[k].filter((n) => n !== prod);
+                const a0 = secAngle(k);
+                if (prod.hub) hubPos[prod.id] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 };
+                const spread = Math.min(0.11, (step * 0.86) / Math.max(1, members.length - 1));
                 members.forEach((n, i) => {
-                    const a = hubPos[f].a + (i - (members.length - 1) / 2) * spread;
-                    pos[n.id] = { x: CX + NODE_R * Math.cos(a), y: CY + NODE_R * Math.sin(a) };
+                    const a = a0 + (i - (members.length - 1) / 2) * spread;
+                    const r = NODE_R + (members.length > 6 && i % 2 ? 54 : 0);
+                    pos[n.id] = { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
                 });
-            });
-            NODES.filter((n) => n.f === "apps").forEach((n, i, all) => {
-                const a = -Math.PI / 2 + (i - (all.length - 1) / 2) * 0.155;
-                pos[n.id] = { x: CX + APP_R * Math.cos(a), y: CY + APP_R * Math.sin(a) };
-            });
-            // the trinity: what the whole stack is for, at the very centre
-            pos["cyb"] = { x: CX, y: CY - 58 };
-            pos["cyber"] = { x: CX - 64, y: CY + 44 };
-            pos["cyberia"] = { x: CX + 66, y: CY + 44 };
-
-            // ── draw ─────────────────────────────────────────────────────
-            const svg = document.getElementById("stage");
-            const NS = "http://www.w3.org/2000/svg";
-            const el = (t, at, parent) => {
-                const e = document.createElementNS(NS, t);
-                for (const k in at) e.setAttribute(k, at[k]);
-                (parent || svg).appendChild(e);
-                return e;
-            };
-            // defs: one arrowhead per facet colour
-            const defs = el("defs", {});
-            Object.entries(FACETS).forEach(([f, v]) => {
-                const m = el("marker", {
-                    id: "arr-" + f, viewBox: "0 0 10 10", refX: 9, refY: 5,
-                    markerWidth: 5.5, markerHeight: 5.5, orient: "auto-start-reverse",
-                }, defs);
-                el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m);
-            });
-
-            const edgeLayer = el("g", {});
-            const hubLayer = el("g", {});
-            const nodeLayer = el("g", {});
-
-            // the heart's halo
-            el("circle", {
-                cx: CX, cy: CY, r: 132,
-                fill: "#7dffc4", "fill-opacity": 0.035,
-                stroke: "#7dffc4", "stroke-opacity": 0.25, "stroke-width": 1,
-            }, hubLayer);
-
-            // the spiral through the hubs: form → … → play, closing dashed
-            {
-                const pts = RING.map((f) => hubPos[f]);
-                el("polyline", {
-                    points: pts.map((p) => `${p.x},${p.y}`).join(" "),
-                    fill: "none", stroke: "rgba(255,255,255,0.14)", "stroke-width": 1,
-                }, hubLayer);
-                el("line", {
-                    x1: pts[6].x, y1: pts[6].y, x2: pts[0].x, y2: pts[0].y,
-                    stroke: "rgba(255,226,138,0.4)", "stroke-width": 1,
-                    "stroke-dasharray": "4 5",
-                }, hubLayer);
             }
+            Object.assign(pos, hubPos);
+            pos["cyb"] = { x: CX, y: CY - 62 }; pos["cyber"] = { x: CX - 70, y: CY + 48 }; pos["cyberia"] = { x: CX + 72, y: CY + 48 };
 
-            // hubs: the flag, writ large
-            RING.forEach((f) => {
-                const { x, y } = hubPos[f];
-                el("circle", {
-                    cx: x, cy: y, r: 48,
-                    fill: FACETS[f].c, "fill-opacity": 0.16,
-                    stroke: FACETS[f].c, "stroke-opacity": 0.55, "stroke-width": 1.4,
-                }, hubLayer);
-                el("text", {
-                    x, y: y + 4, "text-anchor": "middle",
-                    fill: FACETS[f].c, "font-size": 15, class: "hub-label",
-                }, hubLayer).textContent = f.toUpperCase();
-            });
-            // spokes hub → its components (faint, structural)
-            NODES.forEach((n) => {
-                if (n.f === "apps" || n.f === "core") return;
-                const h = hubPos[n.f], p = pos[n.id];
-                el("line", {
-                    x1: h.x + (p.x - h.x) * 0.34, y1: h.y + (p.y - h.y) * 0.34,
-                    x2: p.x, y2: p.y,
-                    stroke: FACETS[n.f].c, "stroke-opacity": 0.16, "stroke-width": 1,
-                }, hubLayer);
-            });
+            const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
+            const el = (t, at, parent) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); (parent || svg).appendChild(e); return e; };
+            const defs = el("defs", {});
+            Object.entries(FACETS).forEach(([f, v]) => { const m = el("marker", { id: "arr-" + f, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 5.5, markerHeight: 5.5, orient: "auto-start-reverse" }, defs); el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m); });
+            const edgeLayer = el("g", {}), hubLayer = el("g", {}), nodeLayer = el("g", {});
 
-            // flows: curved toward the centre so the middle reads as the bus
+            el("circle", { cx: CX, cy: CY, r: 150, fill: "#7dffc4", "fill-opacity": 0.035, stroke: "#7dffc4", "stroke-opacity": 0.25, "stroke-width": 1 }, hubLayer);
+            el("text", { x: CX, y: CY + 112, "text-anchor": "middle", fill: "rgba(125,255,196,0.6)", "font-size": 11 }, hubLayer).textContent = "apps — the point of the whole stack";
+            [8, 9, 10].forEach((k) => { const a = secAngle(k); el("line", { x1: CX + 160 * Math.cos(a), y1: CY + 160 * Math.sin(a), x2: CX + (NODE_R - 40) * Math.cos(a), y2: CY + (NODE_R - 40) * Math.sin(a), stroke: "rgba(255,248,240,0.12)", "stroke-width": 1, "stroke-dasharray": "3 6" }, hubLayer); });
+            {
+                const pts = LADDER.slice(0, 7).map((id) => hubPos[id]);
+                el("polyline", { points: pts.map((p) => `${p.x},${p.y}`).join(" "), fill: "none", stroke: "rgba(255,255,255,0.12)", "stroke-width": 1 }, hubLayer);
+            }
+            NODES.filter((n) => n.hub).forEach((n) => {
+                const { x, y } = hubPos[n.id], c = FACETS[n.f].c;
+                const g = el("g", { class: "hub", "data-id": n.id }, hubLayer);
+                el("circle", { cx: x, cy: y, r: 54, fill: c, "fill-opacity": 0.18, stroke: c, "stroke-opacity": 0.6, "stroke-width": 1.5 }, g);
+                el("text", { x, y: y - 2, "text-anchor": "middle", fill: c, "font-size": 15, class: "hub-label" }, g).textContent = n.id.toUpperCase();
+                el("text", { x, y: y + 14, "text-anchor": "middle", fill: "rgba(255,248,240,0.7)", "font-size": 9.5 }, g).textContent = n.layer + " · " + n.role;
+                el("text", { x, y: y + 76, "text-anchor": "middle", fill: c, "fill-opacity": 0.8, "font-size": 10 }, g).textContent = FACETS[n.f].q;
+            });
+            NODES.forEach((n) => { if (n.hub || n.f === "apps" || n.layer > 7) return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.22, y1: h.y + (p.y - h.y) * 0.22, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.14, "stroke-width": 1 }, hubLayer); });
+
             const edgeEls = [];
-            EDGES.forEach(([a, b, label], i) => {
-                const A = pos[a], B = pos[b];
-                const f = NODES.find((n) => n.id === a).f;
-                const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
-                const pull = 0.12;
+            EDGES.forEach(([a, b, label]) => {
+                const A = pos[a], B = pos[b]; const f = NODES.find((n) => n.id === a).f;
+                const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2, pull = 0.14;
                 const cx = mx + (CX - mx) * pull, cy = my + (CY - my) * pull;
-                const path = el("path", {
-                    d: `M ${A.x} ${A.y} Q ${cx} ${cy} ${B.x} ${B.y}`,
-                    fill: "none",
-                    stroke: FACETS[f].c, "stroke-opacity": 0.45, "stroke-width": 1.6,
-                    "marker-end": `url(#arr-${f})`,
-                }, edgeLayer);
+                const path = el("path", { d: `M ${A.x} ${A.y} Q ${cx} ${cy} ${B.x} ${B.y}`, fill: "none", stroke: FACETS[f].c, "stroke-opacity": 0.3, "stroke-width": 1.3, "marker-end": `url(#arr-${f})` }, edgeLayer);
                 el("title", {}, path).textContent = `${a} → ${b} · ${label}`;
                 edgeEls.push({ path, a, b, label, f, A, B, cx, cy });
             });
 
-            // nodes: flag-coloured pills; ghosts dashed
             const nodeEls = {};
-            NODES.forEach((n) => {
-                const { x, y } = pos[n.id];
-                const w = 18 + n.id.length * 8.8;
-                const g = el("g", { class: "node", "data-id": n.id });
-                el("rect", {
-                    x: x - w / 2, y: y - 13, width: w, height: 26, rx: 13,
-                    fill: n.f === "apps" ? "rgba(255,248,240,0.09)" : FACETS[n.f].c,
-                    stroke: n.f === "apps" ? "rgba(255,248,240,0.7)"
-                        : n.f === "core" ? "#fff8f0" : "rgba(255,255,255,0.28)",
-                    "stroke-width": n.f === "core" ? 1.6 : 1,
-                    ...(n.ghost || n.f === "apps" ? { "stroke-dasharray": n.ghost ? "4 3" : "" } : {}),
-                }, g);
-                el("text", {
-                    x, y: y + 4, "text-anchor": "middle",
-                    fill: n.f === "apps" ? "#fff8f0" : FACETS[n.f].t,
-                    "font-size": 13, "font-weight": 700,
-                }, g);
-                g.lastChild.textContent = n.id;
-                nodeLayer.appendChild(g);
+            NODES.filter((n) => !n.hub).forEach((n) => {
+                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = (apps ? 26 : 16) + n.id.length * (apps ? 10 : 7.4);
+                const g = el("g", { class: "node", "data-id": n.id }, nodeLayer);
+                el("rect", { x: x - w / 2, y: y - (apps ? 15 : 11), width: w, height: apps ? 30 : 22, rx: 11, fill: apps ? "rgba(255,248,240,0.1)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.28)", "stroke-width": apps ? 1.6 : 1 }, g);
+                el("text", { x, y: y + 4, "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 15 : 11.5, "font-weight": 700 }, g).textContent = n.id;
                 nodeEls[n.id] = g;
             });
-            el("text", {
-                x: CX, y: CY + 96, "text-anchor": "middle",
-                fill: "rgba(125,255,196,0.6)", "font-size": 11,
-            }).textContent = "the point of the whole stack";
-            // a caption over the crown
-            el("text", {
-                x: CX, y: CY - APP_R - 44, "text-anchor": "middle",
-                fill: "rgba(255,248,240,0.55)", "font-size": 12,
-            }).textContent = "and products keep growing on it — miners, publishers, studios";
 
-            // ── interaction: select a node, read its exact I/O ───────────
-            const panel = document.getElementById("panel");
+            const inp = document.getElementById("inp"), outp = document.getElementById("outp");
             const labelLayer = el("g", {});
-            function clearLabels() {
-                while (labelLayer.firstChild) labelLayer.firstChild.remove();
-            }
-            function labelEdge(e) {
-                // midpoint of the quadratic: (A + 2C + B) / 4
-                const x = (e.A.x + 2 * e.cx + e.B.x) / 4;
-                const y = (e.A.y + 2 * e.cy + e.B.y) / 4;
-                const t = el("text", {
-                    x, y: y - 4, "text-anchor": "middle",
-                    "font-size": 10.5, fill: "#fff8f0",
-                    "paint-order": "stroke", stroke: "#06100a", "stroke-width": 4,
-                }, labelLayer);
-                t.textContent = e.label;
-            }
-            const defaultPanel = panel.innerHTML;
-            function release() {
-                edgeEls.forEach((e) => {
-                    e.path.setAttribute("stroke-opacity", 0.45);
-                    e.path.setAttribute("stroke-width", 1.6);
-                });
-                Object.values(nodeEls).forEach((g) => (g.style.opacity = 1));
-                clearLabels();
-                panel.innerHTML = defaultPanel;
-            }
+            const clearLabels = () => { while (labelLayer.firstChild) labelLayer.firstChild.remove(); };
+            function labelEdge(e) { const x = (e.A.x + 2 * e.cx + e.B.x) / 4, y = (e.A.y + 2 * e.cy + e.B.y) / 4; el("text", { x, y: y - 4, "text-anchor": "middle", "font-size": 10.5, fill: "#fff8f0", "paint-order": "stroke", stroke: "#06100a", "stroke-width": 4 }, labelLayer).textContent = e.label; }
+            const inDefault = inp.innerHTML, outDefault = outp.innerHTML;
+            function release() { edgeEls.forEach((e) => { e.path.setAttribute("stroke-opacity", 0.3); e.path.setAttribute("stroke-width", 1.3); }); Object.values(nodeEls).forEach((g) => (g.style.opacity = 1)); hubLayer.querySelectorAll(".hub").forEach((g) => (g.style.opacity = 1)); clearLabels(); inp.innerHTML = inDefault; outp.innerHTML = outDefault; }
             function select(id) {
-                const ins = edgeEls.filter((e) => e.b === id);
-                const outs = edgeEls.filter((e) => e.a === id);
-                const near = new Set([id]);
+                const n = NODES.find((x) => x.id === id); if (!n) return;
+                const ins = edgeEls.filter((e) => e.b === id), outs = edgeEls.filter((e) => e.a === id), near = new Set([id]);
                 clearLabels();
-                edgeEls.forEach((e) => {
-                    const touch = e.a === id || e.b === id;
-                    e.path.setAttribute("stroke-opacity", touch ? 0.95 : 0.05);
-                    e.path.setAttribute("stroke-width", touch ? 2.2 : 1);
-                    if (touch) { near.add(e.a); near.add(e.b); labelEdge(e); }
-                });
-                Object.entries(nodeEls).forEach(([nid, g]) => {
-                    g.style.opacity = near.has(nid) ? 1 : 0.22;
-                });
-                const n = NODES.find((x) => x.id === id);
-                const fc = n.f === "apps" ? "#fff8f0" : FACETS[n.f].c;
-                panel.innerHTML =
-                    `<h2>${id}</h2>` +
-                    `<div class="facet-tag" style="color:${fc}">${n.f === "apps" ? "built on soft3" : n.f}${n.ghost ? " · proposed" : ""}</div>` +
-                    `<div class="dir">in — what arrives</div>` +
-                    (ins.length
-                        ? `<ul class="io">` + ins.map((e) => `<li>← <b>${e.a}</b> · ${e.label}</li>`).join("") + `</ul>`
-                        : `<p class="hint">nothing — this is a source</p>`) +
-                    `<div class="dir">out — what it feeds</div>` +
-                    (outs.length
-                        ? `<ul class="io">` + outs.map((e) => `<li>→ <b>${e.b}</b> · ${e.label}</li>`).join("") + `</ul>`
-                        : `<p class="hint">nothing — this is a sink</p>`);
+                edgeEls.forEach((e) => { const t = e.a === id || e.b === id; e.path.setAttribute("stroke-opacity", t ? 0.95 : 0.05); e.path.setAttribute("stroke-width", t ? 2.2 : 1); if (t) { near.add(e.a); near.add(e.b); labelEdge(e); } });
+                Object.entries(nodeEls).forEach(([nid, g]) => (g.style.opacity = near.has(nid) ? 1 : 0.22));
+                hubLayer.querySelectorAll(".hub").forEach((g) => (g.style.opacity = near.has(g.dataset.id) ? 1 : 0.35));
+                const c = FACETS[n.f].c;
+                const head = `<h2>${id}</h2><div class="tag" style="color:${c}">${n.hub ? n.layer + " · " + n.role : n.f === "apps" ? n.layer + " · " + n.role + " · app" : "rung " + n.layer + " · " + (n.verb || n.f)}</div>`;
+                const q = n.hub ? `<p class="q">${FACETS[n.f].q}</p>` : n.id === "chroma" ? `<p class="hint">one component: ${ORGANS.join(" · ")}</p>` : n.note ? `<p class="hint">${n.note}</p>` : "";
+                inp.innerHTML = head + q + `<div class="dir">in — what arrives</div>` + (ins.length ? `<ul class="io">` + ins.map((e) => `<li>← <b>${e.a}</b> · ${e.label}</li>`).join("") + `</ul>` : `<p class="hint">nothing drawn — a source, or wires not written yet</p>`);
+                outp.innerHTML = head + (n.thesis ? `<p class="hint">${n.thesis}</p>` : "") + `<div class="dir">out — what it feeds</div>` + (outs.length ? `<ul class="io">` + outs.map((e) => `<li>→ <b>${e.b}</b> · ${e.label}</li>`).join("") + `</ul>` : `<p class="hint">nothing drawn — a sink, or wires not written yet</p>`);
             }
-            nodeLayer.addEventListener("click", (ev) => {
-                const g = ev.target.closest(".node");
-                if (g) { select(g.dataset.id); ev.stopPropagation(); }
-            });
-            svg.addEventListener("click", (ev) => {
-                if (!ev.target.closest(".node")) release();
-            });
+            svg.addEventListener("click", (ev) => { const g = ev.target.closest(".node, .hub"); if (g) select(g.dataset.id); else release(); });
             const q = new URLSearchParams(location.search).get("sel");
-            if (q && nodeEls[q]) select(q);
+            if (q && NODES.some((n) => n.id === q)) select(q);
         </script>
     </body>
 </html>

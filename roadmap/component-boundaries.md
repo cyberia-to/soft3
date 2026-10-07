@@ -80,4 +80,4 @@ each row is one mechanism that was implemented twice. the status column is what 
 
 ## what this changed on the ladder
 
-[soft3.org/layers](https://soft3.org/layers): `mudra` moved from rung 5 (language) to rung 4 (cybergraph) beside `neuron` — a primitive lives where its noun is born, and the neuron is born in the book. rung 6 (cy) now shows the agent as one [[cy/specs/chroma|chroma]] — the eight organs that show — plus the eight that work unseen; `time` (log ← now → plan) and `name` moved from the robot to the agent.
+[soft3.org](https://soft3.org) (the ladder is the front page since 2026-10-07): `mudra` moved from rung 5 (language) to rung 4 (cybergraph) beside `neuron` — a primitive lives where its noun is born, and the neuron is born in the book. rung 6 (cy) now shows the agent as one [[cy/specs/chroma|chroma]] — the eight organs that show — plus the eight that work unseen; `time` (log ← now → plan) and `name` moved from the robot to the agent.

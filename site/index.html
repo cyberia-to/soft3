@@ -381,303 +381,24 @@
                 min-height: 0;
                 min-width: 0;
             }
-            .ringwrap {
-                flex: none;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .detail {
-                flex: 1 1 auto;
-                min-height: 0;
-                overflow: auto;
-                display: flex;
-                flex-direction: column;
-            }
 
-            .spiral {
-                padding: 0.7rem 0.9rem 0;
-                font-size: 0.64rem;
-                font-weight: 700;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: rgba(255, 248, 240, 0.4);
-                text-align: center;
-            }
-            .spiral em {
-                font-style: normal;
-                color: #7dffc4;
-            }
 
             /* the crystal ring: 7 triads as facets of one heptagon, not a row of
                pills — the spiral is a shape you see, not a caption you read. one
                dashed edge (play → form) shows the spiral closing and starting over. */
-            .ring {
-                position: relative;
-                width: clamp(200px, 30vh, 290px);
-                aspect-ratio: 1 / 1;
-                margin: 0.55rem auto 0.2rem;
-            }
-            .ring-q {
-                position: absolute;
-                inset: 30%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                font-size: 0.6rem;
-                font-weight: 700;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                line-height: 1.5;
-                color: rgba(255, 248, 240, 0.75);
-                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-                pointer-events: none;
-            }
-            .ring-lines {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                overflow: visible;
-            }
-            .ring-lines polyline {
-                fill: none;
-                stroke: rgba(255, 255, 255, 0.16);
-                stroke-width: 1;
-            }
-            .ring-lines .loop {
-                stroke: rgba(255, 226, 138, 0.4);
-                stroke-width: 1;
-                stroke-dasharray: 3 4;
-            }
-            .ring-core {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                width: 38%;
-                height: 38%;
-                transform: translate(-50%, -50%);
-                border-radius: 999px;
-                background: radial-gradient(
-                    circle,
-                    hsl(var(--accent-h) 85% 60% / 0.4),
-                    transparent 72%
-                );
-                filter: blur(4px);
-                pointer-events: none;
-                transition: background 0.5s ease;
-            }
 
             /* the seven colours are the cyberia flag, exactly — the ring IS
                the flag: same heptagon, same circles, same paint. light discs
                carry dark text, dark discs carry cream. */
-            .tab[data-tab="form"],  .band[data-go="form"]  { --fc: #00ff00; --ft: #0a120e; }
-            .tab[data-tab="mass"],  .band[data-go="mass"]  { --fc: #0000ff; --ft: #0a120e; }
-            .tab[data-tab="space"], .band[data-go="space"] { --fc: #4000ff; --ft: #fff8f0; }
-            .tab[data-tab="life"],  .band[data-go="life"]  { --fc: #8000ff; --ft: #fff8f0; }
-            .tab[data-tab="word"],  .band[data-go="word"]  { --fc: #ff0000; --ft: #fff8f0; }
-            .tab[data-tab="work"],  .band[data-go="work"]  { --fc: #ff8000; --ft: #0a120e; }
-            .tab[data-tab="play"],  .band[data-go="play"]  { --fc: #ffff00; --ft: #0a120e; }
 
-            .tab {
-                position: absolute;
-                left: var(--x);
-                top: var(--y);
-                transform: translate(-50%, -50%);
-                width: 3.5rem;
-                height: 3.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.22);
-                background: var(--fc);
-                color: var(--ft);
-                opacity: 0.9;
-                font-family: Play, system-ui, sans-serif;
-                border-radius: 999px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition:
-                    transform 0.2s ease,
-                    background 0.2s ease,
-                    color 0.2s ease,
-                    border-color 0.2s ease;
-            }
-            .tab b {
-                font-size: 0.62rem;
-                font-weight: 700;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                pointer-events: none;
-            }
-            .tab small {
-                display: none;
-            }
-            .tab:hover {
-                opacity: 1;
-                border-color: rgba(255, 255, 255, 0.5);
-                transform: translate(-50%, -50%) scale(1.08);
-            }
-            .tab[aria-selected="true"] {
-                opacity: 1;
-                border-color: #fff8f0;
-                box-shadow: 0 0 26px var(--fc);
-                transform: translate(-50%, -50%) scale(1.16);
-            }
 
             /* ── the architecture, before the toy: the whole stack as seven
                layers, foundation at the bottom, each wearing its flag colour.
                this is the first thing a visitor reads; the crystal below is
                how they play with it. */
-            .scheme {
-                display: flex;
-                flex-direction: column;
-                gap: 0.22rem;
-                margin: 0 0 0.7rem;
-            }
-            .scheme-cap {
-                font-size: 0.62rem;
-                font-weight: 700;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: rgba(255, 248, 240, 0.65);
-                margin: 0 0 0.35rem;
-            }
-            .scheme-cap em {
-                color: #7dffc4;
-                font-style: normal;
-            }
-            .band {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                width: 100%;
-                padding: 0.3rem 0.55rem;
-                border-radius: 0.55rem;
-                border: 1px solid color-mix(in srgb, var(--fc) 34%, transparent);
-                background: color-mix(in srgb, var(--fc) 10%, rgba(6, 16, 10, 0.62));
-                color: rgba(255, 248, 240, 0.88);
-                font-family: Play, system-ui, sans-serif;
-                cursor: pointer;
-                text-align: left;
-                transition: background 0.15s ease, border-color 0.15s ease;
-            }
-            .band .chips {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.26rem;
-                flex: 1;
-                min-width: 0;
-            }
-            .band i {
-                font-style: normal;
-                font-family: "JetBrains Mono", ui-monospace, monospace;
-                font-size: 0.58rem;
-                letter-spacing: 0.02em;
-                padding: 0.14rem 0.42rem;
-                border-radius: 999px;
-                background: var(--fc);
-                color: var(--ft);
-                white-space: nowrap;
-            }
-            .band b {
-                flex: none;
-                font-size: 0.56rem;
-                font-weight: 700;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: color-mix(in srgb, var(--fc) 78%, #fff8f0);
-            }
-            .band.base {
-                justify-content: center;
-            }
-            .band.base b {
-                display: none;
-            }
-            .band:hover {
-                background: color-mix(in srgb, var(--fc) 22%, rgba(6, 16, 10, 0.6));
-            }
-            .band[aria-selected="true"] {
-                border-color: color-mix(in srgb, var(--fc) 85%, transparent);
-                background: color-mix(in srgb, var(--fc) 26%, rgba(6, 16, 10, 0.5));
-            }
             /* the verbs between layers: how one hangs from the next */
-            .edge {
-                font-size: 0.56rem;
-                letter-spacing: 0.06em;
-                color: rgba(255, 248, 240, 0.5);
-                padding-left: 0.9rem;
-                margin: -0.06rem 0;
-                user-select: none;
-            }
 
-            .body {
-                padding: 0.85rem 1rem 1rem;
-                display: flex;
-                flex-direction: column;
-                gap: 0.4rem;
-                overflow: auto;
-                min-height: 0;
-            }
-            .body[hidden] {
-                display: none;
-            }
 
-            .chip {
-                font-size: 0.65rem;
-                font-weight: 700;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: #7dffc4;
-            }
-            .body h2 {
-                font-size: clamp(1.15rem, 2.2vw, 1.45rem);
-                font-weight: 700;
-                line-height: 1.15;
-            }
-            .why {
-                font-size: 0.95rem;
-                line-height: 1.4;
-                color: rgba(255, 248, 240, 0.9);
-            }
-            .props {
-                display: grid;
-                gap: 0.3rem;
-                margin-top: 0.1rem;
-            }
-            .prop {
-                display: grid;
-                grid-template-columns: 5.8rem minmax(0, 1fr);
-                gap: 0.4rem;
-                padding: 0.42rem 0.55rem;
-                border-radius: 10px;
-                background: rgba(255, 255, 255, 0.06);
-                border: 1px solid rgba(255, 255, 255, 0.06);
-            }
-            .prop b {
-                font-size: 0.68rem;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: #7dffc4;
-                font-weight: 700;
-                padding-top: 0.12rem;
-            }
-            .prop span {
-                font-size: 0.88rem;
-                line-height: 1.32;
-                color: rgba(255, 248, 240, 0.9);
-                overflow-wrap: anywhere;
-            }
-            .prop a {
-                color: #fff;
-                font-weight: 700;
-                text-decoration: none;
-                border-bottom: 1px solid rgba(125, 255, 196, 0.35);
-            }
-            .prop a:hover {
-                color: #7dffc4;
-                border-bottom-color: #7dffc4;
-            }
 
             .foot {
                 display: flex;
@@ -695,16 +416,6 @@
 
             /* wide screens: the diagram reads on the left, the crystal spins
                on the right — the map beside the toy, not above it */
-            .ringwrap {
-                display: grid;
-                grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-                grid-template-areas: "scheme spiral" "scheme ring";
-                column-gap: 1.1rem;
-                align-items: center;
-            }
-            .scheme { grid-area: scheme; margin: 0; }
-            .spiral { grid-area: spiral; align-self: end; }
-            .ring { grid-area: ring; align-self: start; }
             @media (max-width: 900px) {
                 .stage {
                     display: flex;
@@ -717,64 +428,15 @@
                 .sigil {
                     width: clamp(9rem, 40vw, 11rem);
                 }
-                .ring {
-                    position: static;
-                    width: 100%;
-                    aspect-ratio: auto;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 0.35rem;
-                    margin: 0.5rem auto 0.2rem;
-                }
                 .ring-lines,
                 .ring-core,
-                .ring-q {
-                    display: none;
-                }
-                .ringwrap {
-                    align-items: stretch;
-                }
-                .tab {
-                    position: static;
-                    transform: none !important;
-                    flex: 1 1 21%;
-                    width: auto;
-                    height: auto;
-                    border-radius: 12px;
-                    padding: 0.5rem 0.2rem;
-                }
-                .detail {
-                    overflow: visible;
-                }
             }
 
             @media (max-width: 1180px) {
-                .ringwrap {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: stretch;
-                }
             }
 
-            .tab {
-            .tab {
-                    position: static;
-                    transform: none !important;
-                    flex: 1 1 21%;
-                    width: auto;
-                    height: auto;
-                    border-radius: 12px;
-                    padding: 0.5rem 0.2rem;
-                }
-                .detail {
-                    overflow: visible;
-                }
-            }
 
             @media (max-width: 420px) {
-                .prop {
-                    grid-template-columns: 1fr;
-                }
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -784,7 +446,34 @@
                     animation: none !important;
                 }
             }
-        </style>
+        
+            /* ── the ladder: ten products, three groups — the stack as it reads ── */
+            .ladder { overflow: auto; padding-right: 0.2rem; gap: 0.45rem; }
+            .ladder-cap { margin: 0 0 0.1rem; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+            .ladder-cap em { font-style: normal; color: var(--mint); font-size: 0.95rem; }
+            .ladder-cap .legend { margin-left: auto; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
+            .ladder-cap .legend i { font-style: normal; width: 0.5rem; height: 0.5rem; border-radius: 999px; display: inline-block; background: var(--fc); margin: 0 0.15rem 0 0.4rem; vertical-align: middle; }
+            .ladder .group { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.5rem; }
+            .ladder .rail { position: relative; border-right: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); }
+            .ladder .rail span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); writing-mode: vertical-rl; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mint); text-shadow: 0 0 14px rgba(125,255,196,0.45); white-space: nowrap; }
+            .ladder .rungs { display: flex; flex-direction: column; gap: 0.3rem; }
+            .ladder .rung { display: grid; grid-template-columns: 2.2rem 2.4rem minmax(0, 1fr) fit-content(56%); gap: 0.65rem; align-items: center; min-height: 3.3rem; padding: 0.4rem 0.9rem 0.4rem 0.7rem; border-radius: 0.7rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(14% - var(--k) * 1%), rgba(6,16,10,0.72)); cursor: pointer; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
+            .ladder .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.6rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
+            .ladder .ico { font-size: 1.6rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); } .ladder .ico .glyph { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif; color: var(--mint); font-size: 2rem; }
+            .ladder .who h2 { margin: 0; font-size: 1.1rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.62rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
+            .ladder .who .does { margin: 0.2rem 0 0; font-size: 0.72rem; line-height: 1.3; color: rgba(255,248,240,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .ladder .deps { display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: nowrap; gap: 0.22rem; justify-content: flex-end; }
+            .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.38rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
+            .ladder i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
+            .ladder i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
+            .ladder i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
+            .ladder i[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
+            .ladder i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
+            .ladder i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
+            .ladder i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
+            @media (max-width: 900px) { .ladder .group { grid-template-columns: 1fr; } .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.3rem; } .ladder .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .ladder .rung { grid-template-columns: 2rem 2.2rem 1fr; min-height: 0; } .ladder .deps { grid-column: 1 / -1; align-items: flex-start; } .ladder .deps .row { flex-wrap: wrap; justify-content: flex-start; } .ladder .who .does { white-space: normal; } }
+</style>
     </head>
     <body>
         <canvas id="world" aria-hidden="true"></canvas>
@@ -795,31 +484,16 @@
                     >soft3<span class="xbadge">experimental</span></span
                 >
                 <nav class="nav-links">
-                    <a href="/layers/">layers</a>
-                    <a
-                        href="https://github.com/cyberia-to/soft3/blob/main/specs/execution-model.md"
-                        target="_blank"
-                        rel="noopener"
-                        >architecture ↗</a
-                    >
-                    <a
-                        href="https://cyber.page/soft3/"
-                        target="_blank"
-                        rel="noopener"
-                        >docs ↗</a
-                    >
-                    <a
-                        href="https://github.com/cyberia-to/soft3"
-                        target="_blank"
-                        rel="noopener"
-                        >github ↗</a
-                    >
+                    <a href="/chart/">chart</a>
+                    <a href="/scheme/">scheme</a>
+                    <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs ↗</a>
+                    <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github ↗</a>
                 </nav>
             </header>
 
             <main class="stage">
                 <section class="pitch glass">
-                    <p class="eyebrow">an open stack for provable computing</p>
+                    <p class="eyebrow">an open stack for provable computing — ten products, one ladder</p>
                     <h1>one mind.<em>still growing.</em></h1>
                     <p class="lede">
                         Every link has weight,<br />
@@ -879,563 +553,83 @@
                     </div>
                 </section>
 
-                <aside class="panel">
-                    <div class="ringwrap">
-                    <div class="scheme" role="tablist" aria-label="the architecture, top to bottom">
-                        <p class="scheme-cap">the <em>architecture</em> — how it hangs together · <a href="/layers/" style="color:#7dffc4">layers ↗</a> · <a href="/scheme/" style="color:#7dffc4">the scheme ↗</a> · <a href="/chart/" style="color:#7dffc4">full chart ↗</a></p>
-                        <div class="edge">the heart it turns: cyb · cyber · cyberia — grown on it: erga · optica · studio</div>
-                        <div class="edge">↓ &nbsp;embodied through</div>
-                        <button class="band" data-go="play"><span class="chips"><i>mir</i><i>prysm</i><i>lytics</i><i>optica</i><i>evy</i><i>nu</i><i>spark</i></span><b>play</b></button>
-                        <div class="edge">↓ &nbsp;renders &amp; paints one focus over</div>
-                        <button class="band" data-go="life"><span class="chips"><i>soma</i><i>tru</i><i>foculus</i><i>sigma</i></span><b>life</b></button>
-                        <div class="edge">↓ &nbsp;thinks · converges · agrees on</div>
-                        <button class="band" data-go="mass"><span class="chips"><i>cybergraph</i><i>bbg</i><i>neuron</i><i>file</i><i>fs</i><i>tok</i></span><b>mass</b></button>
-                        <div class="edge">↓ &nbsp;signals signed &amp; carried by</div>
-                        <button class="band" data-go="space"><span class="chips"><i>mudra</i><i>radio</i><i>tade</i><i>ward</i><i>vault</i></span><b>space</b></button>
-                        <div class="edge">↓ &nbsp;programs written in</div>
-                        <button class="band" data-go="word"><span class="chips"><i>neural</i><i>trident</i><i>rune</i><i>inf</i></span><b>word</b></button>
-                        <div class="edge">↓ &nbsp;lowered into one waist</div>
-                        <button class="band" data-go="work"><span class="chips"><i>nox</i><i>zheng</i><i>joy</i><i>glia</i><i>eidos</i><i>wysm</i><i>kern</i></span><b>work</b></button>
-                        <div class="edge">↓ &nbsp;arithmetic from</div>
-                        <button class="band" data-go="form"><span class="chips"><i>strata</i><i>hemera</i><i>lens</i><i>rs</i></span><b>form</b></button>
-                        <div class="edge">↓ &nbsp;tuned to the silicon</div>
-                        <button class="band base" data-go="form"><span class="chips"><i>honeycrisp</i></span><b>form</b></button>
-                    </div>
-                    <p class="spiral">
-                        the same stack as <em>7 facets</em> — click around
-                    </p>
-                    <div class="ring" role="tablist">
-                        <svg
-                            class="ring-lines"
-                            viewBox="0 0 200 200"
-                            aria-hidden="true"
-                        >
-                            <!-- polyline, not polygon: it must NOT auto-close, so the
-                                 dashed loop line below reads as its own distinct edge -->
-                            <polyline
-                                points="100,22 161,51.4 176,117.4 133.8,170.3 66.2,170.3 24,117.4 39,51.4"
-                            />
-                            <line class="loop" x1="39" y1="51.4" x2="100" y2="22" />
-                        </svg>
-                        <div class="ring-core" aria-hidden="true"></div>
-                        <div class="ring-q" id="ringq" aria-hidden="true"></div>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="form"
-                            aria-selected="true"
-                            style="--x: 50%; --y: 11%"
-                        >
-                            <b>form</b><small>rules</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="mass"
-                            aria-selected="false"
-                            style="--x: 80.5%; --y: 25.7%"
-                        >
-                            <b>mass</b><small>matter</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="space"
-                            aria-selected="false"
-                            style="--x: 88%; --y: 58.7%"
-                        >
-                            <b>space</b><small>where</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="life"
-                            aria-selected="false"
-                            style="--x: 66.9%; --y: 85.15%"
-                        >
-                            <b>life</b><small>alive</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="word"
-                            aria-selected="false"
-                            style="--x: 33.1%; --y: 85.15%"
-                        >
-                            <b>word</b><small>meaning</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="work"
-                            aria-selected="false"
-                            style="--x: 12%; --y: 58.7%"
-                        >
-                            <b>work</b><small>making</small>
-                        </button>
-                        <button
-                            class="tab"
-                            role="tab"
-                            data-tab="play"
-                            aria-selected="false"
-                            style="--x: 19.5%; --y: 25.7%"
-                        >
-                            <b>play</b><small>together</small>
-                        </button>
-                    </div>
-                    </div>
-                    <div class="detail glass">
-                    <div class="body" data-panel="form">
-                        <span class="chip">what are the rules?</span>
-                        <h2>The floor beneath everything</h2>
-                        <p class="why">
-                            The math floor: field arithmetic, hashing,
-                            commitments — tuned to the silicon so proofs come
-                            cheap.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>accelerate</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/honeycrisp/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >honeycrisp</a
-                                    >
-                                    · NEON · AMX · Metal · ANE · zero-copy
-                                    unimem</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>math</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/strata/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >strata</a
-                                    >
-                                    · finite fields, three algebras (𝔽_p · 𝔽_q · R_q)</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>hash</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/hemera/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >hemera</a
-                                    >
-                                    · Poseidon2 — identity, trees,
-                                    streams</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>commit</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/lens/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >lens</a
-                                    >
-                                    · polynomial commitments — 5 backends</span
-                                >
-                            </div>
+                <aside class="panel ladder" aria-label="the stack as a ladder of ten products">
+                    <p class="ladder-cap"><em id="ladq">what are the rules?</em> <span id="ladp">· nox</span> <span class="legend"><i data-f="form"></i>form <i data-f="mass"></i>mass <i data-f="space"></i>space <i data-f="life"></i>life <i data-f="word"></i>word <i data-f="work"></i>work <i data-f="play"></i>play</span></p>
+                    <section class="group" data-g="kernel">
+                        <div class="rail"><span>kernel</span></div>
+                        <div class="rungs">
+                        <section class="rung" style="--k:1" data-f="form" data-q="what are the rules?" data-p="nox">
+                            <div class="num">1</div>
+                            <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
+                            <div class="who"><h2>nox <small>· machine</small></h2><p class="does">virtual machine: field, hash, run</p></div>
+                            <div class="deps"><span class="row"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="form">honeycrisp</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:2" data-f="work" data-q="how is it made?" data-p="trident">
+                            <div class="num">2</div>
+                            <div class="ico" aria-hidden="true">🔱</div>
+                            <div class="who"><h2>trident <small>· weapon</small></h2><p class="does">compiler: .tri to .nox, cost known before it runs</p></div>
+                            <div class="deps"><span class="row" title="tine · tir · toll · forge · lsp are trident's parts"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="play">lsp</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:3" data-f="space" data-q="where does it happen?" data-p="joy">
+                            <div class="num">3</div>
+                            <div class="ico" aria-hidden="true">💋</div>
+                            <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runtime: runs, proves and stores</p></div>
+                            <div class="deps"><span class="row"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></span></div>
+                        </section>
                         </div>
-                    </div>
-                    <div class="body" data-panel="mass" hidden>
-                        <span class="chip">what is it made of?</span>
-                        <h2>Knowledge as matter</h2>
-                        <p class="why">
-                            Where data lives: a content-addressed graph.
-                            Writing is linking, state is one cryptographic
-                            commitment, value is conserved by proof.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>link</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/cybergraph/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >cybergraph</a
-                                    >
-                                    · signed links between content-addressed data</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>store</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/bbg/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >bbg</a
-                                    >
-                                    · all state as one polynomial · ~200-byte proofs</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>hold</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cell/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >cell</a
-                                    >
-                                    · your local node: a slice of the graph</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>mount</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/fs/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >fs</a
-                                    >
-                                    · the graph mounted as a filesystem</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>pay</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/tok/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >tok</a
-                                    >
-                                    · coins &amp; cards — conservation enforced by proof</span
-                                >
-                            </div>
+                    </section>
+                    <section class="group" data-g="core">
+                        <div class="rail"><span>core</span></div>
+                        <div class="rungs">
+                        <section class="rung" style="--k:4" data-f="mass" data-q="what is it made of?" data-p="cybergraph">
+                            <div class="num">4</div>
+                            <div class="ico" aria-hidden="true">🕸️</div>
+                            <div class="who"><h2>cybergraph <small>· brain</small></h2><p class="does">the book: neuron, tokens, signals, files, links, focus</p></div>
+                            <div class="deps"><span class="row" title="neuron acts · tok pays · signal commits · file is the thing · tru converges · name resolves · mudra hides · tade is the bytes of a file and the payload of a link on any boundary (one exchange format: soft3/proposals/tade-one-exchange)"><i data-f="mass">neuron</i><i data-f="mass">tok</i><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="mass">name</i><i data-f="mass">mudra</i><i data-f="mass">tade</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:5" data-f="word" data-q="what does it mean?" data-p="neural">
+                            <div class="num">5</div>
+                            <div class="ico" aria-hidden="true">🧠</div>
+                            <div class="who"><h2>neural <small>· language</small></h2><p class="does">what can be said over the book: languages and dialects</p></div>
+                            <div class="deps"><span class="row" title="eidos proves trident (self-verification) · rune runs neurons · inf queries the book · fs mutates files — the CRUD the graph lacks · spark says what a file renders to, in cells or pixels · atlas is the package registry over the book — packages are cards, publishing is minting; trident's package manager, not written yet · rs is the reference the stack is verified against · nu is the shell: ~20 domain verb groups (filesystem, strings, dates, math, network, formats, hash, …) composed into sentences over typed tables — the dialects here are its verb groups, neu generalises it"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="word">inf</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="word">atlas</i><i data-f="form">rs</i><i data-f="play">nu</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:6" data-f="life" data-q="who is alive?" data-p="cy">
+                            <div class="num">6</div>
+                            <div class="ico" aria-hidden="true">🧬</div>
+                            <div class="who"><h2>cy <small>· agent</small></h2><p class="does">the mind over the book: one chroma, headless anywhere</p></div>
+                            <div class="deps"><span class="row" title="chroma — one component: now · voice · name · sense · spacetime · sigma · memory · com · time; behind it the eight unseen"><i data-f="life">chroma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="life">seer</i><i data-f="life">soul</i><i data-f="space">ward</i><i data-f="space">vault</i><i data-f="space">state</i><i data-f="form">body</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:7" data-f="play" data-q="how do we coordinate?" data-p="soft3">
+                            <div class="num">7</div>
+                            <div class="ico" aria-hidden="true">👙</div>
+                            <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
+                            <div class="deps"><span class="row" title="the network in planes (soft3/proposals/network-planes): radio reaches and carries · sync reconciles — ordering, availability, local merge, history trust · foculus agrees — fork-choice over φ*, finality, epochs, beacon · solong rewards — tickets, fold-mining, Shapley settlement; named after Shapley's own coalition game, So Long Sucker"><i data-f="space">radio</i><i data-f="mass">sync</i><i data-f="life">foculus</i><i data-f="work">solong</i></span></div>
+                        </section>
                         </div>
-                    </div>
-                    <div class="body" data-panel="space" hidden>
-                        <span class="chip">where does it happen?</span>
-                        <h2>Nerves across space</h2>
-                        <p class="why">
-                            How machines talk: encrypted transport, typed
-                            streams, and sync that converges without a
-                            coordinator — even across planets.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>encrypt</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/mudra/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >mudra</a
-                                    >
-                                    · post-quantum keys, encryption, thresholds</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>transmit</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/radio/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >radio</a
-                                    >
-                                    · QUIC · BAO streaming · gossip</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>frame</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/tade/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >tade</a
-                                    >
-                                    · typed framing over any byte stream</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>sync</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/foculus/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >foculus</a
-                                    >
-                                    · replicas converge — no coordinator</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>authorize</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/ward/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >ward</a
-                                    >
-                                    · capability gate for every effect</span
-                                >
-                            </div>
+                    </section>
+                    <section class="group" data-g="apps">
+                        <div class="rail"><span>apps</span></div>
+                        <div class="rungs">
+                        <section class="rung" style="--k:8" data-f="play" data-q="how do we coordinate?" data-p="cyb">
+                            <div class="num">8</div>
+                            <div class="ico" aria-hidden="true">🤖</div>
+                            <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures — paints the chroma</p></div>
+                            <div class="deps"><span class="row"><i data-f="play">mir</i><i data-f="play">prysm</i><i data-f="play">lytics</i><i data-f="play">optica</i><i data-f="play">kadek</i><i data-f="play">avatar</i><i data-f="play">brain</i><i data-f="play">vision</i><i data-f="work">kern</i><i data-f="play">evy</i><i data-f="work">wysm</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:9" data-f="play" data-q="how do we coordinate?" data-p="cyber">
+                            <div class="num">9</div>
+                            <div class="ico" aria-hidden="true">🟢</div>
+                            <div class="who"><h2>cyber <small>· superintelligence</small></h2><p class="does">the network of networks thinking as one</p></div>
+                            <div class="deps"><span class="row"><i data-f="play">bostrom</i><i data-f="play">pussy</i></span></div>
+                        </section>
+                        <section class="rung" style="--k:10" data-f="play" data-q="how do we coordinate?" data-p="cyberia">
+                            <div class="num">10</div>
+                            <div class="ico" aria-hidden="true">🌏</div>
+                            <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
+                            <div class="deps"><span class="row"><i data-f="space">cybernode</i><i data-f="mass">cx</i><i data-f="play">blog</i><i data-f="play">cyberstates</i><i data-f="play">my</i><i data-f="space">cyber-valley</i><i data-f="work">cve</i></span></div>
+                        </section>
                         </div>
-                    </div>
-                    <div class="body" data-panel="life" hidden>
-                        <span class="chip">who is alive?</span>
-                        <h2>The graph wakes up</h2>
-                        <p class="why">
-                            How agreement happens: collective attention ranks
-                            everything, and consensus is the fixed point of
-                            that math — no votes, no leaders.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>converge</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/tru/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >tru</a
-                                    >
-                                    · attention ranking — the φ* fixed point</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>agree</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/foculus/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >foculus</a
-                                    >
-                                    · finality from one convergence theorem</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>think</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/soma/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >soma</a
-                                    >
-                                    · the resident machine mind</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="body" data-panel="word" hidden>
-                        <span class="chip">what does it mean?</span>
-                        <h2>One tongue for two species</h2>
-                        <p class="why">
-                            Humans and machines share the language: write it,
-                            run it, ask it — every answer carries a proof.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>mean</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >neural</a
-                                    >
-                                    · meaning as graph structure — sigil to dialect</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>compile</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/trident/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >trident</a
-                                    >
-                                    · high-level language → provable bytecode</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>eval</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/rune/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >rune</a
-                                    >
-                                    · scripts with effects — reactive, per-item</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>query</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/inf/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >inf</a
-                                    >
-                                    · datalog — whole sets, with proofs</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="body" data-panel="work" hidden>
-                        <span class="chip">how is it made?</span>
-                        <h2>Proof in the marrow</h2>
-                        <p class="why">
-                            How code runs: executing and proving are the same
-                            act. Anyone can verify any result in
-                            ~100&nbsp;ns.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>run</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/nox/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >nox</a
-                                    >
-                                    · provable execution</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>prove</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/zheng/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >zheng</a
-                                    >
-                                    · the proof system</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>infer</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/glia/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >glia</a
-                                    >
-                                    · dynamic model inference</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>certify</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/neural/eidos/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >eidos</a
-                                    >
-                                    · machine-checked theorems become links</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>sandbox</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/wysm/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >wysm</a
-                                    >
-                                    · metered wasm</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>shade</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/kern/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >kern</a
-                                    >
-                                    · metered gpu</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="body" data-panel="play" hidden>
-                        <span class="chip">how do we coordinate?</span>
-                        <h2>Flesh you can inhabit</h2>
-                        <p class="why">
-                            What you actually touch: a 3D world, live UI, an
-                            app shell — and analytics where every visitor
-                            holds their own key.
-                        </p>
-                        <div class="props">
-                            <div class="prop">
-                                <b>render</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/mir/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >mir</a
-                                    >
-                                    · the graph rendered as a 3D world</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>paint</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/prysm/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >prysm</a
-                                    >
-                                    · data streams painted as UI</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>embody</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/cyb/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >cyb</a
-                                    >
-                                    · the app you inhabit — worlds, terminal, live cells</span
-                                >
-                            </div>
-                            <div class="prop">
-                                <b>measure</b
-                                ><span
-                                    ><a
-                                        href="https://cyber.page/soft3/lytics/"
-                                        target="_blank"
-                                        rel="noopener"
-                                        >lytics</a
-                                    >
-                                    · analytics: every visitor holds a key, every event signed</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    </div>
+                    </section>
                 </aside>
             </main>
 
@@ -1446,95 +640,28 @@
         </div>
 
         <script>
-            const panels = [...document.querySelectorAll(".body")];
-            const order = [
-                "form",
-                "mass",
-                "space",
-                "life",
-                "word",
-                "work",
-                "play",
-            ];
-            let organ = "form",
-                organHue = 0;
-            // offsets chosen so 150 + offset lands on each facet's exact flag
-            // hue: form #00ff00→120, mass #0000ff→197, space #4000ff→245,
-            // life #8000ff→265, word #ff0000→0, work #ff8000→24, play #ffff00→46
-            const hues = {
-                form: -30,
-                mass: 47,
-                space: 95,
-                life: 115,
-                word: -150,
-                work: -126,
-                play: -104,
-            };
-            const questions = {
-                form: "what are the rules?",
-                mass: "what is it made of?",
-                space: "where does it happen?",
-                life: "who is alive?",
-                word: "what does it mean?",
-                work: "how is it made?",
-                play: "how do we coordinate?",
-            };
-            const ringq = document.getElementById("ringq");
-
-            function select(name) {
-                organ = name;
-                organHue = hues[name] || 0;
-                // canvas hue is a rotation offset (0 = unshifted world); the UI
-                // accent anchors that same offset to the brand mint (H≈150)
-                document.documentElement.style.setProperty(
-                    "--accent-h",
-                    150 + organHue,
-                );
-                document
-                    .querySelectorAll(".band[data-go]")
-                    .forEach((b) =>
-                        b.setAttribute(
-                            "aria-selected",
-                            b.dataset.go === name ? "true" : "false",
-                        ),
-                    );
-                document
-                    .querySelectorAll(".tab[data-tab]")
-                    .forEach((t) =>
-                        t.setAttribute(
-                            "aria-selected",
-                            t.dataset.tab === name ? "true" : "false",
-                        ),
-                    );
-                panels.forEach((p) => {
-                    p.hidden = p.dataset.panel !== name;
-                });
-                if (ringq) ringq.textContent = questions[name] || "";
+            // the ladder drives the crystal: each rung carries the facet its product answers to
+            const hues = { form: -30, mass: 47, space: 95, life: 115, word: -150, work: -126, play: -104 };
+            let organ = "form", organHue = 0;
+            const rungs = [...document.querySelectorAll(".ladder .rung")];
+            const ladq = document.getElementById("ladq"), ladp = document.getElementById("ladp");
+            function select(r) {
+                organ = r.dataset.f; organHue = hues[organ] || 0;
+                document.documentElement.style.setProperty("--accent-h", 150 + organHue);
+                rungs.forEach((x) => x.setAttribute("aria-selected", x === r ? "true" : "false"));
+                if (ladq) ladq.textContent = r.dataset.q;
+                if (ladp) ladp.textContent = "· " + r.dataset.p;
             }
-            document
-                .querySelectorAll(".tab[data-tab]")
-                .forEach((t) =>
-                    t.addEventListener("click", () => select(t.dataset.tab)),
-                );
-            // the scheme's layers select facets too, and stay in step
-            document.querySelectorAll(".band[data-go]").forEach((b) =>
-                b.addEventListener("click", () => select(b.dataset.go)),
-            );
-            // the page opens on the architecture, so the crystal starts at the
-            // foundation — deterministic, not a roll of the dice
-            select("form");
+            rungs.forEach((r) => {
+                r.addEventListener("mouseenter", () => select(r));
+                r.addEventListener("click", () => { select(r); location.href = "/chart/?sel=" + r.dataset.p; });
+            });
+            if (rungs.length) select(rungs[0]);
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
-                const i = order.indexOf(organ);
-                if (e.key >= "1" && e.key <= "7") select(order[+e.key - 1]);
-                if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                    select(order[(i + 1) % 7]);
-                }
-                if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                    e.preventDefault();
-                    select(order[(i + 6) % 7]);
-                }
+                const i = rungs.findIndex((r) => r.getAttribute("aria-selected") === "true");
+                if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); select(rungs[(i + 1) % rungs.length]); }
+                if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); select(rungs[(i + rungs.length - 1) % rungs.length]); }
             });
 
             const cmd = document.getElementById("cmd");
