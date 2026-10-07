@@ -28,6 +28,20 @@ soft3 SDK depends on: hemera (particle), bbg (state + proofs), lens (verificatio
 
 do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation.
 
+## release train
+
+rules: `~/cyber/cyberia/dev.md` § release train. soft3 rides the weekly
+train with cyb and cyber. a candidate is cut every friday 12:00 UTC by an
+agent from `origin/main` only. gates: `cargo test` in `crate/`, the node
+boots and answers `/status`, the conformance snapshot passes. one bump is
+one PR `chore: soft3 <version>` (Cargo.toml, CHANGELOG, sibling pins in cyb
+and cyber). `release/phase1.toml` is the phase-1 manifest: the sibling
+revisions every candidate closes over; drift from a pin is a red gate and
+is fixed by a bump PR, never by a path edit. receipts in
+`audit/release-<date>/`; one row per candidate in the launch page work log.
+agents cut, gate and open bump PRs; only the owner merges a bump, promotes
+a candidate, publishes to crates.io or tags.
+
 ## do not touch zones
 
 - `js/` package.json dependency versions — discuss before changing
