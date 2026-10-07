@@ -2,6 +2,7 @@
 //!
 //! - [[network]] — spacepussy-test product network (soft3 chaosnet)
 //! - [[node]] — real soft3-node over cybergraph + bbg
+//! - [[radio]] — gossip topic derivation, `feature = "radio"`
 //! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`
 //!
 //! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`
@@ -9,6 +10,8 @@
 
 pub mod network;
 pub mod node;
+#[cfg(feature = "radio")]
+pub mod radio;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
