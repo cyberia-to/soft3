@@ -24,7 +24,7 @@ Reviewed local contracts on 2026-09-16:
 - [Neuron integration](../../neuron/specs/integration.md), plus the local
   `neuron/specs/identity.md`, `soft3/specs/neuron.md` and
   `soft3/specs/identity-consumers.md` contracts.
-- [Mudra identity](../../mudra/specs/identity.md) and
+- [Mudra identity](../../neuron/specs/proof-authority.md) (now neuron/specs/proof-authority.md) and
   [private recovery](../../mudra/specs/private-recovery.md).
 
 The three named subject/consumer files above were untracked working-tree

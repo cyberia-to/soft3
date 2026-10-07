@@ -20,7 +20,7 @@ value        tok (pay)
 cognition    soma (think)
 capability   ward (authorize)
 present      mir (render world)        prysm (paint UI)
-network      mudra · radio · tape · foculus
+network      radio · tade · foculus
 dynamics     tru (converge φ*)         foculus (agree)
 graph        cybergraph · bbg · cell · fs
 proof        zheng (execution)         eidos (theorem)
