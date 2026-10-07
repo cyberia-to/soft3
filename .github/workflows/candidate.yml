@@ -15,6 +15,10 @@ on:
       cut:
         default: false
         type: boolean
+    secrets:
+      soft3_read_token:
+        description: 'Optional read access for a soft3 draft build in another repository'
+        required: false
 
 permissions:
   contents: read
@@ -37,10 +41,10 @@ jobs:
       - uses: hustcer/setup-nu@9215c80adb545a85c419d5085b76eb6d082f49e7
         with:
           version: '0.112.2'
-      - name: Capture default branches and immutable inputs
+      - name: Capture soft3 sources or consume the product's pinned soft3 build
         id: capture
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.soft3_read_token || github.token }}
           COMPONENT: ${{ inputs.component }}
           CANDIDATE: ${{ inputs.candidate }}
         run: |
@@ -48,19 +52,19 @@ jobs:
           python3 release/train.py snapshot --manager . --component $env.COMPONENT --candidate $name --output snapshot
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "source snapshot failed"} }
           let rows = [
-            {runner: ubuntu-24.04, target: stack}
             {runner: ubuntu-24.04, target: x86_64-unknown-linux-gnu}
             {runner: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu}
             {runner: macos-14, target: aarch64-apple-darwin}
             {runner: macos-15-intel, target: x86_64-apple-darwin}
           ]
+          let rows = if $env.COMPONENT == soft3 { $rows | prepend {runner: ubuntu-24.04, target: stack} } else { $rows }
           let rows = if $env.COMPONENT == cyb { $rows | append {runner: ubuntu-24.04, target: aarch64-linux-android} } else { $rows }
           $"candidate=($name)\n" | save --append $env.GITHUB_OUTPUT
           $"matrix=({include: $rows} | to json --raw)\n" | save --append $env.GITHUB_OUTPUT
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: source-snapshot
-          path: snapshot/sources.json
+          path: snapshot/
           if-no-files-found: error
 
   qualify:
@@ -103,7 +107,7 @@ jobs:
           rustup target add aarch64-linux-android
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "Android Rust target unavailable"} }
           sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
-      - name: Qualify stack and product
+      - name: Qualify this product against its selected stack
         env:
           TARGET: ${{ matrix.target }}
           RUSTUP_TOOLCHAIN: '1.95.0'

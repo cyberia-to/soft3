@@ -1,0 +1,35 @@
+test_archive_traversal_rejected (test_train.ReleaseTests.test_archive_traversal_rejected) ... ok
+test_candidate_identifier_cannot_be_a_version_tag (test_train.ReleaseTests.test_candidate_identifier_cannot_be_a_version_tag) ... ok
+test_complete_set_collects (test_train.ReleaseTests.test_complete_set_collects) ... ok
+test_draft_operation_never_promotes_or_pushes (test_train.ReleaseTests.test_draft_operation_never_promotes_or_pushes) ... ok
+test_missing_inventory_is_red (test_train.ReleaseTests.test_missing_inventory_is_red) ... ok
+test_missing_platform_is_red (test_train.ReleaseTests.test_missing_platform_is_red) ... ok
+test_mixed_source_sets_are_red (test_train.ReleaseTests.test_mixed_source_sets_are_red) ... ok
+test_modified_binary_is_red (test_train.ReleaseTests.test_modified_binary_is_red) ... ok
+test_origin_lookup_failure_is_explicit (test_train.ReleaseTests.test_origin_lookup_failure_is_explicit) ... ok
+test_origin_pin_drift_is_red (test_train.ReleaseTests.test_origin_pin_drift_is_red) ... ok
+test_qualifier_revision_must_match_consumed_soft3 (test_train.ReleaseTests.test_qualifier_revision_must_match_consumed_soft3) ... RED cyber candidate-20260924.1
+GREEN cyber candidate-20260924.1
+draft URL
+RED cyber candidate-20260924.1
+RED cyber candidate-20260924.1
+RED cyber candidate-20260924.1
+RED cyber candidate-20260924.1
+GREEN origin-checkouts
+GREEN phase1-pins
+GREEN release-notes-source
+RED soft3-dependency
+GREEN origin-checkouts
+GREEN phase1-pins
+GREEN release-notes-source
+GREEN soft3-dependency
+ok
+test_red_gate_cannot_be_hidden_by_green_summary (test_train.ReleaseTests.test_red_gate_cannot_be_hidden_by_green_summary) ... ok
+test_warning_is_red_even_with_zero_exit (test_train.ReleaseTests.test_warning_is_red_even_with_zero_exit) ... RED cyber candidate-20260924.1
+RED warning
+ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.094s
+
+OK

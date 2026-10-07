@@ -30,8 +30,9 @@ separate selections with explicit compatibility rules.
 
 ## releases
 
-[Release train](specs/releases.md) owns stack qualification for soft3, cyber and
-cyb. [GitHub Releases](https://github.com/cyberia-to/soft3/releases) holds draft
+[Release train](specs/releases.md) qualifies concrete soft3 builds. Cyber and
+Cyb pin one build and its checksum manifest, inherit its component revisions,
+and add product acceptance. [GitHub Releases](https://github.com/cyberia-to/soft3/releases) holds draft
 candidates with source inventories, platform binaries and gate receipts.
 
 ## install

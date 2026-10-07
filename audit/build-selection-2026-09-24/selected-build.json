@@ -1,0 +1,26 @@
+{
+  "engine_revision": "838450ae972740fd2564319bb23ab869d79d92dd",
+  "command": [
+    "python3",
+    "release/train.py",
+    "consume",
+    "--contract",
+    "/tmp/cyber-train-20260924/audit-cyber/release/soft3.toml",
+    "--output",
+    "/tmp/soft3-pinned-build-20260924"
+  ],
+  "receipt": {
+    "contract": {
+      "repository": "cyberia-to/soft3",
+      "version": "0.10.0",
+      "revision": "c5cc2077df510610abb7b5bd69675af6048ed724",
+      "build": "candidate-20260924.1",
+      "release_id": 395482953,
+      "checksums_sha256": "ae01a7b5edb8aef5cc194f7cf0095d3eac39653de26647daf1b1d998f1a36baf"
+    },
+    "result": "red",
+    "reason": "Pinned soft3 build is RED or incomplete.",
+    "sources_sha256": "22a03d8e40ec6f255980c7802e23e15b285a073060269e3d52d3a4b69d688f00",
+    "validation_sha256": "43990a901ec341a9583f5c92578b2bd9fc90d37acd5ac442a9ab183e36039809"
+  }
+}

@@ -7,13 +7,22 @@ tags: soft3, release, spec
 
 `release/phase1.toml` pins each shared component by checkout name, GitHub
 repository, default branch and full Git revision. Checkout names preserve sibling
-Cargo paths; `tok` maps to `cyberia-to/plumb`. Build tools and forks are inputs too.
-A missing revision or inaccessible origin remains an explicit red gate.
+Cargo paths; `tok` maps to `cyberia-to/plumb`. Build tools and upstream inputs
+belong in this inventory. Missing origins and revision drift are red evidence.
 
-The three products are captured separately from origin when cutting a candidate.
-Their revisions and manifest versions are recorded in `candidate.json`.
-Consumers pin soft3 in `release/soft3.toml`; the shared engine checks this pin
-against the captured soft3 revision and version. See [[specs/releases]].
+Soft3 cuts an assembly from these inputs and its own default-branch revision.
+Cyber and Cyb choose a finished assembly through `release/soft3.toml`: build
+identity, release ID and SHA256SUMS digest, with expected version/source revision.
+They inherit its captured component revisions and verdict. Their release jobs
+resolve only their own product source, as defined in [[specs/releases]].
 
-Pins are changed through coordinated bump PRs. Release jobs never repair drift
-by rewriting local manifests or silently choosing feature branches.
+Owned repositories use their default-branch HEAD at a new soft3 cut and must
+match the declared pin. `source = "upstream"` selects an exact reviewed upstream
+commit and checks that it belongs to the upstream default-branch history.
+Nu is the Nushell source maintained in `cyberia-to/nu`, with upstream history
+from `nushell/nushell`. It follows the owned-repository rule. Its embedded library
+version is controlled here independently of the CI command runner version.
+
+Changing pins requires review. Existing assembly bytes and evidence remain fixed.
+Local source edits and feature-branch work require a new qualified assembly before
+products can select them as release inputs.

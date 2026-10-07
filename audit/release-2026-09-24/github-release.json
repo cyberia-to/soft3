@@ -1,0 +1,70 @@
+{
+  "assets": [
+    {
+      "digest": "sha256:d5671f389d3865dc42463a946552d8d67ed1b4549ba0a0dbd6b25c66c0254881",
+      "name": "candidate.json",
+      "size": 1980
+    },
+    {
+      "digest": "sha256:e0ae974442e54375af3388df1742d1aaf10f4ef2ebb43021764a720b039d3023",
+      "name": "release-notes.md",
+      "size": 12974
+    },
+    {
+      "digest": "sha256:43990a901ec341a9583f5c92578b2bd9fc90d37acd5ac442a9ab183e36039809",
+      "name": "release-validation.json",
+      "size": 21944
+    },
+    {
+      "digest": "sha256:ae01a7b5edb8aef5cc194f7cf0095d3eac39653de26647daf1b1d998f1a36baf",
+      "name": "SHA256SUMS",
+      "size": 1109
+    },
+    {
+      "digest": "sha256:8b5e5528cb4ec985b96dd1c538a7da6f94e241fd66952232afdfd7caaa53b0de",
+      "name": "soft3-candidate-20260924.1-aarch64-apple-darwin.tar.gz",
+      "size": 10667
+    },
+    {
+      "digest": "sha256:f5d9f34ddbfb2b648a75fb4a317e64cf8a1e8402f5a9ea2d9abad9b271e6768b",
+      "name": "soft3-candidate-20260924.1-aarch64-unknown-linux-gnu.tar.gz",
+      "size": 10672
+    },
+    {
+      "digest": "sha256:780e7ee88904e14af022b6767f274eb3b9923fd401e0e85c0517d4b13342b8bb",
+      "name": "soft3-candidate-20260924.1-stack.tar.gz",
+      "size": 25158
+    },
+    {
+      "digest": "sha256:ce07176bf9b91ac31accbb10ee4bb61d6fa8a4c80f4e881248b6284e8359e9f4",
+      "name": "soft3-candidate-20260924.1-x86_64-apple-darwin.tar.gz",
+      "size": 10673
+    },
+    {
+      "digest": "sha256:1b188fbb3fece6ea031cc66251f7fbe58cade69f39716d10684947b61a1d1698",
+      "name": "soft3-candidate-20260924.1-x86_64-unknown-linux-gnu.tar.gz",
+      "size": 10666
+    },
+    {
+      "digest": "sha256:877f49435433651b7ae5f8eb9f325b1c0bb2b8c8fc777d61683f56d81b1d6be4",
+      "name": "soft3-dependencies.json",
+      "size": 209552
+    },
+    {
+      "digest": "sha256:5ff710c5c268634d0a161927334b01ffb1663b9fa3dab00c998417d22616ef43",
+      "name": "soft3-dependencies.md",
+      "size": 7327
+    },
+    {
+      "digest": "sha256:22a03d8e40ec6f255980c7802e23e15b285a073060269e3d52d3a4b69d688f00",
+      "name": "sources.json",
+      "size": 10403
+    }
+  ],
+  "draft": true,
+  "html_url": "https://github.com/cyberia-to/soft3/releases/tag/untagged-47fb822e14af390dd809",
+  "id": 395482953,
+  "prerelease": true,
+  "tag_name": "candidate-20260924.1",
+  "target_commitish": "c5cc2077df510610abb7b5bd69675af6048ed724"
+}

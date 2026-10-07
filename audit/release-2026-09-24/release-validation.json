@@ -1,0 +1,655 @@
+{
+  "platforms": [
+    {
+      "archive": "soft3-candidate-20260924.1-stack.tar.gz",
+      "archive_sha256": "780e7ee88904e14af022b6767f274eb3b9923fd401e0e85c0517d4b13342b8bb",
+      "artifacts": [],
+      "gates": [
+        {
+          "failures": [
+            {
+              "error": "git exited 128: fatal: could not read Username for 'https://github.com': terminal prompts disabled",
+              "name": "nu",
+              "result": "red"
+            }
+          ],
+          "name": "origin-checkouts",
+          "result": "red"
+        },
+        {
+          "drift": [
+            "nu"
+          ],
+          "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+          "name": "phase1-pins",
+          "result": "red"
+        },
+        {
+          "errors": [
+            {
+              "component": "cyb",
+              "error": "captured product HEAD has no merged pull request"
+            }
+          ],
+          "name": "release-notes-source",
+          "result": "red"
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/hemera/rs",
+          "elapsed_seconds": 1.117,
+          "exit_code": 101,
+          "log": "logs/stack-hemera.txt",
+          "log_sha256": "cabd155f69eb01896fa258f4fddb9890587ef58a3b5dab688947385190e13891",
+          "name": "stack-hemera",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/bbg/rs",
+          "elapsed_seconds": 0.265,
+          "exit_code": 101,
+          "log": "logs/stack-bbg.txt",
+          "log_sha256": "3e88a10e784747467b842701bff615e338c673e427ba7ba97803262ff486c4c4",
+          "name": "stack-bbg",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/lens",
+          "elapsed_seconds": 0.115,
+          "exit_code": 101,
+          "log": "logs/stack-lens.txt",
+          "log_sha256": "bbcb336db942f757088184df3c358bf21f587185d0559422179c275b143e5737",
+          "name": "stack-lens",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/nox/rs",
+          "elapsed_seconds": 0.666,
+          "exit_code": 101,
+          "log": "logs/stack-nox.txt",
+          "log_sha256": "06c94fa691b109881d3caf8be6fb5e7c998c4766041954f0a8fb45a6b5fbf720",
+          "name": "stack-nox",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/zheng/rs",
+          "elapsed_seconds": 0.032,
+          "exit_code": 101,
+          "log": "logs/stack-zheng.txt",
+          "log_sha256": "c1fb5c2436764e022322bddff1a487f3205644eaa99d95af216656c22018ab2f",
+          "name": "stack-zheng",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/cybergraph",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/stack-cybergraph.txt",
+          "log_sha256": "358ab60939d71b01205c72ea31f4ab6795668ece8b997a1a946a3edf2a285064",
+          "name": "stack-cybergraph",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/foculus",
+          "elapsed_seconds": 0.032,
+          "exit_code": 101,
+          "log": "logs/stack-foculus.txt",
+          "log_sha256": "bcea51961e47acd861f46a58d389ed56eccc83908e778ec787489426d894dbca",
+          "name": "stack-foculus",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/tru/rs",
+          "elapsed_seconds": 0.165,
+          "exit_code": 101,
+          "log": "logs/stack-tru.txt",
+          "log_sha256": "c9fc8316d2d2c35623c6069922d028842680abbc0c3a967f27d090cad3b74310",
+          "name": "stack-tru",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/tok/rs",
+          "elapsed_seconds": 9.74,
+          "exit_code": 0,
+          "log": "logs/stack-tok.txt",
+          "log_sha256": "6bb4e4a213ed4db397e53bee082d07b7ad6411e30716a35c98db7aea54bbb6db",
+          "name": "stack-tok",
+          "result": "green",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/mudra",
+          "elapsed_seconds": 0.415,
+          "exit_code": 101,
+          "log": "logs/stack-mudra.txt",
+          "log_sha256": "278d2513eb9a16baf9eb5eeddfd3c2170abdba02cca2bff6548b5d122e37757e",
+          "name": "stack-mudra",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/vault",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/stack-vault.txt",
+          "log_sha256": "41ca05b7e3ab54888e02d6e07b4caf48f37451b0661eb91291cd88505aaea617",
+          "name": "stack-vault",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/neuron",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/stack-neuron.txt",
+          "log_sha256": "78614fd4892aec40ae5c409a7418570becfd018b7d9ca1eb2a20be5be8409ee8",
+          "name": "stack-neuron",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/file",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/stack-file.txt",
+          "log_sha256": "92368880cbcf2279cca269b99e876d10c9b644724fe17f8de28a13160de0919e",
+          "name": "stack-file",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/radio",
+          "elapsed_seconds": 181.445,
+          "exit_code": 101,
+          "log": "logs/stack-radio.txt",
+          "log_sha256": "c064d2eae68ca93d269f1f01f4e49df8df36564007040d08b7ebed4f1de46fbd",
+          "name": "stack-radio",
+          "result": "red",
+          "warnings": true
+        },
+        {
+          "command": [
+            "cargo",
+            "conformance",
+            "--check"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3",
+          "elapsed_seconds": 0.032,
+          "exit_code": 101,
+          "log": "logs/conformance-snapshot.txt",
+          "log_sha256": "ed83d7d323df7ee258eb7526d015566956eaf29bbef87995e9e4abd82e4ce107",
+          "name": "conformance-snapshot",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/soft3-tests.txt",
+          "log_sha256": "573752e6c68d2b2f0ce3e6af39fa29b4cedca2c8826e35f024a1d16e47b8d09b",
+          "name": "soft3-tests",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "build",
+            "--release",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/soft3-release.txt",
+          "log_sha256": "3398e9e0da7aada749b98c228af78dd95196065d8c648fc649746555f49a2c42",
+          "name": "soft3-release",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "name": "node-status",
+          "reason": "release executable was not built",
+          "result": "blocked"
+        },
+        {
+          "changed": [],
+          "name": "source-inputs-unchanged",
+          "result": "green"
+        },
+        {
+          "error": "cargo exited 101: Updating crates.io index\nerror: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/home/runner/work/_temp/sources/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+          "name": "package-resolution",
+          "result": "red"
+        }
+      ],
+      "result": "red",
+      "target": "stack"
+    },
+    {
+      "archive": "soft3-candidate-20260924.1-aarch64-apple-darwin.tar.gz",
+      "archive_sha256": "8b5e5528cb4ec985b96dd1c538a7da6f94e241fd66952232afdfd7caaa53b0de",
+      "artifacts": [],
+      "error": "qualification incomplete or binary unavailable",
+      "gates": [
+        {
+          "failures": [
+            {
+              "error": "git exited 128: fatal: could not read Username for 'https://github.com': terminal prompts disabled",
+              "name": "nu",
+              "result": "red"
+            }
+          ],
+          "name": "origin-checkouts",
+          "result": "red"
+        },
+        {
+          "drift": [
+            "nu"
+          ],
+          "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+          "name": "phase1-pins",
+          "result": "red"
+        },
+        {
+          "errors": [
+            {
+              "component": "cyb",
+              "error": "captured product HEAD has no merged pull request"
+            }
+          ],
+          "name": "release-notes-source",
+          "result": "red"
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/Users/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.074,
+          "exit_code": 101,
+          "log": "logs/soft3-tests.txt",
+          "log_sha256": "48b6bc3bfa765a3cf19cc91cfcf019518937e4dfe1ac3d12ffac92cb21d72c3e",
+          "name": "soft3-tests",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "build",
+            "--release",
+            "--locked"
+          ],
+          "cwd": "/Users/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.05,
+          "exit_code": 101,
+          "log": "logs/soft3-release.txt",
+          "log_sha256": "2cd5ff828cd07900c34409d1095ea5a1e411005c66502d7f5a420dc948993adb",
+          "name": "soft3-release",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "name": "node-status",
+          "reason": "release executable was not built",
+          "result": "blocked"
+        },
+        {
+          "changed": [],
+          "name": "source-inputs-unchanged",
+          "result": "green"
+        },
+        {
+          "error": "cargo exited 101: Updating crates.io index\nerror: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/Users/runner/work/_temp/sources/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+          "name": "package-resolution",
+          "result": "red"
+        }
+      ],
+      "result": "red",
+      "target": "aarch64-apple-darwin"
+    },
+    {
+      "archive": "soft3-candidate-20260924.1-x86_64-apple-darwin.tar.gz",
+      "archive_sha256": "ce07176bf9b91ac31accbb10ee4bb61d6fa8a4c80f4e881248b6284e8359e9f4",
+      "artifacts": [],
+      "error": "qualification incomplete or binary unavailable",
+      "gates": [
+        {
+          "failures": [
+            {
+              "error": "git exited 128: fatal: could not read Username for 'https://github.com': terminal prompts disabled",
+              "name": "nu",
+              "result": "red"
+            }
+          ],
+          "name": "origin-checkouts",
+          "result": "red"
+        },
+        {
+          "drift": [
+            "nu"
+          ],
+          "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+          "name": "phase1-pins",
+          "result": "red"
+        },
+        {
+          "errors": [
+            {
+              "component": "cyb",
+              "error": "captured product HEAD has no merged pull request"
+            }
+          ],
+          "name": "release-notes-source",
+          "result": "red"
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/Users/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.369,
+          "exit_code": 101,
+          "log": "logs/soft3-tests.txt",
+          "log_sha256": "48b6bc3bfa765a3cf19cc91cfcf019518937e4dfe1ac3d12ffac92cb21d72c3e",
+          "name": "soft3-tests",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "build",
+            "--release",
+            "--locked"
+          ],
+          "cwd": "/Users/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.278,
+          "exit_code": 101,
+          "log": "logs/soft3-release.txt",
+          "log_sha256": "2cd5ff828cd07900c34409d1095ea5a1e411005c66502d7f5a420dc948993adb",
+          "name": "soft3-release",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "name": "node-status",
+          "reason": "release executable was not built",
+          "result": "blocked"
+        },
+        {
+          "changed": [],
+          "name": "source-inputs-unchanged",
+          "result": "green"
+        },
+        {
+          "error": "cargo exited 101: Updating crates.io index\nerror: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/Users/runner/work/_temp/sources/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+          "name": "package-resolution",
+          "result": "red"
+        }
+      ],
+      "result": "red",
+      "target": "x86_64-apple-darwin"
+    },
+    {
+      "archive": "soft3-candidate-20260924.1-aarch64-unknown-linux-gnu.tar.gz",
+      "archive_sha256": "f5d9f34ddbfb2b648a75fb4a317e64cf8a1e8402f5a9ea2d9abad9b271e6768b",
+      "artifacts": [],
+      "error": "qualification incomplete or binary unavailable",
+      "gates": [
+        {
+          "failures": [
+            {
+              "error": "git exited 128: fatal: could not read Username for 'https://github.com': terminal prompts disabled",
+              "name": "nu",
+              "result": "red"
+            }
+          ],
+          "name": "origin-checkouts",
+          "result": "red"
+        },
+        {
+          "drift": [
+            "nu"
+          ],
+          "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+          "name": "phase1-pins",
+          "result": "red"
+        },
+        {
+          "errors": [
+            {
+              "component": "cyb",
+              "error": "captured product HEAD has no merged pull request"
+            }
+          ],
+          "name": "release-notes-source",
+          "result": "red"
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.032,
+          "exit_code": 101,
+          "log": "logs/soft3-tests.txt",
+          "log_sha256": "573752e6c68d2b2f0ce3e6af39fa29b4cedca2c8826e35f024a1d16e47b8d09b",
+          "name": "soft3-tests",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "build",
+            "--release",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.033,
+          "exit_code": 101,
+          "log": "logs/soft3-release.txt",
+          "log_sha256": "3398e9e0da7aada749b98c228af78dd95196065d8c648fc649746555f49a2c42",
+          "name": "soft3-release",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "name": "node-status",
+          "reason": "release executable was not built",
+          "result": "blocked"
+        },
+        {
+          "changed": [],
+          "name": "source-inputs-unchanged",
+          "result": "green"
+        },
+        {
+          "error": "cargo exited 101: Updating crates.io index\nerror: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/home/runner/work/_temp/sources/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+          "name": "package-resolution",
+          "result": "red"
+        }
+      ],
+      "result": "red",
+      "target": "aarch64-unknown-linux-gnu"
+    },
+    {
+      "archive": "soft3-candidate-20260924.1-x86_64-unknown-linux-gnu.tar.gz",
+      "archive_sha256": "1b188fbb3fece6ea031cc66251f7fbe58cade69f39716d10684947b61a1d1698",
+      "artifacts": [],
+      "error": "qualification incomplete or binary unavailable",
+      "gates": [
+        {
+          "failures": [
+            {
+              "error": "git exited 128: fatal: could not read Username for 'https://github.com': terminal prompts disabled",
+              "name": "nu",
+              "result": "red"
+            }
+          ],
+          "name": "origin-checkouts",
+          "result": "red"
+        },
+        {
+          "drift": [
+            "nu"
+          ],
+          "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+          "name": "phase1-pins",
+          "result": "red"
+        },
+        {
+          "errors": [
+            {
+              "component": "cyb",
+              "error": "captured product HEAD has no merged pull request"
+            }
+          ],
+          "name": "release-notes-source",
+          "result": "red"
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.065,
+          "exit_code": 101,
+          "log": "logs/soft3-tests.txt",
+          "log_sha256": "573752e6c68d2b2f0ce3e6af39fa29b4cedca2c8826e35f024a1d16e47b8d09b",
+          "name": "soft3-tests",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "command": [
+            "cargo",
+            "build",
+            "--release",
+            "--locked"
+          ],
+          "cwd": "/home/runner/work/_temp/sources/soft3/crate",
+          "elapsed_seconds": 0.064,
+          "exit_code": 101,
+          "log": "logs/soft3-release.txt",
+          "log_sha256": "3398e9e0da7aada749b98c228af78dd95196065d8c648fc649746555f49a2c42",
+          "name": "soft3-release",
+          "result": "red",
+          "warnings": false
+        },
+        {
+          "name": "node-status",
+          "reason": "release executable was not built",
+          "result": "blocked"
+        },
+        {
+          "changed": [],
+          "name": "source-inputs-unchanged",
+          "result": "green"
+        },
+        {
+          "error": "cargo exited 101: Updating crates.io index\nerror: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/home/runner/work/_temp/sources/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+          "name": "package-resolution",
+          "result": "red"
+        }
+      ],
+      "result": "red",
+      "target": "x86_64-unknown-linux-gnu"
+    }
+  ],
+  "result": "red",
+  "source_snapshot_sha256": "22a03d8e40ec6f255980c7802e23e15b285a073060269e3d52d3a4b69d688f00"
+}

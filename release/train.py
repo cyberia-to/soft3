@@ -11,6 +11,8 @@ import tarfile
 
 from train_sources import PRODUCTS, TARGETS, command, digest, inventory, materialize, snapshot, write_json
 from train_gates import run_gates
+from train_notes import render as render_notes
+from train_build import contract as build_contract, fetch as fetch_build, verify as verify_build, bound_sources
 
 
 def candidate_name(value):
@@ -29,6 +31,14 @@ def build(args):
     sources = json.loads(args.snapshot.read_text())
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
+    if sources["component"] != "soft3":
+        if args.stack:
+            raise ValueError("product builds consume soft3 qualification; only soft3 runs stack gates")
+        inherited, pinned = verify_build(args.snapshot.parent / "soft3-build", sources["soft3_build"]["contract"])
+        if inherited != sources["soft3_build"]:
+            raise ValueError("soft3 verdict differs from the authenticated build")
+        bound_sources(sources, pinned)
+        shutil.copytree(args.snapshot.parent / "soft3-build", output / "soft3-build")
     checkouts = materialize(sources, args.checkout.resolve())
     actual = inventory(sources, args.checkout.resolve(), output)
     component = "soft3" if args.stack else sources["component"]
@@ -61,6 +71,10 @@ def build(args):
     if actual["package_resolution"]["result"] != "green":
         validation["result"] = "red"
         validation["gates"].append({"name": "package-resolution", **actual["package_resolution"]})
+    binding = actual.get("component_bindings", {"result": "blocked", "reason": "Package resolution failed."})
+    validation["gates"].append({"name": "component-bindings", **binding})
+    if binding["result"] != "green":
+        validation["result"] = "red"
     write_json(output / "release-validation.json", validation)
     checksums(output)
     archive = output.parent / f"{sources['component']}-{sources['candidate']}-{args.target}.tar.gz"
@@ -76,8 +90,22 @@ def collect(args):
     candidate_name(name)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    expected = ["stack", *TARGETS] + (["aarch64-linux-android"] if component == "cyb" else [])
+    expected = (["stack"] if component == "soft3" else []) + TARGETS + (["aarch64-linux-android"] if component == "cyb" else [])
     results, versions, binaries, details, inventories = [], None, [], [], {}
+    if component != "soft3":
+        inherited, pinned = verify_build(args.snapshot.parent / "soft3-build", sources["soft3_build"]["contract"])
+        if inherited != sources["soft3_build"]:
+            raise ValueError("soft3 verdict differs from the authenticated build")
+        bound_sources(sources, pinned)
+        archive = output / "soft3-build.tar.gz"
+        with tarfile.open(archive, "w:gz") as tar:
+            for path in sorted((args.snapshot.parent / "soft3-build").iterdir()):
+                tar.add(path, arcname=path.name)
+        write_json(output / "soft3-build.json", inherited)
+        results.append({"target": "stack", "result": inherited["result"], "inherited": True,
+                        "archive": archive.name, "archive_sha256": digest(archive), "artifacts": [],
+                        "gates": [{"name": "soft3-build", "result": inherited["result"],
+                                   "reason": inherited["reason"]}]})
     source_revisions = {r["name"]: r.get("revision") for r in sources["repositories"]}
     for target in expected:
         archives = list(args.artifacts.rglob(f"{component}-{name}-{target}.tar.gz"))
@@ -150,29 +178,13 @@ def collect(args):
                "source_snapshot_sha256": digest(args.snapshot)})
     write_json(output / "candidate.json", {"name": name, "component": component, "versions": versions,
                "result": verdict, "source_revisions": source_revisions, "available_binaries": binaries,
-               "manager_revision": sources["manager_revision"], "promotion": "owner only"})
+               "manager_revision": sources["manager_revision"], "promotion": "owner only",
+               **({"soft3_build": sources["soft3_build"]} if "soft3_build" in sources else {})})
     (output / "soft3-dependencies.md").write_text("\n".join(details or ["Source capture is in sources.json; no platform resolved a package inventory."]) + "\n")
-    body = [f"# {component} {name} — {verdict.upper()}", "",
-            "Draft candidate. The owner records the verdict and selects promotion.", "",
-            "Input updates at the captured product revisions:", ""]
-    for index, change in enumerate(sources.get("changes", []), start=1):
-        title = change["title"].replace("\n", " ").replace("[", "(").replace("]", ")")
-        body.append(f"{index}. {change['component']}: [{title}]({change['html_url']})")
-    for error in sources.get("change_errors", []):
-        body.append(f"Unresolved change attribution: {error['component']} — {error['error']}")
-    body += ["", "Exact gate commands and results are in release-validation.json. Available binaries are inside platform archives.",
-             "", "| target | verdict | binaries |", "|---|---|---|"]
-    for row in results:
-        body.append(f"| {row['target']} | {row['result'].upper()} | {', '.join(a['name'] for a in row.get('artifacts', [])) or 'unavailable; see receipt'} |")
-    body += ["", "## failures", ""]
-    for row in results:
-        for gate in row.get("gates", []):
-            if gate["result"] != "green":
-                body.append(f"- {row['target']}: {gate['name']} — {gate.get('error', gate.get('reason', gate['result']))}")
-        if row.get("error"):
-            body.append(f"- {row['target']}: {row['error']}")
-    body += ["", *(details or ["See sources.json for the captured default-branch revisions."])]
-    (output / "release-notes.md").write_text("\n".join(body) + "\n")
+    declarations = [data["component_inputs"] for data in inventories.values() if "component_inputs" in data]
+    if declarations:
+        write_json(output / "component-inputs.json", declarations[0])
+    (output / "release-notes.md").write_text(render_notes(output))
     checksums(output)
     print(f"{verdict.upper()} {component} {name}")
 
@@ -184,10 +196,11 @@ def draft(args):
     component = candidate["component"]
     repo = PRODUCTS[component][0]
     assets = [str(path) for path in sorted(output.iterdir()) if path.is_file()]
+    marker = "🟢" if candidate["result"] == "green" else "🔴"
     # gh keeps this tag name in draft metadata. No tag is pushed or published.
     result = command(["gh", "release", "create", name, *assets, "--repo", repo, "--draft", "--prerelease",
                       "--target", candidate["source_revisions"][component], "--latest=false",
-                      "--title", f"{component} {name} — {candidate['result'].upper()}",
+                      "--title", f"{marker} {component} {name} — {candidate['result'].upper()}",
                       "--notes-file", str(output / "release-notes.md")], timeout=300)
     print(result)
 
@@ -210,11 +223,17 @@ def main():
     gather.add_argument("--snapshot", type=Path, required=True)
     gather.add_argument("--artifacts", type=Path, required=True)
     gather.add_argument("--output", type=Path, required=True)
+    consume = sub.add_parser("consume", help="Download and verify one pinned soft3 build")
+    consume.add_argument("--contract", type=Path, required=True)
+    consume.add_argument("--output", type=Path, required=True)
     publish = sub.add_parser("draft")
     publish.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.action == "snapshot":
         snapshot(args.manager.resolve(), args.output.resolve(), args.component, args.candidate)
+    elif args.action == "consume":
+        receipt, _ = fetch_build(build_contract(args.contract.read_text()), args.output)
+        print(json.dumps(receipt, indent=2))
     else:
         {"build": build, "collect": collect, "draft": draft}[args.action](args)
 
