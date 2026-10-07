@@ -22,7 +22,7 @@
             rel="icon"
             href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
         />
-        <link rel="stylesheet" href="/base.css?v=8" />
+        <link rel="stylesheet" href="/base.css?v=9" />
         <style>
 
 
@@ -351,7 +351,7 @@
             .ladder .rung[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
             .ladder .rung[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
             .ladder .rung[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
-            .ladder .rung[data-f="apps"]  { --fc: #7dffc4; --ft: #0a120e; }
+            .ladder .rung[data-f="apps"]  { --fc: #fff8f0; --ft: #0a120e; }
             .ladder .rung { border-color: color-mix(in srgb, var(--fc) 35%, transparent); }
             .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--fc) 80%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--fc) 30%, transparent); background: color-mix(in srgb, var(--fc) 10%, rgba(6,16,10,0.94)); }
             .ladder .who .fac { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--fc) 62%, white); text-shadow: 0 0 10px color-mix(in srgb, var(--fc) 70%, transparent); vertical-align: middle; }
@@ -535,18 +535,22 @@
             </footer>
         </div>
 
-        <script src="/world.js?v=8"></script>
+        <script src="/world.js?v=9"></script>
         <script>
             // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to.
             // nothing is selected by default — the page is neutral until you point at a rung
             const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
             let pinned = null;
             const rungs = [...document.querySelectorAll(".ladder .rung")];
+            // a facet paints the world in its colour; the apps — and nothing selected — are
+            // all seven mixed: the world in full colour, no tint at all
             function paint(f) {
+                const full = !f || f === "apps";
                 const [col, hue] = FACET[f] || FACET.apps;
-                document.documentElement.style.setProperty("--accent-h", hue);
-                document.documentElement.style.setProperty("--facet", col);
-                if (window.worldHue) worldHue(hue - 150);
+                document.documentElement.style.setProperty("--accent-h", full ? 150 : hue);
+                document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : col);
+                document.documentElement.style.setProperty("--tint", full ? 0 : 0.72);
+                if (window.worldHue) worldHue(full ? 0 : hue - 150);
             }
             function select(r) {
                 rungs.forEach((x) => x.setAttribute("aria-selected", x === r ? "true" : "false"));

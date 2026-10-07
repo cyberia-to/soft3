@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" />
-        <link rel="stylesheet" href="/base.css?v=8" />
+        <link rel="stylesheet" href="/base.css?v=9" />
         <style>
             .shell { max-width: 1500px; }
             .chart-stage { display: grid; grid-template-columns: minmax(220px, 17rem) minmax(0, 1fr) minmax(220px, 17rem); gap: clamp(0.6rem, 1.5vw, 1rem); min-height: 0; align-items: stretch; }
@@ -56,7 +56,7 @@
                 <span>don't trust. don't fear. don't beg.</span>
             </footer>
         </div>
-        <script src="/world.js?v=8"></script>
+        <script src="/world.js?v=9"></script>
         <script>
           try {
             const FACETS = {
@@ -169,7 +169,7 @@
             const clearLabels = () => { while (labelLayer.firstChild) labelLayer.firstChild.remove(); };
             function labelEdge(e) { const x = (e.A.x + 2 * e.cx + e.B.x) / 4, y = (e.A.y + 2 * e.cy + e.B.y) / 4; el("text", { x, y: y - 8, "text-anchor": "middle", "font-size": 26, fill: "#fff8f0", "paint-order": "stroke", stroke: "#06100a", "stroke-width": 7 }, labelLayer).textContent = e.label; }
             const inDefault = inp.innerHTML, outDefault = outp.innerHTML;
-            function tint(f) { const v = FACETS[f] || FACETS.apps; document.documentElement.style.setProperty("--facet", v.c); document.documentElement.style.setProperty("--accent-h", v.h); if (window.worldHue) worldHue(v.h - 150); }
+            function tint(f) { const full = !f || f === "apps"; const v = FACETS[f] || FACETS.apps; document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : v.c); document.documentElement.style.setProperty("--accent-h", full ? 150 : v.h); document.documentElement.style.setProperty("--tint", full ? 0 : 0.72); if (window.worldHue) worldHue(full ? 0 : v.h - 150); }
             function release() { edgeEls.forEach((e) => { e.path.setAttribute("stroke-opacity", 0.32); e.path.setAttribute("stroke-width", 2.4); }); Object.values(nodeEls).forEach((g) => (g.style.opacity = 1)); hubLayer.querySelectorAll(".hub").forEach((g) => (g.style.opacity = 1)); clearLabels(); inp.innerHTML = inDefault; outp.innerHTML = outDefault; tint("apps"); history.replaceState(null, "", location.pathname); }
             function select(id) {
                 const n = NODES.find((x) => x.id === id); if (!n) return;

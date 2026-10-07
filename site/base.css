@@ -124,5 +124,5 @@ body {
     color: rgba(255, 248, 240, 0.5);
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
-#tint { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: var(--facet, #7dffc4); mix-blend-mode: color; opacity: 0.72; transition: background 0.5s ease, opacity 0.5s ease; }
-#tint::after { content: ""; position: absolute; inset: 0; background: var(--facet, #7dffc4); opacity: 0.18; mix-blend-mode: normal; }
+#tint { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: var(--facet, #7dffc4); mix-blend-mode: color; opacity: var(--tint, 0); transition: background 0.5s ease, opacity 0.5s ease; }
+#tint::after { content: ""; position: absolute; inset: 0; background: var(--facet, #7dffc4); opacity: 0.25; mix-blend-mode: normal; }
