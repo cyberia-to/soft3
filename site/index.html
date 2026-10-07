@@ -540,11 +540,11 @@
         <script>
             // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to
             const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
-            let organ = "form", organHue = 0, pinned = null;
+            let organ = "form", pinned = null;
             const rungs = [...document.querySelectorAll(".ladder .rung")];
             const ladq = document.getElementById("ladq"), ladp = document.getElementById("ladp");
             function select(r) {
-                organ = r.dataset.f; const [col, hue] = FACET[organ] || FACET.apps; organHue = hue - 150;
+                organ = r.dataset.f; const [col, hue] = FACET[organ] || FACET.apps;
                 document.documentElement.style.setProperty("--accent-h", hue);
                 document.documentElement.style.setProperty("--facet", col);
                 if (window.worldHue) worldHue(hue - 150);
