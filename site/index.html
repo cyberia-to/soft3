@@ -447,24 +447,26 @@
                 }
             }
         
-            /* ── the ladder: ten products, three groups — the stack as it reads ── */
-            .ladder { overflow: auto; padding-right: 0.2rem; gap: 0.45rem; }
-            .ladder-cap { margin: 0 0 0.1rem; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+            /* ── the ladder: ten products, three groups — fills the panel, reads on glass ── */
+            .ladder { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.8rem 0.9rem 0.7rem; min-height: 0; overflow: auto; }
+            .ladder-cap { margin: 0; flex: none; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
             .ladder-cap em { font-style: normal; color: var(--mint); font-size: 0.95rem; }
             .ladder-cap .legend { margin-left: auto; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
             .ladder-cap .legend i { font-style: normal; width: 0.5rem; height: 0.5rem; border-radius: 999px; display: inline-block; background: var(--fc); margin: 0 0.15rem 0 0.4rem; vertical-align: middle; }
-            .ladder .group { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.5rem; }
+            .ladder .group { flex: 1 1 0; min-height: 0; display: grid; grid-template-columns: 2rem 1fr; gap: 0.5rem; }
+            .ladder .group[data-g="core"] { flex-grow: 1.34; }
             .ladder .rail { position: relative; border-right: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); }
-            .ladder .rail span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); writing-mode: vertical-rl; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mint); text-shadow: 0 0 14px rgba(125,255,196,0.45); white-space: nowrap; }
-            .ladder .rungs { display: flex; flex-direction: column; gap: 0.3rem; }
-            .ladder .rung { display: grid; grid-template-columns: 2.2rem 2.4rem minmax(0, 1fr) fit-content(56%); gap: 0.65rem; align-items: center; min-height: 3.3rem; padding: 0.4rem 0.9rem 0.4rem 0.7rem; border-radius: 0.7rem; border: 1px solid color-mix(in srgb, var(--mint) 30%, transparent); background: color-mix(in srgb, var(--mint) calc(14% - var(--k) * 1%), rgba(6,16,10,0.72)); cursor: pointer; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
-            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--mint) 65%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.18); }
-            .ladder .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.6rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
-            .ladder .ico { font-size: 1.6rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); } .ladder .ico .glyph { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif; color: var(--mint); font-size: 2rem; }
-            .ladder .who h2 { margin: 0; font-size: 1.1rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.62rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
-            .ladder .who .does { margin: 0.2rem 0 0; font-size: 0.72rem; line-height: 1.3; color: rgba(255,248,240,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .ladder .deps { display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: nowrap; gap: 0.22rem; justify-content: flex-end; }
-            .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.38rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
+            .ladder .rail span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); writing-mode: vertical-rl; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.64rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mint); text-shadow: 0 0 14px rgba(125,255,196,0.45); white-space: nowrap; }
+            .ladder .rungs { display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; }
+            .ladder .rung { flex: 1 1 0; min-height: 3rem; display: grid; grid-template-columns: 1.9rem 2.2rem minmax(0, 1fr) fit-content(52%); gap: 0.6rem; align-items: center; padding: 0.35rem 0.8rem 0.35rem 0.6rem; border-radius: 0.7rem; border: 1px solid color-mix(in srgb, var(--mint) 32%, transparent); background: color-mix(in srgb, var(--mint) calc(12% - var(--k) * 0.8%), rgba(6,16,10,0.86)); cursor: pointer; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--mint) 70%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.2); background: color-mix(in srgb, var(--mint) 14%, rgba(6,16,10,0.9)); }
+            .ladder .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.5rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
+            .ladder .ico { font-size: 1.5rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); } .ladder .ico .glyph { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif; color: var(--mint); font-size: 1.9rem; }
+            .ladder .who { min-width: 0; }
+            .ladder .who h2 { margin: 0; font-size: 1.05rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.6rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
+            .ladder .who .does { margin: 0.15rem 0 0; font-size: 0.72rem; line-height: 1.25; color: rgba(255,248,240,0.8); }
+            .ladder .deps { display: flex; flex-direction: column; gap: 0.22rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: wrap; gap: 0.2rem; justify-content: flex-end; }
+            .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.36rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
             .ladder i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
             .ladder i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
             .ladder i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
@@ -472,7 +474,7 @@
             .ladder i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
             .ladder i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
             .ladder i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
-            @media (max-width: 900px) { .ladder .group { grid-template-columns: 1fr; } .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.3rem; } .ladder .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .ladder .rung { grid-template-columns: 2rem 2.2rem 1fr; min-height: 0; } .ladder .deps { grid-column: 1 / -1; align-items: flex-start; } .ladder .deps .row { flex-wrap: wrap; justify-content: flex-start; } .ladder .who .does { white-space: normal; } }
+            @media (max-width: 900px) { .ladder { overflow: visible; } .ladder .group { grid-template-columns: 1fr; } .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.3rem; } .ladder .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .ladder .rung { grid-template-columns: 1.8rem 2rem 1fr; min-height: 0; } .ladder .deps { grid-column: 1 / -1; align-items: flex-start; } .ladder .deps .row { justify-content: flex-start; } }
 </style>
     </head>
     <body>
@@ -553,7 +555,7 @@
                     </div>
                 </section>
 
-                <aside class="panel ladder" aria-label="the stack as a ladder of ten products">
+                <aside class="panel ladder glass" aria-label="the stack as a ladder of ten products">
                     <p class="ladder-cap"><em id="ladq">what are the rules?</em> <span id="ladp">· nox</span> <span class="legend"><i data-f="form"></i>form <i data-f="mass"></i>mass <i data-f="space"></i>space <i data-f="life"></i>life <i data-f="word"></i>word <i data-f="work"></i>work <i data-f="play"></i>play</span></p>
                     <section class="group" data-g="kernel">
                         <div class="rail"><span>kernel</span></div>

@@ -8,7 +8,7 @@ byname = {c['name']: c for c in reg}
 errs = []
 # home: the ladder. every chip is a component; every layered component is a chip, a rung, or inside a chip (part_of)
 home = (root/'site/index.html').read_text()
-start = home.index('class="panel ladder"')
+start = home.index('class="panel ladder')
 lad = home[start:home.index('</aside>', start)]
 chips = set(re.findall(r'<i data-f="[a-z]+">([a-z0-9-]+)</i>', lad))
 rungs = set(re.findall(r'data-p="([a-z0-9-]+)"', lad))
