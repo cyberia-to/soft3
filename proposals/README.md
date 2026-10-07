@@ -19,4 +19,4 @@ architecture changes that cross repositories are written here before they are bu
 
 statuses: **proposed** — agreed picture, not built · **draft** — still being argued · **implemented** — closed by its last merge · **superseded** — overtaken by a later decision, kept as the record.
 
-the ladder these proposals shape is [soft3.org/layers](https://soft3.org/layers); the boundaries they respect are [[soft3/roadmap/component-boundaries|component boundaries]].
+the ladder these proposals shape is the front page of [soft3.org](https://soft3.org); the boundaries they respect are [[soft3/roadmap/component-boundaries|component boundaries]].

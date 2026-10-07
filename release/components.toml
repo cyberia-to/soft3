@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung on soft3.org/layers — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung of the ladder on soft3.org — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces.
 
@@ -30,7 +30,7 @@ name = "nox"
 kind = "crate"
 repo = "nox"
 verb = "run"
-facet = "work"
+facet = "form"
 layer = 1
 role = "machine"
 phase = "1"
@@ -41,7 +41,7 @@ name = "trident"
 kind = "crate"
 repo = "trident"
 verb = "compile"
-facet = "word"
+facet = "work"
 layer = 2
 role = "weapon"
 phase = "1"
@@ -118,7 +118,7 @@ name = "joy"
 kind = "crate"
 repo = "joy"
 verb = "prove"
-facet = "work"
+facet = "space"
 layer = 3
 role = "warrior"
 phase = "1"
@@ -220,7 +220,7 @@ kind = "crate"
 repo = "mudra"
 verb = "encrypt"
 facet = "space"
-layer = 5
+layer = 4
 part_of = "neural"
 phase = "1"
 state = "live"
@@ -242,7 +242,7 @@ kind = "crate"
 repo = "tade"
 verb = "frame"
 facet = "space"
-layer = 7
+layer = 4
 part_of = "soft3"
 phase = "1"
 state = "published"
@@ -430,7 +430,7 @@ name = "cy"
 kind = "product"
 repo = "cy"
 verb = "embody"
-facet = "play"
+facet = "life"
 layer = 6
 role = "agent"
 phase = "1"
@@ -511,7 +511,7 @@ repo = "sigma"
 verb = "evaluate"
 facet = "life"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "after"
 state = "own repo 2026-09-29: the sum — a token registry with three measurements (price, balance, supply), one method each; live as a world in cyb"
 
@@ -679,7 +679,7 @@ repo = "cyb"
 verb = "ask"
 facet = "play"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the commander: the one input of the agent — a line with completion, on a cli or under a screen; reads the soul on every ask — cyb/parts/com.md"
 
@@ -701,7 +701,7 @@ repo = "cyb"
 verb = "browse"
 facet = "play"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the file manager with links: files as a file system, table or tiles, works over a cli as well as a screen — cyb/parts/memory.md"
 
@@ -712,7 +712,7 @@ repo = "cyb"
 verb = "utter"
 facet = "life"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the ability to form a signal and hand it to sense to send; not sound — cyb/parts/voice.md"
 
@@ -733,8 +733,8 @@ kind = "part"
 repo = "cyb"
 verb = "show"
 facet = "play"
-layer = 8
-part_of = "cyb"
+layer = 6
+part_of = "chroma"
 phase = "1"
 state = "one screen: log ← now → plan — cyb/parts/time.md"
 
@@ -767,7 +767,7 @@ repo = "cyb"
 verb = "message"
 facet = "space"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the messenger: interaction with other neurons, files, robots — inbox and outbox — cyb/parts/sense.md"
 
@@ -789,7 +789,7 @@ repo = "cyb"
 verb = "stand"
 facet = "life"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the context: the file the robot stands on; what com acts on, what soma packs into the window — cyb/parts/now.md"
 
@@ -800,7 +800,7 @@ repo = "cyb"
 verb = "schedule"
 facet = "life"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the schedule: standing orders and deferred intents — cyb/parts/plan.md"
 
@@ -833,7 +833,7 @@ repo = "cyb"
 verb = "remember"
 facet = "mass"
 layer = 6
-part_of = "cy"
+part_of = "chroma"
 phase = "1"
 state = "the history of every interaction; graph.log is the log — cyb/parts/log.md"
 
@@ -847,3 +847,39 @@ layer = 5
 part_of = "neural"
 phase = "after"
 state = "research"
+
+[[component]]
+name = "chroma"
+kind = "part"
+repo = "cy"
+verb = "show"
+facet = "life"
+layer = 6
+part_of = "cy"
+phase = "1"
+state = "spec"
+note = "one component: the eight organs that show — now · voice · name · sense · sigma · memory · com · time — on a 3×3 grid; cy/chroma"
+
+[[component]]
+name = "sync"
+kind = "part"
+repo = "foculus"
+verb = "reconcile"
+facet = "mass"
+layer = 7
+part_of = "soft3"
+phase = "1"
+state = "proposed"
+note = "the data plane of foculus — ordering, availability, local merge, history trust; soft3/proposals/network-planes"
+
+[[component]]
+name = "solong"
+kind = "part"
+repo = "foculus"
+verb = "reward"
+facet = "work"
+layer = 7
+part_of = "soft3"
+phase = "1"
+state = "proposed"
+note = "the incentive plane of foculus — tickets, fold-mining, Shapley settlement; named after Shapley's So Long Sucker; soft3/proposals/network-planes"
