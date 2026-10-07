@@ -17,14 +17,17 @@ def covered(c, seen=frozenset()):
     if c['name'] in chips or c['name'] in rungs: return True
     p = c.get('part_of')
     return bool(p) and p in byname and p not in seen and covered(byname[p], seen | {p})
+APPS = {'cyb','cyber','cyberia'}
+def on_site(c):  # products built on soft3 are not decomposed on the site
+    return 'layer' in c and not (c['layer'] > 7 and c['name'] not in APPS)
 for c in reg:
-    if 'layer' in c and not covered(c): errs.append(f'layer {c["layer"]} component missing from the home ladder: {c["name"]}')
+    if on_site(c) and not covered(c): errs.append(f'layer {c["layer"]} component missing from the home ladder: {c["name"]}')
 # chart: every node is a component; every layered component is a node or inside one
 chart = (root/'site/chart/index.html').read_text()
 nodes = set(re.findall(r'"id": "([a-z0-9-]+)"', chart))
 for x in sorted(nodes - names): errs.append(f'chart node not in registry: {x}')
 for c in reg:
-    if 'layer' in c and c['name'] not in nodes and not (c.get('part_of') in nodes): errs.append(f'layer {c["layer"]} component missing from the chart: {c["name"]}')
+    if on_site(c) and c['name'] not in nodes and not (c.get('part_of') in nodes): errs.append(f'layer {c["layer"]} component missing from the chart: {c["name"]}')
 # status.md: every crate/product row exists
 st = (root/'status.md').read_text()
 for c in reg:
