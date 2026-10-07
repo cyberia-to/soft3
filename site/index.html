@@ -356,7 +356,19 @@
             .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--fc) 80%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--fc) 30%, transparent); background: color-mix(in srgb, var(--fc) 10%, rgba(6,16,10,0.94)); }
             .ladder .who .fac { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fc); vertical-align: middle; }
             .ladder .who .fac i { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: var(--fc); box-shadow: 0 0 10px var(--fc); display: inline-block; }
-            @media (max-width: 900px) { .ladder { overflow: visible; } .ladder .group { grid-template-columns: 1fr; } .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.3rem; } .ladder .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .ladder .rung { grid-template-columns: 1.8rem 2rem 1fr; min-height: 0; } .ladder .deps { grid-column: 1 / -1; align-items: flex-start; } .ladder .deps .row { justify-content: flex-start; } }
+            @media (max-width: 900px) {
+                /* the phone reads the ladder as a list: nothing flexes to fit a height, everything flows */
+                .ladder { display: block; overflow: visible; padding: 0.8rem 0.8rem 0.9rem; }
+                .ladder-cap { margin-bottom: 0.6rem; }
+                .ladder .group { display: block; flex: none; min-height: auto; margin-top: 0.5rem; }
+                .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: auto; margin: 0 0 0.45rem; padding-bottom: 0.2rem; }
+                .ladder .rail span { position: static; transform: none; writing-mode: horizontal-tb; display: block; }
+                .ladder .rungs { display: flex; flex-direction: column; gap: 0.4rem; min-height: auto; }
+                .ladder .rung { flex: none; min-height: auto; grid-template-columns: 1.8rem 2rem minmax(0, 1fr); grid-template-areas: "num ico who" "deps deps deps"; row-gap: 0.4rem; padding: 0.55rem 0.7rem; }
+                .ladder .num { grid-area: num; } .ladder .ico { grid-area: ico; } .ladder .who { grid-area: who; } .ladder .deps { grid-area: deps; align-items: flex-start; }
+                .ladder .deps .row { justify-content: flex-start; flex-wrap: wrap; }
+                .ladder .who .does { white-space: normal; }
+            }
 </style>
     </head>
     <body>
