@@ -22,7 +22,7 @@
             rel="icon"
             href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
         />
-        <link rel="stylesheet" href="/base.css" />
+        <link rel="stylesheet" href="/base.css?v=8" />
         <style>
 
 
@@ -325,7 +325,7 @@
         
             /* ── the ladder: ten products, three groups — fills the panel, reads on glass ── */
             .ladder { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.4rem; padding: 0.8rem 0.9rem 0.7rem; min-height: 0; overflow: auto; }
-            .ladder-cap { margin: 0; flex: none; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+            .ladder-cap { display: none; margin: 0; flex: none; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
             .ladder-cap em { font-style: normal; color: var(--mint); font-size: 0.95rem; }
             .ladder-cap .legend { margin-left: auto; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
             .ladder-cap .legend i { font-style: normal; width: 0.5rem; height: 0.5rem; border-radius: 999px; display: inline-block; background: var(--fc); margin: 0 0.15rem 0 0.4rem; vertical-align: middle; }
@@ -451,23 +451,22 @@
                 </section>
 
                 <aside class="panel ladder glass" aria-label="the stack as a ladder of ten products">
-                    <p class="ladder-cap"><em id="ladq">what are the rules?</em> <span id="ladp">· nox</span></p>
                     <section class="group" data-g="kernel">
                         <div class="rail"><span>kernel</span></div>
                         <div class="rungs">
-                        <section class="rung" style="--k:1" data-f="form" data-q="what are the rules?" data-p="nox">
+                        <section class="rung" style="--k:1" data-f="form" data-q="what are the rules?" title="what are the rules?" data-p="nox">
                             <div class="num">1</div>
                             <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
                             <div class="who"><h2>nox <small>· machine</small> <span class="fac"><i></i>form</span></h2><p class="does">virtual machine: field, hash, run</p></div>
                             <div class="deps"><span class="row"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="form">honeycrisp</i></span></div>
                         </section>
-                        <section class="rung" style="--k:2" data-f="mass" data-q="what is it made of?" data-p="trident">
+                        <section class="rung" style="--k:2" data-f="mass" data-q="what is it made of?" title="what is it made of?" data-p="trident">
                             <div class="num">2</div>
                             <div class="ico" aria-hidden="true">🔱</div>
                             <div class="who"><h2>trident <small>· weapon</small> <span class="fac"><i></i>mass</span></h2><p class="does">compiler: .tri to .nox, cost known before it runs</p></div>
                             <div class="deps"><span class="row" title="tine · tir · toll · forge · lsp are trident's parts"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="play">lsp</i></span></div>
                         </section>
-                        <section class="rung" style="--k:3" data-f="space" data-q="where does it happen?" data-p="joy">
+                        <section class="rung" style="--k:3" data-f="space" data-q="where does it happen?" title="where does it happen?" data-p="joy">
                             <div class="num">3</div>
                             <div class="ico" aria-hidden="true">💋</div>
                             <div class="who"><h2>joy <small>· warrior</small> <span class="fac"><i></i>space</span></h2><p class="does">runtime: runs, proves and stores</p></div>
@@ -478,25 +477,25 @@
                     <section class="group" data-g="core">
                         <div class="rail"><span>core</span></div>
                         <div class="rungs">
-                        <section class="rung" style="--k:4" data-f="life" data-q="who is alive?" data-p="cybergraph">
+                        <section class="rung" style="--k:4" data-f="life" data-q="who is alive?" title="who is alive?" data-p="cybergraph">
                             <div class="num">4</div>
                             <div class="ico" aria-hidden="true">🕸️</div>
                             <div class="who"><h2>cybergraph <small>· brain</small> <span class="fac"><i></i>life</span></h2><p class="does">the book: neuron, tokens, signals, files, links, focus</p></div>
                             <div class="deps"><span class="row" title="neuron acts · tok pays · signal commits · file is the thing · tru converges · name resolves · mudra hides · tade is the bytes of a file and the payload of a link on any boundary (one exchange format: soft3/proposals/tade-one-exchange)"><i data-f="mass">neuron</i><i data-f="mass">tok</i><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="mass">name</i><i data-f="mass">mudra</i><i data-f="mass">tade</i></span></div>
                         </section>
-                        <section class="rung" style="--k:5" data-f="word" data-q="what does it mean?" data-p="neural">
+                        <section class="rung" style="--k:5" data-f="word" data-q="what does it mean?" title="what does it mean?" data-p="neural">
                             <div class="num">5</div>
                             <div class="ico" aria-hidden="true">🧠</div>
                             <div class="who"><h2>neural <small>· language</small> <span class="fac"><i></i>word</span></h2><p class="does">what can be said over the book: languages and dialects</p></div>
                             <div class="deps"><span class="row" title="eidos proves trident (self-verification) · rune runs neurons · inf queries the book · fs mutates files — the CRUD the graph lacks · spark says what a file renders to, in cells or pixels · atlas is the package registry over the book — packages are cards, publishing is minting; trident's package manager, not written yet · rs is the reference the stack is verified against · nu is the shell: ~20 domain verb groups (filesystem, strings, dates, math, network, formats, hash, …) composed into sentences over typed tables — the dialects here are its verb groups, neu generalises it"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="word">inf</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="word">atlas</i><i data-f="form">rs</i><i data-f="play">nu</i></span></div>
                         </section>
-                        <section class="rung" style="--k:6" data-f="work" data-q="how is it made?" data-p="cy">
+                        <section class="rung" style="--k:6" data-f="work" data-q="how is it made?" title="how is it made?" data-p="cy">
                             <div class="num">6</div>
                             <div class="ico" aria-hidden="true">🧬</div>
                             <div class="who"><h2>cy <small>· agent</small> <span class="fac"><i></i>work</span></h2><p class="does">the mind over the book: one chroma, headless anywhere</p></div>
                             <div class="deps"><span class="row" title="chroma — one component: now · voice · name · sense · spacetime · sigma · memory · com · time; behind it the eight unseen"><i data-f="life">chroma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="life">seer</i><i data-f="life">soul</i><i data-f="space">ward</i><i data-f="space">vault</i><i data-f="space">state</i><i data-f="form">body</i></span></div>
                         </section>
-                        <section class="rung" style="--k:7" data-f="play" data-q="how do we coordinate?" data-p="soft3">
+                        <section class="rung" style="--k:7" data-f="play" data-q="how do we coordinate?" title="how do we coordinate?" data-p="soft3">
                             <div class="num">7</div>
                             <div class="ico" aria-hidden="true">👙</div>
                             <div class="who"><h2>soft3 <small>· network</small> <span class="fac"><i></i>play</span></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
@@ -507,19 +506,19 @@
                     <section class="group" data-g="apps">
                         <div class="rail"><span>apps</span></div>
                         <div class="rungs">
-                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" data-p="cyb" data-site="https://cyb.ai">
+                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyb" data-site="https://cyb.ai">
                             <div class="num">8</div>
                             <div class="ico" aria-hidden="true">🤖</div>
                             <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures — paints the chroma</p></div>
                             <div class="deps"><span class="row"><a class="on" href="https://cyb.ai" target="_blank" rel="noopener">cyb.ai ↗</a></span></div>
                         </section>
-                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" data-p="cyber" data-site="https://cyber.page">
+                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyber" data-site="https://cyber.page">
                             <div class="num">9</div>
                             <div class="ico" aria-hidden="true">🟢</div>
                             <div class="who"><h2>cyber <small>· superintelligence</small></h2><p class="does">the network of networks thinking as one</p></div>
                             <div class="deps"><span class="row"><a class="on" href="https://cyber.page" target="_blank" rel="noopener">cyber.page ↗</a></span></div>
                         </section>
-                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" data-p="cyberia" data-site="https://cyberia.to">
+                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyberia" data-site="https://cyberia.to">
                             <div class="num">10</div>
                             <div class="ico" aria-hidden="true">🌏</div>
                             <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
@@ -536,33 +535,35 @@
             </footer>
         </div>
 
-        <script src="/world.js"></script>
+        <script src="/world.js?v=8"></script>
         <script>
-            // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to
+            // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to.
+            // nothing is selected by default — the page is neutral until you point at a rung
             const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
-            let organ = "form", pinned = null;
+            let pinned = null;
             const rungs = [...document.querySelectorAll(".ladder .rung")];
-            const ladq = document.getElementById("ladq"), ladp = document.getElementById("ladp");
-            function select(r) {
-                organ = r.dataset.f; const [col, hue] = FACET[organ] || FACET.apps;
+            function paint(f) {
+                const [col, hue] = FACET[f] || FACET.apps;
                 document.documentElement.style.setProperty("--accent-h", hue);
                 document.documentElement.style.setProperty("--facet", col);
                 if (window.worldHue) worldHue(hue - 150);
+            }
+            function select(r) {
                 rungs.forEach((x) => x.setAttribute("aria-selected", x === r ? "true" : "false"));
-                if (ladq) ladq.textContent = r.dataset.q || "built on soft3";
-                if (ladp) ladp.textContent = "· " + r.dataset.p;
+                paint(r ? r.dataset.f : "apps");
             }
             rungs.forEach((r) => {
                 r.addEventListener("mouseenter", () => select(r));
-                r.addEventListener("mouseleave", () => { if (pinned) select(pinned); });
-                r.addEventListener("click", (e) => { pinned = r; select(r); if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else location.href = "/chart/?sel=" + r.dataset.p; });
+                r.addEventListener("mouseleave", () => select(pinned));
+                r.addEventListener("click", (e) => { if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else location.href = "/chart/?sel=" + r.dataset.p; });
             });
-            if (rungs.length) { pinned = rungs[0]; select(rungs[0]); }
+            select(null);
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
                 const i = rungs.indexOf(pinned);
                 if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); pinned = rungs[(i + 1) % rungs.length]; select(pinned); }
                 if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); pinned = rungs[(i + rungs.length - 1) % rungs.length]; select(pinned); }
+                if (e.key === "Escape") { pinned = null; select(null); }
             });
 
             const cmd = document.getElementById("cmd");

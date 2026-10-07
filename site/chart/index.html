@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" />
-        <link rel="stylesheet" href="/base.css" />
+        <link rel="stylesheet" href="/base.css?v=8" />
         <style>
             .shell { max-width: 1500px; }
             .chart-stage { display: grid; grid-template-columns: minmax(220px, 17rem) minmax(0, 1fr) minmax(220px, 17rem); gap: clamp(0.6rem, 1.5vw, 1rem); min-height: 0; align-items: stretch; }
@@ -56,8 +56,9 @@
                 <span>don't trust. don't fear. don't beg.</span>
             </footer>
         </div>
-        <script src="/world.js"></script>
+        <script src="/world.js?v=8"></script>
         <script>
+          try {
             const FACETS = {
                 form: { c: "#00ff00", t: "#0a120e", h: 120, q: "what are the rules?" },
                 mass: { c: "#0000ff", t: "#fff8f0", h: 240, q: "what is it made of?" },
@@ -168,6 +169,10 @@
             tint("apps");
             const q = new URLSearchParams(location.search).get("sel");
             if (q && NODES.some((n) => n.id === q)) select(q);
+          } catch (err) {
+            const b = document.querySelector(".board"); if (b) { b.innerHTML = "<p style=\"padding:1rem;font-family:monospace;color:#ffb0b0\">chart failed: " + (err && err.message) + "</p>"; }
+            throw err;
+          }
         </script>
 
         <!-- lytics: anonymous, signed, PoW-gated pageview + attention tracking.
