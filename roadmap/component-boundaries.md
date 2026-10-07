@@ -18,7 +18,7 @@ the hashing fear was unfounded. there is one hash home — [[hemera]] (Poseidon2
 
 [[radio]] is a wholesale fork of iroh. forking the whole P2P stack to swap one hash dragged other components' responsibilities into radio — `iroh-docs` / `iroh-willow` reconciliation engines (foculus's domain; still there, see the ledger), vendored rustls + ring + ed25519 (mudra's domain, and classical), per-protocol postcard framing (tade's), and `cyber-bao` (a second copy of hemera's verified-streaming format).
 
-the second root was [[mudra]]: a confidentiality repo that had grown an identity implementation (the only code it had), two specs about time and position, and a module index advertising an `order` page that did not exist.
+the second root was [[mudra]]: a confidentiality repo whose only code was an identity implementation, with two specs about time and position and a module index advertising an `order` page that did not exist — while the four confidentiality specs it was for had no code at all.
 
 ## clean boundaries
 
@@ -28,7 +28,7 @@ one responsibility per component. the verb is the whole job.
 |---|---|---|
 | [[hemera]] | content identity and its proof: Poseidon2 sponge, Merkle / NMT / sparse trees, content-defined chunking, and the verified-streaming codec (`stream` / `stream_async` / `async_io`) | nebu (field) |
 | [[neuron]] | the subject: `NeuronId`, proof-based authority ([[neuron/specs/proof-authority|spec]]), the implemented secp256k1 profile and NSIG1 envelope, domain-scoped keys, the legacy-key bridge — crate `neuron-auth` | hemera (hash), neuron-id |
-| [[mudra]] | confidentiality and key distribution: seal (KEM), stealth (NIKE), veil (FHE), quorum (threshold), private recovery. **specification only** — no code | hemera (hash), nebu / genies / jali (algebras) |
+| [[mudra]] | confidentiality and key distribution: seal (KEM — ML-KEM-768 profile **built**), quorum (threshold — Shamir **built**; VSS/DKG open), stealth (NIKE, spec), veil (FHE, spec), private recovery | hemera (hash), nebu / genies / jali (algebras) |
 | [[tade]] | wire framing: marker + sigil + render + varint + payload, plus the minimal stream-control set | bytes only |
 | [[radio]] | transmit: iroh transport (QUIC, hole-punching, relay, gossip), piping a hemera-encoded verified stream over the wire | hemera (streaming), tade (framing) |
 | [[foculus]] | the whole reconciliation engine: ordering (hash chain, step, equivocation, the VDF — [[foculus/specs/delay|delay]]), availability (erasure coding, DAS — [[foculus/specs/erasure|erasure]]), CRDT merge, position ([[foculus/specs/place|place]]) *and* the fork-choice that completes the merge — the τ-threshold rule over φ\*, nullifier double-spend, the epoch beacon. fork-choice is pluggable, so the substrate runs without the tri-kernel for trusted deployments | tru (φ\*, Focus strategy only), hemera (NMT node rule, hash), nebu (RS), radio (transport), tade (frames), bbg (state), zheng (proof) |
@@ -44,7 +44,7 @@ neuron-auth│           (identity over hemera)
    │
 foculus                (substrate + fork-choice, one crate)
 
-mudra                  (specs; implemented by nobody yet — the seal row below waits on it)
+mudra                  (seal + quorum built over hemera / nebu; stealth + veil wait on genies / jali)
 ```
 
 ## the duplication ledger — executed
@@ -59,8 +59,8 @@ each row is one mechanism that was implemented twice. the status column is what 
 | erasure / DAS | `hemera/roadmap/erasure-coding.md` (claim) | `foculus/src/{erasure,das}.rs` | **done.** the roadmap's substance became `foculus/specs/erasure.md` over the code that exists; hemera's roadmap index points there. `das::confidence` no longer returns an `f64` — it returns the exponent (`confidence_bits`) |
 | CRDT reconciliation | `radio/iroh-docs` (range-based set reconciliation — `ranger.rs` — replicas, QUIC sync session), `radio/iroh-willow` (3D range reconciliation, meadowcap) | `foculus` | **open — a refactor, not a file move.** the first execution pass deleted the two engines because nothing in the stack called them; that was wrong and was reverted the same day: they are the set-reconciliation substrate that closes [[foculus/specs/structural-sync|structural-sync]] layers 3–5 (compare fingerprints over ranges, exchange the difference), and foculus's `reconcile.rs` resolves *conflicts between signals*, it does not reconcile *sets* over a wire. the move splits each crate at the transport line: `iroh-docs/src/ranger.rs` and willow's `proto/` (the algorithms, transport-independent) become foculus modules; the sessions over QUIC and the blob/gossip plumbing stay in radio and call foculus. until then the engines stay in radio, documented as foculus's tenants (`radio/README.md` § boundary, `radio/CLAUDE.md`) |
 | φ\* / tri-kernel | `foculus/specs/provable-consensus.md` re-derived the kernel, its contraction rate and a 1.4B-constraint circuit | [[tru]] | **moved, not linked.** the circuit — operators, per-iteration constraints, convergence, algebraic-NMT reads, capacity, prover/verifier times — is `tru/specs/proving.md`; foculus's page keeps only what the proof does to a network (what it replaces, what remains, recursion, phases). the "624 million" closing figure that contradicted the page's own total is gone |
-| identity | `mudra/src/*` + `mudra/specs/{identity,neuron-auth,bridge,bridge-proof,neuron-measures}.md` | [[neuron]] | **done.** crate `neuron-auth` (`neuron/auth`), specs under `neuron/specs/` (`proof-authority.md`, `local-authority.md` § NSIG1 envelope, `bridge.md`, `bridge-proof.md`, `measures.md`). ten dependents switched (`cyber`, `cyb`, `soma`, `vault`, `lytics`, `cyberia-my`, `neuron`, …); the `cyber-mudra` crate no longer exists |
-| classical transport crypto | radio rustls / ring / ed25519 | [[mudra]] seal / stealth | **open, with a condition.** mudra has specified seal and stealth and implemented neither; a post-quantum QUIC handshake cannot be routed through a primitive that does not exist. the row moves when `seal` has code. until then radio's README names the classical placeholder for what it is |
+| identity | `mudra/src/*` + `mudra/specs/{identity,neuron-auth,bridge,bridge-proof,neuron-measures}.md` | [[neuron]] | **done.** crate `neuron-auth` (`neuron/auth`), specs under `neuron/specs/` (`proof-authority.md`, `local-authority.md` § NSIG1 envelope, `bridge.md`, `bridge-proof.md`, `measures.md`). ten dependents switched (`cyber`, `cyb`, `soma`, `vault`, `lytics`, `cyberia-my`, `neuron`, …); the `cyber-mudra` crate keeps its name and is the confidentiality crate: `seal` and `quorum` implemented the same day the identity code left (an earlier state of this page said "specification only, no code" — wrong: the specs exist to be built, and the first execution pass had removed the crate instead of building it) |
+| classical transport crypto | radio rustls / ring / ed25519 | [[mudra]] seal / stealth | **open, now unblocked on the KEM side.** `mudra::seal` exists (ML-KEM-768); the QUIC handshake still runs on vendored rustls + ring. the move is a hybrid or PQ-only handshake profile in radio over `mudra::seal` — real transport work, not a dependency swap; radio's README names the classical placeholder for what it is until then |
 
 ## ownership decisions — settled
 

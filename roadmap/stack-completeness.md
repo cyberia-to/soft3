@@ -22,7 +22,7 @@ capability   ward (authorize)
 present      mir (render world)        prysm (paint UI)
 network      radio · tade · foculus
 dynamics     tru (converge φ*)         foculus (agree)
-graph        cybergraph · bbg · cell · fs    mudra (hide — spec, beside the neuron it protects)
+graph        cybergraph · bbg · cell · fs    mudra (hide: seal ML-KEM-768 + quorum Shamir built; stealth · veil spec — beside the neuron it protects)
 proof        zheng (execution)         eidos (theorem)
 runtime      nox · wysm · glia · wgpu  (the proof-contract ladder)
 language     trident · neural · rune · inf     (+ cybermark, nu host)
