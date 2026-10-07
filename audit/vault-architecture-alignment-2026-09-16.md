@@ -18,13 +18,13 @@ bases and gaps; this review does not overwrite those findings.
 Reviewed local contracts on 2026-09-16:
 
 - [Soft3 execution model](../specs/execution-model.md), especially sections 1–6.
-- [Cyb anatomy](../../cyb/anatomy.md), [Vault](../../cyb/parts/vault.md),
-  [Ward](../../cyb/parts/ward.md), [Sigma](../../cyb/parts/sigma.md),
-  [Com](../../cyb/parts/com.md) and [Body](../../cyb/parts/body.md).
+- [Cyb anatomy](../../cyb/anatomy.md), [Vault](../../cy/specs/vault.md),
+  [Ward](../../cy/specs/ward.md), [Sigma](../../cy/specs/sigma.md),
+  [Com](../../cy/specs/com.md) and [Body](../../cy/specs/body.md).
 - [Neuron integration](../../neuron/specs/integration.md), plus the local
   `neuron/specs/identity.md`, `soft3/specs/neuron.md` and
   `soft3/specs/identity-consumers.md` contracts.
-- [Mudra identity](../../mudra/specs/identity.md) and
+- [Mudra identity](../../neuron/specs/proof-authority.md) (now neuron/specs/proof-authority.md) and
   [private recovery](../../mudra/specs/private-recovery.md).
 
 The three named subject/consumer files above were untracked working-tree
