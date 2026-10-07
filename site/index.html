@@ -342,7 +342,7 @@
             .ladder .who h2 { margin: 0; font-size: 1.05rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.6rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
             .ladder .who .does { margin: 0.15rem 0 0; font-size: 0.72rem; line-height: 1.25; color: rgba(255,248,240,0.8); }
             .ladder .deps { display: flex; flex-direction: column; gap: 0.22rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: wrap; gap: 0.2rem; justify-content: flex-end; }
-            .ladder .deps i.on { background: transparent; color: color-mix(in srgb, var(--fc) 80%, white); border: 1px dashed color-mix(in srgb, var(--fc) 50%, transparent); }
+            .ladder .deps a.on { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; padding: 0.14rem 0.45rem; border-radius: 999px; text-decoration: none; background: transparent; color: color-mix(in srgb, var(--fc) 85%, white); border: 1px dashed color-mix(in srgb, var(--fc) 55%, transparent); white-space: nowrap; } .ladder .deps a.on:hover { background: color-mix(in srgb, var(--fc) 18%, transparent); }
             .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.36rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
             .ladder .rung[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
             .ladder .rung[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
@@ -507,23 +507,23 @@
                     <section class="group" data-g="apps">
                         <div class="rail"><span>apps</span></div>
                         <div class="rungs">
-                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" data-p="cyb">
+                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" data-p="cyb" data-site="https://cyb.ai">
                             <div class="num">8</div>
                             <div class="ico" aria-hidden="true">🤖</div>
                             <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures — paints the chroma</p></div>
-                            <div class="deps"><span class="row"><i class="on">built on soft3</i></span></div>
+                            <div class="deps"><span class="row"><a class="on" href="https://cyb.ai" target="_blank" rel="noopener">cyb.ai ↗</a></span></div>
                         </section>
-                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" data-p="cyber">
+                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" data-p="cyber" data-site="https://cyber.page">
                             <div class="num">9</div>
                             <div class="ico" aria-hidden="true">🟢</div>
                             <div class="who"><h2>cyber <small>· superintelligence</small></h2><p class="does">the network of networks thinking as one</p></div>
-                            <div class="deps"><span class="row"><i class="on">built on soft3</i></span></div>
+                            <div class="deps"><span class="row"><a class="on" href="https://cyber.page" target="_blank" rel="noopener">cyber.page ↗</a></span></div>
                         </section>
-                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" data-p="cyberia">
+                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" data-p="cyberia" data-site="https://cyberia.to">
                             <div class="num">10</div>
                             <div class="ico" aria-hidden="true">🌏</div>
                             <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
-                            <div class="deps"><span class="row"><i class="on">built on soft3</i></span></div>
+                            <div class="deps"><span class="row"><a class="on" href="https://cyberia.to" target="_blank" rel="noopener">cyberia.to ↗</a></span></div>
                         </section>
                         </div>
                     </section>
@@ -555,7 +555,7 @@
             rungs.forEach((r) => {
                 r.addEventListener("mouseenter", () => select(r));
                 r.addEventListener("mouseleave", () => { if (pinned) select(pinned); });
-                r.addEventListener("click", () => { pinned = r; select(r); location.href = "/chart/?sel=" + r.dataset.p; });
+                r.addEventListener("click", (e) => { pinned = r; select(r); if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else location.href = "/chart/?sel=" + r.dataset.p; });
             });
             if (rungs.length) { pinned = rungs[0]; select(rungs[0]); }
             document.addEventListener("keydown", (e) => {
