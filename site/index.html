@@ -466,20 +466,27 @@
             .ladder .who h2 { margin: 0; font-size: 1.05rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.6rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
             .ladder .who .does { margin: 0.15rem 0 0; font-size: 0.72rem; line-height: 1.25; color: rgba(255,248,240,0.8); }
             .ladder .deps { display: flex; flex-direction: column; gap: 0.22rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: wrap; gap: 0.2rem; justify-content: flex-end; }
-            .ladder .deps i.on { background: transparent; color: rgba(125,255,196,0.7); border: 1px dashed rgba(125,255,196,0.4); }
+            .ladder .deps i.on { background: transparent; color: color-mix(in srgb, var(--fc) 80%, white); border: 1px dashed color-mix(in srgb, var(--fc) 50%, transparent); }
             .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.36rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
-            .ladder i[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
-            .ladder i[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
-            .ladder i[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
-            .ladder i[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
-            .ladder i[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
-            .ladder i[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
-            .ladder i[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
+            .ladder .rung[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
+            .ladder .rung[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
+            .ladder .rung[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
+            .ladder .rung[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
+            .ladder .rung[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
+            .ladder .rung[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
+            .ladder .rung[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
+            .ladder .rung[data-f="apps"]  { --fc: #7dffc4; --ft: #0a120e; }
+            .ladder .rung { border-color: color-mix(in srgb, var(--fc) 35%, transparent); }
+            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--fc) 80%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--fc) 30%, transparent); background: color-mix(in srgb, var(--fc) 10%, rgba(6,16,10,0.94)); }
+            .ladder .who .fac { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fc); vertical-align: middle; }
+            .ladder .who .fac i { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: var(--fc); box-shadow: 0 0 10px var(--fc); display: inline-block; }
+            #tint { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: color-mix(in srgb, var(--facet, #7dffc4) 26%, transparent); transition: background 0.6s ease; }
             @media (max-width: 900px) { .ladder { overflow: visible; } .ladder .group { grid-template-columns: 1fr; } .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: 1.3rem; } .ladder .rail span { writing-mode: horizontal-tb; transform: translate(-50%, -50%); } .ladder .rung { grid-template-columns: 1.8rem 2rem 1fr; min-height: 0; } .ladder .deps { grid-column: 1 / -1; align-items: flex-start; } .ladder .deps .row { justify-content: flex-start; } }
 </style>
     </head>
     <body>
         <canvas id="world" aria-hidden="true"></canvas>
+        <div id="tint" aria-hidden="true"></div>
 
         <div class="shell">
             <header class="top">
@@ -557,26 +564,26 @@
                 </section>
 
                 <aside class="panel ladder glass" aria-label="the stack as a ladder of ten products">
-                    <p class="ladder-cap"><em id="ladq">what are the rules?</em> <span id="ladp">· nox</span> <span class="legend"><i data-f="form"></i>form <i data-f="mass"></i>mass <i data-f="space"></i>space <i data-f="life"></i>life <i data-f="word"></i>word <i data-f="work"></i>work <i data-f="play"></i>play</span></p>
+                    <p class="ladder-cap"><em id="ladq">what are the rules?</em> <span id="ladp">· nox</span></p>
                     <section class="group" data-g="kernel">
                         <div class="rail"><span>kernel</span></div>
                         <div class="rungs">
                         <section class="rung" style="--k:1" data-f="form" data-q="what are the rules?" data-p="nox">
                             <div class="num">1</div>
                             <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
-                            <div class="who"><h2>nox <small>· machine</small></h2><p class="does">virtual machine: field, hash, run</p></div>
+                            <div class="who"><h2>nox <small>· machine</small> <span class="fac"><i></i>form</span></h2><p class="does">virtual machine: field, hash, run</p></div>
                             <div class="deps"><span class="row"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="form">honeycrisp</i></span></div>
                         </section>
                         <section class="rung" style="--k:2" data-f="work" data-q="how is it made?" data-p="trident">
                             <div class="num">2</div>
                             <div class="ico" aria-hidden="true">🔱</div>
-                            <div class="who"><h2>trident <small>· weapon</small></h2><p class="does">compiler: .tri to .nox, cost known before it runs</p></div>
+                            <div class="who"><h2>trident <small>· weapon</small> <span class="fac"><i></i>work</span></h2><p class="does">compiler: .tri to .nox, cost known before it runs</p></div>
                             <div class="deps"><span class="row" title="tine · tir · toll · forge · lsp are trident's parts"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="play">lsp</i></span></div>
                         </section>
                         <section class="rung" style="--k:3" data-f="space" data-q="where does it happen?" data-p="joy">
                             <div class="num">3</div>
                             <div class="ico" aria-hidden="true">💋</div>
-                            <div class="who"><h2>joy <small>· warrior</small></h2><p class="does">runtime: runs, proves and stores</p></div>
+                            <div class="who"><h2>joy <small>· warrior</small> <span class="fac"><i></i>space</span></h2><p class="does">runtime: runs, proves and stores</p></div>
                             <div class="deps"><span class="row"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></span></div>
                         </section>
                         </div>
@@ -587,25 +594,25 @@
                         <section class="rung" style="--k:4" data-f="mass" data-q="what is it made of?" data-p="cybergraph">
                             <div class="num">4</div>
                             <div class="ico" aria-hidden="true">🕸️</div>
-                            <div class="who"><h2>cybergraph <small>· brain</small></h2><p class="does">the book: neuron, tokens, signals, files, links, focus</p></div>
+                            <div class="who"><h2>cybergraph <small>· brain</small> <span class="fac"><i></i>mass</span></h2><p class="does">the book: neuron, tokens, signals, files, links, focus</p></div>
                             <div class="deps"><span class="row" title="neuron acts · tok pays · signal commits · file is the thing · tru converges · name resolves · mudra hides · tade is the bytes of a file and the payload of a link on any boundary (one exchange format: soft3/proposals/tade-one-exchange)"><i data-f="mass">neuron</i><i data-f="mass">tok</i><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="mass">name</i><i data-f="mass">mudra</i><i data-f="mass">tade</i></span></div>
                         </section>
                         <section class="rung" style="--k:5" data-f="word" data-q="what does it mean?" data-p="neural">
                             <div class="num">5</div>
                             <div class="ico" aria-hidden="true">🧠</div>
-                            <div class="who"><h2>neural <small>· language</small></h2><p class="does">what can be said over the book: languages and dialects</p></div>
+                            <div class="who"><h2>neural <small>· language</small> <span class="fac"><i></i>word</span></h2><p class="does">what can be said over the book: languages and dialects</p></div>
                             <div class="deps"><span class="row" title="eidos proves trident (self-verification) · rune runs neurons · inf queries the book · fs mutates files — the CRUD the graph lacks · spark says what a file renders to, in cells or pixels · atlas is the package registry over the book — packages are cards, publishing is minting; trident's package manager, not written yet · rs is the reference the stack is verified against · nu is the shell: ~20 domain verb groups (filesystem, strings, dates, math, network, formats, hash, …) composed into sentences over typed tables — the dialects here are its verb groups, neu generalises it"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="word">inf</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="word">atlas</i><i data-f="form">rs</i><i data-f="play">nu</i></span></div>
                         </section>
                         <section class="rung" style="--k:6" data-f="life" data-q="who is alive?" data-p="cy">
                             <div class="num">6</div>
                             <div class="ico" aria-hidden="true">🧬</div>
-                            <div class="who"><h2>cy <small>· agent</small></h2><p class="does">the mind over the book: one chroma, headless anywhere</p></div>
+                            <div class="who"><h2>cy <small>· agent</small> <span class="fac"><i></i>life</span></h2><p class="does">the mind over the book: one chroma, headless anywhere</p></div>
                             <div class="deps"><span class="row" title="chroma — one component: now · voice · name · sense · spacetime · sigma · memory · com · time; behind it the eight unseen"><i data-f="life">chroma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="life">seer</i><i data-f="life">soul</i><i data-f="space">ward</i><i data-f="space">vault</i><i data-f="space">state</i><i data-f="form">body</i></span></div>
                         </section>
                         <section class="rung" style="--k:7" data-f="play" data-q="how do we coordinate?" data-p="soft3">
                             <div class="num">7</div>
                             <div class="ico" aria-hidden="true">👙</div>
-                            <div class="who"><h2>soft3 <small>· network</small></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
+                            <div class="who"><h2>soft3 <small>· network</small> <span class="fac"><i></i>play</span></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
                             <div class="deps"><span class="row" title="the network in planes (soft3/proposals/network-planes): radio reaches and carries · sync reconciles — ordering, availability, local merge, history trust · foculus agrees — fork-choice over φ*, finality, epochs, beacon · solong rewards — tickets, fold-mining, Shapley settlement; named after Shapley's own coalition game, So Long Sucker"><i data-f="space">radio</i><i data-f="mass">sync</i><i data-f="life">foculus</i><i data-f="work">solong</i></span></div>
                         </section>
                         </div>
@@ -613,19 +620,19 @@
                     <section class="group" data-g="apps">
                         <div class="rail"><span>apps</span></div>
                         <div class="rungs">
-                        <section class="rung" style="--k:8" data-f="play" data-q="how do we coordinate?" data-p="cyb">
+                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" data-p="cyb">
                             <div class="num">8</div>
                             <div class="ico" aria-hidden="true">🤖</div>
                             <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures — paints the chroma</p></div>
                             <div class="deps"><span class="row"><i class="on">built on soft3</i></span></div>
                         </section>
-                        <section class="rung" style="--k:9" data-f="play" data-q="how do we coordinate?" data-p="cyber">
+                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" data-p="cyber">
                             <div class="num">9</div>
                             <div class="ico" aria-hidden="true">🟢</div>
                             <div class="who"><h2>cyber <small>· superintelligence</small></h2><p class="does">the network of networks thinking as one</p></div>
                             <div class="deps"><span class="row"><i class="on">built on soft3</i></span></div>
                         </section>
-                        <section class="rung" style="--k:10" data-f="play" data-q="how do we coordinate?" data-p="cyberia">
+                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" data-p="cyberia">
                             <div class="num">10</div>
                             <div class="ico" aria-hidden="true">🌏</div>
                             <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
@@ -643,28 +650,30 @@
         </div>
 
         <script>
-            // the ladder drives the crystal: each rung carries the facet its product answers to
-            const hues = { form: -30, mass: 47, space: 95, life: 115, word: -150, work: -126, play: -104 };
-            let organ = "form", organHue = 0;
+            // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to
+            const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
+            let organ = "form", organHue = 0, pinned = null;
             const rungs = [...document.querySelectorAll(".ladder .rung")];
             const ladq = document.getElementById("ladq"), ladp = document.getElementById("ladp");
             function select(r) {
-                organ = r.dataset.f; organHue = hues[organ] || 0;
-                document.documentElement.style.setProperty("--accent-h", 150 + organHue);
+                organ = r.dataset.f; const [col, hue] = FACET[organ] || FACET.apps; organHue = hue - 150;
+                document.documentElement.style.setProperty("--accent-h", hue);
+                document.documentElement.style.setProperty("--facet", col);
                 rungs.forEach((x) => x.setAttribute("aria-selected", x === r ? "true" : "false"));
-                if (ladq) ladq.textContent = r.dataset.q;
+                if (ladq) ladq.textContent = r.dataset.q || "built on soft3";
                 if (ladp) ladp.textContent = "· " + r.dataset.p;
             }
             rungs.forEach((r) => {
                 r.addEventListener("mouseenter", () => select(r));
-                r.addEventListener("click", () => { select(r); location.href = "/chart/?sel=" + r.dataset.p; });
+                r.addEventListener("mouseleave", () => { if (pinned) select(pinned); });
+                r.addEventListener("click", () => { pinned = r; select(r); });
             });
-            if (rungs.length) select(rungs[0]);
+            if (rungs.length) { pinned = rungs[0]; select(rungs[0]); }
             document.addEventListener("keydown", (e) => {
                 if (e.target.matches("input, textarea")) return;
-                const i = rungs.findIndex((r) => r.getAttribute("aria-selected") === "true");
-                if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); select(rungs[(i + 1) % rungs.length]); }
-                if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); select(rungs[(i + rungs.length - 1) % rungs.length]); }
+                const i = rungs.indexOf(pinned);
+                if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); pinned = rungs[(i + 1) % rungs.length]; select(pinned); }
+                if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); pinned = rungs[(i + rungs.length - 1) % rungs.length]; select(pinned); }
             });
 
             const cmd = document.getElementById("cmd");
