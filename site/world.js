@@ -259,7 +259,7 @@ function drawPlanets(t) {
             p.r *
             Math.min(W, H) *
             (1 + 0.03 * Math.sin(t * 0.5 + p.phase));
-        const hue = p.hue + organHue * 0.3 + t * 3;
+        const hue = p.hue + organHue + t * 3;
 
         // glow
         const glow = ctx.createRadialGradient(
@@ -363,13 +363,13 @@ function drawSun(t, breath) {
         sy,
         sr * 3.5,
     );
-    corona.addColorStop(0, hsl(50 + organHue * 0.1, 100, 96, 1));
+    corona.addColorStop(0, hsl(50 + organHue, 100, 96, 1));
     corona.addColorStop(0.12, hsl(45, 100, 78, 0.95));
     corona.addColorStop(0.28, hsl(35, 100, 60, 0.55));
     corona.addColorStop(0.5, hsl(20, 100, 50, 0.2));
     corona.addColorStop(
         0.75,
-        hsl(320 + organHue * 0.2, 90, 50, 0.08),
+        hsl(320 + organHue, 90, 50, 0.08),
     );
     corona.addColorStop(1, hsl(280, 70, 40, 0));
     ctx.fillStyle = corona;
@@ -463,7 +463,7 @@ function drawTree(tr, t, breath) {
             const cw =
                 tw * (4.5 - u * 2.5) * (1 + 0.04 * Math.sin(t + k));
             const ch = tw * (2.2 - u * 0.5);
-            const hue = tr.hue + organHue * 0.25 + k * 6;
+            const hue = tr.hue + organHue + k * 6;
             ctx.beginPath();
             ctx.moveTo(0, cy - ch);
             ctx.lineTo(-cw, cy + ch * 0.4);
@@ -489,7 +489,7 @@ function drawTree(tr, t, breath) {
                 tw * (2.5 + k * 0.5) * (1 + 0.04 * Math.sin(t + k));
             const hue =
                 tr.hue +
-                organHue * 0.3 +
+                organHue +
                 k * 8 +
                 Math.sin(t * 0.3 + k) * 15;
             const g = ctx.createRadialGradient(
@@ -548,7 +548,7 @@ function drawHills(t, breath) {
         ctx.lineTo(W, H);
         ctx.closePath();
         const hue =
-            L.hue + organHue * 0.25 + Math.sin(t * 0.2) * 12;
+            L.hue + organHue + Math.sin(t * 0.2) * 12;
         const g = ctx.createLinearGradient(0, H * L.y - 40, 0, H);
         g.addColorStop(0, hsl(hue + 25, 50, L.lit + 14));
         g.addColorStop(1, hsl(hue - 15, 45, L.lit - 6));
@@ -583,7 +583,7 @@ function drawWater(t, breath) {
     const g = ctx.createLinearGradient(0, y0 - 80, 0, H);
     g.addColorStop(
         0,
-        hsl(185 + organHue * 0.2 + t * 4, 70, 58, 0.7),
+        hsl(185 + organHue + t * 4, 70, 58, 0.7),
     );
     g.addColorStop(0.25, hsl(200, 75, 45, 0.8));
     g.addColorStop(0.55, hsl(215, 65, 32, 0.88));
@@ -672,7 +672,7 @@ function drawFish(f, t) {
     ctx.translate(x, y);
     ctx.scale(dir, 1);
     ctx.globalAlpha = 0.55;
-    const hue = f.hue + organHue * 0.3 + t * 10;
+    const hue = f.hue + organHue + t * 10;
     ctx.fillStyle = hsl(hue, 70, 55);
     ctx.beginPath();
     ctx.ellipse(0, 0, s, s * 0.4, 0, 0, Math.PI * 2);
@@ -727,7 +727,7 @@ function drawFern(f, t, breath) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(f.side * 0.12 + Math.sin(t * 0.35 + f.phase) * 0.06);
-    const hue = f.hue + organHue * 0.2;
+    const hue = f.hue + organHue;
     ctx.strokeStyle = hsl(hue, 50, 30, 0.85);
     ctx.lineWidth = 1.3;
     ctx.beginPath();
@@ -778,7 +778,7 @@ function drawMushroom(m, t, breath) {
         0.03 *
         (1 + breath * 0.05 + 0.03 * Math.sin(t * 0.6 + m.phase));
     const hue =
-        m.hue + organHue * 0.35 + Math.sin(t * 0.25 + m.phase) * 12;
+        m.hue + organHue + Math.sin(t * 0.25 + m.phase) * 12;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(m.tilt);
@@ -924,7 +924,7 @@ function drawFlower(f, t, breath) {
     const y =
         f.y * H + Math.sin(t * 0.7 + f.phase) * 4 + breath * 4;
     const s = f.s * Math.min(W, H) * 0.024 * (1 + breath * 0.05);
-    const hue = f.hue + organHue * 0.4 + t * 12;
+    const hue = f.hue + organHue + t * 12;
     const open = 0.85 + 0.15 * Math.sin(t * 0.8 + f.phase);
     ctx.save();
     ctx.translate(x, y);
@@ -1022,7 +1022,7 @@ function drawButterfly(b, t) {
         (b.y + Math.cos(t * b.speed * 0.8 + b.phase) * 0.08) * H;
     const s = b.s * 8;
     const flap = Math.abs(0.45 + 0.55 * Math.sin(t * 8 * b.speed + b.phase));
-    const hue = b.hue + organHue * 0.5 + t * 20;
+    const hue = b.hue + organHue + t * 20;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(Math.sin(t * b.speed + b.phase) * 0.4);
