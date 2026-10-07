@@ -48,7 +48,7 @@
             </header>
             <main class="chart-stage">
                 <aside class="side glass" id="inp"><div class="dir">in — what arrives</div><p class="hint">click a product or a component. the apps built on soft3 sit at the centre; the seven kernel and core products around them wear the colours of the flag, in order; every component rides the outer ring in its product's colour.</p></aside>
-                <section class="board glass"><svg id="stage" viewBox="0 0 1800 1800" aria-label="the chart"></svg></section>
+                <section class="board glass"><svg id="stage" viewBox="0 0 2200 2200" aria-label="the chart"></svg></section>
                 <aside class="side glass" id="outp"><div class="dir">out — what it feeds</div><p class="hint">the seven questions of the flag are the seven products: rules · made of · where · alive · meaning · made · coordinate.</p></aside>
             </main>
             <footer class="foot">
@@ -75,28 +75,27 @@
             const PF = { 1: "form", 2: "mass", 3: "space", 4: "life", 5: "word", 6: "work", 7: "play" };  // the flag, in order
             NODES.forEach((n) => { n.f = n.f === "apps" ? "apps" : PF[n.layer]; });
 
-            // ── layout: the apps at the centre; seven sectors clockwise from the top in
-            //    ladder order; a hub per sector on the inner ring; the sector's
-            //    components fanned on the outer ring, in up to three rows ──
-            const CX = 900, CY = 900, HUB_R = 440, NODE_R = 680, ROW = 80;
-            const step = (2 * Math.PI) / 7, secAngle = (k) => -Math.PI / 2 + (k - 1) * step;
+            // ── layout: the apps at the centre; every component on ONE outer ring, evenly
+            //    spaced, grouped by product in ladder order clockwise from the top; each
+            //    product's hub sits on the inner ring at the middle of its group ──
+            const CX = 1100, CY = 1100, HUB_R = 560, RING_R = 930, WOBBLE = 26;
             const byLayer = {}; NODES.forEach((n) => (byLayer[n.layer] ||= []).push(n));
-            const pos = {}, hubPos = {};
+            const ringList = [];
+            for (let k = 1; k <= 7; k++) byLayer[k].filter((n) => n.id !== LADDER[k - 1]).forEach((n) => ringList.push(n));
+            const slot = (2 * Math.PI) / ringList.length;
+            const pos = {}, hubPos = {}, groupAngles = {};
+            ringList.forEach((n, i) => {
+                const a = -Math.PI / 2 + (i + 0.5) * slot;
+                const r = RING_R + (i % 2 ? WOBBLE : -WOBBLE);
+                pos[n.id] = { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a), a };
+                (groupAngles[n.layer] ||= []).push(a);
+            });
             for (let k = 1; k <= 7; k++) {
-                const prod = NODES.find((n) => n.id === LADDER[k - 1]);
-                const members = byLayer[k].filter((n) => n !== prod);
-                const a0 = secAngle(k);
-                hubPos[prod.id] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 };
-                const rows = members.length > 6 ? 3 : members.length > 3 ? 2 : 1;
-                const span = step * 0.8, spread = members.length > 1 ? Math.min(0.24, span / (members.length - 1)) : 0;
-                members.forEach((n, i) => {
-                    const a = a0 + (i - (members.length - 1) / 2) * spread;
-                    const r = NODE_R + (i % rows) * ROW;
-                    pos[n.id] = { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
-                });
+                const as = groupAngles[k], a0 = (as[0] + as[as.length - 1]) / 2;
+                hubPos[LADDER[k - 1]] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 };
             }
             Object.assign(pos, hubPos);
-            pos["cyb"] = { x: CX, y: CY - 96 }; pos["cyber"] = { x: CX - 118, y: CY + 72 }; pos["cyberia"] = { x: CX + 124, y: CY + 72 };
+            pos["cyb"] = { x: CX, y: CY - 104 }; pos["cyber"] = { x: CX - 126, y: CY + 76 }; pos["cyberia"] = { x: CX + 132, y: CY + 76 };
 
             const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
             const el = (t, at, parent) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); (parent || svg).appendChild(e); return e; };
@@ -104,21 +103,20 @@
             Object.entries(FACETS).forEach(([f, v]) => { const m = el("marker", { id: "arr-" + f, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs); el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m); });
             const edgeLayer = el("g", {}), hubLayer = el("g", {}), nodeLayer = el("g", {});
 
-            el("circle", { cx: CX, cy: CY, r: 230, fill: "#7dffc4", "fill-opacity": 0.05, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
-            el("text", { x: CX, y: CY + 170, "text-anchor": "middle", fill: "rgba(125,255,196,0.75)", "font-size": 20 }, hubLayer).textContent = "built on soft3 — the point of the whole stack";
+            el("circle", { cx: CX, cy: CY, r: 250, fill: "#7dffc4", "fill-opacity": 0.05, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
+            el("text", { x: CX, y: CY + 190, "text-anchor": "middle", fill: "rgba(125,255,196,0.75)", "font-size": 20 }, hubLayer).textContent = "built on soft3 — the point of the whole stack";
             el("circle", { cx: CX, cy: CY, r: HUB_R, fill: "none", stroke: "rgba(255,248,240,0.12)", "stroke-width": 1.2, "stroke-dasharray": "4 8" }, hubLayer);
+            el("circle", { cx: CX, cy: CY, r: RING_R, fill: "none", stroke: "rgba(255,248,240,0.09)", "stroke-width": 1.2 }, hubLayer);
             NODES.filter((n) => n.hub).forEach((n) => {
                 const { x, y } = hubPos[n.id], c = FACETS[n.f].c;
                 const g = el("g", { class: "hub", "data-id": n.id }, hubLayer);
-                el("circle", { cx: x, cy: y, r: 92, fill: "#06100a", "fill-opacity": 0.7 }, g);
-                el("circle", { cx: x, cy: y, r: 92, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
-                el("text", { x, y: y - 4, "text-anchor": "middle", fill: c, "font-size": 28, class: "hub-label" }, g).textContent = n.id.toUpperCase();
-                el("text", { x, y: y + 24, "text-anchor": "middle", fill: "rgba(255,248,240,0.8)", "font-size": 17 }, g).textContent = n.layer + " · " + n.role;
-                // the question sits outside the hub, away from the centre
-                const qx = x + 128 * Math.cos(hubPos[n.id].a), qy = y + 128 * Math.sin(hubPos[n.id].a) + 6;
-                el("text", { x: qx, y: qy, "text-anchor": "middle", fill: c, "fill-opacity": 0.9, "font-size": 18, "paint-order": "stroke", stroke: "#06100a", "stroke-width": 6 }, g).textContent = FACETS[n.f].q;
+                el("circle", { cx: x, cy: y, r: 104, fill: "#06100a", "fill-opacity": 0.72 }, g);
+                el("circle", { cx: x, cy: y, r: 104, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
+                el("text", { x, y: y - 8, "text-anchor": "middle", fill: c, "font-size": 30, class: "hub-label" }, g).textContent = n.id.toUpperCase();
+                el("text", { x, y: y + 20, "text-anchor": "middle", fill: "rgba(255,248,240,0.85)", "font-size": 18 }, g).textContent = n.layer + " · " + n.role;
+                el("text", { x, y: y + 46, "text-anchor": "middle", fill: c, "fill-opacity": 0.9, "font-size": 15 }, g).textContent = FACETS[n.f].q;
             });
-            NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.42, y1: h.y + (p.y - h.y) * 0.42, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.18, "stroke-width": 1.2 }, hubLayer); });
+            NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.3, y1: h.y + (p.y - h.y) * 0.3, x2: p.x, y2: p.y, stroke: FACETS[n.f].c, "stroke-opacity": 0.2, "stroke-width": 1.2 }, hubLayer); });
 
             const edgeEls = [];
             EDGES.forEach(([a, b, label]) => {
@@ -132,10 +130,10 @@
 
             const nodeEls = {};
             NODES.filter((n) => !n.hub).forEach((n) => {
-                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = (apps ? 44 : 30) + n.id.length * (apps ? 19 : 14);
+                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = (apps ? 46 : 28) + n.id.length * (apps ? 20 : 13);
                 const g = el("g", { class: "node", "data-id": n.id }, nodeLayer);
                 el("rect", { x: x - w / 2, y: y - (apps ? 27 : 20), width: w, height: apps ? 54 : 40, rx: 20, fill: apps ? "rgba(6,16,10,0.85)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
-                el("text", { x, y: y + (apps ? 9 : 7), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 28 : 22, "font-weight": 700 }, g).textContent = n.id;
+                el("text", { x, y: y + (apps ? 9 : 7), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 30 : 21, "font-weight": 700 }, g).textContent = n.id;
                 nodeEls[n.id] = g;
             });
 
