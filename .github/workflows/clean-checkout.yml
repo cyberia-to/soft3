@@ -1,0 +1,103 @@
+# soft3 clean-checkout gate — property #39 (launch.md): soft3 builds and
+# tests against its 13 siblings' current origin default-branch tips, not a
+# working tree that can drift. layout mirrors tru/.github/workflows/ci.yml:
+# cyber/{soft3,<sibling>...} so `../../<sibling>` path deps from
+# soft3/crate/Cargo.toml resolve. closure computed in
+# audit/clean-checkout-ci-dependency-closure-2026-09-24.md via
+# `cargo metadata` on the default feature set; mudra/neuron-model/cyb sit
+# behind non-default features and are out of this gate. the `tok` sibling
+# directory is GitHub repo cyberia-to/plumb (crate cyber-tok) — the local
+# checkout convention names the dir after the crate, not the repo.
+name: Clean checkout
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  clean-checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout soft3 (triggering commit)
+        uses: actions/checkout@v4
+        with:
+          path: soft3
+      - name: checkout bbg
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/bbg
+          path: bbg
+      - name: checkout cybergraph
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/cybergraph
+          path: cybergraph
+      - name: checkout foculus
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/foculus
+          path: foculus
+      - name: checkout hemera
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/hemera
+          path: hemera
+      - name: checkout inf
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/inf
+          path: inf
+      - name: checkout lens
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/lens
+          path: lens
+      - name: checkout neuron
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/neuron
+          path: neuron
+      - name: checkout nox
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/nox
+          path: nox
+      - name: checkout strata
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/strata
+          path: strata
+      - name: checkout tade
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/tade
+          path: tade
+      - name: checkout tok (repo: plumb)
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/plumb
+          path: tok
+      - name: checkout tru
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/tru
+          path: tru
+      - name: checkout zheng
+        uses: actions/checkout@v4
+        with:
+          repository: cyberia-to/zheng
+          path: zheng
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: soft3/crate
+      - name: check
+        working-directory: soft3/crate
+        run: cargo check --tests
+      - name: test
+        working-directory: soft3/crate
+        run: cargo test
