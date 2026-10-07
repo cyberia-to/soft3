@@ -161,6 +161,18 @@ pub fn default_home() -> PathBuf {
     PathBuf::from(home).join(".spacepussy-test")
 }
 
+/// Adopt an external genesis file (a real burial-snapshot candidate, not the
+/// hardcoded spacepussy-test default) as `$home/genesis.json` before the
+/// node's database exists. Returns the installed genesis's chain_id.
+pub fn install_genesis(home: &Path, file: &Path) -> io::Result<String> {
+    if home.join("bbg").try_exists()? {
+        return Err(io::Error::other(
+            "home already has a database; genesis install requires an empty home",
+        ));
+    }
+    genesis::install(home, file).map(|loaded| loaded.chain_id)
+}
+
 /// Validate and recover durable state before binding the listener.
 pub fn run(home: PathBuf, bind: &str, moniker: &str) -> io::Result<()> {
     let node = Node::open(home.clone(), moniker.to_owned())?;
