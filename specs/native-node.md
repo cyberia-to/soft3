@@ -97,3 +97,21 @@ the committed operations and verifies stored roots before readiness.
 
 The product remains an unsigned local chaosnet bridge. Authentication, peer
 sync, consensus and graceful shutdown follow their owning product contracts.
+
+## claim
+
+`soft3 claim --claim ENCODED [--hrp HRP] [--home DIR]` binds a legacy Cosmos
+key to a native neuron: it decodes `ENCODED` as a [[mudra]] claim, verifies
+the ADR-036 signature under `HRP` (default the current network's bech32
+prefix), and, only on success, appends the binding to `$home/claims.jsonl` as
+one JSON object per line: `address`, `pubkey`, `neuron`.
+
+A legacy address binds exactly one neuron. Replaying the same claim is a
+no-op — the existing record already carries that neuron. A second claim for
+an already-bound address that names a different neuron is rejected and
+nothing is written; the first binding stands. An unverifiable or malformed
+claim writes nothing.
+
+This is the CLI's claim step; it does not yet read the burial snapshot's own
+account list or check a claimed address against it — that is genesis
+ingestion, tracked separately.

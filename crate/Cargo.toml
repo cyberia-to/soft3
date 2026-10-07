@@ -31,6 +31,7 @@ stack = ["dep:cyb"]
 cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
 hemera = { package = "cyber-hemera", version = "0.3" }
+mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra" }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync

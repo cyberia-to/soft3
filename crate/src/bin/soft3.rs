@@ -42,6 +42,7 @@ fn main() {
         }
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
+        "claim" => cmd_claim(&args[1..], net),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -227,6 +228,58 @@ fn cmd_node(args: &[String]) {
     }
 }
 
+fn cmd_claim(args: &[String], net: Network) {
+    let mut home = node::default_home();
+    let mut hrp = net.bech32_prefix().to_string();
+    let mut claim: Option<String> = None;
+    let mut seen_claim = false;
+    let mut seen_hrp = false;
+    let mut seen_home = false;
+    let parsed = (|| -> Result<(), &'static str> {
+        let mut i = 0;
+        while i < args.len() {
+            match args[i].as_str() {
+                "--claim" if !seen_claim => {
+                    i += 1;
+                    claim = Some(args.get(i).ok_or("missing claim")?.clone());
+                    seen_claim = true;
+                }
+                "--hrp" if !seen_hrp => {
+                    i += 1;
+                    hrp = args.get(i).ok_or("missing hrp")?.clone();
+                    seen_hrp = true;
+                }
+                "--home" if !seen_home => {
+                    i += 1;
+                    home = PathBuf::from(args.get(i).ok_or("missing home")?);
+                    seen_home = true;
+                }
+                _ => return Err("unknown or duplicate argument"),
+            }
+            i += 1;
+        }
+        Ok(())
+    })();
+    let claim = match (parsed, claim) {
+        (Ok(()), Some(claim)) => claim,
+        (Ok(()), None) => {
+            eprintln!("missing --claim; usage: soft3 claim --claim ENCODED [--hrp HRP] [--home DIR]");
+            std::process::exit(2);
+        }
+        (Err(e), _) => {
+            eprintln!("{e}; usage: soft3 claim --claim ENCODED [--hrp HRP] [--home DIR]");
+            std::process::exit(2);
+        }
+    };
+    match node::claim_account(&home, &claim, &hrp) {
+        Ok(neuron) => println!("claim verified; neuron {neuron}; home {}", home.display()),
+        Err(e) => {
+            eprintln!("claim failed: {e}");
+            std::process::exit(1);
+        }
+    }
+}
+
 /// Real-environment hostname fallback: `$HOSTNAME`, else `$HOST`, else the
 /// literal default. Thin wrapper over [`hostname_fallback_from`] so the
 /// fallback chain itself is testable without mutating process-wide env vars.
@@ -273,6 +326,7 @@ fn print_help() {
     println!("  soft3 status              # alias of sync");
     println!("  soft3 network [name]      # print endpoints");
     println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+    println!("  soft3 claim --claim ENCODED [--hrp HRP] [--home DIR]");
     println!("  soft3 manifesto");
     println!("  soft3 version");
     println!();
