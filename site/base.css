@@ -42,7 +42,7 @@ body {
     min-height: 100dvh;
     min-height: 100vh;
     width: 100%;
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: max(0.7rem, env(safe-area-inset-top))
         max(1rem, env(safe-area-inset-right))
