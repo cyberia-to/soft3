@@ -1,7 +1,7 @@
 # soft3 component registry — the one list every surface is checked against.
 # name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung of the ladder on soft3.org — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
-# checked by site/check-components.py; edit here first, then the surfaces.
+# checked by site/check-components.py; edit here first, then the surfaces. products built on soft3 (cyb, cyber, cyberia — layers 8–10) keep their parts here for the registry, but the site does not decompose them: what they are made of is their own business.
 
 [[component]]
 name = "strata"
