@@ -125,6 +125,8 @@ own acceptance evidence.
 6. **adversarial audit.** the consensus theorem is conditional, the truth-serum unaudited, and mudra's cryptography is self-built. before real value moves, someone paid to break it must try. no roadmap budgets this.
 7. **operations.** one duplicated launchd job recently ate the strongest dev machine for hours. a network of nodes needs health, metrics and alerting as protocol citizens, not as an afterthought — networks die of boring things.
 
+external reference: parano1d (live proof-native L1, 2026-08) has shipped working answers to 1, 4, 5 and the bootstrap half of 3 — occupancy-priced burned growth fees, incarnation ids for slot reuse, receipts-not-archive, state + terminal + 18 blocks. read: [[warriors/audit/parano1d-vs-uhash-2026-09-27]] §7.
+
 ## the SDK
 
 | dir | what | status |

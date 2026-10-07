@@ -478,7 +478,7 @@ Evidence:
   two key files/two networks, captured author after UI switch, durable answer
   content, revocation and foreign watch-only without an Identity resource.
 - robot-shell-check.log: `cargo check -p cyb -p cy --offline` passes after Sigma
-  attachment summary and optional chrome identity. Full shell unit suite is
+  attachment summary and optional chroma identity. Full shell unit suite is
   running next in cyb-shell-tests.log (not yet assumed passed).
 
 Remaining P08 seams are still substantial: legacy body relay splits links and
