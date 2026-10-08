@@ -14,8 +14,11 @@
         <style id="page-style">
             .chart-stage { display: grid; grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr); gap: clamp(0.6rem, 1.2vw, 0.9rem); min-height: 0; align-items: stretch; }
             .side { padding: 1rem 1.1rem; font-size: 0.86rem; line-height: 1.45; min-height: 0; overflow: auto; }
-            .side h2 { margin: 0 0 0.1rem; font-size: 1.25rem; letter-spacing: 0.04em; }
-            .side .tag { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; }
+            .side .head { padding-bottom: 0.6rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,248,240,0.12); }
+            .side h2 { margin: 0 0 0.3rem; font-size: 1.35rem; letter-spacing: 0.02em; color: var(--cream); }
+            .side .facts { display: flex; flex-wrap: wrap; gap: 0.3rem 0; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.6); }
+            .side .facts span + span::before { content: "·"; margin: 0 0.45rem; color: rgba(255,248,240,0.35); }
+            .side .q { margin: 0.45rem 0 0; font-size: 0.95rem; font-style: italic; color: rgba(255,248,240,0.85); }
             .side .dir { margin: 0.3rem 0 0.4rem; font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
             .side .hint { color: rgba(255,248,240,0.62); font-size: 0.8rem; }
             .side .dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 999px; background: var(--c); margin-right: 0.45rem; vertical-align: middle; box-shadow: 0 0 8px var(--c); }
@@ -28,7 +31,6 @@
             .side .io .verb { color: rgba(255,248,240,0.75); }
             .side .io .how { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.4); }
             .side .io.spec b { color: rgba(255,248,240,0.7); }
-            .side .q { color: var(--facet, #7dffc4); font-size: 1.05rem; margin: 0.2rem 0 0.3rem; }
             /* the board is exactly the ring: as tall as the row, as wide as it is tall — the side panels take what is left */
             .board { padding: 0.2rem; min-height: 0; height: 100%; aspect-ratio: 1; max-width: min(100%, calc(100vw - 28rem)); justify-self: center; display: flex; align-items: center; justify-content: center; background: rgba(6, 16, 10, 0.78); }
             #stage { width: 100%; height: 100%; display: block; }
@@ -206,8 +208,11 @@
                 Object.entries(nodeEls).forEach(([nid, g]) => (g.style.opacity = near.has(nid) ? 1 : 0.3));
                 Object.entries(hubEls).forEach(([nid, g]) => (g.style.opacity = near.has(nid) ? 1 : 0.3));
                 const c = colourOf(n);
-                const head = `<h2>${dot(c)}${id}</h2><div class="tag" style="color:${c}">${n.hub ? ROLE[id] + " · " + n.f : n.f === "apps" ? ROLE[id] + " · built on soft3" : (n.verb || "") + " · " + productOf(n)}</div>`;
-                const q = n.hub ? `<p class="q">${FACETS[n.f].q}</p>` : n.id === "chroma" ? `<p class="hint">one component: ${ORGANS.join(" · ")}</p>` : n.note ? `<p class="hint">${n.note}</p>` : "";
+                // the head: the name carries the colour (the dot); everything else is cream.
+                // one line of facts — role · rung · facet — then the question, if it has one
+                const facts = n.hub ? [ROLE[id], "rung " + n.layer, n.f] : n.f === "apps" ? [ROLE[id], "built on soft3"] : [n.verb || "", "rung " + n.layer + " · " + productOf(n)];
+                const head = `<header class="head"><h2>${dot(c)}${id}</h2><div class="facts">${facts.filter(Boolean).map((f) => `<span>${f}</span>`).join("")}</div>${n.hub ? `<p class="q">${FACETS[n.f].q}</p>` : ""}</header>`;
+                const q = n.id === "chroma" ? `<p class="hint">one component: ${ORGANS.join(" · ")}</p>` : (!n.hub && n.note) ? `<p class="hint">${n.note}</p>` : "";
                 inp.innerHTML = head + q + `<div class="dir">in — what arrives</div>` + (ins.length ? `<ul class="groups">${groupLines(ins, (e) => e.a)}</ul>` : `<p class="hint">nothing — a source</p>`);
                 outp.innerHTML = head + (n.thesis ? `<p class="hint">${n.thesis}</p>` : "") + `<div class="dir">out — what it feeds</div>` + (outs.length ? `<ul class="groups">${groupLines(outs, (e) => e.b)}</ul>` : `<p class="hint">nothing — a sink</p>`);
                 tint(n.f); history.replaceState(null, "", "?sel=" + id);
