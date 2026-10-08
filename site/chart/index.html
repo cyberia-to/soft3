@@ -26,11 +26,13 @@
             .side .groups, .side .groups ul { list-style: none; margin: 0; padding: 0; }
             .side .grp { margin: 0.45rem 0 0.2rem; }
             .side .gh { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.7); margin-bottom: 0.25rem; }
-            .side .io { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.2rem 0.5rem; padding: 0.18rem 0 0.18rem 0.3rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.74rem; }
+            .side .io { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 0.2rem 0.5rem; padding: 0.18rem 0 0.18rem 0.3rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.74rem; }
             .side .io b { font-weight: 700; color: var(--cream); }
             .side .io .verb { color: rgba(255,248,240,0.75); }
-            .side .io .how { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.4); }
+            .side .io .verb { text-align: right; }
             .side .io.spec b { color: rgba(255,248,240,0.7); }
+            .side .io.spec .dot { background: transparent; box-shadow: none; border: 1px dashed var(--c); }
+            .side .io b .dot { }
             /* the board is exactly the ring: as tall as the row, as wide as it is tall — the side panels take what is left */
             .board { padding: 0.2rem; min-height: 0; height: 100%; aspect-ratio: 1; max-width: min(100%, calc(100vw - 28rem)); justify-self: center; display: flex; align-items: center; justify-content: center; background: rgba(6, 16, 10, 0.78); }
             #stage { width: 100%; height: 100%; display: block; }
@@ -190,7 +192,7 @@
                 const order = [...LADDER.slice(0, 7), "built on soft3"];
                 return [...groups.entries()].sort((x, y) => order.indexOf(x[0]) - order.indexOf(y[0])).map(([key, es]) => {
                     const head = key === "built on soft3" ? `${dot("#fff8f0")}built on soft3` : `${dot(colourOf(byId[key]))}${key} · ${ROLE[key]}`;
-                    const rows = es.map((e) => { const other = byId[pick(e)]; return `<li class="io${e.s ? " spec" : ""}">${dot(colourOf(other))}<b>${other.id}</b><span class="verb">${e.v}</span>${e.s ? `<span class="how">specified</span>` : ""}</li>`; }).join("");
+                    const rows = es.map((e) => { const other = byId[pick(e)]; return `<li class="io${e.s ? " spec" : ""}" title="${e.s ? "specified, not yet code" : e.k.join(", ")}"><b>${dot(colourOf(other))}${other.id}</b><span class="verb">${e.v}</span></li>`; }).join("");
                     return `<li class="grp"><div class="gh">${head}</div><ul>${rows}</ul></li>`;
                 }).join("");
             }
