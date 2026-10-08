@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-four features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, rewards, useful mining, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,11 +31,11 @@
             .hero .verbs a { color: var(--c); text-decoration: none; } .hero .verbs a:hover { text-decoration: underline; }
             .hero .verbs i { color: rgba(255,248,240,0.3); font-style: normal; }
             /* the wall: the features on the left, the one you chose on the right */
-            .wall { padding: 0.8rem 1rem 0.9rem; display: grid; grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem 1rem; min-height: 0; }
+            .wall { padding: 0.8rem 1rem 0.9rem; display: grid; grid-template-columns: minmax(24rem, 29rem) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem 1rem; min-height: 0; }
             .wall .cap { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 1rem; margin: 0 0 0.1rem; }
             .wall .cap h2 { margin: 0; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,248,240,0.6); font-weight: 400; }
             .wall .cap span { font-size: 0.76rem; color: rgba(255,248,240,0.5); }
-            .list { display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; overflow: auto; padding-right: 0.2rem; }
+            .list { display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 0.3rem; min-height: 0; overflow: auto; padding-right: 0.2rem; }
             .feat { --c: #7dffc4; text-align: left; cursor: pointer; border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); background: color-mix(in srgb, var(--c) 6%, rgba(6,16,10,0.82)); border-radius: 0.7rem; padding: 0.42rem 0.7rem 0.4rem; color: var(--cream); font-family: inherit; display: grid; grid-template-columns: 0.6rem 1fr; gap: 0.12rem 0.55rem; align-items: center; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
             .feat:hover { border-color: color-mix(in srgb, var(--c) 70%, transparent); background: color-mix(in srgb, var(--c) 11%, rgba(6,16,10,0.88)); }
             .feat[aria-selected="true"] { border-color: color-mix(in srgb, var(--c) 90%, transparent); background: color-mix(in srgb, var(--c) 16%, rgba(6,16,10,0.92)); box-shadow: 0 0 22px color-mix(in srgb, var(--c) 25%, transparent); }
@@ -65,12 +65,12 @@
             .fig svg text { font-family: Play, system-ui, sans-serif; fill: var(--cream); }
             .fig svg .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
             .fig svg .dim { fill: rgba(255,248,240,0.55); }
-            @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } .wall { grid-template-columns: minmax(22rem, 28rem) minmax(0, 1fr); } .list { display: grid; grid-template-columns: 1fr 1fr; align-content: start; } }
+            @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } }
             @media (max-width: 900px), (max-height: 560px) {
                 .home { grid-template-rows: auto auto; }
                 .hero { grid-template-columns: 1fr; padding: 1rem 1rem 0.9rem; }
                 .wall { grid-template-columns: 1fr; }
-                .list { overflow: visible; }
+                .list { overflow: visible; grid-template-columns: 1fr; }
                 .detail { overflow: visible; }
                 .fig td.n { white-space: normal; }
             }
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>sixteen things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>twenty-four things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -158,6 +158,27 @@
                       [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
                       [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
                   ], "no trusted setup anywhere; a hash is the only assumption the proof system makes.") },
+                { id: "determ", verb: "compute", name: "deterministic", line: "no floats, no clocks, no randomness: the same answer on every device", status: "live",
+                  claim: "no floats, no clocks, no randomness: the same answer on every device",
+                  why: "every number in the provable path is a field element — fixed-point over Goldilocks, never a float. time is work, a VDF delay, never a wall clock. order is not arrival: it emerges from convergence. so any device recomputes any result bit for bit, and that is what makes proofs, memoization and replay possible at all.",
+                  parts: ["strata", "nox", "tru", "foculus"], source: ["tru/specs/arithmetic.md", GH + "tru/blob/main/specs/arithmetic.md"],
+                  fig: () => table(["elsewhere", "here"], [
+                      [d("floating point"), t("fixed-point over one field")],
+                      [d("a wall clock"), t("a VDF: the only clock is work")],
+                      [d("a block proposer orders"), t("order emerges from convergence")],
+                      [d("replay drifts"), t("replay is bit-exact — bostrom's 2 949 732 links rebuilt from events, identical")],
+                  ]) },
+                { id: "halt", verb: "compute", name: "no halting", line: "every program ends, and its cost is known before it starts", status: "live",
+                  claim: "every program ends — and its cost is known before it starts",
+                  why: "loops have explicit bounds, there is no recursion, there is no heap: there is no halting problem on this machine. that is what makes every program provable, every cost predictable, and proofs composable — a proof can verify another proof inside it, and any chain collapses into one. and the network does not halt either: no leader to go down; in a partition nothing conflicting finalises and nothing breaks.",
+                  parts: ["trident", "nox", "foculus"], source: ["trident — bounded execution", GH + "trident#readme"],
+                  fig: () => table(["elsewhere", "here"], [
+                      [d("unbounded loops, recursion, a heap"), t("explicit bounds · no recursion · no heap")],
+                      [d("the halting problem"), t("none: every program ends")],
+                      [d("a gas estimate"), t("the exact cost, before it runs")],
+                      [d("proofs that do not compose"), t("a proof verifies a proof; chains collapse into one")],
+                      [d("a leader that can stop"), t("no leader; partitions wait, nothing breaks")],
+                  ]) },
                 { id: "compact", verb: "build", name: "compact", line: "275k lines for the whole stack — small enough for one person to read, understand and verify", status: "measured",
                   claim: "small enough to understand, verify — and only then freeze",
                   why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. one person can read it end to end; a team can audit it; the cross-verified harness can check it. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it: nobody has read those, so nobody can verify them, so nobody can freeze them. understanding comes first; the freeze is what you earn after.",
@@ -218,6 +239,24 @@
                       [`<td>miss</td>`, n("H(subject) · H(formula)"), `<td>compute, prove, link — now a hit for anyone</td>`, n("one computation")],
                       [`<td>paid</td>`, d(""), `<td>the first prover, every time it is remembered</td>`, t("a Shapley share")],
                   ], "deterministic steps are memoized globally; steps with a private witness are memoized only within their proof.") },
+                { id: "reads", verb: "remember", name: "provable reads", line: "every answer carries a proof — a phone checks it with 32 bytes", status: "building",
+                  claim: "every answer carries a proof — a phone checks it with 32 bytes",
+                  why: "writes are proven everywhere; here reads are too. ask the graph in inf and the answer comes with a zheng proof that it follows from the committed state. a light client holding only the 32-byte graph root checks it in microseconds — without storing the graph, without trusting whoever ran the query. the proof object on the wire is bbg's QueryProof.",
+                  parts: ["inf", "bbg", "zheng"], source: ["inf", GH + "inf#readme"],
+                  fig: () => table(["you hold", "you ask", "you get", "you check"], [
+                      [t("a 32-byte root"), `<td>an inf query — what matters here, and how it shifted</td>`, `<td>the result + a QueryProof</td>`, n("microseconds · target")],
+                  ], "QueryProof has a wire format and serde; inf runs R0–R3b over bbg. provable reads on the live graph are the open work.") },
+                { id: "graph", verb: "remember", name: "graph, not ledger", line: "the state is the graph; there is no ledger", status: "live",
+                  claim: "the state is the graph — there is no ledger",
+                  why: "no blocks, no transactions, no accounts table. five primitives — file, cyberlink, neuron, token, focus — and every write is a signed link. the finalised subgraph is the canonical state; any node replays the signal log to the same root, bit for bit. bostrom's two million nine hundred thousand links were rebuilt from events this way, identical.",
+                  parts: ["cybergraph", "bbg", "neuron", "tok"], source: ["cybergraph/specs", GH + "cybergraph/tree/main/specs"],
+                  fig: () => table(["primitive", "what it is"], [
+                      [t("file"), `<td>the thing; its particle is its 32-byte identity</td>`],
+                      [t("cyberlink"), `<td>a signed link between two particles, with weight — the only write</td>`],
+                      [t("neuron"), `<td>a keypair that signs</td>`],
+                      [t("token"), `<td>value that moves by a link</td>`],
+                      [t("focus"), `<td>the ranking the whole graph settles to</td>`],
+                  ], "the finalised subgraph IS the state — foculus/specs/protocol.md") },
                 { id: "scale", verb: "remember", name: "planet scale", line: "from a pocket to a planet: 10¹⁵ particles, 10¹⁰ neurons. availability is sampled, not downloaded.", status: "specified · today 2.95M links",
                   claim: "the graph shards; a phone checks a planet",
                   why: "storage tiers from memory to cold archive; replication follows focus, so what matters is everywhere and what does not is somewhere. availability is checked by sampling: twenty samples, one and a half kilobytes, six nines of confidence. today the live graph holds 2.95 million links over 3.14 million particles.",
@@ -234,6 +273,16 @@
                   why: "explainability by construction: the model is compiled from the focus-weighted graph, so its weights are made of signed links. given any output, the links that produced it and the neurons who signed them are recoverable — attribution is exact, not estimated after the fact. no hidden training set, no weights nobody can explain: the training set is the book, the book is public and proven, and the authors an answer names are the ones it pays.",
                   parts: ["neural", "cybergraph", "tru"], source: ["cyber/whitepaper §5", "https://cyber.page/whitepaper/"],
                   fig: () => trace() },
+                { id: "aligned", verb: "learn", name: "aligned", line: "alignment is a graph measurement, and compliance is a proof", status: "research",
+                  claim: "alignment is a measurement, and compliance is a proof",
+                  why: "human values here are files — heavily and consistently linked by human neurons over time: an explicit, signed, staked record of what people care about. a model compiled from the graph starts with exactly that geometry, structurally aligned before any training. an AI acting here is a neuron: its links are signed, staked and scored for honesty like anyone's. and a model can prove it followed a stated policy during a session — compliance verifiable, not claimed.",
+                  parts: ["neural", "tru", "zheng"], source: ["cyber/whitepaper §22.2", "https://cyber.page/whitepaper/"],
+                  fig: () => table(["elsewhere", "here"], [
+                      [d("values inside a hidden reward model"), t("values as signed, staked files in the book")],
+                      [d("alignment claimed"), t("alignment measured: the distance between human and machine focus on one graph")],
+                      [d("behaviour audited afterwards"), t("a zheng proof that this session followed this policy")],
+                      [d("the AI is a black box outside"), t("the AI is a neuron inside: scored for honesty like anyone")],
+                  ]) },
                 { id: "names", verb: "link", name: "names", line: "you address by name, and the name is yours", status: "specified · 47 837 names port into genesis",
                   claim: "you address by name — and the name is yours",
                   why: "every stack hands you an address no human can say. here a name is a link in the book, from a word to a particle: owned like a token — sold, lent, inherited — never set in a config, resolving through the graph wherever the thing runs. no registrar, no DNS, no accounts: a keypair is a neuron, your node is the network, and the names of the bootloader era come along.",
@@ -245,6 +294,26 @@
                       [d("an account, a password"), t("a keypair — a neuron — a signature")],
                       [d("a config file"), t("owned like a token: sold, lent, inherited")],
                   ], "47 837 names from the bootloader era port into the genesis book.") },
+                { id: "agentic", verb: "link", name: "agentic", line: "a mind over the book — yours, headless anywhere", status: "building · soma live",
+                  claim: "a mind over the book — yours, headless anywhere",
+                  why: "cy acts for a neuron: it reads the graph the neuron keeps, decides, proposes the next link, speaks it as a signal, holds what the neuron owns and keeps secret what must stay secret. sixteen organs, one chroma — in cells or pixels, on a server or in a pocket. the agent that answers you is itself a neuron in the network, signing like anyone.",
+                  parts: ["cy", "soma", "glia", "seer"], source: ["cy", GH + "cy#readme"],
+                  fig: () => table(["organs", ""], [
+                      [t("mind"), `<td>soma · glia · seer · soul · ward</td>`],
+                      [t("mouth and messenger"), `<td>com · voice · sense</td>`],
+                      [t("perception"), `<td>state · now</td>`],
+                      [t("keeping"), `<td>log · plan · memory · sigma · vault · body</td>`],
+                  ], "soma asks glia and links the answer into the graph today; the rest grow into crates as their contracts settle.") },
+                { id: "cfocus", verb: "focus", name: "collective focus", line: "one ranking, computed by everyone, provable", status: "specified · κ measured on bostrom",
+                  claim: "one ranking, computed by everyone — a theorem, not a vote",
+                  why: "every neuron runs the same contraction on the same graph and lands on the same focus: the fixed point of the tri-kernel — diffusion, springs, heat — guaranteed by Banach. nobody votes, nobody is elected; agreement is the math converging. the book decides what matters, and any mind can recompute why. this is the collective intelligence: measured on bostrom, the kernel contracts at κ = 0.74.",
+                  parts: ["tru", "foculus", "cybergraph"], source: ["tru/specs/tri-kernel.md", GH + "tru/blob/main/specs/tri-kernel.md"],
+                  fig: () => table(["kernel", "what it does", "contracts by"], [
+                      [t("diffusion"), `<td>a token-weighted random walk — who points at what</td>`, n("teleport α")],
+                      [t("springs"), `<td>the Laplacian — what is near what</td>`, n("screening μ")],
+                      [t("heat"), `<td>the heat kernel — how far influence spreads</td>`, n("e^(−τλ₂)")],
+                      [`<td><b>composite</b></td>`, `<td>a convex mix of the three</td>`, t("κ < 1 → one fixed point φ*")],
+                  ], "measured: bostrom contracts at κ = 0.74, λ₂ = 0.13 (foculus/specs/provable-consensus). the fixed point is unique by Banach; the ranking is a theorem.") },
                 { id: "rewards", verb: "focus", name: "rewards", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
                   claim: "four reasons to be paid, one formula",
                   why: "a reward has four terms: a Shapley share of the focus you moved, a subsidy for proof-of-work, a cut of the fees your work served, and yield on the stake you risked. storage needs no separate market — focus is the storage payment. the attribution is the unique fair one: efficient, symmetric, no pay for no contribution.",
@@ -255,6 +324,14 @@
                       [`<td>bandwidth</td>`, `<td>you relayed what moved</td>`, n("relay fees"), d("proposed")],
                       [`<td>fairness</td>`, `<td>always</td>`, n("Shapley share of Δφ*"), t("specified")],
                   ], "collusion resistance is open: the mechanism is incentive-compatible against unilateral deviation.") },
+                { id: "mining", verb: "focus", name: "useful mining", line: "the work is proving", status: "proposed · tickets measured",
+                  claim: "the work is proving",
+                  why: "miners here do not burn hashes. they produce proofs the network needs: settlement tickets — each a zheng proof that one Shapley share was evaluated correctly under a beacon-seeded order — and folds, each collapsing two proofs into one accumulator. two lotteries, both proof-of-useful-work. the hardware that mines is the hardware that proves; nothing is stranded when the difficulty moves.",
+                  parts: ["foculus", "zheng", "solong", "tru"], source: ["foculus/specs/fold-mining.md", GH + "foculus/blob/main/specs/fold-mining.md"],
+                  fig: () => table(["lottery", "the work", "the proof", "status"], [
+                      [t("settlement"), `<td>draw tickets: evaluate Shapley marginals</td>`, `<td>one zheng proof per ticket</td>`, n("measured: decide ~18.7 ms, verify ~9.2 ms, flat n = 8…512")],
+                      [t("fold"), `<td>aggregate the winning tickets</td>`, `<td>one HyperNova fold per step</td>`, d("proposed")],
+                  ], "proof-of-useful-work: every unit of mining is a proof the settlement needs anyway.") },
                 { id: "finality", verb: "focus", name: "fast finality", line: "final in about a second — final forever", status: "specified · parameters illustrative",
                   claim: "final in about a second, final forever",
                   why: "no proposer, no committee round: every neuron computes the same focus from the same graph, and a particle is final the moment its focus crosses the threshold. that is irreversible — no rollbacks, no confirmation depth. across a WAN a well-connected domain finalises in about a second and a half; a sparse fringe takes tens of seconds; during a partition nothing conflicting can finalise at all.",
