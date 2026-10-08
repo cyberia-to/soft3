@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <title>soft3 — the loop</title>
-        <meta name="description" content="the loop: compute · build · prove · remember · learn · link · focus — the seven colours of the flag, in order. a thought becomes a computation, a computation becomes a program, a program becomes a proof, a proof becomes an answer, the book becomes a model, a thought becomes a link, the links become one focus — and whoever moved it is paid." />
+        <meta name="description" content="the loop: compute · build · prove · remember · learn · link · focus — the seven colours of the flag, in order. the focus becomes a computation, a computation becomes a program, a program becomes a proof, a proof becomes an answer, the book becomes a model, a thought becomes a link, the links become one focus — and whoever moved it is paid." />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,7 +58,7 @@
             //   LINK      work   cy          who does the work: a mind links
             //   FOCUS     play   soft3       how we coordinate: one focus, and whoever moved it is paid
             const VERBS = [
-                { id: "compute",  c: "#00ff00", h: 120, who: "the machine", does: "a thought becomes a computation — one field, one hash",    sel: "nox",        parts: ["nox", "strata", "hemera"] },
+                { id: "compute",  c: "#00ff00", h: 120, who: "the machine", does: "the focus becomes a computation — one field, one hash",    sel: "nox",        parts: ["nox", "strata", "hemera"] },
                 { id: "build",    c: "#0000ff", ink: "#8080ff", h: 240, who: "the weapon",  does: "a computation becomes a program — its cost known before it runs", sel: "trident", parts: ["trident"] },
                 { id: "prove",    c: "#4000ff", ink: "#9a80ff", h: 255, who: "the warrior", does: "a program becomes a proof — stored wherever it ran",     sel: "joy",        parts: ["joy", "zheng", "bbg"] },
                 { id: "remember", c: "#8000ff", h: 270, who: "the book",    does: "a proof becomes an answer — for anyone, never recomputed",  sel: "cybergraph", parts: ["cybergraph", "inf"] },
@@ -66,12 +66,12 @@
                 { id: "link",     c: "#ff8000", h: 30,  who: "a mind",      does: "a thought becomes a link — with weight",                    sel: "cy",         parts: ["cy"] },
                 { id: "focus",    c: "#ffff00", h: 60,  who: "the network", does: "the links become one focus — whoever moved it is paid",     sel: "soft3",      parts: ["soft3", "foculus", "tru", "solong"] },
             ];
-            // each arrow carries one thing to the next verb — and carries it once
+            // each arrow carries one thing to the next verb, and the verb's sentence starts with it
             const ARCS = [
                 ["compute", "build", "one computation"],
                 ["build", "prove", "one program"],
                 ["prove", "remember", "one proof"],
-                ["remember", "learn", "one answer"],
+                ["remember", "learn", "one book"],
                 ["learn", "link", "one thought"],
                 ["link", "focus", "one link"],
                 ["focus", "compute", "one focus"],
