@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-six features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-eight features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, home books, planet scale, explainable, aligned, names, referral, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twenty-six things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>twenty-eight things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -257,6 +257,17 @@
                       [t("token"), `<td>value that moves by a link</td>`],
                       [t("focus"), `<td>the ranking the whole graph settles to</td>`],
                   ], "the finalised subgraph IS the state — foculus/specs/protocol.md") },
+                { id: "oikos", verb: "remember", name: "home books", line: "every neuron roots its own graph — own name, own token, own terms — and registers it into the one", status: "proposed · phase 1",
+                  claim: "your own graph, on your own terms — registered into the one",
+                  why: "every neuron roots a home book: one non-fungible name, one token in the neuron's name, its links, its local focus, its obligations — settled at home, on the same binary, under whatever terms the book sets. foculus gives each book its own finality; registration links the name and the state root into the cybergraph. a personal mind is born in a personal book: without home books no personal brains, so they ship in phase 1 with the two root chains.",
+                  parts: ["cybergraph", "tok", "foculus", "name"], source: ["cyber/launch.md — personal chains", "https://cyber.page/launch/"],
+                  fig: () => table(["a home book has", ""], [
+                      [t("a name"), `<td>non-fungible, yours, resolves through the graph</td>`],
+                      [t("a token · $ν"), `<td>minted in the neuron's name; its holders share the book's fees</td>`],
+                      [t("links and a local focus"), `<td>the neuron's own graph, its own ranking</td>`],
+                      [t("finality at home"), `<td>foculus gives the book its own domain finality</td>`],
+                      [t("a registration"), `<td>one cyberlink: name + state root into the cybergraph</td>`],
+                  ], "the same binary runs a planet and a pocket; the book decides its own terms, the graph only learns its name and its root.") },
                 { id: "scale", verb: "remember", name: "planet scale", line: "from a pocket to a planet: 10¹⁵ particles, 10¹⁰ neurons. availability is sampled, not downloaded.", status: "specified · today 2.95M links",
                   claim: "the graph shards; a phone checks a planet",
                   why: "storage tiers from memory to cold archive; replication follows focus, so what matters is everywhere and what does not is somewhere. availability is checked by sampling: twenty samples, one and a half kilobytes, six nines of confidence. today the live graph holds 2.95 million links over 3.14 million particles.",
@@ -294,6 +305,15 @@
                       [d("an account, a password"), t("a keypair — a neuron — a signature")],
                       [d("a config file"), t("owned like a token: sold, lent, inherited")],
                   ], "47 837 names from the bootloader era port into the genesis book.") },
+                { id: "referral", verb: "link", name: "referral", line: "bring a neuron, own a share of its economy — paid in its token, so a fake one pays nothing", status: "proposed · phase 1",
+                  claim: "bring a neuron, own a share of its economy — a fake one pays nothing",
+                  why: "registration is a cyberlink: the referrer's neuron links the newcomer's name. at the birth of the newcomer's book a fixed share of its token goes to the referrer, and holding that token is a pro-rata share of the fees the book collects for as long as it lives. the referrer is paid in the referee's own token, from the referee's own economy: a fake account has a book with no fees and a token worth nothing, so referring it pays nothing — Sybil-resistant by construction, paying on focus created, never per head. past the Dunbar number the share flattens and growth continues by delegation: a referee builds a branch of their own.",
+                  parts: ["tok", "cybergraph", "name"], source: ["cyber/launch.md — the referral", "https://cyber.page/launch/"],
+                  fig: () => table(["when", "the referrer gets", "why it cannot be gamed"], [
+                      [t("the newcomer's book is born"), `<td>a fixed share r of its token $ν</td>`, `<td>the token is worth what the book earns</td>`],
+                      [t("the book collects fees"), `<td>a pro-rata share, for the life of the book</td>`, `<td>a fake book collects nothing</td>`],
+                      [t("a cell passes the Dunbar number"), `<td>a flattened share</td>`, `<td>growth by delegation, not by stacking heads</td>`],
+                  ], "paid on focus created, never per head — the same rule as every reward here.") },
                 { id: "agentic", verb: "link", name: "agentic", line: "a mind over the book — yours, headless anywhere", status: "building · soma live",
                   claim: "a mind over the book — yours, headless anywhere",
                   why: "cy acts for a neuron: it reads the graph the neuron keeps, decides, proposes the next link, speaks it as a signal, holds what the neuron owns and keeps secret what must stay secret. sixteen organs, one chroma — in cells or pixels, on a server or in a pocket. the agent that answers you is itself a neuron in the network, signing like anyone.",
