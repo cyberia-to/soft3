@@ -254,8 +254,10 @@
                     ["agent, keys, silicon, mind", "cy · mudra · vault · soma · glia · rune · neural · honeycrisp", 90, "—", 0, ""],
                 ];
                 const tbl = `<table><thead><tr><th>function</th><th>soft3</th><th>k lines</th><th>the usual parts</th><th>k lines</th></tr></thead><tbody>${rows.map(([f, a, x, b, y, extra]) => `<tr><td>${f}</td><td class="dim">${a}</td><td class="n t">${x}</td><td class="dim">${b}</td><td class="n">${y ? y.toLocaleString("en") : "—"}${extra ? ` <span class="dim">${extra}</span>` : ""}</td></tr>`).join("")}<tr><td><b>total</b></td><td class="dim">275k · 425k with radio</td><td class="n t">275</td><td class="dim">3.2 M · 38.8 M with LLVM</td><td class="n">3 222</td></tr></tbody></table>`;
-                const W = 520, bw = (v) => Math.max(4, (v / 3222) * 380);
-                const svg = `<svg viewBox="0 0 ${W} 86"><text x="0" y="16" font-size="13">soft3, with radio</text><rect x="0" y="22" width="${bw(425)}" height="10" rx="5" fill="var(--c)"/><text class="mono" x="${bw(425) + 8}" y="31" font-size="12" fill="var(--c)">425 k</text><text x="0" y="58" font-size="13">the usual parts, before LLVM</text><rect x="0" y="64" width="${bw(3222)}" height="10" rx="5" fill="rgba(255,248,240,0.35)"/><text class="mono" x="${bw(3222) + 8}" y="73" font-size="12" fill="rgba(255,248,240,0.7)">3.2 M · ×7.6</text></svg>`;
+                // one linear scale for all three, so the difference is seen, not read
+                const W = 520, bw = (v) => Math.max(3, (v / 38782) * 400);
+                const bar = (y, label, v, text, ours) => `<text x="0" y="${y}" font-size="13">${label}</text><rect x="0" y="${y + 6}" width="${bw(v)}" height="10" rx="5" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.35)"}"/><text class="mono" x="${bw(v) + 8}" y="${y + 15}" font-size="12" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.7)"}">${text}</text>`;
+                const svg = `<svg viewBox="0 0 ${W} 128">${bar(14, "soft3, with radio", 425, "425 k", true)}${bar(56, "the usual parts, before LLVM", 3222, "3.2 M · ×7.6", false)}${bar(98, "the usual parts, with LLVM", 38782, "38.8 M · ×91", false)}</svg>`;
                 return tbl + svg + `<p class="note">code lines only, tokei 14, 2026-10-08, tests and data files excluded; rustc is compiler/ + library/; LLVM is the published 2024 figure. the same functions, not the same features: nothing on the right proves, remembers or pays.</p>`;
             }
             function chain() {
