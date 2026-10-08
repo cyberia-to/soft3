@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private, trusting trust, memoization, planet scale, transparent models, names, rewards, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -229,9 +229,9 @@
                       [`<td>replicas</td>`, `<td>by focus: top 1000 · median 10 · tail 3</td>`, d(""), d("")],
                       [`<td>availability</td>`, `<td>20 samples · 1.5 KiB</td>`, t("99.9999 %"), d("")],
                   ], "target operating point: 10¹⁵ particles, 10¹⁰ neurons. today: bostrom, 2 949 732 links.") },
-                { id: "models", verb: "learn", name: "transparent models", line: "every weight traces to the links and the neurons who signed them — a model you can audit.", status: "research",
-                  claim: "a model compiled from the book, not trained in the dark",
-                  why: "the model is compiled from the focus-weighted graph. given any output, the links that produced it and the neurons who signed them are recoverable. no hidden training set, no weights nobody can explain — the training set is the book, and the book is public and proven.",
+                { id: "models", verb: "learn", name: "explainable", line: "every answer names its sources — and pays them", status: "research",
+                  claim: "every answer names its sources — and pays them",
+                  why: "explainability by construction: the model is compiled from the focus-weighted graph, so its weights are made of signed links. given any output, the links that produced it and the neurons who signed them are recoverable — attribution is exact, not estimated after the fact. no hidden training set, no weights nobody can explain: the training set is the book, the book is public and proven, and the authors an answer names are the ones it pays.",
                   parts: ["neural", "cybergraph", "tru"], source: ["cyber/whitepaper §5", "https://cyber.page/whitepaper/"],
                   fig: () => trace() },
                 { id: "names", verb: "link", name: "names", line: "you address by name, and the name is yours", status: "specified · 47 837 names port into genesis",
