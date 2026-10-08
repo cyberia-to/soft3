@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -199,9 +199,9 @@
                   why: "a fold is about thirty field operations per step, and the accumulator stays two hundred bytes however long the run. proving rides along with execution instead of replaying it afterwards; a single decider closes the proof. one program, one run, one proof — and a change to the program re-proves only what changed.",
                   parts: ["zheng", "nox"], source: ["zheng/specs/recursion.md", GH + "zheng/blob/main/specs/recursion.md"],
                   fig: () => chain() },
-                { id: "private", verb: "prove", name: "private", line: "the block is public, the person is not: aggregates are proven, individuals are sealed.", status: "specified",
+                { id: "private", verb: "prove", name: "private by default", line: "the block is public, the person is not: aggregates are proven, individuals are sealed.", status: "specified",
                   claim: "private by default, public on demand",
-                  why: "what the network needs — axons, supplies, focus, φ* — is always public and always proven. what belongs to one neuron — links, balances, queries — stays sealed. a question is answered inside the proof over public tables, so the answer is proven without the question ever leaving your device.",
+                  why: "what the network needs — axons, supplies, focus, φ* — is always public and always proven. what belongs to one neuron — links, balances, queries — stays sealed. a question is answered inside the proof over public tables, so the answer is proven without the question ever leaving your device. confidentiality is the mechanism — sealed data; privacy is the result — the person stays out of the block.",
                   parts: ["bbg", "mudra", "zheng"], source: ["bbg/specs/privacy.md", GH + "bbg/blob/main/specs/privacy.md"],
                   fig: () => halves() },
                 { id: "trust", verb: "prove", name: "trusting trust", line: "the compiler proves it compiled itself", status: "target · SH0 of SH8 next",
