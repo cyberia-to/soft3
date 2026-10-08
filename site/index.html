@@ -2,531 +2,116 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-        <title>soft3 — one mind</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="Shared mind. Proof in every breath. Link everything."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twelve features: frozen foundations, post-quantum, compact stack, ~2 KB proofs, incremental proving, private by default, memoized, scalable, transparent models, sovereign, rewarding, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" />
         <link rel="stylesheet" href="/base.css?v=16" />
         <style id="page-style">
-
-
-
-            /* desktop is a single game screen: nothing to scroll, only to click */
-
-
-
-
-            /* the stage: pitch card left, the playable crystal right.
-               desktop is one screen — no page scroll, you click, not read down */
-            .stage {
-                display: grid;
-                grid-template-columns: minmax(300px, 25rem) minmax(0, 1fr);
-                gap: clamp(0.8rem, 2vw, 1.4rem);
-                min-height: 0;
-                align-items: stretch;
-            }
-
-
-            /* the pitch card: everything a stranger needs — what this is,
-               the one number that matters, and how to install */
-            .pitch {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                gap: 0.55rem;
-                min-width: 0;
-                min-height: 0;
-                padding: clamp(1rem, 2.2vh, 1.5rem)
-                    clamp(1.1rem, 2vw, 1.5rem);
-                overflow: auto;
-            }
-
-            .eyebrow {
-                font-size: clamp(0.62rem, 1vw, 0.72rem);
-                font-weight: 700;
-                letter-spacing: 0.22em;
-                text-transform: uppercase;
-                color: rgba(255, 248, 240, 0.55);
-            }
-
-            h1 {
-                font-size: clamp(1.8rem, 3.4vw, 2.7rem);
-                font-weight: 700;
-                line-height: 1.05;
-                letter-spacing: -0.02em;
-                color: #fff;
-                text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
-            }
-            h1 em {
-                font-style: normal;
-                font-weight: 400;
-                display: block;
-                background: linear-gradient(
-                    110deg,
-                    rgba(255, 248, 240, 0.95),
-                    #7dffc4 55%,
-                    rgba(255, 248, 240, 0.95)
-                );
-                background-size: 220% auto;
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                animation: sheen 9s ease-in-out infinite;
-            }
-            @keyframes sheen {
-                0%,
-                100% {
-                    background-position: 0% 50%;
-                }
-                50% {
-                    background-position: 100% 50%;
-                }
-            }
-
-            .lede {
-                font-size: clamp(0.92rem, 1.45vw, 1.05rem);
-                line-height: 1.5;
-                color: rgba(255, 248, 240, 0.92);
-            }
-
-            /* the sigil: the killer number drawn inside the crystal — the same
-               heptagon geometry as the triad ring below, one visual language */
-            .sigil {
-                position: relative;
-                width: clamp(10rem, 21vh, 12.5rem);
-                aspect-ratio: 1 / 1;
-                align-self: center;
-                margin: 0.15rem 0;
-            }
-            .sigil::before {
-                content: "";
-                position: absolute;
-                inset: 12%;
-                border-radius: 999px;
-                background: radial-gradient(
-                    circle,
-                    rgba(125, 255, 196, 0.16),
-                    transparent 70%
-                );
-                filter: blur(6px);
-            }
-            .sigil svg {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                overflow: visible;
-            }
-            .sigil polygon {
-                fill: none;
-                stroke: rgba(255, 248, 240, 0.28);
-                stroke-width: 1;
-                transform-origin: 100px 100px;
-                animation: spin 140s linear infinite;
-            }
-            .sigil polygon.inner {
-                stroke: rgba(125, 255, 196, 0.45);
-                stroke-dasharray: 4 5;
-                animation: spin 100s linear infinite reverse;
-            }
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            .sigil-text {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 0.15rem;
-                text-align: center;
-            }
-            .sigil-text b {
-                font-size: clamp(1.5rem, 3vw, 1.95rem);
-                font-weight: 700;
-                letter-spacing: -0.02em;
-                color: #7dffc4;
-                text-shadow: 0 0 24px rgba(125, 255, 196, 0.5);
-            }
-            .sigil-text span {
-                font-size: 0.58rem;
-                font-weight: 700;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                line-height: 1.5;
-                color: rgba(255, 248, 240, 0.62);
-            }
-
-            .consensus {
-                font-size: clamp(0.85rem, 1.35vw, 0.95rem);
-                line-height: 1.45;
-                color: rgba(255, 248, 240, 0.6);
-                max-width: 30em;
-            }
-
-            .action {
-                display: flex;
-                flex-direction: column;
-                gap: 0.4rem;
-                margin-top: 0.2rem;
-                min-width: 0;
-            }
-
-            .install {
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto;
-                border-radius: 999px;
-                overflow: hidden;
-                background: rgba(4, 14, 10, 0.65);
-                border: 1px solid rgba(255, 255, 255, 0.22);
-                min-width: 0;
-            }
-            .install code {
-                min-width: 0;
-                padding: 0.8rem 0.95rem;
-                font-family: ui-monospace, "SF Mono", Menlo, monospace;
-                font-size: clamp(0.66rem, 1.2vw, 0.82rem);
-                color: #c4ffe8;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                user-select: all;
-            }
-            .install button {
-                border: none;
-                background: linear-gradient(
-                    125deg,
-                    #ff6bab,
-                    #c06bff 40%,
-                    #4dffc0 75%,
-                    #ffe28a
-                );
-                background-size: 240% 240%;
-                animation: flow 5s ease infinite;
-                color: #0a120e;
-                font-family: Play, system-ui, sans-serif;
-                font-weight: 700;
-                font-size: 0.75rem;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                padding: 0 1.05rem;
-                cursor: pointer;
-            }
-            .install button.ok {
-                filter: saturate(1.4);
-            }
-            @keyframes flow {
-                0%,
-                100% {
-                    background-position: 0% 50%;
-                }
-                50% {
-                    background-position: 100% 50%;
-                }
-            }
-
-            .hint {
-                font-size: 0.78rem;
-                color: rgba(255, 248, 240, 0.55);
-            }
-            .hint a {
-                color: #7dffc4;
-                text-decoration: none;
-            }
-            .hint a:hover {
-                text-decoration: underline;
-            }
-            .early {
-                font-size: 0.7rem;
-                letter-spacing: 0.04em;
-                color: rgba(255, 248, 240, 0.45);
-            }
-
-            /* right column: the ring floats over the world, the detail card
-               below it takes whatever height is left — never the page */
-            .panel {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                min-height: 0;
-                min-width: 0;
-            }
-
-
-            /* the crystal ring: 7 triads as facets of one heptagon, not a row of
-               pills — the spiral is a shape you see, not a caption you read. one
-               dashed edge (play → form) shows the spiral closing and starting over. */
-
-            /* the seven colours are the cyberia flag, exactly — the ring IS
-               the flag: same heptagon, same circles, same paint. light discs
-               carry dark text, dark discs carry cream. */
-
-
-            /* ── the architecture, before the toy: the whole stack as seven
-               layers, foundation at the bottom, each wearing its flag colour.
-               this is the first thing a visitor reads; the crystal below is
-               how they play with it. */
-            /* the verbs between layers: how one hangs from the next */
-
-
-
-
-            /* wide screens: the diagram reads on the left, the crystal spins
-               on the right — the map beside the toy, not above it */
+            .home { display: grid; gap: 0.8rem; align-content: start; min-height: 0; overflow: auto; padding-bottom: 0.4rem; }
+            /* the hero: one sentence, one line under it, the install */
+            .hero { padding: 1.6rem 1.8rem 1.3rem; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.2rem 2rem; align-items: end; }
+            .hero h1 { margin: 0; font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.02; letter-spacing: -0.01em; color: var(--cream); }
+            .hero h1 em { font-style: normal; color: #7dffc4; display: block; }
+            .hero .sub { margin: 0.8rem 0 0; font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.45; color: rgba(255,248,240,0.86); max-width: 38rem; }
+            .hero .sub b { color: var(--cream); font-weight: 400; }
+            .hero .install { display: flex; gap: 0; border: 1px solid rgba(125,255,196,0.35); border-radius: 999px; overflow: hidden; background: rgba(6,16,10,0.6); }
+            .hero .install code { flex: 1; padding: 0.7rem 1rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.95rem; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .hero .install button { border: 0; cursor: pointer; padding: 0.7rem 1.2rem; background: linear-gradient(90deg, #a46bff, #7dffc4); color: #06100a; font-family: inherit; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.72rem; }
+            .hero .hint { margin: 0.5rem 0 0; font-size: 0.82rem; color: rgba(255,248,240,0.65); }
+            .hero .hint a { color: #7dffc4; text-decoration: none; } .hero .hint a:hover { text-decoration: underline; }
+            .hero .verbs { margin: 0.9rem 0 0; display: flex; flex-wrap: wrap; gap: 0.35rem 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+            .hero .verbs a { color: var(--c); text-decoration: none; opacity: 0.9; } .hero .verbs a:hover { text-decoration: underline; }
+            .hero .verbs i { color: rgba(255,248,240,0.35); font-style: normal; }
+            /* the wall: twelve features, each in the colour of the verb it is born from */
+            .wall { padding: 1rem 1.2rem 1.2rem; }
+            .wall .cap { display: flex; align-items: baseline; gap: 1rem; margin: 0 0 0.7rem; }
+            .wall .cap h2 { margin: 0; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,248,240,0.6); font-weight: 400; }
+            .wall .cap span { font-size: 0.78rem; color: rgba(255,248,240,0.5); }
+            .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
+            .tile { --c: #7dffc4; position: relative; text-align: left; cursor: pointer; border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); background: color-mix(in srgb, var(--c) 7%, rgba(6,16,10,0.85)); border-radius: 0.9rem; padding: 0.8rem 0.9rem 0.75rem; color: var(--cream); font-family: inherit; display: grid; gap: 0.3rem; align-content: start; min-height: 7.2rem; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
+            .tile:hover, .tile[aria-expanded="true"] { border-color: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--c) 28%, transparent); background: color-mix(in srgb, var(--c) 13%, rgba(6,16,10,0.9)); }
+            .tile h3 { margin: 0; font-size: 1.05rem; letter-spacing: 0.01em; display: flex; align-items: center; gap: 0.45rem; }
+            .tile h3 i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--c); box-shadow: 0 0 10px var(--c); flex: none; }
+            .tile p { margin: 0; font-size: 0.86rem; line-height: 1.4; color: rgba(255,248,240,0.82); }
+            .tile .st { margin-top: auto; padding-top: 0.3rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
+            .tile .st b { font-weight: 400; color: color-mix(in srgb, var(--c) 70%, white); }
+            /* the card: opens under the row of the tile you clicked */
+            .card { --c: #7dffc4; grid-column: 1 / -1; border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); border-radius: 1rem; background: color-mix(in srgb, var(--c) 6%, rgba(6,16,10,0.92)); padding: 1.1rem 1.2rem 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 1.6rem; position: relative; animation: open 0.25s ease; }
+            @keyframes open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+            .card .x { position: absolute; top: 0.6rem; right: 0.7rem; border: 0; background: transparent; color: rgba(255,248,240,0.6); font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 0.2rem 0.4rem; font-family: inherit; } .card .x:hover { color: var(--cream); }
+            .card h3 { margin: 0 0 0.5rem; font-size: 1.45rem; line-height: 1.15; color: var(--cream); }
+            .card h3 small { display: block; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 70%, white); margin-bottom: 0.35rem; font-family: "JetBrains Mono", ui-monospace, monospace; }
+            .card p { margin: 0 0 0.6rem; font-size: 0.95rem; line-height: 1.5; color: rgba(255,248,240,0.86); }
+            .card .parts { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 0.6rem; }
+            .card .parts a { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.74rem; padding: 0.18rem 0.6rem; border-radius: 999px; background: var(--c); color: var(--t, #0a120e); text-decoration: none; }
+            .card .meta { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.68rem; letter-spacing: 0.06em; color: rgba(255,248,240,0.55); display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
+            .card .meta a { color: #7dffc4; text-decoration: none; } .card .meta a:hover { text-decoration: underline; }
+            .card .meta b { font-weight: 400; color: color-mix(in srgb, var(--c) 70%, white); }
+            .fig { min-height: 0; display: grid; align-content: center; }
+            .fig table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+            .fig th, .fig td { text-align: left; padding: 0.38rem 0.5rem; border-bottom: 1px solid rgba(255,248,240,0.1); vertical-align: top; }
+            .fig th { font-weight: 400; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
+            .fig td.n { font-family: "JetBrains Mono", ui-monospace, monospace; white-space: nowrap; }
+            .fig td.t { color: color-mix(in srgb, var(--c) 70%, white); }
+            .fig td.dim { color: rgba(255,248,240,0.55); }
+            .fig .note { margin: 0.45rem 0 0; font-size: 0.7rem; color: rgba(255,248,240,0.5); line-height: 1.4; }
+            .fig svg { width: 100%; height: auto; display: block; }
+            .fig svg text { font-family: Play, system-ui, sans-serif; fill: var(--cream); }
+            .fig svg .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+            .fig svg .dim { fill: rgba(255,248,240,0.55); }
+            @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
             @media (max-width: 900px), (max-height: 560px) {
-                .stage {
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0.4rem 0;
-                }
-                .pitch {
-                    overflow: visible;
-                }
-                .sigil {
-                    width: clamp(9rem, 40vw, 11rem);
-                }
-                .ring-lines,
-                .ring-core,
+                .home { overflow: visible; }
+                .hero { grid-template-columns: 1fr; padding: 1.2rem 1.1rem 1.1rem; }
+                .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                .card { grid-template-columns: 1fr; }
             }
-
-            @media (max-width: 1180px) {
-            }
-
-
-            @media (max-width: 420px) {
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                h1 em,
-                .install button,
-                .sigil polygon {
-                    animation: none !important;
-                }
-            }
-        
-            /* ── the ladder: ten products, three groups — fills the panel, reads on glass ── */
-            .ladder { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.4rem; padding: 0.8rem 0.9rem 0.7rem; min-height: 0; overflow: auto; }
-            .ladder-cap { display: none; margin: 0; flex: none; font-size: 0.8rem; color: rgba(255,248,240,0.7); display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
-            .ladder-cap em { font-style: normal; color: var(--mint); font-size: 0.95rem; }
-            .ladder-cap .legend { margin-left: auto; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
-            .ladder-cap .legend i { font-style: normal; width: 0.5rem; height: 0.5rem; border-radius: 999px; display: inline-block; background: var(--fc); margin: 0 0.15rem 0 0.4rem; vertical-align: middle; }
-            .ladder .group { flex: 1 1 0; min-height: 0; display: grid; grid-template-columns: 2rem 1fr; gap: 0.5rem; }
-            .ladder .group[data-g="core"] { flex-grow: 1.34; }
-            .ladder .rail { position: relative; border-right: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); }
-            .ladder .rail span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(180deg); writing-mode: vertical-rl; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.64rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mint); text-shadow: 0 0 14px rgba(125,255,196,0.45); white-space: nowrap; }
-            .ladder .rungs { display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; }
-            .ladder .rung { flex: 1 1 0; min-height: 3rem; display: grid; grid-template-columns: 1.9rem 2.2rem minmax(0, 1fr) fit-content(52%); gap: 0.6rem; align-items: center; padding: 0.35rem 0.8rem 0.35rem 0.6rem; border-radius: 0.7rem; border: 1px solid color-mix(in srgb, var(--mint) 32%, transparent); background: color-mix(in srgb, var(--mint) calc(12% - var(--k) * 0.8%), rgba(6,16,10,0.94)); cursor: pointer; transition: box-shadow 0.15s ease, border-color 0.15s ease; }
-            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--mint) 70%, transparent); box-shadow: 0 0 22px rgba(125,255,196,0.2); background: color-mix(in srgb, var(--mint) 14%, rgba(6,16,10,0.9)); }
-            .ladder .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.5rem; line-height: 1; color: var(--mint); text-shadow: 0 0 18px rgba(125,255,196,0.45); text-align: center; }
-            .ladder .ico { font-size: 1.5rem; line-height: 1; text-align: center; filter: drop-shadow(0 0 10px rgba(125,255,196,0.35)); } .ladder .ico .glyph { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", sans-serif; color: var(--mint); font-size: 1.9rem; }
-            .ladder .who { min-width: 0; }
-            .ladder .who h2 { margin: 0; font-size: 1.05rem; line-height: 1.1; } .ladder .who h2 small { font-size: 0.6rem; font-weight: 400; color: rgba(255,248,240,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
-            .ladder .who .does { margin: 0.15rem 0 0; font-size: 0.72rem; line-height: 1.25; color: rgba(255,248,240,0.8); }
-            .ladder .deps { display: flex; flex-direction: column; gap: 0.22rem; align-items: flex-end; } .ladder .deps .row { display: flex; flex-wrap: wrap; gap: 0.2rem; justify-content: flex-end; }
-            .ladder .deps a.on { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; padding: 0.14rem 0.45rem; border-radius: 999px; text-decoration: none; background: transparent; color: color-mix(in srgb, var(--fc) 85%, white); border: 1px dashed color-mix(in srgb, var(--fc) 55%, transparent); white-space: nowrap; } .ladder .deps a.on:hover { background: color-mix(in srgb, var(--fc) 18%, transparent); }
-            .ladder .deps i { font-style: normal; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.56rem; padding: 0.12rem 0.36rem; border-radius: 999px; background: var(--fc); color: var(--ft); white-space: nowrap; }
-            .ladder .rung[data-f="form"]  { --fc: #00ff00; --ft: #0a120e; }
-            .ladder .rung[data-f="mass"]  { --fc: #0000ff; --ft: #fff8f0; }
-            .ladder .rung[data-f="space"] { --fc: #4000ff; --ft: #fff8f0; }
-            .ladder .rung[data-f="life"]  { --fc: #8000ff; --ft: #fff8f0; }
-            .ladder .rung[data-f="word"]  { --fc: #ff0000; --ft: #fff8f0; }
-            .ladder .rung[data-f="work"]  { --fc: #ff8000; --ft: #0a120e; }
-            .ladder .rung[data-f="play"]  { --fc: #ffff00; --ft: #0a120e; }
-            .ladder .rung[data-f="apps"]  { --fc: #fff8f0; --ft: #0a120e; }
-            .ladder .rung { border-color: color-mix(in srgb, var(--fc) 35%, transparent); }
-            .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--fc) 80%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--fc) 30%, transparent); background: color-mix(in srgb, var(--fc) 10%, rgba(6,16,10,0.94)); }
-            .ladder .who .fac { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--fc) 62%, white); text-shadow: 0 0 10px color-mix(in srgb, var(--fc) 70%, transparent); vertical-align: middle; }
-            .ladder .who .fac i { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: var(--fc); box-shadow: 0 0 10px var(--fc); display: inline-block; }
-            @media (max-width: 900px), (max-height: 560px) {
-                /* the phone reads the ladder as a list: nothing flexes to fit a height, everything flows */
-                .ladder { display: block; overflow: visible; padding: 0.8rem 0.8rem 0.9rem; }
-                .ladder-cap { margin-bottom: 0.6rem; }
-                .ladder .group { display: block; flex: none; min-height: auto; margin-top: 0.5rem; }
-                .ladder .rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--mint) 45%, transparent); height: auto; margin: 0 0 0.45rem; padding-bottom: 0.2rem; }
-                .ladder .rail span { position: static; transform: none; writing-mode: horizontal-tb; display: block; }
-                .ladder .rungs { display: flex; flex-direction: column; gap: 0.4rem; min-height: auto; }
-                .ladder .rung { flex: none; min-height: auto; grid-template-columns: 1.8rem 2rem minmax(0, 1fr); grid-template-areas: "num ico who" "deps deps deps"; row-gap: 0.4rem; padding: 0.55rem 0.7rem; }
-                .ladder .num { grid-area: num; } .ladder .ico { grid-area: ico; } .ladder .who { grid-area: who; } .ladder .deps { grid-area: deps; align-items: flex-start; }
-                .ladder .deps .row { justify-content: flex-start; flex-wrap: wrap; }
-                .ladder .who .does { white-space: normal; }
-            }
-</style>
+            @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .tile { min-height: 0; } }
+        </style>
     </head>
     <body>
         <canvas id="world" aria-hidden="true"></canvas>
         <div id="tint" aria-hidden="true"></div>
-
         <div class="shell">
             <header class="top">
                 <a class="logo" href="/">soft3<span class="xbadge">experimental</span></a>
                 <nav class="nav-links">
+                    <a href="/layers/">layers</a>
                     <a href="/chart/">chart</a>
                     <a href="/loop/">loop</a>
                     <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs ↗</a>
                     <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github ↗</a>
                 </nav>
             </header>
-
-            <main class="stage">
-                <section class="pitch glass">
-                    <p class="eyebrow">an open stack for provable computing — ten products, one ladder</p>
-                    <h1>one mind.<em>still growing.</em></h1>
-                    <p class="lede">
-                        Every link has weight,<br />
-                        every computation leaves a proof,<br />
-                        the whole graph settles into one focus.
-                    </p>
-                    <p class="consensus">
-                        A shared knowledge graph that computes: claims are
-                        signed, results carry proofs, ranking falls out of the
-                        math. Agreement is convergence, not voting — it works
-                        even across light-minutes.
-                    </p>
-                    <div
-                        class="sigil"
-                        role="img"
-                        aria-label="a light client verifies all of history in about 100 nanoseconds"
-                    >
-                        <svg viewBox="0 0 200 200" aria-hidden="true">
-                            <polygon
-                                points="100,22 161,51.4 176,117.4 133.8,170.3 66.2,170.3 24,117.4 39,51.4"
-                            />
-                            <polygon
-                                class="inner"
-                                points="100,43.8 143.9,65 154.7,112.5 124.3,150.6 75.7,150.6 45.3,112.5 56.1,65"
-                            />
-                        </svg>
-                        <div class="sigil-text">
-                            <b>~100&nbsp;ns</b>
-                            <span>verify all of history<br />on any device</span>
-                        </div>
+            <main class="home">
+                <section class="hero glass">
+                    <div>
+                        <h1>collective, private,<em>provable computing.</em></h1>
+                        <p class="sub"><b>compute once. prove it. everyone remembers.</b><br />one field, one hash, every device: a computer the whole world shares, that keeps every proof it has ever seen and pays whoever moves its focus.</p>
+                        <p class="verbs" id="verbs"></p>
                     </div>
-                    <div class="action">
+                    <div>
                         <div class="install">
                             <code id="cmd">cargo install soft3</code>
                             <button type="button" id="copy">copy</button>
                         </div>
-                        <p class="hint">
-                            install ·
-                            <a
-                                href="https://cyber.page/soft3/"
-                                target="_blank"
-                                rel="noopener"
-                                >docs</a
-                            >
-                            ·
-                            <a
-                                href="https://github.com/cyberia-to/soft3"
-                                target="_blank"
-                                rel="noopener"
-                                >github</a
-                            >
-                        </p>
-                        <p class="early">
-                            early experimental build — interfaces, proofs and
-                            formats still shift week to week
-                        </p>
+                        <p class="hint">install · <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github</a> · <a href="/layers/">the ten products</a></p>
+                        <p class="hint">early experimental build — the numbers below say which are measured and which are targets.</p>
                     </div>
                 </section>
-
-                <aside class="panel ladder glass" aria-label="the stack as a ladder of ten products">
-                    <section class="group" data-g="kernel">
-                        <div class="rail"><span>kernel</span></div>
-                        <div class="rungs">
-                        <section class="rung" style="--k:1" data-f="form" data-q="what are the rules?" title="what are the rules?" data-p="nox">
-                            <div class="num">1</div>
-                            <div class="ico" aria-hidden="true"><span class="glyph">⚛&#xFE0E;</span></div>
-                            <div class="who"><h2>nox <small>· machine</small> <span class="fac"><i></i>form</span></h2><p class="does">virtual machine: field, hash, run</p></div>
-                            <div class="deps"><span class="row"><i data-f="form">strata</i><i data-f="form">hemera</i><i data-f="form">honeycrisp</i></span></div>
-                        </section>
-                        <section class="rung" style="--k:2" data-f="mass" data-q="what is it made of?" title="what is it made of?" data-p="trident">
-                            <div class="num">2</div>
-                            <div class="ico" aria-hidden="true">🔱</div>
-                            <div class="who"><h2>trident <small>· weapon</small> <span class="fac"><i></i>mass</span></h2><p class="does">compiler: .tri to .nox, cost known before it runs</p></div>
-                            <div class="deps"><span class="row" title="tine · tir · toll · forge · lsp are trident's parts"><i data-f="word">tine</i><i data-f="word">tir</i><i data-f="work">toll</i><i data-f="work">forge</i><i data-f="play">lsp</i></span></div>
-                        </section>
-                        <section class="rung" style="--k:3" data-f="space" data-q="where does it happen?" title="where does it happen?" data-p="joy">
-                            <div class="num">3</div>
-                            <div class="ico" aria-hidden="true">💋</div>
-                            <div class="who"><h2>joy <small>· warrior</small> <span class="fac"><i></i>space</span></h2><p class="does">runtime: runs, proves and stores</p></div>
-                            <div class="deps"><span class="row"><i data-f="form">lens</i><i data-f="work">zheng</i><i data-f="mass">bbg</i></span></div>
-                        </section>
-                        </div>
-                    </section>
-                    <section class="group" data-g="core">
-                        <div class="rail"><span>core</span></div>
-                        <div class="rungs">
-                        <section class="rung" style="--k:4" data-f="life" data-q="what lives?" title="what lives?" data-p="cybergraph">
-                            <div class="num">4</div>
-                            <div class="ico" aria-hidden="true">🕸️</div>
-                            <div class="who"><h2>cybergraph <small>· brain</small> <span class="fac"><i></i>life</span></h2><p class="does">the book: neuron, tokens, signals, files, links, focus</p></div>
-                            <div class="deps"><span class="row" title="neuron acts · tok pays · signal commits · file is the thing · tru converges · name resolves · mudra hides · tade is the bytes of a file and the payload of a link on any boundary (one exchange format: soft3/proposals/tade-one-exchange)"><i data-f="mass">neuron</i><i data-f="mass">tok</i><i data-f="mass">signal</i><i data-f="mass">file</i><i data-f="life">tru</i><i data-f="mass">name</i><i data-f="mass">mudra</i><i data-f="mass">tade</i></span></div>
-                        </section>
-                        <section class="rung" style="--k:5" data-f="word" data-q="what does it mean?" title="what does it mean?" data-p="neural">
-                            <div class="num">5</div>
-                            <div class="ico" aria-hidden="true">🧠</div>
-                            <div class="who"><h2>neural <small>· language</small> <span class="fac"><i></i>word</span></h2><p class="does">what can be said over the book: languages and dialects</p></div>
-                            <div class="deps"><span class="row" title="eidos proves trident (self-verification) · rune runs neurons · inf queries the book · fs mutates files — the CRUD the graph lacks · spark says what a file renders to, in cells or pixels · atlas is the package registry over the book — packages are cards, publishing is minting; trident's package manager, not written yet · rs is the reference the stack is verified against · nu is the shell: ~20 domain verb groups (filesystem, strings, dates, math, network, formats, hash, …) composed into sentences over typed tables — the dialects here are its verb groups, neu generalises it"><i data-f="work">eidos</i><i data-f="word">rune</i><i data-f="word">inf</i><i data-f="mass">fs</i><i data-f="play">spark</i><i data-f="word">atlas</i><i data-f="form">rs</i><i data-f="play">nu</i></span></div>
-                        </section>
-                        <section class="rung" style="--k:6" data-f="work" data-q="who does the work?" title="who does the work?" data-p="cy">
-                            <div class="num">6</div>
-                            <div class="ico" aria-hidden="true">🧬</div>
-                            <div class="who"><h2>cy <small>· agent</small> <span class="fac"><i></i>work</span></h2><p class="does">the mind over the book: one chroma, headless anywhere</p></div>
-                            <div class="deps"><span class="row" title="chroma — one component: now · voice · name · sense · spacetime · sigma · memory · com · time; behind it the eight unseen"><i data-f="life">chroma</i><i data-f="life">soma</i><i data-f="work">glia</i><i data-f="life">seer</i><i data-f="life">soul</i><i data-f="space">ward</i><i data-f="space">vault</i><i data-f="space">state</i><i data-f="form">body</i></span></div>
-                        </section>
-                        <section class="rung" style="--k:7" data-f="play" data-q="how do we coordinate?" title="how do we coordinate?" data-p="soft3">
-                            <div class="num">7</div>
-                            <div class="ico" aria-hidden="true">👙</div>
-                            <div class="who"><h2>soft3 <small>· network</small> <span class="fac"><i></i>play</span></h2><p class="does">agents connected: files by particle, epochs agreed</p></div>
-                            <div class="deps"><span class="row" title="the network in planes (soft3/proposals/network-planes): radio reaches and carries · sync reconciles — ordering, availability, local merge, history trust · foculus agrees — fork-choice over φ*, finality, epochs, beacon · solong rewards — tickets, fold-mining, Shapley settlement; named after Shapley's own coalition game, So Long Sucker"><i data-f="space">radio</i><i data-f="mass">sync</i><i data-f="life">foculus</i><i data-f="work">solong</i></span></div>
-                        </section>
-                        </div>
-                    </section>
-                    <section class="group" data-g="apps">
-                        <div class="rail"><span>apps</span></div>
-                        <div class="rungs">
-                        <section class="rung" style="--k:8" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyb" data-site="https://cyb.ai">
-                            <div class="num">8</div>
-                            <div class="ico" aria-hidden="true">🤖</div>
-                            <div class="who"><h2>cyb <small>· robot</small></h2><p class="does">cy with a body: eyes, ears, pictures — paints the chroma</p></div>
-                            <div class="deps"><span class="row"><a class="on" href="https://cyb.ai" target="_blank" rel="noopener">cyb.ai ↗</a></span></div>
-                        </section>
-                        <section class="rung" style="--k:9" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyber" data-site="https://cyber.page">
-                            <div class="num">9</div>
-                            <div class="ico" aria-hidden="true">🟢</div>
-                            <div class="who"><h2>cyber <small>· superintelligence</small></h2><p class="does">the network of networks thinking as one</p></div>
-                            <div class="deps"><span class="row"><a class="on" href="https://cyber.page" target="_blank" rel="noopener">cyber.page ↗</a></span></div>
-                        </section>
-                        <section class="rung" style="--k:10" data-f="apps" data-q="how do we coordinate?" title="how do we coordinate?" data-p="cyberia" data-site="https://cyberia.to">
-                            <div class="num">10</div>
-                            <div class="ico" aria-hidden="true">🌏</div>
-                            <div class="who"><h2>cyberia <small>· state</small></h2><p class="does">the cyberstate: machines, land, citizens and money</p></div>
-                            <div class="deps"><span class="row"><a class="on" href="https://cyberia.to" target="_blank" rel="noopener">cyberia.to ↗</a></span></div>
-                        </section>
-                        </div>
-                    </section>
-                </aside>
+                <section class="wall glass" aria-label="features">
+                    <div class="cap"><h2>twelve things it does</h2><span>click one — each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="grid" id="grid"></div>
+                </section>
             </main>
-
             <footer class="foot">
                 <span>don't trust. don't fear. don't beg.</span>
             </footer>
@@ -536,66 +121,208 @@
         <script src="/nav.js?v=3" defer></script>
         <script>
           {
+            // ── the verbs of the loop give every feature its colour ─────────────
+            const VERB = {
+                compute:  { c: "#00ff00", t: "#0a120e", h: 120, who: "nox" },
+                build:    { c: "#0000ff", t: "#fff8f0", h: 240, who: "trident", ink: "#8080ff" },
+                prove:    { c: "#4000ff", t: "#fff8f0", h: 255, who: "joy", ink: "#9a80ff" },
+                remember: { c: "#8000ff", t: "#fff8f0", h: 270, who: "cybergraph" },
+                learn:    { c: "#ff0000", t: "#fff8f0", h: 0,   who: "neural" },
+                link:     { c: "#ff8000", t: "#0a120e", h: 30,  who: "cy" },
+                focus:    { c: "#ffff00", t: "#0a120e", h: 60,  who: "soft3" },
+            };
+            const GH = "https://github.com/cyberia-to/";
+            const n = (v) => `<td class="n">${v}</td>`, d = (v) => `<td class="dim">${v}</td>`, t = (v) => `<td class="t">${v}</td>`;
+            const table = (head, rows, note) => `<table><thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.join("")}</tr>`).join("")}</tbody></table>${note ? `<p class="note">${note}</p>` : ""}`;
 
-            // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to.
-            // nothing is selected by default — the page is neutral until you point at a rung
-            const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
-            let pinned = null;
-            const rungs = [...document.querySelectorAll(".ladder .rung")];
-            // a facet paints the world in its colour; the apps — and nothing selected — are
-            // all seven mixed: the world in full colour, no tint at all
-            function paint(f) {
-                const full = !f || f === "apps";
-                const [col, hue] = FACET[f] || FACET.apps;
-                document.documentElement.style.setProperty("--accent-h", full ? 150 : hue);
-                document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : col);
-                document.documentElement.style.setProperty("--tint", full ? 0 : 0.72);
-                if (window.worldHue) worldHue(full ? 0 : hue - 150);
-            }
-            function select(r) {
-                rungs.forEach((x) => x.setAttribute("aria-selected", x === r ? "true" : "false"));
-                paint(r ? r.dataset.f : "apps");
-            }
-            rungs.forEach((r) => {
-                r.addEventListener("mouseenter", () => select(r));
-                r.addEventListener("mouseleave", () => select(pinned));
-                r.addEventListener("click", (e) => { if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else (window.soft3Go || ((h) => { location.href = h; }))("/chart/?sel=" + r.dataset.p); });
-            });
-            select(null);
-            document.addEventListener("keydown", (e) => {
-                if (e.target.matches("input, textarea")) return;
-                const i = rungs.indexOf(pinned);
-                if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); pinned = rungs[(i + 1) % rungs.length]; select(pinned); }
-                if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); pinned = rungs[(i + rungs.length - 1) % rungs.length]; select(pinned); }
-                if (e.key === "Escape") { pinned = null; select(null); }
-            });
+            // ── the twelve features: one line on the tile, one card behind it ───
+            //   status words: measured · live · specified · target · research · proposed
+            const FEATURES = [
+                { id: "frozen", verb: "compute", name: "frozen foundations", line: "the bottom of the stack never changes: nox is complete — 18 patterns, one field, one hash.", status: "nox frozen · hemera candidate",
+                  claim: "a floor that will not move under you",
+                  why: "every layer has a temperature that only drops; zero kelvin is forever. nox froze first: its eighteen patterns, the Goldilocks field and the hemera hash are the fixed point everything above compiles to. a program written today runs and proves the same way in fifty years.",
+                  parts: ["nox", "hemera", "strata"], source: ["nox/specs", GH + "nox/tree/main/specs"],
+                  fig: () => table(["rung", "what freezes", "temperature"], [
+                      [`<td>nox</td>`, `<td>18 patterns · field · hash · reduction</td>`, t("0 K — frozen")],
+                      [`<td>hemera</td>`, `<td>hash parameters</td>`, n("candidate — under review")],
+                      [`<td>strata</td>`, `<td>field arithmetic, algebras</td>`, d("cooling")],
+                      [`<td>trident</td>`, `<td>language surface, bundle format</td>`, d("cooling")],
+                      [`<td>joy · zheng</td>`, `<td>proof formats</td>`, d("warm")],
+                      [`<td>cybergraph · foculus</td>`, `<td>link, signal, epoch</td>`, d("warm")],
+                  ], "kelvin versioning: lower layers freeze first; a frozen layer takes no proposals.") },
+                { id: "quantum", verb: "compute", name: "post-quantum", line: "value and privacy both: hash-only proofs, lattice seals — nothing rests on a curve a quantum computer breaks.", status: "proofs live · seals building",
+                  claim: "what is sealed today stays sealed",
+                  why: "the proofs are hash-only — SuperSpartan, Brakedown, HyperNova, no pairings, no trusted setup. keys seal with ML-KEM, the lattice standard. private state encrypts under RLWE. most chains protect value against a quantum computer and leave privacy to curves it breaks; here both sides of the ledger survive it.",
+                  parts: ["zheng", "mudra", "bbg"], source: ["mudra/specs/seal.md", GH + "mudra/blob/main/specs/seal.md"],
+                  fig: () => table(["layer", "primitive", "protects", "status"], [
+                      [`<td>proofs</td>`, n("Brakedown + hash"), `<td>every computation, all history</td>`, t("live")],
+                      [`<td>seal</td>`, n("ML-KEM-768 · FIPS 203"), `<td>keys, messages</td>`, n("building")],
+                      [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
+                      [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
+                  ], "no trusted setup anywhere; a hash is the only assumption the proof system makes.") },
+                { id: "compact", verb: "build", name: "compact stack", line: "275k lines for the whole stack. a C or Rust toolchain is tens of millions — you cannot read it, so you cannot freeze it.", status: "measured",
+                  claim: "small enough to read, audit and freeze",
+                  why: "the whole stack is 275 213 lines of its own code: kernel 171k, core 104k, forks of iroh and nushell not counted. the provable toolchain — language, machine, prover, field, hash — is about 122k. LLVM alone is 35.6 million lines; rustc is 380 thousand before it reaches LLVM. a stack you can read end to end is a stack you can freeze.",
+                  parts: ["trident", "nox", "joy", "zheng"], source: ["tokei over 28 repos, 2026-10-08", GH + "soft3/blob/main/status.md"],
+                  fig: () => bars([["provable toolchain", 122000, true], ["soft3, whole stack", 275213, true], ["rustc, without LLVM", 380000, false], ["LLVM", 35560000, false]], "lines of code, log scale · soft3 counted with tokei; rustc and LLVM as published") },
+                { id: "proofs", verb: "prove", name: "fast & compact proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
+                  claim: "a proof is a constant: two kilobytes, whatever it proves",
+                  why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
+                  parts: ["zheng", "joy", "lens"], source: ["zheng/specs/accumulator.md", GH + "zheng/blob/main/specs/accumulator.md"],
+                  fig: () => table(["statement", "prove", "verify", "proof"], [
+                      [`<td>(a+b)·a <span class="dim">· target</span></td>`, t("2 ms"), t("1 ms"), t("1.3 KB")],
+                      [`<td><span class="dim">· today</span></td>`, n("6 ms"), n("3 ms"), n("2.3 KB")],
+                      [`<td>one hash, a signature <span class="dim">· target</span></td>`, t("70 ms"), t("1 ms"), t("2.4 KB")],
+                      [`<td><span class="dim">· today</span></td>`, n("460 ms"), n("460 ms"), n("295 KB, full witness")],
+                      [`<td>Merkle path, depth 32 <span class="dim">· target</span></td>`, t("~100 ms"), t("1 ms"), t("2.6 KB")],
+                  ], "today: joy 0.5.0 release build on an M4 Max, 2026-10-08. targets: the folded format zheng 0.3 shipped (2.4 KB per hash) with authenticated execution.") },
+                { id: "incremental", verb: "prove", name: "incremental", line: "every step folds into one accumulator as it runs — proving costs a few percent, not 10–100×.", status: "specified",
+                  claim: "proving is not a separate job",
+                  why: "a fold is about thirty field operations per step, and the accumulator stays two hundred bytes however long the run. proving rides along with execution instead of replaying it afterwards; a single decider closes the proof. one program, one run, one proof — and a change to the program re-proves only what changed.",
+                  parts: ["zheng", "nox"], source: ["zheng/specs/recursion.md", GH + "zheng/blob/main/specs/recursion.md"],
+                  fig: () => chain() },
+                { id: "private", verb: "prove", name: "private", line: "the block is public, the person is not: aggregates are proven, individuals are sealed.", status: "specified",
+                  claim: "private by default, public on demand",
+                  why: "what the network needs — axons, supplies, focus, φ* — is always public and always proven. what belongs to one neuron — links, balances, queries — stays sealed. a question is answered inside the proof over public tables, so the answer is proven without the question ever leaving your device.",
+                  parts: ["bbg", "mudra", "zheng"], source: ["bbg/specs/privacy.md", GH + "bbg/blob/main/specs/privacy.md"],
+                  fig: () => halves() },
+                { id: "memo", verb: "remember", name: "memoized", line: "computed once, answered forever: a proof in the book is the computation.", status: "specified",
+                  claim: "nothing is computed twice on the planet",
+                  why: "every proven step is a fact in the book, keyed by the hash of what was asked. ask the book before the machine: a hit is one verification, a miss is one computation that becomes the next hit — for everyone. the one who proved it first is paid each time the world remembers instead of recomputing.",
+                  parts: ["cybergraph", "bbg", "inf"], source: ["cyber/whitepaper §7.5", "https://cyber.page/whitepaper/"],
+                  fig: () => table(["", "key", "answer", "cost"], [
+                      [`<td>hit</td>`, n("H(subject) · H(formula)"), `<td>the stored result, with its proof</td>`, t("one verify")],
+                      [`<td>miss</td>`, n("H(subject) · H(formula)"), `<td>compute, prove, link — now a hit for anyone</td>`, n("one computation")],
+                      [`<td>paid</td>`, d(""), `<td>the first prover, every time it is remembered</td>`, t("a Shapley share")],
+                  ], "deterministic steps are memoized globally; steps with a private witness are memoized only within their proof.") },
+                { id: "scale", verb: "remember", name: "scalable", line: "from a pocket to a planet: 10¹⁵ particles, 10¹⁰ neurons. availability is sampled, not downloaded.", status: "specified · today 2.95M links",
+                  claim: "the graph shards; a phone checks a planet",
+                  why: "storage tiers from memory to cold archive; replication follows focus, so what matters is everywhere and what does not is somewhere. availability is checked by sampling: twenty samples, one and a half kilobytes, six nines of confidence. today the live graph holds 2.95 million links over 3.14 million particles.",
+                  parts: ["bbg", "foculus", "cybergraph"], source: ["bbg/specs/storage.md", GH + "bbg/blob/main/specs/storage.md"],
+                  fig: () => table(["", "where", "read", "scale"], [
+                      [`<td>hot</td>`, `<td>memory</td>`, n("ns"), `<td>a phone</td>`],
+                      [`<td>ssd</td>`, `<td>LSM tree</td>`, n("20 µs"), `<td>nation → planet</td>`],
+                      [`<td>cold</td>`, `<td>erasure-coded archive</td>`, n("sequential"), `<td>full history</td>`],
+                      [`<td>replicas</td>`, `<td>by focus: top 1000 · median 10 · tail 3</td>`, d(""), d("")],
+                      [`<td>availability</td>`, `<td>20 samples · 1.5 KiB</td>`, t("99.9999 %"), d("")],
+                  ], "target operating point: 10¹⁵ particles, 10¹⁰ neurons. today: bostrom, 2 949 732 links.") },
+                { id: "models", verb: "learn", name: "transparent models", line: "every weight traces to the links and the neurons who signed them — a model you can audit.", status: "research",
+                  claim: "a model compiled from the book, not trained in the dark",
+                  why: "the model is compiled from the focus-weighted graph. given any output, the links that produced it and the neurons who signed them are recoverable. no hidden training set, no weights nobody can explain — the training set is the book, and the book is public and proven.",
+                  parts: ["neural", "cybergraph", "tru"], source: ["cyber/whitepaper §5", "https://cyber.page/whitepaper/"],
+                  fig: () => trace() },
+                { id: "sovereign", verb: "link", name: "sovereign", line: "no accounts, no gatekeeper, no schema: a keypair is a neuron, your node is the network.", status: "live",
+                  claim: "you don't log in. you sign.",
+                  why: "identity is a keypair and nothing else; your node is a full participant, not a client of someone's server; transport is the stack's own radio; keys never leave your vault. the world is open: any link between any two particles, no schema to ask permission from.",
+                  parts: ["cy", "mudra", "radio", "vault"], source: ["cy", GH + "cy"],
+                  fig: () => table(["elsewhere", "here"], [
+                      [d("an account"), t("a keypair — a neuron")],
+                      [d("a server"), t("your node")],
+                      [d("an API key"), t("a signature")],
+                      [d("a schema"), t("any link")],
+                      [d("a password reset"), t("a seed phrase, sealed")],
+                  ]) },
+                { id: "rewards", verb: "focus", name: "rewarding", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
+                  claim: "four reasons to be paid, one formula",
+                  why: "a reward has four terms: a Shapley share of the focus you moved, a subsidy for proof-of-work, a cut of the fees your work served, and yield on the stake you risked. storage needs no separate market — focus is the storage payment. the attribution is the unique fair one: efficient, symmetric, no pay for no contribution.",
+                  parts: ["tru", "solong", "tok"], source: ["tru/specs/rewards.md", GH + "tru/blob/main/specs/rewards.md"],
+                  fig: () => table(["for", "paid when", "how", "status"], [
+                      [`<td>risk</td>`, `<td>your bet was right</td>`, n("stake ±1 · karma slashing"), t("specified")],
+                      [`<td>storage</td>`, `<td>what you hold is in focus</td>`, n("replication follows φ*"), t("specified")],
+                      [`<td>bandwidth</td>`, `<td>you relayed what moved</td>`, n("relay fees"), d("proposed")],
+                      [`<td>fairness</td>`, `<td>always</td>`, n("Shapley share of Δφ*"), t("specified")],
+                  ], "collusion resistance is open: the mechanism is incentive-compatible against unilateral deviation.") },
+                { id: "space", verb: "focus", name: "interplanetary", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
+                  claim: "no proposer, no clock, no committee: facts commute",
+                  why: "agreement is convergence, not voting. signals commute, so they can be stored and forwarded across any delay; there is no round that a far world could miss. Earth to Mars is four to twenty-four minutes one way; each world is its own pond, safe through the conjunction when no signal gets through at all.",
+                  parts: ["foculus", "tru", "soft3"], source: ["foculus/docs/interplanetary", GH + "foculus/blob/main/docs/explanation/interplanetary.md"],
+                  fig: () => mars() },
+            ];
 
-            const cmd = document.getElementById("cmd");
-            const copyBtn = document.getElementById("copy");
-            copyBtn.addEventListener("click", async () => {
-                try {
-                    await navigator.clipboard.writeText(
-                        cmd.textContent.replace(/\s+/g, " ").trim(),
-                    );
-                } catch {
-                    const r = document.createRange();
-                    r.selectNodeContents(cmd);
-                    getSelection().removeAllRanges();
-                    getSelection().addRange(r);
-                    document.execCommand("copy");
-                }
-                copyBtn.textContent = "yes";
-                copyBtn.classList.add("ok");
-                setTimeout(() => {
-                    copyBtn.textContent = "copy";
-                    copyBtn.classList.remove("ok");
-                }, 1400);
+            // ── figures ─────────────────────────────────────────────────────────
+            function bars(rows, note) {
+                const W = 520, H = rows.length * 44 + 10, max = Math.log10(40000000), min = Math.log10(50000);
+                const b = rows.map(([label, v, ours], i) => { const w = Math.max(6, ((Math.log10(v) - min) / (max - min)) * 300); const y = 8 + i * 44; return `<text x="0" y="${y + 18}" font-size="14">${label}</text><rect x="0" y="${y + 24}" width="${w}" height="10" rx="5" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.35)"}"/><text class="mono" x="${w + 8}" y="${y + 33}" font-size="12" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.7)"}">${v >= 1e6 ? (v / 1e6).toFixed(1) + " M" : Math.round(v / 1000) + " k"}</text>`; }).join("");
+                return `<svg viewBox="0 0 ${W} ${H}">${b}</svg><p class="note">${note}</p>`;
+            }
+            function chain() {
+                const steps = [1, 2, 3], W = 520, y = 56;
+                let s = "";
+                steps.forEach((k, i) => { const x = 20 + i * 150; s += `<rect x="${x}" y="${y - 22}" width="92" height="44" rx="8" fill="rgba(6,16,10,0.8)" stroke="var(--c)"/><text x="${x + 46}" y="${y + 5}" text-anchor="middle" font-size="14">step ${k}</text><path d="M ${x + 92} ${y} L ${x + 150 - 2} ${y}" stroke="var(--c)" stroke-width="2" fill="none"/><text class="mono dim" x="${x + 121}" y="${y - 8}" text-anchor="middle" font-size="11">fold · ~30 ops</text>`; });
+                s += `<text x="470" y="${y + 5}" font-size="18" fill="var(--c)">…</text>`;
+                s += `<rect x="20" y="${y + 48}" width="430" height="34" rx="17" fill="none" stroke="var(--c)" stroke-dasharray="5 6"/><text class="mono" x="235" y="${y + 70}" text-anchor="middle" font-size="12">accumulator · ~200 bytes, however long the run</text>`;
+                s += `<path d="M 450 ${y + 65} L 486 ${y + 65}" stroke="var(--c)" stroke-width="2"/><text x="470" y="${y + 120}" text-anchor="end" font-size="14">one decider</text><text class="mono" x="510" y="${y + 120}" text-anchor="end" font-size="12" fill="var(--c)">→ ~2 KB</text>`;
+                return `<svg viewBox="0 0 520 190">${s}</svg><p class="note">proving overhead today: ~80× on one hash (joy 0.5.0, full witness). target: a few percent — thirty field operations per step.</p>`;
+            }
+            function halves() {
+                const pub = ["axons", "supplies", "focus · φ*", "epochs"], priv = ["your links", "your balances", "your queries", "your keys"];
+                const col = (x, title, items, dashed) => `<rect x="${x}" y="10" width="240" height="160" rx="12" fill="rgba(6,16,10,0.7)" stroke="var(--c)" ${dashed ? 'stroke-dasharray="5 6"' : ""}/><text x="${x + 120}" y="36" text-anchor="middle" font-size="12" class="mono" fill="var(--c)">${title}</text>` + items.map((it, i) => `<text x="${x + 120}" y="${66 + i * 28}" text-anchor="middle" font-size="15">${it}</text>`).join("");
+                return `<svg viewBox="0 0 520 180">${col(10, "PUBLIC · PROVEN", pub, false)}${col(270, "PRIVATE · SEALED", priv, true)}</svg><p class="note">a query runs inside the proof over the public tables: the answer is proven, the question never leaves your device.</p>`;
+            }
+            function trace() {
+                let s = "";
+                const links = ["link · signed by a", "link · signed by b", "link · signed by c"];
+                links.forEach((l, i) => { const y = 30 + i * 42; s += `<rect x="10" y="${y - 16}" width="170" height="32" rx="7" fill="rgba(6,16,10,0.8)" stroke="var(--c)"/><text x="95" y="${y + 5}" text-anchor="middle" font-size="12" class="mono">${l}</text><path d="M 180 ${y} C 230 ${y}, 230 94, 270 94" stroke="var(--c)" stroke-width="1.6" fill="none" opacity="0.8"/>`; });
+                s += `<rect x="270" y="74" width="100" height="40" rx="8" fill="rgba(6,16,10,0.8)" stroke="var(--c)"/><text x="320" y="99" text-anchor="middle" font-size="14">weights</text>`;
+                s += `<path d="M 370 94 L 420 94" stroke="var(--c)" stroke-width="2"/><rect x="420" y="74" width="90" height="40" rx="8" fill="var(--c)"/><text x="465" y="99" text-anchor="middle" font-size="14" fill="var(--t)">output</text>`;
+                s += `<path d="M 465 118 L 465 150 L 95 150 L 95 136" stroke="rgba(255,248,240,0.5)" stroke-width="1.4" stroke-dasharray="4 5" fill="none" marker-end="url(#tr)"/><text class="mono dim" x="280" y="166" text-anchor="middle" font-size="11">any output → the links and the neurons who signed them</text>`;
+                return `<svg viewBox="0 0 520 176"><defs><marker id="tr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,248,240,0.6)"/></marker></defs>${s}</svg>`;
+            }
+            function mars() {
+                let s = `<line x1="60" y1="60" x2="460" y2="60" stroke="rgba(255,248,240,0.25)" stroke-width="2"/>`;
+                s += `<circle cx="60" cy="60" r="18" fill="var(--c)" fill-opacity="0.25" stroke="var(--c)" stroke-width="2"/><text x="60" y="100" text-anchor="middle" font-size="14">Earth</text>`;
+                s += `<circle cx="460" cy="60" r="12" fill="#ff8000" fill-opacity="0.3" stroke="#ff8000" stroke-width="2"/><text x="460" y="100" text-anchor="middle" font-size="14">Mars</text>`;
+                s += `<path d="M 85 48 L 440 48" stroke="var(--c)" stroke-width="2" marker-end="url(#ma)"/><text class="mono" x="260" y="40" text-anchor="middle" font-size="12" fill="var(--c)">a signal · 4 to 24 min one way</text>`;
+                s += `<path d="M 440 72 L 85 72" stroke="var(--c)" stroke-width="2" marker-end="url(#ma)"/><text class="mono dim" x="260" y="90" text-anchor="middle" font-size="11">store and forward · signals commute · no round to miss</text>`;
+                s += `<rect x="200" y="118" width="120" height="22" rx="4" fill="rgba(255,248,240,0.08)" stroke="rgba(255,248,240,0.3)" stroke-dasharray="4 4"/><text class="mono dim" x="260" y="133" text-anchor="middle" font-size="11">conjunction · ~2 weeks dark</text>`;
+                s += `<text x="260" y="166" text-anchor="middle" font-size="13">each world is its own pond: it stays safe through the blackout and converges after</text>`;
+                return `<svg viewBox="0 0 520 176"><defs><marker id="ma" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--c)"/></marker></defs>${s}</svg>`;
+            }
+
+            // ── render ──────────────────────────────────────────────────────────
+            const grid = document.getElementById("grid");
+            const go = (h) => (window.soft3Go || ((x) => { location.href = x; }))(h);
+            const tiles = {};
+            FEATURES.forEach((f) => {
+                const v = VERB[f.verb];
+                const b = document.createElement("button");
+                b.type = "button"; b.className = "tile"; b.dataset.id = f.id; b.style.setProperty("--c", v.ink || v.c); b.setAttribute("aria-expanded", "false");
+                b.innerHTML = `<h3><i style="background:${v.c};box-shadow:0 0 10px ${v.c}"></i>${f.name}</h3><p>${f.line}</p><div class="st"><b>${f.verb}</b> · ${f.status}</div>`;
+                grid.appendChild(b); tiles[f.id] = b;
             });
+            document.getElementById("verbs").innerHTML = Object.keys(VERB).map((k) => `<a href="/chart/?sel=${VERB[k].who}" style="--c:${VERB[k].ink || VERB[k].c}">${k}</a>`).join("<i> · </i>");
+
+            let card = null, openId = null;
+            function tint(verb) { const full = !verb; const v = VERB[verb]; document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : v.c); document.documentElement.style.setProperty("--accent-h", full ? 150 : v.h); document.documentElement.style.setProperty("--tint", full ? 0 : 0.72); if (window.worldHue) worldHue(full ? 0 : v.h - 150); }
+            function close() { if (card) card.remove(); card = null; if (openId) tiles[openId].setAttribute("aria-expanded", "false"); openId = null; tint(null); history.replaceState(null, "", location.pathname); }
+            function open(id, scroll) {
+                const f = FEATURES.find((x) => x.id === id); if (!f) return;
+                if (openId === id) { close(); return; }
+                close();
+                const v = VERB[f.verb], tile = tiles[id];
+                card = document.createElement("article"); card.className = "card"; card.style.setProperty("--c", v.ink || v.c); card.style.setProperty("--t", v.t);
+                card.innerHTML = `<button class="x" type="button" aria-label="close">×</button><div><h3><small>${f.name} · born in ${f.verb}</small>${f.claim}</h3><p>${f.why}</p><div class="parts">${f.parts.map((p) => `<a href="/chart/?sel=${p}">${p}</a>`).join("")}</div><div class="meta"><span>status <b>${f.status}</b></span><span>source <a href="${f.source[1]}" target="_blank" rel="noopener">${f.source[0]} ↗</a></span></div></div><div class="fig">${f.fig()}</div>`;
+                // the card opens under the row of the tile: after the last tile of that row
+                const cols = getComputedStyle(grid).gridTemplateColumns.split(" ").length, all = [...grid.querySelectorAll(".tile")], i = all.indexOf(tile), last = all[Math.min(all.length - 1, Math.floor(i / cols) * cols + cols - 1)];
+                last.after(card);
+                card.querySelector(".x").addEventListener("click", close);
+                card.querySelectorAll(".parts a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href")); }));
+                tile.setAttribute("aria-expanded", "true"); openId = id; tint(f.verb);
+                history.replaceState(null, "", "?f=" + id);
+                if (scroll) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }
+            Object.values(tiles).forEach((b) => { b.addEventListener("click", () => open(b.dataset.id, true)); b.addEventListener("mouseenter", () => { if (!openId) tint(FEATURES.find((x) => x.id === b.dataset.id).verb); }); b.addEventListener("mouseleave", () => { if (!openId) tint(null); }); });
+            document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+            document.querySelectorAll("#verbs a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href")); }));
+            const want = new URLSearchParams(location.search).get("f"); if (want) open(want, false); else tint(null);
+
+            // copy the install line
+            const copy = document.getElementById("copy");
+            copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(document.getElementById("cmd").textContent); copy.textContent = "copied"; setTimeout(() => (copy.textContent = "copy"), 1200); } catch { copy.textContent = "select"; } });
           }
         </script>
 
-        <!-- lytics: anonymous, signed, PoW-gated pageview + attention tracking.
- shared "cyberia" identity domain — see lytics/specs for the model. -->
-        <script type="module" src="https://lytics.cyb.ai/tracker/loader.js" data-endpoint="https://lytics.cyb.ai">
+        <!-- lytics: anonymous, signed, PoW-gated pageview + attention tracking. -->
+        <script type="module" src="https://lytics.cyb.ai/tracker/loader.js" data-endpoint="https://lytics.cyb.ai"></script>
     </body>
 </html>
