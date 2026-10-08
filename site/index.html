@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twelve features: frozen foundations, post-quantum, compact stack, ~2 KB proofs, incremental proving, private by default, memoized, scalable, transparent models, sovereign, rewarding, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. fourteen features: frozen foundations, post-quantum, 275k lines, trinity, 2 KB proofs, incremental proving, private, memoization, planet scale, transparent models, names, rewards, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twelve things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>fourteen things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -163,6 +163,16 @@
                   why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it. a stack you can read end to end is a stack you can freeze.",
                   parts: ["trident", "nox", "zheng", "bbg", "foculus"], source: ["tokei over every repo, 2026-10-08", GH + "soft3/blob/main/status.md"],
                   fig: () => stackfig() },
+                { id: "trinity", verb: "build", name: "trinity", line: "one field for zk, fhe and neural networks", status: "demonstrated · not yet secure",
+                  claim: "one field for zero-knowledge, homomorphic encryption and neural networks",
+                  why: "zero-knowledge circuits, homomorphic encryption and neural inference all reduce to arithmetic over one prime field. so a single lookup table over Goldilocks is at once the hash's S-box, a neural activation, an FHE bootstrap and a proof lookup. one trident program encrypts with LWE, runs a neural layer, hashes, bootstraps and commits — in one proof trace. the stack is tuned for all three because underneath they are the same thing.",
+                  parts: ["trident", "nox", "strata"], source: ["trident — Trinity", GH + "trident#readme"],
+                  fig: () => table(["one table, read as", "role", "gives"], [
+                      [t("cryptographic S-box"), `<td>hash nonlinearity</td>`, `<td>security</td>`],
+                      [t("neural activation"), `<td>network expressiveness</td>`, `<td>intelligence</td>`],
+                      [t("FHE bootstrap"), `<td>encrypted evaluation</td>`, `<td>privacy</td>`],
+                      [t("proof lookup"), `<td>proof authentication</td>`, `<td>verifiability</td>`],
+                  ], "the Trinity program runs and proves today; the spec says it does not yet establish secure TFHE, private inference or a quantum commitment — that is the open work.") },
                 { id: "proofs", verb: "prove", name: "2 KB proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
                   claim: "a proof is a constant: two kilobytes, whatever it proves",
                   why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
@@ -209,17 +219,17 @@
                   why: "the model is compiled from the focus-weighted graph. given any output, the links that produced it and the neurons who signed them are recoverable. no hidden training set, no weights nobody can explain — the training set is the book, and the book is public and proven.",
                   parts: ["neural", "cybergraph", "tru"], source: ["cyber/whitepaper §5", "https://cyber.page/whitepaper/"],
                   fig: () => trace() },
-                { id: "sovereign", verb: "link", name: "no accounts", line: "no accounts, no gatekeeper, no schema: a keypair is a neuron, your node is the network.", status: "live",
-                  claim: "you don't log in. you sign.",
-                  why: "identity is a keypair and nothing else; your node is a full participant, not a client of someone's server; transport is the stack's own radio; keys never leave your vault. the world is open: any link between any two particles, no schema to ask permission from.",
-                  parts: ["cy", "mudra", "radio", "vault"], source: ["cy", GH + "cy"],
+                { id: "names", verb: "link", name: "names", line: "you address by name, and the name is yours", status: "specified · 47 837 names port into genesis",
+                  claim: "you address by name — and the name is yours",
+                  why: "every stack hands you an address no human can say. here a name is a link in the book, from a word to a particle: owned like a token — sold, lent, inherited — never set in a config, resolving through the graph wherever the thing runs. no registrar, no DNS, no accounts: a keypair is a neuron, your node is the network, and the names of the bootloader era come along.",
+                  parts: ["cybergraph", "name", "mudra", "cy"], source: ["cyb/parts/name.md", GH + "cyb/blob/master/parts/name.md"],
                   fig: () => table(["elsewhere", "here"], [
-                      [d("an account"), t("a keypair — a neuron")],
-                      [d("a server"), t("your node")],
-                      [d("an API key"), t("a signature")],
-                      [d("a schema"), t("any link")],
-                      [d("a password reset"), t("a seed phrase, sealed")],
-                  ]) },
+                      [d("0x3f9a…c21e"), t("alice")],
+                      [d("a registrar"), t("a link in the book: word → particle")],
+                      [d("DNS"), t("the graph resolves it, anywhere")],
+                      [d("an account, a password"), t("a keypair — a neuron — a signature")],
+                      [d("a config file"), t("owned like a token: sold, lent, inherited")],
+                  ], "47 837 names from the bootloader era port into the genesis book.") },
                 { id: "rewards", verb: "focus", name: "rewards", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
                   claim: "four reasons to be paid, one formula",
                   why: "a reward has four terms: a Shapley share of the focus you moved, a subsidy for proof-of-work, a cut of the fees your work served, and yield on the stake you risked. storage needs no separate market — focus is the storage payment. the attribution is the unique fair one: efficient, symmetric, no pay for no contribution.",
@@ -230,6 +240,17 @@
                       [`<td>bandwidth</td>`, `<td>you relayed what moved</td>`, n("relay fees"), d("proposed")],
                       [`<td>fairness</td>`, `<td>always</td>`, n("Shapley share of Δφ*"), t("specified")],
                   ], "collusion resistance is open: the mechanism is incentive-compatible against unilateral deviation.") },
+                { id: "finality", verb: "focus", name: "fast finality", line: "final in about a second — final forever", status: "specified · parameters illustrative",
+                  claim: "final in about a second, final forever",
+                  why: "no proposer, no committee round: every neuron computes the same focus from the same graph, and a particle is final the moment its focus crosses the threshold. that is irreversible — no rollbacks, no confirmation depth. across a WAN a well-connected domain finalises in about a second and a half; a sparse fringe takes tens of seconds; during a partition nothing conflicting can finalise at all.",
+                  parts: ["foculus", "tru"], source: ["foculus/specs/protocol.md", GH + "foculus/blob/main/specs/protocol.md"],
+                  fig: () => table(["", "classic BFT", "nakamoto", "foculus"], [
+                      [`<td>leader</td>`, d("rotating proposer"), d("PoW lottery"), t("none")],
+                      [`<td>finality</td>`, d("5–60 s"), d("~60 min"), t("1–3 s typical · irreversible")],
+                      [`<td>throughput</td>`, d("1k–10k tx/s"), d("~10 tx/s"), t("~10⁹ signals/s per GPU")],
+                      [`<td>validators</td>`, d("10²–10³"), d("unbounded"), t("unbounded")],
+                      [`<td>fault tolerance</td>`, d("⅓ stake"), d("51 % hash"), t("½ focus")],
+                  ], "typical WAN case: compute ~0.2 s, 5–8 iterations, propagation ~0.4 s, finality ~1.4 s. derived in the spec; the jitter bound and thresholds are illustrative until measured.") },
                 { id: "space", verb: "focus", name: "interplanetary", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
                   claim: "no proposer, no clock, no committee: facts commute",
                   why: "agreement is convergence, not voting. signals commute, so they can be stored and forwarded across any delay; there is no round that a far world could miss. Earth to Mars is four to twenty-four minutes one way; each world is its own pond, safe through the conjunction when no signal gets through at all.",
