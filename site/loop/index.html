@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <title>soft3 — the loop</title>
-        <meta name="description" content="the loop: link · prove · remember · focus · learn. a mind links, the machine proves, the book remembers what anyone ever proved, the network settles into one focus, the weighted graph compiles into a model — and the model's next thought is a link again." />
+        <meta name="description" content="the loop: link · prove · remember · focus · learn · reward. a mind links, the machine proves, the book remembers what anyone ever proved, the network settles into one focus, the weighted graph compiles into a model, whoever moved the focus is paid — and a paid mind links again." />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,7 +38,7 @@
                 </nav>
             </header>
             <main class="loop-stage">
-                <section class="board glass"><svg id="stage" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid meet" aria-label="the loop: link, prove, remember, focus, learn"></svg></section>
+                <section class="board glass"><svg id="stage" viewBox="0 0 1400 1120" preserveAspectRatio="xMidYMid meet" aria-label="the loop: link, prove, remember, focus, learn, reward"></svg></section>
             </main>
             <footer class="foot">
                 <span>don't trust. don't fear. don't beg.</span>
@@ -48,28 +48,31 @@
         <script src="/nav.js?v=3" defer></script>
         <script>
           try {
-            // ── the loop: five verbs, one circle ──────────────────────────────────
-            //   LINK      a thought becomes a link, with weight            (a mind — cybergraph · cy)
-            //   PROVE     every computation leaves a proof                 (the machine — trident · nox · joy)
-            //   REMEMBER  what anyone ever proved, the book answers        (the book — bbg · zheng)      ← only here
-            //   FOCUS     the whole graph settles into one focus           (the network — tru · foculus · soft3) ← only here
-            //   LEARN     the weighted graph compiles into a model         (the model — neural)         ← only here
-            //   … and the model's next thought is a link again.
+            // ── the loop: six verbs, one circle ───────────────────────────────────
+            //   each verb wears the colour of the product it opens on the chart and links there.
+            //   LINK      a thought becomes a link, with weight                 (a mind — cy)
+            //   PROVE     every computation leaves a proof                      (the machine — nox)
+            //   REMEMBER  what anyone ever proved, the book answers             (the book — cybergraph)   only here
+            //   FOCUS     the whole graph settles into one focus                (the network — soft3)     only here
+            //   LEARN     the weighted graph compiles into a model              (the model — neural)      only here
+            //   REWARD    whoever moved the focus is paid                       (the token — solong)      only here
             const VERBS = [
-                { id: "link",     f: "life", c: "#8000ff", t: "#fff8f0", h: 270, who: "a mind",      does: "a thought becomes a link, with weight",          parts: ["cybergraph", "cy"] },
-                { id: "prove",    f: "form", c: "#00ff00", t: "#0a120e", h: 120, who: "the machine", does: "every computation leaves a proof",                parts: ["trident", "nox", "joy"] },
-                { id: "remember", f: "mass", c: "#0000ff", ink: "#8080ff", t: "#fff8f0", h: 240, who: "the book",    does: "what anyone ever proved, the book answers — never recomputed", parts: ["bbg", "zheng"], only: true },
-                { id: "focus",    f: "play", c: "#ffff00", t: "#0a120e", h: 60,  who: "the network", does: "the whole graph settles into one focus",          parts: ["tru", "foculus", "soft3"], only: true },
-                { id: "learn",    f: "word", c: "#ff0000", t: "#fff8f0", h: 0,   who: "the model",   does: "the weighted graph compiles into a model",        parts: ["neural"], only: true },
+                { id: "link",     c: "#ff8000", h: 30,  who: "a mind",      does: "a thought becomes a link, with weight",                        sel: "cy",         parts: ["cy", "cybergraph"] },
+                { id: "prove",    c: "#00ff00", h: 120, who: "the machine", does: "every computation leaves a proof",                              sel: "nox",        parts: ["nox", "trident", "joy", "zheng"] },
+                { id: "remember", c: "#8000ff", h: 270, who: "the book",    does: "what anyone ever proved, the book answers — never recomputed",  sel: "cybergraph", parts: ["cybergraph", "bbg", "inf"] },
+                { id: "focus",    c: "#ffff00", h: 60,  who: "the network", does: "the whole graph settles into one focus",                        sel: "soft3",      parts: ["foculus", "tru", "soft3"] },
+                { id: "learn",    c: "#ff0000", h: 0,   who: "the model",   does: "the weighted graph compiles into a model",                      sel: "neural",     parts: ["neural"] },
+                { id: "reward",   c: "#ffff00", h: 60,  who: "the token",   does: "whoever moved the focus is paid — a Shapley share",             sel: "solong",     parts: ["solong", "tok", "tru"] },
             ];
             const ARCS = [
                 ["link", "prove", "every link is a computation"],
                 ["prove", "remember", "every proof is kept"],
                 ["remember", "focus", "every answer carries weight"],
                 ["focus", "learn", "the weights are the model"],
-                ["learn", "link", "the model's next thought"],
+                ["learn", "reward", "every answer pays its authors"],
+                ["reward", "link", "a paid mind links again"],
             ];
-            const CX = 700, CY = 520, R = 300, VR = 104, N = VERBS.length;
+            const CX = 700, CY = 552, R = 360, VR = 88, N = VERBS.length;
             const ang = {}; VERBS.forEach((v, i) => { ang[v.id] = -Math.PI / 2 + (i * 2 * Math.PI) / N; });
             const P = (a, r = R) => ({ x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) });
             // a sentence wraps to lines of at most `w` characters, breaking at spaces
@@ -78,54 +81,52 @@
             const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
             const el = (t, at, parent) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); (parent || svg).appendChild(e); return e; };
             const defs = el("defs", {});
-            VERBS.forEach((v) => { const m = el("marker", { id: "arr-" + v.id, viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 28, markerHeight: 28, markerUnits: "userSpaceOnUse", orient: "auto" }, defs); el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m); });
+            VERBS.forEach((v) => { const m = el("marker", { id: "arr-" + v.id, viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 26, markerHeight: 26, markerUnits: "userSpaceOnUse", orient: "auto" }, defs); el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: v.c }, m); });
             { const rg = el("radialGradient", { id: "heart", cx: "50%", cy: "50%", r: "50%" }, defs); el("stop", { offset: "0%", "stop-color": "#7dffc4", "stop-opacity": 0.16 }, rg); el("stop", { offset: "100%", "stop-color": "#7dffc4", "stop-opacity": 0 }, rg); }
 
-            // the ring: five coloured arcs, each the verb's colour, arrowed into the next
+            // the ring: six coloured arcs, each the verb's colour, arrowed into the next; labels ride outside the ring
             const arcLayer = el("g", {}), verbLayer = el("g", {});
-            el("circle", { cx: CX, cy: CY, r: 200, fill: "url(#heart)" }, arcLayer);
+            el("circle", { cx: CX, cy: CY, r: 240, fill: "url(#heart)" }, arcLayer);
             const gap = Math.asin((VR + 10) / R);
             ARCS.forEach(([a, b, label]) => {
                 const va = VERBS.find((v) => v.id === a);
                 let a0 = ang[a] + gap, a1 = ang[b] - gap; if (a1 < a0) a1 += 2 * Math.PI; // leave the verb circles clear, always go clockwise
                 const p0 = P(a0), p1 = P(a1);
                 el("path", { d: `M ${p0.x} ${p0.y} A ${R} ${R} 0 0 1 ${p1.x} ${p1.y}`, fill: "none", stroke: va.c, "stroke-opacity": 0.85, "stroke-width": 9, "stroke-linecap": "round", "marker-end": `url(#arr-${a})` }, arcLayer);
-                // the label rides outside the ring, except at the bottom where the sentences live — there it rides inside
-                const am = (a0 + a1) / 2, inside = Math.sin(am) > 0.5; const mid = P(am, inside ? R - 178 : Math.sin(am) < -0.5 ? R + 108 : R + 56);
-                const t = el("text", { x: mid.x, y: mid.y + 6, "text-anchor": "middle", fill: "rgba(255,248,240,0.85)", "font-size": 21, "paint-order": "stroke", stroke: "#06100a", "stroke-width": 8 }, arcLayer);
+                // near the top and bottom verbs the label steps further out, past the verb's sentence
+                const am = (a0 + a1) / 2, mid = P(am, Math.abs(Math.sin(am)) > 0.8 ? R + 118 : R + 72);
+                const t = el("text", { x: mid.x, y: mid.y + 6, "text-anchor": "middle", fill: "rgba(255,248,240,0.85)", "font-size": 18, "paint-order": "stroke", stroke: "#06100a", "stroke-width": 8 }, arcLayer);
                 t.textContent = label;
             });
             // the heart
-            el("text", { x: CX, y: CY - 14, "text-anchor": "middle", fill: "#7dffc4", "font-size": 50, "font-weight": 700, "letter-spacing": 6 }).textContent = "the loop";
-            el("text", { x: CX, y: CY + 26, "text-anchor": "middle", fill: "rgba(255,248,240,0.7)", "font-size": 19, class: "mono" }).textContent = "one graph · one proof · one mind";
-            el("text", { x: CX, y: CY + 58, "text-anchor": "middle", fill: "rgba(255,248,240,0.5)", "font-size": 15, class: "mono" }).textContent = "dashed — nobody else does this";
+            el("text", { x: CX, y: CY - 6, "text-anchor": "middle", fill: "#7dffc4", "font-size": 50, "font-weight": 700, "letter-spacing": 6 }).textContent = "the loop";
+            el("text", { x: CX, y: CY + 34, "text-anchor": "middle", fill: "rgba(255,248,240,0.7)", "font-size": 19, class: "mono" }).textContent = "one graph · one proof · one mind";
 
-            // the verbs
+            // the verbs: the circle names the verb and who does it; the sentence and its parts sit beside the circle
             const verbEls = {};
             VERBS.forEach((v) => {
                 const a = ang[v.id], p = P(a);
                 const g = el("g", { class: "verb", "data-id": v.id }, verbLayer);
                 el("circle", { cx: p.x, cy: p.y, r: VR, fill: "#06100a", "fill-opacity": 0.85 }, g);
                 el("circle", { cx: p.x, cy: p.y, r: VR, fill: v.c, "fill-opacity": 0.22, stroke: v.c, "stroke-width": 3 }, g);
-                if (v.only) el("circle", { cx: p.x, cy: p.y, r: VR + 12, fill: "none", stroke: v.c, "stroke-opacity": 0.75, "stroke-width": 2, "stroke-dasharray": "6 8" }, g);
-                const fs = v.id.length > 6 ? 27 : 42, ink = v.ink || v.c;
-                el("text", { x: p.x, y: p.y - 18, "text-anchor": "middle", fill: ink, "font-size": fs, "font-weight": 700, "letter-spacing": v.id.length > 6 ? 1 : 3 }, g).textContent = v.id.toUpperCase();
-                el("text", { x: p.x, y: p.y + 14, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 18 }, g).textContent = v.who;
-                el("text", { x: p.x, y: p.y + 44, "text-anchor": "middle", fill: ink, "font-size": 16, class: "mono" }, g).textContent = v.parts.join(" · ");
-                // the sentence: above the top verb, beside the upper two, below the lower two
-                const c = Math.cos(a), sn = Math.sin(a), lines = wrap(v.does, 26);
-                let x = p.x, y, anchor = "middle";
-                if (sn < -0.9) { y = p.y - VR - 22 - (lines.length - 1) * 28; }
-                else if (sn < 0.5) { anchor = c > 0 ? "start" : "end"; x = p.x + (c > 0 ? 1 : -1) * (VR + 26); y = p.y - ((lines.length - 1) * 28) / 2; }
-                else { y = p.y + VR + 36; }
-                const s = el("text", { x, y: y + 8, "text-anchor": anchor, fill: "rgba(255,248,240,0.92)", "font-size": 23, "paint-order": "stroke", stroke: "#06100a", "stroke-width": 8 }, g);
-                lines.forEach((ln, i) => { const ts = el("tspan", { x, dy: i ? 28 : 0 }, s); ts.textContent = ln; });
+                const fs = v.id.length > 6 ? 23 : v.id.length > 5 ? 32 : 38;
+                el("text", { x: p.x, y: p.y - 6, "text-anchor": "middle", fill: v.c, "font-size": fs, "font-weight": 700, "letter-spacing": v.id.length > 6 ? 1 : 3 }, g).textContent = v.id.toUpperCase();
+                el("text", { x: p.x, y: p.y + 26, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 17 }, g).textContent = v.who;
+                // the block: sentence lines, then the parts line — above the top verb, beside the side verbs, below the bottom one
+                const c = Math.cos(a), sn = Math.sin(a), lines = wrap(v.does, Math.abs(sn) > 0.9 ? 20 : 22), LH = 26, block = lines.length * LH + 24;
+                let x = p.x, y0, anchor = "middle";
+                if (sn < -0.9) { y0 = p.y - VR - 22 - block + LH; }
+                else if (sn > 0.9) { y0 = p.y + VR + 36; }
+                else { anchor = c > 0 ? "start" : "end"; x = p.x + (c > 0 ? 1 : -1) * (VR + 24); y0 = p.y - block / 2 + LH; }
+                const s = el("text", { x, y: y0, "text-anchor": anchor, fill: "rgba(255,248,240,0.92)", "font-size": 21, "paint-order": "stroke", stroke: "#06100a", "stroke-width": 8 }, g);
+                lines.forEach((ln, i) => { const ts = el("tspan", { x, dy: i ? LH : 0 }, s); ts.textContent = ln; });
+                el("text", { x, y: y0 + (lines.length - 1) * LH + 24, "text-anchor": anchor, fill: v.c, "font-size": 15, class: "mono", "paint-order": "stroke", stroke: "#06100a", "stroke-width": 6 }, g).textContent = v.parts.join(" · ");
                 verbEls[v.id] = g;
             });
 
             // the page takes the verb's colour while you point at it
             function tint(v) { const full = !v; document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : v.c); document.documentElement.style.setProperty("--accent-h", full ? 150 : v.h); document.documentElement.style.setProperty("--tint", full ? 0 : 0.72); if (window.worldHue) worldHue(full ? 0 : v.h - 150); }
-            VERBS.forEach((v) => { const g = verbEls[v.id]; g.addEventListener("mouseenter", () => tint(v)); g.addEventListener("mouseleave", () => tint(null)); g.addEventListener("click", () => { (window.soft3Go || ((h) => { location.href = h; }))("/chart/?sel=" + v.parts[0]); }); });
+            VERBS.forEach((v) => { const g = verbEls[v.id]; g.addEventListener("mouseenter", () => tint(v)); g.addEventListener("mouseleave", () => tint(null)); g.addEventListener("click", () => { (window.soft3Go || ((h) => { location.href = h; }))("/chart/?sel=" + v.sel); }); });
             tint(null);
           } catch (err) {
             const b = document.querySelector(".board"); if (b) { b.innerHTML = "<p style=\"padding:1rem;font-family:monospace;color:#ffb0b0\">loop failed: " + (err && err.message) + "</p>"; }
