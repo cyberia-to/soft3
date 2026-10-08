@@ -31,7 +31,7 @@
             .hero .verbs a { color: var(--c); text-decoration: none; } .hero .verbs a:hover { text-decoration: underline; }
             .hero .verbs i { color: rgba(255,248,240,0.3); font-style: normal; }
             /* the wall: the features on the left, the one you chose on the right */
-            .wall { padding: 0.8rem 1rem 0.9rem; display: grid; grid-template-columns: minmax(16rem, 23rem) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem 1rem; min-height: 0; }
+            .wall { padding: 0.8rem 1rem 0.9rem; display: grid; grid-template-columns: minmax(17rem, 24rem) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem 1rem; min-height: 0; }
             .wall .cap { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 1rem; margin: 0 0 0.1rem; }
             .wall .cap h2 { margin: 0; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,248,240,0.6); font-weight: 400; }
             .wall .cap span { font-size: 0.76rem; color: rgba(255,248,240,0.5); }
@@ -42,9 +42,7 @@
             .feat i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--c); box-shadow: 0 0 10px var(--c); }
             .feat b { font-size: 0.98rem; font-weight: 700; letter-spacing: 0.01em; }
             .feat small { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.5); text-align: right; }
-            .feat p { display: none; grid-column: 2 / -1; margin: 0; font-size: 0.78rem; line-height: 1.35; color: rgba(255,248,240,0.72); }
-            .feat[aria-selected="true"] p { display: block; }
-            /* the detail: the chosen feature, text then figure */
+                        /* the detail: the chosen feature, text then figure */
             .detail { --c: #7dffc4; min-width: 0; min-height: 0; overflow: auto; border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); border-radius: 0.9rem; background: color-mix(in srgb, var(--c) 5%, rgba(6,16,10,0.9)); padding: 1rem 1.2rem 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.7rem; align-content: start; animation: open 0.25s ease; }
             @keyframes open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
             .detail h3 { margin: 0 0 0.4rem; font-size: 1.35rem; line-height: 1.15; color: var(--cream); }
@@ -150,7 +148,7 @@
                       [`<td>joy · zheng</td>`, `<td>proof formats</td>`, d("warm")],
                       [`<td>cybergraph · foculus</td>`, `<td>link, signal, epoch</td>`, d("warm")],
                   ], "kelvin versioning: lower layers freeze first; a frozen layer takes no proposals.") },
-                { id: "quantum", verb: "compute", name: "post-quantum", line: "value and privacy both: hash-only proofs, lattice seals — nothing rests on a curve a quantum computer breaks.", status: "proofs live · seals building",
+                { id: "quantum", verb: "compute", name: "post-quantum value and privacy", line: "value and privacy both: hash-only proofs, lattice seals — nothing rests on a curve a quantum computer breaks.", status: "proofs live · seals building",
                   claim: "what is sealed today stays sealed",
                   why: "the proofs are hash-only — SuperSpartan, Brakedown, HyperNova, no pairings, no trusted setup. keys seal with ML-KEM, the lattice standard. private state encrypts under RLWE. most chains protect value against a quantum computer and leave privacy to curves it breaks; here both sides of the ledger survive it.",
                   parts: ["zheng", "mudra", "bbg"], source: ["mudra/specs/seal.md", GH + "mudra/blob/main/specs/seal.md"],
@@ -160,12 +158,12 @@
                       [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
                       [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
                   ], "no trusted setup anywhere; a hash is the only assumption the proof system makes.") },
-                { id: "compact", verb: "build", name: "compact stack", line: "275k lines for the whole stack. the same functions elsewhere take 3.2 million — plus 35 million of LLVM you cannot read, so you cannot freeze.", status: "measured",
+                { id: "compact", verb: "build", name: "275k lines, the whole stack", line: "275k lines for the whole stack. the same functions elsewhere take 3.2 million — plus 35 million of LLVM you cannot read, so you cannot freeze.", status: "measured",
                   claim: "small enough to read, audit and freeze",
                   why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it. a stack you can read end to end is a stack you can freeze.",
                   parts: ["trident", "nox", "zheng", "bbg", "foculus"], source: ["tokei over every repo, 2026-10-08", GH + "soft3/blob/main/status.md"],
                   fig: () => stackfig() },
-                { id: "proofs", verb: "prove", name: "fast & compact proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
+                { id: "proofs", verb: "prove", name: "2 KB proofs, any computation", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
                   claim: "a proof is a constant: two kilobytes, whatever it proves",
                   why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
                   parts: ["zheng", "joy", "lens"], source: ["zheng/specs/accumulator.md", GH + "zheng/blob/main/specs/accumulator.md"],
@@ -176,17 +174,17 @@
                       [`<td><span class="dim">· today</span></td>`, n("460 ms"), n("460 ms"), n("295 KB, full witness")],
                       [`<td>Merkle path, depth 32 <span class="dim">· target</span></td>`, t("~100 ms"), t("1 ms"), t("2.6 KB")],
                   ], "today: joy 0.5.0 release build on an M4 Max, 2026-10-08. targets: the folded format zheng 0.3 shipped (2.4 KB per hash) with authenticated execution.") },
-                { id: "incremental", verb: "prove", name: "incremental", line: "every step folds into one accumulator as it runs — proving costs a few percent, not 10–100×.", status: "specified",
+                { id: "incremental", verb: "prove", name: "incremental proving", line: "every step folds into one accumulator as it runs — proving costs a few percent, not 10–100×.", status: "specified",
                   claim: "proving is not a separate job",
                   why: "a fold is about thirty field operations per step, and the accumulator stays two hundred bytes however long the run. proving rides along with execution instead of replaying it afterwards; a single decider closes the proof. one program, one run, one proof — and a change to the program re-proves only what changed.",
                   parts: ["zheng", "nox"], source: ["zheng/specs/recursion.md", GH + "zheng/blob/main/specs/recursion.md"],
                   fig: () => chain() },
-                { id: "private", verb: "prove", name: "private", line: "the block is public, the person is not: aggregates are proven, individuals are sealed.", status: "specified",
+                { id: "private", verb: "prove", name: "private by default", line: "the block is public, the person is not: aggregates are proven, individuals are sealed.", status: "specified",
                   claim: "private by default, public on demand",
                   why: "what the network needs — axons, supplies, focus, φ* — is always public and always proven. what belongs to one neuron — links, balances, queries — stays sealed. a question is answered inside the proof over public tables, so the answer is proven without the question ever leaving your device.",
                   parts: ["bbg", "mudra", "zheng"], source: ["bbg/specs/privacy.md", GH + "bbg/blob/main/specs/privacy.md"],
                   fig: () => halves() },
-                { id: "memo", verb: "remember", name: "memoized", line: "computed once, answered forever: a proof in the book is the computation.", status: "specified",
+                { id: "memo", verb: "remember", name: "computed once, remembered forever", line: "computed once, answered forever: a proof in the book is the computation.", status: "specified",
                   claim: "nothing is computed twice on the planet",
                   why: "every proven step is a fact in the book, keyed by the hash of what was asked. ask the book before the machine: a hit is one verification, a miss is one computation that becomes the next hit — for everyone. the one who proved it first is paid each time the world remembers instead of recomputing.",
                   parts: ["cybergraph", "bbg", "inf"], source: ["cyber/whitepaper §7.5", "https://cyber.page/whitepaper/"],
@@ -195,7 +193,7 @@
                       [`<td>miss</td>`, n("H(subject) · H(formula)"), `<td>compute, prove, link — now a hit for anyone</td>`, n("one computation")],
                       [`<td>paid</td>`, d(""), `<td>the first prover, every time it is remembered</td>`, t("a Shapley share")],
                   ], "deterministic steps are memoized globally; steps with a private witness are memoized only within their proof.") },
-                { id: "scale", verb: "remember", name: "scalable", line: "from a pocket to a planet: 10¹⁵ particles, 10¹⁰ neurons. availability is sampled, not downloaded.", status: "specified · today 2.95M links",
+                { id: "scale", verb: "remember", name: "a pocket to a planet", line: "from a pocket to a planet: 10¹⁵ particles, 10¹⁰ neurons. availability is sampled, not downloaded.", status: "specified · today 2.95M links",
                   claim: "the graph shards; a phone checks a planet",
                   why: "storage tiers from memory to cold archive; replication follows focus, so what matters is everywhere and what does not is somewhere. availability is checked by sampling: twenty samples, one and a half kilobytes, six nines of confidence. today the live graph holds 2.95 million links over 3.14 million particles.",
                   parts: ["bbg", "foculus", "cybergraph"], source: ["bbg/specs/storage.md", GH + "bbg/blob/main/specs/storage.md"],
@@ -211,7 +209,7 @@
                   why: "the model is compiled from the focus-weighted graph. given any output, the links that produced it and the neurons who signed them are recoverable. no hidden training set, no weights nobody can explain — the training set is the book, and the book is public and proven.",
                   parts: ["neural", "cybergraph", "tru"], source: ["cyber/whitepaper §5", "https://cyber.page/whitepaper/"],
                   fig: () => trace() },
-                { id: "sovereign", verb: "link", name: "sovereign", line: "no accounts, no gatekeeper, no schema: a keypair is a neuron, your node is the network.", status: "live",
+                { id: "sovereign", verb: "link", name: "no accounts, no gatekeeper", line: "no accounts, no gatekeeper, no schema: a keypair is a neuron, your node is the network.", status: "live",
                   claim: "you don't log in. you sign.",
                   why: "identity is a keypair and nothing else; your node is a full participant, not a client of someone's server; transport is the stack's own radio; keys never leave your vault. the world is open: any link between any two particles, no schema to ask permission from.",
                   parts: ["cy", "mudra", "radio", "vault"], source: ["cy", GH + "cy"],
@@ -222,7 +220,7 @@
                       [d("a schema"), t("any link")],
                       [d("a password reset"), t("a seed phrase, sealed")],
                   ]) },
-                { id: "rewards", verb: "focus", name: "rewarding", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
+                { id: "rewards", verb: "focus", name: "paid for risk, storage, bandwidth", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
                   claim: "four reasons to be paid, one formula",
                   why: "a reward has four terms: a Shapley share of the focus you moved, a subsidy for proof-of-work, a cut of the fees your work served, and yield on the stake you risked. storage needs no separate market — focus is the storage payment. the attribution is the unique fair one: efficient, symmetric, no pay for no contribution.",
                   parts: ["tru", "solong", "tok"], source: ["tru/specs/rewards.md", GH + "tru/blob/main/specs/rewards.md"],
@@ -232,7 +230,7 @@
                       [`<td>bandwidth</td>`, `<td>you relayed what moved</td>`, n("relay fees"), d("proposed")],
                       [`<td>fairness</td>`, `<td>always</td>`, n("Shapley share of Δφ*"), t("specified")],
                   ], "collusion resistance is open: the mechanism is incentive-compatible against unilateral deviation.") },
-                { id: "space", verb: "focus", name: "interplanetary", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
+                { id: "space", verb: "focus", name: "interplanetary agreement", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
                   claim: "no proposer, no clock, no committee: facts commute",
                   why: "agreement is convergence, not voting. signals commute, so they can be stored and forwarded across any delay; there is no round that a far world could miss. Earth to Mars is four to twenty-four minutes one way; each world is its own pond, safe through the conjunction when no signal gets through at all.",
                   parts: ["foculus", "tru", "soft3"], source: ["foculus/docs/interplanetary", GH + "foculus/blob/main/docs/explanation/interplanetary.md"],
@@ -303,7 +301,7 @@
                 const v = VERB[f.verb];
                 const b = document.createElement("button");
                 b.type = "button"; b.className = "feat"; b.dataset.id = f.id; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", "false"); b.style.setProperty("--c", v.ink || v.c);
-                b.innerHTML = `<i style="background:${v.c};box-shadow:0 0 10px ${v.c}"></i><b>${f.name}</b><small>${f.status}</small><p>${f.line}</p>`;
+                b.innerHTML = `<i style="background:${v.c};box-shadow:0 0 10px ${v.c}"></i><b>${f.name}</b><small>${f.status}</small>`;
                 list.appendChild(b); items[f.id] = b;
             });
             document.getElementById("verbs").innerHTML = Object.keys(VERB).map((k) => `<a href="/chart/?sel=${VERB[k].who}" style="--c:${VERB[k].ink || VERB[k].c}">${k}</a>`).join("<i>·</i>");
