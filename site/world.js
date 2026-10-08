@@ -10,10 +10,16 @@ window.worldHue = (h) => { organHue = h; };
 const canvas = document.getElementById("world");
 // a phone gets a cheaper canvas: no desynchronised buffer (it tears), a lower pixel ratio
 const SMALL = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
-const ctx = canvas.getContext("2d", {
+const screen = canvas.getContext("2d", {
     alpha: false,
     desynchronized: !SMALL,
 });
+// the glitch draws a burst frame here first, then slips slices of it onto the
+// screen — never reading the screen back (a desynchronised canvas returns nothing,
+// a phone pays a full readback per frame)
+const off = document.createElement("canvas");
+const octx = off.getContext("2d", { alpha: false });
+let ctx = screen;
 let W,
     H,
     dpr = 1,
@@ -37,16 +43,20 @@ const hsl = (h, s, l, a = 1) =>
     `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
 
 function resize() {
-    dpr = Math.min(devicePixelRatio || 1, SMALL ? 1.5 : 2.5);
+    dpr = Math.min(devicePixelRatio || 1, SMALL ? 1.25 : 2.5);
     W = innerWidth;
     H = innerHeight;
     canvas.width = (W * dpr) | 0;
     canvas.height = (H * dpr) | 0;
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    off.width = canvas.width;
+    off.height = canvas.height;
+    for (const c of [screen, octx]) {
+        c.setTransform(dpr, 0, 0, dpr, 0, 0);
+        c.imageSmoothingEnabled = true;
+        c.imageSmoothingQuality = "high";
+    }
     seed();
 }
 
@@ -1086,24 +1096,48 @@ function drawSpores(t) {
 
 // the glitch — the stack has not crystallised yet, and the world says so: every
 // ~30 s a burst of a few frames where slices of the picture slip sideways. rare,
-// short, cheap (it redraws slices of the canvas onto itself), the same on every
-// device. it goes away when the stack stabilises.
-const GLITCH_EVERY = 30, GLITCH_LEN = 0.22;
-function glitch(t) {
+// short, the same on every device; a phone gets a shorter burst with fewer
+// slices. it goes away when the stack stabilises.
+const GLITCH_EVERY = 30, GLITCH_LEN = SMALL ? 0.12 : 0.22;
+let jolted = false;
+function glitchPhase(t) {
     const phase = (t + 7) % GLITCH_EVERY;
-    if (phase > GLITCH_LEN) return;
-    const k = phase / GLITCH_LEN, n = 3 + ((k * 9) | 0) % 4;
+    return phase < GLITCH_LEN ? phase / GLITCH_LEN : -1;
+}
+// blit the burst frame from `off` to the screen, slices displaced
+function glitchBlit(t, k) {
+    const n = SMALL ? 2 : 3 + ((k * 9) | 0) % 4;
     const seedT = Math.floor(t / GLITCH_EVERY) * 977;
+    screen.drawImage(off, 0, 0, off.width, off.height, 0, 0, W, H);
     for (let i = 0; i < n; i++) {
         const r1 = ((Math.sin(seedT + i * 12.9898 + k * 3) * 43758.5453) % 1 + 1) % 1;
         const r2 = ((Math.sin(seedT + i * 78.233 + k * 5) * 43758.5453) % 1 + 1) % 1;
         const y = r1 * H, h = 6 + r2 * 40, dx = (r2 - 0.5) * 36 * (1 - k);
-        ctx.drawImage(canvas, 0, y * dpr, W * dpr, h * dpr, dx, y, W, h);
+        screen.drawImage(off, 0, y * dpr, off.width, h * dpr, dx, y, W, h);
     }
-    if (k < 0.35) { ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.07; ctx.drawImage(canvas, 0, 0, W * dpr, H * dpr, 4, 0, W, H); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; }
+    // on a desktop the glass hides most of the world, so the page itself jolts
+    // too: three stepped offsets, transform only, back in place before the end
+    if (!SMALL) {
+        const shell = document.querySelector(".shell");
+        if (shell) {
+            const step = (k * 3) | 0;
+            const jx = k < 0.7 ? [1, -1, 0.5][step] * (5 + 5 * (seedT % 3)) : 0;
+            shell.style.transform = jx ? `translate3d(${jx}px,0,0)` : "";
+            jolted = !!jx;
+        }
+    }
+    if (!SMALL && k < 0.35) {
+        screen.globalCompositeOperation = "lighter";
+        screen.globalAlpha = 0.07;
+        screen.drawImage(off, 0, 0, off.width, off.height, 4, 0, W, H);
+        screen.globalAlpha = 1;
+        screen.globalCompositeOperation = "source-over";
+    }
 }
 function frame() {
     const t = (Date.now() - EPOCH) / 1000;
+    const gk = glitchPhase(t);
+    ctx = gk < 0 ? screen : octx;
     mx += (mxt - mx) * 0.05;
     my += (myt - my) * 0.05;
     const breath = 0.5 + 0.5 * Math.sin(t * 0.48);
@@ -1159,7 +1193,8 @@ function frame() {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
-    glitch(t);
+    if (gk >= 0) glitchBlit(t, gk);
+    else if (jolted) { const shell = document.querySelector(".shell"); if (shell) shell.style.transform = ""; jolted = false; }
     requestAnimationFrame(frame);
 }
 
