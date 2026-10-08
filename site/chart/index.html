@@ -119,7 +119,7 @@
                 hubPos[LADDER[k - 1]] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 };
             }
             Object.assign(pos, hubPos);
-            pos["cyb"] = { x: CX, y: CY - 86 }; pos["cyber"] = { x: CX - 110, y: CY + 60 }; pos["cyberia"] = { x: CX + 116, y: CY + 60 };
+            pos["cyberia"] = { x: CX, y: CY - 84 }; pos["cyb"] = { x: CX - 98, y: CY + 56 }; pos["cyber"] = { x: CX + 104, y: CY + 56 };
 
             const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
             const el = (t, at, parent) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); (parent || svg).appendChild(e); return e; };
@@ -129,7 +129,7 @@
 
             el("circle", { cx: CX, cy: CY, r: 212, fill: "#06100a", "fill-opacity": 0.35, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.4 }, hubLayer);
             el("circle", { cx: CX, cy: CY, r: 212, fill: "#7dffc4", "fill-opacity": 0.04, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
-            el("text", { x: CX, y: CY + 164, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 20 }, hubLayer).textContent = "products built on soft3";
+            el("text", { x: CX, y: CY + 146, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 20 }, hubLayer).textContent = "products built on soft3";
             el("circle", { cx: CX, cy: CY, r: HUB_R, fill: "none", stroke: "rgba(255,248,240,0.12)", "stroke-width": 1.2, "stroke-dasharray": "4 8" }, hubLayer);
             el("circle", { cx: CX, cy: CY, r: RING_R, fill: "none", stroke: "rgba(255,248,240,0.07)", "stroke-width": 1.2 }, hubLayer);
             { const rg = el("radialGradient", { id: "heart", cx: "50%", cy: "50%", r: "50%" }, defs); el("stop", { offset: "0%", "stop-color": "#7dffc4", "stop-opacity": 0.14 }, rg); el("stop", { offset: "100%", "stop-color": "#7dffc4", "stop-opacity": 0 }, rg); el("circle", { cx: CX, cy: CY, r: 330, fill: "url(#heart)" }, hubLayer); }
