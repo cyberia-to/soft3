@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <title>soft3 — the loop</title>
-        <meta name="description" content="the loop: compute · make · prove · remember · learn · link · focus — the seven colours of the flag, in order. one field computes, a thought is made into a program, every run leaves a proof, the book remembers what anyone ever proved, the weighted graph compiles into a model, a mind links, the network settles into one focus and pays whoever moved it." />
+        <meta name="description" content="the loop: compute · build · prove · remember · learn · link · focus — the seven colours of the flag, in order. a thought becomes a computation, a computation becomes a program, a program becomes a proof, a proof becomes an answer, the book becomes a model, a thought becomes a link, the links become one focus — and whoever moved it is paid." />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,7 +38,7 @@
                 </nav>
             </header>
             <main class="loop-stage">
-                <section class="board glass"><svg id="stage" viewBox="0 0 1400 1120" preserveAspectRatio="xMidYMid meet" aria-label="the loop: compute, make, prove, remember, learn, link, focus"></svg></section>
+                <section class="board glass"><svg id="stage" viewBox="0 0 1400 1120" preserveAspectRatio="xMidYMid meet" aria-label="the loop: compute, build, prove, remember, learn, link, focus"></svg></section>
             </main>
             <footer class="foot">
                 <span>don't trust. don't fear. don't beg.</span>
@@ -51,29 +51,30 @@
             // ── the loop: seven verbs, the seven colours of the flag, in order ──────────
             //   one verb per product, each wearing the product's colour from the chart and linking there.
             //   COMPUTE   form   nox         the rules: one field, one hash
-            //   MAKE      mass   trident     what it is made of: programs, cost known before they run
+            //   BUILD     mass   trident     what it is made of: programs, cost known before they run
             //   PROVE     space  joy         where it happens: every run leaves a proof and is stored
             //   REMEMBER  life   cybergraph  what lives: the book answers what anyone ever proved
             //   LEARN     word   neural      what it means: the weighted graph compiles into a model
             //   LINK      work   cy          who does the work: a mind links
             //   FOCUS     play   soft3       how we coordinate: one focus, and whoever moved it is paid
             const VERBS = [
-                { id: "compute",  c: "#00ff00", h: 120, who: "the machine", does: "every thought is a computation over one field", sel: "nox",        parts: ["nox", "strata", "hemera"] },
-                { id: "make",     c: "#0000ff", ink: "#8080ff", h: 240, who: "the weapon",  does: "a thought is made into a program — its cost known before it runs", sel: "trident",    parts: ["trident"] },
-                { id: "prove",    c: "#4000ff", ink: "#9a80ff", h: 255, who: "the warrior", does: "every run leaves a proof, and the proof is stored wherever it ran",  sel: "joy",        parts: ["joy", "zheng", "bbg"] },
-                { id: "remember", c: "#8000ff", h: 270, who: "the book",    does: "what anyone ever proved, the book answers — never recomputed",        sel: "cybergraph", parts: ["cybergraph", "inf"] },
-                { id: "learn",    c: "#ff0000", h: 0,   who: "the model",   does: "the weighted graph compiles into a model",                            sel: "neural",     parts: ["neural"] },
-                { id: "link",     c: "#ff8000", h: 30,  who: "a mind",      does: "a thought becomes a link, with weight",                              sel: "cy",         parts: ["cy"] },
-                { id: "focus",    c: "#ffff00", h: 60,  who: "the network", does: "the whole graph settles into one focus — and pays whoever moved it",  sel: "soft3",      parts: ["soft3", "foculus", "tru", "solong"] },
+                { id: "compute",  c: "#00ff00", h: 120, who: "the machine", does: "a thought becomes a computation — one field, one hash",    sel: "nox",        parts: ["nox", "strata", "hemera"] },
+                { id: "build",    c: "#0000ff", ink: "#8080ff", h: 240, who: "the weapon",  does: "a computation becomes a program — its cost known before it runs", sel: "trident", parts: ["trident"] },
+                { id: "prove",    c: "#4000ff", ink: "#9a80ff", h: 255, who: "the warrior", does: "a program becomes a proof — stored wherever it ran",     sel: "joy",        parts: ["joy", "zheng", "bbg"] },
+                { id: "remember", c: "#8000ff", h: 270, who: "the book",    does: "a proof becomes an answer — for anyone, never recomputed",  sel: "cybergraph", parts: ["cybergraph", "inf"] },
+                { id: "learn",    c: "#ff0000", h: 0,   who: "the model",   does: "the book becomes a model — the weighted graph compiles",     sel: "neural",     parts: ["neural"] },
+                { id: "link",     c: "#ff8000", h: 30,  who: "a mind",      does: "a thought becomes a link — with weight",                    sel: "cy",         parts: ["cy"] },
+                { id: "focus",    c: "#ffff00", h: 60,  who: "the network", does: "the links become one focus — whoever moved it is paid",     sel: "soft3",      parts: ["soft3", "foculus", "tru", "solong"] },
             ];
+            // each arrow carries one thing to the next verb — and carries it once
             const ARCS = [
-                ["compute", "make", "one machine, one language"],
-                ["make", "prove", "every program runs once"],
-                ["prove", "remember", "every proof is kept"],
-                ["remember", "learn", "the book is the training set"],
-                ["learn", "link", "the model's next thought"],
-                ["link", "focus", "every link has weight"],
-                ["focus", "compute", "the focus runs next"],
+                ["compute", "build", "one computation"],
+                ["build", "prove", "one program"],
+                ["prove", "remember", "one proof"],
+                ["remember", "learn", "one answer"],
+                ["learn", "link", "one thought"],
+                ["link", "focus", "one link"],
+                ["focus", "compute", "one focus"],
             ];
             const CX = 700, CY = 552, R = 360, VR = 88, N = VERBS.length;
             const ang = {}; VERBS.forEach((v, i) => { ang[v.id] = -Math.PI / 2 + (i * 2 * Math.PI) / N; });
@@ -116,7 +117,7 @@
                 el("text", { x: p.x, y: p.y - 6, "text-anchor": "middle", fill: ink, "font-size": fs, "font-weight": 700, "letter-spacing": v.id.length > 6 ? 1 : 3 }, g).textContent = v.id.toUpperCase();
                 el("text", { x: p.x, y: p.y + 26, "text-anchor": "middle", fill: "rgba(255,248,240,0.9)", "font-size": 17 }, g).textContent = v.who;
                 // the block: sentence lines, then the parts line — above the top verb, beside the side verbs, below the bottom one
-                const c = Math.cos(a), sn = Math.sin(a), lines = wrap(v.does, sn < -0.9 ? 26 : sn > 0.85 ? 20 : 22), LH = 26, block = lines.length * LH + 24;
+                const c = Math.cos(a), sn = Math.sin(a), lines = wrap(v.does, sn < -0.9 ? 32 : sn > 0.85 ? 20 : 22), LH = 26, block = lines.length * LH + 24;
                 let x = p.x, y0, anchor = "middle";
                 if (sn < -0.9) { y0 = p.y - VR - 22 - block + LH; }
                 else if (sn > 0.85) { y0 = p.y + VR + 36; }
