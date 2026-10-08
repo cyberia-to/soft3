@@ -22,8 +22,8 @@
             rel="icon"
             href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
         />
-        <link rel="stylesheet" href="/base.css?v=12" />
-        <style>
+        <link rel="stylesheet" href="/base.css?v=13" />
+        <style id="page-style">
 
 
 
@@ -534,8 +534,11 @@
             </footer>
         </div>
 
-        <script src="/world.js?v=9"></script>
+        <script src="/world.js?v=11"></script>
+        <script src="/nav.js?v=1" defer></script>
         <script>
+          {
+
             // the ladder drives the crystal: each rung of 1–7 carries the facet its product answers to.
             // nothing is selected by default — the page is neutral until you point at a rung
             const FACET = { form: ["#00ff00", 120], mass: ["#0000ff", 240], space: ["#4000ff", 255], life: ["#8000ff", 270], word: ["#ff0000", 0], work: ["#ff8000", 30], play: ["#ffff00", 60], apps: ["#7dffc4", 150] };
@@ -558,7 +561,7 @@
             rungs.forEach((r) => {
                 r.addEventListener("mouseenter", () => select(r));
                 r.addEventListener("mouseleave", () => select(pinned));
-                r.addEventListener("click", (e) => { if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else location.href = "/chart/?sel=" + r.dataset.p; });
+                r.addEventListener("click", (e) => { if (e.target.closest("a")) return; if (r.dataset.site) window.open(r.dataset.site, "_blank", "noopener"); else (window.soft3Go || ((h) => { location.href = h; }))("/chart/?sel=" + r.dataset.p); });
             });
             select(null);
             document.addEventListener("keydown", (e) => {
@@ -590,8 +593,8 @@
                     copyBtn.classList.remove("ok");
                 }, 1400);
             });
-
-            </script>
+          }
+        </script>
 
         <!-- lytics: anonymous, signed, PoW-gated pageview + attention tracking.
  shared "cyberia" identity domain — see lytics/specs for the model. -->

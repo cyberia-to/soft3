@@ -1,4 +1,9 @@
 // soft3 — the world: the living canvas behind every page. the page sets the hue through worldHue(h).
+// one seed and one clock, so the world is the same on every page and keeps moving across them:
+// the scene is drawn from a fixed seed, and time runs from the first visit of the session.
+const SEED = 0x50f73;
+const rnd = (() => { let a = SEED >>> 0; return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; })();
+const EPOCH = (() => { try { const k = "soft3.world.epoch"; let e = +sessionStorage.getItem(k); if (!e) { e = Date.now(); sessionStorage.setItem(k, e); } return e; } catch { return Date.now(); } })();
 let organHue = 0;
 window.worldHue = (h) => { organHue = h; };
 /* ========== WORLD ========== */
@@ -103,40 +108,40 @@ function seed() {
     const nT = Math.floor(W / 55) + 8;
     for (let i = 0; i < nT; i++) {
         trees.push({
-            x: (i + Math.random() * 0.85) / nT,
-            h: 0.28 + Math.random() * 0.42,
-            w: 0.03 + Math.random() * 0.04,
-            phase: Math.random() * 6.28,
-            lean: (Math.random() - 0.5) * 0.12,
-            hue: 110 + Math.random() * 60,
-            layers: 5 + ((Math.random() * 4) | 0),
-            kind: Math.random() < 0.35 ? "pine" : "broad",
+            x: (i + rnd() * 0.85) / nT,
+            h: 0.28 + rnd() * 0.42,
+            w: 0.03 + rnd() * 0.04,
+            phase: rnd() * 6.28,
+            lean: (rnd() - 0.5) * 0.12,
+            hue: 110 + rnd() * 60,
+            layers: 5 + ((rnd() * 4) | 0),
+            kind: rnd() < 0.35 ? "pine" : "broad",
         });
     }
 
     for (let i = 0; i < Math.floor(22 + W / 50); i++) {
         mushrooms.push({
-            x: Math.random(),
-            y: 0.55 + Math.random() * 0.38,
-            s: 0.4 + Math.random() * 1.3,
+            x: rnd(),
+            y: 0.55 + rnd() * 0.38,
+            s: 0.4 + rnd() * 1.3,
             hue:
                 [0, 8, 340, 280, 200, 45, 160][i % 7] +
-                Math.random() * 20,
-            phase: Math.random() * 6.28,
-            spots: 5 + ((Math.random() * 9) | 0),
+                rnd() * 20,
+            phase: rnd() * 6.28,
+            spots: 5 + ((rnd() * 9) | 0),
             kind: ["fly", "bolete", "morel", "ink"][i % 4],
-            tilt: (Math.random() - 0.5) * 0.2,
+            tilt: (rnd() - 0.5) * 0.2,
         });
     }
 
     for (let i = 0; i < Math.floor(32 + (W * H) / 12000); i++) {
         flowers.push({
-            x: Math.random(),
-            y: 0.5 + Math.random() * 0.42,
-            s: 0.35 + Math.random() * 1,
-            petals: 5 + ((Math.random() * 6) | 0),
-            hue: Math.random() * 360,
-            phase: Math.random() * 6.28,
+            x: rnd(),
+            y: 0.5 + rnd() * 0.42,
+            s: 0.35 + rnd() * 1,
+            petals: 5 + ((rnd() * 6) | 0),
+            hue: rnd() * 360,
+            phase: rnd() * 6.28,
             type: ["daisy", "poppy", "sun", "orchid", "tulip"][
                 i % 5
             ],
@@ -145,57 +150,57 @@ function seed() {
 
     for (let i = 0; i < 12; i++) {
         ferns.push({
-            x: Math.random(),
-            y: 0.58 + Math.random() * 0.35,
-            s: 0.5 + Math.random() * 1.1,
-            phase: Math.random() * 6.28,
-            side: Math.random() < 0.5 ? -1 : 1,
-            hue: 130 + Math.random() * 35,
+            x: rnd(),
+            y: 0.58 + rnd() * 0.35,
+            s: 0.5 + rnd() * 1.1,
+            phase: rnd() * 6.28,
+            side: rnd() < 0.5 ? -1 : 1,
+            hue: 130 + rnd() * 35,
         });
     }
 
     for (let i = 0; i < 14; i++) {
         butterflies.push({
-            x: Math.random(),
-            y: 0.15 + Math.random() * 0.45,
-            s: 0.5 + Math.random() * 0.9,
-            hue: Math.random() * 360,
-            phase: Math.random() * 6.28,
-            speed: 0.3 + Math.random() * 0.5,
+            x: rnd(),
+            y: 0.15 + rnd() * 0.45,
+            s: 0.5 + rnd() * 0.9,
+            hue: rnd() * 360,
+            phase: rnd() * 6.28,
+            speed: 0.3 + rnd() * 0.5,
         });
     }
 
     for (let i = 0; i < 10; i++) {
         birds.push({
-            x: Math.random(),
-            y: 0.08 + Math.random() * 0.28,
-            s: 0.6 + Math.random() * 0.8,
-            phase: Math.random() * 6.28,
-            speed: 0.15 + Math.random() * 0.25,
-            hue: 20 + Math.random() * 40,
+            x: rnd(),
+            y: 0.08 + rnd() * 0.28,
+            s: 0.6 + rnd() * 0.8,
+            phase: rnd() * 6.28,
+            speed: 0.15 + rnd() * 0.25,
+            hue: 20 + rnd() * 40,
         });
     }
 
     for (let i = 0; i < 18; i++) {
         fish.push({
-            x: Math.random(),
-            y: 0.82 + Math.random() * 0.14,
-            s: 0.4 + Math.random() * 0.8,
-            phase: Math.random() * 6.28,
-            speed: 0.2 + Math.random() * 0.35,
-            hue: 180 + Math.random() * 80,
+            x: rnd(),
+            y: 0.82 + rnd() * 0.14,
+            s: 0.4 + rnd() * 0.8,
+            phase: rnd() * 6.28,
+            speed: 0.2 + rnd() * 0.35,
+            hue: 180 + rnd() * 80,
         });
     }
 
     for (let i = 0; i < 70; i++) {
         spores.push({
-            x: Math.random(),
-            y: Math.random(),
-            z: 0.3 + Math.random() * 0.7,
-            r: 0.5 + Math.random() * 2,
-            hue: Math.random() * 360,
-            phase: Math.random() * 6.28,
-            sp: 0.06 + Math.random() * 0.18,
+            x: rnd(),
+            y: rnd(),
+            z: 0.3 + rnd() * 0.7,
+            r: 0.5 + rnd() * 2,
+            hue: rnd() * 360,
+            phase: rnd() * 6.28,
+            sp: 0.06 + rnd() * 0.18,
         });
     }
 }
@@ -1077,9 +1082,8 @@ function drawSpores(t) {
     ctx.restore();
 }
 
-function frame(now) {
-    if (!t0) t0 = now;
-    const t = (now - t0) / 1000;
+function frame() {
+    const t = (Date.now() - EPOCH) / 1000;
     mx += (mxt - mx) * 0.05;
     my += (myt - my) * 0.05;
     const breath = 0.5 + 0.5 * Math.sin(t * 0.48);
