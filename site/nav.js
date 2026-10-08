@@ -6,23 +6,27 @@
   const fetchPage = (href) => cache.get(href) || (cache.set(href, fetch(href, { credentials: "same-origin" }).then((r) => r.text())), cache.get(href));
   function swapTo(html, href, push) {
     const doc = new DOMParser().parseFromString(html, "text/html");
-    const shell = doc.querySelector(".shell"); if (!shell) { location.href = href; return; }
+    const main = doc.querySelector(".shell > main"); if (!main) { location.href = href; return; }
     const style = [...doc.head.querySelectorAll("style")].map((s) => s.textContent).join("\n");
     const scripts = [...doc.querySelectorAll("script:not([src])")].map((s) => s.textContent);
     const apply = () => {
-      const cur = document.querySelector(".shell");
+      const cur = document.querySelector(".shell > main");
       let ps = document.getElementById("page-style");
       if (!ps) { ps = document.createElement("style"); ps.id = "page-style"; document.head.appendChild(ps); }
       ps.textContent = style;
-      cur.innerHTML = shell.innerHTML;
+      cur.replaceWith(main);
       document.title = doc.title;
       if (push) history.pushState({ soft3: true }, "", href);
       window.scrollTo(0, 0);
       for (const text of scripts) { const s = document.createElement("script"); s.textContent = text; document.body.appendChild(s); s.remove(); }
+      markActive();
       dispatchEvent(new CustomEvent("soft3:page", { detail: { href } }));
     };
-    if (document.startViewTransition) document.startViewTransition(apply); else { const cur = document.querySelector(".shell"); cur.style.transition = "opacity 180ms ease"; cur.style.opacity = "0"; setTimeout(() => { apply(); requestAnimationFrame(() => { cur.style.opacity = "1"; }); }, 180); }
+    if (document.startViewTransition) document.startViewTransition(apply); else { const cur = document.querySelector(".shell > main"); cur.style.transition = "opacity 180ms ease"; cur.style.opacity = "0"; setTimeout(() => { apply(); const nm = document.querySelector(".shell > main"); nm.style.opacity = "0"; nm.style.transition = "opacity 180ms ease"; requestAnimationFrame(() => { nm.style.opacity = "1"; }); }, 180); }
   }
+  // the menu is the same on every page; the current page is marked
+  function markActive() { document.querySelectorAll(".nav-links a").forEach((a) => { const u = new URL(a.href, location.href); const on = u.origin === location.origin && u.pathname === location.pathname; if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }); }
+  markActive();
   const go = (href, push = true) => fetchPage(href).then((html) => swapTo(html, href, push)).catch(() => { location.href = href; });
   window.soft3Go = (href) => go(href);
   document.addEventListener("click", (e) => {

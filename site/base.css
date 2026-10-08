@@ -97,6 +97,9 @@ body {
         color 0.2s,
         text-shadow 0.2s;
 }
+.nav-links a[aria-current="page"] { color: #7dffc4; text-shadow: 0 0 16px rgba(125, 255, 196, 0.6); }
+.nav-links a::after { content: ""; display: block; height: 2px; margin-top: 0.15rem; background: transparent; border-radius: 2px; transition: background 0.2s; }
+.nav-links a[aria-current="page"]::after { background: #7dffc4; }
 .top a:hover {
     color: #fff;
     text-shadow: 0 0 16px rgba(255, 210, 120, 0.9);
