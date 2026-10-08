@@ -22,7 +22,7 @@
             rel="icon"
             href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>"
         />
-        <link rel="stylesheet" href="/base.css?v=15" />
+        <link rel="stylesheet" href="/base.css?v=16" />
         <style id="page-style">
 
 
@@ -292,7 +292,7 @@
 
             /* wide screens: the diagram reads on the left, the crystal spins
                on the right — the map beside the toy, not above it */
-            @media (max-width: 900px) {
+            @media (max-width: 900px), (max-height: 560px) {
                 .stage {
                     display: flex;
                     flex-direction: column;
@@ -356,7 +356,7 @@
             .ladder .rung:hover, .ladder .rung[aria-selected="true"] { border-color: color-mix(in srgb, var(--fc) 80%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--fc) 30%, transparent); background: color-mix(in srgb, var(--fc) 10%, rgba(6,16,10,0.94)); }
             .ladder .who .fac { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--fc) 62%, white); text-shadow: 0 0 10px color-mix(in srgb, var(--fc) 70%, transparent); vertical-align: middle; }
             .ladder .who .fac i { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: var(--fc); box-shadow: 0 0 10px var(--fc); display: inline-block; }
-            @media (max-width: 900px) {
+            @media (max-width: 900px), (max-height: 560px) {
                 /* the phone reads the ladder as a list: nothing flexes to fit a height, everything flows */
                 .ladder { display: block; overflow: visible; padding: 0.8rem 0.8rem 0.9rem; }
                 .ladder-cap { margin-bottom: 0.6rem; }
@@ -532,7 +532,7 @@
             </footer>
         </div>
 
-        <script src="/world.js?v=13"></script>
+        <script src="/world.js?v=14"></script>
         <script src="/nav.js?v=3" defer></script>
         <script>
           {

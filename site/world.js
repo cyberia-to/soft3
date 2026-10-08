@@ -43,7 +43,7 @@ const hsl = (h, s, l, a = 1) =>
     `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
 
 function resize() {
-    dpr = Math.min(devicePixelRatio || 1, SMALL ? 1.25 : 2.5);
+    dpr = Math.min(devicePixelRatio || 1, SMALL ? 1 : 2.5);
     W = innerWidth;
     H = innerHeight;
     canvas.width = (W * dpr) | 0;
@@ -131,7 +131,7 @@ function seed() {
         });
     }
 
-    for (let i = 0; i < Math.floor(22 + W / 50); i++) {
+    for (let i = 0; i < Math.floor((22 + W / 50) * (SMALL ? 0.5 : 1)); i++) {
         mushrooms.push({
             x: rnd(),
             y: 0.55 + rnd() * 0.38,
@@ -146,7 +146,7 @@ function seed() {
         });
     }
 
-    for (let i = 0; i < Math.floor(32 + (W * H) / 12000); i++) {
+    for (let i = 0; i < Math.floor((32 + (W * H) / 12000) * (SMALL ? 0.5 : 1)); i++) {
         flowers.push({
             x: rnd(),
             y: 0.5 + rnd() * 0.42,
@@ -1095,18 +1095,18 @@ function drawSpores(t) {
 }
 
 // the glitch — the stack has not crystallised yet, and the world says so: every
-// ~30 s a burst of a few frames where slices of the picture slip sideways. rare,
-// short, the same on every device; a phone gets a shorter burst with fewer
-// slices. it goes away when the stack stabilises.
-const GLITCH_EVERY = 30, GLITCH_LEN = SMALL ? 0.12 : 0.22;
-let jolted = false;
+// ~30 s a burst of a few frames where two slices of the picture slip sideways.
+// phones only — on a desktop the glass hides the world and it read as noise.
+// it goes away when the stack stabilises.
+const GLITCH_EVERY = 30, GLITCH_LEN = 0.12;
 function glitchPhase(t) {
+    if (!SMALL) return -1;
     const phase = (t + 7) % GLITCH_EVERY;
     return phase < GLITCH_LEN ? phase / GLITCH_LEN : -1;
 }
 // blit the burst frame from `off` to the screen, slices displaced
 function glitchBlit(t, k) {
-    const n = SMALL ? 2 : 3 + ((k * 9) | 0) % 4;
+    const n = 2;
     const seedT = Math.floor(t / GLITCH_EVERY) * 977;
     screen.drawImage(off, 0, 0, off.width, off.height, 0, 0, W, H);
     for (let i = 0; i < n; i++) {
@@ -1115,26 +1115,11 @@ function glitchBlit(t, k) {
         const y = r1 * H, h = 6 + r2 * 40, dx = (r2 - 0.5) * 36 * (1 - k);
         screen.drawImage(off, 0, y * dpr, off.width, h * dpr, dx, y, W, h);
     }
-    // on a desktop the glass hides most of the world, so the page itself jolts
-    // too: three stepped offsets, transform only, back in place before the end
-    if (!SMALL) {
-        const shell = document.querySelector(".shell");
-        if (shell) {
-            const step = (k * 3) | 0;
-            const jx = k < 0.7 ? [1, -1, 0.5][step] * (5 + 5 * (seedT % 3)) : 0;
-            shell.style.transform = jx ? `translate3d(${jx}px,0,0)` : "";
-            jolted = !!jx;
-        }
-    }
-    if (!SMALL && k < 0.35) {
-        screen.globalCompositeOperation = "lighter";
-        screen.globalAlpha = 0.07;
-        screen.drawImage(off, 0, 0, off.width, off.height, 4, 0, W, H);
-        screen.globalAlpha = 1;
-        screen.globalCompositeOperation = "source-over";
-    }
 }
+let skip = false;
 function frame() {
+    // a phone paints every other vsync: 30 fps for the world, the page stays responsive
+    if (SMALL && (skip = !skip)) { requestAnimationFrame(frame); return; }
     const t = (Date.now() - EPOCH) / 1000;
     const gk = glitchPhase(t);
     ctx = gk < 0 ? screen : octx;
@@ -1194,7 +1179,6 @@ function frame() {
     ctx.fillRect(0, 0, W, H);
 
     if (gk >= 0) glitchBlit(t, gk);
-    else if (jolted) { const shell = document.querySelector(".shell"); if (shell) shell.style.transform = ""; jolted = false; }
     requestAnimationFrame(frame);
 }
 
