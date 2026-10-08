@@ -10,8 +10,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" />
-        <link rel="stylesheet" href="/base.css?v=12" />
-        <style>
+        <link rel="stylesheet" href="/base.css?v=13" />
+        <style id="page-style">
             .chart-stage { display: grid; grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr); gap: clamp(0.6rem, 1.2vw, 0.9rem); min-height: 0; align-items: stretch; }
             .side { padding: 1rem 1.1rem; font-size: 0.86rem; line-height: 1.45; min-height: 0; overflow: auto; }
             .side h2 { margin: 0 0 0.1rem; font-size: 1.25rem; letter-spacing: 0.04em; }
@@ -55,7 +55,8 @@
                 <span>don't trust. don't fear. don't beg.</span>
             </footer>
         </div>
-        <script src="/world.js?v=9"></script>
+        <script src="/world.js?v=11"></script>
+        <script src="/nav.js?v=1" defer></script>
         <script>
           try {
             const FACETS = {
@@ -85,7 +86,7 @@
             // pills are laid around the ring by their real width: two interleaved rows,
             // a pill may not touch its same-row neighbour; the whole circle is then
             // scaled to close exactly, and the type shrinks a notch if it must
-            const PILL = (n) => 44 + n.id.length * 25.5, GAP = 26;
+            const PILL = (n) => 40 + n.id.length * 22, GAP = 24;
             let K = 1, angles = [];
             for (let tries = 0; tries < 6; tries++) {
                 const rowR = [RING_R - WOBBLE, RING_R + WOBBLE];
@@ -128,7 +129,7 @@
 
             el("circle", { cx: CX, cy: CY, r: 212, fill: "#06100a", "fill-opacity": 0.35, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.4 }, hubLayer);
             el("circle", { cx: CX, cy: CY, r: 212, fill: "#7dffc4", "fill-opacity": 0.04, stroke: "#7dffc4", "stroke-opacity": 0.3, "stroke-width": 1.2 }, hubLayer);
-            el("text", { x: CX, y: CY + 164, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 20 }, hubLayer).textContent = "built on soft3 — the point of the whole stack";
+            el("text", { x: CX, y: CY + 164, "text-anchor": "middle", fill: "rgba(125,255,196,0.8)", "font-size": 20 }, hubLayer).textContent = "products built on soft3";
             el("circle", { cx: CX, cy: CY, r: HUB_R, fill: "none", stroke: "rgba(255,248,240,0.12)", "stroke-width": 1.2, "stroke-dasharray": "4 8" }, hubLayer);
             el("circle", { cx: CX, cy: CY, r: RING_R, fill: "none", stroke: "rgba(255,248,240,0.07)", "stroke-width": 1.2 }, hubLayer);
             { const rg = el("radialGradient", { id: "heart", cx: "50%", cy: "50%", r: "50%" }, defs); el("stop", { offset: "0%", "stop-color": "#7dffc4", "stop-opacity": 0.14 }, rg); el("stop", { offset: "100%", "stop-color": "#7dffc4", "stop-opacity": 0 }, rg); el("circle", { cx: CX, cy: CY, r: 330, fill: "url(#heart)" }, hubLayer); }
@@ -158,8 +159,8 @@
             NODES.filter((n) => !n.hub).forEach((n) => {
                 const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = apps ? 56 + n.id.length * 26 : PILL(n) * K;
                 const g = el("g", { class: "node", "data-id": n.id }, nodeLayer);
-                el("rect", { x: x - w / 2, y: y - (apps ? 34 : 34 * K), width: w, height: apps ? 68 : 68 * K, rx: 34, fill: apps ? "rgba(6,16,10,0.85)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
-                el("text", { x, y: y + (apps ? 13 : 16 * K), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 38 : 44 * K, "font-weight": 700 }, g).textContent = n.id;
+                el("rect", { x: x - w / 2, y: y - (apps ? 33 : 30 * K), width: w, height: apps ? 66 : 60 * K, rx: 33, fill: apps ? "rgba(6,16,10,0.85)" : FACETS[n.f].c, stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
+                el("text", { x, y: y + (apps ? 12 : 14 * K), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 36 : 38 * K, "font-weight": 700 }, g).textContent = n.id;
                 nodeEls[n.id] = g;
             });
 
