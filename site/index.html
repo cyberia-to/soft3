@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. fourteen features: frozen foundations, post-quantum, 275k lines, trinity, 2 KB proofs, incremental proving, private, memoization, planet scale, transparent models, names, rewards, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private, trusting trust, memoization, planet scale, transparent models, names, rewards, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,7 +65,7 @@
             .fig svg text { font-family: Play, system-ui, sans-serif; fill: var(--cream); }
             .fig svg .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
             .fig svg .dim { fill: rgba(255,248,240,0.55); }
-            @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } }
+            @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } .wall { grid-template-columns: minmax(22rem, 28rem) minmax(0, 1fr); } .list { display: grid; grid-template-columns: 1fr 1fr; align-content: start; } }
             @media (max-width: 900px), (max-height: 560px) {
                 .home { grid-template-rows: auto auto; }
                 .hero { grid-template-columns: 1fr; padding: 1rem 1rem 0.9rem; }
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>fourteen things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>sixteen things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -173,6 +173,16 @@
                       [t("FHE bootstrap"), `<td>encrypted evaluation</td>`, `<td>privacy</td>`],
                       [t("proof lookup"), `<td>proof authentication</td>`, `<td>verifiability</td>`],
                   ], "the Trinity program runs and proves today; the spec says it does not yet establish secure TFHE, private inference or a quantum commitment — that is the open work.") },
+                { id: "cross", verb: "build", name: "cross-verified", line: "every primitive is written three times, and the three must agree", status: "live · coverage by call tree",
+                  claim: "every primitive is written three times — and the three must agree",
+                  why: "a contract in the spec, an implementation in Rust, an implementation in Trident running on nox: the field, the hash, the encodings, the compiler itself. a differential harness runs the real Trident modules on the real machine against independently computed Rust ground truth; compiler output, hand-written assembly and the neural optimiser must agree on the same fixtures. nothing ships on one author's word, in one language. coverage today is by reachable call tree, not whole modules — the harness says so itself.",
+                  parts: ["trident", "strata", "hemera", "nox"], source: ["trident/tests/differential.rs", GH + "trident/blob/master/tests/differential.rs"],
+                  fig: () => table(["primitive", "spec", "rust", "trident", "agree by"], [
+                      [`<td>field arithmetic</td>`, d("nox/specs"), t("nebu"), t("nebu/tri: field · fp2 · fp3 · fp4 · ntt"), `<td>differential on nox · trisha bench</td>`],
+                      [`<td>hash</td>`, t("hemera/specs"), t("hemera/rs"), t("std.crypto Poseidon2"), `<td>independent integer reference</td>`],
+                      [`<td>encodings, batches</td>`, d("tade/specs"), t("kuro · nebu"), t("kuro/tri · nebu/tri"), `<td>differential on nox</td>`],
+                      [`<td>the compiler</td>`, t("reference/language.md"), t("src/"), n("lib/std/compiler — experimental"), `<td>differential corpus · four producers must agree</td>`],
+                  ], "four producers of machine code — Rust reference, the compiler, hand baselines, the neural optimiser — share one scoreboard; a disagreement is a bug, whichever side is wrong.") },
                 { id: "proofs", verb: "prove", name: "2 KB proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
                   claim: "a proof is a constant: two kilobytes, whatever it proves",
                   why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
@@ -194,6 +204,11 @@
                   why: "what the network needs — axons, supplies, focus, φ* — is always public and always proven. what belongs to one neuron — links, balances, queries — stays sealed. a question is answered inside the proof over public tables, so the answer is proven without the question ever leaving your device.",
                   parts: ["bbg", "mudra", "zheng"], source: ["bbg/specs/privacy.md", GH + "bbg/blob/main/specs/privacy.md"],
                   fig: () => halves() },
+                { id: "trust", verb: "prove", name: "trusting trust", line: "the compiler proves it compiled itself", status: "target · SH0 of SH8 next",
+                  claim: "the compiler proves it compiled itself",
+                  why: "Thompson's attack: a compiler that plants a backdoor in every compiler it builds, invisible in any source you can read. the answer here is not trust but a proof. the Trident compiler is written in Trident and runs on nox; it builds itself to a fixed point — the second self-build equals the third, reproducibly on every target — and the build runs under zheng, so a proof binds the exact source closure to the exact binary. in the stack's own words: a proof of faithful execution shows the compiler ran as written, not that what was written is correct; that needs separate evidence.",
+                  parts: ["trident", "joy", "zheng", "nox"], source: ["trident/reference/self-hosting.md", GH + "trident/blob/master/reference/self-hosting.md"],
+                  fig: () => bootstrap() },
                 { id: "memo", verb: "remember", name: "memoization", line: "computed once, answered forever: a proof in the book is the computation.", status: "specified",
                   claim: "nothing is computed twice on the planet",
                   why: "every proven step is a fact in the book, keyed by the hash of what was asked. ask the book before the machine: a hit is one verification, a miss is one computation that becomes the next hit — for everyone. the one who proved it first is paid each time the world remembers instead of recomputing.",
@@ -280,6 +295,15 @@
                 const bar = (y, label, v, text, ours) => `<text x="0" y="${y}" font-size="13">${label}</text><rect x="0" y="${y + 6}" width="${bw(v)}" height="10" rx="5" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.35)"}"/><text class="mono" x="${bw(v) + 8}" y="${y + 15}" font-size="12" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.7)"}">${text}</text>`;
                 const svg = `<svg viewBox="0 0 ${W} 128">${bar(14, "soft3, with radio", 425, "425 k", true)}${bar(56, "the usual parts, before LLVM", 3222, "3.2 M · ×7.6", false)}${bar(98, "the usual parts, with LLVM", 38782, "38.8 M · ×91", false)}</svg>`;
                 return tbl + svg + `<p class="note">code lines only, tokei 14, 2026-10-08, tests and data files excluded; rustc is compiler/ + library/; LLVM is the published 2024 figure. the same functions, not the same features: nothing on the right proves, remembers or pays.</p>`;
+            }
+            function bootstrap() {
+                const box = (x, y, w, label, sub, fill) => `<rect x="${x}" y="${y}" width="${w}" height="46" rx="8" fill="${fill || "rgba(6,16,10,0.8)"}" stroke="var(--c)"/><text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-size="14" ${fill ? 'fill="var(--t)"' : ""}>${label}</text><text class="mono dim" x="${x + w / 2}" y="${y + 37}" text-anchor="middle" font-size="10" ${fill ? 'fill="var(--t)"' : ""}>${sub}</text>`;
+                const arrow = (x1, x2, y, label) => `<path d="M ${x1} ${y} L ${x2 - 2} ${y}" stroke="var(--c)" stroke-width="2" marker-end="url(#bt)"/><text class="mono dim" x="${(x1 + x2) / 2}" y="${y - 7}" text-anchor="middle" font-size="10">${label}</text>`;
+                let g = `<defs><marker id="bt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--c)"/></marker></defs>`;
+                g += box(10, 40, 100, "source S", "in trident") + arrow(110, 160, 63, "seed") + box(160, 40, 100, "C1", "rust-built") + arrow(260, 310, 63, "on nox") + box(310, 40, 100, "C2", "C1 builds S") + arrow(410, 460, 63, "on nox") + box(460, 40, 100, "C3", "C2 builds S", true);
+                g += `<path d="M 360 86 L 360 112 L 510 112 L 510 86" stroke="var(--c)" stroke-width="1.6" fill="none" stroke-dasharray="4 5"/><text class="mono" x="435" y="128" text-anchor="middle" font-size="12" fill="var(--c)">C2 = C3: the fixed point, everywhere</text>`;
+                g += `<path d="M 60 86 L 60 150 L 510 150 L 510 86" stroke="rgba(255,248,240,0.5)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/><text class="mono dim" x="285" y="166" text-anchor="middle" font-size="11">one zheng proof binds S to C3: what was compiled, by what, into what</text>`;
+                return `<svg viewBox="0 0 570 176">${g}</svg><p class="note">milestones SH0–SH8 in trident/reference/self-hosting.md; today the Rust compiler is the implementation and no milestone is closed — SH0.1 merged, SH0 next. a fixed point shows reproducibility, not correctness.</p>`;
             }
             function chain() {
                 const steps = [1, 2, 3], W = 520, y = 56;
