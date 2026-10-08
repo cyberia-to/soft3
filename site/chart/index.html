@@ -112,10 +112,11 @@
             }
             const pos = {}, hubPos = {}, groupAngles = {};
             ringList.forEach((n, i) => { const a = -Math.PI / 2 + angles[i] + 0.06; const r = RING_R + (i % 2 ? WOBBLE : -WOBBLE); pos[n.id] = { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a), a }; (groupAngles[n.layer] ||= []).push(a); });
-            for (let k = 1; k <= 7; k++) { const as = groupAngles[k], mid = (as[0] + as[as.length - 1]) / 2, even = -Math.PI / 2 + (k - 0.5) * (2 * Math.PI / 7); const a0 = mid * 0.5 + even * 0.5; hubPos[LADDER[k - 1]] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 }; }
+            for (let k = 1; k <= 7; k++) { const as = groupAngles[k], mid = (as[0] + as[as.length - 1]) / 2, even = -Math.PI / 2 + (k - 0.5) * (2 * Math.PI / 7); const a0 = even; void mid; hubPos[LADDER[k - 1]] = { x: CX + HUB_R * Math.cos(a0), y: CY + HUB_R * Math.sin(a0), a: a0 }; }
             Object.assign(pos, hubPos);
             pos["cyberia"] = { x: CX, y: CY - 84 }; pos["cyb"] = { x: CX - 98, y: CY + 56 }; pos["cyber"] = { x: CX + 104, y: CY + 56 };
-            const HUB_RAD = 122;
+            // one font for everything named: pills, hubs and the products share PF_SIZE * K
+            const NAME_FS = PF_SIZE * K, HUB_RAD = Math.max(122, Math.ceil((10 * 19.2 * K) / 2) + 18);
 
             // ── draw ──
             const svg = document.getElementById("stage"), NS = "http://www.w3.org/2000/svg";
@@ -135,8 +136,8 @@
                 const g = el("g", { class: "hub", "data-id": n.id }, hubLayer);
                 el("circle", { cx: x, cy: y, r: HUB_RAD, fill: "#06100a", "fill-opacity": 0.82 }, g);
                 el("circle", { cx: x, cy: y, r: HUB_RAD, fill: c, "fill-opacity": 0.2, stroke: c, "stroke-opacity": 0.7, "stroke-width": 2.2 }, g);
-                el("text", { x, y: y + 4, "text-anchor": "middle", fill: c, "font-size": PF_SIZE, "font-weight": 700 }, g).textContent = n.id;
-                el("text", { x, y: y + 36, "text-anchor": "middle", fill: "rgba(255,248,240,0.85)", "font-size": 20 }, g).textContent = ROLE[n.id];
+                el("text", { x, y: y + 4 * K, "text-anchor": "middle", fill: c, "font-size": NAME_FS, "font-weight": 700 }, g).textContent = n.id;
+                el("text", { x, y: y + 36 * K, "text-anchor": "middle", fill: "rgba(255,248,240,0.85)", "font-size": 20 * K }, g).textContent = ROLE[n.id];
                 hubEls[n.id] = g;
             });
             NODES.forEach((n) => { if (n.hub || n.f === "apps") return; const h = hubPos[LADDER[n.layer - 1]], p = pos[n.id]; el("line", { x1: h.x + (p.x - h.x) * 0.45, y1: h.y + (p.y - h.y) * 0.45, x2: p.x, y2: p.y, stroke: colourOf(n), "stroke-opacity": 0.16, "stroke-width": 1.2 }, hubLayer); });
@@ -150,10 +151,10 @@
             });
             const nodeEls = {}, nodeBox = {};
             NODES.filter((n) => !n.hub).forEach((n) => {
-                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = apps ? 56 + n.id.length * 26 : PILL(n) * K, h = apps ? 66 : PH * K;
+                const { x, y } = pos[n.id]; const apps = n.f === "apps"; const w = PILL(n) * K + (apps ? 22 : 0), h = PH * K + (apps ? 10 : 0);
                 const g = el("g", { class: "node", "data-id": n.id }, nodeLayer);
                 el("rect", { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: h / 2, fill: apps ? "rgba(6,16,10,0.85)" : colourOf(n), stroke: apps ? "#fff8f0" : "rgba(255,255,255,0.3)", "stroke-width": apps ? 1.8 : 1 }, g);
-                el("text", { x, y: y + (apps ? 12 : 11 * K), "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": apps ? 36 : PF_SIZE * K, "font-weight": 700 }, g).textContent = n.id;
+                el("text", { x, y: y + 11 * K, "text-anchor": "middle", fill: apps ? "#fff8f0" : FACETS[n.f].t, "font-size": NAME_FS, "font-weight": 700 }, g).textContent = n.id;
                 nodeEls[n.id] = g; nodeBox[n.id] = { x: x - w / 2, y: y - h / 2, w, h };
             });
 
