@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-five features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-six features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twenty-five things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>twenty-six things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -352,6 +352,16 @@
                       [`<td>validators</td>`, d("10²–10³"), d("unbounded"), t("unbounded")],
                       [`<td>fault tolerance</td>`, d("⅓ stake"), d("51 % hash"), t("½ focus")],
                   ], "typical WAN case: compute ~0.2 s, 5–8 iterations, propagation ~0.4 s, finality ~1.4 s. derived in the spec; the jitter bound and thresholds are illustrative until measured.") },
+                { id: "location", verb: "focus", name: "location proofs", line: "where a node is, proven by the speed of light — no GPS, no anchors, no authority", status: "specified",
+                  claim: "where a node is, proven by the speed of light — no GPS, no anchors, no authority",
+                  why: "an IP address has confused who you are with where you are since 1973, and every layer that resolves it is a point of control. here the two are separate: a keypair says who, a location proof says where. nodes time signals between each other; because light has a known speed, round-trip times are distances, a distance matrix recovers 3D coordinates with no known anchor, and the size of the Earth calibrates the picture. four axioms, nothing else: I exist, signals have a bounded speed, the Earth is a sphere, at least one observer is honest. it makes relay cheap, ordering checkable and agreement geographically honest.",
+                  parts: ["foculus", "radio", "mudra"], source: ["cyberia/protocol — location proof", "https://cyberia.blog/cyberia/protocol/location-proof/"],
+                  fig: () => table(["the usual stack", "here"], [
+                      [d("IP: who and where in one number"), t("pubkey → who · geohash → where")],
+                      [d("IANA → RIR → AS → ISP → you"), t("no hierarchy: a mesh of round-trip times")],
+                      [d("GPS, certificates, known anchors"), t("the speed of light and the size of the Earth")],
+                      [d("trust the provider"), t("four axioms and one honest observer")],
+                  ], "round-trip times → distance matrix → classical MDS → 3D coordinates; Earth's circumference self-calibrates the embedding.") },
                 { id: "space", verb: "focus", name: "interplanetary", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
                   claim: "no proposer, no clock, no committee: facts commute",
                   why: "agreement is convergence, not voting. signals commute, so they can be stored and forwarded across any delay; there is no round that a far world could miss. Earth to Mars is four to twenty-four minutes one way; each world is its own pond, safe through the conjunction when no signal gets through at all.",
