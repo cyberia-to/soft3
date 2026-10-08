@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-four features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, rewards, useful mining, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-five features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, planet scale, explainable, aligned, names, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -105,7 +105,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twenty-four things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>twenty-five things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -314,16 +314,26 @@
                       [t("heat"), `<td>the heat kernel — how far influence spreads</td>`, n("e^(−τλ₂)")],
                       [`<td><b>composite</b></td>`, `<td>a convex mix of the three</td>`, t("κ < 1 → one fixed point φ*")],
                   ], "measured: bostrom contracts at κ = 0.74, λ₂ = 0.13 (foculus/specs/provable-consensus). the fixed point is unique by Banach; the ranking is a theorem.") },
-                { id: "rewards", verb: "focus", name: "rewards", line: "whoever moves the focus is paid — for risk, for storage, for bandwidth, and fairly.", status: "specified · bandwidth proposed",
-                  claim: "four reasons to be paid, one formula",
-                  why: "a reward has four terms: a Shapley share of the focus you moved, a subsidy for proof-of-work, a cut of the fees your work served, and yield on the stake you risked. storage needs no separate market — focus is the storage payment. the attribution is the unique fair one: efficient, symmetric, no pay for no contribution.",
-                  parts: ["tru", "solong", "tok"], source: ["tru/specs/rewards.md", GH + "tru/blob/main/specs/rewards.md"],
-                  fig: () => table(["for", "paid when", "how", "status"], [
-                      [`<td>risk</td>`, `<td>your bet was right</td>`, n("stake ±1 · karma slashing"), t("specified")],
-                      [`<td>storage</td>`, `<td>what you hold is in focus</td>`, n("replication follows φ*"), t("specified")],
-                      [`<td>bandwidth</td>`, `<td>you relayed what moved</td>`, n("relay fees"), d("proposed")],
-                      [`<td>fairness</td>`, `<td>always</td>`, n("Shapley share of Δφ*"), t("specified")],
-                  ], "collusion resistance is open: the mechanism is incentive-compatible against unilateral deviation.") },
+                { id: "truth", verb: "focus", name: "truth staking", line: "stake on what you believe; honesty is the only strategy that pays", status: "specified · collusion open",
+                  claim: "stake on what you believe — honesty is the only strategy that pays",
+                  why: "every link can carry a stake: an active bet, plus or minus one. you are paid a Shapley share of the focus your link moved, and scored by Bayesian Truth Serum and the surprisingly-popular rule — so honesty pays with no judge and no oracle, in a market that never resolves. karma accumulates and cannot be transferred; liars pay truth-tellers. what is still open, in the spec's own words: the mechanism is incentive-compatible against unilateral deviation; collusion is not yet closed.",
+                  parts: ["tru", "tok", "foculus"], source: ["tru/specs/strong-truthfulness.md", GH + "tru/blob/main/specs/strong-truthfulness.md"],
+                  fig: () => table(["you", "if right", "if wrong", "why it holds"], [
+                      [t("link with a stake, ±1"), `<td>a Shapley share of the focus you moved</td>`, `<td>karma slashing — you pay the truth-tellers</td>`, `<td>BTS + surprisingly popular: no judge needed</td>`],
+                      [t("split your stake"), `<td>nothing gained</td>`, `<td>nothing hidden</td>`, `<td>stake conserved, karma non-transferable</td>`],
+                      [t("stay passive, stake 0"), `<td>no staking reward</td>`, `<td>no loss</td>`, `<td>only active bets are scored</td>`],
+                  ], "the proof assumes honest stake above one half; the perpetual market with no external oracle is the case strong-truthfulness.md settles.") },
+                { id: "markets", verb: "focus", name: "resource markets", line: "storage, compute, bandwidth: bought and sold, priced by focus", status: "specified · relay proposed",
+                  claim: "storage, compute, bandwidth — bought and sold, priced by focus",
+                  why: "five resources — sequence, compute, storage, relay, consensus — each with its own base fee and each operation declaring who pays. focus is the exchange rate: what the world attends to is cheap to store (replication follows it), cheap to relay (cached at the edges), cheap to compute (memoized); the rest pays full price. anyone with a disk, a chip or a good link sells; an agent's answers are compute sold on the same market. hubs form without permission and dissolve when conditions change.",
+                  parts: ["tok", "solong", "bbg", "radio"], source: ["cyber/whitepaper — resource economics", "https://cyber.page/whitepaper/"],
+                  fig: () => table(["resource", "what you sell", "priced by", "status"], [
+                      [t("storage"), `<td>holding state across time</td>`, n("duration × popularity"), `<td>specified — replication follows focus</td>`],
+                      [t("compute"), `<td>aggregation, proving, verification, inference</td>`, n("complexity × proof cost"), `<td>specified</td>`],
+                      [t("bandwidth"), `<td>moving state between nodes</td>`, n("size × route × 1/latency"), d("proposed")],
+                      [t("sequence"), `<td>verifiable ordering</td>`, n("precision: causal cheap, global dear"), `<td>specified</td>`],
+                      [t("consensus"), `<td>private signals into shared truth</td>`, n("finality strength × scope"), `<td>specified</td>`],
+                  ], "one fee per resource, an EIP-1559 rule each; push or pull — whoever extracts more value pays.") },
                 { id: "mining", verb: "focus", name: "useful mining", line: "the work is proving", status: "proposed · tickets measured",
                   claim: "the work is proving",
                   why: "miners here do not burn hashes. they produce proofs the network needs: settlement tickets — each a zheng proof that one Shapley share was evaluated correctly under a beacon-seeded order — and folds, each collapsing two proofs into one accumulator. two lotteries, both proof-of-useful-work. the hardware that mines is the hardware that proves; nothing is stranded when the difficulty moves.",
