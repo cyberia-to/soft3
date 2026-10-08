@@ -8,9 +8,11 @@ let organHue = 0;
 window.worldHue = (h) => { organHue = h; };
 /* ========== WORLD ========== */
 const canvas = document.getElementById("world");
+// a phone gets a cheaper canvas: no desynchronised buffer (it tears), a lower pixel ratio
+const SMALL = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
 const ctx = canvas.getContext("2d", {
     alpha: false,
-    desynchronized: true,
+    desynchronized: !SMALL,
 });
 let W,
     H,
@@ -35,7 +37,7 @@ const hsl = (h, s, l, a = 1) =>
     `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
 
 function resize() {
-    dpr = Math.min(devicePixelRatio || 1, 2.5);
+    dpr = Math.min(devicePixelRatio || 1, SMALL ? 1.5 : 2.5);
     W = innerWidth;
     H = innerHeight;
     canvas.width = (W * dpr) | 0;
@@ -1082,6 +1084,24 @@ function drawSpores(t) {
     ctx.restore();
 }
 
+// the glitch — the stack has not crystallised yet, and the world says so: every
+// ~30 s a burst of a few frames where slices of the picture slip sideways. rare,
+// short, cheap (it redraws slices of the canvas onto itself), the same on every
+// device. it goes away when the stack stabilises.
+const GLITCH_EVERY = 30, GLITCH_LEN = 0.22;
+function glitch(t) {
+    const phase = (t + 7) % GLITCH_EVERY;
+    if (phase > GLITCH_LEN) return;
+    const k = phase / GLITCH_LEN, n = 3 + ((k * 9) | 0) % 4;
+    const seedT = Math.floor(t / GLITCH_EVERY) * 977;
+    for (let i = 0; i < n; i++) {
+        const r1 = ((Math.sin(seedT + i * 12.9898 + k * 3) * 43758.5453) % 1 + 1) % 1;
+        const r2 = ((Math.sin(seedT + i * 78.233 + k * 5) * 43758.5453) % 1 + 1) % 1;
+        const y = r1 * H, h = 6 + r2 * 40, dx = (r2 - 0.5) * 36 * (1 - k);
+        ctx.drawImage(canvas, 0, y * dpr, W * dpr, h * dpr, dx, y, W, h);
+    }
+    if (k < 0.35) { ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = 0.07; ctx.drawImage(canvas, 0, 0, W * dpr, H * dpr, 4, 0, W, H); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; }
+}
 function frame() {
     const t = (Date.now() - EPOCH) / 1000;
     mx += (mxt - mx) * 0.05;
@@ -1139,6 +1159,7 @@ function frame() {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
+    glitch(t);
     requestAnimationFrame(frame);
 }
 
