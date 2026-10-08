@@ -15,66 +15,67 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='22'>🍄</text></svg>" />
         <link rel="stylesheet" href="/base.css?v=16" />
         <style id="page-style">
-            .home { display: grid; gap: 0.8rem; align-content: start; min-height: 0; overflow: auto; padding-bottom: 0.4rem; }
-            /* the hero: one sentence, one line under it, the install */
-            .hero { padding: 1.6rem 1.8rem 1.3rem; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.2rem 2rem; align-items: end; }
-            .hero h1 { margin: 0; font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.02; letter-spacing: -0.01em; color: var(--cream); }
-            .hero h1 em { font-style: normal; color: #7dffc4; display: block; }
-            .hero .sub { margin: 0.8rem 0 0; font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.45; color: rgba(255,248,240,0.86); max-width: 38rem; }
+            .home { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.7rem; min-height: 0; }
+            /* the hero: one line, one sentence, the install — small enough that the features fit under it */
+            .hero { padding: 0.95rem 1.4rem 0.9rem; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 0.6rem 2rem; align-items: center; }
+            .hero h1 { margin: 0; font-size: clamp(1.5rem, 2.6vw, 2.3rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--cream); }
+            .hero h1 em { font-style: normal; color: #7dffc4; }
+            .hero .sub { margin: 0.45rem 0 0; font-size: clamp(0.9rem, 1.1vw, 1rem); line-height: 1.4; color: rgba(255,248,240,0.82); }
             .hero .sub b { color: var(--cream); font-weight: 400; }
-            .hero .install { display: flex; gap: 0; border: 1px solid rgba(125,255,196,0.35); border-radius: 999px; overflow: hidden; background: rgba(6,16,10,0.6); }
-            .hero .install code { flex: 1; padding: 0.7rem 1rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.95rem; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .hero .install button { border: 0; cursor: pointer; padding: 0.7rem 1.2rem; background: linear-gradient(90deg, #a46bff, #7dffc4); color: #06100a; font-family: inherit; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.72rem; }
-            .hero .hint { margin: 0.5rem 0 0; font-size: 0.82rem; color: rgba(255,248,240,0.65); }
+            .hero .install { display: flex; border: 1px solid rgba(125,255,196,0.35); border-radius: 999px; overflow: hidden; background: rgba(6,16,10,0.6); }
+            .hero .install code { flex: 1; padding: 0.55rem 1rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.9rem; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .hero .install button { border: 0; cursor: pointer; padding: 0.55rem 1.1rem; background: linear-gradient(90deg, #a46bff, #7dffc4); color: #06100a; font-family: inherit; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.7rem; }
+            .hero .hint { margin: 0.4rem 0 0; font-size: 0.76rem; color: rgba(255,248,240,0.62); }
             .hero .hint a { color: #7dffc4; text-decoration: none; } .hero .hint a:hover { text-decoration: underline; }
-            .hero .verbs { margin: 0.9rem 0 0; display: flex; flex-wrap: wrap; gap: 0.35rem 0.5rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
-            .hero .verbs a { color: var(--c); text-decoration: none; opacity: 0.9; } .hero .verbs a:hover { text-decoration: underline; }
-            .hero .verbs i { color: rgba(255,248,240,0.35); font-style: normal; }
-            /* the wall: twelve features, each in the colour of the verb it is born from */
-            .wall { padding: 1rem 1.2rem 1.2rem; }
-            .wall .cap { display: flex; align-items: baseline; gap: 1rem; margin: 0 0 0.7rem; }
-            .wall .cap h2 { margin: 0; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,248,240,0.6); font-weight: 400; }
-            .wall .cap span { font-size: 0.78rem; color: rgba(255,248,240,0.5); }
-            .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
-            .tile { --c: #7dffc4; position: relative; text-align: left; cursor: pointer; border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); background: color-mix(in srgb, var(--c) 7%, rgba(6,16,10,0.85)); border-radius: 0.9rem; padding: 0.8rem 0.9rem 0.75rem; color: var(--cream); font-family: inherit; display: grid; gap: 0.3rem; align-content: start; min-height: 7.2rem; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
-            .tile:hover, .tile[aria-expanded="true"] { border-color: color-mix(in srgb, var(--c) 85%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--c) 28%, transparent); background: color-mix(in srgb, var(--c) 13%, rgba(6,16,10,0.9)); }
-            .tile h3 { margin: 0; font-size: 1.05rem; letter-spacing: 0.01em; display: flex; align-items: center; gap: 0.45rem; }
-            .tile h3 i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--c); box-shadow: 0 0 10px var(--c); flex: none; }
-            .tile p { margin: 0; font-size: 0.86rem; line-height: 1.4; color: rgba(255,248,240,0.82); }
-            .tile .st { margin-top: auto; padding-top: 0.3rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.5); }
-            .tile .st b { font-weight: 400; color: color-mix(in srgb, var(--c) 70%, white); }
-            /* the card: opens under the row of the tile you clicked */
-            .card { --c: #7dffc4; grid-column: 1 / -1; border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); border-radius: 1rem; background: color-mix(in srgb, var(--c) 6%, rgba(6,16,10,0.92)); padding: 1.1rem 1.2rem 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 1.6rem; position: relative; animation: open 0.25s ease; }
-            @keyframes open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-            .card .x { position: absolute; top: 0.6rem; right: 0.7rem; border: 0; background: transparent; color: rgba(255,248,240,0.6); font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 0.2rem 0.4rem; font-family: inherit; } .card .x:hover { color: var(--cream); }
-            .card h3 { margin: 0 0 0.5rem; font-size: 1.45rem; line-height: 1.15; color: var(--cream); }
-            .card h3 small { display: block; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 70%, white); margin-bottom: 0.35rem; font-family: "JetBrains Mono", ui-monospace, monospace; }
-            .card p { margin: 0 0 0.6rem; font-size: 0.95rem; line-height: 1.5; color: rgba(255,248,240,0.86); }
-            .card .parts { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 0.6rem; }
-            .card .parts a { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.74rem; padding: 0.18rem 0.6rem; border-radius: 999px; background: var(--c); color: var(--t, #0a120e); text-decoration: none; }
-            .card .meta { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.68rem; letter-spacing: 0.06em; color: rgba(255,248,240,0.55); display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
-            .card .meta a { color: #7dffc4; text-decoration: none; } .card .meta a:hover { text-decoration: underline; }
-            .card .meta b { font-weight: 400; color: color-mix(in srgb, var(--c) 70%, white); }
-            .fig { min-height: 0; display: grid; align-content: center; }
-            .fig table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-            .fig th, .fig td { text-align: left; padding: 0.38rem 0.5rem; border-bottom: 1px solid rgba(255,248,240,0.1); vertical-align: top; }
-            .fig th { font-weight: 400; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
+            .hero .verbs { display: inline-flex; flex-wrap: wrap; gap: 0.2rem 0.45rem; margin-left: 0.6rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: middle; }
+            .hero .verbs a { color: var(--c); text-decoration: none; } .hero .verbs a:hover { text-decoration: underline; }
+            .hero .verbs i { color: rgba(255,248,240,0.3); font-style: normal; }
+            /* the wall: the features on the left, the one you chose on the right */
+            .wall { padding: 0.8rem 1rem 0.9rem; display: grid; grid-template-columns: minmax(16rem, 23rem) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem 1rem; min-height: 0; }
+            .wall .cap { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 1rem; margin: 0 0 0.1rem; }
+            .wall .cap h2 { margin: 0; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,248,240,0.6); font-weight: 400; }
+            .wall .cap span { font-size: 0.76rem; color: rgba(255,248,240,0.5); }
+            .list { display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; overflow: auto; padding-right: 0.2rem; }
+            .feat { --c: #7dffc4; text-align: left; cursor: pointer; border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); background: color-mix(in srgb, var(--c) 6%, rgba(6,16,10,0.82)); border-radius: 0.7rem; padding: 0.42rem 0.7rem 0.4rem; color: var(--cream); font-family: inherit; display: grid; grid-template-columns: 0.6rem 1fr auto; gap: 0.12rem 0.5rem; align-items: center; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
+            .feat:hover { border-color: color-mix(in srgb, var(--c) 70%, transparent); background: color-mix(in srgb, var(--c) 11%, rgba(6,16,10,0.88)); }
+            .feat[aria-selected="true"] { border-color: color-mix(in srgb, var(--c) 90%, transparent); background: color-mix(in srgb, var(--c) 16%, rgba(6,16,10,0.92)); box-shadow: 0 0 22px color-mix(in srgb, var(--c) 25%, transparent); }
+            .feat i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--c); box-shadow: 0 0 10px var(--c); }
+            .feat b { font-size: 0.98rem; font-weight: 700; letter-spacing: 0.01em; }
+            .feat small { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,248,240,0.5); text-align: right; }
+            .feat p { display: none; grid-column: 2 / -1; margin: 0; font-size: 0.78rem; line-height: 1.35; color: rgba(255,248,240,0.72); }
+            .feat[aria-selected="true"] p { display: block; }
+            /* the detail: the chosen feature, text then figure */
+            .detail { --c: #7dffc4; min-width: 0; min-height: 0; overflow: auto; border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); border-radius: 0.9rem; background: color-mix(in srgb, var(--c) 5%, rgba(6,16,10,0.9)); padding: 1rem 1.2rem 1.1rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.7rem; align-content: start; animation: open 0.25s ease; }
+            @keyframes open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+            .detail h3 { margin: 0 0 0.4rem; font-size: 1.35rem; line-height: 1.15; color: var(--cream); }
+            .detail h3 small { display: block; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 70%, white); margin-bottom: 0.3rem; font-family: "JetBrains Mono", ui-monospace, monospace; }
+            .detail p { margin: 0 0 0.5rem; font-size: 0.92rem; line-height: 1.5; color: rgba(255,248,240,0.86); }
+            .detail .parts { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.2rem 0 0.5rem; }
+            .detail .parts a { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.72rem; padding: 0.16rem 0.6rem; border-radius: 999px; background: var(--c); color: var(--t, #0a120e); text-decoration: none; }
+            .detail .meta { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.66rem; letter-spacing: 0.06em; color: rgba(255,248,240,0.55); display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
+            .detail .meta a { color: #7dffc4; text-decoration: none; } .detail .meta a:hover { text-decoration: underline; }
+            .detail .meta b { font-weight: 400; color: color-mix(in srgb, var(--c) 70%, white); }
+            .fig { min-width: 0; overflow-x: auto; border-top: 1px solid rgba(255,248,240,0.1); padding-top: 0.7rem; }
+            .fig table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+            .fig th, .fig td { text-align: left; padding: 0.34rem 0.5rem; border-bottom: 1px solid rgba(255,248,240,0.1); vertical-align: top; }
+            .fig th { font-weight: 400; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,248,240,0.55); }
             .fig td.n { font-family: "JetBrains Mono", ui-monospace, monospace; white-space: nowrap; }
             .fig td.t { color: color-mix(in srgb, var(--c) 70%, white); }
             .fig td.dim { color: rgba(255,248,240,0.55); }
-            .fig .note { margin: 0.45rem 0 0; font-size: 0.7rem; color: rgba(255,248,240,0.5); line-height: 1.4; }
-            .fig svg { width: 100%; height: auto; display: block; }
+            .fig .note { margin: 0.45rem 0 0; font-size: 0.68rem; color: rgba(255,248,240,0.5); line-height: 1.4; }
+            .fig svg { width: 100%; max-width: 560px; height: auto; display: block; margin-top: 0.5rem; }
             .fig svg text { font-family: Play, system-ui, sans-serif; fill: var(--cream); }
             .fig svg .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
             .fig svg .dim { fill: rgba(255,248,240,0.55); }
-            @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+            @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } }
             @media (max-width: 900px), (max-height: 560px) {
-                .home { overflow: visible; }
-                .hero { grid-template-columns: 1fr; padding: 1.2rem 1.1rem 1.1rem; }
-                .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-                .card { grid-template-columns: 1fr; }
+                .home { grid-template-rows: auto auto; }
+                .hero { grid-template-columns: 1fr; padding: 1rem 1rem 0.9rem; }
+                .wall { grid-template-columns: 1fr; }
+                .list { overflow: visible; }
+                .detail { overflow: visible; }
+                .fig td.n { white-space: normal; }
             }
-            @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .tile { min-height: 0; } }
         </style>
     </head>
     <body>
@@ -94,22 +95,21 @@
             <main class="home">
                 <section class="hero glass">
                     <div>
-                        <h1>collective, private,<em>provable computing.</em></h1>
-                        <p class="sub"><b>compute once. prove it. everyone remembers.</b><br />one field, one hash, every device: a computer the whole world shares, that keeps every proof it has ever seen and pays whoever moves its focus.</p>
-                        <p class="verbs" id="verbs"></p>
+                        <h1>collective, private, <em>provable computing.</em></h1>
+                        <p class="sub"><b>compute once. prove it. everyone remembers.</b> one field, one hash, every device — a computer the whole world shares, that keeps every proof it has seen and pays whoever moves its focus. <span class="verbs" id="verbs"></span></p>
                     </div>
                     <div>
                         <div class="install">
                             <code id="cmd">cargo install soft3</code>
                             <button type="button" id="copy">copy</button>
                         </div>
-                        <p class="hint">install · <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github</a> · <a href="/layers/">the ten products</a></p>
-                        <p class="hint">early experimental build — the numbers below say which are measured and which are targets.</p>
+                        <p class="hint">install · <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github</a> · <a href="/layers/">the ten products</a> · early experimental build: every number says whether it is measured or a target</p>
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twelve things it does</h2><span>click one — each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
-                    <div class="grid" id="grid"></div>
+                    <div class="cap"><h2>twelve things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="list" id="list" role="tablist"></div>
+                    <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
             </main>
             <footer class="foot">
@@ -160,11 +160,11 @@
                       [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
                       [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
                   ], "no trusted setup anywhere; a hash is the only assumption the proof system makes.") },
-                { id: "compact", verb: "build", name: "compact stack", line: "275k lines for the whole stack. a C or Rust toolchain is tens of millions — you cannot read it, so you cannot freeze it.", status: "measured",
+                { id: "compact", verb: "build", name: "compact stack", line: "275k lines for the whole stack. the same functions elsewhere take 3.2 million — plus 35 million of LLVM you cannot read, so you cannot freeze.", status: "measured",
                   claim: "small enough to read, audit and freeze",
-                  why: "the whole stack is 275 213 lines of its own code: kernel 171k, core 104k, forks of iroh and nushell not counted. the provable toolchain — language, machine, prover, field, hash — is about 122k. LLVM alone is 35.6 million lines; rustc is 380 thousand before it reaches LLVM. a stack you can read end to end is a stack you can freeze.",
-                  parts: ["trident", "nox", "joy", "zheng"], source: ["tokei over 28 repos, 2026-10-08", GH + "soft3/blob/main/status.md"],
-                  fig: () => bars([["provable toolchain", 122000, true], ["soft3, whole stack", 275213, true], ["rustc, without LLVM", 380000, false], ["LLVM", 35560000, false]], "lines of code, log scale · soft3 counted with tokei; rustc and LLVM as published") },
+                  why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it. a stack you can read end to end is a stack you can freeze.",
+                  parts: ["trident", "nox", "zheng", "bbg", "foculus"], source: ["tokei over every repo, 2026-10-08", GH + "soft3/blob/main/status.md"],
+                  fig: () => stackfig() },
                 { id: "proofs", verb: "prove", name: "fast & compact proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
                   claim: "a proof is a constant: two kilobytes, whatever it proves",
                   why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
@@ -245,6 +245,21 @@
                 const b = rows.map(([label, v, ours], i) => { const w = Math.max(6, ((Math.log10(v) - min) / (max - min)) * 300); const y = 8 + i * 44; return `<text x="0" y="${y + 18}" font-size="14">${label}</text><rect x="0" y="${y + 24}" width="${w}" height="10" rx="5" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.35)"}"/><text class="mono" x="${w + 8}" y="${y + 33}" font-size="12" fill="${ours ? "var(--c)" : "rgba(255,248,240,0.7)"}">${v >= 1e6 ? (v / 1e6).toFixed(1) + " M" : Math.round(v / 1000) + " k"}</text>`; }).join("");
                 return `<svg viewBox="0 0 ${W} ${H}">${b}</svg><p class="note">${note}</p>`;
             }
+            function stackfig() {
+                const rows = [
+                    ["language & compiler", "trident", 69, "rustc + std", 1358, "+ LLVM 35 560"],
+                    ["machine, chain, client", "nox · joy · cybergraph · neuron · tok · tade", 29, "go-ethereum", 322, ""],
+                    ["proofs", "zheng · lens · strata · hemera · eidos", 49, "sp1", 215, ""],
+                    ["database & query", "bbg · inf", 17, "postgres", 1088, ""],
+                    ["consensus & rewards", "foculus · tru", 21, "cometbft", 161, ""],
+                    ["transport", "radio — an iroh fork, not in the 275k", 150, "rust-libp2p", 79, ""],
+                    ["agent, keys, silicon, mind", "cy · mudra · vault · soma · glia · rune · neural · honeycrisp", 90, "—", 0, ""],
+                ];
+                const tbl = `<table><thead><tr><th>function</th><th>soft3</th><th>k lines</th><th>the usual parts</th><th>k lines</th></tr></thead><tbody>${rows.map(([f, a, x, b, y, extra]) => `<tr><td>${f}</td><td class="dim">${a}</td><td class="n t">${x}</td><td class="dim">${b}</td><td class="n">${y ? y.toLocaleString("en") : "—"}${extra ? ` <span class="dim">${extra}</span>` : ""}</td></tr>`).join("")}<tr><td><b>total</b></td><td class="dim">275k · 425k with radio</td><td class="n t">275</td><td class="dim">3.2 M · 38.8 M with LLVM</td><td class="n">3 222</td></tr></tbody></table>`;
+                const W = 520, bw = (v) => Math.max(4, (v / 3222) * 380);
+                const svg = `<svg viewBox="0 0 ${W} 86"><text x="0" y="16" font-size="13">soft3, with radio</text><rect x="0" y="22" width="${bw(425)}" height="10" rx="5" fill="var(--c)"/><text class="mono" x="${bw(425) + 8}" y="31" font-size="12" fill="var(--c)">425 k</text><text x="0" y="58" font-size="13">the usual parts, before LLVM</text><rect x="0" y="64" width="${bw(3222)}" height="10" rx="5" fill="rgba(255,248,240,0.35)"/><text class="mono" x="${bw(3222) + 8}" y="73" font-size="12" fill="rgba(255,248,240,0.7)">3.2 M · ×7.6</text></svg>`;
+                return tbl + svg + `<p class="note">code lines only, tokei 14, 2026-10-08, tests and data files excluded; rustc is compiler/ + library/; LLVM is the published 2024 figure. the same functions, not the same features: nothing on the right proves, remembers or pays.</p>`;
+            }
             function chain() {
                 const steps = [1, 2, 3], W = 520, y = 56;
                 let s = "";
@@ -279,42 +294,40 @@
                 return `<svg viewBox="0 0 520 176"><defs><marker id="ma" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--c)"/></marker></defs>${s}</svg>`;
             }
 
-            // ── render ──────────────────────────────────────────────────────────
-            const grid = document.getElementById("grid");
+            // ── render: the list on the left, the chosen feature on the right ────
+            const list = document.getElementById("list"), detail = document.getElementById("detail"), wall = document.querySelector(".wall");
             const go = (h) => (window.soft3Go || ((x) => { location.href = x; }))(h);
-            const tiles = {};
+            const small = matchMedia("(max-width: 900px), (max-height: 560px)");
+            const items = {};
             FEATURES.forEach((f) => {
                 const v = VERB[f.verb];
                 const b = document.createElement("button");
-                b.type = "button"; b.className = "tile"; b.dataset.id = f.id; b.style.setProperty("--c", v.ink || v.c); b.setAttribute("aria-expanded", "false");
-                b.innerHTML = `<h3><i style="background:${v.c};box-shadow:0 0 10px ${v.c}"></i>${f.name}</h3><p>${f.line}</p><div class="st"><b>${f.verb}</b> · ${f.status}</div>`;
-                grid.appendChild(b); tiles[f.id] = b;
+                b.type = "button"; b.className = "feat"; b.dataset.id = f.id; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", "false"); b.style.setProperty("--c", v.ink || v.c);
+                b.innerHTML = `<i style="background:${v.c};box-shadow:0 0 10px ${v.c}"></i><b>${f.name}</b><small>${f.status}</small><p>${f.line}</p>`;
+                list.appendChild(b); items[f.id] = b;
             });
-            document.getElementById("verbs").innerHTML = Object.keys(VERB).map((k) => `<a href="/chart/?sel=${VERB[k].who}" style="--c:${VERB[k].ink || VERB[k].c}">${k}</a>`).join("<i> · </i>");
+            document.getElementById("verbs").innerHTML = Object.keys(VERB).map((k) => `<a href="/chart/?sel=${VERB[k].who}" style="--c:${VERB[k].ink || VERB[k].c}">${k}</a>`).join("<i>·</i>");
 
-            let card = null, openId = null;
+            let openId = null;
             function tint(verb) { const full = !verb; const v = VERB[verb]; document.documentElement.style.setProperty("--facet", full ? "#fff8f0" : v.c); document.documentElement.style.setProperty("--accent-h", full ? 150 : v.h); document.documentElement.style.setProperty("--tint", full ? 0 : 0.72); if (window.worldHue) worldHue(full ? 0 : v.h - 150); }
-            function close() { if (card) card.remove(); card = null; if (openId) tiles[openId].setAttribute("aria-expanded", "false"); openId = null; tint(null); history.replaceState(null, "", location.pathname); }
-            function open(id, scroll) {
+            // on a phone the detail sits right under the feature you chose; on a desktop it is the right column
+            function place() { if (small.matches && openId) items[openId].after(detail); else wall.appendChild(detail); }
+            function show(id, scroll) {
                 const f = FEATURES.find((x) => x.id === id); if (!f) return;
-                if (openId === id) { close(); return; }
-                close();
-                const v = VERB[f.verb], tile = tiles[id];
-                card = document.createElement("article"); card.className = "card"; card.style.setProperty("--c", v.ink || v.c); card.style.setProperty("--t", v.t);
-                card.innerHTML = `<button class="x" type="button" aria-label="close">×</button><div><h3><small>${f.name} · born in ${f.verb}</small>${f.claim}</h3><p>${f.why}</p><div class="parts">${f.parts.map((p) => `<a href="/chart/?sel=${p}">${p}</a>`).join("")}</div><div class="meta"><span>status <b>${f.status}</b></span><span>source <a href="${f.source[1]}" target="_blank" rel="noopener">${f.source[0]} ↗</a></span></div></div><div class="fig">${f.fig()}</div>`;
-                // the card opens under the row of the tile: after the last tile of that row
-                const cols = getComputedStyle(grid).gridTemplateColumns.split(" ").length, all = [...grid.querySelectorAll(".tile")], i = all.indexOf(tile), last = all[Math.min(all.length - 1, Math.floor(i / cols) * cols + cols - 1)];
-                last.after(card);
-                card.querySelector(".x").addEventListener("click", close);
-                card.querySelectorAll(".parts a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href")); }));
-                tile.setAttribute("aria-expanded", "true"); openId = id; tint(f.verb);
+                const v = VERB[f.verb];
+                Object.values(items).forEach((b) => b.setAttribute("aria-selected", b.dataset.id === id ? "true" : "false"));
+                detail.style.setProperty("--c", v.ink || v.c); detail.style.setProperty("--t", v.t);
+                detail.innerHTML = `<div><h3><small>${f.name} · born in ${f.verb} · ${f.status}</small>${f.claim}</h3><p>${f.why}</p><div class="parts">${f.parts.map((p) => `<a href="/chart/?sel=${p}">${p}</a>`).join("")}</div><div class="meta"><span>source <a href="${f.source[1]}" target="_blank" rel="noopener">${f.source[0]} ↗</a></span></div></div><div class="fig">${f.fig()}</div>`;
+                detail.querySelectorAll(".parts a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href")); }));
+                openId = id; place(); tint(f.verb); detail.scrollTop = 0;
                 history.replaceState(null, "", "?f=" + id);
-                if (scroll) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                if (scroll && small.matches) detail.scrollIntoView({ block: "nearest", behavior: "smooth" });
             }
-            Object.values(tiles).forEach((b) => { b.addEventListener("click", () => open(b.dataset.id, true)); b.addEventListener("mouseenter", () => { if (!openId) tint(FEATURES.find((x) => x.id === b.dataset.id).verb); }); b.addEventListener("mouseleave", () => { if (!openId) tint(null); }); });
-            document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+            Object.values(items).forEach((b) => b.addEventListener("click", () => show(b.dataset.id, true)));
+            small.addEventListener("change", place);
             document.querySelectorAll("#verbs a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href")); }));
-            const want = new URLSearchParams(location.search).get("f"); if (want) open(want, false); else tint(null);
+            const want = new URLSearchParams(location.search).get("f");
+            show(FEATURES.some((x) => x.id === want) ? want : FEATURES[0].id, false);
 
             // copy the install line
             const copy = document.getElementById("copy");
