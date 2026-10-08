@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. twenty-eight features: frozen foundations, post-quantum, deterministic, no halting, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, home books, planet scale, explainable, aligned, names, referral, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. thirty features: frozen foundations, post-quantum, deterministic, no halting, native silicon, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, home books, planet scale, explainable, aligned, names, referral, the wire, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,6 +65,7 @@
             .fig svg text { font-family: Play, system-ui, sans-serif; fill: var(--cream); }
             .fig svg .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
             .fig svg .dim { fill: rgba(255,248,240,0.55); }
+            @media (max-height: 900px) and (min-width: 901px) { .wall { grid-template-columns: minmax(30rem, 37rem) minmax(0, 1fr); } .list { grid-template-columns: 1fr 1fr 1fr; } }
             @media (max-height: 820px) and (min-width: 901px) { .hero { padding: 0.7rem 1.2rem 0.65rem; } .hero .sub { font-size: 0.84rem; } .hero .verbs { display: none; } .feat { padding: 0.34rem 0.65rem 0.32rem; } .feat b { font-size: 0.92rem; } }
             @media (max-width: 900px), (max-height: 560px) {
                 .home { grid-template-rows: auto auto; }
@@ -105,7 +106,7 @@
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
-                    <div class="cap"><h2>twenty-eight things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
+                    <div class="cap"><h2>thirty things it does</h2><span>each wears the colour of the verb in <a href="/loop/" style="color:#7dffc4;text-decoration:none">the loop</a> it is born from</span></div>
                     <div class="list" id="list" role="tablist"></div>
                     <article class="detail" id="detail" role="tabpanel"></article>
                 </section>
@@ -179,6 +180,17 @@
                       [d("proofs that do not compose"), t("a proof verifies a proof; chains collapse into one")],
                       [d("a leader that can stop"), t("no leader; partitions wait, nothing breaks")],
                   ]) },
+                { id: "silicon", verb: "compute", name: "native silicon", line: "runs on your silicon, not on an emulation of it", status: "live · macOS + Android",
+                  claim: "runs on your silicon, not on an emulation of it",
+                  why: "the machine is eighteen patterns and five jets. a jet is a native accelerator for one hot operation — hash, polynomial evaluation, merkle verify, fold, NTT — with the same result as the pattern it replaces: remove the jets and everything still runs, 8.5× slower. underneath, honeycrisp drives every compute unit on the chip directly — NEON lanes, AMX tiles, Metal dispatches, ANE programs — over one shared memory, so data lives in place from entry to exit. no black box deciding what is fast enough.",
+                  parts: ["nox", "honeycrisp", "strata"], source: ["honeycrisp", GH + "honeycrisp#readme"],
+                  fig: () => table(["unit", "driver", "what runs there", "measured"], [
+                      [t("CPU · NEON, AMX"), n("acpu"), `<td>field math, hashing, proving</td>`, `<td>1.2–10× over Accelerate</td>`],
+                      [t("GPU · Metal"), n("aruminium"), `<td>graph painting, mining kernels</td>`, `<td>one compute pass per frame</td>`],
+                      [t("ANE"), n("rane"), `<td>inference</td>`, `<td>1.6 TFLOPS · 1024×1024×256 in 332 µs</td>`],
+                      [t("unified memory"), n("unimem"), `<td>zero copy, entry to exit</td>`, `<td>IOSurface · arena · pool</td>`],
+                      [t("jets"), n("nox"), `<td>hash · poly_eval · merkle_verify · fri_fold · ntt</td>`, `<td>identical results · 8.5× without them</td>`],
+                  ], "honeycrisp is experimental and its API unstable; it is also the most complete open documentation of Apple Silicon's undocumented hardware.") },
                 { id: "compact", verb: "build", name: "compact", line: "275k lines for the whole stack — small enough for one person to read, understand and verify", status: "measured",
                   claim: "small enough to understand, verify — and only then freeze",
                   why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. one person can read it end to end; a team can audit it; the cross-verified harness can check it. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it: nobody has read those, so nobody can verify them, so nobody can freeze them. understanding comes first; the freeze is what you earn after.",
@@ -314,6 +326,15 @@
                       [t("the book collects fees"), `<td>a pro-rata share, for the life of the book</td>`, `<td>a fake book collects nothing</td>`],
                       [t("a cell passes the Dunbar number"), `<td>a flattened share</td>`, `<td>growth by delegation, not by stacking heads</td>`],
                   ], "paid on focus created, never per head — the same rule as every reward here.") },
+                { id: "wire", verb: "link", name: "the wire", line: "the wire obeys the graph: following is a link, an address is a link", status: "live · three nodes proven",
+                  claim: "the wire obeys the graph: following is a link, an address is a link",
+                  why: "three well-known particles — FOLLOW, ANTENNA, SOCKET — are just the hashes of the words, mintable by anyone. a node casts its antenna and socket as one signal at startup; `follow X` casts one link. that is the entire control surface: subscription, discovery and routing are graph content, replicated by the very mechanism they route. the only address a human ever types is the first contact; after that the graph dials. one QUIC stream per peer over the stack's own radio, no rented relays; replay, anti-entropy and push are one mechanism. proven with three nodes: the third reached the first through the second by reading the address out of the graph.",
+                  parts: ["radio", "cybergraph", "cy"], source: ["cyb/decide/wire.md", GH + "cyb/blob/master/decide/wire.md"],
+                  fig: () => table(["particle", "link", "meaning"], [
+                      [t("FOLLOW"), n("FOLLOW → neuron, on my chain"), `<td>i want that neuron's chain, live</td>`],
+                      [t("ANTENNA"), n("ANTENNA → endpoint-id, on my own chain"), `<td>how to call me: my radio identity</td>`],
+                      [t("SOCKET"), n("SOCKET → ip:port, on my own chain"), `<td>where my endpoint listens</td>`],
+                  ], "cy wire up <peer-id> <ip:port> — the one address a human types; everything after is the graph.") },
                 { id: "agentic", verb: "link", name: "agentic", line: "a mind over the book — yours, headless anywhere", status: "building · soma live",
                   claim: "a mind over the book — yours, headless anywhere",
                   why: "cy acts for a neuron: it reads the graph the neuron keeps, decides, proposes the next link, speaks it as a signal, holds what the neuron owns and keeps secret what must stay secret. sixteen organs, one chroma — in cells or pixels, on a server or in a pocket. the agent that answers you is itself a neuron in the network, signing like anyone.",
