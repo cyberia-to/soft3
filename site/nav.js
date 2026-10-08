@@ -27,7 +27,9 @@
   // the menu is the same on every page; the current page is marked
   function markActive() { document.querySelectorAll(".nav-links a").forEach((a) => { const u = new URL(a.href, location.href); const on = u.origin === location.origin && u.pathname === location.pathname; if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }); }
   markActive();
-  const go = (href, push = true) => fetchPage(href).then((html) => swapTo(html, href, push)).catch(() => { location.href = href; });
+  // the last click wins: a slower earlier fetch must not land after a later one
+  let seq = 0;
+  const go = (href, push = true) => { const my = ++seq; return fetchPage(href).then((html) => { if (my === seq) swapTo(html, href, push); }).catch(() => { location.href = href; }); };
   window.soft3Go = (href) => go(href);
   document.addEventListener("click", (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
