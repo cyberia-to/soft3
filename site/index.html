@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, 275k lines, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. sixteen features: frozen foundations, post-quantum, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, planet scale, explainable, names, rewards, fast finality, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -158,9 +158,9 @@
                       [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
                       [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
                   ], "no trusted setup anywhere; a hash is the only assumption the proof system makes.") },
-                { id: "compact", verb: "build", name: "275k lines", line: "275k lines for the whole stack. the same functions elsewhere take 3.2 million — plus 35 million of LLVM you cannot read, so you cannot freeze.", status: "measured",
-                  claim: "small enough to read, audit and freeze",
-                  why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it. a stack you can read end to end is a stack you can freeze.",
+                { id: "compact", verb: "build", name: "compact", line: "275k lines for the whole stack — small enough for one person to read, understand and verify", status: "measured",
+                  claim: "small enough to understand, verify — and only then freeze",
+                  why: "the whole stack is 275 thousand lines of its own code — language, machine, proofs, database, consensus, agent. one person can read it end to end; a team can audit it; the cross-verified harness can check it. the same functions assembled from the usual parts — rustc, go-ethereum, postgres, a zkVM, libp2p, cometbft — are 3.2 million lines before LLVM and 39 million with it: nobody has read those, so nobody can verify them, so nobody can freeze them. understanding comes first; the freeze is what you earn after.",
                   parts: ["trident", "nox", "zheng", "bbg", "foculus"], source: ["tokei over every repo, 2026-10-08", GH + "soft3/blob/main/status.md"],
                   fig: () => stackfig() },
                 { id: "trinity", verb: "build", name: "trinity", line: "one field for zk, fhe and neural networks", status: "demonstrated · not yet secure",
