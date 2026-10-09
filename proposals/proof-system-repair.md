@@ -100,12 +100,12 @@ phase 2's bake-off is therefore three-way on the small class — TensorMerkle+RS
 
 1. **relation.** the prover compiles the program exactly as the verifier will: CCS with a public prefix `z = (1 ‖ io ‖ cycles ‖ w)`. the verifier evaluates the prefix's multilinear extension itself; only `w` is committed. this is what binds program and io once the witness leaves the wire — the hole of 2026-09-09, closed structurally.
 2. **verifying key.** the verifier recompiles the CCS from the program — as today, O(program), never from the prover — hashes it once (`vk = hemera(matrices)`) and absorbs `vk` instead of every entry. a light client caches `vk` per program it accepts; the step relation of §3 has one fixed `vk`. the artifact carries the program, never matrices.
-3. **commit.** `w` as a multilinear polynomial in `log n` variables; RS-encode at rate 1/16; hemera Merkle over cosets of 2^4 leaves. one root.
+3. **commit.** `w` as a multilinear polynomial in `log n` variables, Reed–Solomon encoded, hemera Merkle over columns or cosets — the layout is the phase-2 winner's. one root.
 4. **IOP.** Spartan: outer sumcheck (degree = CCS degree, 7 on hash programs) with challenges in fp3; inner sumcheck batching the matrix evaluations; one claim `w̃(r) = v`.
-5. **open.** WHIR for `w̃(r)` with Johnson-bound parameters at 128 bits: folding factor 4, rate 1/16, grinding 16 bits. the verifier's work is `t` Merkle paths of hemera hashes plus a sumcheck of logarithmic length.
-6. **wire.** statement · program · profile · root · sumcheck polynomials · matrix evaluations · WHIR rounds (roots, folded polynomials, query openings with deduplicated paths) · final polynomial.
+5. **open.** the phase-2 winner opens `w̃(r)` with Johnson-bound parameters at 128 bits. with WHIR that is folding factor 4, rate 1/16, grinding 16 bits, and the verifier's work is `t` Merkle paths plus a logarithmic sumcheck; with TensorMerkle+RS it is `t` columns and their paths plus the row combination; with SmallWood its own small-instance argument. the wire below is written for WHIR as the worked example, not as the choice.
+6. **wire.** statement · program · profile · root · sumcheck polynomials · matrix evaluations · the opening (for WHIR: rounds, folded polynomials, query openings with deduplicated paths, final polynomial).
 
-### byte budget (estimate, to be measured at phase 2)
+### byte budget (estimate for the WHIR candidate, to be measured at phase 2)
 
 for one hash, `n = 2^10` after zheng#45, degree-7 CCS, 128-bit Johnson parameters, fp3 challenges (24 B per element):
 
@@ -126,7 +126,7 @@ for a program of `n = 2^20` the WHIR part grows by two more rounds and 10 more h
 
 ### unbounded programs: accumulation, then one decider
 
-a program longer than the relation limit (today 2^15 rows, 29 permutations) is proven step by step over a **uniform step relation** — one CCS for "one nox reduction step with continuity and memory arguments" (`zheng/audit/general-nox-relation-review.md:160-173` lists the requirements). each step yields one proximity claim about its committed witness; ARC folds claim after claim into one accumulator of fixed size (one root, one evaluation point, one value — a few hundred bytes plus the accumulated Merkle openings per step, which is where ARC's "small number of openings relative to the code rate" matters). at the end, one WHIR proof decides the accumulator. the proof of a million steps is the same ~60 KB as the proof of one.
+a program longer than the relation limit (today 2^15 rows, 29 permutations) is proven step by step over a **uniform step relation** — one CCS for "one nox reduction step with continuity and memory arguments" (`zheng/audit/general-nox-relation-review.md:160-173` lists the requirements). each step yields one proximity claim about its committed witness; ARC folds claim after claim into one accumulator of fixed size (one root, one evaluation point, one value — a few hundred bytes plus the accumulated Merkle openings per step, which is where ARC's "small number of openings relative to the code rate" matters). at the end, one opening by the phase-2 winner decides the accumulator. the proof of a million steps is the same ≤ 64 KB as the proof of one.
 
 this is the *recursion milestone* every zheng document pointed at. the difference from the 2026 plan is that it no longer needs a homomorphic commitment nor a verifier circuit of the verifier: ARC is accumulation in the random-oracle model, which is exactly the one assumption the stack makes.
 
@@ -134,7 +134,7 @@ what phase 3 must pin down before it is built — the part the first draft left 
 
 - **the accumulator on the wire**: one Merkle root of the accumulated codeword, one evaluation point in fp3, one claimed value, and the per-step openings ARC needs — "a small number of Merkle openings relative to the code rate" ([2024/1731](https://eprint.iacr.org/2024/1731)); at rate 1/16 that is a handful of cosets per step, so the in-flight object is a few KB and does not grow with the number of steps;
 - **the per-step cost**: one RS encoding of the step witness, one Merkle tree, one proximity reduction; measured on the nox step relation before phase 3 commits, next to the Neo-style lattice fold of §10;
-- **the decider**: one opening (TensorMerkle or WHIR, whichever phase 2 chose) of the final accumulator — the same ≤ 64 KB as a single-shot proof;
+- **the decider**: one opening by the phase-2 winner of the large class, of the final accumulator — the same ≤ 64 KB as a single-shot proof;
 - **the fallback** if ARC's prover is too slow or its argument does not close on review: bounded-depth recursion — the Trident verifier of §5 proven inside nox, one level at a time. costlier, standard, sound; it keeps the goal, not the elegance.
 
 until phase 3 lands, phase 2 delivers succinct proofs for one relation of at most 2^15 rows (about 29 hemera permutations), not for "any computation"; the goal of §0 is met only when phase 3 does.
@@ -145,7 +145,7 @@ the `zk` profile masks the committed polynomial and the sumcheck with random low
 
 ## 4. simplicity: what disappears
 
-- `lens/brakedown` (PublicTensor, TensorMerkle, the recursive stub `UnsupportedRecursiveOpening`): replaced by `lens/whir`.
+- in lens, **the loser of the phase-2 bake-off** — not decided here. the recursive stub `UnsupportedRecursiveOpening` and the flat-hash `Tensor` opening go regardless. `PublicTensor` stays as the `public` profile until `succinct` is live and audited: a disclosed witness checked linearly is the only thing that replaces nothing.
 - `zheng/folding` (HyperNova over hemera, unsound by construction): replaced by `zheng/accumulate` (ARC).
 - formats `zheng-hypernova-tensor-merkle-v2`, `JOYEXEC1`, `JOYEXEC2`, `JOYZK003`: one format with a profile byte; the old ones read by a `legacy` tool for a release, then gone.
 - the disclosed/tagged/native-private experimental kernels on `release/0.4` keep their audits and leave the production path once `zk` lands.
@@ -227,10 +227,10 @@ for one hash at 128 bits, starting from the ~36 KB of §3:
 | grinding 20 bits | 20 bits for free; 8 fewer queries | −12 % |
 | folding factor 5 | 32-element leaves, fewer levels, fewer rounds | −10 % |
 | fp3 challenges | 24 B per element instead of 32 | −3 % |
-| **together** | | **~15–20 KB** |
+| **together, if they composed cleanly** | | ~15–20 KB — the lower dream |
 | 100 bits instead of 128 | queries ×0.78 | ~12–16 KB |
 
-this is the real floor for "one hash, post-quantum": 15–20 KB at 128 bits, well inside the 64 KB goal and below every production chain. recursive compression (proving the WHIR verifier inside nox) buys nothing in a hash-only world — the final proof carries its own paths again. phase 2 adopts these levers as parameters, not as separate work.
+the levers do not multiply cleanly: rate 1/32 doubles the prover, a larger folding factor raises the leaf cost it saves in levels, and grinding is bounded by what a phone can do in a second. **the honest floor for "one hash, post-quantum" with these schemes is 25–40 KB at 128 bits** — inside the 64 KB goal and below every production chain; 15–20 KB is what the levers reach only if they compose, and it is not a gate. the small-statement class gets below that by a different construction (SmallWood, §3), which is why that class has its own number. recursive compression (proving the WHIR verifier inside nox) buys nothing in a hash-only world — the final proof carries its own paths again. phase 2 adopts these levers as parameters, not as separate work.
 
 ### the tensor track, with its arithmetic
 
@@ -242,7 +242,7 @@ the sound half of the old idea survives: Ligero geometry — a `k₁ × k₂` ma
 | 2^20 | 1024 × 1024 | 64 × 1024 × 8 = **512 KB** | 8 KB | — | not viable |
 | 2^20 | k₁ = 64, recurse y (2^14 → 64 × 256 → 256) | 32 KB + 32 KB | 2 KB | ~20 KB | **~80–100 KB** |
 
-at 2^10 the tensor opening and WHIR land in the same 25–40 KB band; at 2^20 the recursion of y pays `t · k₁` at every level and ends at or above WHIR's 56–87 KiB — because WHIR *is* this recursion (folding by 2^k per round is "k₁ = 2^k"), done with a proximity argument across rounds. that is why the proposal does not pick a winner on paper: phase 2 measures both on the same fixtures and keeps the smaller sound one. what no version of the track brings back is `C = hemera(w)`, and with it 1.3 KB.
+at 2^10 the tensor opening and WHIR land in the same 25–40 KB band. at 2^20 the row of the table is conditional on the geometry: a thin `k₁` with recursion of `y` is, in substance, folding — and folding with a proximity argument across rounds is WHIR. the spirit that holds regardless of the exact bytes: on large n folding wins over raw Ligero, and the proposal does not pick the winner on paper — phase 2 measures both on the same fixtures and keeps the smaller sound one. what no version of the track brings back is `C = hemera(w)`, and with it 1.3 KB.
 
 ## 10. lattices — what they buy, and what they do not
 
