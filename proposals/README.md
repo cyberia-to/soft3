@@ -11,6 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
+| [one proof — the repair of zheng](proof-system-repair.md) | proposed | 2026-10-09 | goal ≤ 64 KB · post-quantum · verify ≤ 1 ms · constant size: one field, one hash, Reed–Solomon + WHIR, Spartan over CCS, ARC accumulation; what was broken and why 2 KB was never real; five phases with acceptance |
 | [the network in planes](network-planes.md) | proposed | 2026-10-07 | foculus → `sync` · `foculus` · `solong` in one workspace, one arrow; radio keeps its fork and hands the reconciliation cores to sync; the epoch certificate stops carrying the payout |
 | [tade — one exchange format](tade-one-exchange.md) | proposed | 2026-10-07 | one format from the wire to the screen: payload is the canonical nox noun, tade annotates, spark is the catalog of the render byte, postcard and serde_json leave the stack |
 | [vault has its own home](vault-secret-custody.md) | superseded | 2026-09-16 | vault became a repository (now an organ of [[cy]]) |
