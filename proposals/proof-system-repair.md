@@ -45,6 +45,7 @@ the ~2 KB "constant proof" of zheng 0.3.x rested on five things that were false 
 | the constant wire was free | `decider.md:110`, `attack_zeroed_constant_wire_satisfies_universal_instance` | the all-zero witness satisfied the universal instance |
 | code distance unproven, queries miscounted | lens#6 (open), `lens/specs/scalar-field.md:28-32` | "20 queries → 2^-20" assumed a proven distance; today only minimum weight 1 is proven, so the sampling count is 100·m and every column is opened |
 | base-field challenges | `zheng/specs/execution.md:75` | all sumcheck and opening challenges are Goldilocks elements; 64-bit field ⇒ no 128-bit claim without an extension |
+| λ counted in elements, not bits | `recursive-brakedown.md:244` ("≈ 2^{-λ}") next to a 128-element remainder | the document's size arithmetic treats 128 field elements as 128 bits of soundness; the soundness ledger of §5 counts bits only |
 
 what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-execution-release.md`) was the honest fallback: derive the relation on the verifier, disclose the witness, check every row. it is sound and it is not succinct. zheng#45 (2026-10-09) shrank that path 19× by shrinking the relation; it cannot shrink it further than the witness.
 
@@ -66,7 +67,8 @@ what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-exec
 |---|---|---|
 | relation | program + subject shape → CCS; public prefix `(1, io, cycles)`; jets as rows | zheng `execution/relation` (today), nox semantics |
 | IOP | Spartan over CCS: outer sumcheck, inner sumcheck, one evaluation claim per matrix family | zheng `spartan` |
-| commitment | multilinear polynomial → RS codeword → hemera Merkle; WHIR opening at an fp3 point; ARC accumulation of proximity claims | lens (new crate `lens/whir`; `brakedown` retired) |
+| commitment | multilinear polynomial → RS codeword → hemera Merkle over columns or cosets; opening at an fp3 point by **TensorMerkle (Ligero geometry, RS rows) or WHIR — chosen by the phase-2 bake-off**; ARC accumulation of proximity claims | lens (`brakedown` becomes `tensor` with an RS code; `whir` added for the bake-off; the loser is retired) |
+| state certificates | bbg's `QueryProof` is a lens commitment plus openings over the state polynomial; it rides whichever PCS wins and migrates in the same phase | bbg |
 | accumulation driver | uniform step relation; fold the IOP's evaluation claims into one ARC accumulator per run; decider = one WHIR proof of the accumulator | zheng `accumulate` (replaces `folding`) |
 | statement & wire | profile, program digest, inputs, outputs, cycles, budget; serialisation; versioning | joy `rs/execution` + zheng `execution/statement` |
 | independent verifier | the whole verifier in Trident on nox, cross-checked against the Rust one on every fixture | trident `lib/std/zheng` (new) |
@@ -74,7 +76,7 @@ what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-exec
 ### the proof, end to end (succinct profile)
 
 1. **relation.** the prover compiles the program exactly as the verifier will: CCS with a public prefix `z = (1 ‖ io ‖ cycles ‖ w)`. the verifier evaluates the prefix's multilinear extension itself; only `w` is committed. this is what binds program and io once the witness leaves the wire — the hole of 2026-09-09, closed structurally.
-2. **verifying key.** the verifier hashes the compiled CCS once (`vk = hemera(matrices)`) and absorbs `vk`, not every entry. the key is cached per program; the artifact carries the program, not the key.
+2. **verifying key.** the verifier recompiles the CCS from the program — as today, O(program), never from the prover — hashes it once (`vk = hemera(matrices)`) and absorbs `vk` instead of every entry. a light client caches `vk` per program it accepts; the step relation of §3 has one fixed `vk`. the artifact carries the program, never matrices.
 3. **commit.** `w` as a multilinear polynomial in `log n` variables; RS-encode at rate 1/16; hemera Merkle over cosets of 2^4 leaves. one root.
 4. **IOP.** Spartan: outer sumcheck (degree = CCS degree, 7 on hash programs) with challenges in fp3; inner sumcheck batching the matrix evaluations; one claim `w̃(r) = v`.
 5. **open.** WHIR for `w̃(r)` with Johnson-bound parameters at 128 bits: folding factor 4, rate 1/16, grinding 16 bits. the verifier's work is `t` Merkle paths of hemera hashes plus a sumcheck of logarithmic length.
@@ -90,8 +92,10 @@ for one hash, `n = 2^10` after zheng#45, degree-7 CCS, 128-bit Johnson parameter
 | root + Spartan: 10 outer rounds × 8 coefficients + 10 inner rounds × 3, 5 matrix evaluations | ~3 KB |
 | WHIR: 3 rounds; t ≈ 64 queries; per query a coset of 16 elements (128 B) and a hemera path of 14 → 10 → 6 hashes (32 B each), paths deduplicated across queries (~−30 %) | ~28–36 KB |
 | final polynomial, grinding nonce | ~0.5 KB |
-| **total, 128 bit** | **~32–40 KB** |
+| **total, 128 bit** | **~32–40 KB expected · 64 KB is the acceptance ceiling** |
 | same at 100-bit conjectured (t ≈ 30) | ~16–20 KB |
+
+the query count `t ≈ 64` is Johnson-bound arithmetic (`log₂(1/√ρ)` = 2 bits per query at rate 1/16), not a conjecture; it is also exactly where the 2025 repricing bites, so the budget is written with the ceiling, not the expectation, as the gate. the fp3 element is 24 B (three Goldilocks limbs) wherever a challenge or an evaluation travels.
 
 verify: 64 queries × ≤ 30 hemera permutations + two short sumchecks ≈ 2,000 permutations ≈ **0.5–1 ms** native (hemera is ~0.3 µs per permutation on M4). the budget is dominated by Merkle authentication, as in every hash-based system; that is the price of "one hash" and it is within the goal.
 
@@ -102,6 +106,15 @@ for a program of `n = 2^20` the WHIR part grows by two more rounds and 10 more h
 a program longer than the relation limit (today 2^15 rows, 29 permutations) is proven step by step over a **uniform step relation** — one CCS for "one nox reduction step with continuity and memory arguments" (`zheng/audit/general-nox-relation-review.md:160-173` lists the requirements). each step yields one proximity claim about its committed witness; ARC folds claim after claim into one accumulator of fixed size (one root, one evaluation point, one value — a few hundred bytes plus the accumulated Merkle openings per step, which is where ARC's "small number of openings relative to the code rate" matters). at the end, one WHIR proof decides the accumulator. the proof of a million steps is the same ~60 KB as the proof of one.
 
 this is the *recursion milestone* every zheng document pointed at. the difference from the 2026 plan is that it no longer needs a homomorphic commitment nor a verifier circuit of the verifier: ARC is accumulation in the random-oracle model, which is exactly the one assumption the stack makes.
+
+what phase 3 must pin down before it is built — the part the first draft left as one line:
+
+- **the accumulator on the wire**: one Merkle root of the accumulated codeword, one evaluation point in fp3, one claimed value, and the per-step openings ARC needs — "a small number of Merkle openings relative to the code rate" ([2024/1731](https://eprint.iacr.org/2024/1731)); at rate 1/16 that is a handful of cosets per step, so the in-flight object is a few KB and does not grow with the number of steps;
+- **the per-step cost**: one RS encoding of the step witness, one Merkle tree, one proximity reduction; measured on the nox step relation before phase 3 commits, next to the Neo-style lattice fold of §10;
+- **the decider**: one opening (TensorMerkle or WHIR, whichever phase 2 chose) of the final accumulator — the same ≤ 64 KB as a single-shot proof;
+- **the fallback** if ARC's prover is too slow or its argument does not close on review: bounded-depth recursion — the Trident verifier of §5 proven inside nox, one level at a time. costlier, standard, sound; it keeps the goal, not the elegance.
+
+until phase 3 lands, phase 2 delivers succinct proofs for one relation of at most 2^15 rows (about 29 hemera permutations), not for "any computation"; the goal of §0 is met only when phase 3 does.
 
 ### zero knowledge
 
@@ -140,7 +153,7 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
 | 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≤ 10 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
-| 2 | `lens/whir` (RS, hemera Merkle, fp3, Johnson parameters), Spartan over fp3, `succinct` profile | hash.tri **≤ 40 KB, verify ≤ 1 ms**; bit-flip scan clean; soundness ledger complete and all rows proven | lens, zheng, strata (fp3 exposure) |
+| 2 | **bake-off**: (a) today's `TensorMerkle` with the expander replaced by a Reed–Solomon code (proven distance → Johnson query count instead of `100·m`) and fp3 challenges; (b) `lens/whir`. same fixtures, same ledger; the smaller sound one becomes `succinct`, the other is retired | hash.tri **≤ 64 KB (expected 25–40), verify ≤ 1 ms**; `n = 2^20` fixture ≤ 64 KB; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
 | 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
 | 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
 | 5 | delete: brakedown, folding, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
@@ -185,6 +198,7 @@ for one hash at 128 bits, starting from the ~36 KB of §3:
 
 | lever | what it does | effect |
 |---|---|---|
+| **a code with a proven distance** (Reed–Solomon instead of the one-layer expander whose proven minimum weight is 1) | query count from `100·m` (every column) to the Johnson count (~64 at 128 bits) | the first and largest win: it is what turns "open everything" into an opening at all |
 | path deduplication | t queries share the top levels; send shared nodes once | −30…−45 % |
 | rate 1/32 instead of 1/16 | Johnson bits per query `log₂(1/√ρ)`: 2 → 2.5; queries 64 → 52 | −20 % of path bytes, prover ×2 |
 | grinding 20 bits | 20 bits for free; 8 fewer queries | −12 % |
@@ -194,6 +208,18 @@ for one hash at 128 bits, starting from the ~36 KB of §3:
 | 100 bits instead of 128 | queries ×0.78 | ~12–16 KB |
 
 this is the real floor for "one hash, post-quantum": 15–20 KB at 128 bits, well inside the 64 KB goal and below every production chain. recursive compression (proving the WHIR verifier inside nox) buys nothing in a hash-only world — the final proof carries its own paths again. phase 2 adopts these levers as parameters, not as separate work.
+
+### the tensor track, with its arithmetic
+
+the sound half of the old idea survives: Ligero geometry — a `k₁ × k₂` matrix, RS rows, a Merkle tree over columns, the combination `y = q₁ᵀW` sent in the clear, t columns opened — is today's `TensorMerkle`, and GLSTW21 §5 is its proof. "do not send y, commit it and recurse" is the part that needs an argument for composing levels (open question 1 of `recursive-brakedown.md`), and it has a byte arithmetic that bounds what it can win: **each query opens a whole column of k₁ elements**, so a level costs `t · k₁ · 8 B` before any path.
+
+| n | geometry | columns opened | y | paths (dedup.) | ≈ total |
+|---|---|---|---|---|---|
+| 2^10 | 32 × 32, rate 1/16 | 64 × 32 × 8 = 16 KB | 256 B | ~10 KB | **~27–35 KB** |
+| 2^20 | 1024 × 1024 | 64 × 1024 × 8 = **512 KB** | 8 KB | — | not viable |
+| 2^20 | k₁ = 64, recurse y (2^14 → 64 × 256 → 256) | 32 KB + 32 KB | 2 KB | ~20 KB | **~80–100 KB** |
+
+at 2^10 the tensor opening and WHIR land in the same 25–40 KB band; at 2^20 the recursion of y pays `t · k₁` at every level and ends at or above WHIR's 56–87 KiB — because WHIR *is* this recursion (folding by 2^k per round is "k₁ = 2^k"), done with a proximity argument across rounds. that is why the proposal does not pick a winner on paper: phase 2 measures both on the same fixtures and keeps the smaller sound one. what no version of the track brings back is `C = hemera(w)`, and with it 1.3 KB.
 
 ## 10. lattices — what they buy, and what they do not
 
