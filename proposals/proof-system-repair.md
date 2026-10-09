@@ -7,7 +7,7 @@ date: 2026-10-09
 ---
 # one proof — the repair of zheng
 
-> goal fixed by the owner on 2026-10-09: **a proof of any computation is at most 64 KB, post-quantum, verifies in at most 1 ms, and stays that size however long the computation — and the system that produces it is simple, reliable and flexible.** refined on the same day from the 2025–26 frontier (§3): **a small statement — a signature, a hash, a transfer — is at most 16 KB.** this page records what is broken, why the old numbers were never real, what the literature now allows, and the design that meets the goal with the fewest parts. it closes on the last merge, not the first.
+> goal fixed by the owner on 2026-10-09: **a proof of any computation is at most 64 KB, post-quantum, verifies in at most 1 ms, and stays that size however long the computation — and the system that produces it is simple, reliable and flexible.** refined on the same day from the 2025–26 frontier (§3): **a small statement — a signature, a hash, a transfer — is at most 20 KB, with 16 KB as the stretch.** this page records what is broken, why the old numbers were never real, what the literature now allows, and the design that meets the goal with the fewest parts. it closes on the last merge, not the first.
 
 ## 1. the state of the art, measured
 
@@ -34,7 +34,7 @@ two facts follow. the smallest post-quantum proof anyone has shown is about 50 K
 
 ## 2. what was broken, with evidence
 
-the ~2 KB "constant proof" of zheng 0.3.x rested on five things that were false or unproven. none of them was the Merkle tree.
+the ~2 KB "constant proof" of zheng 0.3.x rested on eight things that were false or unproven. none of them was the Merkle tree.
 
 | hole | where | evidence |
 |---|---|---|
@@ -55,10 +55,10 @@ what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-exec
 
 - **one field**: Goldilocks for everything committed; its cubic extension (`strata/nebu` `fp3`, already written) for every challenge and every evaluation point. no second field.
 - **one hash**: hemera (Poseidon2 over Goldilocks) for Merkle trees, for Fiat–Shamir, for program digests. the only cryptographic assumption is that this hash is a random oracle.
-- **one code**: Reed–Solomon over Goldilocks (NTT in `nebu`), proximity by WHIR. no expander codes, no conjectured distance.
+- **one code**: Reed–Solomon over Goldilocks (NTT in `nebu`); the proximity argument is the phase-2 winner's (WHIR, TensorMerkle+RS or SmallWood's DECS). no expander codes, no conjectured distance.
 - **one IOP**: Spartan sumcheck over CCS, as today. CCS of any degree, as of zheng#45.
 - **one accumulation**: ARC — hash-based accumulation of Reed–Solomon proximity claims, unbounded depth, up to list-decoding radius, random oracle only ([2024/1731](https://eprint.iacr.org/2024/1731), CRYPTO 2025). it replaces the homomorphic fold HyperNova needed and we never had. WARP ([2025/753](https://eprint.iacr.org/2025/753)) is the linear-time successor and the fallback if ARC's prover is too slow.
-- **one wire format**, three profiles: `public` (disclosed witness, linear check — the fallback and the debugging tool), `succinct` (committed witness, WHIR, ≤ 64 KB), `zk` (succinct plus VEIL-style masking, [2026/683](https://eprint.iacr.org/2026/683.pdf)). one magic, one version, a profile byte.
+- **one wire format**, three profiles: `public` (disclosed witness, linear check — the fallback and the debugging tool), `succinct` (committed witness, the class's opening, ≤ 20 KB small / ≤ 64 KB large), `zk` (succinct plus VEIL-style masking, [2026/683](https://eprint.iacr.org/2026/683.pdf)). one magic, one version, a profile byte.
 - **the verifier derives everything it checks** — the relation from the program, the public prefix from the statement — and trusts nothing from the prover but field elements and hashes. this is the rule that survived from 2026-09-11, kept.
 
 ### the commitment, chosen from the whole 2023–2026 frontier
@@ -79,8 +79,8 @@ why WHIR and not STIR: STIR (CRYPTO 2024) is the older one; WHIR (late 2024, sam
 
 two size classes follow, and the goal splits into two numbers that are both met by hash-only schemes with papers:
 
-- **small statements** (one relation of up to ~2^16 rows: a signature, a hash, a transfer, a vote, a lookup): the frontier is SmallWood/CAPSS at **10–16 KB at 128 bits**. this is the class the p2p market trades in most, and it is the class where "fits in a few packets" is honestly reachable. phase-2 acceptance for this class: **≤ 16 KB** (expected 10–16, measured against CAPSS's 9.5–15.5 at comparable constraint counts).
-- **unbounded computation**: WHIR as the decider of an ARC accumulator, **≤ 64 KB**, constant in the number of steps.
+- **small statements** (one relation of up to ~2^16 rows: a signature, a hash, a transfer, a vote, a lookup): the frontier is SmallWood/CAPSS at **10–16 KB at 128 bits**. this is the class the p2p market trades in most, and it is the class where "fits in a few packets" is honestly reachable. phase-2 acceptance for this class: **≤ 20 KB gate, 16 KB stretch** (SmallWood's own comparable rows are 14–23 KB; CAPSS reaches 9.5–15.5 with permutations designed for it — see the estimate below).
+- **unbounded computation**: the large-class winner as the decider of an ARC accumulator, **≤ 64 KB**, constant in the number of steps.
 
 phase 2's bake-off is therefore three-way on the small class — TensorMerkle+RS (today's code, repaired), WHIR, SmallWood — and two-way on the large class — WHIR, Ligerito/DeepFold — on the same fixtures, same ledger; one PCS per class ships, the rest is retired.
 
@@ -124,9 +124,9 @@ estimate for `hash.tri` with a SmallWood-style opening over Goldilocks: **15–2
 |---|---|---|
 | relation | program + subject shape → CCS; public prefix `(1, io, cycles)`; jets as rows | zheng `execution/relation` (today), nox semantics |
 | IOP | Spartan over CCS: outer sumcheck, inner sumcheck, one evaluation claim per matrix family | zheng `spartan` |
-| commitment | multilinear polynomial → RS codeword → hemera Merkle over columns or cosets; opening at an fp3 point by **TensorMerkle (Ligero geometry, RS rows) or WHIR — chosen by the phase-2 bake-off**; ARC accumulation of proximity claims | lens (`brakedown` becomes `tensor` with an RS code; `whir` added for the bake-off; the loser is retired) |
+| commitment | multilinear polynomial → RS codeword → hemera Merkle over columns or cosets; opening at an fp3 point by **the phase-2 winner per class — TensorMerkle+RS, WHIR or SmallWood on the small class; WHIR, Ligerito or DeepFold on the large**; ARC accumulation of proximity claims | lens (`brakedown` becomes `tensor` with an RS code; `whir` added for the bake-off; the loser is retired) |
 | state certificates | bbg's `QueryProof` is a lens commitment plus openings over the state polynomial; it rides whichever PCS wins and migrates in the same phase | bbg |
-| accumulation driver | uniform step relation; fold the IOP's evaluation claims into one ARC accumulator per run; decider = one WHIR proof of the accumulator | zheng `accumulate` (replaces `folding`) |
+| accumulation driver | uniform step relation; fold the IOP's evaluation claims into one ARC accumulator per run; decider = one opening of the accumulator by the large-class winner | zheng `accumulate` (replaces `folding`) |
 | statement & wire | profile, program digest, inputs, outputs, cycles, budget; serialisation; versioning | joy `rs/execution` + zheng `execution/statement` |
 | independent verifier | the whole verifier in Trident on nox, cross-checked against the Rust one on every fixture | trident `lib/std/zheng` (new) |
 
@@ -171,7 +171,7 @@ what phase 3 must pin down before it is built — the part the first draft left 
 - **the decider**: one opening by the phase-2 winner of the large class, of the final accumulator — the same ≤ 64 KB as a single-shot proof;
 - **the fallback** if ARC's prover is too slow or its argument does not close on review: bounded-depth recursion — the Trident verifier of §5 proven inside nox, one level at a time. costlier, standard, sound; it keeps the goal, not the elegance.
 
-until phase 3 lands, phase 2 delivers succinct proofs for one relation of at most 2^15 rows (about 29 hemera permutations), not for "any computation"; the goal of §0 is met only when phase 3 does.
+until phase 3 lands, phase 2 delivers succinct proofs for one relation of at most 2^15 rows (about 29 hemera permutations), not for "any computation"; the goal at the head of this page is met only when phase 3 does.
 
 ### zero knowledge
 
@@ -209,11 +209,11 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 | phase | what | acceptance | repos |
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
-| 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≤ 10 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
+| 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≈ 10 KB (the ~5 KB of redundant paths gone), gate ≤ 11 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
 | 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB stretch, ≤ 20 KB gate, verify ≤ 1 ms**, against SmallWood's Kyber/Dilithium rows (14–23 KB) and CAPSS's 9.5–15.5 KB; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
 | 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
 | 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
-| 5 | delete: brakedown, folding, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
+| 5 | delete: the bake-off losers, `folding`, the flat-hash opening and the recursive stub, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
 
 phases 1 and 2 are a month of focused work each; 3 is the research-grade one and is where ARC's prover cost must be measured before committing; 4 and 5 are weeks.
 
@@ -299,7 +299,7 @@ so the honest reading:
 
 what lattices buy is **not the final byte count** — the trees come back in the decider, or the lattice PCS is bigger than the trees. what they buy is the **shape of accumulation**: a homomorphic fold with a tiny in-flight object and no proximity machinery per step. if the thing that must fit in a packet is *what travels between steps of a p2p computation* rather than the final proof, lattices are the only way to make that object a few KB of algebra. that is a real reason, and it is also a second assumption.
 
-**decision recorded:** phase 2 is hash-only WHIR with the levers of §9 (one assumption, measured floor 15–20 KB). phase 3's accumulation is implemented first as ARC; a **Neo-style lattice fold is a scheduled research spike** before phase 3 commits: measure the fold's in-flight size and per-step cost on the nox step relation against ARC's, and decide on numbers. nothing in phases 1–2 depends on the outcome.
+**decision recorded:** phase 2 is hash-only — the bake-off of §3 with the levers of §9 (one assumption; honest floor 25–40 KB for the folding candidates on one hash, 15–25 KB for SmallWood on the small class). phase 3's accumulation is implemented first as ARC; a **Neo-style lattice fold is a scheduled research spike** before phase 3 commits: measure the fold's in-flight size and per-step cost on the nox step relation against ARC's, and decide on numbers. nothing in phases 1–2 depends on the outcome.
 
 ## 11. what this proposal does not claim
 
