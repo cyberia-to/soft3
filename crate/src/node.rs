@@ -5,6 +5,8 @@
 
 mod genesis;
 mod http;
+#[cfg(test)]
+mod proof_admission_tests;
 mod requests;
 mod routes;
 
