@@ -7,283 +7,132 @@ date: 2026-10-09
 ---
 # one proof — the repair of zheng
 
-> goal fixed by the owner on 2026-10-09: **a proof of any computation is at most 64 KB, post-quantum, verifies in at most 1 ms, and stays that size however long the computation — and the system that produces it is simple, reliable and flexible.** refined on the same day from the 2025–26 frontier (§3): **a small statement — a signature, a hash, a transfer — is at most 16 KB.** this page records what is broken, why the old numbers were never real, what the literature now allows, and the design that meets the goal with the fewest parts. it closes on the last merge, not the first.
+## 0. goal
 
-## 1. the state of the art, measured
+fixed by the owner on 2026-10-09:
 
-numbers that ship or are published, not claims. ours are measured on an M4 Max on 2026-10-08/09.
+| class | statement | proof on the wire | verify | security |
+|---|---|---|---|---|
+| small | one relation ≤ 2¹⁶ rows: a hash, a signature, a transfer, a vote | ≤ 16 KB | ≤ 1 ms | 128 bit, post-quantum, hash-only |
+| any | a computation of any length | ≤ 64 KB, constant in the number of steps | ≤ 1 ms | same |
 
-| system | primitives | security | proof on the wire | verify | source |
-|---|---|---|---|---|---|
-| **soft3 today** (joy 0.5.0 + zheng#45) | nox CCS · Spartan · PublicTensor (full witness) | linear check, no succinctness | one hash: **15,608 B** (was 294,861) | 30 ms | `zheng/audit/compact-relation-2026-10-09.md` |
-| soft3 Triton zk path (trisha) | Triton VM STARK, Tip5 | hash-only, 160 bit | add 768 KB · hash **1.05 MB** | 10–170 ms | same |
-| Starknet · Stwo | Circle STARK over M31, FRI | 96 bit proven · "conjectured" | **617 KB** · 221 KB (hash chain 2^14) | — | [proven.provably.fast](https://github.com/starknet-innovation/proven.provably.fast) |
-| Neptune · Triton VM | STARK, Tip5, recursion in production | hash-only | **~1 MB** per block | — | [docs.neptune.cash](https://docs.neptune.cash/) |
-| Quantus · wormhole | Plonky2 `standard_recursion_config`, Poseidon2, ML-DSA-87 | **100 bit conjectured** | **151 KB** private batch · 224 KB public batch · cap 512 KiB; one Plonky2 recursion proof measured by us: **127,192 B** | — | `Quantus-Network/chain` `pallets/wormhole/src/lib.rs:30-44` (482c5b9); plonky2 5d9da5a `bench_recursion` |
-| parano1d | FRI-Binius over GF(2^128), Poseidon2b | NIST Cat 1 (~173 bit) | **913–981 KB** per block, cap 1.1 MB | 0.8–2.5 s | [performance.md](https://raw.githubusercontent.com/proof-native/parano1d/main/docs/reference/performance.md) |
-| RISC Zero succinct receipt | FRI STARK + recursion | hash-only | **~200 KB**, constant | — | [risczero](https://dev.risczero.com/api/recursion) |
-| WHIR (PCS) | RS proximity, hash-only | **128 bit** | rate 1/16: **56–87 KiB** · rate 1/2: 120–187 KiB | **0.4–0.8 ms** | [eprint 2024/1586](https://eprint.iacr.org/2024/1586.pdf) |
-| STIR (PCS) | RS proximity, hash-only | 128 bit | 114 KiB (degree 2^26, rate 1/4) | — | same |
-| LaBRADOR · Greyhound | lattices, Module-SIS | PQ | **~50–58 KB** | — | [2022/1341](https://eprint.iacr.org/2022/1341.pdf) · [2024/1293](https://eprint.iacr.org/2024/1293.pdf) |
-| LaBinius (2026) | Binius + LaBRADOR compressor | PQ | **< 100 KiB** for a standard hash | — | [2026/2103](https://eprint.iacr.org/2026/2103.pdf) |
-| not post-quantum, for scale | Jolt KZG wrapper 7.5 KB · Mina ~22 KB · Groth16 ~0.2 KB | curves | — | — | — |
+and the system that produces it is simple, reliable and flexible. this page records what is broken, the design with the fewest parts, and the gates that decide each phase. it closes on the last merge.
 
-two facts follow. the smallest post-quantum proof anyone has shown is about 50 KB at 128 bits; every post-quantum chain in production ships 150 KB to 1 MB. a 10 KB post-quantum proof of an arbitrary computation does not exist in the literature, and a 2 KB one is not on any horizon. the 2025 SoK adds a repricing: the capacity-soundness conjectures behind the "conjectured" columns above were disproven over large fields ([2026/1367](https://eprint.iacr.org/2026/1367)); honest parameters are Johnson-bound parameters, i.e. more queries.
+## 1. where the numbers stand
 
-**64 KB is therefore the right goal:** it is reachable with hash-only primitives at 128 bits (WHIR at rate 1/16 is already there for large polynomials), it beats every production chain by 3–15×, and it keeps the stack's one assumption — a hash.
+| system | proof | verify | security |
+|---|---|---|---|
+| soft3 today — public certificate (joy 0.5.0 + zheng#45) | 15,608 B for one hash, witness disclosed | 30 ms | sound, linear, not succinct |
+| soft3 Triton zk path (trisha) | 1.05 MB | 10–170 ms | hash-only, 160 bit |
+| production chains — Stwo, Triton, RISC Zero, parano1d, Quantus | 150 KB – 1 MB | — | 96–173 bit |
+| WHIR, hash-only PCS (2024) | 56–87 KiB at rate 1/16 | 0.4–0.8 ms | 128 bit |
+| SmallWood / CAPSS, small statements (2025) | 9.5–15.5 KB at 24–35K constraints | — | 128 bit |
+| LaBRADOR / Greyhound / LaBinius, lattices | 50–83 KB | 700 ms | PQ, second assumption |
+| curves, for scale: Groth16 / Jolt / Mina | 0.2 / 7.5 / 22 KB | — | not post-quantum |
 
-## 2. what was broken, with evidence
+sources: `zheng/audit/compact-relation-2026-10-09.md`, [WHIR 2024/1586](https://eprint.iacr.org/2024/1586.pdf), [SmallWood](https://eprint.iacr.org/2025/1085), [LaBinius 2026/2103](https://eprint.iacr.org/2026/2103.pdf), [SoK repricing 2026/1367](https://eprint.iacr.org/2026/1367). the smallest post-quantum proof anyone has shown is ~50 KB; a 10 KB one for arbitrary computation does not exist; 64 KB is reachable hash-only and beats every production chain 3–15×.
 
-the ~2 KB "constant proof" of zheng 0.3.x rested on five things that were false or unproven. none of them was the Merkle tree.
+## 2. what is broken
 
-| hole | where | evidence |
+the ~2 KB "constant proof" of zheng 0.3.x rested on five false or unproven things. none was the Merkle tree.
+
+| hole | evidence | fix (phase) |
 |---|---|---|
-| the opening checked nothing | lens dbf472b (2026-04-16), `brakedown/src/lib.rs` | the verifier compared the prover-supplied final value with itself; `let _ = (expected_idx, qidx); // transcript consistency ensured by absorption`; modulus `EXPANSION_M_PLACEHOLDER = 1024 // verifier doesn't know m exactly`. zheng#14 found 2,080 proof bytes that changed nothing by bit-flip scan |
-| "Brakedown is Merkle-free" | `zheng/docs/explanation/recursive-brakedown.md:12` | a misreading: GLSTW21 §5 Brakedown is a Merkle tree over columns. a flat hash of a codeword binds it but cannot be opened at one position; spot checks need a vector commitment |
-| the fold was never checked | `zheng/specs/decider.md:105` | HyperNova needs an additively homomorphic commitment; hemera is a hash. the error vector was prover-chosen; "leaves the verifier trusting the fold" |
-| the statement was not bound | `decider.md:111`, tests `attack_satisfying_but_meaningless_witness_passes_for_any_statement` | program/input/output hashes only absorbed into Fiat–Shamir; a satisfying witness of nothing verified for any statement. `output_hash` hashed arena ids, not values |
-| the constant wire was free | `decider.md:110`, `attack_zeroed_constant_wire_satisfies_universal_instance` | the all-zero witness satisfied the universal instance |
-| code distance unproven, queries miscounted | lens#6 (open), `lens/specs/scalar-field.md:28-32` | "20 queries → 2^-20" assumed a proven distance; today only minimum weight 1 is proven, so the sampling count is 100·m and every column is opened |
-| base-field challenges | `zheng/specs/execution.md:75` | all sumcheck and opening challenges are Goldilocks elements; 64-bit field ⇒ no 128-bit claim without an extension |
-| λ counted in elements, not bits | `recursive-brakedown.md:244` ("≈ 2^{-λ}") next to a 128-element remainder | the document's size arithmetic treats 128 field elements as 128 bits of soundness; the soundness ledger of §5 counts bits only |
+| the opening checked nothing — verifier compared a prover value with itself; 2,080 dead proof bytes found by bit-flip scan | lens dbf472b, zheng#14 | opening by a PCS with a proof (2) |
+| "Brakedown is Merkle-free" — a flat hash cannot be opened at one position; a local opening costs Θ(log n) digests in a hash-only world, by lower bound | `zheng/docs/explanation/recursive-brakedown.md:12`; §A | Merkle paths, deduplicated (2) |
+| the fold was never checked — HyperNova needs a homomorphic commitment, hemera is a hash; the error vector was prover-chosen | `zheng/specs/decider.md:105` | ARC accumulation (3) |
+| the statement was not bound — a satisfying witness of nothing verified for any statement | `decider.md:111`, test `attack_satisfying_but_meaningless_witness_passes_for_any_statement` | public prefix in the CCS (1) |
+| the constant wire was free — the all-zero witness satisfied the universal instance | `decider.md:110`, test `attack_zeroed_constant_wire_satisfies_universal_instance` | pinned constant (1) |
+| code distance unproven — minimum weight 1 is all that is proven, so `num_queries = 100·m` opens every column | lens#6, `lens/specs/scalar-field.md:28-32` | Reed–Solomon (2) |
+| base-field challenges — 64-bit Goldilocks, no 128-bit claim possible | `zheng/specs/execution.md:75` | fp3 challenges (1) |
+| λ counted in elements, not bits | `recursive-brakedown.md:244` | soundness ledger (1) |
 
-what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-execution-release.md`) was the honest fallback: derive the relation on the verifier, disclose the witness, check every row. it is sound and it is not succinct. zheng#45 (2026-10-09) shrank that path 19× by shrinking the relation; it cannot shrink it further than the witness.
+the owner's 2026-09-11 fallback — derive the relation on the verifier, disclose the witness, check every row — is sound and stays as the `public` profile.
 
 ## 3. the design
 
-### principles
+seven rules, each a removal:
 
-- **one field**: Goldilocks for everything committed; its cubic extension (`strata/nebu` `fp3`, already written) for every challenge and every evaluation point. no second field.
-- **one hash**: hemera (Poseidon2 over Goldilocks) for Merkle trees, for Fiat–Shamir, for program digests. the only cryptographic assumption is that this hash is a random oracle.
-- **one code**: Reed–Solomon over Goldilocks (NTT in `nebu`), proximity by WHIR. no expander codes, no conjectured distance.
-- **one IOP**: Spartan sumcheck over CCS, as today. CCS of any degree, as of zheng#45.
-- **one accumulation**: ARC — hash-based accumulation of Reed–Solomon proximity claims, unbounded depth, up to list-decoding radius, random oracle only ([2024/1731](https://eprint.iacr.org/2024/1731), CRYPTO 2025). it replaces the homomorphic fold HyperNova needed and we never had. WARP ([2025/753](https://eprint.iacr.org/2025/753)) is the linear-time successor and the fallback if ARC's prover is too slow.
-- **one wire format**, three profiles: `public` (disclosed witness, linear check — the fallback and the debugging tool), `succinct` (committed witness, WHIR, ≤ 64 KB), `zk` (succinct plus VEIL-style masking, [2026/683](https://eprint.iacr.org/2026/683.pdf)). one magic, one version, a profile byte.
-- **the verifier derives everything it checks** — the relation from the program, the public prefix from the statement — and trusts nothing from the prover but field elements and hashes. this is the rule that survived from 2026-09-11, kept.
-
-### the commitment, chosen from the whole 2023–2026 frontier
-
-why WHIR and not STIR: STIR (CRYPTO 2024) is the older one; WHIR (late 2024, same authors) is its successor — multilinear, "super-fast verification", and smaller: 56–87 KiB vs 114 KiB at 128 bits, 1.0 ms vs 3.8 ms to verify. but the question is right in general: the proposal must choose from the full row of hash-based commitments, not from one paper. the row, with what each is for:
-
-| scheme | year | code · geometry | what it is good at | size (128 bit unless noted) | fit |
-|---|---|---|---|---|---|
-| Basefold | 2023 | foldable codes, FRI-style | field-agnostic, simple | large | superseded by WHIR on RS |
-| STIR | 2024 | RS, shrinking domains | fewer queries than FRI | 114 KiB (2^26, rate 1/4) | superseded by WHIR |
-| **WHIR** | 2024 | RS, constrained folding, multilinear | smallest verifier; proven regime beyond unique decoding | **56–87 KiB** at rate 1/16; 36 KiB at 100 bit (SoK) | large polynomials, the accumulation decider |
-| DeepFold | 2025 | RS, multilinear | optimal prover, concise proofs | large | alternative to WHIR, same class |
-| Ligerito | 2025 | Ligero recursion + partial sumcheck, any linear-time code | linear-time prover; sizes ≈ WHIR in the proven regime; verifier heavier (code switching) | 255 KiB at 2^24 over a 32-bit binary field | if prover time wins over verifier time; not here |
-| **SmallWood** | 2025 | hash-based PCS + ZK argument **for witnesses 2^6–2^16** | the smallest proofs in exactly our small-statement range | **< 25 KB**; CAPSS signatures on it: **9.5–15.5 KB for 24–35K R1CS constraints** | signature-like statements: one hash, one transfer, one vote |
-| ReedWeave | 2026 | RS, interleaving + folding | fastest prover measured | 595 KiB (2^24, rate 1/4): big | prover-bound settings, not ours |
-| DeepBrake | 2026 | row-wise RS, arbitrary points | Brakedown geometry with RS rows | — | the tensor track of §9 with a paper |
-| FRI-Binius · Blaze | 2024–25 | binary towers | bit-heavy traces | ~1 MB blocks in parano1d | wrong field for a Goldilocks stack |
-
-two size classes follow, and the goal splits into two numbers that are both met by hash-only schemes with papers:
-
-- **small statements** (one relation of up to ~2^16 rows: a signature, a hash, a transfer, a vote, a lookup): the frontier is SmallWood/CAPSS at **10–16 KB at 128 bits**. this is the class the p2p market trades in most, and it is the class where "fits in a few packets" is honestly reachable. phase-2 acceptance for this class: **≤ 16 KB** (expected 10–16, measured against CAPSS's 9.5–15.5 at comparable constraint counts).
-- **unbounded computation**: WHIR as the decider of an ARC accumulator, **≤ 64 KB**, constant in the number of steps.
-
-phase 2's bake-off is therefore three-way on the small class — TensorMerkle+RS (today's code, repaired), WHIR, SmallWood — and two-way on the large class — WHIR, Ligerito/DeepFold — on the same fixtures, same ledger; one PCS per class ships, the rest is retired.
-
-### the layers and who owns them
+1. one field — Goldilocks for everything committed; its cubic extension fp3 (`strata/nebu`, written) for every challenge and evaluation point.
+2. one hash — hemera for Merkle trees, Fiat–Shamir and program digests. the only assumption: hemera is a random oracle.
+3. one code — Reed–Solomon over Goldilocks (NTT in nebu). no expander codes, no conjectured distance.
+4. one IOP — Spartan sumcheck over CCS of any degree (zheng#45).
+5. one accumulation — ARC: hash-based, unbounded depth, up to list-decoding radius, random oracle only ([2024/1731](https://eprint.iacr.org/2024/1731)); WARP ([2025/753](https://eprint.iacr.org/2025/753)) as the linear-time fallback.
+6. one wire format, three profiles — `public` (disclosed witness, linear check), `succinct` (committed witness, ≤ 64 KB), `zk` (succinct + VEIL masking, [2026/683](https://eprint.iacr.org/2026/683.pdf)). one magic, one version, one profile byte.
+7. the verifier derives everything it checks — the relation from the program, the public prefix from the statement — and trusts nothing from the prover but field elements and hashes.
 
 | layer | owns | repo |
 |---|---|---|
-| relation | program + subject shape → CCS; public prefix `(1, io, cycles)`; jets as rows | zheng `execution/relation` (today), nox semantics |
-| IOP | Spartan over CCS: outer sumcheck, inner sumcheck, one evaluation claim per matrix family | zheng `spartan` |
-| commitment | multilinear polynomial → RS codeword → hemera Merkle over columns or cosets; opening at an fp3 point by **TensorMerkle (Ligero geometry, RS rows) or WHIR — chosen by the phase-2 bake-off**; ARC accumulation of proximity claims | lens (`brakedown` becomes `tensor` with an RS code; `whir` added for the bake-off; the loser is retired) |
-| state certificates | bbg's `QueryProof` is a lens commitment plus openings over the state polynomial; it rides whichever PCS wins and migrates in the same phase | bbg |
-| accumulation driver | uniform step relation; fold the IOP's evaluation claims into one ARC accumulator per run; decider = one WHIR proof of the accumulator | zheng `accumulate` (replaces `folding`) |
-| statement & wire | profile, program digest, inputs, outputs, cycles, budget; serialisation; versioning | joy `rs/execution` + zheng `execution/statement` |
-| independent verifier | the whole verifier in Trident on nox, cross-checked against the Rust one on every fixture | trident `lib/std/zheng` (new) |
+| relation | program + subject shape → CCS; public prefix `(1 ‖ io ‖ cycles)`; jets as rows; `vk = hemera(matrices)` | zheng `execution/relation` |
+| IOP | Spartan: outer and inner sumcheck, one evaluation claim per matrix family | zheng `spartan` |
+| commitment | multilinear → RS codeword → hemera Merkle; opening at an fp3 point by the phase-2 winner | lens |
+| accumulation | uniform step relation; ARC folds evaluation claims; decider = one opening of the accumulator | zheng `accumulate` (replaces `folding`) |
+| statement & wire | profile, program digest, io, cycles, budget; serialisation; versioning | joy `rs/execution` + zheng `execution/statement` |
+| state certificates | bbg `QueryProof` rides the winning PCS | bbg |
+| second verifier | the whole verifier in Trident on nox, agreeing with Rust on every fixture | trident `lib/std/zheng` |
 
-### the proof, end to end (succinct profile)
+the proof, succinct profile: relation (prover and verifier compile the same CCS; only `w` is committed) → `vk` (the verifier recompiles, hashes once, absorbs the digest) → commit (`w` as a multilinear polynomial, RS-encoded, one hemera root) → IOP (Spartan with fp3 challenges, one claim `w̃(r) = v`) → open (Johnson-bound parameters, 128 bit) → wire (statement · program · profile · root · sumcheck polynomials · evaluations · opening).
 
-1. **relation.** the prover compiles the program exactly as the verifier will: CCS with a public prefix `z = (1 ‖ io ‖ cycles ‖ w)`. the verifier evaluates the prefix's multilinear extension itself; only `w` is committed. this is what binds program and io once the witness leaves the wire — the hole of 2026-09-09, closed structurally.
-2. **verifying key.** the verifier recompiles the CCS from the program — as today, O(program), never from the prover — hashes it once (`vk = hemera(matrices)`) and absorbs `vk` instead of every entry. a light client caches `vk` per program it accepts; the step relation of §3 has one fixed `vk`. the artifact carries the program, never matrices.
-3. **commit.** `w` as a multilinear polynomial in `log n` variables, Reed–Solomon encoded, hemera Merkle over columns or cosets — the layout is the phase-2 winner's. one root.
-4. **IOP.** Spartan: outer sumcheck (degree = CCS degree, 7 on hash programs) with challenges in fp3; inner sumcheck batching the matrix evaluations; one claim `w̃(r) = v`.
-5. **open.** the phase-2 winner opens `w̃(r)` with Johnson-bound parameters at 128 bits. with WHIR that is folding factor 4, rate 1/16, grinding 16 bits, and the verifier's work is `t` Merkle paths plus a logarithmic sumcheck; with TensorMerkle+RS it is `t` columns and their paths plus the row combination; with SmallWood its own small-instance argument. the wire below is written for WHIR as the worked example, not as the choice.
-6. **wire.** statement · program · profile · root · sumcheck polynomials · matrix evaluations · the opening (for WHIR: rounds, folded polynomials, query openings with deduplicated paths, final polynomial).
+byte budget for one hash (`n = 2¹⁰`, degree-7 CCS, 128-bit Johnson, fp3 at 24 B), WHIR as the worked example: statement 0.3 KB · Spartan 3 KB · opening 28–36 KB · final polynomial 0.5 KB → 32–40 KB expected, 64 KB the ceiling; 16–20 KB at 100 bit. verify ≈ 2,000 hemera permutations ≈ 0.5–1 ms. at `n = 2²⁰`: 56–70 KB, WHIR's published number.
 
-### byte budget (estimate for the WHIR candidate, to be measured at phase 2)
+unbounded programs: a uniform step relation (one CCS for one nox reduction step with continuity and memory arguments, `zheng/audit/general-nox-relation-review.md:160-173`); each step yields one proximity claim; ARC folds claims into one accumulator of fixed size (one root, one fp3 point, one value, a few cosets of openings per step); one opening decides it. proof size independent of length. fallback if ARC's prover is too slow or its argument does not close on review: bounded-depth recursion through the Trident verifier — costlier, standard, sound.
 
-for one hash, `n = 2^10` after zheng#45, degree-7 CCS, 128-bit Johnson parameters, fp3 challenges (24 B per element):
+## 4. phases and gates
 
-| component | bytes |
-|---|---|
-| statement, program, profile | ~0.3 KB |
-| root + Spartan: 10 outer rounds × 8 coefficients + 10 inner rounds × 3, 5 matrix evaluations | ~3 KB |
-| WHIR: 3 rounds; t ≈ 64 queries; per query a coset of 16 elements (128 B) and a hemera path of 14 → 10 → 6 hashes (32 B each), paths deduplicated across queries (~−30 %) | ~28–36 KB |
-| final polynomial, grinding nonce | ~0.5 KB |
-| **total, 128 bit** | **~32–40 KB expected · 64 KB is the acceptance ceiling** |
-| same at 100-bit conjectured (t ≈ 30) | ~16–20 KB |
+every gate is a fixture and a command, not an opinion. a phase closes when its row is green on CI.
 
-the query count `t ≈ 64` is Johnson-bound arithmetic (`log₂(1/√ρ)` = 2 bits per query at rate 1/16), not a conjecture; it is also exactly where the 2025 repricing bites, so the budget is written with the ceiling, not the expectation, as the gate. the fp3 element is 24 B (three Goldilocks limbs) wherever a challenge or an evaluation travels.
-
-verify: 64 queries × ≤ 30 hemera permutations + two short sumchecks ≈ 2,000 permutations ≈ **0.5–1 ms** native (hemera is ~0.3 µs per permutation on M4). the budget is dominated by Merkle authentication, as in every hash-based system; that is the price of "one hash" and it is within the goal.
-
-for a program of `n = 2^20` the WHIR part grows by two more rounds and 10 more hashes per path: **~56–70 KB** at 128 bits — the number WHIR publishes.
-
-### unbounded programs: accumulation, then one decider
-
-a program longer than the relation limit (today 2^15 rows, 29 permutations) is proven step by step over a **uniform step relation** — one CCS for "one nox reduction step with continuity and memory arguments" (`zheng/audit/general-nox-relation-review.md:160-173` lists the requirements). each step yields one proximity claim about its committed witness; ARC folds claim after claim into one accumulator of fixed size (one root, one evaluation point, one value — a few hundred bytes plus the accumulated Merkle openings per step, which is where ARC's "small number of openings relative to the code rate" matters). at the end, one opening by the phase-2 winner decides the accumulator. the proof of a million steps is the same ≤ 64 KB as the proof of one.
-
-this is the *recursion milestone* every zheng document pointed at. the difference from the 2026 plan is that it no longer needs a homomorphic commitment nor a verifier circuit of the verifier: ARC is accumulation in the random-oracle model, which is exactly the one assumption the stack makes.
-
-what phase 3 must pin down before it is built — the part the first draft left as one line:
-
-- **the accumulator on the wire**: one Merkle root of the accumulated codeword, one evaluation point in fp3, one claimed value, and the per-step openings ARC needs — "a small number of Merkle openings relative to the code rate" ([2024/1731](https://eprint.iacr.org/2024/1731)); at rate 1/16 that is a handful of cosets per step, so the in-flight object is a few KB and does not grow with the number of steps;
-- **the per-step cost**: one RS encoding of the step witness, one Merkle tree, one proximity reduction; measured on the nox step relation before phase 3 commits, next to the Neo-style lattice fold of §10;
-- **the decider**: one opening by the phase-2 winner of the large class, of the final accumulator — the same ≤ 64 KB as a single-shot proof;
-- **the fallback** if ARC's prover is too slow or its argument does not close on review: bounded-depth recursion — the Trident verifier of §5 proven inside nox, one level at a time. costlier, standard, sound; it keeps the goal, not the elegance.
-
-until phase 3 lands, phase 2 delivers succinct proofs for one relation of at most 2^15 rows (about 29 hemera permutations), not for "any computation"; the goal of §0 is met only when phase 3 does.
-
-### zero knowledge
-
-the `zk` profile masks the committed polynomial and the sumcheck with random low-degree terms (VEIL, 2026) — a few KB and a few percent of prover time over `succinct`, no second proof system. the Triton path (trisha) remains as the independent zk oracle for differential testing until `zk` is reviewed, and is then retired from the product path.
-
-## 4. simplicity: what disappears
-
-- in lens, **the loser of the phase-2 bake-off** — not decided here. the recursive stub `UnsupportedRecursiveOpening` and the flat-hash `Tensor` opening go regardless. `PublicTensor` stays as the `public` profile until `succinct` is live and audited: a disclosed witness checked linearly is the only thing that replaces nothing.
-- `zheng/folding` (HyperNova over hemera, unsound by construction): replaced by `zheng/accumulate` (ARC).
-- formats `zheng-hypernova-tensor-merkle-v2`, `JOYEXEC1`, `JOYEXEC2`, `JOYZK003`: one format with a profile byte; the old ones read by a `legacy` tool for a release, then gone.
-- the disclosed/tagged/native-private experimental kernels on `release/0.4` keep their audits and leave the production path once `zk` lands.
-- expander codes, `MIN_ABS_WEIGHT`, `num_queries = 100·EXPANSION·k2`: gone with the code.
-
-what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, hemera, nebu, nox, joy's statement model. the whole proving path — relation, IOP, commitment, accumulation, wire — should fit in about 12k lines of Rust against today's ~25k across lens, zheng/folding and zheng/execution.
-
-## 5. reliability: how it stays sound
-
-- **a soundness ledger** (`zheng/specs/soundness.md`, new): one row per component — assumption, bits claimed, proven or conjectured, the paper, the parameter that controls it. the release gate fails if any row is "conjectured" on the production profile.
-- **attack tests that must fail.** the two residual tests of 0.3.2 flip from "passes, documenting a hole" to "must be rejected": a meaningless satisfying witness for a statement; a zeroed constant wire. plus: forged public output, forged `vk`, truncated Merkle path, query index replay, challenge reuse across rounds. every one is a fixture, every one is a release gate.
-- **bit-flip scan** over every byte of every fixture proof: a byte that can change without the verifier noticing is a bug (the method that found the 2,080 dead bytes of 0.3.0).
-- **differential against native**: every circuit digest against `nox::data::hash`, every output against `nox::reduce`, as today.
-- **two verifiers**: the Rust verifier and a Trident verifier on nox, run on every fixture, must agree — the `cross-verified` feature made real for the proof system itself. the Trident verifier is also the seed of the decider circuit, if recursion is ever wanted on top of accumulation.
-- **frozen fixtures**: a proof, once produced for a release, is a fixture that every later verifier must still accept (or the format version moves).
-
-## 6. flexibility: what the design leaves open
-
-- any CCS degree (zheng#45): jets as single high-degree rows, lookups via state tables as today.
-- profiles are a byte, not a fork: a market can require `succinct`, a dispute can demand `public`, a wallet can insist on `zk`.
-- the verifier is program-independent through `vk`: a light client holds `vk`s, not programs.
-- the step relation is the only thing that needs to grow for new nox patterns; the commitment, accumulation and wire do not know what a nox is.
-- security parameters are data: queries, rate, grinding, extension degree live in one struct, printed into the proof header, checked by the verifier against its policy.
-
-## 7. the path, with acceptance
-
-| phase | what | acceptance | repos |
+| phase | what | gate | repos |
 |---|---|---|---|
-| 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
-| 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≤ 10 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
-| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB, verify ≤ 1 ms**, against CAPSS's 9.5–15.5 KB at 24–35K constraints; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
-| 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
-| 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
-| 5 | delete: brakedown, folding, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
+| 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B; prove/verify 460 → 36/30 ms; 259 tests | zheng |
+| 1 | soundness floor: public prefix + pinned constant + `vk` digest + fp3 challenges + one format with a profile byte + the soundness ledger | `public` hash.tri ≤ 10 KB · fixtures `forged-io`, `forged-vk`, `zeroed-constant`, `meaningless-witness` rejected · ledger has no "conjectured" row | zheng, joy, strata |
+| 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 16 KB, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
+| 3 | uniform step relation + ARC + decider; lattice-fold spike measured first (§B) | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms | zheng, nox |
+| 4 | `zk` profile (VEIL); Trident verifier | zk fixtures · Rust and Trident verifiers agree on every fixture | zheng, trident |
+| 5 | delete: brakedown, folding, legacy formats, stale docs (§C) | proving path ≤ 12k lines by `tokei` · no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
 
-phases 1 and 2 are a month of focused work each; 3 is the research-grade one and is where ARC's prover cost must be measured before committing; 4 and 5 are weeks.
+phases 1 and 2 are a month each; 3 is research-grade and measures before it commits; 4 and 5 are weeks. until 3 lands, `succinct` covers one relation of ≤ 2¹⁵ rows, and the "any computation" row of §0 is open.
 
-## 8. documents that still describe the old design as current
+## 5. how it stays sound
 
-to be marked "superseded by proof-system-repair" or deleted in phase 5: `zheng/specs/{verifier,api,README,decider,accumulator,recursion}.md`, `zheng/docs/explanation/{recursive-brakedown,polynomial-commitments,whirlaway,fri-to-whir,zheng-vs-starks,performance}.md`, `zheng/CLAUDE.md` (Brakedown line), `nox/specs/jets/{decider,recursion}.md`, `lens/README.md`, `lens/specs/commitment.md`, `bbg/specs/{architecture,data-availability}.md` (the ~2 KiB / ~75 B lines), `cyber/whitepaper.md:1202` (~22 KB), `cyber/light.md:115`, `crystal/architecture.md:331-341`, `soft3/docs/polynomial-proof-system.md` (already bannered; the link to `roadmap/` is wrong).
+- soundness ledger (`zheng/specs/soundness.md`): one row per component — assumption, bits claimed, proven or conjectured, paper, controlling parameter. the release gate fails on any "conjectured" row in a production profile.
+- attack fixtures that must be rejected: meaningless witness, zeroed constant, forged io, forged `vk`, truncated path, query-index replay, challenge reuse. each one a release gate.
+- bit-flip scan over every byte of every fixture proof — the method that found the 2,080 dead bytes.
+- differential against native: circuit digests against `nox::data::hash`, outputs against `nox::reduce`.
+- two verifiers, Rust and Trident, agreeing on every fixture.
+- frozen fixtures: a proof produced for a release stays accepted by every later verifier, or the format version moves.
+- security parameters are data — queries, rate, grinding, extension degree in one struct, printed in the header, checked against the verifier's policy.
 
-## 9. the Merkle question — can the trees go?
+## 6. what disappears
 
-the owner asked this to be dug properly on 2026-10-09: the trees are the byte bottleneck, the Merkle-free design was "a solid calculation", is the blocked soundness gap just a bug? here is the dig.
+`zheng/folding` (HyperNova over hemera) → `zheng/accumulate` (ARC). the lens loser of the bake-off; `UnsupportedRecursiveOpening`; the flat-hash `Tensor` opening; expander codes, `MIN_ABS_WEIGHT`, `num_queries = 100·EXPANSION·k2`. formats `zheng-hypernova-tensor-merkle-v2`, `JOYEXEC1`, `JOYEXEC2`, `JOYZK003` → one format, read by a `legacy` tool for one release. the experimental kernels on `release/0.4` leave the production path when `zk` lands. `PublicTensor` stays as the `public` profile. the proving path — relation, IOP, commitment, accumulation, wire — fits in ~12k lines against ~25k today.
 
-### the design, reconstructed
+## 7. open, and who closes it
 
-`zheng/docs/explanation/recursive-brakedown.md`: commit `C = hemera(Enc(w))`, one hash of the whole codeword. to open ⟨w, q⟩ = v with `q = q₁ ⊗ q₂`: the prover sends `y = q₁ᵀ W`; the verifier draws t columns and checks `Enc(y)[j] = q₁ᵀ · col_j`; then recurse — commit `y` the same way instead of sending it. "32 bytes per level, zero trees, ~1.3 KiB".
+| question | closed by |
+|---|---|
+| which PCS per class | phase 2, on numbers |
+| ARC prover cost per step vs a Neo-style lattice fold (§B) | the phase-3 spike, on numbers |
+| zip's measured gain on the winner | phase 2 |
+| in-proof digest length under hemera profile v2 | decided: 32 B in trees (§B) |
 
-### the step that breaks
+## A. decisions recorded, with the argument compressed
 
-the column check means something only if `col_j` was fixed before `q₁` was drawn. the only thing that fixes columns is `C` — and `C` is a hash of the whole word: to check that a received `col_j` is the j-th column of `Enc(W)` the verifier needs the entire preimage. a flat hash has no local opening.
+the Merkle question. the owner asked whether the trees can go. they cannot: a flat hash `C = hemera(Enc(w))` has no local opening, and the column check `Enc(y)[j] = q₁ᵀ·col_j` is satisfiable by a prover who never touches `C` (pick `y'`, solve one linear equation per queried column). in a hash-only world a local opening costs Θ(log n) digests — a lower bound, not a layout; every hash-based system carries paths. the only escape is a homomorphism, i.e. lattices, at ~50 KB. the sound half of the old idea — Ligero geometry, RS rows, a column tree, `y` in the clear — is today's `TensorMerkle` and is a bake-off candidate; at `n = 2¹⁰` it and WHIR land in the same 25–40 KB band, at `2²⁰` folding wins. no version brings back `C = hemera(w)` or 1.3 KB.
 
-the attack, on an honest implementation that does read the columns:
+the levers on the trees, from ~36 KB for one hash: a code with a proven distance (queries from every column to ~64 — the largest win); path deduplication −30…45 %; rate 1/32 −20 % at ×2 prover; grinding 20 bits −12 %; folding factor 5 −10 %; fp3 at 24 B −3 %. honest floor 25–40 KB at 128 bit; 15–20 KB if the levers compose; zip ×0.6 on top of either.
 
-1. commit any `C` (the hash of zeros will do);
-2. receive `q₁`;
-3. pick any `y'`, compute `Enc(y')`;
-4. for each queried column j solve `q₁ᵀ · col_j = Enc(y')[j]` — one linear equation in k₁ unknowns, infinitely many solutions;
-5. every check passes; `⟨y', q₂⟩` is whatever `v` the prover wants.
+## B. lattices and the frontier, 2026-10-09
 
-no step touches `C`. that is why lens dbf472b "worked": its verifier did not read the columns at all, and the difference from this attack is cosmetic. the recursion changes nothing — every level has the same flat hash and the same hole, smaller.
+what lattices buy is the shape of accumulation, not the final byte count: a homomorphic fold with a tiny in-flight object (Neo/SuperNeo [2025/294](https://eprint.iacr.org/2025/294.pdf), LatticeFold+ [2025/247](https://eprint.iacr.org/2025/247.pdf), Symphony [2025/1905](https://eprint.iacr.org/2025/1905), PikkuFold ~5.7 KB per step [2026/1809](https://eprint.iacr.org/2026/1809.pdf)) at the price of a second assumption and norm bookkeeping. LaBinius ([2026/2103](https://eprint.iacr.org/2026/2103.pdf)) now wins the bytes at `2²⁴` — 82.9 KiB against WHIR's 300.9 at rate ¼ — and loses the verifier 650× (713 ms against 1.1). under the goal as fixed, hash-only stands; the spike's one question is whether any lattice verifier gets under 10 ms.
 
-### why one more hash does not fix it
+zip ([2025/1446](https://eprint.iacr.org/2025/1446)): black-box compression of hash-based proofs to ~60 %, standard assumptions. it composes with every lever because it acts on the finished proof; phase 2 measures it.
 
-the verifier must recompute `C` from what it receives. `C` depends on all n symbols; the verifier wants to read one. the other n−1 symbols must therefore arrive compressed, as hash outputs, each covering some subtree of hash calls. a chain `H(H(…), cⱼ)` costs one digest per position — linear. a balanced tree costs `(arity−1)·log n` digests, and that is minimal among structures where a digest covers a subtree. in a hash-only world a Merkle path is not an implementation choice but a lower bound: **a local opening costs Θ(log n) digests, and no rearrangement of hash calls changes it.** this is why WHIR, STIR, Basefold, FRI-Binius, Plonky2 and parano1d all carry paths.
+the in-proof digest: hemera profile v2 (hemera PR #15) raises the identity digest to 48 or 64 bytes for post-quantum collision resistance. a Merkle node inside a proof is ephemeral — it must be forged before the verifier runs, so "harvest now, break later" does not apply — and stays 32 bytes. one permutation, two squeeze lengths; a 48-byte node would add 50 % to the dominant term for nothing.
 
-the only thing that escapes the bound is a **homomorphism**: if the commitment is linear — `C = A·Enc(w)` over a lattice, Ajtai/SIS — then "this column is consistent with C" is checked by algebra without the preimage, and a Bulletproofs-style recursion gives logarithmic size. that is exactly LaBRADOR and Greyhound, and they cost ~50 KB because lattice elements are heavy. the idea "everything algebraic, no trees" is alive; its name is lattices and its price is tens of KB, not 2.
+what this proposal does not claim: no 2 KB, no 100 ns, no "Merkle-free", no proof smaller than the authentication of its own queries.
 
-### what the intuition gets right: attack the cost of the trees
+## C. documents that still describe the old design
 
-for one hash at 128 bits, starting from the ~36 KB of §3:
+to be marked superseded or deleted in phase 5: `zheng/specs/{verifier,api,README,decider,accumulator,recursion}.md`, `zheng/docs/explanation/{recursive-brakedown,polynomial-commitments,whirlaway,fri-to-whir,zheng-vs-starks,performance}.md`, `zheng/CLAUDE.md` (Brakedown line), `nox/specs/jets/{decider,recursion}.md`, `lens/README.md`, `lens/specs/commitment.md`, `bbg/specs/{architecture,data-availability}.md`, `cyber/whitepaper.md:1202`, `cyber/light.md:115`, `crystal/architecture.md:331-341`, `soft3/docs/polynomial-proof-system.md`.
 
-| lever | what it does | effect |
-|---|---|---|
-| **a code with a proven distance** (Reed–Solomon instead of the one-layer expander whose proven minimum weight is 1) | query count from `100·m` (every column) to the Johnson count (~64 at 128 bits) | the first and largest win: it is what turns "open everything" into an opening at all |
-| path deduplication | t queries share the top levels; send shared nodes once | −30…−45 % |
-| rate 1/32 instead of 1/16 | Johnson bits per query `log₂(1/√ρ)`: 2 → 2.5; queries 64 → 52 | −20 % of path bytes, prover ×2 |
-| grinding 20 bits | 20 bits for free; 8 fewer queries | −12 % |
-| folding factor 5 | 32-element leaves, fewer levels, fewer rounds | −10 % |
-| fp3 challenges | 24 B per element instead of 32 | −3 % |
-| **together, if they composed cleanly** | | ~15–20 KB — the lower dream |
-| 100 bits instead of 128 | queries ×0.78 | ~12–16 KB |
-
-the levers do not multiply cleanly: rate 1/32 doubles the prover, a larger folding factor raises the leaf cost it saves in levels, and grinding is bounded by what a phone can do in a second. **the honest floor for "one hash, post-quantum" with these schemes is 25–40 KB at 128 bits** — inside the 64 KB goal and below every production chain; 15–20 KB is what the levers reach only if they compose, and it is not a gate. the small-statement class gets below that by a different construction (SmallWood, §3), which is why that class has its own number. recursive compression (proving the WHIR verifier inside nox) buys nothing in a hash-only world — the final proof carries its own paths again. phase 2 adopts these levers as parameters, not as separate work.
-
-### the tensor track, with its arithmetic
-
-the sound half of the old idea survives: Ligero geometry — a `k₁ × k₂` matrix, RS rows, a Merkle tree over columns, the combination `y = q₁ᵀW` sent in the clear, t columns opened — is today's `TensorMerkle`, and GLSTW21 §5 is its proof. "do not send y, commit it and recurse" is the part that needs an argument for composing levels (open question 1 of `recursive-brakedown.md`), and it has a byte arithmetic that bounds what it can win: **each query opens a whole column of k₁ elements**, so a level costs `t · k₁ · 8 B` before any path.
-
-| n | geometry | columns opened | y | paths (dedup.) | ≈ total |
-|---|---|---|---|---|---|
-| 2^10 | 32 × 32, rate 1/16 | 64 × 32 × 8 = 16 KB | 256 B | ~10 KB | **~27–35 KB** |
-| 2^20 | 1024 × 1024 | 64 × 1024 × 8 = **512 KB** | 8 KB | — | not viable |
-| 2^20 | k₁ = 64, recurse y (2^14 → 64 × 256 → 256) | 32 KB + 32 KB | 2 KB | ~20 KB | **~80–100 KB** |
-
-at 2^10 the tensor opening and WHIR land in the same 25–40 KB band. at 2^20 the row of the table is conditional on the geometry: a thin `k₁` with recursion of `y` is, in substance, folding — and folding with a proximity argument across rounds is WHIR. the spirit that holds regardless of the exact bytes: on large n folding wins over raw Ligero, and the proposal does not pick the winner on paper — phase 2 measures both on the same fixtures and keeps the smaller sound one. what no version of the track brings back is `C = hemera(w)`, and with it 1.3 KB.
-
-## 10. lattices — what they buy, and what they do not
-
-the owner's second question: if lattices are the only algebraic route, is there something there beyond the 50 KB, or is it not worth the weight? read the recent literature:
-
-- **Neo / SuperNeo** (Nguyen–Setty, [2025/294](https://eprint.iacr.org/2025/294.pdf), [2026/242](https://eprint.iacr.org/2026/242.pdf)): a lattice folding scheme *for CCS over small prime fields* — HyperNova's folding with Ajtai commitments instead of curves, one sumcheck per fold over a small-field extension, and **pay-per-bit** commitment cost: committing a vector of bits is 64× cheaper than a vector of 64-bit integers. this is our setting exactly: Goldilocks, CCS, hash traces full of bits.
-- **LatticeFold+** ([2025/247](https://eprint.iacr.org/2025/247.pdf)): folding proof size `O(κd + log n)`, no decomposed commitments, smaller verification circuit.
-- **HyperWolf** ([2025/922](https://eprint.iacr.org/2025/922)): lattice PCS, O(log N) proof size — and still **~436 KB at N = 2^20**. **Greyhound** ~53 KB; **LaBRADOR** ~50 KB as the final compressor.
-
-so the honest reading:
-
-| | hash-only (WHIR + ARC) | lattices (Neo + LaBRADOR) |
-|---|---|---|
-| final proof | 15–40 KB (128 bit) | ~50 KB; lattice PCS alone 400 KB+ |
-| the accumulator between steps | a root + openings: a few KB, Merkle-authenticated | **one Ajtai commitment + short vectors: a few KB, no tree, pure algebra** |
-| per-step prover | encode + Merkle + proximity sumcheck | one sumcheck + a matrix-vector product; **pay-per-bit** makes bit-heavy traces cheap |
-| verifier | hashes along paths | ring/matrix arithmetic; slower per element |
-| assumptions | one: the hash | two: the hash (Fiat–Shamir) **and** SIS; parameters need norm bookkeeping |
-| maturity | WHIR implemented and audited in several stacks | folding implementations young; soundness proofs still moving (LatticeFold → +, Neo → SuperNeo within a year) |
-
-what lattices buy is **not the final byte count** — the trees come back in the decider, or the lattice PCS is bigger than the trees. what they buy is the **shape of accumulation**: a homomorphic fold with a tiny in-flight object and no proximity machinery per step. if the thing that must fit in a packet is *what travels between steps of a p2p computation* rather than the final proof, lattices are the only way to make that object a few KB of algebra. that is a real reason, and it is also a second assumption.
-
-**decision recorded:** phase 2 is hash-only WHIR with the levers of §9 (one assumption, measured floor 15–20 KB). phase 3's accumulation is implemented first as ARC; a **Neo-style lattice fold is a scheduled research spike** before phase 3 commits: measure the fold's in-flight size and per-step cost on the nox step relation against ARC's, and decide on numbers. nothing in phases 1–2 depends on the outcome.
-
-## 11. what this proposal does not claim
-
-no 2 KB. no 100 ns. no "Merkle-free". no proof smaller than the authentication of its own queries. the stack keeps one assumption and pays for it in bytes; 64 KB is what that honesty costs at 128 bits, and it is still the smallest in production.
-
-## 12. frontier check, 2026-10-09 — what moves the numbers
-
-read against the 2025–26 literature after §1–11 were written. four things change a number; none changes the design.
-
-| finding | source | what it does to the goal |
-|---|---|---|
-| **zip** — black-box, non-recursive compression of hash-based SNARG proofs to ~60 % of their size, standard assumptions, no trusted setup | [2025/1446](https://eprint.iacr.org/2025/1446) | a post-processing lever the proposal did not count: the 25–40 KB floor of §9 becomes **15–25 KB**, the small class's 10–16 KB becomes **6–10 KB**. it composes with every lever in §9 because it acts on the finished proof. phase 2 should measure it on the winner |
-| **LaBinius** (2026) — Ajtai commitments + one LaBRADOR compression: 82.9 KiB at 2^24 against WHIR's 300.9 KiB at rate 1/4; but the verifier takes **713 ms against WHIR's 1.1 ms** | [2026/2103](https://eprint.iacr.org/2026/2103.pdf) | corrects §10's "lattice PCS alone 400 KB+": lattices now win the *bytes* at large n by ~3.6×, and lose the 1 ms verifier by ~650×. under the goal as fixed (≤ 64 KB **and** ≤ 1 ms) the hash-only choice stands; the lattice spike's question becomes "is there a verifier under 10 ms" |
-| **proximity gaps for RS with random evaluation points** improved toward the Goyal–Guruswami bounds | [arXiv 2607.08516](https://arxiv.org/abs/2607.08516) | fewer queries per bit at the same rate: the `t ≈ 64` of §3 may fall by 10–25 % once the result is applied to the WHIR analysis. a watch item, not a gate |
-| **Symphony** — lattice high-arity folding in the ROM, "folding as a black box without hashes in circuits"; **PikkuFold** — 5.7 KB per fold step | [2025/1905](https://eprint.iacr.org/2025/1905), [2026/1809](https://eprint.iacr.org/2026/1809.pdf) | sharpens the §10 spike: the lattice in-flight object is now measured at single-digit KB per step. the comparison for phase 3 is ARC's per-step openings (a few cosets at rate 1/16) against ~6 KB of algebra |
-
-**the digest in the paths.** the paths are the byte bottleneck (§9), and their cost is `t · log n · |digest|`. the hemera profile-v2 decision (hemera PR #15) raises the *identity* digest to 48 or 64 bytes for post-quantum collision resistance. that must not propagate into proofs: a Merkle commitment inside a proof is ephemeral — it has to be forged *before* the verifier runs, so "harvest now, break later" does not apply, and a 32-byte node (128-bit classical collision) remains the right in-proof digest. output length is the sponge's squeeze length, not a second profile; the rule is one permutation, two squeeze lengths — 48/64 for identities that live forever, 32 for trees that live one verification. a 48-byte node would add 50 % to the dominant term for nothing.
-
-**what the small-field survey reports at 2^24** (LaBinius Table 1, 100 bit): BaseFold rate ½ 478.5 KiB / 0.6 ms; WHIR rate ¼ 300.9 KiB / 1.1 ms; LaBinius+LaBRADOR 82.9 KiB / 713 ms. the sizes at 2^24 and rate ¼ are 3–5× the rate-1/16 figures §1 quotes, which is the rate–prover tradeoff in the open; §3's budget already prices rate 1/16.
-
-none of this changes §7. phase 2 adds one measurement — zip on the winner — and phase 3's spike gets concrete opponents.
+the long form of every argument above is in this file's history (`git log -p proposals/proof-system-repair.md` before this revision).
