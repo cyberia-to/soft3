@@ -376,7 +376,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/zheng|zheng/README.md]] | legacy commit/verify does not authenticate execution | yes |
 | [[zheng/specs/decider|zheng/specs/decider.md]] | residuals named | partial — the header still claims ~825 constraints, ~2.4 KiB |
 | [[cyber/launch|cyber/launch.md]] row 33 | "recursive form blocked" | yes for that row; line 77 is in the table |
-| [[blog/2026_09_12|cyberia-blog/blog/2026_09_12.md]] | describes the Merkle-free lens as unsound | correct, leave |
+| [cyberia-blog/blog/2026_09_12.md](https://cyberia.blog/blog/2026-09-12) | describes the Merkle-free lens as unsound | correct, leave |
 | [[recursive-brakedown]] | none | no |
 
 generic STARK/SNARK comparison figures that are not zheng claims ([[cybics/crypto/zero-knowledge]], trident's `stark-proofs`, `verifying-proofs`, `provable-computing`, [[cyber/research/privacy trilateral|privacy trilateral]]) stay.
