@@ -17,7 +17,7 @@ fixed by the owner on 2026-10-09:
 | small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 16 KB | ≤ 1 ms | 128 bit, post-quantum, hash-only |
 | any | a [[nox]] computation of any length | ≤ 64 KB, constant in the number of steps | ≤ 1 ms | same |
 
-and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
+and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
 
 ## 1. where the numbers stand
 
@@ -109,7 +109,7 @@ every gate is a fixture and a command, not an opinion. a phase closes when its r
 | 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 16 KB, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
 | 3 | uniform step relation + ARC + decider; lattice-fold spike measured first (§B); the Trident verifier as a nox program; one recursion fixture | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms · `verify(verify(π))` at depth 2 agrees across Rust and Trident · a [[fold mining]] cluster of 512 tickets decides in one proof | zheng, nox, trident, foculus |
 | 4 | `zk` profile (VEIL) | zk fixtures; P1 and P3 of [[cyber/launch\|launch]] unblocked | zheng |
-| 5 | delete: brakedown, folding, legacy formats, stale docs (§C) | proving path ≤ 12k lines by `tokei` · no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
+| 5 | delete: brakedown, folding, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
 
 phases 1 and 2 are a month each; 3 is research-grade and measures before it commits; 4 and 5 are weeks. until 3 lands, `succinct` covers one relation of ≤ 2¹⁵ rows, and the "any computation" row of §0 is open.
 
@@ -137,6 +137,29 @@ phases 1 and 2 are a month each; 3 is research-grade and measures before it comm
 | in-proof digest length under hemera profile v2 | decided: 32 B in trees (§B) |
 | whether [[fold mining]]'s `σ_f` stays a per-step proof or becomes an ARC step | phase 3, with foculus |
 
+## 9. release — this proposal as the first run of the train
+
+the repair touches nine repositories and every product that verifies a proof. it is therefore the first change shipped end to end by the [[cyberia/dev|release train]]: candidates cut from origin on fridays, gates executable, bumps as pull requests, promotion by the owner only. the proposal is the test of that process as much as of the proofs.
+
+propagation order — each row pins the one above it; a bump is one PR `chore: <component> <version>` touching `Cargo.toml`, `CHANGELOG.md` and the sibling pins:
+
+| order | component | today | phase 1 | phase 2 | phase 3 | what changes for its dependents |
+|---|---|---|---|---|---|---|
+| 1 | [[strata]] / [[nebu]] | — | fp3 exposed | — | — | the challenge field |
+| 2 | [[lens]] | brakedown 0.2.0 | — | 0.3: RS code, the winning opening, `QueryProof` API | — | commitment and opening types |
+| 3 | [[zheng]] | 0.4.0 | 0.5: soundness floor, one format, soundness ledger | 0.6: `succinct` profile | 0.7: `accumulate`, decider; 0.8: `zk` | proof format, verifier API |
+| 4 | [[joy]] | 0.5.0 | 0.6: statement model with the profile byte | 0.7 | 0.8 | the wire |
+| 5 | [[nox]] | 0.3.0 | — | — | 0.4: uniform step relation; decider jet retired | the step relation |
+| 6 | [[bbg]] | — | — | `QueryProof` on the winning PCS | — | state certificates |
+| 7 | [[foculus]] · [[tok]] | 0.1.3 · — | — | — | tickets, self-fold and cluster tree on ARC; `σ_f` decided (§8) | settlement |
+| 8 | [[trident]] | 0.3.0 | — | — | `lib/std/zheng`: the second verifier | the recursion seed |
+| 9 | [[soft3]] | 0.10.0 | 0.11 | 0.12 | 0.13 | the node |
+| 10 | [[cyber]] · cyb | — | docs rows of the ledger | docs | docs | the products |
+
+what each soft3 version means: 0.11 — every proof the node accepts is sound (the public profile, fp3, bound statements); 0.12 — succinct proofs ≤ 16 / 64 KB on the wire, the first version a phone verifies in a millisecond; 0.13 — any computation at constant size, settlement on accumulation. the next soft3 version is 0.11 and it ships phase 1 alone.
+
+the train's rules apply unchanged: one candidate per friday from `origin/main` of every repo in the closure; `sources.json` and receipts in `<repo>/audit/release-<date>/`; freeze from cut to verdict; a red gate ships as a red candidate; the owner merges bumps, promotes, publishes. two gates join the train's set for this work: the soundness ledger has no "conjectured" row on the production profile (from 0.11), and `scripts/stale-proof-claims.nu` returns zero (from 0.13). the launch page gets one row per candidate.
+
 ## A. decisions recorded, with the argument compressed
 
 the Merkle question. the owner asked whether the trees can go. they cannot: a flat hash `C = hemera(Enc(w))` has no local opening, and the column check `Enc(y)[j] = q₁ᵀ·col_j` is satisfiable by a prover who never touches `C` (pick `y'`, solve one linear equation per queried column). in a hash-only world a local opening costs Θ(log n) digests — a lower bound, not a layout; every hash-based system carries paths ([[merklezation]], [[hash chain]]). the only escape is a homomorphism, i.e. lattices, at ~50 KB. the sound half of the old idea — Ligero geometry, RS rows, a column tree, `y` in the clear — is today's `TensorMerkle` and is a bake-off candidate; at `n = 2¹⁰` it and WHIR land in the same 25–40 KB band, at `2²⁰` folding wins. no version brings back `C = hemera(w)` or 1.3 KB.
@@ -153,8 +176,10 @@ the in-proof digest: hemera profile v2 ([hemera#15](https://github.com/cyberia-t
 
 what this proposal does not claim: no 2 KB, no 100 ns, no "Merkle-free", no proof smaller than the authentication of its own queries.
 
-## C. documents that still describe the old design
+## C. the ledger of stale claims
 
-to be marked superseded or deleted in phase 5: [[zheng/specs/verifier|verifier]], `zheng/specs/{api,README}.md`, [[zheng/specs/decider|decider]], [[zheng/specs/accumulator|accumulator]], [[zheng/specs/recursion|recursion]], [[recursive-brakedown]], `zheng/docs/explanation/{polynomial-commitments,whirlaway,fri-to-whir,zheng-vs-starks,performance}.md`, `zheng/CLAUDE.md` (Brakedown line), `nox/specs/jets/{decider,recursion}.md`, `lens/README.md`, `lens/specs/commitment.md`, `bbg/specs/{architecture,data-availability}.md`, [[cyber/whitepaper|whitepaper]] §9.3 (~100–200 KB), [[cyber/light|light]] line 115, `crystal/architecture.md:331-341`, `soft3/docs/polynomial-proof-system.md`.
+the sweep of 2026-10-09 found ~150 places in 22 repositories that still present the old design as current — ~2 KB proofs, ~5 μs verification, "Merkle-free" Brakedown, HyperNova over hemera, the ~825/~89-constraint decider, algebraic Fiat–Shamir, "the accumulator is the proof". they are listed one by one, with the action and the phase that closes each, in [[proof-system-repair-ledger]]. the largest clusters: zheng (whole pages: [[recursive-brakedown]], [[zheng/specs/verifier|verifier]], [[zheng/specs/recursion|recursion]], [[zheng/specs/accumulator|accumulator]], [[zheng-vs-starks]]), nox (the decider story: `specs/jets/decider.md`, `docs/explanation/decider.md`, `roadmap/decider-product.md`), bbg (the ~2 KiB / ~5 μs / ~200 B numbers in every spec), cyber (`research/*`, [[cyber/whitepaper|whitepaper]] §9.3 and §18, [[cyber/light|light]], network, communication), hemera (`roadmap/algebraic-fiat-shamir.md`, the roadmap's "Merkle-free" endgame), soft3 (`docs/polynomial-proof-system.md`, `docs/README.md`, `status.md`, `specs/terms.md`), and foculus/tok/tru/inf/crystal/eidos/trident/strata.
+
+the rule is executable: `scripts/stale-proof-claims.nu` greps the workspace for every family of stale claim and exits 1 on any hit outside a short allow-list of dated posts and changelogs. it is the phase-5 gate and, from the phase-5 candidate on, a gate of the release train. each earlier phase closes its own rows — phase 1 the security claims, phase 2 the sizes and the Merkle-free pages, phase 3 the fold, decider and recursion pages — so the ledger shrinks with the work rather than at the end.
 
 the long form of every argument above is in this file's history (`git log -p proposals/proof-system-repair.md` before this revision).
