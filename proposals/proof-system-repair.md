@@ -323,7 +323,7 @@ actions: delete — built on the old design, no other content · superseded — 
 
 | document | stale claim | action | phase |
 |---|---|---|---|
-| [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | the whole old design with its numbers | delete (fix the link in the meantime) | 5 |
+| `soft3/docs/polynomial-proof-system.md` | the whole old design with its numbers | deleted 2026-10-17 | 5 |
 | [[soft3/docs|soft3/docs/README.md]] | "~200 bytes", "~30 field ops … 100 nanoseconds", "microseconds" | rewrite | 2 |
 | [[soft3/specs/terms|soft3/specs/terms.md]] | "~200-byte query proofs" | number | 2 |
 | [[soft3/status|soft3/status.md]] | "~200B proofs" | number | 2 |
@@ -397,7 +397,7 @@ actions: delete — built on the old design, no other content · superseded — 
 
 | document | banner | enough? |
 |---|---|---|
-| [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | "target architecture, not the current lens" | no — the body states the numbers as fact and links `roadmap/` where the page lives in `zheng/docs/explanation/` |
+| `soft3/docs/polynomial-proof-system.md` (deleted 2026-10-17) | "target architecture, not the current lens" | no — the body states the numbers as fact and links `roadmap/` where the page lives in `zheng/docs/explanation/` |
 | [[neural/trident/roadmap/polynomial-target|trident/roadmap/polynomial-target.md]] | one inline line | no — the rest of the page is bare |
 | [[fri-to-whir]] · [[soft3/zheng/docs/explanation/whir|whir]] · [[whirlaway]] | "historical … zheng has evolved to use recursive Brakedown" | no — the banner points at the unsound design as current |
 | [[soft3/zheng|zheng/README.md]] | legacy commit/verify does not authenticate execution | yes |
