@@ -75,6 +75,7 @@ def main [
             let parts = ($l | split column ':' file line text -n 3)
             $parts | first
           }
+        | where {|h| not ($h.text | str trim | str starts-with '> superseded:') }
         | where {|h|
             let rel = ($h.file | str replace $"($root)/" '')
             not ($allow_files | any {|a| $rel | str starts-with $a })
