@@ -270,3 +270,20 @@ what lattices buy is **not the final byte count** — the trees come back in the
 ## 11. what this proposal does not claim
 
 no 2 KB. no 100 ns. no "Merkle-free". no proof smaller than the authentication of its own queries. the stack keeps one assumption and pays for it in bytes; 64 KB is what that honesty costs at 128 bits, and it is still the smallest in production.
+
+## 12. frontier check, 2026-10-09 — what moves the numbers
+
+read against the 2025–26 literature after §1–11 were written. four things change a number; none changes the design.
+
+| finding | source | what it does to the goal |
+|---|---|---|
+| **zip** — black-box, non-recursive compression of hash-based SNARG proofs to ~60 % of their size, standard assumptions, no trusted setup | [2025/1446](https://eprint.iacr.org/2025/1446) | a post-processing lever the proposal did not count: the 25–40 KB floor of §9 becomes **15–25 KB**, the small class's 10–16 KB becomes **6–10 KB**. it composes with every lever in §9 because it acts on the finished proof. phase 2 should measure it on the winner |
+| **LaBinius** (2026) — Ajtai commitments + one LaBRADOR compression: 82.9 KiB at 2^24 against WHIR's 300.9 KiB at rate 1/4; but the verifier takes **713 ms against WHIR's 1.1 ms** | [2026/2103](https://eprint.iacr.org/2026/2103.pdf) | corrects §10's "lattice PCS alone 400 KB+": lattices now win the *bytes* at large n by ~3.6×, and lose the 1 ms verifier by ~650×. under the goal as fixed (≤ 64 KB **and** ≤ 1 ms) the hash-only choice stands; the lattice spike's question becomes "is there a verifier under 10 ms" |
+| **proximity gaps for RS with random evaluation points** improved toward the Goyal–Guruswami bounds | [arXiv 2607.08516](https://arxiv.org/abs/2607.08516) | fewer queries per bit at the same rate: the `t ≈ 64` of §3 may fall by 10–25 % once the result is applied to the WHIR analysis. a watch item, not a gate |
+| **Symphony** — lattice high-arity folding in the ROM, "folding as a black box without hashes in circuits"; **PikkuFold** — 5.7 KB per fold step | [2025/1905](https://eprint.iacr.org/2025/1905), [2026/1809](https://eprint.iacr.org/2026/1809.pdf) | sharpens the §10 spike: the lattice in-flight object is now measured at single-digit KB per step. the comparison for phase 3 is ARC's per-step openings (a few cosets at rate 1/16) against ~6 KB of algebra |
+
+**the digest in the paths.** the paths are the byte bottleneck (§9), and their cost is `t · log n · |digest|`. the hemera profile-v2 decision (hemera PR #15) raises the *identity* digest to 48 or 64 bytes for post-quantum collision resistance. that must not propagate into proofs: a Merkle commitment inside a proof is ephemeral — it has to be forged *before* the verifier runs, so "harvest now, break later" does not apply, and a 32-byte node (128-bit classical collision) remains the right in-proof digest. output length is the sponge's squeeze length, not a second profile; the rule is one permutation, two squeeze lengths — 48/64 for identities that live forever, 32 for trees that live one verification. a 48-byte node would add 50 % to the dominant term for nothing.
+
+**what the small-field survey reports at 2^24** (LaBinius Table 1, 100 bit): BaseFold rate ½ 478.5 KiB / 0.6 ms; WHIR rate ¼ 300.9 KiB / 1.1 ms; LaBinius+LaBRADOR 82.9 KiB / 713 ms. the sizes at 2^24 and rate ¼ are 3–5× the rate-1/16 figures §1 quotes, which is the rate–prover tradeoff in the open; §3's budget already prices rate 1/16.
+
+none of this changes §7. phase 2 adds one measurement — zip on the winner — and phase 3's spike gets concrete opponents.
