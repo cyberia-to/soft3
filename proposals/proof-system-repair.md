@@ -151,6 +151,73 @@ phases 1 and 2 are a month of focused work each; 3 is the research-grade one and
 
 to be marked "superseded by proof-system-repair" or deleted in phase 5: `zheng/specs/{verifier,api,README,decider,accumulator,recursion}.md`, `zheng/docs/explanation/{recursive-brakedown,polynomial-commitments,whirlaway,fri-to-whir,zheng-vs-starks,performance}.md`, `zheng/CLAUDE.md` (Brakedown line), `nox/specs/jets/{decider,recursion}.md`, `lens/README.md`, `lens/specs/commitment.md`, `bbg/specs/{architecture,data-availability}.md` (the ~2 KiB / ~75 B lines), `cyber/whitepaper.md:1202` (~22 KB), `cyber/light.md:115`, `crystal/architecture.md:331-341`, `soft3/docs/polynomial-proof-system.md` (already bannered; the link to `roadmap/` is wrong).
 
-## 9. what this proposal does not claim
+## 9. the Merkle question — can the trees go?
+
+the owner asked this to be dug properly on 2026-10-09: the trees are the byte bottleneck, the Merkle-free design was "a solid calculation", is the blocked soundness gap just a bug? here is the dig.
+
+### the design, reconstructed
+
+`zheng/docs/explanation/recursive-brakedown.md`: commit `C = hemera(Enc(w))`, one hash of the whole codeword. to open ⟨w, q⟩ = v with `q = q₁ ⊗ q₂`: the prover sends `y = q₁ᵀ W`; the verifier draws t columns and checks `Enc(y)[j] = q₁ᵀ · col_j`; then recurse — commit `y` the same way instead of sending it. "32 bytes per level, zero trees, ~1.3 KiB".
+
+### the step that breaks
+
+the column check means something only if `col_j` was fixed before `q₁` was drawn. the only thing that fixes columns is `C` — and `C` is a hash of the whole word: to check that a received `col_j` is the j-th column of `Enc(W)` the verifier needs the entire preimage. a flat hash has no local opening.
+
+the attack, on an honest implementation that does read the columns:
+
+1. commit any `C` (the hash of zeros will do);
+2. receive `q₁`;
+3. pick any `y'`, compute `Enc(y')`;
+4. for each queried column j solve `q₁ᵀ · col_j = Enc(y')[j]` — one linear equation in k₁ unknowns, infinitely many solutions;
+5. every check passes; `⟨y', q₂⟩` is whatever `v` the prover wants.
+
+no step touches `C`. that is why lens dbf472b "worked": its verifier did not read the columns at all, and the difference from this attack is cosmetic. the recursion changes nothing — every level has the same flat hash and the same hole, smaller.
+
+### why one more hash does not fix it
+
+the verifier must recompute `C` from what it receives. `C` depends on all n symbols; the verifier wants to read one. the other n−1 symbols must therefore arrive compressed, as hash outputs, each covering some subtree of hash calls. a chain `H(H(…), cⱼ)` costs one digest per position — linear. a balanced tree costs `(arity−1)·log n` digests, and that is minimal among structures where a digest covers a subtree. in a hash-only world a Merkle path is not an implementation choice but a lower bound: **a local opening costs Θ(log n) digests, and no rearrangement of hash calls changes it.** this is why WHIR, STIR, Basefold, FRI-Binius, Plonky2 and parano1d all carry paths.
+
+the only thing that escapes the bound is a **homomorphism**: if the commitment is linear — `C = A·Enc(w)` over a lattice, Ajtai/SIS — then "this column is consistent with C" is checked by algebra without the preimage, and a Bulletproofs-style recursion gives logarithmic size. that is exactly LaBRADOR and Greyhound, and they cost ~50 KB because lattice elements are heavy. the idea "everything algebraic, no trees" is alive; its name is lattices and its price is tens of KB, not 2.
+
+### what the intuition gets right: attack the cost of the trees
+
+for one hash at 128 bits, starting from the ~36 KB of §3:
+
+| lever | what it does | effect |
+|---|---|---|
+| path deduplication | t queries share the top levels; send shared nodes once | −30…−45 % |
+| rate 1/32 instead of 1/16 | Johnson bits per query `log₂(1/√ρ)`: 2 → 2.5; queries 64 → 52 | −20 % of path bytes, prover ×2 |
+| grinding 20 bits | 20 bits for free; 8 fewer queries | −12 % |
+| folding factor 5 | 32-element leaves, fewer levels, fewer rounds | −10 % |
+| fp3 challenges | 24 B per element instead of 32 | −3 % |
+| **together** | | **~15–20 KB** |
+| 100 bits instead of 128 | queries ×0.78 | ~12–16 KB |
+
+this is the real floor for "one hash, post-quantum": 15–20 KB at 128 bits, well inside the 64 KB goal and below every production chain. recursive compression (proving the WHIR verifier inside nox) buys nothing in a hash-only world — the final proof carries its own paths again. phase 2 adopts these levers as parameters, not as separate work.
+
+## 10. lattices — what they buy, and what they do not
+
+the owner's second question: if lattices are the only algebraic route, is there something there beyond the 50 KB, or is it not worth the weight? read the recent literature:
+
+- **Neo / SuperNeo** (Nguyen–Setty, [2025/294](https://eprint.iacr.org/2025/294.pdf), [2026/242](https://eprint.iacr.org/2026/242.pdf)): a lattice folding scheme *for CCS over small prime fields* — HyperNova's folding with Ajtai commitments instead of curves, one sumcheck per fold over a small-field extension, and **pay-per-bit** commitment cost: committing a vector of bits is 64× cheaper than a vector of 64-bit integers. this is our setting exactly: Goldilocks, CCS, hash traces full of bits.
+- **LatticeFold+** ([2025/247](https://eprint.iacr.org/2025/247.pdf)): folding proof size `O(κd + log n)`, no decomposed commitments, smaller verification circuit.
+- **HyperWolf** ([2025/922](https://eprint.iacr.org/2025/922)): lattice PCS, O(log N) proof size — and still **~436 KB at N = 2^20**. **Greyhound** ~53 KB; **LaBRADOR** ~50 KB as the final compressor.
+
+so the honest reading:
+
+| | hash-only (WHIR + ARC) | lattices (Neo + LaBRADOR) |
+|---|---|---|
+| final proof | 15–40 KB (128 bit) | ~50 KB; lattice PCS alone 400 KB+ |
+| the accumulator between steps | a root + openings: a few KB, Merkle-authenticated | **one Ajtai commitment + short vectors: a few KB, no tree, pure algebra** |
+| per-step prover | encode + Merkle + proximity sumcheck | one sumcheck + a matrix-vector product; **pay-per-bit** makes bit-heavy traces cheap |
+| verifier | hashes along paths | ring/matrix arithmetic; slower per element |
+| assumptions | one: the hash | two: the hash (Fiat–Shamir) **and** SIS; parameters need norm bookkeeping |
+| maturity | WHIR implemented and audited in several stacks | folding implementations young; soundness proofs still moving (LatticeFold → +, Neo → SuperNeo within a year) |
+
+what lattices buy is **not the final byte count** — the trees come back in the decider, or the lattice PCS is bigger than the trees. what they buy is the **shape of accumulation**: a homomorphic fold with a tiny in-flight object and no proximity machinery per step. if the thing that must fit in a packet is *what travels between steps of a p2p computation* rather than the final proof, lattices are the only way to make that object a few KB of algebra. that is a real reason, and it is also a second assumption.
+
+**decision recorded:** phase 2 is hash-only WHIR with the levers of §9 (one assumption, measured floor 15–20 KB). phase 3's accumulation is implemented first as ARC; a **Neo-style lattice fold is a scheduled research spike** before phase 3 commits: measure the fold's in-flight size and per-step cost on the nox step relation against ARC's, and decide on numbers. nothing in phases 1–2 depends on the outcome.
+
+## 11. what this proposal does not claim
 
 no 2 KB. no 100 ns. no "Merkle-free". no proof smaller than the authentication of its own queries. the stack keeps one assumption and pays for it in bytes; 64 KB is what that honesty costs at 128 bits, and it is still the smallest in production.
