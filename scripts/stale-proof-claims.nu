@@ -48,7 +48,7 @@ def main [
     ]
 
     # directories that are archives, vendored trees, build output, or the ledger itself
-    let exclude_dirs = [target build dist node_modules .git .node-builds .worktrees zheng-022 cyb-014 .vendor refs]
+    let exclude_dirs = [target build dist node_modules .git .node-builds .worktrees .stands .rel04 zheng-022 cyb-014 .vendor refs]
     let allow_files = [
         'soft3/proposals/proof-system-repair.md'
         'soft3/scripts/stale-proof-claims.nu'
