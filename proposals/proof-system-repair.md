@@ -7,7 +7,7 @@ date: 2026-10-09
 ---
 # one proof — the repair of zheng
 
-> goal fixed by the owner on 2026-10-09: **a proof of any computation is at most 64 KB, post-quantum, verifies in at most 1 ms, and stays that size however long the computation — and the system that produces it is simple, reliable and flexible.** this page records what is broken, why the old numbers were never real, what the literature now allows, and the design that meets the goal with the fewest parts. it closes on the last merge, not the first.
+> goal fixed by the owner on 2026-10-09: **a proof of any computation is at most 64 KB, post-quantum, verifies in at most 1 ms, and stays that size however long the computation — and the system that produces it is simple, reliable and flexible.** refined on the same day from the 2025–26 frontier (§3): **a small statement — a signature, a hash, a transfer — is at most 16 KB.** this page records what is broken, why the old numbers were never real, what the literature now allows, and the design that meets the goal with the fewest parts. it closes on the last merge, not the first.
 
 ## 1. the state of the art, measured
 
@@ -60,6 +60,29 @@ what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-exec
 - **one accumulation**: ARC — hash-based accumulation of Reed–Solomon proximity claims, unbounded depth, up to list-decoding radius, random oracle only ([2024/1731](https://eprint.iacr.org/2024/1731), CRYPTO 2025). it replaces the homomorphic fold HyperNova needed and we never had. WARP ([2025/753](https://eprint.iacr.org/2025/753)) is the linear-time successor and the fallback if ARC's prover is too slow.
 - **one wire format**, three profiles: `public` (disclosed witness, linear check — the fallback and the debugging tool), `succinct` (committed witness, WHIR, ≤ 64 KB), `zk` (succinct plus VEIL-style masking, [2026/683](https://eprint.iacr.org/2026/683.pdf)). one magic, one version, a profile byte.
 - **the verifier derives everything it checks** — the relation from the program, the public prefix from the statement — and trusts nothing from the prover but field elements and hashes. this is the rule that survived from 2026-09-11, kept.
+
+### the commitment, chosen from the whole 2023–2026 frontier
+
+why WHIR and not STIR: STIR (CRYPTO 2024) is the older one; WHIR (late 2024, same authors) is its successor — multilinear, "super-fast verification", and smaller: 56–87 KiB vs 114 KiB at 128 bits, 1.0 ms vs 3.8 ms to verify. but the question is right in general: the proposal must choose from the full row of hash-based commitments, not from one paper. the row, with what each is for:
+
+| scheme | year | code · geometry | what it is good at | size (128 bit unless noted) | fit |
+|---|---|---|---|---|---|
+| Basefold | 2023 | foldable codes, FRI-style | field-agnostic, simple | large | superseded by WHIR on RS |
+| STIR | 2024 | RS, shrinking domains | fewer queries than FRI | 114 KiB (2^26, rate 1/4) | superseded by WHIR |
+| **WHIR** | 2024 | RS, constrained folding, multilinear | smallest verifier; proven regime beyond unique decoding | **56–87 KiB** at rate 1/16; 36 KiB at 100 bit (SoK) | large polynomials, the accumulation decider |
+| DeepFold | 2025 | RS, multilinear | optimal prover, concise proofs | large | alternative to WHIR, same class |
+| Ligerito | 2025 | Ligero recursion + partial sumcheck, any linear-time code | linear-time prover; sizes ≈ WHIR in the proven regime; verifier heavier (code switching) | 255 KiB at 2^24 over a 32-bit binary field | if prover time wins over verifier time; not here |
+| **SmallWood** | 2025 | hash-based PCS + ZK argument **for witnesses 2^6–2^16** | the smallest proofs in exactly our small-statement range | **< 25 KB**; CAPSS signatures on it: **9.5–15.5 KB for 24–35K R1CS constraints** | signature-like statements: one hash, one transfer, one vote |
+| ReedWeave | 2026 | RS, interleaving + folding | fastest prover measured | 595 KiB (2^24, rate 1/4): big | prover-bound settings, not ours |
+| DeepBrake | 2026 | row-wise RS, arbitrary points | Brakedown geometry with RS rows | — | the tensor track of §9 with a paper |
+| FRI-Binius · Blaze | 2024–25 | binary towers | bit-heavy traces | ~1 MB blocks in parano1d | wrong field for a Goldilocks stack |
+
+two size classes follow, and the goal splits into two numbers that are both met by hash-only schemes with papers:
+
+- **small statements** (one relation of up to ~2^16 rows: a signature, a hash, a transfer, a vote, a lookup): the frontier is SmallWood/CAPSS at **10–16 KB at 128 bits**. this is the class the p2p market trades in most, and it is the class where "fits in a few packets" is honestly reachable. phase-2 acceptance for this class: **≤ 16 KB** (expected 10–16, measured against CAPSS's 9.5–15.5 at comparable constraint counts).
+- **unbounded computation**: WHIR as the decider of an ARC accumulator, **≤ 64 KB**, constant in the number of steps.
+
+phase 2's bake-off is therefore three-way on the small class — TensorMerkle+RS (today's code, repaired), WHIR, SmallWood — and two-way on the large class — WHIR, Ligerito/DeepFold — on the same fixtures, same ledger; one PCS per class ships, the rest is retired.
 
 ### the layers and who owns them
 
@@ -153,7 +176,7 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
 | 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≤ 10 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
-| 2 | **bake-off**: (a) today's `TensorMerkle` with the expander replaced by a Reed–Solomon code (proven distance → Johnson query count instead of `100·m`) and fp3 challenges; (b) `lens/whir`. same fixtures, same ledger; the smaller sound one becomes `succinct`, the other is retired | hash.tri **≤ 64 KB (expected 25–40), verify ≤ 1 ms**; `n = 2^20` fixture ≤ 64 KB; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
+| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB, verify ≤ 1 ms**, against CAPSS's 9.5–15.5 KB at 24–35K constraints; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
 | 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
 | 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
 | 5 | delete: brakedown, folding, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
