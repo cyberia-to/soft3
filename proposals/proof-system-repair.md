@@ -28,7 +28,7 @@ numbers that ship or are published, not claims. ours are measured on an M4 Max o
 | LaBinius (2026) | Binius + LaBRADOR compressor | PQ | **< 100 KiB** for a standard hash | — | [2026/2103](https://eprint.iacr.org/2026/2103.pdf) |
 | not post-quantum, for scale | Jolt KZG wrapper 7.5 KB · Mina ~22 KB · Groth16 ~0.2 KB | curves | — | — | — |
 
-two facts follow. the smallest post-quantum proof anyone has shown is about 50 KB at 128 bits; every post-quantum chain in production ships 150 KB to 1 MB. a 10 KB post-quantum proof of an arbitrary computation does not exist in the literature, and a 2 KB one is not on any horizon. the 2025 SoK adds a repricing: the capacity-soundness conjectures behind the "conjectured" columns above were disproven over large fields ([2026/1367](https://eprint.iacr.org/2026/1367)); honest parameters are Johnson-bound parameters, i.e. more queries.
+two facts follow. the smallest *publicly verifiable, transparent* post-quantum proof anyone has shown is about 50 KB at 128 bits (designated-verifier lattice SNARGs go lower — LUNA+ [2026/1639](https://eprint.iacr.org/2026/1639): 4.22 KB for R1CS 2^16, but with a 0.54 GB CRS and a verifier who holds a secret; not a trade-off a public network can use); every post-quantum chain in production ships 150 KB to 1 MB. a 10 KB post-quantum proof of an arbitrary computation does not exist in the literature, and a 2 KB one is not on any horizon. the 2025 SoK adds a repricing: the capacity-soundness conjectures behind the "conjectured" columns above were disproven over large fields ([2026/1367](https://eprint.iacr.org/2026/1367)); honest parameters are Johnson-bound parameters, i.e. more queries.
 
 **64 KB is therefore the right goal:** it is reachable with hash-only primitives at 128 bits (WHIR at rate 1/16 is already there for large polynomials), it beats every production chain by 3–15×, and it keeps the stack's one assumption — a hash.
 
@@ -46,6 +46,7 @@ the ~2 KB "constant proof" of zheng 0.3.x rested on eight things that were false
 | code distance unproven, queries miscounted | lens#6 (open), `lens/specs/scalar-field.md:28-32` | "20 queries → 2^-20" assumed a proven distance; today only minimum weight 1 is proven, so the sampling count is 100·m and every column is opened |
 | base-field challenges | `zheng/specs/execution.md:75` | all sumcheck and opening challenges are Goldilocks elements; 64-bit field ⇒ no 128-bit claim without an extension |
 | λ counted in elements, not bits | `recursive-brakedown.md:244` ("≈ 2^{-λ}") next to a 128-element remainder | the document's size arithmetic treats 128 field elements as 128 bits of soundness; the soundness ledger of §5 counts bits only |
+| **the hash itself is not analysed** | `hemera/specs/README.md:56-80`, `hemera/audit/0.3.1.md:28,74,134` | "Parameter status: experimental", "Quantum collision security: not certified", "16 partial rounds — implemented candidate, not a proven minimum"; the audit: "the security argument that justified cutting partial rounds from 64 to 16 is wrong", "a permanent graph cannot sit on a hash that the authors reserve the right to break". the partial rounds use an inverse S-box, which is not the audited Poseidon2 profile. every "one hash" claim in this proposal rests on this row |
 
 what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-execution-release.md`) was the honest fallback: derive the relation on the verifier, disclose the witness, check every row. it is sound and it is not succinct. zheng#45 (2026-10-09) shrank that path 19× by shrinking the relation; it cannot shrink it further than the witness.
 
@@ -54,7 +55,7 @@ what the owner authorised on 2026-09-11 (`zheng/.claude/plans/authenticated-exec
 ### principles
 
 - **one field**: Goldilocks for everything committed; its cubic extension (`strata/nebu` `fp3`, already written) for every challenge and every evaluation point. no second field.
-- **one hash**: hemera (Poseidon2 over Goldilocks) for Merkle trees, for Fiat–Shamir, for program digests. the only cryptographic assumption is that this hash is a random oracle.
+- **one hash**: hemera (Poseidon2 over Goldilocks) for Merkle trees, for Fiat–Shamir, for program digests. the only cryptographic assumption is that this hash is a random oracle — and that assumption is only as good as the hash's analysis, which today does not exist (§2, last row). the ledger of §5 carries the hash as its first row, and the 128-bit claim is not made until that row is closed: either an external analysis of the inverse-S-box t=16 profile, or a return to the audited Poseidon2 parameters (x^7 in every round, the published round counts) at the cost of more rows per permutation.
 - **one code**: Reed–Solomon over Goldilocks (NTT in `nebu`); the proximity argument is the phase-2 winner's (WHIR, TensorMerkle+RS or SmallWood's DECS). no expander codes, no conjectured distance.
 - **one IOP**: Spartan sumcheck over CCS, as today. CCS of any degree, as of zheng#45.
 - **one accumulation**: ARC — hash-based accumulation of Reed–Solomon proximity claims, unbounded depth, up to list-decoding radius, random oracle only ([2024/1731](https://eprint.iacr.org/2024/1731), CRYPTO 2025). it replaces the homomorphic fold HyperNova needed and we never had. WARP ([2025/753](https://eprint.iacr.org/2025/753)) is the linear-time successor and the fallback if ARC's prover is too slow.
@@ -189,7 +190,7 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 
 ## 5. reliability: how it stays sound
 
-- **a soundness ledger** (`zheng/specs/soundness.md`, new): one row per component — assumption, bits claimed, proven or conjectured, the paper, the parameter that controls it. the release gate fails if any row is "conjectured" on the production profile.
+- **a soundness ledger** (`zheng/specs/soundness.md`, new): one row per component — assumption, bits claimed, proven or conjectured, the paper, the parameter that controls it. the release gate fails if any row is "conjectured" on the production profile. the first rows, today: the hash (**open** — experimental parameters, inverse-S-box partial rounds, quantum collision not certified); Fiat–Shamir in the random-oracle model over an fp3 transcript; the code's distance (Reed–Solomon: proven); the proximity argument's regime (Johnson: proven; capacity: disproven, forbidden); the accumulation (ARC: random oracle only). a 128-bit post-quantum claim is the conjunction of these rows, not of the opening alone.
 - **attack tests that must fail.** the two residual tests of 0.3.2 flip from "passes, documenting a hole" to "must be rejected": a meaningless satisfying witness for a statement; a zeroed constant wire. plus: forged public output, forged `vk`, truncated Merkle path, query index replay, challenge reuse across rounds. every one is a fixture, every one is a release gate.
 - **bit-flip scan** over every byte of every fixture proof: a byte that can change without the verifier noticing is a bug (the method that found the 2,080 dead bytes of 0.3.0).
 - **differential against native**: every circuit digest against `nox::data::hash`, every output against `nox::reduce`, as today.
@@ -203,6 +204,7 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 - the verifier is program-independent through `vk`: a light client holds `vk`s, not programs.
 - the step relation is the only thing that needs to grow for new nox patterns; the commitment, accumulation and wire do not know what a nox is.
 - security parameters are data: queries, rate, grinding, extension degree live in one struct, printed into the proof header, checked by the verifier against its policy.
+- **two size metrics, never conflated**: the standalone proof of one statement (the numbers of this page), and the bytes per operation inside a batch — a thousand transfers under one accumulator cost ~64 KB in total, tens of bytes each. a market quotes the second; a light client pays the first.
 
 ## 7. the path, with acceptance
 
@@ -210,7 +212,8 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
 | 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≈ 10 KB (the ~5 KB of redundant paths gone), gate ≤ 11 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
-| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB stretch, ≤ 20 KB gate, verify ≤ 1 ms**, against SmallWood's Kyber/Dilithium rows (14–23 KB) and CAPSS's 9.5–15.5 KB; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
+| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired. every candidate is a **full prototype** — statement binding, the Spartan IOP, the opening, and the `zk` masking — not a swapped component | small class (hash.tri, a transfer): **≤ 16 KB stretch, ≤ 20 KB gate, verify ≤ 1 ms**, against SmallWood's Kyber/Dilithium rows (14–23 KB) and CAPSS's 9.5–15.5 KB; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**. bytes accounted **separately** — statement, program, public io, IOP, opening, accumulator — and verification timed **twice**: first contact (relation compiled, `vk` derived) and repeat (`vk` cached); bit-flip scan clean; ledger complete, all rows proven **including the hash row**; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
+| 2h | **the hash row**: an external analysis of hemera's inverse-S-box t=16 profile, or a return to the audited Poseidon2 parameters; the site's "post-quantum" and "frozen foundations" claims follow this row | the ledger's hash row reads "proven" or "audited parameters"; hemera parameters frozen; the quantum-collision figure (~2^85 for 256-bit digests, BHT) stated, not the capacity bound | hemera, soft3 site |
 | 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
 | 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
 | 5 | delete: the bake-off losers, `folding`, the flat-hash opening and the recursive stub, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
@@ -256,6 +259,7 @@ for one hash at 128 bits, starting from the ~36 KB of §3:
 | lever | what it does | effect |
 |---|---|---|
 | **a code with a proven distance** (Reed–Solomon instead of the one-layer expander whose proven minimum weight is 1) | query count from `100·m` (every column) to the Johnson count (~64 at 128 bits) | the first and largest win: it is what turns "open everything" into an opening at all |
+| parallel constraints for the permutation rounds | the sixteen lanes and the repeated rounds described once as a parallel (PACS/lookup) sub-relation instead of row by row — SmallWood's regime, and a smaller witness for every opening | the lever behind the 15–25 KB small-class estimate; measured in phase 2 |
 | path deduplication | t queries share the top levels; send shared nodes once | −30…−45 % |
 | rate 1/32 instead of 1/16 | Johnson bits per query `log₂(1/√ρ)`: 2 → 2.5; queries 64 → 52 | −20 % of path bytes, prover ×2 |
 | grinding 20 bits | 20 bits for free; 8 fewer queries | −12 % |
