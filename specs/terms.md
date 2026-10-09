@@ -94,7 +94,7 @@ the cybergraph ontology: two objects, one primitive (see [[cybergraph]]/specs/mo
 - `dialect` — the rules that validate a class of cyberlinks. applications are dialects, not contracts; the graph is the state.
 - `prog` — autonomous behavior installed on a neuron: listens for events, reads state, emits cyberlinks. Runs through a compatible warrior/worker, including [[rune]] and [[trident]]. Installation, task, invocation and checkpoint IDs identify data/work, without another signing identity.
 - `plumb` — the unified validation system: WHO (auth), WHAT (conservation), HOW (hooks). proving ownership of the `from` token is the only authorization.
-- `bbg` — authenticated state: one polynomial, ten dimensions, ~200-byte query proofs.
+- `bbg` — authenticated state: one polynomial, ten dimensions, query proofs.
 
 ## computation — nox
 
