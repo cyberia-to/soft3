@@ -191,7 +191,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/zheng/docs/explanation/recursive-brakedown|zheng/docs/explanation/recursive-brakedown.md]] | "Merkle-free lens, zero hash trees", "≈1.3 KiB", "~5 μs", "error ≤ 5·2⁻¹²⁸" | delete (or research/ with an "unsound" banner) | 5 |
 | [[soft3/zheng/specs/verifier|zheng/specs/verifier.md]] | "no Merkle verification … ~2 KiB"; ~825/~89 tiers; "verify(verify(proof)) to arbitrary depth"; "~5 μs … ~3 hemera calls"; "~30 field ops + 1 hemera per fold" | superseded; verifier spec rewritten in phase 2 | 2 |
 | [[soft3/zheng/specs/api|zheng/specs/api.md]] | "~2 KiB at 128-bit", "Brakedown … Merkle-free", decide ~825 | superseded | 2 |
-| [[soft3/zheng/specs/README|zheng/specs/README.md]] | HyperNova ~30 ops/fold, Merkle-free, ~660 ops ~5 μs, ~1.3 KiB, decide ~825 | rewrite | 2 |
+| [[soft3/zheng/specs|zheng/specs/README.md]] | HyperNova ~30 ops/fold, Merkle-free, ~660 ops ~5 μs, ~1.3 KiB, decide ~825 | rewrite | 2 |
 | [[soft3/zheng/specs/decider|zheng/specs/decider.md]] | "~825 constraints — same whether N is 1 or 1,000,000"; "~2.4 KiB" | superseded (keep residuals) | 3 |
 | [[soft3/zheng/specs/recursion|zheng/specs/recursion.md]] | fold formula, "accumulator IS the proof", "~5 μs", "1000 levels → 2⁻¹¹⁸" | superseded; line 180 deleted | 3 |
 | [[soft3/zheng/specs/accumulator|zheng/specs/accumulator.md]] | "~200 bytes", "10–50 μs", "~30 field ops + 1 hemera" | superseded | 3 |
@@ -228,7 +228,7 @@ actions: delete — built on the old design, no other content · superseded — 
 
 | document | stale claim | action | phase |
 |---|---|---|---|
-| [[soft3/lens/README|lens/README.md]] | "hemera hashes the codeword → 32-byte commitment … 20 positions" | rewrite | 2 |
+| [[soft3/lens|lens/README.md]] | "hemera hashes the codeword → 32-byte commitment … 20 positions" | rewrite | 2 |
 | [[soft3/lens/specs/commitment|lens/specs/commitment.md]] | "~1.3 KiB proof, ~660 field ops", "recursive tensor decomposition", "d 20–30 for 128-bit" | number + rewrite | 2 |
 | [[soft3/lens/specs/binary-tower|lens/specs/binary-tower.md]] | "~30 ops + 1 hemera per fold" | rewrite | 3 |
 | [[soft3/lens/specs/polynomial-ring|lens/specs/polynomial-ring.md]] | "~30 field ops per fold" | rewrite | 3 |
@@ -242,7 +242,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/nox/specs/jets/decider|nox/specs/jets/decider.md]] | "89 constraints ≈ 100 nanoseconds", "~200 bytes", "240 bytes" | delete or superseded | 3 |
 | [[soft3/nox/specs/jets/recursion|nox/specs/jets/recursion.md]] | "Brakedown (Merkle-free PCS) … ~825" | rewrite | 3 |
 | [[soft3/nox/specs/jets|nox/specs/jets.md]] | "Merkle-free … ~825 … ~89 … recursion to arbitrary depth" | rewrite | 3 |
-| [[soft3/nox/specs/jets/README|nox/specs/jets/README.md]] | "decider … 89 constraints" | number | 3 |
+| [[soft3/nox/specs/jets|nox/specs/jets/README.md]] | "decider … 89 constraints" | number | 3 |
 | [[soft3/nox/specs/trace|nox/specs/trace.md]] | "no Merkle paths", "~825 / ~89", "~2 KiB … ~30 field ops + 1 hemera" | rewrite | 3 |
 | [[soft3/nox/specs/reduction|nox/specs/reduction.md]] | "each reduce() folds into HyperNova", "accumulator IS the proof", "~3 calls", "10–50 μs" | rewrite | 3 |
 | [[soft3/nox/specs/jets/state|nox/specs/jets/state.md]] | "folds into accumulator (~30 field ops)" | rewrite | 3 |
@@ -255,7 +255,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/nox/docs/explanation/self-verification|nox/docs/explanation/self-verification.md]] | "Merkle-free … ~825 / ~89 … ~2 KiB per level" | rewrite | 3 |
 | [[soft3/nox/docs/explanation/jets|nox/docs/explanation/jets.md]] | "Merkle-free … all-history verification in 89 constraints" | rewrite | 3 |
 | [[soft3/nox/docs/explanation/layers|nox/docs/explanation/layers.md]] | "Brakedown (Merkle-free PCS) … ~825" | rewrite | 3 |
-| [[soft3/nox/docs/explanation/README|nox/docs/explanation/README.md]] | "decider.md — 89 constraints" | with the page | 3 |
+| [[soft3/nox/docs/explanation|nox/docs/explanation/README.md]] | "decider.md — 89 constraints" | with the page | 3 |
 | [[soft3/nox/docs/explanation/why-nox|nox/docs/explanation/why-nox.md]] | "1 trillion txs → 1 proof (~100 KiB)" | number | 3 |
 | [nox/.claude/plans/jet-registry-0.1.md](https://github.com/cyberia-to/nox/blob/main/.claude/plans/jet-registry-0.1.md) | "89/825-constraint verifier" | superseded | 5 |
 | [nox/rs/jets/decider.rs](https://github.com/cyberia-to/nox/blob/main/rs/jets/decider.rs) | `//! 89 primary + 825 cross-term constraints` | code (the jet verifies nothing; launch #40) | 3 |
@@ -265,7 +265,7 @@ actions: delete — built on the old design, no other content · superseded — 
 
 | document | stale claim | action | phase |
 |---|---|---|---|
-| [[soft3/bbg/README|bbg/README.md]] | "~5 μs via zheng-2 folding", "~2 KiB (recursive Brakedown)" | number | 2 |
+| [[soft3/bbg|bbg/README.md]] | "~5 μs via zheng-2 folding", "~2 KiB (recursive Brakedown)" | number | 2 |
 | [[soft3/bbg/specs/architecture|bbg/specs/architecture.md]] | "~5 μs", "~75 bytes", "~2 KiB", "~240 bytes", "~200 bytes per namespace" | number | 2 |
 | [[soft3/bbg/specs/data-availability|bbg/specs/data-availability.md]] | "~75 bytes (recursive Brakedown)", "O(λ log log N)" | rewrite | 2 |
 | [[soft3/bbg/specs/state|bbg/specs/state.md]] | "~2 KiB, ~5 μs" | number | 2 |
@@ -288,8 +288,8 @@ actions: delete — built on the old design, no other content · superseded — 
 | document | stale claim | action | phase |
 |---|---|---|---|
 | [[soft3/hemera/roadmap/algebraic-fiat-shamir|hemera/roadmap/algebraic-fiat-shamir.md]] | "8.7× fewer hemera calls" | delete | 1 |
-| [[soft3/hemera/roadmap/README|hemera/roadmap/README.md]] | algebraic FS row; "~3 calls per execution"; "ZERO hemera calls", "Brakedown is Merkle-free", "144K to 0", "each permutation = one fold step" | rewrite | 2 |
-| [[soft3/hemera/specs/README|hemera/specs/README.md]] | "one Hemera call for binding hash" | rewrite | 2 |
+| [[soft3/hemera/roadmap|hemera/roadmap/README.md]] | algebraic FS row; "~3 calls per execution"; "ZERO hemera calls", "Brakedown is Merkle-free", "144K to 0", "each permutation = one fold step" | rewrite | 2 |
+| [[soft3/hemera/specs|hemera/specs/README.md]] | "one Hemera call for binding hash" | rewrite | 2 |
 | [[soft3/hemera/specs/tree|hemera/specs/tree.md]] | "~75 bytes of proof, O(1) random access" | number | 2 |
 
 ### soft3
@@ -297,7 +297,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | document | stale claim | action | phase |
 |---|---|---|---|
 | [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | the whole old design with its numbers | delete (fix the link in the meantime) | 5 |
-| [[soft3/docs/README|soft3/docs/README.md]] | "~200 bytes", "~30 field ops … 100 nanoseconds", "microseconds" | rewrite | 2 |
+| [[soft3/docs|soft3/docs/README.md]] | "~200 bytes", "~30 field ops … 100 nanoseconds", "microseconds" | rewrite | 2 |
 | [[soft3/specs/terms|soft3/specs/terms.md]] | "~200-byte query proofs" | number | 2 |
 | [[soft3/status|soft3/status.md]] | "~200B proofs" | number | 2 |
 | [[soft3/specs/languages|soft3/specs/languages.md]] | "HyperNova folds all partitions" | rewrite | 3 |
@@ -349,15 +349,15 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/foculus/specs/gossip|foculus/specs/gossip.md]] | "verify σ (tens of microseconds)" | number | 3 |
 | [[soft3/foculus/docs/explanation/latency-targets|foculus/docs/explanation/latency-targets.md]] | "Lens ~200 B", "O(1) fold (~30 field ops)" | number | 3 |
 | [[soft3/foculus/docs/explanation/life-of-a-signal|foculus/docs/explanation/life-of-a-signal.md]] | "roughly fifty microseconds" | number | 3 |
-| [[soft3/foculus/README|foculus/README.md]] | "HyperNova fold tree" | rewrite (ARC) | 3 |
+| [[soft3/foculus|foculus/README.md]] | "HyperNova fold tree" | rewrite (ARC) | 3 |
 | [[soft3/foculus/proposals/view-certificates|foculus/proposals/view-certificates.md]] | "π_att HyperNova fold" | review | 3 |
 | [foculus/src](https://github.com/cyberia-to/foculus/tree/main/src): `tip`, `tickets`, `marginal_cert`, `pay_proof`, `ticket_proof`, `rewards`, `step`, `epoch` | "HyperNova σ / seal / fold" | code (ARC) | 3 |
 | [[soft3/tok/programming-model|tok/programming-model.md]] | "fold into one constant-size proof via HyperNova"; "~200 bytes" | rewrite / number | 3 |
 | [[neural/inf/specs/proof|inf/specs/proof.md]] | "~200 bytes"; "~5 μs" | number | 2 |
 | [[neural/inf/specs/cost|inf/specs/cost.md]] | "~5 μs, one decider" | number | 2 |
-| [[neural/inf/README|inf/README.md]] · [[neural/inf/docs/README|inf/docs/README.md]] · [[soft3/cybergraph/docs/README|cybergraph/docs/README.md]] | "in microseconds" | number | 2 |
+| [[neural/inf|inf/README.md]] · [[neural/inf/docs|inf/docs/README.md]] · [[soft3/cybergraph/docs|cybergraph/docs/README.md]] | "in microseconds" | number | 2 |
 | [[soft3/tru/specs/rewards|tru/specs/rewards.md]] | "self-folds using zheng's HyperNova IVC" | rewrite (ARC) | 3 |
-| [[soft3/strata/jali/specs/noise|strata/jali/specs/noise.md]] · [[soft3/strata/jali/docs/explanation/lattice-security|strata/jali/docs/explanation/lattice-security.md]] · [[soft3/strata/jali/README|strata/jali/README.md]] | "~30 field ops per fold"; ring-aware Brakedown | number | 5 |
+| [[soft3/strata/jali/specs/noise|strata/jali/specs/noise.md]] · [[soft3/strata/jali/docs/explanation/lattice-security|strata/jali/docs/explanation/lattice-security.md]] · [[soft3/strata/jali|strata/jali/README.md]] | "~30 field ops per fold"; ring-aware Brakedown | number | 5 |
 | [[cybics/crypto/graphy|cybics/crypto/graphy.md]] | "Brakedown — 5 μs verification" | number | 2 |
 | [[soft3/soma/soma-spec|soma/soma-spec.md]] | "~5 μs" | number | 2 |
 | [fs/sync.md](https://github.com/cyberia-to/fs/blob/main/sync.md) | "ONE zheng proof … (~50 μs)" | number | 3 |
@@ -373,10 +373,10 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | "target architecture, not the current lens" | no — the body states the numbers as fact and links `roadmap/` where the page lives in `zheng/docs/explanation/` |
 | [[neural/trident/roadmap/polynomial-target|trident/roadmap/polynomial-target.md]] | one inline line | no — the rest of the page is bare |
 | [[fri-to-whir]] · [[soft3/zheng/docs/explanation/whir|whir]] · [[whirlaway]] | "historical … zheng has evolved to use recursive Brakedown" | no — the banner points at the unsound design as current |
-| [[soft3/zheng/README|zheng/README.md]] | legacy commit/verify does not authenticate execution | yes |
+| [[soft3/zheng|zheng/README.md]] | legacy commit/verify does not authenticate execution | yes |
 | [[zheng/specs/decider|zheng/specs/decider.md]] | residuals named | partial — the header still claims ~825 constraints, ~2.4 KiB |
 | [[cyber/launch|cyber/launch.md]] row 33 | "recursive form blocked" | yes for that row; line 77 is in the table |
-| [[cyberia-blog/blog/2026_09_12]] | describes the Merkle-free lens as unsound | correct, leave |
+| [[blog/2026_09_12|cyberia-blog/blog/2026_09_12.md]] | describes the Merkle-free lens as unsound | correct, leave |
 | [[recursive-brakedown]] | none | no |
 
 generic STARK/SNARK comparison figures that are not zheng claims ([[cybics/crypto/zero-knowledge]], trident's `stark-proofs`, `verifying-proofs`, `provable-computing`, [[cyber/research/privacy trilateral|privacy trilateral]]) stay.
