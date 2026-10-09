@@ -84,6 +84,40 @@ two size classes follow, and the goal splits into two numbers that are both met 
 
 phase 2's bake-off is therefore three-way on the small class — TensorMerkle+RS (today's code, repaired), WHIR, SmallWood — and two-way on the large class — WHIR, Ligerito/DeepFold — on the same fixtures, same ledger; one PCS per class ships, the rest is retired.
 
+### one system, two openings — and the scale that separates them
+
+this is not two proof systems. one field, one hash, one relation compiler, one IOP (Spartan over CCS), one accumulation, one wire format with a profile byte. what the two classes choose differently is the **polynomial commitment behind one trait** — a small-domain opening for small witnesses, a folding opening for large ones — the way a database picks a page size: the caller never sees it, the verifier reads the class from the header. SmallWood itself is "DECS + Brakedown techniques", i.e. the tensor geometry with a degree-enforcing twist, so the small-class candidates are closer kin than the names suggest.
+
+the scale, in nox terms after zheng#45 (a hemera permutation is 176 wires and 176 rows; an atom's structural digest adds ~100 bit wires and two permutations):
+
+| statement | permutations | witness `n` | class |
+|---|---|---|---|
+| a hash, a signature-like preimage (`hash.tri`) | 2–4 | ~2^10 | small |
+| a token transfer with nullifier and two digests | ~15 | ~2^12 | small |
+| an ICBS position, a vote, a link with a truth report | ~20–40 | ~2^12–2^13 | small |
+| a Merkle membership of depth 32 (~24 permutations per level) | ~770 | ~2^17 | large — today unprovable (relation limit 2^15 rows) |
+| a block of a thousand transfers, an inference step, an epoch settlement | 10^4–10^7 | 2^20–2^30 | large — accumulation |
+
+the small class ends at ~2^16 witness elements ≈ 370 permutations; everything a person does in one signal lives below it. everything a *network* does lives above it.
+
+### SmallWood on our CCS — a first estimate, to be measured
+
+SmallWood ([2025/1085](https://eprint.iacr.org/2025/1085), Feneuil–Rivain) commits evaluations on a small domain under a Merkle tree, masks with random low-degree polynomials and opens a handful of points whose consistency enforces the degree (DECS), packed Brakedown-style into row vectors; the argument proves *parallel* polynomial constraints (PACS) with one oracle query. its own numbers, 128-bit soundness:
+
+| instance | field | witness | size |
+|---|---|---|---|
+| generic circuit, 2^12 multiplication gates, degree 2 / 4 (Table 3) | 32-bit | 100 inputs | 47.1 / 49.8 KB |
+| same | 13-bit | | 32.9 / 35.9 KB |
+| same | 256-bit | | 141.6 / 146.2 KB |
+| Kyber512–1024 (parallel constraints, witness 512–1024, N = 2048 leaves) (Table 4) | 3329 | | **14.1–16.5 KB** |
+| Dilithium2–5 (witness 1024–1792, N = 4096) | 2^23 | | **17.5–22.7 KB** |
+| subset-sum, n = 256 | 2^256 | | 12.6 KB |
+| the PCS alone, very small polynomials | | | **4–6 KB** (Ligero-PCS floor: 20–30 KB) |
+
+the lesson in those rows: the size is not set by the number of constraints but by the witness length and by whether the constraints are *parallel* (the same polynomial on many lanes). a hemera permutation is exactly that — sixteen lanes, the same degree-7 S-box, the same MDS — so `hash.tri` fits the Kyber/Dilithium regime rather than the generic-circuit one: witness ~2^10, parallel constraints of degree 7, a 64-bit field with a degree-2 or -3 extension for soundness.
+
+estimate for `hash.tri` with a SmallWood-style opening over Goldilocks: **15–25 KB if the hash is expressed as parallel constraints, 30–40 KB if fed as a generic CCS**; CAPSS's 9.5–15.5 KB for its own permutations marks the floor this geometry reaches when the permutation is designed for it. the number is an interpolation of their tables, not a measurement; phase 2 measures it. what it already settles: the small-class acceptance of ≤ 16 KB is at the edge of what the best published scheme does for a comparable instance, so it is a stretch gate, and 20 KB is the honest fallback.
+
 ### the layers and who owns them
 
 | layer | owns | repo |
@@ -176,7 +210,7 @@ what stays: the relation compiler (now 1/6 of its old size per hash), Spartan, h
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B, prove/verify 460 → 36/30 ms; 259 tests | zheng |
 | 1 | public prefix + `vk` digest + paths dropped from the public profile; one format with a profile byte | hash.tri public ≤ 10 KB; forged-io and forged-vk fixtures rejected; the two residual tests flip | zheng, joy |
-| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB, verify ≤ 1 ms**, against CAPSS's 9.5–15.5 KB at 24–35K constraints; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
+| 2 | **bake-off** (§3): small class — today's `TensorMerkle` with a Reed–Solomon code and fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold. same fixtures, same ledger; one PCS per class ships, the rest is retired | small class (hash.tri, a transfer): **≤ 16 KB stretch, ≤ 20 KB gate, verify ≤ 1 ms**, against SmallWood's Kyber/Dilithium rows (14–23 KB) and CAPSS's 9.5–15.5 KB; large class (`n = 2^20` fixture): **≤ 64 KB, ≤ 1 ms**; bit-flip scan clean; ledger complete, all rows proven; bbg `QueryProof` migrated | lens, zheng, bbg, strata (fp3 exposure) |
 | 3 | uniform step relation + ARC accumulation + decider | merkle-32 and a 10^6-step run both prove; proof size independent of length, **≤ 64 KB**; verify ≤ 1 ms | zheng, nox |
 | 4 | `zk` profile (VEIL masking); Trident verifier | zk fixtures; Rust and Trident verifiers agree on every fixture | zheng, trident |
 | 5 | delete: brakedown, folding, legacy formats, stale docs (§8) | `tokei` shows the proving path ≤ 12k lines; no document claims 2 KB or 100 ns | lens, zheng, joy, nox, bbg, crystal |
