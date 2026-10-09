@@ -178,8 +178,208 @@ what this proposal does not claim: no 2 KB, no 100 ns, no "Merkle-free", no proo
 
 ## C. the ledger of stale claims
 
-the sweep of 2026-10-09 found ~150 places in 22 repositories that still present the old design as current — ~2 KB proofs, ~5 μs verification, "Merkle-free" Brakedown, HyperNova over hemera, the ~825/~89-constraint decider, algebraic Fiat–Shamir, "the accumulator is the proof". they are listed one by one, with the action and the phase that closes each, in [[proof-system-repair-ledger]]. the largest clusters: zheng (whole pages: [[recursive-brakedown]], [[zheng/specs/verifier|verifier]], [[zheng/specs/recursion|recursion]], [[zheng/specs/accumulator|accumulator]], [[zheng-vs-starks]]), nox (the decider story: `specs/jets/decider.md`, `docs/explanation/decider.md`, `roadmap/decider-product.md`), bbg (the ~2 KiB / ~5 μs / ~200 B numbers in every spec), cyber (`research/*`, [[cyber/whitepaper|whitepaper]] §9.3 and §18, [[cyber/light|light]], network, communication), hemera (`roadmap/algebraic-fiat-shamir.md`, the roadmap's "Merkle-free" endgame), soft3 (`docs/polynomial-proof-system.md`, `docs/README.md`, `status.md`, `specs/terms.md`), and foculus/tok/tru/inf/crystal/eidos/trident/strata.
+every place in the stack that still presents the old design as current — ~2 KB proofs, ~5 μs verification, "Merkle-free" Brakedown, HyperNova over hemera, the ~825/~89-constraint decider, algebraic Fiat–Shamir, "the accumulator is the proof" — swept on 2026-10-09 across every repository under `~/cyber` (archives, vendored trees and `zheng-pin/`, a worktree of zheng, excluded). one row per document; the line numbers are in the sweep's output and in the script.
 
-the rule is executable: `scripts/stale-proof-claims.nu` greps the workspace for every family of stale claim and exits 1 on any hit outside a short allow-list of dated posts and changelogs. it is the phase-5 gate and, from the phase-5 candidate on, a gate of the release train. each earlier phase closes its own rows — phase 1 the security claims, phase 2 the sizes and the Merkle-free pages, phase 3 the fold, decider and recursion pages — so the ledger shrinks with the work rather than at the end.
+the rule is executable: `scripts/stale-proof-claims.nu` greps the workspace for every family of stale claim and exits 1 on any hit outside a short allow-list of dated posts and changelogs (736 raw hits in 214 files today). it is the phase-5 gate and, from the 0.13 candidate on, a gate of the release train. each earlier phase closes its own rows — phase 1 the security claims, phase 2 the sizes and the Merkle-free pages, phase 3 the fold, decider and recursion pages — so the table shrinks with the work.
+
+actions: delete — built on the old design, no other content · superseded — keep with a banner pointing here · rewrite — the section is rewritten against §3 · number — the figure becomes the measured or target one (≤ 16 KB small, ≤ 64 KB any, ≤ 1 ms) · code — goes with the phase-5 code removal · leave — dated post or audit snapshot, erratum link only.
+
+### zheng
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/zheng/docs/explanation/recursive-brakedown|zheng/docs/explanation/recursive-brakedown.md]] | "Merkle-free lens, zero hash trees", "≈1.3 KiB", "~5 μs", "error ≤ 5·2⁻¹²⁸" | delete (or research/ with an "unsound" banner) | 5 |
+| [[soft3/zheng/specs/verifier|zheng/specs/verifier.md]] | "no Merkle verification … ~2 KiB"; ~825/~89 tiers; "verify(verify(proof)) to arbitrary depth"; "~5 μs … ~3 hemera calls"; "~30 field ops + 1 hemera per fold" | superseded; verifier spec rewritten in phase 2 | 2 |
+| [[soft3/zheng/specs/api|zheng/specs/api.md]] | "~2 KiB at 128-bit", "Brakedown … Merkle-free", decide ~825 | superseded | 2 |
+| [[soft3/zheng/specs/README|zheng/specs/README.md]] | HyperNova ~30 ops/fold, Merkle-free, ~660 ops ~5 μs, ~1.3 KiB, decide ~825 | rewrite | 2 |
+| [[soft3/zheng/specs/decider|zheng/specs/decider.md]] | "~825 constraints — same whether N is 1 or 1,000,000"; "~2.4 KiB" | superseded (keep residuals) | 3 |
+| [[soft3/zheng/specs/recursion|zheng/specs/recursion.md]] | fold formula, "accumulator IS the proof", "~5 μs", "1000 levels → 2⁻¹¹⁸" | superseded; line 180 deleted | 3 |
+| [[soft3/zheng/specs/accumulator|zheng/specs/accumulator.md]] | "~200 bytes", "10–50 μs", "~30 field ops + 1 hemera" | superseded | 3 |
+| [[soft3/zheng/specs/transcript|zheng/specs/transcript.md]] | "~3 hemera calls … algebraic Fiat–Shamir", "~2 KiB", "256-bit classical / 170+ PQ", "kd/p negligible" | rewrite | 1 |
+| [[soft3/zheng/specs/constraints|zheng/specs/constraints.md]] | "folded sub-proof ~825 constraints" | number | 3 |
+| [[soft3/zheng/specs/proof-types|zheng/specs/proof-types.md]] | "verify(π₀) → π₁ (~100–200 KB)", "290 μs, ~157 KiB" | number | 2 |
+| [[soft3/zheng/specs/tensor|zheng/specs/tensor.md]] | "phone folds each step incrementally" | rewrite | 3 |
+| [[soft3/zheng/docs/explanation/zheng-vs-starks|zheng/docs/explanation/zheng-vs-starks.md]] | "computation IS proving", "240-byte checkpoint", "8.7×", "144K → 0" | delete or rewrite | 5 |
+| [[soft3/zheng/docs/explanation/polynomial-commitments|zheng/docs/explanation/polynomial-commitments.md]] | "Brakedown is Merkle-free" | rewrite | 2 |
+| [[soft3/zheng/docs/explanation/whirlaway|zheng/docs/explanation/whirlaway.md]] | "eliminates the Merkle tree bottleneck entirely" | rewrite banner + section | 2 |
+| [[soft3/zheng/docs/explanation/fri-to-whir|zheng/docs/explanation/fri-to-whir.md]] | "recursive Brakedown made it Merkle-free" | rewrite banner + section | 2 |
+| [[soft3/zheng/docs/explanation/whir|zheng/docs/explanation/whir.md]] | banner; "290 μs" | rewrite banner | 2 |
+| [[soft3/zheng/docs/explanation/performance|zheng/docs/explanation/performance.md]] | "~60 KiB / ~290 μs", "~157 KiB ~1.0 ms" | number | 2 |
+| [[soft3/zheng/docs/explanation/landscape|zheng/docs/explanation/landscape.md]] | "recursive Brakedown, the current frontier" | rewrite | 2 |
+| [[soft3/zheng/docs/explanation/superspartan|zheng/docs/explanation/superspartan.md]] | "recursive Brakedown is the right choice" | rewrite | 2 |
+| [[soft3/zheng/docs/explanation/why-zheng|zheng/docs/explanation/why-zheng.md]] | "recursive Brakedown is the PCS" | rewrite | 2 |
+| [[soft3/zheng/docs/explanation/stark|zheng/docs/explanation/stark.md]] | "SuperSpartan + recursive Brakedown = current architecture" | rewrite | 2 |
+| [[soft3/zheng/docs/explanation/recursion|zheng/docs/explanation/recursion.md]] | "1000 field ops + 1000 hashes ≈ microseconds" | rewrite | 3 |
+| [[soft3/zheng/docs/explanation/security|zheng/docs/explanation/security.md]] | "256-bit classical / 170-bit quantum", "kd/p negligible", "< 2⁻¹²⁸" | rewrite (the soundness ledger) | 1 |
+| [[soft3/zheng/docs/explanation/sumcheck|zheng/docs/explanation/sumcheck.md]] | "Hemera provides 128-bit security" | number | 1 |
+| [[soft3/zheng/CLAUDE|zheng/CLAUDE.md]] | "fastest PCS verification (290 μs – 1.0 ms)" | number | 2 |
+| [[soft3/zheng/CHANGELOG|zheng/CHANGELOG.md]] | "proof size is now a constant (~2.4 KiB + ~1.7 KiB)" | leave (historical) | — |
+| [[soft3/zheng/roadmap/gravity-commitment|zheng/roadmap/gravity-commitment.md]] | "~1 KiB / ~10 μs" on recursive Brakedown | superseded | 5 |
+| [[soft3/zheng/roadmap/ring-aware-fhe|zheng/roadmap/ring-aware-fhe.md]] | "~30 field ops per fold" | rewrite | 5 |
+| [zheng/.claude/plans/release-plan.md](https://github.com/cyberia-to/zheng/blob/main/.claude/plans/release-plan.md) | "~2 KiB, ~5 μs, ~825", "~200 bytes", algebraic FS | superseded | 5 |
+| [zheng/.claude/plans/axis-verifier-integration.md](https://github.com/cyberia-to/zheng/blob/main/.claude/plans/axis-verifier-integration.md) | "~2 KiB per proof", "~825" | superseded | 5 |
+| [zheng/.claude/plans/minimal-zheng-structure-and-cli.md](https://github.com/cyberia-to/zheng/blob/main/.claude/plans/minimal-zheng-structure-and-cli.md) | "~2 KiB spec target" | number | 5 |
+| [zheng/rs/src/types.rs](https://github.com/cyberia-to/zheng/blob/main/rs/src/types.rs) | `/// ~2 KiB at 128-bit security for N = 2^20.` | code | 2 |
+| [zheng/rs/src/transcript.rs](https://github.com/cyberia-to/zheng/blob/main/rs/src/transcript.rs) | `/// negligible at 128-bit security.` | code (fp3) | 1 |
+| [zheng/rs/src](https://github.com/cyberia-to/zheng/tree/main/rs/src): `folding/{mod,fold,decide}.rs`, `types.rs`, `lib.rs`, `ccs/universal.rs`, `phi/mod.rs` | "HyperNova CCS folding" | code | 5 |
+| [zheng/rs/Cargo.toml](https://github.com/cyberia-to/zheng/blob/main/rs/Cargo.toml) | "SuperSpartan IOP + Brakedown PCS + sumcheck" | number (after the bake-off) | 2 |
+
+### lens
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/lens/README|lens/README.md]] | "hemera hashes the codeword → 32-byte commitment … 20 positions" | rewrite | 2 |
+| [[soft3/lens/specs/commitment|lens/specs/commitment.md]] | "~1.3 KiB proof, ~660 field ops", "recursive tensor decomposition", "d 20–30 for 128-bit" | number + rewrite | 2 |
+| [[soft3/lens/specs/binary-tower|lens/specs/binary-tower.md]] | "~30 ops + 1 hemera per fold" | rewrite | 3 |
+| [[soft3/lens/specs/polynomial-ring|lens/specs/polynomial-ring.md]] | "~30 field ops per fold" | rewrite | 3 |
+| [lens/.claude/plans/release.md](https://github.com/cyberia-to/lens/blob/main/.claude/plans/release.md) | "Brakedown opening verifier as a CCS instance (~825)" | superseded | 5 |
+| [lens/brakedown/](https://github.com/cyberia-to/lens/blob/main/brakedown/) · [lens/ikat/](https://github.com/cyberia-to/lens/blob/main/ikat/) · [lens/porphyry/` `Cargo.toml](https://github.com/cyberia-to/lens/blob/main/porphyry/` `Cargo.toml) | "expander-graph codes" | number (with the bake-off) | 2 |
+
+### nox
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/nox/specs/jets/decider|nox/specs/jets/decider.md]] | "89 constraints ≈ 100 nanoseconds", "~200 bytes", "240 bytes" | delete or superseded | 3 |
+| [[soft3/nox/specs/jets/recursion|nox/specs/jets/recursion.md]] | "Brakedown (Merkle-free PCS) … ~825" | rewrite | 3 |
+| [[soft3/nox/specs/jets|nox/specs/jets.md]] | "Merkle-free … ~825 … ~89 … recursion to arbitrary depth" | rewrite | 3 |
+| [[soft3/nox/specs/jets/README|nox/specs/jets/README.md]] | "decider … 89 constraints" | number | 3 |
+| [[soft3/nox/specs/trace|nox/specs/trace.md]] | "no Merkle paths", "~825 / ~89", "~2 KiB … ~30 field ops + 1 hemera" | rewrite | 3 |
+| [[soft3/nox/specs/reduction|nox/specs/reduction.md]] | "each reduce() folds into HyperNova", "accumulator IS the proof", "~3 calls", "10–50 μs" | rewrite | 3 |
+| [[soft3/nox/specs/jets/state|nox/specs/jets/state.md]] | "folds into accumulator (~30 field ops)" | rewrite | 3 |
+| [[soft3/nox/specs/jets/polynomial-ring|nox/specs/jets/polynomial-ring.md]] | "HyperNova folds the F₂ sub-trace" | rewrite | 3 |
+| [[soft3/nox/specs/vm|nox/specs/vm.md]] | "~766 constraints per type transition" | number | 3 |
+| [[soft3/nox/roadmap/decider-product|nox/roadmap/decider-product.md]] | "~200 bytes … 89 constraints, ~100 ns", "Brakedown is Merkle-free" | delete or superseded | 5 |
+| [[soft3/nox/roadmap/strata-collapse|nox/roadmap/strata-collapse.md]] | "cross-algebra composition via HyperNova folds" | rewrite | 5 |
+| [[soft3/nox/docs/explanation/decider|nox/docs/explanation/decider.md]] | "all history in 89 constraints … 240 bytes … 100 nanoseconds" | delete | 3 |
+| [[soft3/nox/docs/explanation/five-algebras|nox/docs/explanation/five-algebras.md]] | "universal accumulator (~200 bytes) … 89 constraints" | rewrite | 3 |
+| [[soft3/nox/docs/explanation/self-verification|nox/docs/explanation/self-verification.md]] | "Merkle-free … ~825 / ~89 … ~2 KiB per level" | rewrite | 3 |
+| [[soft3/nox/docs/explanation/jets|nox/docs/explanation/jets.md]] | "Merkle-free … all-history verification in 89 constraints" | rewrite | 3 |
+| [[soft3/nox/docs/explanation/layers|nox/docs/explanation/layers.md]] | "Brakedown (Merkle-free PCS) … ~825" | rewrite | 3 |
+| [[soft3/nox/docs/explanation/README|nox/docs/explanation/README.md]] | "decider.md — 89 constraints" | with the page | 3 |
+| [[soft3/nox/docs/explanation/why-nox|nox/docs/explanation/why-nox.md]] | "1 trillion txs → 1 proof (~100 KiB)" | number | 3 |
+| [nox/.claude/plans/jet-registry-0.1.md](https://github.com/cyberia-to/nox/blob/main/.claude/plans/jet-registry-0.1.md) | "89/825-constraint verifier" | superseded | 5 |
+| [nox/rs/jets/decider.rs](https://github.com/cyberia-to/nox/blob/main/rs/jets/decider.rs) | `//! 89 primary + 825 cross-term constraints` | code (the jet verifies nothing; launch #40) | 3 |
+| [nox/rs/jets/formulas.rs](https://github.com/cyberia-to/nox/blob/main/rs/jets/formulas.rs) | `/// Full 89/825-constraint verification` | code | 3 |
+
+### bbg
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/bbg/README|bbg/README.md]] | "~5 μs via zheng-2 folding", "~2 KiB (recursive Brakedown)" | number | 2 |
+| [[soft3/bbg/specs/architecture|bbg/specs/architecture.md]] | "~5 μs", "~75 bytes", "~2 KiB", "~240 bytes", "~200 bytes per namespace" | number | 2 |
+| [[soft3/bbg/specs/data-availability|bbg/specs/data-availability.md]] | "~75 bytes (recursive Brakedown)", "O(λ log log N)" | rewrite | 2 |
+| [[soft3/bbg/specs/state|bbg/specs/state.md]] | "~2 KiB, ~5 μs" | number | 2 |
+| [[soft3/bbg/specs/indexes|bbg/specs/indexes.md]] | "O(λ log log N) … ~5 μs", "~200 bytes per opening" | number | 2 |
+| [[soft3/bbg/specs/privacy|bbg/specs/privacy.md]] | "~240 bytes constant", "~2 KiB" | number | 2 |
+| [[soft3/bbg/specs/neuron-state|bbg/specs/neuron-state.md]] | "~5 μs", "~2 KiB", "~240 bytes", "~200 bytes regardless of batch" | number | 2 |
+| [[soft3/bbg/specs/temporal|bbg/specs/temporal.md]] | "~5 μs" | number | 2 |
+| [[soft3/bbg/roadmap/verifiable-query|bbg/roadmap/verifiable-query.md]] | "~5 μs", "~1 / ~5 / ~2 KiB" | number | 2 |
+| [[soft3/bbg/docs/explanation/architecture-overview|bbg/docs/explanation/architecture-overview.md]] | "240-byte checkpoint … ~5 μs", "accumulator IS the proof", "~3 hemera calls" | rewrite | 3 |
+| [[soft3/bbg/docs/explanation/why-signal-first|bbg/docs/explanation/why-signal-first.md]] | "~240 bytes", "~5 μs", "~2 KiB" | number | 2 |
+| [[soft3/bbg/docs/explanation/why-polynomial-state|bbg/docs/explanation/why-polynomial-state.md]] | "~200 bytes", "10–50 μs", "~5 μs" | number | 2 |
+| [[soft3/bbg/docs/explanation/polynomial-privacy|bbg/docs/explanation/polynomial-privacy.md]] | "O(1) verification, ~200 bytes" | number | 2 |
+| [[soft3/bbg/docs/explanation/data-availability|bbg/docs/explanation/data-availability.md]] | "~200 bytes per sample" | number | 2 |
+| [[soft3/bbg/docs/explanation/signal-sync|bbg/docs/explanation/signal-sync.md]] | "~40,000 constraints verifiable in ~5 μs" | number | 2 |
+| [bbg/.claude/plans/pattern17-look-integration.md](https://github.com/cyberia-to/bbg/blob/main/.claude/plans/pattern17-look-integration.md) | "Brakedown opening (~825) is a folded sub-instance" | superseded | 5 |
+| [[soft3/bbg/CLAUDE|bbg/CLAUDE.md]] | "Brakedown evaluation proofs" | number (with the bake-off) | 2 |
+
+### hemera
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/hemera/roadmap/algebraic-fiat-shamir|hemera/roadmap/algebraic-fiat-shamir.md]] | "8.7× fewer hemera calls" | delete | 1 |
+| [[soft3/hemera/roadmap/README|hemera/roadmap/README.md]] | algebraic FS row; "~3 calls per execution"; "ZERO hemera calls", "Brakedown is Merkle-free", "144K to 0", "each permutation = one fold step" | rewrite | 2 |
+| [[soft3/hemera/specs/README|hemera/specs/README.md]] | "one Hemera call for binding hash" | rewrite | 2 |
+| [[soft3/hemera/specs/tree|hemera/specs/tree.md]] | "~75 bytes of proof, O(1) random access" | number | 2 |
+
+### soft3
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | the whole old design with its numbers | delete (fix the link in the meantime) | 5 |
+| [[soft3/docs/README|soft3/docs/README.md]] | "~200 bytes", "~30 field ops … 100 nanoseconds", "microseconds" | rewrite | 2 |
+| [[soft3/specs/terms|soft3/specs/terms.md]] | "~200-byte query proofs" | number | 2 |
+| [[soft3/status|soft3/status.md]] | "~200B proofs" | number | 2 |
+| [[soft3/specs/languages|soft3/specs/languages.md]] | "HyperNova folds all partitions" | rewrite | 3 |
+
+### cyber — site, whitepaper, research
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[cyber/whitepaper|cyber/whitepaper.md]] | "expander-graph codes, HyperNova folding"; "each level constant (~100–200 KB)"; "O(1) global state (~22kb)"; "≥ 1 − 2⁻¹²⁸ by zheng soundness"; "fold of winning tickets" | rewrite §9.3, number §18, soundness-ledger wording, ARC in §14.3 | 2–3 |
+| [[cyber/whitepaper|cyber/whitepaper.md]] | SNARK ~200 B vs zheng ~100–200 KB (comparison table) | number (≤ 64 KB target) | 2 |
+| [[cyber/light|cyber/light.md]] | "one proof of ~100–200 KB" | number | 2 |
+| [[cyber/network|cyber/network.md]] | "one recursive proof (~100–200 KB)" | number | 2 |
+| [[cyber/communication|cyber/communication.md]] | "after recursive composition: ~100–200 KB" | number | 2 |
+| [[cyber/launch|cyber/launch.md]] | "one O(1) accumulator by HyperNova folding" | rewrite (ARC) | 3 |
+| [[cyber/security|cyber/security.md]] | "≥ 1 − 2⁻¹²⁸" | rewrite | 1 |
+| [[cyber/restructure|cyber/restructure.md]] | "continuous fold / ~30 field ops / ~200-byte accumulator" | number | 3 |
+| [[cyber/research/algorithmic essence of superintelligence|cyber/research/algorithmic essence of superintelligence.md]] | "~2 KiB", "~5 μs", "~3 calls", "recursive Brakedown" | superseded | 5 |
+| [[cyber/research/universal law|cyber/research/universal law.md]] | "~2 KiB, ~50 μs", "~30 field operations" | number | 5 |
+| [[cyber/research/bbg|cyber/research/bbg.md]] | "~200 bytes, 10–50 μs", "Merkle-free lens … 144,000", "240 bytes" | superseded | 5 |
+| [[cyber/research/polynomial nouns|cyber/research/polynomial nouns.md]] | "~3 hemera calls", "~200 bytes", "each reduce() folds" | superseded | 5 |
+| [[cyber/research/programmable state|cyber/research/programmable state.md]] | "~200 bytes, 10–50 μs" | superseded | 5 |
+| [[cyber/research/cybergraph model architecture|cyber/research/cybergraph model architecture.md]] | "10–50 μs", "~30 field ops", "240-byte checkpoint" | superseded | 5 |
+| [[cyber/research/egregore properties|cyber/research/egregore properties.md]] | "240-byte accumulator", "10–50 μs" | number | 5 |
+| [[cyber/research/algebraic state commitments|cyber/research/algebraic state commitments.md]] | "~200 bytes", "50 μs", "no Merkle tree" | superseded | 5 |
+| [[cyber/research/data availability strategy|cyber/research/data availability strategy.md]] | "~200 bytes per sample" | superseded | 5 |
+| [[cyber/research/structural-sync|cyber/research/structural-sync.md]] | "HyperNova (~30 ops per step) … 700×" | rewrite | 3 |
+| [[cyber/research/provable consensus|cyber/research/provable consensus.md]] | "~50 μs to verify" | number | 3 |
+| [[cyber/research/vec formalization|cyber/research/vec formalization.md]] | "~50 μs"; "error ≤ 2⁻⁵¹² at k=16" | number | 3 |
+| [[cyber/research/data structures for polynomial state|cyber/research/data structures for polynomial state.md]] | "10 ZB of state in 50 μs" | number | 5 |
+| [[cyber/research/five algebras|cyber/research/five algebras.md]] | "~30 field ops per fold" | number | 5 |
+| [[cyber/research/nox - frozen provable computer|cyber/research/nox - frozen provable computer.md]] | "ONE HyperNova accumulator" | rewrite | 3 |
+| [[cyber/research/256 symbols|cyber/research/256 symbols.md]] | "decider … 89 constraints" | number | 3 |
+| [[cyber/research/bootstrap|cyber/research/bootstrap.md]] | "HyperNova folder … 89 constraints" | number | 3 |
+| [[cyber/research/unified mining|cyber/research/unified mining.md]] | algebraic NMT openings as real work | review | 3 |
+
+### other repositories
+
+| document | stale claim | action | phase |
+|---|---|---|---|
+| [[cybics/crystal/architecture|crystal/architecture.md]] | "constant-size global state (~22kb)" | rewrite + number | 3 |
+| [[cybics/crystal/stark|crystal/stark.md]] | "~60–200 KB"; "HyperNova accumulator (~200 bytes)" | rewrite | 3 |
+| [[cybics/crystal/topoisomerase|crystal/topoisomerase.md]] | "~5μs per step" | number | 2 |
+| [[neural/eidos/specs/certificate|eidos/specs/certificate.md]] | "~825 constraints … constant time" | number | 3 |
+| [[neural/trident/roadmap/polynomial-target|trident/roadmap/polynomial-target.md]] | "~8K → ~89", "~2 KiB … ~0.1 μs", "~30 ops/fold" | superseded (extend the line-254 banner) | 5 |
+| [[soft3/foculus/specs/structural-sync|foculus/specs/structural-sync.md]] | "~2 KiB", "~5 μs", "~200 bytes", "~30 ops" | number | 3 |
+| [[soft3/foculus/specs/fold-mining|foculus/specs/fold-mining.md]] | "HyperNova IVC folding … decider O(1)" | rewrite (ARC) | 3 |
+| [[soft3/foculus/specs/provable-consensus|foculus/specs/provable-consensus.md]] | "~50 us" | number | 3 |
+| [[soft3/foculus/specs/vec|foculus/specs/vec.md]] | "~50 us"; "2⁻⁵¹² at k=16"; "batched folding (IVC)" | number / review | 3 |
+| [[soft3/foculus/specs/gossip|foculus/specs/gossip.md]] | "verify σ (tens of microseconds)" | number | 3 |
+| [[soft3/foculus/docs/explanation/latency-targets|foculus/docs/explanation/latency-targets.md]] | "Lens ~200 B", "O(1) fold (~30 field ops)" | number | 3 |
+| [[soft3/foculus/docs/explanation/life-of-a-signal|foculus/docs/explanation/life-of-a-signal.md]] | "roughly fifty microseconds" | number | 3 |
+| [[soft3/foculus/README|foculus/README.md]] | "HyperNova fold tree" | rewrite (ARC) | 3 |
+| [[soft3/foculus/proposals/view-certificates|foculus/proposals/view-certificates.md]] | "π_att HyperNova fold" | review | 3 |
+| [foculus/src](https://github.com/cyberia-to/foculus/tree/main/src): `tip`, `tickets`, `marginal_cert`, `pay_proof`, `ticket_proof`, `rewards`, `step`, `epoch` | "HyperNova σ / seal / fold" | code (ARC) | 3 |
+| [[soft3/tok/programming-model|tok/programming-model.md]] | "fold into one constant-size proof via HyperNova"; "~200 bytes" | rewrite / number | 3 |
+| [[neural/inf/specs/proof|inf/specs/proof.md]] | "~200 bytes"; "~5 μs" | number | 2 |
+| [[neural/inf/specs/cost|inf/specs/cost.md]] | "~5 μs, one decider" | number | 2 |
+| [[neural/inf/README|inf/README.md]] · [[neural/inf/docs/README|inf/docs/README.md]] · [[soft3/cybergraph/docs/README|cybergraph/docs/README.md]] | "in microseconds" | number | 2 |
+| [[soft3/tru/specs/rewards|tru/specs/rewards.md]] | "self-folds using zheng's HyperNova IVC" | rewrite (ARC) | 3 |
+| [[soft3/strata/jali/specs/noise|strata/jali/specs/noise.md]] · [[soft3/strata/jali/docs/explanation/lattice-security|strata/jali/docs/explanation/lattice-security.md]] · [[soft3/strata/jali/README|strata/jali/README.md]] | "~30 field ops per fold"; ring-aware Brakedown | number | 5 |
+| [[cybics/crypto/graphy|cybics/crypto/graphy.md]] | "Brakedown — 5 μs verification" | number | 2 |
+| [[soft3/soma/soma-spec|soma/soma-spec.md]] | "~5 μs" | number | 2 |
+| [fs/sync.md](https://github.com/cyberia-to/fs/blob/main/sync.md) | "ONE zheng proof … (~50 μs)" | number | 3 |
+| [[cyb/evy/specs/evy|evy/specs/evy.md]] | "~50μs for BBG recommit + proof" | number | 5 |
+| [cyberia-blog/blog/2026_03_24.md](https://github.com/cyberia-to/cyberia-blog/blob/main/blog/2026_03_24.md) · [2026_03_26.md](https://github.com/cyberia-to/cyberia-blog/blob/main/blog/2026_03_26.md) · [2026_03_27.md](https://github.com/cyberia-to/cyberia-blog/blob/main/blog/2026_03_27.md) | "recursive brakedown (the perfect PCS)", "~200 bytes, 10–50 μs" | leave (dated posts) — erratum link | 5 |
+| [[warriors/audit/parano1d-vs-uhash-2026-09-27|warriors/audit/parano1d-vs-uhash-2026-09-27.md]] | "HyperNova folding"; "decider ~2.1 KB measured" | leave (audit snapshot) — footnote | — |
+| [[warriors/joy/CHANGELOG|joy/CHANGELOG.md]] | "SuperSpartan + Brakedown + HyperNova accumulators" | leave (historical) | — |
+
+### pages already bannered — and whether the banner is enough
+
+| document | banner | enough? |
+|---|---|---|
+| [[soft3/docs/polynomial-proof-system|soft3/docs/polynomial-proof-system.md]] | "target architecture, not the current lens" | no — the body states the numbers as fact and links `roadmap/` where the page lives in `zheng/docs/explanation/` |
+| [[neural/trident/roadmap/polynomial-target|trident/roadmap/polynomial-target.md]] | one inline line | no — the rest of the page is bare |
+| [[fri-to-whir]] · [[soft3/zheng/docs/explanation/whir|whir]] · [[whirlaway]] | "historical … zheng has evolved to use recursive Brakedown" | no — the banner points at the unsound design as current |
+| [[soft3/zheng/README|zheng/README.md]] | legacy commit/verify does not authenticate execution | yes |
+| [[zheng/specs/decider|zheng/specs/decider.md]] | residuals named | partial — the header still claims ~825 constraints, ~2.4 KiB |
+| [[cyber/launch|cyber/launch.md]] row 33 | "recursive form blocked" | yes for that row; line 77 is in the table |
+| [[cyberia-blog/blog/2026_09_12]] | describes the Merkle-free lens as unsound | correct, leave |
+| [[recursive-brakedown]] | none | no |
+
+generic STARK/SNARK comparison figures that are not zheng claims ([[cybics/crypto/zero-knowledge]], trident's `stark-proofs`, `verifying-proofs`, `provable-computing`, [[cyber/research/privacy trilateral|privacy trilateral]]) stay.
+
 
 the long form of every argument above is in this file's history (`git log -p proposals/proof-system-repair.md` before this revision).

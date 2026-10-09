@@ -7,7 +7,7 @@
 # usage:  nu scripts/stale-proof-claims.nu            # from ~/cyber/soft3
 #         nu scripts/stale-proof-claims.nu --root ~/cyber --json
 #
-# the ledger of every hit as of 2026-10-09 is proposals/proof-system-repair-ledger.md.
+# the ledger of every hit as of 2026-10-09 is proposals/proof-system-repair.md §C.
 
 def main [
     --root: string = "~/cyber"   # the workspace that holds every repo
@@ -51,7 +51,6 @@ def main [
     let exclude_dirs = [target build dist node_modules .git .node-builds .worktrees zheng-022 cyb-014 .vendor refs]
     let allow_files = [
         'soft3/proposals/proof-system-repair.md'
-        'soft3/proposals/proof-system-repair-ledger.md'
         'soft3/scripts/stale-proof-claims.nu'
         'zheng/CHANGELOG.md'
         'joy/CHANGELOG.md'
