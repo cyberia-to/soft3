@@ -6,7 +6,7 @@
         <title>soft3 — collective, private, provable computing</title>
         <meta
             name="description"
-            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. thirty features: frozen foundations, post-quantum, deterministic, no halting, native silicon, compact, trinity, cross-verified, 2 KB proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, home books, planet scale, explainable, aligned, names, referral, the wire, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
+            content="soft3: collective, private, provable computing. compute once, prove it, everyone remembers. thirty features: frozen foundations, post-quantum, deterministic, no halting, native silicon, compact, trinity, cross-verified, succinct proofs, incremental proving, private by default, trusting trust, memoization, provable reads, graph not ledger, home books, planet scale, explainable, aligned, names, referral, the wire, agentic, collective focus, truth staking, resource markets, useful mining, fast finality, location proofs, interplanetary."
         />
         <meta name="theme-color" content="#08140c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -215,17 +215,16 @@
                       [`<td>encodings, batches</td>`, d("tade/specs"), t("kuro · nebu"), t("kuro/tri · nebu/tri"), `<td>differential on nox</td>`],
                       [`<td>the compiler</td>`, t("reference/language.md"), t("src/"), n("lib/std/compiler — experimental"), `<td>differential corpus · four producers must agree</td>`],
                   ], "four producers of machine code — Rust reference, the compiler, hand baselines, the neural optimiser — share one scoreboard; a disagreement is a bug, whichever side is wrong.") },
-                { id: "proofs", verb: "prove", name: "2 KB proofs", line: "one proof of about 2 KB for any computation, checked in a millisecond on a phone.", status: "target · today measured",
-                  claim: "a proof is a constant: two kilobytes, whatever it proves",
-                  why: "every step folds into a HyperNova accumulator of about 200 bytes; one decider at the end and a Brakedown opening of about 1.7 KiB make the proof. its size does not grow with the program. the shipped build still carries the full witness while the folded format is re-authenticated — the table shows both.",
-                  parts: ["zheng", "joy", "lens"], source: ["zheng/specs/accumulator.md", GH + "zheng/blob/main/specs/accumulator.md"],
-                  fig: () => table(["statement", "prove", "verify", "proof"], [
-                      [`<td>(a+b)·a <span class="dim">· target</span></td>`, t("2 ms"), t("1 ms"), t("1.3 KB")],
-                      [`<td><span class="dim">· today</span></td>`, n("6 ms"), n("3 ms"), n("2.3 KB")],
-                      [`<td>one hash, a signature <span class="dim">· target</span></td>`, t("70 ms"), t("1 ms"), t("2.4 KB")],
-                      [`<td><span class="dim">· today</span></td>`, n("460 ms"), n("460 ms"), n("295 KB, full witness")],
-                      [`<td>Merkle path, depth 32 <span class="dim">· target</span></td>`, t("~100 ms"), t("1 ms"), t("2.6 KB")],
-                  ], "today: joy 0.5.0 release build on an M4 Max, 2026-10-08. targets: the folded format zheng 0.3 shipped (2.4 KB per hash) with authenticated execution.") },
+                { id: "proofs", verb: "prove", name: "succinct proofs", line: "at most 64 KB for any computation, post-quantum, checked in a millisecond", status: "goal · today measured",
+                  claim: "at most 64 KB, post-quantum, verified in a millisecond — however long the computation",
+                  why: "the proof is a sumcheck over the program's constraints plus an opening of the committed witness; the opening is hash-only (Reed–Solomon with WHIR over hemera, Johnson-bound parameters at 128 bits), so the only assumption is the hash. steps accumulate (ARC) into one accumulator and one decider closes it: a million steps cost the bytes of one. no post-quantum proof below ~50 KB exists anywhere today, and production chains ship 150 KB to 1 MB; 64 KB is what one honest assumption costs. the shipped build still discloses the full witness — the table shows both.",
+                  parts: ["zheng", "lens", "joy"], source: ["soft3/proposals/proof-system-repair.md", GH + "soft3/blob/main/proposals/proof-system-repair.md"],
+                  fig: () => table(["statement", "today · measured", "goal"], [
+                      [`<td>(a+b)·a</td>`, n("2.2 KB · prove 2 ms · verify 3 ms"), t("≤ 40 KB · ≤ 1 ms")],
+                      [`<td>one hash, a signature</td>`, n("15.6 KB · prove 36 ms · verify 30 ms"), t("≤ 40 KB · ≤ 1 ms")],
+                      [`<td>any length — a million steps</td>`, d("not yet: one relation, 29 hashes at most"), t("≤ 64 KB · ≤ 1 ms · constant")],
+                      [`<td>others, post-quantum, in production</td>`, d("Quantus 151 KB · RISC Zero 200 KB · Starknet 617 KB · Neptune 1 MB"), d("")],
+                  ], "today: joy 0.5.0 with zheng#45, M4 Max, 2026-10-09 — a public certificate, full witness, not succinct. goal and the design behind it: soft3/proposals/proof-system-repair.md.") },
                 { id: "incremental", verb: "prove", name: "incremental proving", line: "every step folds into one accumulator as it runs — proving costs a few percent, not 10–100×.", status: "specified",
                   claim: "proving is not a separate job",
                   why: "a fold is about thirty field operations per step, and the accumulator stays two hundred bytes however long the run. proving rides along with execution instead of replaying it afterwards; a single decider closes the proof. one program, one run, one proof — and a change to the program re-proves only what changed.",
@@ -448,7 +447,7 @@
                 s += `<text x="470" y="${y + 5}" font-size="18" fill="var(--c)">…</text>`;
                 s += `<rect x="20" y="${y + 48}" width="430" height="34" rx="17" fill="none" stroke="var(--c)" stroke-dasharray="5 6"/><text class="mono" x="235" y="${y + 70}" text-anchor="middle" font-size="12">accumulator · ~200 bytes, however long the run</text>`;
                 s += `<path d="M 450 ${y + 65} L 486 ${y + 65}" stroke="var(--c)" stroke-width="2"/><text x="470" y="${y + 120}" text-anchor="end" font-size="14">one decider</text><text class="mono" x="510" y="${y + 120}" text-anchor="end" font-size="12" fill="var(--c)">→ ~2 KB</text>`;
-                return `<svg viewBox="0 0 520 190">${s}</svg><p class="note">proving overhead today: ~80× on one hash (joy 0.5.0, full witness). target: a few percent — thirty field operations per step.</p>`;
+                return `<svg viewBox="0 0 520 190">${s}</svg><p class="note">today one hash proves in 36 ms with the witness disclosed (joy 0.5.0 + zheng#45). target: accumulation (ARC) — a few percent per step, one decider at the end.</p>`;
             }
             function halves() {
                 const pub = ["axons", "supplies", "focus · φ*", "epochs"], priv = ["your links", "your balances", "your queries", "your keys"];
