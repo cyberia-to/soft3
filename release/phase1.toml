@@ -27,7 +27,7 @@ rev = "d5f0a09539360934fb32db9b2e15a91995607db6"
 name = "lens"
 repo = "cyberia-to/lens"
 branch = "master"
-rev = "392abe752793c3e0b98f2d1d57245ba1e3173673"
+rev = "8b26cef6587bee6a686f2cf163f6a8496931ee6a"
 
 [[sibling]]
 name = "nox"
@@ -51,7 +51,7 @@ rev = "441e3c9ddf85c4bee36b40ed7ae8805b1481bc27"
 name = "radio"
 repo = "cyberia-to/radio"
 branch = "main"
-rev = "344ac1627ef4cb4544a98d9afc5442be85fe1d15"
+rev = "bc8b6331d3c76cbc011210e13f81e6ea351ef06f"
 
 [[sibling]]
 name = "foculus"
@@ -87,7 +87,7 @@ rev = "5054c939adbc875c32f1d89cce839d87bbd428bb"
 name = "mudra"
 repo = "cyberia-to/mudra"
 branch = "master"
-rev = "bff8dce011d29231fd3af299d1f73f29760cf1af"
+rev = "186c0f22871e72ac5d27396d893998865fc604d4"
 
 [[sibling]]
 name = "neuron"
