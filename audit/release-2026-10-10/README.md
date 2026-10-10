@@ -113,3 +113,41 @@ Merge style: a merge commit everywhere except soft3 (squash), as in each reposit
 4. `cargo conformance` does not exist; the conformance gate cannot pass until it does.
 5. `nu` needs a reproducible checkout before cyb can build in a stand.
 6. The proof-size goal: profile 5 is constant (282–285 KB from 33 to 1,572,850 cycles) but over 64 KB and over 1 ms; the wrap step on zheng#53 is the open work.
+
+## 5. rerun after the gate fixes — RED, 12 of 14 stack gates fixed or owner-blocked
+
+Same commands, from a clean worktree of soft3 `origin/main` d2cfe5f (after soft3#171), candidate `candidate-20261010.2`, `CARGO_TARGET_DIR` shared across the stack (so `soft3-release` would put its binary outside `crate/target`; moot here, the crate does not resolve). Receipts: `train-stack-rerun/` (snapshot as `snapshot-sources.json`). Archive `soft3-candidate-20261010.2-stack.tar.gz` sha256 `97a72e74ac0b36b84aa4780d99ddceef8747a5ace29abfcee8335f6bf7cf9a4f` (not committed).
+
+Fix pull requests, each tested on a stand of origin default branches (`.stands/G2`, deleted afterwards) with the gate's own command, `cargo test --locked`, and the gate's zero-warning rule:
+
+| PR | change | state |
+|---|---|---|
+| zheng#55 | cli `cyber-tape` at dead `../../tape` → `tade` (same alias as `release/0.4`, which needs nothing); stale lock | merged 5733dfd |
+| foculus#64 | same for foculus; dead test bindings (warnings) | merged 8a935e1 |
+| cybergraph#17 | `cyber-nox` 0.1 → 0.2; `stack_*` tests on nox 0.2 names (#10's test diff) and `Statement.bbg_root`; lock | merged 42fc251 |
+| mudra#21 | `cyber-nox` 0.1 → 0.2, `zheng` 0.1 → 0.3; `bbg_root` no-state sentinel; lock | merged bff8dce |
+| bbg#39, nox#29 | lockfile refresh (path crates only) | merged 441e3c9, 0b1407a |
+| tru#31 | lockfile refresh; 16 example/test warnings | merged 2f3a255 |
+| hemera#19, file#35 | commit `Cargo.lock` (was gitignored; the spec says committed lockfiles); hemera duplicate import | merged d5f0a09, e29b4c7 |
+| lens#22 | commit `Cargo.lock` | open: green only together with lens#16 |
+| strata#15 | nebu-wgsl: `gl_double` was called with a `vec2<u32>` in `fp3_norm`/`fp3_inv`; naga rejected the module, so all 10 GPU tests died at shader creation — a code bug, not the environment | merged 494df7a; workspace 519/0, gpu 11/0 |
+| soft3#171 | `conformance-snapshot` builds `cargo-conformance` from soft3's `conformance/rs`; blocked (never green) while that crate is a scaffold | merged d2cfe5f |
+
+| gate | before (§1) | after |
+|---|---|---|
+| origin-checkouts | green | green |
+| phase1-pins | red, 15 drifted | red, 18 drifted (the fixes moved bbg, cybergraph, file, foculus, hemera, mudra, nox, strata, tru, zheng); `nu` has a remote now (cyberia-to/nu, main 1e58416) but no `rev` in the manifest; soft3#169 must re-pin |
+| release-notes-source | red (cyb) | red (cyb: HEAD has no merged PR) |
+| stack-hemera, stack-file | red, no lockfile | **green** |
+| stack-bbg, stack-nox, stack-tru | red, stale lock | **green** |
+| stack-zheng, stack-foculus | red, dead `../tape` | **green** |
+| stack-cybergraph, stack-mudra | red, nox ^0.1 | **green** |
+| stack-tok | green | green |
+| stack-lens | red, no lockfile | red, no lockfile until lens#22; with #22 and lens#16 (or its duplicate #10, the porphyry `squeeze_field` panic for Fq) the stand gives 98/0 |
+| stack-vault, stack-neuron | red | red: they need cybergraph features/modules (`local-storage`, `legacy-redb-migration`, `cybergraph::{application,content,native}`) that exist only on the owner's decision PR cybergraph#3 |
+| stack-radio | red | red: `iroh-bench` names the crate `radio`; `iroh-docs`/`iroh-blobs` mix registry `iroh-base` 0.96 with the forked one; two `transfer` examples collide. radio#5 + #6 merged locally still leave `iroh-blobs` examples broken: fork maintenance, not a pin |
+| conformance-snapshot | red, `no such command` | blocked: harness is a scaffold (soft3#171) |
+| soft3-tests, soft3-release, package-resolution | red | red: soft3 main needs cybergraph#3 (`cybergraph::native`, `local-storage`) and foculus#5 (`signal_codec`, `decode_events_strict`); the lock refresh waits for those |
+| node-status | blocked | blocked |
+
+Owner items left: cybergraph#3 and foculus#5 (unblock neuron, vault, soft3 and its lockfile); merge lens#16 then lens#22 (refresh one lock line after); radio fork repair; a `nu` rev pin and the cyb release-notes PR; the conformance harness itself.

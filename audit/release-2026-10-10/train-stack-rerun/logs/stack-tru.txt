@@ -1,0 +1,131 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/G2/_train/checkout/tru/rs
+   Compiling crossbeam-utils v0.8.23
+   Compiling mutants v0.0.3
+   Compiling syn v3.0.3
+   Compiling crossbeam-queue v0.3.14
+   Compiling unimem v0.2.0 (/Users/master/cyber/.stands/G2/_train/checkout/honeycrisp/unimem)
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.20
+   Compiling thiserror v2.0.20
+   Compiling acpu v0.2.0 (/Users/master/cyber/.stands/G2/_train/checkout/honeycrisp/acpu)
+   Compiling serde v1.0.229
+   Compiling serde_spanned v0.6.9
+   Compiling toml_datetime v0.6.11
+   Compiling toml_edit v0.22.27
+   Compiling toml v0.8.23
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/.stands/G2/_train/checkout/tru/rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.90s
+     Running unittests lib.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/tru-34c9aab8de15190f)
+
+running 85 tests
+test arithmetic::tests::ratio_u128_handles_large_ints ... ok
+test arithmetic::tests::field_element_round_trips ... ok
+test arithmetic::tests::mul_rescales_within_one_ulp ... ok
+test arithmetic::tests::storage_encoding_round_trips ... ok
+test arithmetic::tests::div_recip_sqrt ... ok
+test arithmetic::tests::round_trips_encode_decode ... ok
+test arithmetic::tests::associative_add_and_distributive_scale ... ok
+test arithmetic::tests::add_sub_neg_exact_when_representable ... ok
+test arithmetic::tests::exp_and_floor ... ok
+test arithmetic::tests::ln_matches_reference ... ok
+test arithmetic::tests::ordering_respects_sign_and_magnitude ... ok
+test focusing::focusing::tests::contraction_below_one ... ok
+test focusing::focusing::tests::focus_sums_to_one ... ok
+test focusing::focusing::tests::fiedler_vector_separates_the_two_communities ... ok
+test focusing::focusing::tests::deterministic_bit_identical ... ok
+test focusing::focusing::tests::derived_steps_reach_the_fixed_point ... ok
+test focusing::focusing::tests::empty_graph ... ok
+test focusing::focusing::tests::heat_conserves_mass_and_smooths ... ok
+test focusing::focusing::tests::market_doubt_prunes_the_edge ... ok
+test focusing::focusing::tests::self_loops_excluded ... ok
+test focusing::focusing::tests::high_in_stake_ranks_higher ... ok
+test focusing::focusing::tests::zero_amount_excluded ... ok
+test focusing::focusing::tests::market_price_scales_the_link_it_weights ... ok
+test focusing::focusing::tests::embedding_k_clamps_to_n_minus_one ... ok
+test focusing::focusing::tests::well_linked_node_ranks_higher ... ok
+test focusing::focusing::tests::embedding_is_centered_and_orthogonal ... ok
+test focusing::focusing::tests::large_stakes_are_scale_invariant ... ok
+test focusing::focusing::tests::karma_amplifies_the_link_it_weights ... ok
+test focusing::measures::tests::syntropy_zero_at_uniform ... ok
+test focusing::measures::tests::syntropy_nonnegative_and_grows_with_concentration ... ok
+test model::writer::tests::tensors_are_page_aligned ... ok
+test focusing::impulse::tests::first_links_from_an_empty_base ... ok
+test focusing::measures::tests::cyberank_reads_focus_by_particle ... ok
+test pass::arch::tests::empty_graph_yields_default_arch ... ok
+test focusing::impulse::tests::a_new_link_shifts_focus_and_is_local ... ok
+test model::writer::tests::round_trips_text_and_tensors ... ok
+test focusing::impulse::tests::directed_clips_a_flattening_batch ... ok
+test focusing::impulse::tests::delta_j_decomposes_into_entropy_drop_plus_discovery ... ok
+test focusing::focusing::tests::will_is_shared_equally_across_a_neurons_links ... ok
+test focusing::focusing::tests::will_adds_broad_attention_to_a_neurons_links ... ok
+test pass::dialect::tests::a_heavy_labeller_registers_as_a_dialect ... ok
+test focusing::measures::tests::result_carries_syntropy ... ok
+test focusing::impulse::tests::discovery_term_fires_only_on_new_particles ... ok
+test focusing::impulse::tests::propose_is_the_standalone_directed_impulse ... ok
+test pass::dialect::tests::bottom_is_always_present_and_last ... ok
+test pass::dialect::tests::edge_counts_cover_every_edge ... ok
+test model::writer::tests::deterministic_bytes_and_particle ... ok
+test model::writer::tests::writes_and_reads_a_file ... ok
+test pass::index::tests::adjacency_sums_affirmations_and_drops_the_rest ... ok
+test pass::index::tests::axon_is_deterministic_and_oriented ... ok
+test pass::index::tests::ids_follow_insertion_order_p_q_axon ... ok
+test pass::index::tests::vocab_seed_takes_the_low_ids ... ok
+test pass::arch::tests::arch_params_are_in_bounds_and_shaped ... ok
+test pass::arch::tests::phi_sums_to_one ... ok
+test pass::mlp::tests::layers_get_distinct_seeds ... ok
+test pass::norm::tests::emits_two_per_layer_plus_the_final_norm ... ok
+test pass::arch::tests::arch_is_deterministic ... ok
+test pass::mlp::tests::init_is_deterministic ... ok
+test pass::mlp::tests::emits_five_tensors_per_layer_with_right_shapes ... ok
+test truth_scoring::tests::accumulate_closes_the_loop_to_a_karma_table ... ok
+test truth_scoring::tests::accurate_meta_prediction_beats_an_inaccurate_one ... ok
+test truth_scoring::tests::consensus_copier_scores_near_zero_information ... ok
+test truth_scoring::tests::karma_accumulates_up_on_signal_and_floors_at_zero ... ok
+test truth_scoring::tests::surprise_clips_to_unit_interval ... ok
+test truth_scoring::tests::surprisingly_popular_report_beats_a_follower ... ok
+test vocab::tests::entries_hash_to_their_particle ... ok
+test vocab::tests::file_particle_is_content_addressed ... ok
+test vocab::tests::lookup_resolves_data ... ok
+test vocab::tests::round_trips_through_bytes ... ok
+test vocab::tests::writes_and_reads_a_file ... ok
+test pass::svd::tests::singular_values_descend ... ok
+test pass::svd::tests::reconstructs_a_small_symmetric_matrix ... ok
+test pass::svd::banded_tests::banded_recovers_a_degenerate_tail ... ok
+test pass::embed::tests::pure_targets_get_v_geometry_rows ... ok
+test pass::embed::tests::emitted_rows_are_unit_norm ... ok
+test pass::embed::tests::embedding_has_the_right_shape ... ok
+test pass::embed::tests::embedding_is_deterministic ... ok
+test pass::attn::tests::value_and_output_are_the_retrieval_head ... ok
+test pass::attn::tests::p_attn_scores_are_directed ... ok
+test pass::embed::tests::svd_reconstructs_m_within_tolerance ... ok
+test pass::attn::tests::p_attn_qk_reconstructs_the_projection ... ok
+test pass::attn::tests::emits_five_tensors_per_layer_with_right_shapes ... ok
+test pass::attn::tests::attention_is_deterministic ... ok
+test pass::compile::tests::compiles_a_graph_into_a_loadable_model ... ok
+test pass::compile::tests::compile_is_deterministic ... ok
+
+test result: ok. 85 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.72s
+
+     Running tests/honesty_loop.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/honesty_loop-40c6ab20c01674eb)
+
+running 1 test
+test reports_earn_karma_that_reweights_focus ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/smoke.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/smoke-fe2b484e17d3b0f0)
+
+running 1 test
+test round_trip_minimal_graph ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests tru
+
+running 1 test
+test rs/lib.rs - (line 7) ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+all doctests ran in 0.45s; merged doctests compilation took 0.14s

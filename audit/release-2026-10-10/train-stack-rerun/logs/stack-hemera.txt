@@ -1,0 +1,336 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/G2/_train/checkout/hemera/rs
+   Compiling libc v0.2.190
+   Compiling cfg-if v1.0.5
+   Compiling getrandom v0.3.4
+   Compiling proc-macro2 v1.0.107
+   Compiling getrandom v0.4.3
+   Compiling quote v1.0.47
+   Compiling zerocopy v0.8.62
+   Compiling rustix v1.1.5
+   Compiling unicode-ident v1.0.26
+   Compiling autocfg v1.5.1
+   Compiling bitflags v2.13.2
+   Compiling serde_core v1.0.229
+   Compiling once_cell v1.21.4
+   Compiling zmij v1.0.23
+   Compiling fastrand v2.5.0
+   Compiling quick-error v1.2.3
+   Compiling fnv v1.0.7
+   Compiling bit-vec v0.8.0
+   Compiling serde_json v1.0.151
+   Compiling memchr v2.8.3
+   Compiling pin-project-lite v0.2.17
+   Compiling unarray v0.1.4
+   Compiling itoa v1.0.18
+   Compiling regex-syntax v0.8.11
+   Compiling bit-set v0.8.0
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/.stands/G2/_train/checkout/hemera/rs)
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.6
+   Compiling ppv-lite86 v0.2.21
+   Compiling errno v0.3.14
+   Compiling wait-timeout v0.2.1
+   Compiling rand_core v0.9.5
+   Compiling rand_xorshift v0.4.0
+   Compiling rand v0.9.5
+   Compiling rand_chacha v0.9.0
+   Compiling tempfile v3.27.0
+   Compiling rusty-fork v0.3.1
+   Compiling proptest v1.11.0
+   Compiling tokio-macros v2.7.2
+   Compiling tokio v1.53.2
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.10s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/cyber_hemera-f3a61f5d647e3ecc)
+
+running 247 tests
+test batch::tests::batch_out_of_range_panics - should panic ... ok
+test batch::tests::batch_unsorted_panics - should panic ... ok
+test batch::tests::batch_single_chunk_file ... ok
+test bootstrap::tests::bootstrap_constants_are_canonical ... ok
+test bootstrap::tests::bootstrap_constants_count ... ok
+test bootstrap::tests::bootstrap_constants_nonzero ... ok
+test bootstrap::tests::bootstrap_constants_deterministic ... ok
+test bootstrap::tests::genesis_seed_is_cyber ... ok
+test bootstrap::tests::bootstrap_pinned_first_constants ... ok
+test bootstrap::tests::static_constants_match_bootstrap ... ok
+test cdc::tests::element_size_affects_window_size ... ok
+test cdc::tests::empty_section_gives_hash_leaf_empty ... ok
+test cdc::tests::fingerprint_different_elements_differ ... ok
+test cdc::tests::fingerprint_single_byte_is_table_lookup ... ok
+test cdc::tests::fingerprint_two_bytes_uses_rotations ... ok
+test cdc::tests::gear_table_entry_255_matches_hash ... ok
+test cdc::tests::gear_table_entry_zero_matches_hash ... ok
+test cdc::tests::gear_table_all_entries_distinct ... ok
+test cdc::tests::element_size_2_divisible_data ... ok
+test batch::tests::batch_extra_siblings_rejected ... ok
+test cdc::tests::section_exactly_min_chunk_may_split ... ok
+test batch::tests::batch_wrong_root_fails ... ok
+test cdc::tests::section_different_data_different_hash ... ok
+test batch::tests::batch_wrong_data_fails ... ok
+test cdc::tests::element_size_64_divisible_data ... ok
+test cdc::tests::cdc_boundaries_stable_under_prefix_append ... ok
+test batch::tests::batch_three_chunks_all ... ok
+test encoding::tests::bytes_to_elements_8_bytes_splits ... ok
+test encoding::tests::bytes_to_elements_empty ... ok
+test encoding::tests::bytes_to_elements_exact_7 ... ok
+test cdc::tests::section_smaller_than_min_chunk_is_single_leaf ... ok
+test encoding::tests::bytes_to_elements_exact_rate_block ... ok
+test encoding::tests::bytes_to_elements_max_7byte_boundary ... ok
+test encoding::tests::bytes_to_elements_one_extra ... ok
+test encoding::tests::bytes_to_elements_short ... ok
+test encoding::tests::rate_block_empty ... ok
+test encoding::tests::rate_block_fill ... ok
+test encoding::tests::rate_block_partial_fill ... ok
+test encoding::tests::roundtrip_hash_bytes ... ok
+test encoding::tests::roundtrip_hash_bytes_max_canonical ... ok
+test encoding::tests::seven_byte_values_fit_in_goldilocks ... ok
+test field::tests::canonical_reduces ... ok
+test field::tests::field_add_basic ... ok
+test field::tests::field_add_wrap ... ok
+test field::tests::field_mul_basic ... ok
+test field::tests::field_mul_large ... ok
+test field::tests::field_sub_basic ... ok
+test field::tests::field_sub_wrap ... ok
+test field::tests::inv_basic ... ok
+test field::tests::inv_one ... ok
+test field::tests::inv_chain_matches_fermat ... ok
+test field::tests::inv_p_minus_one ... ok
+test field::tests::inv_roundtrip ... ok
+test field::tests::inv_zero ... ok
+test field::tests::pow7_basic ... ok
+test field::tests::pow7_one ... ok
+test field::tests::pow7_zero ... ok
+test cdc::tests::window_size_always_power_of_two ... ok
+test cdc::tests::window_size_element_size_1_is_4096 ... ok
+test cdc::tests::window_size_element_size_64_is_64 ... ok
+test encoding::tests::bytes_to_cv_with_above_prime_value ... ok
+test merkle::tests::empty_path_leaf_equals_root ... ok
+test merkle::tests::empty_path_wrong_hash_fails ... ok
+test merkle::tests::swapped_sides_fails ... ok
+test merkle::tests::two_leaf_right_leaf_verifies ... ok
+test merkle::tests::two_leaf_left_leaf_verifies ... ok
+test merkle::tests::wrong_leaf_hash_fails ... ok
+test merkle::tests::wrong_sibling_hash_fails ... ok
+test params::tests::different_inputs_different_outputs ... ok
+test params::tests::permutation_changes_state ... ok
+test merkle::tests::wrong_root_fails ... ok
+test params::tests::permutation_is_deterministic ... ok
+test params::tests::sponge_geometry ... ok
+test permutation::tests::different_inputs_different_outputs ... ok
+test permutation::tests::full_round_witnesses_correct ... ok
+test permutation::tests::permutation_changes_state ... ok
+test merkle::tests::four_leaf_tree_all_leaves_verify ... ok
+test permutation::tests::trace_round_indices_are_ordered ... ok
+test permutation::tests::permutation_is_deterministic ... ok
+test permutation::tests::traced_matches_plain ... ok
+test batch::tests::batch_all_leaves ... ok
+test batch::tests::batch_two_adjacent_leaves ... ok
+test cdc::tests::section_is_deterministic ... ok
+test sparse::tests::compressed_proof_smaller_than_full ... ok
+test cdc::tests::uniform_data_above_min_chunk_splits_at_min_chunk ... ok
+test cdc::tests::section_is_root_flag_changes_hash ... ok
+test sparse::tests::delete_nonexistent_is_noop ... ok
+test sparse::tests::insert_changes_root ... ok
+test sparse::tests::insert_delete_insert_same_key ... ok
+test sparse::tests::insert_then_get ... ok
+test sparse::tests::key_bit_extraction ... ok
+test sparse::tests::mask_key_basic ... ok
+test sparse::tests::delete_restores_empty_root ... ok
+test sparse::tests::empty_tree_root_is_sentinel ... ok
+test sparse::tests::deterministic_roots ... ok
+test sparse::tests::insert_two_keys ... ok
+test sparse::tests::sentinel_table_consistency ... ok
+test sparse::tests::prove_wrong_value_fails ... ok
+test batch::tests::batch_two_distant_leaves ... ok
+test sparse::tests::update_value ... ok
+test sparse::tests::two_keys_proofs_both_valid ... ok
+test sparse::tests::prove_inclusion_claimed_absent_fails ... ok
+test sparse::tests::prove_non_inclusion ... ok
+test sparse::tests::prove_inclusion ... ok
+test sponge::tests::all_four_domains_produce_different_outputs ... ok
+test sponge::tests::derive_key_empty_context ... ok
+test sponge::tests::derive_key_empty_material ... ok
+test sponge::tests::different_inputs_different_hashes ... ok
+test sponge::tests::domain_separation_hash_vs_derive_key ... ok
+test sponge::tests::domain_separation_hash_vs_keyed ... ok
+test sponge::tests::empty_hash_is_not_zero ... ok
+test sponge::tests::exact_two_rate_blocks_input ... ok
+test sponge::tests::hash_as_ref ... ok
+test sponge::tests::exact_rate_block_input ... ok
+test sponge::tests::hash_debug_format ... ok
+test sponge::tests::hash_display_is_hex ... ok
+test sponge::tests::hash_from_bytes_roundtrip ... ok
+test sponge::tests::hash_eq_and_hash_trait ... ok
+test sponge::tests::hash_to_hex_length ... ok
+test sponge::tests::hasher_debug_shows_absorbed ... ok
+test sponge::tests::keyed_hash_different_keys ... ok
+test sponge::tests::keyed_hash_empty_data ... ok
+test sponge::tests::hasher_clone_mid_block ... ok
+test sponge::tests::hasher_default_matches_new ... ok
+test sponge::tests::one_less_than_rate_block ... ok
+test sponge::tests::hasher_clone_produces_same_hash ... ok
+test sponge::tests::pinned_hemera_hash ... ok
+test sponge::tests::one_more_than_rate_block ... ok
+test sponge::tests::pinned_empty_hash ... ok
+test sponge::tests::streaming_consistency ... ok
+test sponge::tests::streaming_across_rate_boundary ... ok
+test sponge::tests::xof_first_32_match_finalize ... ok
+test sponge::tests::xof_produces_more_than_32_bytes ... ok
+test sponge::tests::xof_zero_length_fill ... ok
+test sponge::tests::xof_read_trait ... ok
+test step_sponge::tests::by_ref_leaves_sponge_done_for_squeeze ... ok
+test sponge::tests::xof_deterministic ... ok
+test step_sponge::tests::deterministic ... ok
+test step_sponge::tests::different_rate_different_states ... ok
+test step_sponge::tests::done_only_after_all_rounds ... ok
+test step_sponge::tests::each_round_state_differs ... ok
+test step_sponge::tests::matches_atomic_permute ... ok
+test step_sponge::tests::squeeze_matches_final_state_element_zero ... ok
+test step_sponge::tests::step_count_is_rounds_total ... ok
+test batch::tests::batch_single_leaf_matches_single_proof ... ok
+test sponge::tests::xof_different_inputs_different_streams ... ok
+test stream::tests::decode_truncated_header ... ok
+test stream::tests::decode_wrong_root_fails ... ok
+test sponge::tests::xof_incremental_reads_match_bulk ... ok
+test stream::tests::encode_decode_empty ... ok
+test stream::tests::encode_decode_small ... ok
+test batch::tests::batch_contiguous_range ... ok
+test stream::tests::decode_tampered_hash_pair_fails ... ok
+test stream::tests::decode_tampered_data_fails ... ok
+test stream::tests::decode_truncated_data ... ok
+test stream::tests::encode_decode_exact_chunk ... ok
+test stream::tests::outboard_single_chunk ... ok
+test stream::tests::encode_decode_two_chunks ... ok
+test stream::tests::outboard_verify_wrong_root_fails ... ok
+test proptests::clone_consistency ... ok
+test stream::tests::encode_decode_three_chunks ... ok
+test stream::tests::outboard_verify_wrong_data_fails ... ok
+test tests::derive_key_basic ... ok
+test tests::derive_key_different_contexts ... ok
+test tests::derive_key_differs_from_hash ... ok
+test tests::derive_key_long_context ... ok
+test tests::hash_basic ... ok
+test tests::hash_deterministic ... ok
+test tests::hash_different_inputs ... ok
+test tests::hash_empty ... ok
+test tests::hash_matches_streaming ... ok
+test tests::derive_key_long_material ... ok
+test tests::keyed_hash_different_keys ... ok
+test tests::keyed_hash_differs_from_plain ... ok
+test tests::keyed_hash_empty_input ... ok
+test proptests::xof_prefix_matches_finalize ... ok
+test tests::xof_extends_hash ... ok
+test tests::derive_key_different_materials ... ok
+test tree::tests::flag_bits_are_distinct ... ok
+test tree::tests::flags_use_correct_capacity_indices ... ok
+test tree::tests::hash_leaf_counter_differs ... ok
+test tree::tests::four_chunk_tree ... ok
+test tree::tests::hash_leaf_different_data ... ok
+test tree::tests::hash_leaf_empty ... ok
+test tree::tests::hash_leaf_large_counter ... ok
+test tree::tests::hash_leaf_root_differs ... ok
+test tree::tests::hash_leaf_vs_plain_hash ... ok
+test tree::tests::hash_leaf_large_data ... ok
+test stream::tests::outboard_root_matches_encode_root ... ok
+test stream::tests::outboard_multi_chunk ... ok
+test tree::tests::build_tree_indices_match ... ok
+test tests::hash_single_byte_avalanche ... ok
+test proptests::keyed_hash_differs_from_plain ... ok
+test tree::tests::hash_node_identical_children ... ok
+test tree::tests::hash_node_deterministic ... ok
+test tree::tests::hash_node_nmt_different_ns_ranges ... ok
+test tree::tests::hash_node_nmt_non_commutative ... ok
+test tree::tests::hash_node_nmt_root_differs ... ok
+test tree::tests::hash_node_nmt_ns_differs_from_plain ... ok
+test tree::tests::hash_node_nmt_zero_ns_matches_hash_node ... ok
+test tree::tests::hash_node_non_commutative ... ok
+test tree::tests::nmt_capacity_indices_no_overlap ... ok
+test tree::tests::node_index_children ... ok
+test tree::tests::hash_node_non_root_vs_root_with_identical_children ... ok
+test tree::tests::hash_node_root_differs ... ok
+test tree::tests::node_index_from_chunk ... ok
+test tree::tests::node_index_leaf ... ok
+test tree::tests::node_index_level ... ok
+test tree::tests::node_index_parent ... ok
+test tree::tests::node_index_root ... ok
+test tree::tests::node_index_sibling ... ok
+test tree::tests::node_index_to_chunk ... ok
+test tree::tests::num_chunks_basic ... ok
+test tree::tests::prove_empty ... ok
+test tree::tests::prove_out_of_range_panics - should panic ... ok
+test tree::tests::prove_range_unaligned_panics - should panic ... ok
+test tree::tests::prove_single_chunk ... ok
+test tests::large_input ... ok
+test tree::tests::prove_two_chunks ... ok
+test tree::tests::prove_range_full_tree ... ok
+test tree::tests::prove_range_left_subtree ... ok
+test tree::tests::root_hash_below_min_chunk_is_single_leaf ... ok
+test tree::tests::root_hash_different_inputs_differ ... ok
+test tree::tests::root_hash_empty ... ok
+test tree::tests::root_hash_differs_from_plain_hash ... ok
+test tree::tests::single_chunk_root_vs_multi_chunk ... ok
+test tree::tests::tree_depth_basic ... ok
+test tree::tests::two_chunk_tree ... ok
+test tree::tests::prove_range_right_subtree ... ok
+test tree::tests::root_hash_uniform_4096_splits_at_2048 ... ok
+test tree::tests::root_hash_deterministic ... ok
+test tree::tests::prove_three_chunks ... ok
+test tree::tests::verify_node_proof_wrong_hash_fails ... ok
+test tree::tests::prove_range_nested_subtree ... ok
+test proptests::streaming_matches_oneshot ... ok
+test tree::tests::prove_four_chunks ... ok
+test tree::tests::verify_proof_swapped_chunk_fails ... ok
+test proptests::hash_is_deterministic ... ok
+test tree::tests::verify_proof_wrong_root_fails ... ok
+test tree::tests::verify_proof_wrong_data_fails ... ok
+test stream::tests::encode_decode_many_chunks ... ok
+test stream::tests::outboard_verify_sizes ... ok
+test tree::tests::prove_five_chunks ... ok
+test stream::tests::encode_decode_roundtrip_sizes ... ok
+test cdc::tests::large_section_hashes_without_panic ... ok
+test tree::tests::prove_large_file ... ok
+test batch::tests::batch_savings_over_individual ... ok
+
+test result: ok. 247 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.51s
+
+     Running tests/constant_time.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/constant_time-07152f681dabc2e3)
+
+running 2 tests
+test ct_kernel_equals_fast_kernel_bit_for_bit ... ok
+test secret_entry_points_match_reference ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/differential.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/differential-6f1f7c3a5949884b)
+
+running 6 tests
+test leaf_batch_matches_reference ... ok
+test node_and_leaf_match_reference ... ok
+test permutation_matches_reference ... ok
+test hash_matches_reference ... ok
+test traced_and_stepped_equal_permute ... ok
+test v2_shaped_profile_matches_reference ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+
+     Running tests/vectors.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/vectors-474c5c7d5345166d)
+
+running 6 tests
+test derive_key_test ... ok
+test hash_empty ... ok
+test hash_hello ... ok
+test hash_hemera ... ok
+test tree_empty ... ok
+test tree_hello ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_hemera
+
+running 1 test
+test rs/src/lib.rs - (line 41) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+all doctests ran in 0.49s; merged doctests compilation took 0.15s
