@@ -152,7 +152,7 @@ Fix pull requests, each tested on a stand of origin default branches (`.stands/G
 
 Owner items left: cybergraph#3 and foculus#5 (unblock neuron, vault, soft3 and its lockfile); merge lens#16 then lens#22 (refresh one lock line after); radio fork repair; a `nu` rev pin and the cyb release-notes PR; the conformance harness itself.
 
-## 6. second rerun after the re-pin and soft3#172 — RED, 11 of 14 stack gates green
+## 6. second rerun after the re-pin and soft3#172 — RED, 10 of 14 stack gates green, conformance green
 
 Same commands, from a clean worktree of soft3 `origin/main` 18fd6b2 (after soft3#172, the conformance harness), candidate `candidate-20261010.3`, `CARGO_TARGET_DIR` shared across the stack, stand `.stands/G3` (deleted afterwards). Wall time 551 s. Receipts: `train-stack-rerun2/` (snapshot as `snapshot-sources.json`). Archive `soft3-candidate-20261010.3-stack.tar.gz` sha256 `2160dc6e3473bbbb4ac5ac8c3ddf74d1a036e9fcd41b3b8dced3eaa1d61309f2` (not committed).
 
