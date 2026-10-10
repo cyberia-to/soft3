@@ -1,0 +1,20 @@
+# written by `cargo conformance --bless`: the sibling revisions the snapshots were generated from.
+# informational — `--check` compares the .snap files only.
+
+blessed = "2026-10-10"
+harness = "cyber-conformance 0.2.0"
+
+[sources]
+hemera = "d5f0a09539360934fb32db9b2e15a91995607db6"
+strata = "494df7a0973ae10a6cc1c2022e644d70449a29d6"
+nox = "0b1407a4b855e4961ede07e1b7ea199cb8018c30"
+lens = "392abe752793c3e0b98f2d1d57245ba1e3173673"
+zheng = "5733dfdcc15cbc22fce9f5877b37515d005b8c44"
+tade = "c7d404aa8aa4c1e960f7a7268cbef47f2d6ba4d4"
+bbg = "441e3c9ddf85c4bee36b40ed7ae8805b1481bc27"
+foculus = "8a935e1695dfeed2b0241256bc2cd762729bb324"
+cybergraph = "42fc2512389c7411d8cc3461501d859c1545980e"
+inf = "5054c939adbc875c32f1d89cce839d87bbd428bb"
+tru = "2f3a2556afc943ae949530a626ba4f2a83ace06b"
+tok = "e27da0dff72b948418a5e40a5ed6290c0fd167f3"
+soft3 = "d2cfe5f696e099a6c0a704edde4f70e937c03c48"

@@ -1,0 +1,5 @@
+# sub: 7 - 9 wraps mod p
+object  [7 9]
+budget  100
+formula [6 [[0 2] [0 3]]]
+result  18446744069414584319

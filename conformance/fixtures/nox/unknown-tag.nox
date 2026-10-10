@@ -1,0 +1,5 @@
+# tag 255 is no pattern
+object  0
+budget  100
+formula [255 0]
+error   Malformed

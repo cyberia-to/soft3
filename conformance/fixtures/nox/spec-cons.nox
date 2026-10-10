@@ -1,0 +1,6 @@
+# test vector: reduce([1,2], cons, 100) = (pair(1, 2), 97)
+object  [1 2]
+budget  100
+formula [3 [[0 2] [0 3]]]
+result  [1 2]
+cost    3

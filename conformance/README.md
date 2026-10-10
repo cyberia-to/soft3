@@ -23,7 +23,9 @@ each soft3 repo carries its own `conformance/` directory of `.snap` files. CI co
 |-----|---------|
 | [docs/](docs/) | why this crate exists |
 | [specs/](specs/) | how snapshots are produced, compared, blessed |
-| [rs/](rs/) | `cyber-conformance` — trait, tier enum, harness types |
+| [rs/](rs/) | `cyber-conformance` — trait, tiers, surfaces, the `cargo-conformance` runner |
+| [snapshots/](snapshots/) | the stack snapshot: `encoding.snap`, `mechanism.snap`, `manifest.snap`, bless provenance |
+| [fixtures/](fixtures/) | nox input programs, committed zheng proof fixtures |
 
 ## position in the stack
 
@@ -31,6 +33,6 @@ conformance sits beneath every other [[soft3]] component except [[hemera]] itsel
 
 ## status
 
-scaffold. trait surface drafted. snapshot harness lands after [[hemera]] reaches stable output. `cargo conformance` subcommand follows.
+implemented. the stack snapshot covers [[hemera]], nebu, [[nox]], [[zheng]], [[tade]] and [[cybergraph]] surfaces (see [specs/](specs/README.md#surfaces)); the release train's `conformance-snapshot` gate runs `cargo conformance --check` from this crate. per-crate adoption follows each crate's tier promotion.
 
 see [[soft3]] for the surrounding stack and [[hemera]] for the underlying fingerprint primitive.

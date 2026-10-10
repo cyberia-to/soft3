@@ -1,0 +1,5 @@
+# budget exhausted before the add completes
+object  [1 2]
+budget  2
+formula [5 [[0 2] [0 3]]]
+halt

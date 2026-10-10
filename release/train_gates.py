@@ -87,9 +87,10 @@ def conformance_gate(gates, soft3):
     """Run `cargo conformance --check` from the runner soft3 carries in-tree.
 
     A clean origin checkout has no installed cargo subcommand, so the gate builds the
-    runner from soft3/conformance/rs. Until that crate declares the runner binary the
-    harness is a scaffold (conformance/specs/README.md, status) and the gate is blocked,
-    never green: a scaffold cannot pass it.
+    runner from soft3/conformance/rs, which closes over the sibling checkouts beside
+    soft3 by path. The runner regenerates the stack snapshot from the current build and
+    compares it byte for byte with soft3/conformance/snapshots (conformance/specs/README.md).
+    A soft3 revision whose crate declares no runner binary is blocked, never green.
     """
     manifest = soft3 / "conformance/rs/Cargo.toml"
     try:
@@ -99,8 +100,7 @@ def conformance_gate(gates, soft3):
     if not any(b.get("name") == CONFORMANCE_RUNNER for b in bins):
         return gates.blocked("conformance-snapshot",
                              f"cargo conformance is not implemented: {manifest.relative_to(soft3.parent)} declares no "
-                             f"`{CONFORMANCE_RUNNER}` binary; the harness is a scaffold (hemera fingerprint stubbed, "
-                             "no .snap files), see soft3/conformance/specs/README.md status")
+                             f"`{CONFORMANCE_RUNNER}` binary, see soft3/conformance/specs/README.md")
     return gates.run("conformance-snapshot",
                      ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(manifest), "--bin",
                       CONFORMANCE_RUNNER, "--", "conformance", "--check"], soft3, timeout=900)

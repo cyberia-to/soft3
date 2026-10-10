@@ -1,14 +1,37 @@
 [package]
 name = "cyber-conformance"
-version = "0.1.0"
-edition = "2021"
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.89"
 license = "AGPL-3.0-or-later"
 description = "Stability harness for the soft3 stack — hemera fingerprints of canonical encodings and mechanism outputs"
-repository = "https://github.com/cyberia-to/conformance"
+repository = "https://github.com/cyberia-to/soft3"
 readme = "../README.md"
+publish = false
+
+[lib]
+name = "cyber_conformance"
+path = "src/lib.rs"
+
+# `cargo conformance …` — cargo passes the subcommand name as the first argument.
+[[bin]]
+name = "cargo-conformance"
+path = "src/main.rs"
+
+# The harness is its own workspace: it closes over the stack siblings checked
+# out beside soft3 (the release train's origin-default checkout layout), never
+# over a parent workspace.
+[workspace]
 
 [dependencies]
-# cyber-hemera = { path = "../../hemera/rs" }
-# enabled once hemera output reaches stable release
-
-[dev-dependencies]
+hemera = { package = "cyber-hemera", version = "0.3", path = "../../../hemera/rs" }
+nebu = { package = "strata-nebu", version = "0.1", path = "../../../strata/nebu/rs" }
+nox = { package = "cyber-nox", version = "0.2", path = "../../../nox/rs", features = ["brakedown"] }
+zheng = { version = "0.3", path = "../../../zheng/rs", features = ["serde"] }
+lens = { package = "cyber-lens", version = "0.1.3", path = "../../../lens/src" }
+tade = { version = "0.1", path = "../../../tade/impl/rust" }
+cybergraph = { version = "0.1", path = "../../../cybergraph" }
+postcard = { version = "1", default-features = false, features = ["alloc"] }
+bbg = { version = "0.2", path = "../../../bbg/rs" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

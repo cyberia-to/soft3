@@ -1,0 +1,5 @@
+# axis: tail(head(object))
+object  [[1 2] 3]
+budget  100
+formula [0 5]
+result  2

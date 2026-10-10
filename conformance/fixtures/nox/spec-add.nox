@@ -1,0 +1,6 @@
+# nox specs/patterns/README.md test vector: reduce([1,2], add, 100) = (3, 97)
+object  [1 2]
+budget  100
+formula [5 [[0 2] [0 3]]]
+result  3
+cost    3

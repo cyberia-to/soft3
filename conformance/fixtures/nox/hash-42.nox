@@ -1,0 +1,4 @@
+# zheng demo hash: [15 [1 42]] against 42
+object  42
+budget  100
+formula [15 [1 42]]
