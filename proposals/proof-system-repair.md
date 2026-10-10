@@ -14,7 +14,7 @@ fixed by the owner on 2026-10-09:
 
 | class | statement | proof on the wire | verify | security |
 |---|---|---|---|---|
-| small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 16 KB | ≤ 1 ms | 128 bit, post-quantum, hash-only |
+| small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 20 KB, ≤ 16 KB stretch | ≤ 1 ms | 128 bit, post-quantum, hash-only |
 | any | a [[nox]] computation of any length | ≤ 64 KB, constant in the number of steps | ≤ 1 ms | same |
 
 and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
@@ -35,7 +35,7 @@ sources: `zheng/audit/compact-relation-2026-10-09.md`, [WHIR 2024/1586](https://
 
 ## 2. what is broken
 
-the ~2 KB "constant proof" of zheng 0.3.x rested on five false or unproven things. none was the Merkle tree ([[merklezation]]).
+the old "constant proof" of zheng 0.3.x rested on eight false or unproven things, and the hash beneath all of them is not yet analysed (last row). none was the Merkle tree ([[merklezation]]).
 
 | hole | evidence | fix (phase) |
 |---|---|---|
@@ -47,6 +47,7 @@ the ~2 KB "constant proof" of zheng 0.3.x rested on five false or unproven thing
 | code distance unproven — minimum weight 1 is all that is proven, so `num_queries = 100·m` opens every column | lens#6, `lens/specs/scalar-field.md:28-32` | Reed–Solomon (2) |
 | base-field challenges — 64-bit [[Goldilocks field|Goldilocks]], no 128-bit claim possible | `zheng/specs/execution.md:75` | [[fp3]] challenges (1) |
 | λ counted in elements, not bits | `recursive-brakedown.md:244` | soundness ledger (1) |
+| the hash itself is not analysed — hemera's parameters are marked experimental, the 16 inverse-S-box partial rounds are a candidate not a proven minimum, quantum collision security is not certified | `hemera/specs/README.md:56-80`, `hemera/audit/0.3.1.md:28,74,134` | the hash row (2h) |
 
 the owner's 2026-09-11 fallback — derive the relation on the verifier, disclose the witness, check every row — is sound and stays as the `public` profile.
 
@@ -105,11 +106,12 @@ every gate is a fixture and a command, not an opinion. a phase closes when its r
 | phase | what | gate | repos |
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B; prove/verify 460 → 36/30 ms; 259 tests | zheng |
-| 1 | soundness floor: public prefix + pinned constant + `vk` digest + fp3 challenges + one format with a profile byte + the soundness ledger | `public` hash.tri ≤ 10 KB · fixtures `forged-io`, `forged-vk`, `zeroed-constant`, `meaningless-witness` rejected · ledger has no "conjectured" row | zheng, joy, [[strata]] |
-| 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 16 KB, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
+| 1 | soundness floor: public prefix + pinned constant + `vk` digest + fp3 challenges + one format with a profile byte + the soundness ledger | `public` hash.tri ≈ 10 KB, gate ≤ 11 KB · fixtures `forged-io`, `forged-vk`, `zeroed-constant`, `meaningless-witness` rejected · ledger has no "conjectured" row | zheng, joy, [[strata]] |
+| 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; every candidate a full prototype — statement binding, Spartan, the opening and the `zk` masking — with zk bytes and first/repeat verify counted apart; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 20 KB gate, ≤ 16 KB stretch, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
+| 2h | the hash row: an external analysis of hemera's inverse-S-box t = 16 profile, or a return to the audited [[Poseidon2]] parameters; the site's post-quantum and frozen-foundations claims follow this row | the ledger's hash row reads proven or audited parameters; hemera parameters frozen; the quantum-collision figure (~2^85 for 256-bit digests, BHT) stated, not the capacity bound | hemera |
 | 3 | uniform step relation + ARC + decider + IVC (the accumulation verifier inside the step relation, §4); lattice-fold spike measured first (§B); the Trident verifier as a nox program; one recursion fixture | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms · `verify(verify(π))` at depth 2 agrees across Rust and Trident · a [[fold mining]] cluster of 512 tickets decides in one proof | zheng, nox, trident, foculus |
 | 4 | `zk` profile (VEIL) | zk fixtures; P1 and P3 of [[cyber/launch\|launch]] unblocked | zheng |
-| 5 | delete: brakedown, folding, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
+| 5 | delete: the bake-off losers, `folding`, the flat-hash opening, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
 
 phases 1 and 2 are a month each; 3 is research-grade and measures before it commits; 4 and 5 are weeks. until 3 lands, `succinct` covers one relation of ≤ 2¹⁵ rows, and the "any computation" row of §0 is open.
 
@@ -169,6 +171,12 @@ the levers on the trees, from ~36 KB for one hash: a code with a proven distance
 ## B. lattices and the frontier, 2026-10-09
 
 what lattices buy is the shape of accumulation, not the final byte count: a homomorphic fold with a tiny in-flight object (Neo/SuperNeo [2025/294](https://eprint.iacr.org/2025/294.pdf), LatticeFold+ [2025/247](https://eprint.iacr.org/2025/247.pdf), Symphony [2025/1905](https://eprint.iacr.org/2025/1905), PikkuFold ~5.7 KB per step [2026/1809](https://eprint.iacr.org/2026/1809.pdf)) at the price of a second assumption ([[Module-SIS]]) and norm bookkeeping. LaBinius ([2026/2103](https://eprint.iacr.org/2026/2103.pdf)) now wins the bytes at `2²⁴` — 82.9 KiB against WHIR's 300.9 at rate ¼ — and loses the verifier 650× (713 ms against 1.1). under the goal as fixed, hash-only stands; the spike's one question is whether any lattice verifier gets under 10 ms. the binary-tower track ([[Binius]], `lens/specs/binary-tower.md`) is the wrong field for a Goldilocks stack and stays out.
+
+the scale in nox terms after zheng#45 (a hemera permutation is 176 wires and 176 rows): a hash 2–4 permutations (~2^10), a transfer with nullifier ~15 (~2^12), an ICBS position or a vote 20–40 (~2^12–2^13), a depth-32 Merkle membership ~770 (~2^17), a block, an inference step or an epoch settlement 10^4–10^7 (2^20–2^30). the small class ends at ~2^16 witness elements ≈ 370 permutations: what a person does in one signal lives below it, what a network does lives above it. this is one system with two openings behind one trait, not two proof systems.
+
+SmallWood ([2025/1085](https://eprint.iacr.org/2025/1085)) reaches 14.1–16.5 KB on Kyber and 17.5–22.7 KB on Dilithium because their constraints are parallel — the same polynomial on many lanes — against 47–50 KB for a generic 2^12-gate circuit. a hemera permutation is parallel (sixteen lanes, one S-box, one MDS), so the lever is to describe the rounds once as a parallel sub-relation; interpolated estimate for hash.tri, not a measurement: 15–25 KB as parallel constraints, 30–40 KB as a generic CCS.
+
+designated-verifier lattice SNARGs go lower than any public one — LUNA+ ([2026/1639](https://eprint.iacr.org/2026/1639)): 4.22 KB for R1CS 2^16 — but with a 0.54 GB CRS and a verifier holding a secret; a public network cannot use that trade.
 
 zip ([2025/1446](https://eprint.iacr.org/2025/1446)): black-box compression of hash-based proofs to ~60 %, standard assumptions. it composes with every lever because it acts on the finished proof; phase 2 measures it.
 
