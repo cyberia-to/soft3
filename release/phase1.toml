@@ -15,13 +15,13 @@ updated = "2026-10-10"
 name = "strata"
 repo = "cyberia-to/strata"
 branch = "main"
-rev = "4d359726a41fdc747050a2d1d0934ac51d83c7dc"
+rev = "494df7a0973ae10a6cc1c2022e644d70449a29d6"
 
 [[sibling]]
 name = "hemera"
 repo = "cyberia-to/hemera"
 branch = "main"
-rev = "d94390d7c4c29250ae63b320499b3f905e7a25ef"
+rev = "d5f0a09539360934fb32db9b2e15a91995607db6"
 
 [[sibling]]
 name = "lens"
@@ -33,37 +33,37 @@ rev = "392abe752793c3e0b98f2d1d57245ba1e3173673"
 name = "nox"
 repo = "cyberia-to/nox"
 branch = "master"
-rev = "90288aadc6e0491d6cc117a363b5db2bd8fb3718"
+rev = "0b1407a4b855e4961ede07e1b7ea199cb8018c30"
 
 [[sibling]]
 name = "zheng"
 repo = "cyberia-to/zheng"
 branch = "master"
-rev = "44bd5bfec5cb6764123ea513a33a26c0877a488c"
+rev = "5733dfdcc15cbc22fce9f5877b37515d005b8c44"
 
 [[sibling]]
 name = "bbg"
 repo = "cyberia-to/bbg"
 branch = "master"
-rev = "e502ce32429aacd468f734528bf1fc9b8ac5ba0a"
+rev = "441e3c9ddf85c4bee36b40ed7ae8805b1481bc27"
 
 [[sibling]]
 name = "radio"
 repo = "cyberia-to/radio"
 branch = "main"
-rev = "fd90677c2fd3aa61a9aa9db1a07a5c1c234320cd"
+rev = "344ac1627ef4cb4544a98d9afc5442be85fe1d15"
 
 [[sibling]]
 name = "foculus"
 repo = "cyberia-to/foculus"
 branch = "master"
-rev = "177fad4c614a8e002aac28c9ca2a8196ce69b6cb"
+rev = "8a935e1695dfeed2b0241256bc2cd762729bb324"
 
 [[sibling]]
 name = "tru"
 repo = "cyberia-to/tru"
 branch = "master"
-rev = "4cec250e85ccde081a627b5fc7ab709a74c38977"
+rev = "2f3a2556afc943ae949530a626ba4f2a83ace06b"
 
 [[sibling]]
 name = "tok"
@@ -75,7 +75,7 @@ rev = "e27da0dff72b948418a5e40a5ed6290c0fd167f3"
 name = "cybergraph"
 repo = "cyberia-to/cybergraph"
 branch = "master"
-rev = "94fb982f68c853d466178636f4d8c86de12082a0"
+rev = "42fc2512389c7411d8cc3461501d859c1545980e"
 
 [[sibling]]
 name = "inf"
@@ -87,7 +87,7 @@ rev = "5054c939adbc875c32f1d89cce839d87bbd428bb"
 name = "mudra"
 repo = "cyberia-to/mudra"
 branch = "master"
-rev = "4381b9e81ee2ee1e4e779b800ca7688589a86893"
+rev = "bff8dce011d29231fd3af299d1f73f29760cf1af"
 
 [[sibling]]
 name = "neuron"
@@ -105,7 +105,7 @@ rev = "c7d404aa8aa4c1e960f7a7268cbef47f2d6ba4d4"
 name = "file"
 repo = "cyberia-to/file"
 branch = "main"
-rev = "fc666a5880ff874adae655150414b3a45832baf0"
+rev = "e29b4c74804f1fecf123ad4bab14c3cf5b7f3551"
 
 [[sibling]]
 name = "spark"
@@ -153,12 +153,13 @@ rev = "477d91c0a75f8985f4af5f873401a867327bd014"
 name = "honeycrisp"
 repo = "cyberia-to/honeycrisp"
 branch = "main"
-rev = "7b148906263da5ea8aabc5ddb0e2e44ff2288ecc"
+rev = "9cbd48070a136e24711896c930670fcff8a147fc"
 
 [[sibling]]
 name = "nu"
 repo = "cyberia-to/nu"
-note = "local checkout has no git remote; cyber/launch.md decisions log, 2026-09-18 — needs a remote before it needs a pin"
+branch = "main"
+rev = "1e58416ef0501675ef503dd86f80dc1236dfc2a4"
 
 [[sibling]]
 name = "evy"

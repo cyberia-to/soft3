@@ -40,6 +40,20 @@ The goal (proof ≤ 64 KB, verify ≤ 1 ms, constant in the computation's length
 11. strata/nebu: `Goldilocks::dot` overflow at the second product fixed (#14).
 12. docs: stale-claim ledger closed in nox (#27, #28), trident (#124, #125), bbg (#36, #38), evy (#2, #3), cybics (#1, #2), glia (#9), cybergraph (#16), cyber (#114, #115), hemera (#18), soft3 (#162, #168).
 
+### default-branch fixes for the train (merged 2026-10-10)
+
+The stack gates `cargo test --locked` fail on the default branches for reasons unrelated to the repair; these merged fixes turn ten of them green (receipts: `audit/release-2026-10-10/` §5–6).
+
+1. zheng: cli `cyber-tape` at the dead `../../tape` path → `tade`; stale lock (#55).
+2. foculus: the same `tade` path fix; dead test bindings (#64).
+3. cybergraph: `cyber-nox` 0.1 → 0.2, `stack_*` tests on nox 0.2 names and `Statement.bbg_root` (#17).
+4. mudra: `cyber-nox` 0.1 → 0.2, `zheng` 0.1 → 0.3, `bbg_root` no-state sentinel (#21).
+5. bbg (#39), nox (#29), tru (#31, plus 16 example/test warnings): lockfile refresh.
+6. hemera (#19), file (#35): `Cargo.lock` committed.
+7. strata/nebu-wgsl: `gl_double` called with a `vec2<u32>` in `fp3_norm`/`fp3_inv` — the 10 GPU tests pass (#15).
+8. radio: canonical ROOT finalization for complete BAO groups (#33); canonical parent-pair width in the native stores (#34). Open: the workspace build and test repair (#35, carries #5 and #6) — red here only on three mDNS tests that time out because multicast routes into the VPN tunnel.
+9. soft3: the `conformance-snapshot` gate builds `cargo-conformance` from `conformance/rs` (#171); the harness is real — hemera fingerprints, the stack snapshot and the `cargo-conformance` runner (#172).
+
 ### where the code is
 
-`release/phase1.toml` in this bump pins the default-branch heads of 2026-10-10. zheng, lens and foculus pins do not move: their repaired code is on integration lines (`release/0.4` for zheng, nox, joy, trident; the heads of lens#14, foculus#5, cybergraph#3, mudra#2) that reach the default branches only through the owner's decisions (zheng#33 and the 0.4 line, lens#14, foculus#5, cybergraph#3, mudra#2). Until then a candidate cut from the default branches carries none of the repair, and this bump stays a draft.
+`release/phase1.toml` in this bump pins every sibling at its default-branch head of 2026-10-10 after the fixes above, `nu` included (cyberia-to/nu now has a remote). Those heads carry none of the repair: it is on integration lines (`release/0.4` for zheng, nox, joy, trident; the heads of lens#14, foculus#5, cybergraph#3, mudra#2) that reach the default branches only through the owner's decisions (zheng#33 and the 0.4 line, lens#14, foculus#5, cybergraph#3, mudra#2). Until then a candidate cut from the default branches carries none of the repair, and this bump stays a draft; when they land, the pins move again on this branch.
