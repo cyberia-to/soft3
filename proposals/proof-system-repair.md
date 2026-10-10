@@ -14,7 +14,7 @@ fixed by the owner on 2026-10-09:
 
 | class | statement | proof on the wire | verify | security |
 |---|---|---|---|---|
-| small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 16 KB | ≤ 1 ms | 128 bit, post-quantum, hash-only |
+| small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 20 KB, ≤ 16 KB stretch | ≤ 1 ms | 128 bit, post-quantum, hash-only |
 | any | a [[nox]] computation of any length | ≤ 64 KB, constant in the number of steps | ≤ 1 ms | same |
 
 and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
@@ -35,7 +35,7 @@ sources: `zheng/audit/compact-relation-2026-10-09.md`, [WHIR 2024/1586](https://
 
 ## 2. what is broken
 
-the ~2 KB "constant proof" of zheng 0.3.x rested on five false or unproven things. none was the Merkle tree ([[merklezation]]).
+the old "constant proof" of zheng 0.3.x rested on eight false or unproven things, and the hash beneath all of them is not yet analysed (last row). none was the Merkle tree ([[merklezation]]).
 
 | hole | evidence | fix (phase) |
 |---|---|---|
@@ -47,6 +47,7 @@ the ~2 KB "constant proof" of zheng 0.3.x rested on five false or unproven thing
 | code distance unproven — minimum weight 1 is all that is proven, so `num_queries = 100·m` opens every column | lens#6, `lens/specs/scalar-field.md:28-32` | Reed–Solomon (2) |
 | base-field challenges — 64-bit [[Goldilocks field|Goldilocks]], no 128-bit claim possible | `zheng/specs/execution.md:75` | [[fp3]] challenges (1) |
 | λ counted in elements, not bits | `recursive-brakedown.md:244` | soundness ledger (1) |
+| the hash itself is not analysed — hemera's parameters are marked experimental, the 16 inverse-S-box partial rounds are a candidate not a proven minimum, quantum collision security is not certified | `hemera/specs/README.md:56-80`, `hemera/audit/0.3.1.md:28,74,134` | the hash row (2h) |
 
 the owner's 2026-09-11 fallback — derive the relation on the verifier, disclose the witness, check every row — is sound and stays as the `public` profile.
 
@@ -77,26 +78,26 @@ the proof, succinct profile: relation (prover and verifier compile the same CCS;
 
 byte budget for one hash (`n = 2¹⁰`, degree-7 CCS, 128-bit Johnson, fp3 at 24 B), WHIR as the worked example: statement 0.3 KB · Spartan 3 KB · opening 28–36 KB · final polynomial 0.5 KB → 32–40 KB expected, 64 KB the ceiling; 16–20 KB at 100 bit. verify ≈ 2,000 hemera permutations ≈ 0.5–1 ms. at `n = 2²⁰`: 56–70 KB, WHIR's published number.
 
-unbounded programs: a uniform step relation (one CCS for one nox reduction step with continuity and memory arguments, `zheng/audit/general-nox-relation-review.md:160-173`); each step yields one proximity claim; ARC folds claims into one accumulator of fixed size (one root, one fp3 point, one value, a few cosets of openings per step); one opening decides it. proof size independent of length.
+unbounded programs: a uniform step relation (one CCS for one nox reduction step with continuity and memory arguments, `zheng/audit/general-nox-relation-review.md:160-173`); each step yields one proximity claim; ARC folds claims into one accumulator of fixed size (one root, one fp3 point, one value, a few cosets of openings per step); one opening decides it. proof size is independent of length only once each step's openings are checked inside the next step (IVC, §4); without it the proof grows per segment.
 
 ## 4. recursion — what it is here, and where it is needed
 
 two words that the old specs ([[zheng/specs/recursion|recursion]], [[zheng/specs/accumulator|accumulator]]) used as one:
 
-- accumulation — folding *claims* without verifying *proofs*: ARC carries one root, one point, one value and a few openings from step to step, and no verifier circuit is ever built. this is how "any computation" is proven at constant size. it is the default.
-- recursion — a proof that verifies a proof: [[IVC]] and [[PCD]] proper, the [[verification|verifier]] as a nox program. in a hash-only world it does not shrink the final proof — the outer proof carries its own Merkle paths again — so it is a tool for *composition*, never for size.
+- accumulation — folding *claims* without verifying *proofs*: each step batches the claims of its input words into one accumulator — one root and a fixed number of claims, whatever the depth — and one decider opens the last accumulator. the accumulator is constant; the proof is not. every step leaves spot-check openings in every word it folded, and without a verifier for them inside the computation the final verifier checks every step: bytes and verify time grow per segment. measured on zheng#51 (`zheng/audit/accumulation-2026-10.md`): ~96 KB per 2¹⁴-row segment (~8 KB of AIR messages, ~88 KB of accumulation openings), hash.tri verifies in 5.4 ms, three segments in 40 ms; 512 statements fold into one 35 KB decider but 8.9 MB with their per-step proofs. accumulation alone saves openings, not size. it is the default step.
+- recursion — a proof that verifies a proof: [[IVC]] and [[PCD]] proper. constant size comes from IVC: the accumulation verifier — not the whole proof verifier — runs inside the next step's relation, so each step's openings are checked in-relation and consumed, and what travels is one accumulator plus one decider, independent of length (ARC §2.3, WARP §1). this, and not accumulation alone, is how "any computation" is proven at constant size; it is work package R1 of the release plan, in progress. the full [[verification|verifier]] as a nox program, `verify(verify(π))`, does not shrink a single proof in a hash-only world — the outer proof carries its own Merkle paths again — so it is a tool for *composition*.
 
 where the stack needs recursion proper, and what each costs:
 
 | need | shape | cost, with the §3 numbers |
 |---|---|---|
-| [[fold mining]]: a cluster of tickets becomes one [[decider|decider]] before [[tok]] mints | each ticket is a proof of `m(n)`; the miner's self-fold and the cluster tree are accumulation steps; the root is one decider. ARC turns the tree into accumulation, so `σ_f` per fold step is an ARC step, not a proof of a proof | one decider per cluster, ≤ 64 KB; no recursion |
-| a [[light client]] accepts a checkpoint over many [[epoch|epochs]] | accumulate per epoch, decide at the checkpoint; the client verifies one proof | one decider; no recursion |
+| [[fold mining]]: a cluster of tickets becomes one [[decider|decider]] before [[tok]] mints | each ticket is a proof of `m(n)`; the miner's self-fold and the cluster tree are accumulation steps; the root is one decider. `σ_f` per fold step is an accumulation step, not a proof of a proof — but its openings are checked by the next step only under IVC, otherwise by the settler, step by step | without IVC: one decider per cluster plus every step's openings — 512 statements 8.9 MB, verify 1.17 s at test parameters (zheng#51). ≤ 64 KB per cluster needs IVC |
+| a [[light client]] accepts a checkpoint over many [[epoch|epochs]] | accumulate per epoch with IVC, decide at the checkpoint; the client verifies one accumulator and one decider | constant with IVC; without it linear in epochs |
 | composition across domains, or across a version boundary (an old proof inside a new one) | recursion: the Trident verifier of §3 run inside nox | ≈ 2,000 hemera permutations ≈ 1.2M constraints ≈ a 2²⁰–2²¹-row relation; one step ≈ 56–70 KB and seconds of proving — affordable once, never per step |
-| self-hosting: the proof that nox proves nox ([[cyber/launch\|launch]] row 45, "the self-hosting proof is a fold") | accumulation over the self-hosting trace; recursion only to close the loop at the end | one decider plus at most one recursion step |
+| self-hosting: the proof that nox proves nox ([[cyber/launch\|launch]] row 45, "the self-hosting proof is a fold") | accumulation with IVC over the self-hosting trace; full recursion only to close the loop at the end | one decider plus at most one recursion step |
 | the fallback if ARC's prover is too slow or its argument does not close on review | bounded-depth recursion through the Trident verifier, one level at a time | costlier, standard, sound; keeps the goal, not the elegance |
 
-so recursion is built once — as the second verifier of §3, in Trident — and used for composition and as the fallback; accumulation does the daily work. the two numbers the old specs carried for recursion, "~825 constraints per level" and "1000 levels → 2⁻¹¹⁸", described a nox verifier that was never built and are retired in §C.
+so IVC — the accumulation verifier as part of the step relation — is built in phase 3 and is what makes size constant: one step at `ℓ = 20` checks 3 × 53 leaves with ~15-level paths, ≈ 3,000 hemera permutations plus byte decompositions, a ≈ 2¹⁷-row relation per step before the segment's own rows (zheng audit §7). full recursion is built once — as the second verifier of §3, in Trident — and used for composition and as the fallback; accumulation does the daily work, inside IVC. the two numbers the old specs carried for recursion, "~825 constraints per level" and "1000 levels → 2⁻¹¹⁸", described a nox verifier that was never built and are retired in §C.
 
 ## 5. phases and gates
 
@@ -105,11 +106,12 @@ every gate is a fixture and a command, not an opinion. a phase closes when its r
 | phase | what | gate | repos |
 |---|---|---|---|
 | 0 ✓ | relation shrink: linear forms, native constants, degree-7 S-box (zheng#45) | hash.tri 294,861 → 15,608 B; prove/verify 460 → 36/30 ms; 259 tests | zheng |
-| 1 | soundness floor: public prefix + pinned constant + `vk` digest + fp3 challenges + one format with a profile byte + the soundness ledger | `public` hash.tri ≤ 10 KB · fixtures `forged-io`, `forged-vk`, `zeroed-constant`, `meaningless-witness` rejected · ledger has no "conjectured" row | zheng, joy, [[strata]] |
-| 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 16 KB, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
-| 3 | uniform step relation + ARC + decider; lattice-fold spike measured first (§B); the Trident verifier as a nox program; one recursion fixture | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms · `verify(verify(π))` at depth 2 agrees across Rust and Trident · a [[fold mining]] cluster of 512 tickets decides in one proof | zheng, nox, trident, foculus |
+| 1 | soundness floor: public prefix + pinned constant + `vk` digest + fp3 challenges + one format with a profile byte + the soundness ledger | `public` hash.tri ≈ 10 KB, gate ≤ 11 KB · fixtures `forged-io`, `forged-vk`, `zeroed-constant`, `meaningless-witness` rejected · ledger has no "conjectured" row | zheng, joy, [[strata]] |
+| 2 | bake-off: small class — TensorMerkle+RS+fp3, WHIR, SmallWood; large class — WHIR, Ligerito/DeepFold; same fixtures, same ledger; every candidate a full prototype — statement binding, Spartan, the opening and the `zk` masking — with zk bytes and first/repeat verify counted apart; one PCS per class ships, the rest is deleted; zip measured on the winner | small (hash.tri, a transfer): ≤ 20 KB gate, ≤ 16 KB stretch, verify ≤ 1 ms · large (`n = 2²⁰`): ≤ 64 KB, ≤ 1 ms · bit-flip scan clean · bbg `QueryProof` migrated | lens, zheng, bbg |
+| 2h | the hash row: an external analysis of hemera's inverse-S-box t = 16 profile, or a return to the audited [[Poseidon2]] parameters; the site's post-quantum and frozen-foundations claims follow this row | the ledger's hash row reads proven or audited parameters; hemera parameters frozen; the quantum-collision figure (~2^85 for 256-bit digests, BHT) stated, not the capacity bound | hemera |
+| 3 | uniform step relation + ARC + decider + IVC (the accumulation verifier inside the step relation, §4); lattice-fold spike measured first (§B); the Trident verifier as a nox program; one recursion fixture | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms · `verify(verify(π))` at depth 2 agrees across Rust and Trident · a [[fold mining]] cluster of 512 tickets decides in one proof | zheng, nox, trident, foculus |
 | 4 | `zk` profile (VEIL) | zk fixtures; P1 and P3 of [[cyber/launch\|launch]] unblocked | zheng |
-| 5 | delete: brakedown, folding, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
+| 5 | delete: the bake-off losers, `folding`, the flat-hash opening, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
 
 phases 1 and 2 are a month each; 3 is research-grade and measures before it commits; 4 and 5 are weeks. until 3 lands, `succinct` covers one relation of ≤ 2¹⁵ rows, and the "any computation" row of §0 is open.
 
@@ -169,6 +171,12 @@ the levers on the trees, from ~36 KB for one hash: a code with a proven distance
 ## B. lattices and the frontier, 2026-10-09
 
 what lattices buy is the shape of accumulation, not the final byte count: a homomorphic fold with a tiny in-flight object (Neo/SuperNeo [2025/294](https://eprint.iacr.org/2025/294.pdf), LatticeFold+ [2025/247](https://eprint.iacr.org/2025/247.pdf), Symphony [2025/1905](https://eprint.iacr.org/2025/1905), PikkuFold ~5.7 KB per step [2026/1809](https://eprint.iacr.org/2026/1809.pdf)) at the price of a second assumption ([[Module-SIS]]) and norm bookkeeping. LaBinius ([2026/2103](https://eprint.iacr.org/2026/2103.pdf)) now wins the bytes at `2²⁴` — 82.9 KiB against WHIR's 300.9 at rate ¼ — and loses the verifier 650× (713 ms against 1.1). under the goal as fixed, hash-only stands; the spike's one question is whether any lattice verifier gets under 10 ms. the binary-tower track ([[Binius]], `lens/specs/binary-tower.md`) is the wrong field for a Goldilocks stack and stays out.
+
+the scale in nox terms after zheng#45 (a hemera permutation is 176 wires and 176 rows): a hash 2–4 permutations (~2^10), a transfer with nullifier ~15 (~2^12), an ICBS position or a vote 20–40 (~2^12–2^13), a depth-32 Merkle membership ~770 (~2^17), a block, an inference step or an epoch settlement 10^4–10^7 (2^20–2^30). the small class ends at ~2^16 witness elements ≈ 370 permutations: what a person does in one signal lives below it, what a network does lives above it. this is one system with two openings behind one trait, not two proof systems.
+
+SmallWood ([2025/1085](https://eprint.iacr.org/2025/1085)) reaches 14.1–16.5 KB on Kyber and 17.5–22.7 KB on Dilithium because their constraints are parallel — the same polynomial on many lanes — against 47–50 KB for a generic 2^12-gate circuit. a hemera permutation is parallel (sixteen lanes, one S-box, one MDS), so the lever is to describe the rounds once as a parallel sub-relation; interpolated estimate for hash.tri, not a measurement: 15–25 KB as parallel constraints, 30–40 KB as a generic CCS.
+
+designated-verifier lattice SNARGs go lower than any public one — LUNA+ ([2026/1639](https://eprint.iacr.org/2026/1639)): 4.22 KB for R1CS 2^16 — but with a 0.54 GB CRS and a verifier holding a secret; a public network cannot use that trade.
 
 zip ([2025/1446](https://eprint.iacr.org/2025/1446)): black-box compression of hash-based proofs to ~60 %, standard assumptions. it composes with every lever because it acts on the finished proof; phase 2 measures it.
 

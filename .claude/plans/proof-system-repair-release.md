@@ -17,12 +17,13 @@ zheng, joy, foculus, cybergraph, soft3, tok, tru build together on it. trisha ne
 | C | foculus (+tok) | tickets, pay σ, tip, step, epoch cert off legacy fold: per-ticket v3 certificates, cluster settlement verifies every ticket, φ* check on v3 | — | foculus suite; ticket sizes measured; a forged ticket rejected |
 | D | cybergraph, soft3 | admission verifies signal proofs; node rejects bad proofs | C | end-to-end: node admits a valid proved signal, rejects a forged one |
 | E | zheng + lens | succinct profile: Spartan + the bake-off winner per class; wire; measurements | A, B | small ≤ 16 KB (stretch) / ≤ 20 KB, large n = 2^20 ≤ 64 KB, verify ≤ 1 ms, bit-flip scan clean |
-| F | zheng, nox | uniform step relation + ARC accumulation + decider; Trident verifier; fold mining on accumulation | E | merkle-32 and 10^6-step runs prove, constant size ≤ 64 KB |
+| F | zheng, nox | phase 3, part 1 — uniform step relation + accumulation + decider; fold mining on accumulation (zheng#51, foculus on #61) | E | merkle-32 and 10^6-step runs prove; 512 tickets decide in one proof. measured: size and verify grow per segment (~96 KB per 2^14-row segment, hash.tri verify 5.4 ms) — accumulation alone is not constant |
+| R1 | zheng, nox | phase 3, part 2 — IVC: the accumulation step's verifier (transcript, Merkle paths, Fp3 rows, byte decompositions) as part of the next step's relation; then the Trident verifier and `verify(verify(π))` | F | constant size ≤ 64 KB, verify ≤ 1 ms, independent of length; depth-2 fixture agrees across Rust and Trident. in progress |
 | G | zheng | zk profile (masking) | E | zk fixtures; differential against the Triton oracle |
 | H | all docs repos | close §C ledger | B–G | `scripts/stale-proof-claims.nu` → 0 |
 | R | soft3, cyber | versions, changelogs, `release/phase1.toml` pins, gates, candidate, receipts in `audit/release-<date>/` | all | the train's gates green |
 
-parallelism is bounded by disk (35 GB free): at most three stands build at once. waves: {A, B, C} → {D, E} → {F, G} → {H, R}.
+parallelism is bounded by disk (35 GB free): at most three stands build at once. waves: {A, B, C} → {D, E} → {F, G} → {R1} → {H, R}. phase 3 = accumulation (F) + IVC (R1): constant size comes from R1, not from F (proposal §4).
 
 ## rules held throughout
 
