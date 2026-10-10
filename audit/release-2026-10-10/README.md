@@ -114,7 +114,7 @@ Merge style: a merge commit everywhere except soft3 (squash), as in each reposit
 5. `nu` needs a reproducible checkout before cyb can build in a stand.
 6. The proof-size goal: profile 5 is constant (282–285 KB from 33 to 1,572,850 cycles) but over 64 KB and over 1 ms; the wrap step on zheng#53 is the open work.
 
-## 5. rerun after the gate fixes — RED, 12 of 14 stack gates fixed or owner-blocked
+## 5. rerun after the gate fixes — RED, 10 of 14 stack gates green
 
 Same commands, from a clean worktree of soft3 `origin/main` d2cfe5f (after soft3#171), candidate `candidate-20261010.2`, `CARGO_TARGET_DIR` shared across the stack (so `soft3-release` would put its binary outside `crate/target`; moot here, the crate does not resolve). Receipts: `train-stack-rerun/` (snapshot as `snapshot-sources.json`). Archive `soft3-candidate-20261010.2-stack.tar.gz` sha256 `97a72e74ac0b36b84aa4780d99ddceef8747a5ace29abfcee8335f6bf7cf9a4f` (not committed).
 
