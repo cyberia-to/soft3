@@ -173,3 +173,41 @@ Changes since §5: soft3#169 re-pinned (ab01cc3 on `chore/soft3-0.11.0`, not mer
 | source-inputs-unchanged | green | green |
 
 Owner items left: merge soft3#169 (pins); cybergraph#3 and foculus#5 (neuron, vault, soft3 and its lockfile); lens#16 then lens#22; radio#35 (and a decision on mDNS on the train machine); the cyb release-notes PR.
+
+## 7. third rerun after the lens fixes and mudra#2 — RED, 11 of 14 stack gates green
+
+Same commands, from a clean worktree of soft3 `origin/main` 18fd6b2, candidate `candidate-20261010.4`, `CARGO_TARGET_DIR` shared across the stack, `CARGO_BUILD_JOBS=6`, stand `.stands/D` (deleted afterwards). Wall time 605 s. Receipts: `train-stack-rerun3/` (snapshot as `snapshot-sources.json`; the snapshot from soft3#169's manifest as `snapshot-sources-pr169.json`). Archive `soft3-candidate-20261010.4-stack.tar.gz` sha256 `374d4b588d50d777cb6b66991ddecf8c31280a0c4f827f18942ead80eb399cf5` (not committed). A first attempt was discarded: `origin-checkouts` went red when the radio fetch was reset by the network (`curl 56`); the rerun fetched all 30 repositories.
+
+What the decision PRs became. Each was reviewed against its launch row (39, 40), its diff and its dependents, and tested on a stand of origin default branches with `cargo test --locked` and the zero-warning rule:
+
+| PR | outcome | commit / reason |
+|---|---|---|
+| lens#16 | merged | 811e0b7. `squeeze_field` squeezes until `F::byte_len()` bytes; Goldilocks and F₂¹²⁸ challenges unchanged |
+| lens#22 | merged after a one-line lock refresh for #16's `genies` dev-dependency | 8b26cef. `cargo test --locked --workspace` 98/0. lens#10 (duplicate of #16) closed |
+| mudra#2 | merged | 186c0f2. On its branch: master merged, #21's `cyber-nox 0.2` / `zheng 0.3` pins kept (the branch asked for 0.3 / 0.4, which exist only on `release/0.4`); a doc-hidden `mudra::seed` re-export keeps vault `main` building. 23/0 default, 50/0 `--all-features`. neuron `main` and cyb `master` already call `mudra::spell` / `mudra::neuron`; vault `main` 7/0 against it with `graph-store` off |
+| mudra#20 | retargeted to master, held | calls `zheng::execution`, which exists only on zheng `release/0.4` (zheng#33) |
+| cybergraph#3 | held, objection on the PR | needs `bbg::storage::{application,database}` and the vendored fjall from bbg#9 (bbg 0.3.0), plus zheng 0.4 / nox 0.3 / lens 0.2. With the pins lowered against the defaults it fails with 49 errors. Review findings: server request ids share the client keyspace; `LocalCredit` decodes through the public decoder; spec drift |
+| cybergraph#15, soft3#167 | held | stacked on cybergraph#3 |
+| foculus#5 | held, objection on the PR | the signal codec needs `lens::ColumnQuery` / `Opening::TensorMerkle` (cyber-lens 0.2, lens#14), plus bbg 0.3 / zheng 0.4. Review findings: strict legacy import caps can strand legitimately written logs; codec limits are not enforced at ingress; master's `frames::deserialize_signal` still preallocates a peer-supplied u32 link count (the fix 90da5cf on closed foculus#22) |
+| foculus#61, #62, #63 | held | stacked on foculus#5; also need `zheng::execution` |
+
+Merge order the owner's bumps unblock: zheng#33 and nox `release/0.4` → lens#14 → bbg#9 → foculus#5 → #61 → #62 / #63 → cybergraph#3 → #15 → soft3#167; mudra#20 after zheng#33.
+
+soft3#169 re-pinned (19cc464 on `chore/soft3-0.11.0`, not merged): lens 8b26cef, mudra 186c0f2, radio bc8b633 (radio#35).
+
+| gate | §6 | §7 |
+|---|---|---|
+| origin-checkouts | green | green |
+| phase1-pins | red from main's manifest, 18 drifted; 0 with #169's | red from main's manifest, 19 drifted (lens added); **0 drifted** with #169's manifest at 19cc464. Green once the owner merges #169 |
+| release-notes-source | red (cyb) | red (cyb: captured product HEAD has no merged pull request) |
+| stack-hemera, -bbg, -nox, -zheng, -cybergraph, -foculus, -tru, -tok, -file | green | green |
+| stack-mudra | green | green, now with mudra#2 (23/0) |
+| stack-lens | red, no lockfile | **green** (98/0; lens#16 + #22) |
+| conformance-snapshot | green | green |
+| stack-vault, stack-neuron | red | red: `cybergraph` has no `local-storage` (cybergraph#3, held behind bbg#9) |
+| stack-radio | red | red on main bc8b633 (radio#35 merged): the build and the other tests pass; 2 `address_lookup::mdns` tests fail (`test_service_names`, `non_advertising_endpoint_not_discovered`). mDNS on this machine routes into the VPN tunnel, as in §6 |
+| soft3-tests, soft3-release, package-resolution | red | red: `cybergraph` has no `local-storage` (cybergraph#3), and soft3 also needs foculus#5 |
+| node-status | blocked | blocked: no release executable |
+| source-inputs-unchanged | green | green |
+
+Owner items left: zheng#33, the nox 0.3 line, lens#14 and bbg#9 (the bumps that unblock foculus#5 and cybergraph#3, and with them neuron, vault and soft3); merge soft3#169 (pins); mDNS on the train machine (or a train host off the VPN) for stack-radio; the cyb release-notes PR.
