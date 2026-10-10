@@ -1,0 +1,99 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/G3/_train/checkout/mudra
+   Compiling version_check v0.9.5
+   Compiling zeroize v1.9.0
+   Compiling libc v0.2.186
+   Compiling typenum v1.20.1
+   Compiling subtle v2.6.1
+   Compiling const-oid v0.9.6
+   Compiling zerocopy v0.8.52
+   Compiling base16ct v0.2.0
+   Compiling serde_core v1.0.228
+   Compiling tinyvec_macros v0.1.1
+   Compiling arrayvec v0.7.7
+   Compiling serde v1.0.228
+   Compiling bech32 v0.11.1
+   Compiling num-traits v0.2.19
+   Compiling base64 v0.22.1
+   Compiling hex v0.4.3
+   Compiling tinyvec v1.11.0
+   Compiling der v0.7.10
+   Compiling hex-conservative v0.2.2
+   Compiling generic-array v0.14.9
+   Compiling bitcoin_hashes v0.14.101
+   Compiling unicode-normalization v0.1.25
+   Compiling spki v0.7.3
+   Compiling num-integer v0.1.46
+   Compiling getrandom v0.2.17
+   Compiling cpufeatures v0.2.17
+   Compiling num-bigint v0.4.6
+   Compiling rand_core v0.6.4
+   Compiling ff v0.13.1
+   Compiling group v0.13.0
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling sec1 v0.7.3
+   Compiling crypto-bigint v0.5.5
+   Compiling digest v0.10.7
+   Compiling hmac v0.12.1
+   Compiling signature v2.2.0
+   Compiling sha2 v0.10.9
+   Compiling ripemd v0.1.3
+   Compiling rfc6979 v0.4.0
+   Compiling pbkdf2 v0.12.2
+   Compiling bs58 v0.5.1
+   Compiling elliptic-curve v0.13.8
+   Compiling ecdsa v0.16.9
+   Compiling k256 v0.13.4
+   Compiling bip32 v0.5.3
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.3.1
+   Compiling rand v0.8.6
+   Compiling bip39 v2.2.2
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/.stands/G3/_train/checkout/mudra)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.46s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/mudra-d6bb9bf59f65eb05)
+
+running 19 tests
+test claim::tests::decode_rejects_malformed ... ok
+test cosmos::tests::pussy_prefix_is_applied ... ok
+test cosmos::tests::address_matches_cosmos_sdk_known_vector ... ok
+test cosmos::tests::same_key_different_chains_share_account_id ... ok
+test domain::tests::domain_scalar_keys_unchanged_by_constant_time_hash ... ok
+test seed::tests::bad_mnemonic_is_rejected ... ok
+test domain::tests::domain_scalar_is_deterministic_and_domain_bound ... ok
+test domain::tests::native_id_matches_the_bridge_formula ... ok
+test domain::tests::bech32_uses_hrp ... ok
+test domain::tests::different_domains_different_keys ... ok
+test domain::tests::same_entropy_same_domain_same_key ... ok
+test claim::tests::neuron_of_is_deterministic ... ok
+test claim::tests::claim_encodes_and_decodes_round_trip ... ok
+test claim::tests::round_trip_claim_verifies ... ok
+test claim::tests::tampered_neuron_is_rejected ... ok
+test claim::tests::wrong_hrp_is_rejected ... ok
+test seed::tests::derivation_is_deterministic ... ok
+test seed::tests::passphrase_changes_the_key ... ok
+test claim::tests::swapped_pubkey_is_rejected ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/bin/mudra.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/mudra-82b4cb4a7519cf35)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/vectors.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/vectors-1579e8aae57f12be)
+
+running 2 tests
+test abandon_mnemonic_derives_the_verified_pussy_account ... ok
+test full_bridge_round_trips ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests mudra
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

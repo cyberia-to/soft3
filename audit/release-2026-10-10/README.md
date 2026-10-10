@@ -151,3 +151,25 @@ Fix pull requests, each tested on a stand of origin default branches (`.stands/G
 | node-status | blocked | blocked |
 
 Owner items left: cybergraph#3 and foculus#5 (unblock neuron, vault, soft3 and its lockfile); merge lens#16 then lens#22 (refresh one lock line after); radio fork repair; a `nu` rev pin and the cyb release-notes PR; the conformance harness itself.
+
+## 6. second rerun after the re-pin and soft3#172 — RED, 11 of 14 stack gates green
+
+Same commands, from a clean worktree of soft3 `origin/main` 18fd6b2 (after soft3#172, the conformance harness), candidate `candidate-20261010.3`, `CARGO_TARGET_DIR` shared across the stack, stand `.stands/G3` (deleted afterwards). Wall time 551 s. Receipts: `train-stack-rerun2/` (snapshot as `snapshot-sources.json`). Archive `soft3-candidate-20261010.3-stack.tar.gz` sha256 `2160dc6e3473bbbb4ac5ac8c3ddf74d1a036e9fcd41b3b8dced3eaa1d61309f2` (not committed).
+
+Changes since §5: soft3#169 re-pinned (ab01cc3 on `chore/soft3-0.11.0`, not merged — bump PRs are the owner's): every sibling at its origin default head, `nu` pinned at cyberia-to/nu `main` 1e58416. radio#35 opened (the workspace build and test repair, carrying radio#5 and #6); not merged, see the radio row.
+
+| gate | §5 | §6 |
+|---|---|---|
+| origin-checkouts | green | green |
+| phase1-pins | red, 18 drifted | red from main's manifest, 18 drifted (bbg, cybergraph, evy, file, foculus, glia, hemera, honeycrisp, inf, mudra, nox, nu, radio, spark, strata, tade, tru, zheng). With soft3#169's manifest (snapshot from `origin/chore/soft3-0.11.0` ab01cc3, `snapshot-sources-pr169.json`): **0 drifted** — green once the owner merges #169 |
+| release-notes-source | red (cyb) | red (cyb: captured product HEAD has no merged pull request) |
+| stack-hemera, -bbg, -nox, -zheng, -cybergraph, -foculus, -tru, -tok, -mudra, -file | green | green |
+| conformance-snapshot | blocked (scaffold) | **green** (soft3#172) |
+| stack-lens | red, no lockfile | red, no lockfile (lens#22 + lens#16 open) |
+| stack-vault, stack-neuron | red | red: `cybergraph` without `local-storage` — needs cybergraph#3 |
+| stack-radio | red | red on main 344ac162: `iroh-bench` names the crate `radio`, `iroh-docs` mixes registry `iroh-base`, `transfer` examples collide. radio#35 fixes all three plus the `iroh-blobs` 64-byte-hash leftovers (`Hash::EMPTY` was a zero placeholder; 27 library failures and hangs before): on its branch `cargo test --locked` has 0 warnings and 578 passed / 3 failed with `--no-fail-fast`. The 3 are `address_lookup::mdns` timeouts — upstream iroh 0.96.1 fails them identically on this machine and 224.0.0.251 routes into the VPN tunnel `utun4` — so the gate stays red on this Mac until mDNS reaches the LAN (`radio/audit/2026-10-10-workspace-gate/` on the PR branch) |
+| soft3-tests, soft3-release, package-resolution | red | red: `cybergraph` has no `local-storage` (cybergraph#3), foculus#5 |
+| node-status | blocked | blocked: no release executable |
+| source-inputs-unchanged | green | green |
+
+Owner items left: merge soft3#169 (pins); cybergraph#3 and foculus#5 (neuron, vault, soft3 and its lockfile); lens#16 then lens#22; radio#35 (and a decision on mDNS on the train machine); the cyb release-notes PR.

@@ -1,0 +1,249 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/G3/_train/checkout/foculus
+   Compiling rustix v1.1.4
+   Compiling errno v0.3.14
+   Compiling bitflags v2.13.1
+   Compiling getrandom v0.4.3
+   Compiling wait-timeout v0.2.1
+   Compiling rand_xorshift v0.4.0
+   Compiling foculus v0.1.3 (/Users/master/cyber/.stands/G3/_train/checkout/foculus)
+   Compiling tempfile v3.27.0
+   Compiling rusty-fork v0.3.1
+   Compiling proptest v1.11.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.26s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/foculus-afe220d70d00effd)
+
+running 144 tests
+test chain::tests::wrong_step_is_rejected ... ok
+test cli::tests::parse_fx_reads_decimals_exactly ... ok
+test beacon::tests::invalid_signal_vdf_dropped ... ok
+test chain::tests::first_signal_has_zero_prev ... ok
+test chain::tests::equivocation_is_detected ... ok
+test chain::tests::wrong_prev_is_rejected ... ok
+test cli::tests::labels_are_stable_and_reversible ... ok
+test beacon::tests::claims_order_independent ... ok
+test cli::tests::parse_link_and_signal_shapes ... ok
+test beacon::tests::tampered_vdf_fails ... ok
+test beacon::tests::open_beacon_verifies ... ok
+test beacon::tests::signal_set_changes_beacon ... ok
+test das::tests::confidence_calculation ... ok
+test chain::tests::sequential_chain_links_correctly ... ok
+test conflict::tests::equivocation_detected_same_neuron_same_step ... ok
+test beacon::tests::quiet_epoch_uses_prev ... ok
+test epoch::tests::cannot_propose_after_freeze ... ok
+test conflict::tests::no_conflict_for_distinct_steps ... ok
+test erasure::tests::bytes_roundtrip ... ok
+test conflict::tests::reobserving_identical_signal_is_idempotent ... ok
+test erasure::tests::roundtrip_all_shards ... ok
+test epoch_cert::tests::bad_beacon_fails ... ok
+test erasure::tests::roundtrip_k_equals_n ... ok
+test das::tests::tampered_sample_fails ... ok
+test finality::tests::a_spike_crosses_the_threshold ... ok
+test erasure::tests::roundtrip_missing_shards ... ok
+test erasure::tests::different_shard_combinations ... ok
+test finality::tests::epsilon_support_is_the_superlevel_set ... ok
+test finality::tests::certification_gate_bounds_uncertified_mass ... ok
+test finality::tests::mean_and_variance_match_hand_computation ... ok
+test finality::tests::uniform_domain_has_zero_variance_and_nothing_crosses ... ok
+test finality::tests::finalizes_requires_both_conditions ... ok
+test das::tests::commit_and_verify_samples ... ok
+test finality_evidence::tests::issue_from_domain_requires_final ... ok
+test das::tests::availability_check ... ok
+test finality_evidence::tests::evidence_rejects_wrong_tip ... ok
+test focus::tests::empty_members_is_error ... ok
+test conflict::tests::detection_is_order_independent ... ok
+test finality_evidence::tests::evidence_binds_nullifiers ... ok
+test finality_evidence::tests::local_evidence_verifies_on_matching_tip ... ok
+test fork::tests::minhash_rejects_empty ... ok
+test fork::tests::serialize_accepts_singleton_rejects_conflict ... ok
+test frames::delta_pi_frame_tests::delta_pi_round_trips_and_old_frames_stay_readable ... ok
+test frames::tests::decode_rejects_non_signal_bytes ... ok
+test frames::tests::intent_frame_starts_with_tape_marker_and_ket_sigil ... ok
+test frames::tests::intent_payload_length_is_fixed ... ok
+test focus::tests::empty_graph_falls_back_to_minhash ... ok
+test frames::tests::signal_frame_starts_with_tape_marker_and_zap_sigil ... ok
+test frames::tests::signal_payload_length_matches_serialization ... ok
+test gossip::tests::dedupe_same_content ... ok
+test gossip::tests::fanout_delivers_to_peers ... ok
+test frames::tests::signal_frame_roundtrips_through_decode ... ok
+test fork::tests::minhash_is_deterministic_and_order_independent ... ok
+test focus::tests::higher_focus_target_wins ... ok
+test live::tests::light_cannot_ingest ... ok
+test focus::tests::deterministic_across_runs ... ok
+test gossip::tests::self_acc_roundtrip_codec ... ok
+test erasure::tests::roundtrip_large_data ... ok
+test nmt::tests::nmt_completeness_all_leaves_for_namespace ... ok
+test nmt::tests::nmt_absence_proof ... ok
+test nmt::tests::nmt_build_deterministic ... ok
+test nmt::tests::nmt_forged_leaf_in_full_verify ... ok
+test nmt::tests::nmt_namespace_bounds ... ok
+test nmt::tests::nmt_completeness_proof_valid ... ok
+test nmt::tests::nmt_omission_detected ... ok
+test nmt::tests::nmt_root_changes_on_modification ... ok
+test gossip::tests::multi_miner_accs_collect ... ok
+test nmt::tests::nmt_single_namespace ... ok
+test marginal_cert::tests::tampered_marginal_fails_replay ... ok
+test nmt::tests::nmt_sort_order_independent ... ok
+test pay_proof::tests::empty_pay_errors ... ok
+test nmt::tests::nmt_wrong_namespace_in_proof ... ok
+test reconcile::tests::incremental_resolves_equivocation ... ok
+test reconcile::tests::no_conflict_resolves_to_nothing ... ok
+test reconcile::tests::serialize_engine_surfaces_conflict ... ok
+test rewards::tests::copy_rho_zero_earns_nothing_when_bts_scores ... ok
+test rewards::tests::empty_claims_err ... ok
+test reconcile::tests::incremental_and_batch_agree ... ok
+test finality_evidence::tests::certified_evidence_on_fold_tip ... ok
+test pay_proof::tests::verify_rejects_wrong_content ... ok
+test live::tests::mine_requires_beacon ... ok
+test marginal_cert::tests::batch_prove_requires_replay ... ok
+test settlement::tests::ordering_is_deterministic_and_a_permutation ... ok
+test settlement::tests::a_copy_contributes_nothing ... ok
+test pay_proof::tests::prove_and_verify_pay ... ok
+test step::tests::add_step_satisfies_the_universal_instance ... ok
+test step::tests::different_material_gives_different_rows ... ok
+test rewards::tests::solo_claim_earns_budget ... ok
+test store::tests::gset_commutativity ... ok
+test store::tests::capacity_limit ... ok
+test store::tests::gset_merge_union ... ok
+test store::tests::lww_merge_higher_timestamp_wins ... ok
+test store::tests::merkle_root_changes_on_insert ... ok
+test store::tests::merkle_root_deterministic ... ok
+test store::tests::verify_chunk_works ... ok
+test store::tests::store_and_retrieve ... ok
+test settlement::tests::value_of_empty_coalition_is_zero ... ok
+test marginal_cert::tests::certify_and_verify_replays_delta_phi ... ok
+test pay_proof::tests::verify_rejects_wrong_amount ... ok
+test settlement::tests::shapley_exact_is_symmetric_efficient_and_null ... ok
+test tickets::tests::assemble_tree_merges_miners ... ok
+test tickets::tests::easy_grind_finds_winners ... ok
+test tickets::tests::k_min_hoeffding ... ok
+test ticket_proof::tests::seal_rejects_foreign_statement ... ok
+test tip::tests::checkpoint_without_acc_is_untrusted_for_light ... ok
+test ticket_proof::tests::tampered_proof_fails ... ok
+test ticket_proof::tests::fold_tree_proves_and_verifies ... ok
+test ticket_proof::tests::settlement_batch_proves_and_verifies ... ok
+test tip::tests::local_tip_is_grade4 ... ok
+test tickets::tests::self_fold_counts_samples ... ok
+test vdf::tests::challenge_from_hash_is_deterministic ... ok
+test vdf::tests::vdf_evaluate_and_verify ... ok
+test vdf::tests::vdf_is_deterministic ... ok
+test vdf::tests::vdf_sequential_property ... ok
+test vdf::tests::vdf_tampered_iterations_fails ... ok
+test vdf::tests::vdf_tampered_output_fails ... ok
+test vdf::tests::vdf_zero_iterations ... ok
+test vdisk::tests::create_disk_and_attach ... ok
+test vdisk::tests::disk_status_messages ... ok
+test tickets::tests::fold_acc_is_commutative ... ok
+test vdisk::tests::end_to_end_store_and_retrieve ... ok
+test vdisk::tests::full_replication_tier0 ... ok
+test vdisk::tests::file_registry_merge ... ok
+test vdisk::tests::rechunk_on_device_join ... ok
+test tip::tests::join_cannot_detect_a_checkpoint_root_the_fold_never_saw ... ok
+test vdisk::tests::rebalance_moves_chunks ... ok
+test wire::tests::claim_roundtrip ... ok
+test wire::tests::receipt_roundtrip ... ok
+test vdisk::tests::survive_device_loss ... ok
+test tip::tests::join_with_demo_fold_is_grade4 ... ok
+test wire::tests::self_acc_roundtrip ... ok
+test epoch::tests::run_to_settle_quiet ... ok
+test rewards::tests::two_contributors_split_budget ... ok
+test gossip::tests::multi_miner_settle_with_gossiped_accs ... ok
+test tip::tests::prover_multi_height_then_light_join ... ok
+test epoch::tests::full_epoch_with_signal_vdfs_and_proofs ... ok
+test vdisk::tests::rechunk_preserves_data_integrity ... ok
+test tip::tests::light_advance_fold_after_join ... ok
+test rewards::tests::ticket_settle_matches_budget ... ok
+test epoch_cert::tests::epoch_cert_from_runner_verifies ... ok
+test live::tests::cell_mode_same_as_full_for_local_settle ... ok
+test live::tests::full_node_link_settle_and_mature ... ok
+test settlement::tests::lottery_estimates_the_exact_division ... ok
+test live::tests::multi_node_swarm_leaderless_settle ... ok
+
+test result: ok. 144 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running unittests src/bin/main.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/foculus-3a785d74ec4880e3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/attack_vectors.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/attack_vectors-912b764f7d794ae2)
+
+running 17 tests
+test attack_empty_shards ... ok
+test attack_forged_entry_hash ... ok
+test attack_name_squatting_max_drift ... ok
+test attack_shard_hash_swap ... ok
+test attack_merkle_root_with_forged_entry ... ok
+test attack_empty_name ... ok
+test attack_device_id_spoof ... ok
+test attack_merkle_omission_detectable ... ok
+test attack_timestamp_max ... ok
+test attack_timestamp_tamper_after_hash ... ok
+test attack_timestamp_within_drift_accepted ... ok
+test attack_timestamp_future ... ok
+test attack_mixed_valid_invalid_merge ... ok
+test attack_name_squatting ... ok
+test defense_all_fields_bound ... ok
+test defense_honest_entry_passes ... ok
+test attack_registry_bloat ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/million.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/million-7b40d6d97421de59)
+
+running 1 test
+test chaos has been running for over 60 seconds
+test chaos ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 148.55s
+
+     Running tests/stress.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/stress-e119634f28d919e0)
+
+running 12 tests
+test cascading_failure_8_devices ... ok
+test merge_conflict_10_devices_same_file ... ok
+test split_brain_rejoin ... ok
+test cascading_failure_high_k ... ok
+test integrity_every_byte_length_0_to_256 ... ok
+test exhaustive_2_of_8_all_28_subsets ... ok
+test merge_storm_20_devices ... ok
+test validated_merge_adversarial_1000 ... ok
+test exhaustive_4_of_8_all_70_subsets ... ok
+test scale_10_devices_100_files ... ok
+test corruption_chaos_random_flips ... ok
+test das_scale_50_files ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+
+     Running tests/structural_sync.rs (/Users/master/cyber/.stands/G3/_train/target/debug/deps/structural_sync-9a4a47c56b82dd97)
+
+running 19 tests
+test completeness_merkle_sensitive ... ok
+test completeness_merge_same_root ... ok
+test merge_commutative ... ok
+test completeness_merkle_commutative ... ok
+test merge_associative ... ok
+test merge_idempotent ... ok
+test erasure_insufficient_shards_fails_gracefully ... ok
+test das_sampling_honest_vs_tampered ... ok
+test e2e_registry_sync_with_conflicts ... ok
+test e2e_three_devices_lifecycle ... ok
+test merge_lww_conflict_resolution ... ok
+test das_commitment_deterministic ... ok
+test validity_shard_hashes_match ... ok
+test validity_single_bit_flip_detected ... ok
+test erasure_all_configs_all_subsets ... ok
+test bench_hash_verification_throughput ... ok
+test e2e_full_pipeline ... ok
+test erasure_large_data_10mb ... ok
+test bench_erasure_throughput ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.27s
+
+   Doc-tests foculus
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

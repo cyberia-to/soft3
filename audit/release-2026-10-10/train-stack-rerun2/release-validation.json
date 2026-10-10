@@ -1,0 +1,359 @@
+{
+  "complete": true,
+  "gates": [
+    {
+      "failures": [],
+      "name": "origin-checkouts",
+      "result": "green"
+    },
+    {
+      "drift": [
+        "bbg",
+        "cybergraph",
+        "evy",
+        "file",
+        "foculus",
+        "glia",
+        "hemera",
+        "honeycrisp",
+        "inf",
+        "mudra",
+        "nox",
+        "nu",
+        "radio",
+        "spark",
+        "strata",
+        "tade",
+        "tru",
+        "zheng"
+      ],
+      "manifest_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+      "name": "phase1-pins",
+      "result": "red"
+    },
+    {
+      "errors": [
+        {
+          "component": "cyb",
+          "error": "captured product HEAD has no merged pull request"
+        }
+      ],
+      "name": "release-notes-source",
+      "result": "red"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/hemera/rs",
+      "elapsed_seconds": 23.02,
+      "exit_code": 0,
+      "log": "logs/stack-hemera.txt",
+      "log_sha256": "7b02d4ddecc6d45b0c74b78fa44f9df5e7f47835624bd029fd91b7bac8c6cede",
+      "name": "stack-hemera",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/bbg/rs",
+      "elapsed_seconds": 19.567,
+      "exit_code": 0,
+      "log": "logs/stack-bbg.txt",
+      "log_sha256": "0ac019974fdb69b5486e950e580a6b9cc9f80ba99e1cb95ae086c527e206cb79",
+      "name": "stack-bbg",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/lens",
+      "elapsed_seconds": 0.826,
+      "exit_code": 101,
+      "log": "logs/stack-lens.txt",
+      "log_sha256": "3a15dd6fe255d65c9287a0d6139373c03e6ab3e29a611d28b2a3606a12fcc481",
+      "name": "stack-lens",
+      "result": "red",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/nox/rs",
+      "elapsed_seconds": 11.348,
+      "exit_code": 0,
+      "log": "logs/stack-nox.txt",
+      "log_sha256": "315ede817e8151714094f92aa0a5293a6daa968721afa5d5cb0e4853c82cc6f4",
+      "name": "stack-nox",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/zheng/rs",
+      "elapsed_seconds": 25.991,
+      "exit_code": 0,
+      "log": "logs/stack-zheng.txt",
+      "log_sha256": "946c56ee2898a24d9cc416bb9144072427fd927f7bbcc3c39cc752fdcdb69523",
+      "name": "stack-zheng",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/cybergraph",
+      "elapsed_seconds": 15.516,
+      "exit_code": 0,
+      "log": "logs/stack-cybergraph.txt",
+      "log_sha256": "f3821f4c91ac9114dab98f0339631131892dfff9e67ec4930707058347d6253f",
+      "name": "stack-cybergraph",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/foculus",
+      "elapsed_seconds": 175.739,
+      "exit_code": 0,
+      "log": "logs/stack-foculus.txt",
+      "log_sha256": "010bc0837bfa0f828fe4753900a0405aae4daef3f535e6e2510d927f7573a2ce",
+      "name": "stack-foculus",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/tru/rs",
+      "elapsed_seconds": 15.666,
+      "exit_code": 0,
+      "log": "logs/stack-tru.txt",
+      "log_sha256": "aa22d16a90d8019b0aeaab01c116f10aded09069ccb4a21cd992aa39734652c3",
+      "name": "stack-tru",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/tok/rs",
+      "elapsed_seconds": 4.799,
+      "exit_code": 0,
+      "log": "logs/stack-tok.txt",
+      "log_sha256": "f908e6262a2f3312d901eedf78a1bba1ebbaea23cf9939341ee81c837833511f",
+      "name": "stack-tok",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/mudra",
+      "elapsed_seconds": 6.087,
+      "exit_code": 0,
+      "log": "logs/stack-mudra.txt",
+      "log_sha256": "16be167eb0c493a66db6463418104e536010af7b4126ccf346fa85d4b1cf766a",
+      "name": "stack-mudra",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/vault",
+      "elapsed_seconds": 0.041,
+      "exit_code": 101,
+      "log": "logs/stack-vault.txt",
+      "log_sha256": "5b74a322feaf2270dcbc32aa260d7bcb24a929b9eb1d59512e84e8c75827c979",
+      "name": "stack-vault",
+      "result": "red",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/neuron",
+      "elapsed_seconds": 0.039,
+      "exit_code": 101,
+      "log": "logs/stack-neuron.txt",
+      "log_sha256": "3d3a87f93c6c26555e00d9d071977ee6ce1477273c86a0f6f032eaef86cb06fb",
+      "name": "stack-neuron",
+      "result": "red",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/file",
+      "elapsed_seconds": 0.456,
+      "exit_code": 0,
+      "log": "logs/stack-file.txt",
+      "log_sha256": "2d156629f3e949a3b9b5d2251fd2e33f534084254575da32c6d53e6c009831b5",
+      "name": "stack-file",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/radio",
+      "elapsed_seconds": 99.01,
+      "exit_code": 101,
+      "log": "logs/stack-radio.txt",
+      "log_sha256": "c95958170c1f48e5607db89d47fb027127feaac72fdf657e34f6cc41ad353c44",
+      "name": "stack-radio",
+      "result": "red",
+      "warnings": true
+    },
+    {
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--quiet",
+        "--manifest-path",
+        "/Users/master/cyber/.stands/G3/_train/checkout/soft3/conformance/rs/Cargo.toml",
+        "--bin",
+        "cargo-conformance",
+        "--",
+        "conformance",
+        "--check"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/soft3",
+      "elapsed_seconds": 13.457,
+      "exit_code": 0,
+      "log": "logs/conformance-snapshot.txt",
+      "log_sha256": "c0e0bec2080b1bf4bea2e658e464ddc4f6137a3eaf36c83a4c10034497f915ff",
+      "name": "conformance-snapshot",
+      "result": "green",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/soft3/crate",
+      "elapsed_seconds": 0.041,
+      "exit_code": 101,
+      "log": "logs/soft3-tests.txt",
+      "log_sha256": "203aa83326091ea2ebe624c23656f8f2f57df9a97e1a9a15cb9dcef7ca3c4e6d",
+      "name": "soft3-tests",
+      "result": "red",
+      "warnings": false
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--release",
+        "--locked"
+      ],
+      "cwd": "/Users/master/cyber/.stands/G3/_train/checkout/soft3/crate",
+      "elapsed_seconds": 0.041,
+      "exit_code": 101,
+      "log": "logs/soft3-release.txt",
+      "log_sha256": "f023e9e260803a55a1a0ed2a48f462f24b21a1cc04f532ca0c86f4fde555e913",
+      "name": "soft3-release",
+      "result": "red",
+      "warnings": false
+    },
+    {
+      "name": "node-status",
+      "reason": "release executable was not built",
+      "result": "blocked"
+    },
+    {
+      "changed": [],
+      "name": "source-inputs-unchanged",
+      "result": "green"
+    },
+    {
+      "error": "cargo exited 101: error: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/Users/master/cyber/.stands/G3/_train/checkout/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+      "name": "package-resolution",
+      "result": "red"
+    }
+  ],
+  "manager_revision": "18fd6b22ec45725aa776e37d377c5a75aeeaf553",
+  "result": "red",
+  "source_revisions": {
+    "bbg": "441e3c9ddf85c4bee36b40ed7ae8805b1481bc27",
+    "cyb": "4e4711f1ba4de640e60e29304b6180c94f20c9d7",
+    "cyber": "bb6ebd0ec3bf1741cca34fcc8ff0cafc2efdcfcf",
+    "cybergraph": "42fc2512389c7411d8cc3461501d859c1545980e",
+    "evy": "a194311ae557bd6dac3ef0c2f12141cb9fc1e01f",
+    "file": "e29b4c74804f1fecf123ad4bab14c3cf5b7f3551",
+    "foculus": "8a935e1695dfeed2b0241256bc2cd762729bb324",
+    "glia": "477d91c0a75f8985f4af5f873401a867327bd014",
+    "hemera": "d5f0a09539360934fb32db9b2e15a91995607db6",
+    "honeycrisp": "9cbd48070a136e24711896c930670fcff8a147fc",
+    "inf": "5054c939adbc875c32f1d89cce839d87bbd428bb",
+    "lens": "392abe752793c3e0b98f2d1d57245ba1e3173673",
+    "mir": "b9c832d5011d5a719bec6021afef123be35490ab",
+    "mudra": "bff8dce011d29231fd3af299d1f73f29760cf1af",
+    "neuron": "c87541120caae4fb5d5bb401653d1cbcbeffeb7d",
+    "nox": "0b1407a4b855e4961ede07e1b7ea199cb8018c30",
+    "nu": "1e58416ef0501675ef503dd86f80dc1236dfc2a4",
+    "optica": "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace",
+    "prysm": "f66cbd82cada5f5e6315b674818bce705b962eb6",
+    "radio": "344ac1627ef4cb4544a98d9afc5442be85fe1d15",
+    "rune": "67281db727070c1160c12be341c6fd85e39e5380",
+    "soft3": "18fd6b22ec45725aa776e37d377c5a75aeeaf553",
+    "soma": "7cfa6f8a602367ceedf45e0bd7e120884c9a6ae3",
+    "spark": "5399d36e99637a9d36018ecf88f3d4d6a80cc9a9",
+    "strata": "494df7a0973ae10a6cc1c2022e644d70449a29d6",
+    "tade": "c7d404aa8aa4c1e960f7a7268cbef47f2d6ba4d4",
+    "tok": "e27da0dff72b948418a5e40a5ed6290c0fd167f3",
+    "tru": "2f3a2556afc943ae949530a626ba4f2a83ace06b",
+    "vault": "c980557471184a78d43366e1c52fc978a3e82444",
+    "zheng": "5733dfdcc15cbc22fce9f5877b37515d005b8c44"
+  },
+  "target": "stack"
+}
