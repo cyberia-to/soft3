@@ -17,6 +17,14 @@ fixed by the owner on 2026-10-09:
 | small | one relation ≤ 2¹⁶ rows: a [[hemera]] hash, a signature, a transfer, a vote | ≤ 20 KB, ≤ 16 KB stretch | ≤ 1 ms | 128 bit, post-quantum, hash-only |
 | any | a [[nox]] computation of any length | ≤ 64 KB, constant in the number of steps | ≤ 1 ms | same |
 
+and, fixed by the owner on 2026-10-10, the prover:
+
+| prover | where | time |
+|---|---|---|
+| every profile, through [[joy]] (`joy prove --backend auto\|cpu\|metal\|webgpu`) | any device: Metal through [[honeycrisp]] on Apple Silicon, WebGPU through wgpu (browsers, Vulkan/Android, other GPUs), CPU as the fallback; the same proof bytes on every backend | seconds, never minutes |
+
+measured 2026-10-10 (Apple M4 Max, machine shared, load 25–78; zheng `audit/prover-profile-2026-10.md`): profile 1 hash.tri 17.7 s → 1.4 s Metal, 2.8 s WebGPU, 5.5 s CPU (`joy prove --succinct`, byte-identical); profile 5 (IVC, one 2¹⁵-row step) 40–48 s on every backend — relation evaluation and sumchecks on the CPU dominate once hashing and grinding move to the GPU; the wrap chain (profile 6) 13–20 min and 32–38 GB on the CPU. what reaches seconds today is the one-relation class; the recursive classes need the algorithmic work of the wrap chain as well as the GPU.
+
 and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
 
 ## 1. where the numbers stand
@@ -111,6 +119,7 @@ every gate is a fixture and a command, not an opinion. a phase closes when its r
 | 2h | the hash row: an external analysis of hemera's inverse-S-box t = 16 profile, or a return to the audited [[Poseidon2]] parameters; the site's post-quantum and frozen-foundations claims follow this row | the ledger's hash row reads proven or audited parameters; hemera parameters frozen; the quantum-collision figure (~2^85 for 256-bit digests, BHT) stated, not the capacity bound | hemera |
 | 3 | uniform step relation + ARC + decider + IVC (the accumulation verifier inside the step relation, §4); lattice-fold spike measured first (§B); the Trident verifier as a nox program; one recursion fixture | merkle-32 and a 10⁶-step run both prove · size independent of length, ≤ 64 KB · verify ≤ 1 ms · `verify(verify(π))` at depth 2 agrees across Rust and Trident · a [[fold mining]] cluster of 512 tickets decides in one proof | zheng, nox, trident, foculus |
 | 4 | `zk` profile (VEIL) | zk fixtures; P1 and P3 of [[cyber/launch\|launch]] unblocked | zheng |
+| P | the prover everywhere: one backend trait at lens (`rspcs::backend`: hemera permutations, grinding, coset NTT), Metal and WebGPU backends (`cyber-lens-gpu`), CPU fallback; `joy prove --backend` | differential tests GPU = CPU on random inputs; envelopes byte-identical across backends on hash.tri, merkle-32, tree-12; profile 1 ≤ 2 s on Metal · profiles 5/6 in seconds — open | lens, zheng, joy, honeycrisp |
 | 5 | delete: the bake-off losers, `folding`, the flat-hash opening, legacy formats; close the ledger of stale claims (§C) | proving path ≤ 12k lines by `tokei` · `nu scripts/stale-proof-claims.nu` returns 0 hits across the workspace | lens, zheng, joy, nox, bbg, hemera, foculus, tok, cyber, crystal |
 
 phases 1 and 2 are a month each; 3 is research-grade and measures before it commits; 4 and 5 are weeks. until 3 lands, `succinct` covers one relation of ≤ 2¹⁵ rows, and the "any computation" row of §0 is open.
