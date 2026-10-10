@@ -1,0 +1,13 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/REL/_train/checkout/zheng/rs
+error: failed to load manifest for workspace member `/Users/master/cyber/.stands/REL/_train/checkout/zheng/cli`
+referenced by workspace at `/Users/master/cyber/.stands/REL/_train/checkout/zheng/Cargo.toml`
+
+Caused by:
+  failed to load manifest for dependency `cyber-tape`
+
+Caused by:
+  failed to read `/Users/master/cyber/.stands/REL/_train/checkout/tape/impl/rust/Cargo.toml`
+
+Caused by:
+  No such file or directory (os error 2)

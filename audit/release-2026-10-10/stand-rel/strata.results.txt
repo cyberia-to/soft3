@@ -1,0 +1,31 @@
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test gpu_sqrt_qnr ... FAILED
+test gpu_add_matches_cpu ... FAILED
+test gpu_pow7_matches_cpu ... FAILED
+test gpu_mul_matches_cpu ... FAILED
+test gpu_inv_roundtrip ... FAILED
+test gpu_inv_matches_cpu ... FAILED
+test gpu_fp2_mul_matches_cpu ... FAILED
+test gpu_sub_matches_cpu ... FAILED
+test gpu_test_vectors_shader ... FAILED
+test gpu_neg_matches_cpu ... FAILED
+thread 'gpu_sqrt_qnr' (64968888) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_add_matches_cpu' (64968880) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_pow7_matches_cpu' (64968887) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_mul_matches_cpu' (64968884) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_inv_roundtrip' (64968883) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_inv_matches_cpu' (64968882) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_fp2_mul_matches_cpu' (64968881) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_sub_matches_cpu' (64968889) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_test_vectors_shader' (64968890) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+thread 'gpu_neg_matches_cpu' (64968885) panicked at /Users/master/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-24.0.5/src/backend/wgpu_core.rs:1009:30:
+test result: FAILED. 1 passed; 10 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.31s
+error: test failed, to rerun pass `-p nebu-wgsl --test gpu`
