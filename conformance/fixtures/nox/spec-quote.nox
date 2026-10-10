@@ -1,0 +1,6 @@
+# test vector: reduce(42, [1 7], 10) = (7, 9)
+object  42
+budget  10
+formula [1 7]
+result  7
+cost    1

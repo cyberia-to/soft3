@@ -1,0 +1,6 @@
+# test vector: reduce([1,2], branch on eq, 100) = (200, 95)
+object  [1 2]
+budget  100
+formula [4 [[9 [[0 2] [0 3]]] [[1 100] [1 200]]]]
+result  200
+cost    5

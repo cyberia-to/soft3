@@ -1,0 +1,5 @@
+# inv(0) is an error
+object  0
+budget  100
+formula [8 [0 1]]
+error   InvZero

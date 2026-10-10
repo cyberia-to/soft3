@@ -1,0 +1,5 @@
+# lt: 3 < 5 → 0 (specs/patterns/10-lt.md: 0 if a < b, else 1)
+object  [3 5]
+budget  200
+formula [10 [[0 2] [0 3]]]
+result  0

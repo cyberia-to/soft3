@@ -24,7 +24,7 @@ a single rule: every value whose encoding the protocol depends on registers a [[
 
 ## why hemera makes it cheap
 
-a snapshot stores 32 bytes — the [[hemera]] fingerprint of the canonical encoding. no test corpus, no fixture files, no encoded payloads on disk. one `conformance/encoding.snap` file per crate, ~100 lines, covers every stable type.
+a snapshot stores 32 bytes — the [[hemera]] fingerprint of the canonical encoding. no test corpus, no encoded payloads on disk: the only fixtures are the input programs and the proof bytes a verifier must keep accepting. one `encoding.snap` file, one line per stable type, covers every encoding.
 
 ## why nox makes mechanisms work
 
