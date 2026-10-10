@@ -80,6 +80,32 @@ def source_gates(gates, directory, sources, checkouts, component):
             gates.record("soft3-dependency", "red", error=str(error))
 
 
+CONFORMANCE_RUNNER = "cargo-conformance"
+
+
+def conformance_gate(gates, soft3):
+    """Run `cargo conformance --check` from the runner soft3 carries in-tree.
+
+    A clean origin checkout has no installed cargo subcommand, so the gate builds the
+    runner from soft3/conformance/rs. Until that crate declares the runner binary the
+    harness is a scaffold (conformance/specs/README.md, status) and the gate is blocked,
+    never green: a scaffold cannot pass it.
+    """
+    manifest = soft3 / "conformance/rs/Cargo.toml"
+    try:
+        bins = tomllib.loads(manifest.read_text()).get("bin", [])
+    except (OSError, tomllib.TOMLDecodeError):
+        bins = []
+    if not any(b.get("name") == CONFORMANCE_RUNNER for b in bins):
+        return gates.blocked("conformance-snapshot",
+                             f"cargo conformance is not implemented: {manifest.relative_to(soft3.parent)} declares no "
+                             f"`{CONFORMANCE_RUNNER}` binary; the harness is a scaffold (hemera fingerprint stubbed, "
+                             "no .snap files), see soft3/conformance/specs/README.md status")
+    return gates.run("conformance-snapshot",
+                     ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(manifest), "--bin",
+                      CONFORMANCE_RUNNER, "--", "conformance", "--check"], soft3, timeout=900)
+
+
 def boot_status(binary, gates):
     if not binary.is_file():
         return gates.blocked("node-status", "release executable was not built")
@@ -133,8 +159,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         for owner, path in owners.items():
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
-        # This gate requires the real snapshot command. A scaffold cannot pass it.
-        gates.run("conformance-snapshot", ["cargo", "conformance", "--check"], directory / "soft3", timeout=120)
+        conformance_gate(gates, directory / "soft3")
     if component == "soft3":
         crate = root / "crate"
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)

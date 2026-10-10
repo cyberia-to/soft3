@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, source_gates
+from train_gates import Gates, conformance_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -122,6 +122,26 @@ class ReleaseTests(unittest.TestCase):
     def test_warning_is_red_even_with_zero_exit(self):
         gates = Gates(self.root, self.sources, "stack")
         self.assertFalse(gates.run("warning", ["python3", "-c", "print('warning: fixture')"], self.root))
+
+    def test_conformance_scaffold_is_blocked_not_green(self):
+        manifest = self.root / "soft3/conformance/rs/Cargo.toml"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text('[package]\nname = "cyber-conformance"\nversion = "0.1.0"\n')
+        gates = Gates(self.root, self.sources, "stack")
+        self.assertFalse(conformance_gate(gates, self.root / "soft3"))
+        self.assertEqual(gates.rows[-1]["result"], "blocked")
+
+    def test_conformance_runner_is_built_from_soft3(self):
+        manifest = self.root / "soft3/conformance/rs/Cargo.toml"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text('[package]\nname = "cyber-conformance"\nversion = "0.1.0"\n\n'
+                            '[[bin]]\nname = "cargo-conformance"\npath = "src/main.rs"\n')
+        gates = Gates(self.root, self.sources, "stack")
+        with patch.object(Gates, "run", return_value=True) as run:
+            self.assertTrue(conformance_gate(gates, self.root / "soft3"))
+        argv = run.call_args.args[1]
+        self.assertEqual(argv[:3], ["cargo", "run", "--locked"])
+        self.assertEqual(argv[-2:], ["conformance", "--check"])
 
     def test_candidate_identifier_cannot_be_a_version_tag(self):
         for name in ["v0.8.0", "candidate-20269999.1", "../escape", "candidate-20260924.0"]:
