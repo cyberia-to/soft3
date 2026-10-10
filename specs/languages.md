@@ -342,7 +342,7 @@ nox noun (sub-trees per algebra)         nox VM sees:     patterns (uniform, 18)
   ↓ nox VM → trace (rows carry types)
   ↓ zheng partitions trace by type       zheng sees:      trace rows → lens per partition
 prove each partition via native lens
-  ↓ HyperNova folds all partitions
+  ↓ zheng accumulates all partitions
 one accumulator → one decider → one proof   verifier sees: one proof
 ```
 
