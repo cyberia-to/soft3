@@ -1,0 +1,6 @@
+command: ["cargo", "run", "--locked", "--quiet", "--manifest-path", "/Users/master/cyber/.stands/G3/_train/checkout/soft3/conformance/rs/Cargo.toml", "--bin", "cargo-conformance", "--", "conformance", "--check"]
+cwd: /Users/master/cyber/.stands/G3/_train/checkout/soft3
+ok   encoding.snap (24 entries)
+ok   mechanism.snap (127 entries)
+ok   manifest.snap
+conformance: green — 24 encodings, 127 mechanisms, root h64353c453d8db5101b7dfe6d084da4ea72bfc2e5869ccca47598ec29f6d05586

@@ -1,0 +1,1515 @@
+{
+  "candidate": "candidate-20261010.2",
+  "change_errors": [
+    {
+      "component": "cyb",
+      "error": "captured product HEAD has no merged pull request"
+    }
+  ],
+  "changes": [
+    {
+      "component": "cyber",
+      "html_url": "https://github.com/cyberia-to/cyber/pull/115",
+      "title": "docs: close the proof-repair ledger rows (cyber)"
+    },
+    {
+      "component": "soft3",
+      "html_url": "https://github.com/cyberia-to/soft3/pull/171",
+      "title": "fix(release): build the conformance runner from soft3, block while it is a scaffold"
+    }
+  ],
+  "component": "soft3",
+  "manager_revision": "d2cfe5f696e099a6c0a704edde4f70e937c03c48",
+  "package_resolution": {
+    "error": "cargo exited 101: error: failed to select a version for `cybergraph`.\n    ... required by package `soft3 v0.10.0 (/Users/master/cyber/.stands/G2/_train/checkout/soft3/crate)`\nversions that meet the requirements `^0.1.1` (locked to 0.1.1) are: 0.1.1\n\npackage `soft3` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.\n\n\nfailed to select a version for `cybergraph` which could resolve this conflict",
+    "result": "red"
+  },
+  "phase1_sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+  "repositories": [
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "bbg-cli",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "bbg",
+          "version": "0.2.1"
+        }
+      ],
+      "name": "bbg",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/bbg",
+      "rev": "a3c9a0c22bfb78ef891265f9e2cd25838ef77c2d",
+      "revision": "441e3c9ddf85c4bee36b40ed7ae8805b1481bc27",
+      "url": "https://github.com/cyberia-to/bbg.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "apps/Cargo.toml",
+          "name": "cyb-portal",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "cy",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "core/Cargo.toml",
+          "name": "cyb-core",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "crates/cyb/Cargo.toml",
+          "name": "cyb",
+          "version": "0.2.1"
+        },
+        {
+          "manifest": "crates/cyb-reserve/Cargo.toml",
+          "name": "cyb",
+          "version": "0.0.1"
+        },
+        {
+          "manifest": "shell/Cargo.toml",
+          "name": "cyb",
+          "version": "0.16.0"
+        }
+      ],
+      "manifest": "shell/Cargo.toml",
+      "name": "cyb",
+      "packages": [],
+      "pin_matches": null,
+      "repo": "cyberia-to/cyb",
+      "revision": "4e4711f1ba4de640e60e29304b6180c94f20c9d7",
+      "url": "https://github.com/cyberia-to/cyb.git",
+      "version": "0.16.0"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "true-cyber",
+          "version": "0.8.0"
+        }
+      ],
+      "manifest": "Cargo.toml",
+      "name": "cyber",
+      "packages": [],
+      "pin_matches": null,
+      "repo": "cyberia-to/cyber",
+      "revision": "bb6ebd0ec3bf1741cca34fcc8ff0cafc2efdcfcf",
+      "url": "https://github.com/cyberia-to/cyber.git",
+      "version": "0.8.0"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "cybergraph",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "cybergraph-cli",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "cybergraph",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/cybergraph",
+      "rev": "aa374ced57eed6bbf42de0b77d29b4c5412fd30d",
+      "revision": "42fc2512389c7411d8cc3461501d859c1545980e",
+      "url": "https://github.com/cyberia-to/cybergraph.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "crates/evy_diagnostic/Cargo.toml",
+          "name": "evy_diagnostic",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_dialect/Cargo.toml",
+          "name": "evy_dialect",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_ecs_storage/Cargo.toml",
+          "name": "evy_ecs_storage",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_engine_core/Cargo.toml",
+          "name": "evy_engine_core",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_engine_dispatch/Cargo.toml",
+          "name": "evy_engine_dispatch",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_engine_tasks/Cargo.toml",
+          "name": "evy_engine_tasks",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_platform_caps/Cargo.toml",
+          "name": "evy_platform_caps",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_prysm_core/Cargo.toml",
+          "name": "evy_prysm_core",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "crates/evy_radio/Cargo.toml",
+          "name": "evy_radio",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "forks/bevy_animation/Cargo.toml",
+          "name": "bevy_animation",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_anti_alias/Cargo.toml",
+          "name": "bevy_anti_alias",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_core_pipeline/Cargo.toml",
+          "name": "bevy_core_pipeline",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_diagnostic/Cargo.toml",
+          "name": "bevy_diagnostic",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_ecs/Cargo.toml",
+          "name": "bevy_ecs",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_gizmos/Cargo.toml",
+          "name": "bevy_gizmos",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_gizmos_render/Cargo.toml",
+          "name": "bevy_gizmos_render",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_image/Cargo.toml",
+          "name": "bevy_image",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_mesh/Cargo.toml",
+          "name": "bevy_mesh",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_pbr/Cargo.toml",
+          "name": "bevy_pbr",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_post_process/Cargo.toml",
+          "name": "bevy_post_process",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_render/Cargo.toml",
+          "name": "bevy_render",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_sprite/Cargo.toml",
+          "name": "bevy_sprite",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_sprite_render/Cargo.toml",
+          "name": "bevy_sprite_render",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_tasks/Cargo.toml",
+          "name": "bevy_tasks",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/bevy_transform/Cargo.toml",
+          "name": "bevy_transform",
+          "version": "0.18.1"
+        },
+        {
+          "manifest": "forks/naga/Cargo.toml",
+          "name": "naga",
+          "version": "24.0.0"
+        }
+      ],
+      "name": "evy",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/evy",
+      "rev": "2f23bfb97fe2904e3bcba3f116b473ed6cbec483",
+      "revision": "a194311ae557bd6dac3ef0c2f12141cb9fc1e01f",
+      "url": "https://github.com/cyberia-to/evy.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "cyber-file",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "file",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/file",
+      "rev": "fc666a5880ff874adae655150414b3a45832baf0",
+      "revision": "e29b4c74804f1fecf123ad4bab14c3cf5b7f3551",
+      "url": "https://github.com/cyberia-to/file.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "foculus",
+          "version": "0.1.3"
+        }
+      ],
+      "name": "foculus",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/foculus",
+      "rev": "177fad4c614a8e002aac28c9ca2a8196ce69b6cb",
+      "revision": "8a935e1695dfeed2b0241256bc2cd762729bb324",
+      "url": "https://github.com/cyberia-to/foculus.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "import/Cargo.toml",
+          "name": "import",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "run/Cargo.toml",
+          "name": "run",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "glia",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/glia",
+      "rev": "89adc925c47205ba8ce0438ffb984f3e1466a92a",
+      "revision": "477d91c0a75f8985f4af5f873401a867327bd014",
+      "url": "https://github.com/cyberia-to/glia.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "bench/Cargo.toml",
+          "name": "hemera-bench",
+          "version": "0.3.0"
+        },
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "hemera-cli",
+          "version": "0.3.0"
+        },
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "cyber-hemera",
+          "version": "0.3.1"
+        },
+        {
+          "manifest": "wgsl/Cargo.toml",
+          "name": "cyber-hemera-wgsl",
+          "version": "0.3.0"
+        }
+      ],
+      "name": "hemera",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/hemera",
+      "rev": "23f3bbcff910ea6d504ceb505680a539260869da",
+      "revision": "d5f0a09539360934fb32db9b2e15a91995607db6",
+      "url": "https://github.com/cyberia-to/hemera.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "honeycrisp",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "acpu/Cargo.toml",
+          "name": "acpu",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "aruminium/Cargo.toml",
+          "name": "aruminium",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "aruminium/benches/Cargo.toml",
+          "name": "metal-benches",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "audit/2026-10-09-unimem-block-creation/isolated/manifests/candidate/Cargo.toml",
+          "name": "unimem",
+          "version": "0.2.0"
+        },
+        {
+          "manifest": "audit/2026-10-09-unimem-block-creation/isolated/manifests/origin/Cargo.toml",
+          "name": "unimem",
+          "version": "0.2.0"
+        },
+        {
+          "manifest": "audit/2026-10-09-unimem-block-creation/isolated/manifests/tag/Cargo.toml",
+          "name": "unimem",
+          "version": "0.2.0"
+        },
+        {
+          "manifest": "rane/Cargo.toml",
+          "name": "rane",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "rane/benches/Cargo.toml",
+          "name": "rane-benches",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "unimem/Cargo.toml",
+          "name": "unimem",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "unimem/experiments/dext_contiguous_alloc/client/Cargo.toml",
+          "name": "dext_contiguous_client",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "unimem/experiments/dext_iosurface_pa/client/Cargo.toml",
+          "name": "cybmem-client",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "unimem/experiments/hyp_probe/Cargo.toml",
+          "name": "hyp_probe",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "unimem/experiments/iosurface_probe/Cargo.toml",
+          "name": "iosurface_probe",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "honeycrisp",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/honeycrisp",
+      "rev": "9593c7218e14e2b5b816d9008b45ab60b9580cf3",
+      "revision": "9cbd48070a136e24711896c930670fcff8a147fc",
+      "url": "https://github.com/cyberia-to/honeycrisp.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "rs/ast/Cargo.toml",
+          "name": "inf-ast",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/cli/Cargo.toml",
+          "name": "inf-cli",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/eval/Cargo.toml",
+          "name": "inf-eval",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/lex/Cargo.toml",
+          "name": "inf-lex",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/lower/Cargo.toml",
+          "name": "inf-lower",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/oracle/Cargo.toml",
+          "name": "inf-oracle",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/parse/Cargo.toml",
+          "name": "inf-parse",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/plan/Cargo.toml",
+          "name": "inf-plan",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/source/Cargo.toml",
+          "name": "inf-source",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/value/Cargo.toml",
+          "name": "inf-value",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "inf",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/inf",
+      "rev": "bf379879b60d724cb34fead91d703e0090acc08e",
+      "revision": "5054c939adbc875c32f1d89cce839d87bbd428bb",
+      "url": "https://github.com/cyberia-to/inf.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "assayer/Cargo.toml",
+          "name": "cyber-lens-assayer",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "binius/Cargo.toml",
+          "name": "cyber-lens-binius",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "brakedown/Cargo.toml",
+          "name": "cyber-lens-brakedown",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "lens-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "core/Cargo.toml",
+          "name": "cyber-lens-core",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "ikat/Cargo.toml",
+          "name": "cyber-lens-ikat",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "porphyry/Cargo.toml",
+          "name": "cyber-lens-porphyry",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "src/Cargo.toml",
+          "name": "cyber-lens",
+          "version": "0.1.3"
+        }
+      ],
+      "name": "lens",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/lens",
+      "rev": "392abe752793c3e0b98f2d1d57245ba1e3173673",
+      "revision": "392abe752793c3e0b98f2d1d57245ba1e3173673",
+      "url": "https://github.com/cyberia-to/lens.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "mir",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "mir",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/mir",
+      "rev": "b9c832d5011d5a719bec6021afef123be35490ab",
+      "revision": "b9c832d5011d5a719bec6021afef123be35490ab",
+      "url": "https://github.com/cyberia-to/mir.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "cyber-mudra",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "audit/quantus-mldsa-crosscheck/Cargo.toml",
+          "name": "mudra-quantus-mldsa-crosscheck",
+          "version": "0.0.0"
+        },
+        {
+          "manifest": "audit/signature-optimality/xnt-predicate-check/Cargo.toml",
+          "name": "xnt-predicate-check",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "mudra",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/mudra",
+      "rev": "e2d1a63bccd760b96ba55f448ef338b7ab027c37",
+      "revision": "bff8dce011d29231fd3af299d1f73f29760cf1af",
+      "url": "https://github.com/cyberia-to/mudra.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "neuron-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "engine/Cargo.toml",
+          "name": "neuron-engine",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "id/Cargo.toml",
+          "name": "neuron-id",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "model/Cargo.toml",
+          "name": "neuron-model",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "node/Cargo.toml",
+          "name": "neuron-node",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "rune/Cargo.toml",
+          "name": "neuron-rune",
+          "version": {
+            "workspace": true
+          }
+        }
+      ],
+      "name": "neuron",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/neuron",
+      "rev": "c87541120caae4fb5d5bb401653d1cbcbeffeb7d",
+      "revision": "c87541120caae4fb5d5bb401653d1cbcbeffeb7d",
+      "url": "https://github.com/cyberia-to/neuron.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "nox-cli",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "cyber-nox",
+          "version": "0.2.0"
+        }
+      ],
+      "name": "nox",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/nox",
+      "rev": "2612673cae64239cb3511b13027d9ffaba77f48e",
+      "revision": "0b1407a4b855e4961ede07e1b7ea199cb8018c30",
+      "url": "https://github.com/cyberia-to/nox.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "nu",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-cli/Cargo.toml",
+          "name": "nu-cli",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-cmd-base/Cargo.toml",
+          "name": "nu-cmd-base",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-cmd-extra/Cargo.toml",
+          "name": "nu-cmd-extra",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-cmd-lang/Cargo.toml",
+          "name": "nu-cmd-lang",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-cmd-plugin/Cargo.toml",
+          "name": "nu-cmd-plugin",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-color-config/Cargo.toml",
+          "name": "nu-color-config",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-command/Cargo.toml",
+          "name": "nu-command",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-derive-value/Cargo.toml",
+          "name": "nu-derive-value",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-engine/Cargo.toml",
+          "name": "nu-engine",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-experimental/Cargo.toml",
+          "name": "nu-experimental",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-explore/Cargo.toml",
+          "name": "nu-explore",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-glob/Cargo.toml",
+          "name": "nu-glob",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-json/Cargo.toml",
+          "name": "nu-json",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-lsp/Cargo.toml",
+          "name": "nu-lsp",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-mcp/Cargo.toml",
+          "name": "nu-mcp",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-parser/Cargo.toml",
+          "name": "nu-parser",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-parser/fuzz/Cargo.toml",
+          "name": "nu-parser-fuzz",
+          "version": "0.0.0"
+        },
+        {
+          "manifest": "crates/nu-path/Cargo.toml",
+          "name": "nu-path",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-path/fuzz/Cargo.toml",
+          "name": "nu-path-fuzz",
+          "version": "0.0.0"
+        },
+        {
+          "manifest": "crates/nu-plugin/Cargo.toml",
+          "name": "nu-plugin",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-plugin-core/Cargo.toml",
+          "name": "nu-plugin-core",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-plugin-engine/Cargo.toml",
+          "name": "nu-plugin-engine",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-plugin-protocol/Cargo.toml",
+          "name": "nu-plugin-protocol",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-plugin-test-support/Cargo.toml",
+          "name": "nu-plugin-test-support",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-pretty-hex/Cargo.toml",
+          "name": "nu-pretty-hex",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-protocol/Cargo.toml",
+          "name": "nu-protocol",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-std/Cargo.toml",
+          "name": "nu-std",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-system/Cargo.toml",
+          "name": "nu-system",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-table/Cargo.toml",
+          "name": "nu-table",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-term-grid/Cargo.toml",
+          "name": "nu-term-grid",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-test-support/Cargo.toml",
+          "name": "nu-test-support",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu-utils/Cargo.toml",
+          "name": "nu-utils",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_custom_values/Cargo.toml",
+          "name": "nu_plugin_custom_values",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_example/Cargo.toml",
+          "name": "nu_plugin_example",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_formats/Cargo.toml",
+          "name": "nu_plugin_formats",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_gstat/Cargo.toml",
+          "name": "nu_plugin_gstat",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_inc/Cargo.toml",
+          "name": "nu_plugin_inc",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_polars/Cargo.toml",
+          "name": "nu_plugin_polars",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_query/Cargo.toml",
+          "name": "nu_plugin_query",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nu_plugin_stress_internals/Cargo.toml",
+          "name": "nu_plugin_stress_internals",
+          "version": "0.110.0"
+        },
+        {
+          "manifest": "crates/nuon/Cargo.toml",
+          "name": "nuon",
+          "version": "0.110.0"
+        }
+      ],
+      "name": "nu",
+      "note": "local checkout has no git remote; cyber/launch.md decisions log, 2026-09-18 \u2014 needs a remote before it needs a pin",
+      "packages": [],
+      "pin_matches": null,
+      "repo": "cyberia-to/nu",
+      "revision": "1e58416ef0501675ef503dd86f80dc1236dfc2a4",
+      "url": "https://github.com/cyberia-to/nu.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "optica",
+          "version": "0.2.0"
+        }
+      ],
+      "name": "optica",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/optica",
+      "rev": "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace",
+      "revision": "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace",
+      "url": "https://github.com/cyberia-to/optica.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "prysm",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "prysm",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/prysm",
+      "rev": "f66cbd82cada5f5e6315b674818bce705b962eb6",
+      "revision": "f66cbd82cada5f5e6315b674818bce705b962eb6",
+      "url": "https://github.com/cyberia-to/prysm.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "audit/2026-10-09-kadek-slice-traversal/Cargo.toml",
+          "name": "kadek-bao-source-repro",
+          "version": "0.0.0"
+        },
+        {
+          "manifest": "cyber-bao/Cargo.toml",
+          "name": "cyber-bao",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "iroh/Cargo.toml",
+          "name": "cyber-radio",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "iroh/bench/Cargo.toml",
+          "name": "iroh-bench",
+          "version": "0.96.1"
+        },
+        {
+          "manifest": "iroh-base/Cargo.toml",
+          "name": "cyber-radio-base",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "iroh-blobs/Cargo.toml",
+          "name": "iroh-blobs",
+          "version": "0.98.0"
+        },
+        {
+          "manifest": "iroh-car/Cargo.toml",
+          "name": "iroh-car",
+          "version": "0.5.0"
+        },
+        {
+          "manifest": "iroh-dns-server/Cargo.toml",
+          "name": "iroh-dns-server",
+          "version": "0.96.1"
+        },
+        {
+          "manifest": "iroh-docs/Cargo.toml",
+          "name": "iroh-docs",
+          "version": "0.96.0"
+        },
+        {
+          "manifest": "iroh-ffi/Cargo.toml",
+          "name": "iroh-ffi",
+          "version": "0.35.0"
+        },
+        {
+          "manifest": "iroh-ffi/iroh-js/Cargo.toml",
+          "name": "number0_iroh",
+          "version": "0.35.0"
+        },
+        {
+          "manifest": "iroh-gossip/Cargo.toml",
+          "name": "iroh-gossip",
+          "version": "0.96.0"
+        },
+        {
+          "manifest": "iroh-relay/Cargo.toml",
+          "name": "cyber-radio-relay",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "iroh-willow/Cargo.toml",
+          "name": "iroh-willow",
+          "version": "0.28.0"
+        },
+        {
+          "manifest": "nettools/netwatch/Cargo.toml",
+          "name": "cyber-radio-netwatch",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "nettools/portmapper/Cargo.toml",
+          "name": "cyber-radio-portmapper",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "particle/Cargo.toml",
+          "name": "particle",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/bench/Cargo.toml",
+          "name": "bench",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/docs/book/Cargo.toml",
+          "name": "book",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/fuzz/Cargo.toml",
+          "name": "fuzz",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/perf/Cargo.toml",
+          "name": "perf",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/quinn/Cargo.toml",
+          "name": "cyber-radio-quinn",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/quinn-proto/Cargo.toml",
+          "name": "cyber-radio-quinn-proto",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "quinn/quinn-udp/Cargo.toml",
+          "name": "cyber-radio-quinn-udp",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "radio-cli/Cargo.toml",
+          "name": "radio-cli",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "tests/integration/Cargo.toml",
+          "name": "radio-integration-tests",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "radio",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/radio",
+      "rev": "db1d62e2cd1e4b2f309fa19bcc158bd29b44753d",
+      "revision": "fd90677c2fd3aa61a9aa9db1a07a5c1c234320cd",
+      "url": "https://github.com/cyberia-to/radio.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "cyber-rune",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/ast/Cargo.toml",
+          "name": "rune-ast",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/compile/Cargo.toml",
+          "name": "rune-compile",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/interp/Cargo.toml",
+          "name": "rune-interp",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/lex/Cargo.toml",
+          "name": "rune-lex",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/lower/Cargo.toml",
+          "name": "rune-lower",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/mold/Cargo.toml",
+          "name": "rune-mold",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/parse/Cargo.toml",
+          "name": "rune-parse",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/parse-pure/Cargo.toml",
+          "name": "rune-parse-pure",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/prysm/Cargo.toml",
+          "name": "rune-prysm",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/subject/Cargo.toml",
+          "name": "rune-subject",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "rune",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/rune",
+      "rev": "67281db727070c1160c12be341c6fd85e39e5380",
+      "revision": "67281db727070c1160c12be341c6fd85e39e5380",
+      "url": "https://github.com/cyberia-to/rune.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "conformance/rs/Cargo.toml",
+          "name": "cyber-conformance",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "crate/Cargo.toml",
+          "name": "soft3",
+          "version": "0.10.0"
+        }
+      ],
+      "manifest": "crate/Cargo.toml",
+      "name": "soft3",
+      "packages": [],
+      "pin_matches": null,
+      "repo": "cyberia-to/soft3",
+      "revision": "d2cfe5f696e099a6c0a704edde4f70e937c03c48",
+      "url": "https://github.com/cyberia-to/soft3.git",
+      "version": "0.10.0"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [],
+      "name": "soma",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/soma",
+      "rev": "7cfa6f8a602367ceedf45e0bd7e120884c9a6ae3",
+      "revision": "7cfa6f8a602367ceedf45e0bd7e120884c9a6ae3",
+      "url": "https://github.com/cyberia-to/soma.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "cyber-spark",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "spark",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/spark",
+      "rev": "400cd9a178792d02ec577ae74fc728fe6ee49ecd",
+      "revision": "5399d36e99637a9d36018ecf88f3d4d6a80cc9a9",
+      "url": "https://github.com/cyberia-to/spark.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "strata-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "compute/Cargo.toml",
+          "name": "strata-compute",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "core/Cargo.toml",
+          "name": "strata-core",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "ext/Cargo.toml",
+          "name": "strata-ext",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "genies/cli/Cargo.toml",
+          "name": "genies-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "genies/rs/Cargo.toml",
+          "name": "strata-genies",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "genies/wgsl/Cargo.toml",
+          "name": "genies-wgsl",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "jali/cli/Cargo.toml",
+          "name": "jali-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "jali/rs/Cargo.toml",
+          "name": "strata-jali",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "jali/wgsl/Cargo.toml",
+          "name": "jali-wgsl",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "kuro/cli/Cargo.toml",
+          "name": "kuro-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "kuro/rs/Cargo.toml",
+          "name": "strata-kuro",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "kuro/wgsl/Cargo.toml",
+          "name": "kuro-wgsl",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "nebu/cli/Cargo.toml",
+          "name": "nebu-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "nebu/rs/Cargo.toml",
+          "name": "strata-nebu",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "nebu/wgsl/Cargo.toml",
+          "name": "nebu-wgsl",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "proof/Cargo.toml",
+          "name": "strata-proof",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "src/Cargo.toml",
+          "name": "cyber-strata",
+          "version": "0.1.1"
+        },
+        {
+          "manifest": "trop/cli/Cargo.toml",
+          "name": "trop-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "trop/rs/Cargo.toml",
+          "name": "strata-trop",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "trop/wgsl/Cargo.toml",
+          "name": "trop-wgsl",
+          "version": {
+            "workspace": true
+          }
+        }
+      ],
+      "name": "strata",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/strata",
+      "rev": "56aedb2d12b3126c601eb333419136d403614dbb",
+      "revision": "494df7a0973ae10a6cc1c2022e644d70449a29d6",
+      "url": "https://github.com/cyberia-to/strata.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "impl/rust/Cargo.toml",
+          "name": "tade",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "tade",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/tade",
+      "rev": "b1f1c2ca70cb4d65d32272f8ee15cf0657c9d485",
+      "revision": "c7d404aa8aa4c1e960f7a7268cbef47f2d6ba4d4",
+      "url": "https://github.com/cyberia-to/tade.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "cyber-tok",
+          "version": "0.1.1"
+        }
+      ],
+      "name": "tok",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/plumb",
+      "rev": "e27da0dff72b948418a5e40a5ed6290c0fd167f3",
+      "revision": "e27da0dff72b948418a5e40a5ed6290c0fd167f3",
+      "url": "https://github.com/cyberia-to/plumb.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "tru-cli",
+          "version": {
+            "workspace": true
+          }
+        },
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "cyber-tru",
+          "version": "0.1.1"
+        }
+      ],
+      "name": "tru",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/tru",
+      "rev": "89416291dd4cc993a79d63cbd3e2445294b173d3",
+      "revision": "2f3a2556afc943ae949530a626ba4f2a83ace06b",
+      "url": "https://github.com/cyberia-to/tru.git"
+    },
+    {
+      "available": true,
+      "branch": "main",
+      "declared_packages": [
+        {
+          "manifest": "Cargo.toml",
+          "name": "cyber-vault",
+          "version": "0.1.0"
+        }
+      ],
+      "name": "vault",
+      "packages": [],
+      "pin_matches": true,
+      "repo": "cyberia-to/vault",
+      "rev": "c980557471184a78d43366e1c52fc978a3e82444",
+      "revision": "c980557471184a78d43366e1c52fc978a3e82444",
+      "url": "https://github.com/cyberia-to/vault.git"
+    },
+    {
+      "available": true,
+      "branch": "master",
+      "declared_packages": [
+        {
+          "manifest": "cli/Cargo.toml",
+          "name": "zheng-cli",
+          "version": "0.1.0"
+        },
+        {
+          "manifest": "rs/Cargo.toml",
+          "name": "zheng",
+          "version": "0.3.3"
+        }
+      ],
+      "name": "zheng",
+      "packages": [],
+      "pin_matches": false,
+      "repo": "cyberia-to/zheng",
+      "rev": "44bd5bfec5cb6764123ea513a33a26c0877a488c",
+      "revision": "5733dfdcc15cbc22fce9f5877b37515d005b8c44",
+      "url": "https://github.com/cyberia-to/zheng.git"
+    }
+  ]
+}
