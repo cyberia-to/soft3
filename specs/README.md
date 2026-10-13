@@ -29,6 +29,11 @@ products own their specialized interfaces. [Foundations](../docs/README.md)
 explains the substrate; [chains as plugins](../docs/chains-as-plugins.md)
 discusses protocol adapters over it.
 
+For review: [filesystem composition](../proposals/filesystem-composition.md)
+proposes the FS/Cyb service boundary and reconciles storage, synchronization
+and file interfaces across the stack. It remains a draft, outside the accepted
+contracts above.
+
 ## report placement across the stack
 
 Each repository keeps audits, implementation status reports, benchmark results
