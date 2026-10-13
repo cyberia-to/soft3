@@ -81,7 +81,7 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 
 ## critical, and out of scope
 
-seven questions no roadmap in the stack currently owns. each one is ignorable today and existential at the first real scale.
+seven questions no component roadmap owned. [[soft3/proposals/rooted-civilization]] takes them as its phase A and B — they stay critical; they are no longer unowned. each one is ignorable today and existential at the first real scale.
 
 1. **the economics of writing.** φ* ranks particles, but who may write, and at what cost? lytics prices a signal at 0.042 s of PoW — one app's local answer. an open cybergraph with free writes drowns in spam on day one. [[tok]] is published; a live economy, and the bridge from the [[bostrom]] snapshot to it, is nowhere.
 2. **key lifecycle.** [[mudra]] derives and claims; nothing recovers, rotates, or revokes. a lost seed is a lost neuron forever, and one person on two devices is formally two neurons. for a state whose citizens are keys, identity loss is not a bug — it is a constitutional crisis without a constitution.
