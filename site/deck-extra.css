@@ -26,3 +26,42 @@
 body.ink .brand em{color:#000}
 .tiles a.tile{text-decoration:none}
 @media (max-width:900px){.regt td.dim{display:none}.regt{font-size:11px}.deckdetail{padding:10px}.nums .n big{font-size:clamp(16px,4.6vw,24px)!important}}
+
+/* ---------- the world + glass: soft3's own skin on the house engine ---------- */
+html,body{background:#06100a!important}
+#world{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+#tint{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--facet,#7dffc4);mix-blend-mode:color;opacity:var(--tint,0);transition:background .5s ease,opacity .5s ease}
+#tint::after{content:"";position:absolute;inset:0;background:var(--facet,#7dffc4);opacity:.25}
+@media (pointer:coarse){#tint{mix-blend-mode:normal;opacity:calc(var(--tint,0)*.3)}}
+.hud{background:linear-gradient(rgba(6,16,10,.7),transparent);color:#fff8f0}
+body.ink .hud{color:#fff8f0}body.ink .legend{color:rgba(255,248,240,.6)}body.ink .brand .dot{background:var(--mint)}body.ink .brand em{color:var(--mint)}
+.slide .body{align-content:center}
+.slide .body>div{background:rgba(6,16,10,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,248,240,.12);border-radius:18px;padding:clamp(14px,2.2vw,30px)}
+.slide.one .body>div{background:rgba(6,16,10,.6)}
+.slide.ink{background:transparent;color:#fff8f0}
+.slide.ink .body>div{background:color-mix(in srgb,var(--c) 22%,rgba(6,16,10,.78));border-color:color-mix(in srgb,var(--c) 55%,transparent)}
+.slide.ink h2 em,.slide.ink .kick{color:var(--c)}.slide.ink .mute,.slide.ink .n small,.slide.ink .fine{color:rgba(255,248,240,.72)}
+.slide.ink .fine .st{color:var(--c)}.slide.ink .chip{border-color:rgba(255,248,240,.3)}
+.slide.ink .btn:not(.ghost){background:var(--c);color:#06100a}.slide.ink .btn.ghost{color:#fff8f0;border-color:rgba(255,248,240,.4)}
+.slide.ink h2 em{animation:none}
+.slide::after{opacity:.06;color:#fff8f0}
+.rail{background:rgba(6,16,10,.9)}.rail .arrow,.rail .pos{background:transparent}
+.deckdetail{background:rgba(6,16,10,.6)}
+.figwrap{width:100%;margin:6px 0 10px}
+.figwrap svg{width:100%;height:auto;display:block;max-height:62vh}
+.chartwrap svg{max-height:66vh}
+.chartwrap.small svg{max-height:calc(100vh - var(--hud) - var(--rail) - 8vh)}
+.loopwrap svg{max-height:calc(100vh - var(--hud) - var(--rail) - 8vh)}
+.slide.ink .loopwrap{background:transparent}
+.ladder.glass{--mint:#7dffc4}
+.figwrap .ladder{max-height:none;overflow:visible}
+.nums.one-num{grid-template-columns:1fr}.nums.one-num .n big{font-size:clamp(48px,7vw,120px)}
+.steps.two{grid-template-columns:1fr 1fr;gap:4px 24px}.steps.two .step{padding:8px 0}
+.code{font:12.5px/1.6 var(--mono);white-space:pre-wrap;background:rgba(0,0,0,.4);border-radius:10px;padding:12px 14px;margin:4px 0 10px;color:#fff8f0}
+.hero-word{filter:drop-shadow(0 0 28px rgba(125,255,196,.25))}
+@media (max-width:900px){.steps.two{grid-template-columns:1fr}.slide .body>div{padding:12px}.figwrap .ladder{max-height:none}}
+.seg{overflow:hidden}.rail .cta{flex:none}
+.slide.ink .loopwrap svg{max-height:calc(100vh - var(--hud) - var(--rail) - 10vh)}
+.slide .body>div>.figwrap:has(.ladder){margin-bottom:0}
+@media (min-width:901px){.slide:has(.chartwrap.small) .body{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.rung-panel .regt{font-size:11px}.rung-panel .regt td{padding:4px 6px}
