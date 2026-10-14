@@ -158,3 +158,14 @@ depth-16 membership in profile 1, plus P1-shaped veil proofs up to depth
 - The first Metal process after a kernel change pays ~0.7 s of shader compilation, once per installed version.
 - P2 (stealth/veil balances), P3 (hidden ego-net) and oikos have no defined statement, so they could not be measured. Tickets, pay, seals and tips are still produced by the unsound legacy API in cyb/foculus. Moving them to profile 1 relations like the fixtures above is the product-side work this measures for.
 - Peak RSS at 2^17–2^18 on Metal is 0.9–2.1 GB, from staging buffers (codeword copies). This matters on phones; it was not reduced here.
+
+## 5. follow-up — fast path 2 (same day, 21:30)
+
+zheng#66, lens#27, joy#42, merged into `release/0.4` / `release/0.2`;
+report `zheng/audit/fast-path-2-2026-10.md`. Load 24–50.
+
+| gap in §4 | after |
+|---|---|
+| membership depth 32 (1.13 s cold, 64,071 B, 22 grinding bits) | through zheng's hemera node jet (one permutation per level, the `hemera::merkle` tree bbg uses): **0.15 s** cold Metal (0.20 CPU, 0.23 WebGPU), 62 ms warm, 46,719 B, 16 grinding bits; depth 12/16: 0.12 s. Pattern-15 trees keep the old cost: a statement moves to the node tree in its own spec |
+| veil beyond depth 12 (0.94 / 2.0 s, 295–545 KB) | counter-mode coins + held `veil::ProvingKey`: structural depth 32 638 ms warm (was 2,024); node tree depth 32 96 ms warm / 0.18 s cold, 165–181 KB. mudra#22 P1 (pattern-15 tree): depth 20 / 32 = 255 / 396 ms Metal with a held key (was 965 / 1,342). ≤ 64 KB not reached: needs hiding WHIR or a list-decoding zk opening (estimated, not built) |
+| first Metal process ~0.7 s | binary-archive shader cache: `Metal::new` 0.15 s with the archive present on a cold OS cache (4.0 s sequential / 1.9 s concurrent without); a first process after a kernel change still compiles |
