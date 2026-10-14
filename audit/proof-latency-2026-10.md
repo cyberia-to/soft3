@@ -142,6 +142,7 @@ a secret leaf.
 - Ledger: `device_parameters_meet_the_ledger_at_every_size` gives ≥ 128 proven bits (ROM, grinding counted) at every size 2^1…2^20. Without grinding the bound is 112 bits up to 2^17, 106 at 2^18 and 104 beyond; it was 104 at every size under the old 24-bit choice.
 - Bit-flip scans, 0 accepted: `device_params` hash.tri 134,048 flips; folding 5 with 16 / 22 grinding bits 155,232 / 152,352 flips; the veil envelope 512,960 flips.
 - Suites: zheng 371 passed, 0 failed, 18 ignored; joy 219 passed against the branches; lens rspcs 43 and GPU differential 14 (`LENS_GPU_REQUIRE=metal,webgpu`).
+- Merged 2026-10-14: lens#25 into `release/0.2`, after rebasing onto lens#26 (kernel speed): differential 15, rspcs 43, bytes unchanged. zheng#64 into `release/0.4`, after rebasing onto zheng#65: lib 305 and the succinct, veil, key and transcript suites green. One spot check after the rebases (load 20): merkle-32 `joy prove` Metal 999 ms prove, merkle-16 459 ms, same artifacts.
 
 ## 4. verdict
 
