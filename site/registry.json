@@ -1,0 +1,344 @@
+[
+{
+"name": "soft3",
+"verb": "compose",
+"state": "live",
+"release": "0.10.0",
+"crate": "0.10.0",
+"what": "the stack CLI \u00b7 `soft3 node` \u00b7 a release is a conformance snapshot",
+"facet": null
+},
+{
+"name": "honeycrisp",
+"verb": "accelerate",
+"state": "live",
+"release": "0.2.0",
+"crate": "0.2.0",
+"what": "NEON/AMX/SME \u00b7 Metal GPU \u00b7 ANE \u00b7 zero-copy unimem",
+"facet": "form"
+},
+{
+"name": "strata",
+"verb": "math",
+"state": "live",
+"release": "0.1.1",
+"crate": "0.1.1",
+"what": "nebu \ud835\udd3d_p \u00b7 genies \ud835\udd3d_q \u00b7 jali R_q",
+"facet": "form"
+},
+{
+"name": "hemera",
+"verb": "hash",
+"state": "live",
+"release": "0.3.1",
+"crate": "0.3.1",
+"what": "Poseidon2 sponge \u00b7 identity \u00b7 trees \u00b7 verified streaming",
+"facet": "form"
+},
+{
+"name": "lens",
+"verb": "commit",
+"state": "published",
+"release": "0.1.3",
+"crate": "0.1.3",
+"what": "5 PCS backends, one per algebra \u00b7 serde for Commitment/Opening",
+"facet": "form"
+},
+{
+"name": "cybergraph",
+"verb": "link",
+"state": "live",
+"release": "0.1.1",
+"crate": "0.1.1",
+"what": "jets \u00b7 memos \u00b7 types \u00b7 knowledge",
+"facet": "mass"
+},
+{
+"name": "bbg",
+"verb": "store",
+"state": "live",
+"release": "0.2.1",
+"crate": "0.2.1",
+"what": "1 polynomial \u00b7 10 dims \u00b7 ~200B proofs \u00b7 QueryProof serde",
+"facet": "mass"
+},
+{
+"name": "neuron",
+"verb": "act",
+"state": "local",
+"release": "",
+"crate": "",
+"what": "neuron identity and runtime \u00b7 source in neuron",
+"facet": "mass"
+},
+{
+"name": "file",
+"verb": "name",
+"state": "local",
+"release": "",
+"crate": "",
+"what": "file identity and representation \u00b7 source in file",
+"facet": "mass"
+},
+{
+"name": "fs",
+"verb": "mount",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "particles \u00b7 patches \u00b7 sync \u00b7 repo is empty",
+"facet": "mass"
+},
+{
+"name": "tok",
+"verb": "pay",
+"state": "published",
+"release": "0.1.1",
+"crate": "0.1.1",
+"what": "Coin \u00b7 Card \u00b7 conservation \u00b7 no live economy yet",
+"facet": "mass"
+},
+{
+"name": "vault",
+"verb": "keep",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "secret storage: seeds, caps, sealed state \u2014 a seat proposed, not yet a repo",
+"facet": "space"
+},
+{
+"name": "mudra",
+"verb": "encrypt",
+"state": "live",
+"release": "0.1.0",
+"crate": "0.1.0",
+"what": "KEM \u00b7 dCTIDH \u00b7 AEAD \u00b7 TFHE \u00b7 threshold",
+"facet": "space"
+},
+{
+"name": "radio",
+"verb": "transmit",
+"state": "live",
+"release": "0.1.0",
+"crate": "0.1.0",
+"what": "QUIC \u00b7 BAO streaming \u00b7 gossip \u00b7 carries `cyb/sync/0`",
+"facet": "space"
+},
+{
+"name": "tade",
+"verb": "frame",
+"state": "published",
+"release": "0.1.0",
+"crate": "0.1.0",
+"what": "typed particle framing over any byte stream",
+"facet": "space"
+},
+{
+"name": "foculus",
+"verb": "sync",
+"state": "unwired",
+"release": "0.1.2",
+"crate": "0.1.2",
+"what": "chain \u00b7 VDF \u00b7 equivocation \u00b7 DAS \u00b7 erasure \u00b7 CRDT \u00b7 engine partial, never deployed",
+"facet": "space"
+},
+{
+"name": "ward",
+"verb": "authorize",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "effect router \u00b7 emit/query/link/seal/host",
+"facet": "space"
+},
+{
+"name": "tru",
+"verb": "converge",
+"state": "published",
+"release": "0.1.1",
+"crate": "0.1.1",
+"what": "\u03c6* \u00b7 eigenvectors \u00b7 cyberank",
+"facet": "life"
+},
+{
+"name": "foculus",
+"verb": "agree",
+"state": "spec",
+"release": "0.1.2",
+"crate": "0.1.2",
+"what": "collective focus theorem \u2192 finality \u00b7 fork-choice unproven in the wild",
+"facet": "life"
+},
+{
+"name": "sigma",
+"verb": "evaluate",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "assessment: scores and gradings become links \u2014 a seat proposed, not yet a repo",
+"facet": "life"
+},
+{
+"name": "soma",
+"verb": "think",
+"state": "live",
+"release": "",
+"crate": "",
+"what": "four concurrent loops \u00b7 tiered model stack \u00b7 phase 1 in cyb",
+"facet": "life"
+},
+{
+"name": "neural",
+"verb": "mean",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "sigil \u2192 word \u2192 link \u2192 sentence \u2192 motif \u2192 dialect",
+"facet": "word"
+},
+{
+"name": "trident",
+"verb": "compile",
+"state": "live",
+"release": "0.2.0",
+"crate": "0.2.0",
+"what": ".tri \u2192 .nox by default \u2014 the full chain build \u2192 prove \u2192 verify runs through joy (verified 2026-09-08)",
+"facet": "word"
+},
+{
+"name": "rune",
+"verb": "eval",
+"state": "published",
+"release": "0.1.0",
+"crate": "0.1.0",
+"what": "Rs \u00b7 hint \u00b7 host \u00b7 eval \u00b7 async",
+"facet": "word"
+},
+{
+"name": "inf",
+"verb": "query",
+"state": "live",
+"release": "0.1.0",
+"crate": "0.1.0",
+"what": "datalog \u00b7 fixed-point over BBG",
+"facet": "word"
+},
+{
+"name": "nox",
+"verb": "run",
+"state": "live",
+"release": "0.2.0",
+"crate": "0.2.0",
+"what": "18 patterns + jets \u00b7 unconditional proof \u00b7 executes trident programs via joy",
+"facet": "work"
+},
+{
+"name": "zheng",
+"verb": "prove",
+"state": "live",
+"release": "0.3.1",
+"crate": "0.3.1",
+"what": "SuperSpartan \u00b7 Brakedown \u00b7 sumcheck \u00b7 universal step CCS 2026-09-09: any program \u2264 2 accumulator groups, ~1\u20132 KB proofs, every wire byte verifier-read; residuals: verifier-checked fold (degree \u2265 2 rows), lens Brakedown evaluation binding (lens#6)",
+"facet": "work"
+},
+{
+"name": "glia",
+"verb": "infer",
+"state": "live",
+"release": "",
+"crate": "",
+"what": ".model runtime \u00b7 cond/model",
+"facet": "work"
+},
+{
+"name": "eidos",
+"verb": "certify",
+"state": "blocked",
+"release": "",
+"crate": "",
+"what": "CIC type-checker \u00b7 theorem \u2192 cyberlink \u00b7 zheng bridge is a stub",
+"facet": "work"
+},
+{
+"name": "wysm",
+"verb": "sandbox",
+"state": "dormant",
+"release": "",
+"crate": "",
+"what": "WASM souls \u00b7 gas-metered \u00b7 cond/host \u00b7 no commits since june",
+"facet": "work"
+},
+{
+"name": "kern",
+"verb": "shade",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "Metal/Vulkan/WebGPU shaders \u00b7 cond/host",
+"facet": "work"
+},
+{
+"name": "mir",
+"verb": "render",
+"state": "live",
+"release": "",
+"crate": "",
+"what": "positions + features \u2192 R-1.0 world",
+"facet": "play"
+},
+{
+"name": "prysm",
+"verb": "paint",
+"state": "live",
+"release": "",
+"crate": "",
+"what": "tape dialect \u00b7 chunks \u2192 UI",
+"facet": "play"
+},
+{
+"name": "spark",
+"verb": "open",
+"state": "local",
+"release": "",
+"crate": "",
+"what": "file decoding \u00b7 source in spark",
+"facet": "play"
+},
+{
+"name": "evy",
+"verb": "draw",
+"state": "local",
+"release": "",
+"crate": "",
+"what": "rendering \u00b7 source in evy",
+"facet": "play"
+},
+{
+"name": "nu",
+"verb": "console",
+"state": "local",
+"release": "",
+"crate": "",
+"what": "embedded Nushell libraries \u00b7 source in nu",
+"facet": "play"
+},
+{
+"name": "rs",
+"verb": "systems",
+"state": "spec",
+"release": "",
+"crate": "",
+"what": "field-first strict superset of Rust \u00b7 every byte a field element \u00b7 research, no release",
+"facet": "play"
+},
+{
+"name": "lytics",
+"verb": "measure",
+"state": "live",
+"release": "",
+"crate": "",
+"what": "signed visitor events \u00b7 PoW-priced \u00b7 cohorts \u00b7 funnels \u2014 cybernetics is impossible without measurement",
+"facet": "play"
+}
+]
