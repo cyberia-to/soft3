@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>soft3 demos · test bench</title>
+<link rel="stylesheet" href="/deck.css">
+<style>
+  html,body{overflow:auto;height:auto;--c:var(--c4)}
+  body{padding:24px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+  .box{width:560px;--c:var(--c4)}
+  .box h3{margin:0 0 8px;font:700 12px var(--mono);letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+  .box .demo{min-height:60px}
+  .mk{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle}
+  .box[data-h]::after{content:attr(data-h);display:block;margin-top:4px;font:10px var(--mono);opacity:.5}
+  .box.over{outline:1px solid var(--c1)}
+  .legend{font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);display:flex;gap:14px}
+</style></head>
+<body>
+<div class="legend"><span><i class="mk m"></i> measured</span><span><i class="mk t"></i> target</span><span><i class="mk k"></i> mock</span><span id="mode"></span></div>
+<script>
+const VERBS = [['compute', 'the same answer on every device', 'var(--c4)'], ['build', 'the cost is known before it runs', 'var(--c3)'], ['prove', 'a proof that fits in a pocket', 'var(--c5)'], ['remember', 'compute once. everyone remembers.', 'var(--c2)'], ['learn', 'the graph compiled into a transformer', 'var(--c4)'], ['link', 'a thought becomes a link — with weight', 'var(--c1)'], ['focus', 'the links become one focus', 'var(--c3)']];
+for (const [v, title, c] of VERBS) { const b = document.createElement('div'); b.className = 'box panel'; b.id = 'box-' + v; b.style.setProperty('--c', c); b.innerHTML = `<h3>${v} · ${title}</h3><div class="demo" id="d-${v}"></div>`; document.body.appendChild(b); }
+</script>
+<script src="compute.js"></script><script src="build.js"></script><script src="prove.js"></script><script src="remember.js"></script><script src="learn.js"></script><script src="link.js"></script><script src="focus.js"></script>
+<script>
+const api = { sfx: { tick() {}, link() {}, converge() {}, chord() {}, hash() {} }, M: (k) => '<i class="mk ' + k + '"></i>' };
+const live = {}; const errors = [];
+for (const [v] of VERBS) { try { live[v] = window['demo_' + v](document.getElementById('d-' + v), api); } catch (e) { errors.push(v + ': ' + e.message); document.getElementById('d-' + v).textContent = 'ERROR ' + e.message; } }
+const auto = new URLSearchParams(location.search).get('auto') === '1';
+document.getElementById('mode').textContent = auto ? '· auto=1' : '';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const click = (sel, root) => { const b = (root || document).querySelector(sel); if (b) b.click(); return !!b; };
+const measure = () => { for (const [v] of VERBS) { const d = document.getElementById('d-' + v); const h = Math.round(d.getBoundingClientRect().height); const b = document.getElementById('box-' + v); b.dataset.h = v + ' · ' + h + ' px' + (h > 440 ? ' · OVER 440' : ''); b.classList.toggle('over', h > 440); } };
+(async () => {
+  if (auto) {
+    const B = (v) => document.getElementById('d-' + v);
+    click('[data-float]', B('compute'));
+    const r = B('build').querySelector('[data-range]'); r.value = 256; r.dispatchEvent(new Event('input')); click('[data-run]', B('build'));
+    B('prove').querySelectorAll('.chip')[3].click();
+    click('[data-ask]', B('remember')); await sleep(1100); click('[data-ask]', B('remember')); click('[data-other]', B('remember'));
+    const lr = B('learn').querySelector('[data-range]'); lr.value = 9; lr.dispatchEvent(new Event('input'));
+    const st = B('link').querySelector('[data-stake]'); st.value = 42; st.dispatchEvent(new Event('input')); B('link').querySelector('[data-v="1"]').click(); click('[data-go]', B('link'));
+    click('[data-it]', B('focus')); await sleep(1600); click('[data-re]', B('focus')); await sleep(1600);
+  }
+  await sleep(200); measure();
+  window.__ready = { errors, auto };
+  if (errors.length) console.error(errors.join('\n'));
+})();
+</script>
+</body></html>
