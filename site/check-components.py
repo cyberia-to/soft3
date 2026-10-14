@@ -6,15 +6,13 @@ reg = tomllib.loads((root/'release/components.toml').read_text())['component']
 names = {c['name'] for c in reg}
 byname = {c['name']: c for c in reg}
 errs = []
-# the site is one deck; the ladder and the chart are drawn from site/data.js (NODES/EDGES) by ladder-fig.js and chart-fig.js
-import json
-data = (root/'site/data.js').read_text()
-nodes_json = data[data.index('const NODES = ')+len('const NODES = '):]; nodes_json = nodes_json[:nodes_json.index('];')+1]
-NODES = json.loads(nodes_json)
-nodes = {n['id'] for n in NODES}
-rungs = {n['id'] for n in NODES if n.get('hub') or n.get('layer', 0) > 7}
-chips = nodes - rungs
-for x in sorted(chips - names): errs.append(f'ladder chip not in registry: {x}')
+# home: the ladder. every chip is a component; every layered component is a chip, a rung, or inside a chip (part_of)
+home = (root/'site/layers/index.html').read_text()
+start = home.index('class="panel ladder')
+lad = home[start:home.index('</aside>', start)]
+chips = set(re.findall(r'<i data-f="[a-z]+">([a-z0-9-]+)</i>', lad))
+rungs = set(re.findall(r'data-p="([a-z0-9-]+)"', lad))
+for x in sorted(chips - names): errs.append(f'home chip not in registry: {x}')
 def covered(c, seen=frozenset()):
     if c['name'] in chips or c['name'] in rungs: return True
     p = c.get('part_of')
@@ -23,7 +21,10 @@ APPS = {'cyb','cyber','cyberia'}
 def on_site(c):  # products built on soft3 are not decomposed on the site
     return 'layer' in c and not (c['layer'] > 7 and c['name'] not in APPS)
 for c in reg:
-    if on_site(c) and not covered(c): errs.append(f'layer {c["layer"]} component missing from the ladder: {c["name"]}')
+    if on_site(c) and not covered(c): errs.append(f'layer {c["layer"]} component missing from the home ladder: {c["name"]}')
+# chart: every node is a component; every layered component is a node or inside one
+chart = (root/'site/chart/index.html').read_text()
+nodes = set(re.findall(r'"id": "([a-z0-9-]+)"', chart))
 for x in sorted(nodes - names): errs.append(f'chart node not in registry: {x}')
 for c in reg:
     if on_site(c) and c['name'] not in nodes and not (c.get('part_of') in nodes): errs.append(f'layer {c["layer"]} component missing from the chart: {c["name"]}')
