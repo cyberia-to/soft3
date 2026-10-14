@@ -23,6 +23,14 @@ and, fixed by the owner on 2026-10-10, the prover:
 |---|---|---|
 | every profile, through [[joy]] (`joy prove --backend auto\|cpu\|metal\|webgpu`) | any device: Metal through [[honeycrisp]] on Apple Silicon, WebGPU through wgpu (browsers, Vulkan/Android, other GPUs), CPU as the fallback; the same proof bytes on every backend | seconds, never minutes |
 
+and, fixed by the owner on 2026-10-14 ("the product doesn't exist without it"), the gate on the user's device:
+
+| gate | scope | time |
+|---|---|---|
+| user-device proofs ≤ 1 s end-to-end; aggregation off-path | every proof a user device produces on the product path — cyb/joy client: tickets, signals, privacy proofs P1–P3, settlement/[[oikos]], hash/Merkle membership — through `joy prove` from process start to envelope written, cold and warm, on Apple Silicon Metal (the gate), also measured on CPU, WebGPU and Android where a device is available. constant-size compression of long computations (profile 6, the wrap chain) runs on aggregators off the user's critical path and is optimised separately | ≤ 1,000 ms warm on Metal; cold reported |
+
+measured 2026-10-14 (`audit/proof-latency-2026-10.md`; zheng#64, lens#25): profile 1 meets the gate cold and warm on Metal for every product-shaped statement up to Merkle depth 16 (hash.tri 0.07 s, a ticket 0.10 s, a 4-ticket seal 0.19 s, depth-12 balance opening 0.36 s, depth-16 membership 0.48 s; ≤ 64 KB, ≥ 128 bits). Depth-32 membership takes 1.13 s cold and 0.61 s warm with a held key. Veil (P1) passes to depth 12 (0.71 s); depth 16+ is over 1 s. P2, P3 and oikos have no statement yet.
+
 measured 2026-10-10…13 (Apple M4 Max, machine shared, load 25–156; zheng `audit/prover-profile-2026-10.md`, zheng#59, lens#23, joy#40; proofs byte-identical on every backend): profile 1 hash.tri 17.7 s → 1.4 s Metal, 2.8 s WebGPU, 5.5 s CPU (`joy prove --succinct`; 0.4 s in the library on Metal); profile 5 (IVC, one 2¹⁵-row step) 9.6 s Metal against 22.6 s CPU on zheng#58's head; the wrap chain (profile 6) 115 s Metal against 239 s CPU in the same window (zheng#58 alone: 83 s on a quieter machine), CPU time 330 s against 1,771 s. what reaches seconds today is the one-relation class and, on a GPU, one IVC step; the wrap chain is about two minutes — what remains is constraint evaluation in the zerocheck (CPU in every backend), the coset NTTs of streamed words, and the chain's size.
 
 and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
