@@ -1,0 +1,28 @@
+/* soft3 deck — on top of the house stylesheet */
+:root{--mint:#7dffc4;--cream:#fff8f0}
+.brand .dot{background:var(--mint);box-shadow:0 0 18px var(--mint)}
+.brand em{font-style:normal;color:var(--mint)}
+.hero-word{background-image:linear-gradient(90deg,#00ff00,#4d7cff,#8a6bff,#b07cff,#ff3b2f,#ff8c1a,#ffd400)}
+.rail .cta{background:var(--mint)}
+.parts{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{font:12px var(--mono);padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.3);text-decoration:none;opacity:.85}
+.chip:hover{border-color:var(--c);opacity:1}
+.slide.ink .chip{border-color:rgba(0,0,0,.35)}
+.fine .st{color:var(--c);font-weight:700}.slide.ink .fine .st{color:#000}
+.fine a{color:inherit}
+.deckdetail{--cream:#fff8f0;border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px 18px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);color:#fff;max-height:calc(100vh - var(--hud) - var(--rail) - 6vh);overflow:auto}
+.deckdetail .fig{border-top:0;padding-top:0}
+.deckdetail .fig svg{max-width:100%}
+.deckfig{width:100%;height:auto;display:block}
+.regt{width:100%;border-collapse:collapse;font:12px var(--mono)}
+.regt td{padding:6px 8px;border-top:1px solid rgba(255,255,255,.12);vertical-align:top}
+.regt td.dim{opacity:.6;font-size:11px}
+.regt .st-live{color:#7dffc4}.regt .st-published{color:#ffd400}.regt .st-unwired,.regt .st-blocked,.regt .st-dormant{color:#ff8c1a}.regt .st-spec,.regt .st-local{opacity:.6}
+.rung-panel{font-family:var(--mono)}
+.slide.one.wash .deckfig{max-height:48vh}
+.nums .n big{text-transform:none}
+@media (min-width:901px){.slide:not(.one) .body{grid-template-columns:minmax(0,46ch) minmax(0,1fr)}}
+@media (max-width:900px){.deckdetail{max-height:none}}
+body.ink .brand em{color:#000}
+.tiles a.tile{text-decoration:none}
+@media (max-width:900px){.regt td.dim{display:none}.regt{font-size:11px}.deckdetail{padding:10px}.nums .n big{font-size:clamp(16px,4.6vw,24px)!important}}
