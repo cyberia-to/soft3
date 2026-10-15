@@ -30,7 +30,11 @@ pub struct Settings {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Outcome {
     /// A block was accepted by the node.
-    Accepted { height: u64, id: String, nonce: u128 },
+    Accepted {
+        height: u64,
+        id: String,
+        nonce: u128,
+    },
     /// The tip moved or the template aged: refresh.
     Refresh,
     /// The node rejected the solved header (a bug on one side; logged).
@@ -39,7 +43,11 @@ pub enum Outcome {
 
 /// Hashrate for display only (never consensus): `n` hashes over `dt`.
 pub fn rate(n: u64, dt: Duration) -> f64 {
-    if dt.is_zero() { 0.0 } else { n as f64 / dt.as_secs_f64() }
+    if dt.is_zero() {
+        0.0
+    } else {
+        n as f64 / dt.as_secs_f64()
+    }
 }
 
 pub fn fmt_rate(hs: f64) -> String {
@@ -56,7 +64,9 @@ pub fn fmt_rate(hs: f64) -> String {
 
 /// A session salt: the high 64 bits of every nonce this process mines.
 pub fn salt() -> u64 {
-    let t = SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_default();
+    let t = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default();
     let mut m = Vec::new();
     m.extend_from_slice(&t.as_nanos().to_le_bytes());
     m.extend_from_slice(&std::process::id().to_le_bytes());
@@ -77,7 +87,8 @@ pub fn mine_template(
 ) -> Result<Outcome, String> {
     let header = template.header_bytes()?;
     let bits = template.bits_u32()?;
-    let target = decode_bits(bits).ok_or_else(|| format!("template bits {bits:#010x} are not canonical"))?;
+    let target =
+        decode_bits(bits).ok_or_else(|| format!("template bits {bits:#010x} are not canonical"))?;
     if target != template.target_u256()? {
         return Err("template target disagrees with its bits".into());
     }
@@ -95,7 +106,9 @@ pub fn mine_template(
         expected(&target)
     ));
     while !stop.load(Relaxed) {
-        let count = backend.dispatch().min((u64::MAX - low).min(u32::MAX as u64) as u32);
+        let count = backend
+            .dispatch()
+            .min((u64::MAX - low).min(u32::MAX as u64) as u32);
         if count == 0 {
             return Ok(Outcome::Refresh);
         }
@@ -107,12 +120,28 @@ pub fn mine_template(
             let nonce = base + i as u128;
             let solved = job.header_with(nonce);
             if !valid_pow(&solved, &target) {
-                return Err(format!("{}: nonce {nonce:#x} does not verify natively", backend.name()));
+                return Err(format!(
+                    "{}: nonce {nonce:#x} does not verify natively",
+                    backend.name()
+                ));
             }
-            log(&format!("found nonce {nonce:#034x} after {} hashes, {:.1}s", hashes, started.elapsed().as_secs_f64()));
-            let verdict = Client::retry(|| client.submit(&solved), 5, Duration::from_secs(8), |m| log(m))?;
+            log(&format!(
+                "found nonce {nonce:#034x} after {} hashes, {:.1}s",
+                hashes,
+                started.elapsed().as_secs_f64()
+            ));
+            let verdict = Client::retry(
+                || client.submit(&solved),
+                5,
+                Duration::from_secs(8),
+                |m| log(m),
+            )?;
             return Ok(match verdict {
-                Verdict::Accepted(a) => Outcome::Accepted { height: a.height, id: a.id, nonce },
+                Verdict::Accepted(a) => Outcome::Accepted {
+                    height: a.height,
+                    id: a.id,
+                    nonce,
+                },
                 Verdict::Stale => Outcome::Refresh,
                 Verdict::Rejected(r) => Outcome::Rejected(r),
             });
@@ -142,7 +171,10 @@ pub fn mine_template(
         if now - started >= s.refresh {
             return Ok(Outcome::Refresh);
         }
-        let unix = SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or_default().as_secs();
+        let unix = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_secs();
         if template.expires != 0 && unix >= template.expires {
             return Ok(Outcome::Refresh);
         }
@@ -157,7 +189,11 @@ pub fn mine_template(
 fn expected(target: &[u64; 4]) -> String {
     let bits = 256 - leading_zeros(target);
     let pow = target.iter().map(|w| w.count_ones()).sum::<u32>() == 1;
-    if pow { format!("2^{}", 257 - bits) } else { format!("≈2^{}", 256 - bits) }
+    if pow {
+        format!("2^{}", 257 - bits)
+    } else {
+        format!("≈2^{}", 256 - bits)
+    }
 }
 
 fn leading_zeros(t: &[u64; 4]) -> u32 {
@@ -174,20 +210,36 @@ fn leading_zeros(t: &[u64; 4]) -> u32 {
 
 /// `soft3 mine`: the loop over templates. Returns only on an unrecoverable
 /// error or when `stop` is raised.
-pub fn run(backend: &dyn Backend, s: &Settings, stop: &AtomicBool, log: &dyn Fn(&str)) -> Result<(), String> {
+pub fn run(
+    backend: &dyn Backend,
+    s: &Settings,
+    stop: &AtomicBool,
+    log: &dyn Fn(&str),
+) -> Result<(), String> {
     let client = Client::new(&s.node, &s.address);
     let salt = salt();
-    log(&format!("soft3 mine · chain {} · node {} · {} · to {}", s.chain, s.node, backend.name(), s.address));
+    log(&format!(
+        "soft3 mine · chain {} · node {} · {} · to {}",
+        s.chain,
+        s.node,
+        backend.name(),
+        s.address
+    ));
     let mut blocks = 0u64;
     while !stop.load(Relaxed) {
         let template = Client::retry(|| client.template(), 0, Duration::from_secs(30), |m| log(m))?;
         if template.chain != s.chain {
-            return Err(format!("node serves chain `{}`, not `{}`", template.chain, s.chain));
+            return Err(format!(
+                "node serves chain `{}`, not `{}`",
+                template.chain, s.chain
+            ));
         }
         match mine_template(&client, backend, &template, salt, s, stop, log)? {
             Outcome::Accepted { height, id, nonce } => {
                 blocks += 1;
-                log(&format!("block {height} accepted: {id} (nonce {nonce:#x}); {blocks} this session"));
+                log(&format!(
+                    "block {height} accepted: {id} (nonce {nonce:#x}); {blocks} this session"
+                ));
             }
             Outcome::Refresh => {}
             Outcome::Rejected(r) => log(&format!("rejected: {r}")),

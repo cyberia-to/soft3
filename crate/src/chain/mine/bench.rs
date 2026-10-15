@@ -2,7 +2,7 @@
 //! the conformance vector found by each (chain-conformance §5: the mined
 //! header at `GENESIS_BITS`, nonce 40,165,933).
 
-use super::local::{GENESIS_BITS, decode_bits, valid_pow};
+use super::local::{decode_bits, valid_pow, GENESIS_BITS};
 use super::run::{fmt_rate, rate};
 use super::{Backend, Job};
 use std::time::{Duration, Instant};
@@ -61,7 +61,9 @@ pub fn measure(backend: &dyn Backend, seconds: f64) -> Result<Row, String> {
 
 /// The markdown table of rows.
 pub fn table(rows: &[Row]) -> String {
-    let mut s = String::from("| backend | hashes | seconds | H/s | conformance §5 nonce |\n|---|---|---|---|---|\n");
+    let mut s = String::from(
+        "| backend | hashes | seconds | H/s | conformance §5 nonce |\n|---|---|---|---|---|\n",
+    );
     for r in rows {
         s.push_str(&format!(
             "| {} | {} | {:.1} | {} | {} |\n",

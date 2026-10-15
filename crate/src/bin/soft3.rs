@@ -323,9 +323,13 @@ fn cmd_mine(args: &[String]) {
         println!();
         println!("  soft3 mine --address NEURON [--chain pussy|bostrom] [--node URL]");
         println!("             [--backend auto|cpu|metal|webgpu] [--threads N]");
-        println!("  soft3 mine bench [--backend auto|cpu|metal|webgpu] [--threads N] [--seconds S]");
+        println!(
+            "  soft3 mine bench [--backend auto|cpu|metal|webgpu] [--threads N] [--seconds S]"
+        );
         println!();
-        println!("grinds hemera(header) < target over the 16-byte nonce; GET /template, POST /submit");
+        println!(
+            "grinds hemera(header) < target over the 16-byte nonce; GET /template, POST /submit"
+        );
         println!("(chain-wire §7); the template is refreshed when GET /tip moves.");
         println!();
         println!("defaults:");
@@ -377,7 +381,10 @@ fn cmd_mine(args: &[String]) {
         std::process::exit(2);
     }
     let Some(node) = a.node.or_else(|| default_node(&a.chain)) else {
-        eprintln!("unknown chain `{}` (pussy|bostrom), or pass --node", a.chain);
+        eprintln!(
+            "unknown chain `{}` (pussy|bostrom), or pass --node",
+            a.chain
+        );
         std::process::exit(2);
     };
     let backend = match mine::select(choice, a.threads) {
@@ -575,17 +582,34 @@ mod tests {
         assert_eq!(a.chain, "pussy");
         assert_eq!(a.backend, "auto");
         assert!(!a.bench);
-        let args: Vec<String> = ["bench", "--backend", "cpu", "--threads", "3", "--seconds", "2"]
-            .iter()
-            .map(|s| s.to_string())
-            .collect();
+        let args: Vec<String> = [
+            "bench",
+            "--backend",
+            "cpu",
+            "--threads",
+            "3",
+            "--seconds",
+            "2",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
         let a = parse_mine_args(&args).ok().unwrap();
         assert!(a.bench && a.backend == "cpu" && a.threads == 3 && a.seconds == 2);
         let args: Vec<String> = ["--address"].iter().map(|s| s.to_string()).collect();
-        assert!(matches!(parse_mine_args(&args), Err(NodeArgError::MissingValue(_))));
+        assert!(matches!(
+            parse_mine_args(&args),
+            Err(NodeArgError::MissingValue(_))
+        ));
         let args: Vec<String> = ["--bogus"].iter().map(|s| s.to_string()).collect();
-        assert!(matches!(parse_mine_args(&args), Err(NodeArgError::Unknown(_))));
-        assert_eq!(default_node("bostrom").as_deref(), Some("http://127.0.0.1:7782"));
+        assert!(matches!(
+            parse_mine_args(&args),
+            Err(NodeArgError::Unknown(_))
+        ));
+        assert_eq!(
+            default_node("bostrom").as_deref(),
+            Some("http://127.0.0.1:7782")
+        );
         assert_eq!(default_node("x"), None);
     }
 

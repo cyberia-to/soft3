@@ -8,7 +8,7 @@
 //! `base..base+count`, scans it in batches of [`BATCH`], and stops early
 //! once a lower hit than its own position is known.
 
-use super::job::{Job, absorb, passes, seed};
+use super::job::{absorb, passes, seed, Job};
 use hemera::field::Goldilocks;
 use hemera::permutation::permute_batch;
 use std::sync::atomic::{AtomicU32, Ordering::Relaxed};
@@ -95,8 +95,8 @@ impl super::Backend for Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::chain::mine::Backend;
     use crate::chain::mine::local::{pow2, valid_pow};
+    use crate::chain::mine::Backend;
 
     #[test]
     fn cpu_finds_the_least_passing_nonce_across_threads() {
@@ -105,12 +105,18 @@ mod tests {
         let job = Job::new(&header, pow2(244));
         let cpu = Cpu::new(4);
         let base = (7u128 << 64) + 12_345;
-        let i = cpu.search(&job, base, 1 << 15).expect("ok").expect("a nonce");
+        let i = cpu
+            .search(&job, base, 1 << 15)
+            .expect("ok")
+            .expect("a nonce");
         let one = Cpu::new(1);
         assert_eq!(one.search(&job, base, 1 << 15).expect("ok"), Some(i));
         assert!(valid_pow(&job.header_with(base + i as u128), &job.target));
         for k in 0..i {
-            assert!(!valid_pow(&job.header_with(base + k as u128), &job.target), "{k}");
+            assert!(
+                !valid_pow(&job.header_with(base + k as u128), &job.target),
+                "{k}"
+            );
         }
     }
 

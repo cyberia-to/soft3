@@ -128,11 +128,31 @@ mod tests {
         vector[104..136].fill(0x33);
         vector[136..168].fill(0x44);
         let jobs = [
-            (Job::new(&vector, pow2(232)), 40_165_000u128, 2_000u32, Some(933u32)),
-            (Job::new(&[0x3cu8; 168], pow2(246)), (5u128 << 64) + 100, 1 << 14, None),
+            (
+                Job::new(&vector, pow2(232)),
+                40_165_000u128,
+                2_000u32,
+                Some(933u32),
+            ),
+            (
+                Job::new(&[0x3cu8; 168], pow2(246)),
+                (5u128 << 64) + 100,
+                1 << 14,
+                None,
+            ),
             // just below a 2^64 boundary without crossing it (the caller's contract)
-            (Job::new(&[0x3cu8; 168], pow2(246)), ((9u128 << 64) | (u64::MAX as u128)) - 20_000, 1 << 14, None),
-            (Job::new(&[0x99u8; 168], [1, 0, 0, 0]), 0, 4096, Some(u32::MAX)),
+            (
+                Job::new(&[0x3cu8; 168], pow2(246)),
+                ((9u128 << 64) | (u64::MAX as u128)) - 20_000,
+                1 << 14,
+                None,
+            ),
+            (
+                Job::new(&[0x99u8; 168], [1, 0, 0, 0]),
+                0,
+                4096,
+                Some(u32::MAX),
+            ),
         ];
         for (job, base, count, known) in jobs {
             let want = backends[0].search(&job, base, count).expect("cpu");
@@ -145,7 +165,12 @@ mod tests {
                 assert!(valid_pow(&job.header_with(base + i as u128), &job.target));
             }
             for b in &backends[1..] {
-                assert_eq!(b.search(&job, base, count).expect("gpu"), want, "{} base {base:#x}", b.name());
+                assert_eq!(
+                    b.search(&job, base, count).expect("gpu"),
+                    want,
+                    "{} base {base:#x}",
+                    b.name()
+                );
             }
         }
     }

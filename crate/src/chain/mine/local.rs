@@ -84,12 +84,14 @@ pub fn encode_bits(target: &U256) -> u32 {
     }
     let mut mant: u32 = if size <= 3 {
         let mut v = 0u32;
-        for i in 0..size {
-            v |= (bytes[i] as u32) << (8 * i);
+        for (i, b) in bytes.iter().enumerate().take(size) {
+            v |= (*b as u32) << (8 * i);
         }
         v << (8 * (3 - size))
     } else {
-        (bytes[size - 3] as u32) | ((bytes[size - 2] as u32) << 8) | ((bytes[size - 1] as u32) << 16)
+        (bytes[size - 3] as u32)
+            | ((bytes[size - 2] as u32) << 8)
+            | ((bytes[size - 1] as u32) << 16)
     };
     if mant & 0x0080_0000 != 0 {
         mant >>= 8;
@@ -124,14 +126,21 @@ pub struct Asert {
 
 /// The target of the block after a parent at `parent_height` with time
 /// `parent_time`, anchored at `genesis_target` and `genesis_time`.
-pub fn asert(genesis_target: &U256, genesis_time: i64, parent_height: u64, parent_time: i64) -> Asert {
+pub fn asert(
+    genesis_target: &U256,
+    genesis_time: i64,
+    parent_height: u64,
+    parent_time: i64,
+) -> Asert {
     let dt = parent_time - genesis_time;
     let ideal = parent_height as i64 * BLOCK_TIME;
     let e = ((dt - ideal) * 65536).div_euclid(HALF_LIFE);
     let shifts = e >> 16;
     let frac = (e & 0xffff) as u64;
     let f = frac as u128;
-    let factor = 65536 + ((195_766_423_245_049 * f + 971_821_376 * f * f + 5127 * f * f * f + (1u128 << 47)) >> 48) as u64;
+    let factor = 65536
+        + ((195_766_423_245_049 * f + 971_821_376 * f * f + 5127 * f * f * f + (1u128 << 47)) >> 48)
+            as u64;
     let mut t = mul_u64(&widen(genesis_target), factor);
     t = if shifts < 0 {
         shr(&t, (-shifts).min(1024) as u32)
@@ -174,7 +183,10 @@ fn from_u128(v: u128) -> Wide {
 
 /// The low 256 bits, or `None` if anything above is set.
 fn narrow(w: &Wide) -> Option<U256> {
-    w[4..].iter().all(|&x| x == 0).then(|| [w[0], w[1], w[2], w[3]])
+    w[4..]
+        .iter()
+        .all(|&x| x == 0)
+        .then(|| [w[0], w[1], w[2], w[3]])
 }
 
 fn mul_u64(w: &Wide, m: u64) -> Wide {
@@ -194,7 +206,11 @@ fn mul_u64(w: &Wide, m: u64) -> Wide {
 /// word instead of losing them.
 fn shl(w: &Wide, n: u32) -> Wide {
     if n >= 1024 {
-        return if w.iter().all(|&x| x == 0) { [0; 16] } else { [u64::MAX; 16] };
+        return if w.iter().all(|&x| x == 0) {
+            [0; 16]
+        } else {
+            [u64::MAX; 16]
+        };
     }
     let (q, r) = ((n / 64) as usize, n % 64);
     let mut out = [0u64; 16];
@@ -209,13 +225,17 @@ fn shl(w: &Wide, n: u32) -> Wide {
         }
         out[i] = v;
     }
-    for i in (16 - q)..16 {
-        lost |= w[i] != 0;
+    for x in &w[16 - q..] {
+        lost |= *x != 0;
     }
     if r > 0 && w[15 - q] >> (64 - r) != 0 {
         lost = true;
     }
-    if lost { [u64::MAX; 16] } else { out }
+    if lost {
+        [u64::MAX; 16]
+    } else {
+        out
+    }
 }
 
 fn shr(w: &Wide, n: u32) -> Wide {
@@ -250,10 +270,17 @@ mod tests {
         assert_eq!(decode_bits(0x1d08_0000), Some(pow2(227)));
         let mut t = [0u64; 4];
         // 0x084860 · 256^26 = 0x084860 << 208
-        t[3] = 0x0848_60u64 << 16;
+        t[3] = 0x0008_4860_u64 << 16;
         assert_eq!(decode_bits(0x1d08_4860), Some(t));
         assert_eq!(decode_bits(0x0312_3456), Some([0x12_3456, 0, 0, 0]));
-        for bad in [0x1e00_1000u32, 0x0400_1234, 0x0100_3456, 0x1d80_0000, 0, 0x1f01_0000] {
+        for bad in [
+            0x1e00_1000u32,
+            0x0400_1234,
+            0x0100_3456,
+            0x1d80_0000,
+            0,
+            0x1f01_0000,
+        ] {
             assert_eq!(decode_bits(bad), None, "{bad:#x}");
         }
         assert_eq!(encode_bits(&pow2(228)), 0x1d10_0000);
@@ -279,14 +306,156 @@ mod tests {
     fn header_vectors() {
         let h = vector_header(0x1d10_0000, 1_762_349_000, 0);
         let hex: String = block_id(&h).iter().map(|b| format!("{b:02x}")).collect();
-        assert_eq!(hex, "bdfbbff94e6e17eec9169932276825a0f4957f6f3a6af9030439979eacaeb58d");
+        assert_eq!(
+            hex,
+            "bdfbbff94e6e17eec9169932276825a0f4957f6f3a6af9030439979eacaeb58d"
+        );
         assert!(!valid_pow(&h, &pow2(228)));
         let h = vector_header(0x1e01_0000, 1_793_885_850, 40_165_933);
         let hex: String = block_id(&h).iter().map(|b| format!("{b:02x}")).collect();
-        assert_eq!(hex, "d1eec40d1db983bb3df0946890538bec4ba9712fb26b82316efc6b162f000000");
+        assert_eq!(
+            hex,
+            "d1eec40d1db983bb3df0946890538bec4ba9712fb26b82316efc6b162f000000"
+        );
         assert!(valid_pow(&h, &pow2(232)));
         assert!(!valid_pow(&h, &pow2(228)));
-        assert!(!valid_pow(&vector_header(0x1e01_0000, 1_793_885_850, 40_165_932), &pow2(232)));
+        assert!(!valid_pow(
+            &vector_header(0x1e01_0000, 1_793_885_850, 40_165_932),
+            &pow2(232)
+        ));
+    }
+
+    /// chain-conformance §4, behavioral: a chain at T-spacing holds bits;
+    /// T/2 blocks for 20 blocks halve the target (factor in [1.9, 2.1])
+    /// after 600 s of block time; a 100× slowdown recovers the T interval
+    /// within 70 minutes of simulated wall time. Hash rate is simulated
+    /// deterministically: a block takes `expected_hashes / rate` seconds
+    /// (integer seconds, rounded to nearest), where
+    /// `expected_hashes = 2^256/(target+1)`; no randomness, no floats.
+    fn simulate(genesis_target: &U256, steps: &[(u64, u64)]) -> Vec<(u64, i64, U256)> {
+        // steps: (blocks, hash rate in H/s) phases; returns (height, time, target of the next block)
+        let mut out = Vec::new();
+        let (mut h, mut t) = (0u64, 0i64);
+        let mut target = *genesis_target;
+        for &(blocks, rate) in steps {
+            for _ in 0..blocks {
+                // seconds a block at `target` and `rate`: 2^256 / (target+1) / rate, nearest
+                let exp = expected_hashes(&target);
+                let secs = ((exp + rate as u128 / 2) / rate as u128) as i64;
+                t += secs.max(1);
+                h += 1;
+                let a = asert(genesis_target, 0, h, t);
+                target = a.target;
+                out.push((h, t, target));
+            }
+        }
+        out
+    }
+
+    /// `2^256 / (target + 1)` for targets of the form `2^k` or close: via
+    /// the leading 128 bits (test accuracy, not consensus).
+    fn expected_hashes(target: &U256) -> u128 {
+        // work ≈ 2^256 / target: shift so the target fits 64 bits
+        let lz = {
+            let mut z = 0;
+            for w in target.iter().rev() {
+                if *w == 0 {
+                    z += 64
+                } else {
+                    z += w.leading_zeros();
+                    break;
+                }
+            }
+            z
+        };
+        let bits = 256 - lz; // target in [2^(bits-1), 2^bits)
+        let top = if bits > 64 {
+            let w = widen(target);
+            let s = shr(&w, bits - 64);
+            s[0]
+        } else {
+            target[0]
+        };
+        // 2^256/target = 2^(256-(bits-64)) / top = 2^(320-bits)/top
+        let num_shift = 320 - bits;
+        if num_shift >= 128 {
+            ((1u128 << 127) / top as u128) << (num_shift - 127)
+        } else {
+            (1u128 << num_shift) / top as u128
+        }
+    }
+
+    #[test]
+    fn asert_behaviour_and_hundredfold_step() {
+        let g = pow2(228);
+        let base_rate: u64 = (expected_hashes(&g) / 30) as u64; // exactly T-spacing at 2^228
+                                                                // 1. T-spacing holds bits
+        let steady = simulate(&g, &[(200, base_rate)]);
+        for (h, _, target) in &steady {
+            assert_eq!(encode_bits(target), 0x1d10_0000, "height {h}");
+        }
+        // 2. blocks at T/2 spacing: after 600 s of block time (40 blocks at
+        //    15 s, the chain 600 s = one half-life ahead) the target has
+        //    halved — factor in [1.9, 2.1]
+        let a = asert(&g, 0, 40, 600);
+        let ratio_x10 = expected_hashes(&a.target) * 10 / expected_hashes(&g);
+        assert!(
+            (19..=21).contains(&ratio_x10),
+            "work ratio ×10 = {ratio_x10}"
+        );
+        assert_eq!(a.bits, 0x1d08_0000);
+        // 3. a 100× step: how long until the interval is back near T, and
+        //    after the farm leaves (÷100), how long until blocks flow again.
+        //    Lead grows at most 30 s a block, absorbing 100× needs
+        //    log2(100) half-lives ≈ 3,986 s of lead, so > 133 blocks by
+        //    construction; the collapse recovers in H·log2(100) ≈ 66 min
+        //    of wall time whether or not blocks arrive (chain.md §1.5).
+        let run = simulate(&g, &[(1_000, 100 * base_rate)]);
+        let settled = run
+            .windows(2)
+            .position(|w| w[1].1 - w[0].1 >= 27)
+            .expect("settles");
+        let (h_set, t_set, _) = run[settled + 1];
+        eprintln!(
+            "asert 100x step: interval ≥ 27 s from block {h_set}, after {t_set}s wall ({} min)",
+            t_set / 60
+        );
+        assert!(
+            h_set <= 300 && t_set <= 3 * 3600,
+            "100x absorbed in {h_set} blocks / {t_set}s"
+        );
+        let tail = run[999].1 - run[998].1;
+        assert!(
+            (27..=33).contains(&tail),
+            "interval after 1000 blocks at 100x: {tail}s"
+        );
+        // the collapse: steady at 100× (continue from the settled state), then ÷100
+        let both = simulate(&g, &[(1_000, 100 * base_rate), (200, base_rate)]);
+        let t_leave = both[999].1;
+        let first_slow = both[1000].1 - both[999].1;
+        let back = both[1000..]
+            .windows(2)
+            .find(|w| w[1].1 - w[0].1 <= 60)
+            .map(|w| w[1].1 - t_leave)
+            .expect("recovers");
+        eprintln!("asert 100x collapse: first block {first_slow}s ({} min), blocks ≤ 60 s again after {back}s ({} min)", first_slow / 60, back / 60);
+        assert!(back <= 70 * 60, "recovery took {back}s");
+        // 4. the same step from the real genesis target 2^232
+        let g2 = pow2(232);
+        let r2: u64 = (expected_hashes(&g2) / 30) as u64;
+        let run2 = simulate(&g2, &[(20, r2), (1_000, 100 * r2)]);
+        let first_fast = run2[20].1 - run2[19].1;
+        let settled2 = run2[20..]
+            .windows(2)
+            .position(|w| w[1].1 - w[0].1 >= 27)
+            .expect("settles");
+        let (h2, t2, _) = run2[20 + settled2 + 1];
+        let last = run2.last().unwrap();
+        eprintln!(
+            "asert 100x step @2^232: first block {first_fast}s, interval ≥ 27 s from block {h2} ({}s wall), bits after 1000 blocks {:#x}",
+            t2 - run2[19].1,
+            encode_bits(&last.2)
+        );
     }
 
     #[test]
@@ -303,7 +472,11 @@ mod tests {
         ];
         for (h, t, e, shifts, frac, factor, bits) in rows {
             let a = asert(&g, 0, h, t);
-            assert_eq!((a.e, a.shifts, a.frac, a.factor, a.bits), (e, shifts, frac, factor, bits), "parent {h} @ {t}");
+            assert_eq!(
+                (a.e, a.shifts, a.frac, a.factor, a.bits),
+                (e, shifts, frac, factor, bits),
+                "parent {h} @ {t}"
+            );
         }
     }
 }

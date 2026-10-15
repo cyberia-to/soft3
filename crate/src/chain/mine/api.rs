@@ -2,7 +2,7 @@
 //! `POST /submit`, `GET /tip` — the JSON shapes and a blocking client with
 //! retry.
 
-use super::local::{HEADER_BYTES, U256, from_bytes};
+use super::local::{from_bytes, HEADER_BYTES, U256};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
@@ -74,9 +74,9 @@ pub fn unhex(s: &str) -> Result<Vec<u8>, String> {
 
 impl Template {
     pub fn header_bytes(&self) -> Result<[u8; HEADER_BYTES], String> {
-        unhex(&self.header)?
-            .try_into()
-            .map_err(|v: Vec<u8>| format!("template header is {} bytes, not {HEADER_BYTES}", v.len()))
+        unhex(&self.header)?.try_into().map_err(|v: Vec<u8>| {
+            format!("template header is {} bytes, not {HEADER_BYTES}", v.len())
+        })
     }
 
     pub fn target_u256(&self) -> Result<U256, String> {
@@ -87,7 +87,8 @@ impl Template {
     }
 
     pub fn bits_u32(&self) -> Result<u32, String> {
-        u32::from_str_radix(self.bits.trim_start_matches("0x"), 16).map_err(|e| format!("template bits: {e}"))
+        u32::from_str_radix(self.bits.trim_start_matches("0x"), 16)
+            .map_err(|e| format!("template bits: {e}"))
     }
 }
 
@@ -118,20 +119,36 @@ impl Client {
 
     pub fn template(&self) -> Result<Template, String> {
         let url = format!("{}/template?to={}", self.node, self.address);
-        let r = self.agent.get(&url).call().map_err(|e| format!("GET /template: {e}"))?;
+        let r = self
+            .agent
+            .get(&url)
+            .call()
+            .map_err(|e| format!("GET /template: {e}"))?;
         json(r, "GET /template")
     }
 
     pub fn tip(&self) -> Result<Tip, String> {
         let url = format!("{}/tip", self.node);
-        let r = self.agent.get(&url).call().map_err(|e| format!("GET /tip: {e}"))?;
+        let r = self
+            .agent
+            .get(&url)
+            .call()
+            .map_err(|e| format!("GET /tip: {e}"))?;
         json(r, "GET /tip")
     }
 
     pub fn submit(&self, header: &[u8; HEADER_BYTES]) -> Result<Verdict, String> {
         let url = format!("{}/submit", self.node);
-        let body = serde_json::to_string(&Submit { header: hex(header) }).expect("json");
-        match self.agent.post(&url).set("Content-Type", "application/json").send_string(&body) {
+        let body = serde_json::to_string(&Submit {
+            header: hex(header),
+        })
+        .expect("json");
+        match self
+            .agent
+            .post(&url)
+            .set("Content-Type", "application/json")
+            .send_string(&body)
+        {
             Ok(r) => Ok(Verdict::Accepted(json(r, "POST /submit")?)),
             Err(ureq::Error::Status(409, _)) => Ok(Verdict::Stale),
             Err(ureq::Error::Status(code @ (400 | 422), r)) => {
@@ -144,7 +161,12 @@ impl Client {
 
     /// `f` until it succeeds, with backoff 1 s, 2 s, … capped at `cap`,
     /// at most `tries` attempts (0: forever); the last error otherwise.
-    pub fn retry<T>(mut f: impl FnMut() -> Result<T, String>, tries: u32, cap: Duration, log: impl Fn(&str)) -> Result<T, String> {
+    pub fn retry<T>(
+        mut f: impl FnMut() -> Result<T, String>,
+        tries: u32,
+        cap: Duration,
+        log: impl Fn(&str),
+    ) -> Result<T, String> {
         let mut wait = Duration::from_secs(1);
         let mut n = 0;
         loop {
@@ -176,16 +198,24 @@ mod tests {
             prev: "11".repeat(32),
             header: "00".repeat(168),
             bits: "1e010000".into(),
-            target: hex(&crate::chain::mine::local::to_bytes(&crate::chain::mine::local::pow2(232))),
+            target: hex(&crate::chain::mine::local::to_bytes(
+                &crate::chain::mine::local::pow2(232),
+            )),
             body: "0100000001000700".into(),
             expires: 1_793_885_850,
         };
         let s = serde_json::to_string(&t).unwrap();
         assert_eq!(serde_json::from_str::<Template>(&s).unwrap(), t);
         assert_eq!(t.bits_u32().unwrap(), 0x1e01_0000);
-        assert_eq!(t.target_u256().unwrap(), crate::chain::mine::local::pow2(232));
+        assert_eq!(
+            t.target_u256().unwrap(),
+            crate::chain::mine::local::pow2(232)
+        );
         assert_eq!(t.header_bytes().unwrap(), [0u8; 168]);
-        assert!(serde_json::from_str::<Template>(&s.replace("\"chain\"", "\"extra\":1,\"chain\"")).is_err());
+        assert!(
+            serde_json::from_str::<Template>(&s.replace("\"chain\"", "\"extra\":1,\"chain\""))
+                .is_err()
+        );
     }
 
     #[test]

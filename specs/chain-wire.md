@@ -224,6 +224,34 @@ The existing adapter (native-node.md: bounds, request identity, error codes
 | `GET /v2/history?after=POSITION&limit=N` | `cyber/native-history/v1` entries | kept; each entry gains `height`, `block` and `txid`; `encoding: CGOP-v1-hex` kept for cyberlink entries |
 | `POST /v1/link`, `/v1/pay`, `/v1/frame`, `/v2/frame`, `GET /log` | `410 Gone` on chain nodes, with a pointer to `POST /tx` | the unsigned chaosnet ingress has no place on a public chain; `spacepussy-test` keeps them |
 
+Mining routes, the shapes the reference miner (`soft3 mine`,
+`crate/src/chain/mine/api.rs`) speaks; hex is lowercase, bytes in wire
+order; unknown fields are rejected:
+
+```
+GET /template?to={neuron}                       → 200 application/json
+{"chain":"pussy","height":H,"prev":"<hex32: tip id>",
+ "header":"<hex168: the candidate with nonce zero>","bits":"1e010000",
+ "target":"<hex32: the 32 LE bytes of decode(bits)>","body":"<hex: the body>",
+ "expires":<unix second, 0 = none>}
+
+POST /submit    {"header":"<hex168: the solved header>"}
+  200 {"id":"<hex32: block id>","height":H}   accepted and relayed
+  409 {"error":"stale template"}             prev is no longer the tip
+  422 {"error":"<reason>"}                   pow, bits or syntax (§5.5 1–5) failed
+  400 {"error":"<reason>"}                   malformed request
+
+GET /tip        {"height":H,"id":"<hex32>","chainwork":"<decimal u256>"}
+```
+
+`target` repeats `bits` decoded so an external worker needs no compact
+codec; a node always fills both and a miner may check they agree. A
+template is tied to its `prev`: the miner polls `GET /tip` (every 2 s in
+the reference) and refreshes when `id` moves, and refreshes anyway after
+30 s to pick up new transactions. The 16-byte nonce is the miner's alone
+(bytes 24..40); nothing else in the header may change between template and
+submit.
+
 `/status` fields (cybermark, one per line as today): `chain`, `protocol:
 soft3/chain/1`, `rule-set`, `activations`, `engine: chain+cybergraph+bbg`,
 `version`, `moniker`, `height`, `tip`, `chainwork`, `bits`, `next-bits`,

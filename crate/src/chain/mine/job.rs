@@ -18,7 +18,7 @@
 //! [`super::local::valid_pow`] on the header it came from, which is what
 //! the tests pin.
 
-use super::local::{BITS_OFFSET, HEADER_BYTES, NONCE_OFFSET, U256, below};
+use super::local::{below, BITS_OFFSET, HEADER_BYTES, NONCE_OFFSET, U256};
 use hemera::field::Goldilocks;
 
 /// Hemera's rate: eight limbs a block.
@@ -86,7 +86,11 @@ impl Job {
 
     /// The header's compact bits field.
     pub fn bits(&self) -> u32 {
-        u32::from_le_bytes(self.header[BITS_OFFSET..BITS_OFFSET + 4].try_into().expect("4 bytes"))
+        u32::from_le_bytes(
+            self.header[BITS_OFFSET..BITS_OFFSET + 4]
+                .try_into()
+                .expect("4 bytes"),
+        )
     }
 }
 
@@ -105,18 +109,18 @@ pub fn seed(job: &Job, n: u128) -> [Goldilocks; 16] {
     let (a3, a4, a5) = nonce_lanes(n);
     let mut s: [Goldilocks; 16] = core::array::from_fn(|i| Goldilocks::new(job.init[i]));
     for (l, b) in s.iter_mut().zip(job.blocks[0]) {
-        *l = *l + Goldilocks::new(b);
+        *l += Goldilocks::new(b);
     }
-    s[3] = s[3] + Goldilocks::new(a3);
-    s[4] = s[4] + Goldilocks::new(a4);
-    s[5] = s[5] + Goldilocks::new(a5);
+    s[3] += Goldilocks::new(a3);
+    s[4] += Goldilocks::new(a4);
+    s[5] += Goldilocks::new(a5);
     s
 }
 
 /// Block `b` (1..4) added lane-wise; the length lane set for the last.
 pub fn absorb(job: &Job, s: &mut [Goldilocks; 16], b: usize) {
     for (l, v) in s.iter_mut().zip(job.blocks[b]) {
-        *l = *l + Goldilocks::new(v);
+        *l += Goldilocks::new(v);
     }
     if b == 3 {
         s[job.tail_lane] = Goldilocks::new(job.tail);
@@ -152,7 +156,11 @@ mod tests {
                 absorb(&job, &mut s, b);
                 hemera::permutation::permute(&mut s);
             }
-            assert_eq!(digest(&s), from_bytes(&block_id(&job.header_with(n))), "nonce {n}");
+            assert_eq!(
+                digest(&s),
+                from_bytes(&block_id(&job.header_with(n))),
+                "nonce {n}"
+            );
         }
     }
 
