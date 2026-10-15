@@ -23,6 +23,9 @@ instances, explicit proof profiles and independently placed workers.
 | [filenames](filenames.md) | portable source-tree paths |
 | [vault composition](vault.md) | first storage/sync use case; secret custody, complete replicas and device-loss recovery |
 | [routing](routing.md) | the wire obeys the graph: greedy forwarding by locus over FOLLOW links, gravity-pressure fallback; radio stays transport, tru never dials |
+| [chain](chain.md) | the phase-1 root chain: hemera proof of work, ASERT, two neuron transaction kinds plus coinbase, bbg state root, genesis from the burial, heaviest chain with a reorg limit and sunset checkpoints, scheduled forks for the shadow cores |
+| [chain-wire](chain-wire.md) | the chain's network: cyber-radio topics and request streams, header-first sync, discovery through the graph, limits, the HTTP surface cyb and true-cyber use |
+| [chain-conformance](chain-conformance.md) | acceptance vectors: hemera anchors, compact target, ASERT, header and PoW, transactions, identities, state, consensus, genesis pipeline, wire |
 
 Soft3 owns composition invariants. Trident, warriors, proof systems and node
 products own their specialized interfaces. [Foundations](../docs/README.md)
