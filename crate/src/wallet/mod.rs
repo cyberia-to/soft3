@@ -85,6 +85,7 @@ impl SignedTx {
 /// bostrom or pussy holder signs with the key and mnemonic they already have
 /// (chain.md §2.8). `account_id = ripemd160(sha256(pubkey))` is what the
 /// claim tx carries for the address-only accounts.
+#[derive(Clone)]
 pub struct Signer {
     key: SigningKey,
     pub pubkey: [u8; 33],

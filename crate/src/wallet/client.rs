@@ -36,6 +36,24 @@ impl Status {
         self.fields.iter().find(|(k, _)| k == key).map(|(_, v)| v.as_str())
     }
 
+    /// The chain's native denom: the `denom` field when published, else
+    /// the one the chain name implies (`pussy` → `pussy`, `bostrom` → `boot`).
+    pub fn native_denom(&self) -> String {
+        if let Some(d) = self.field("denom") {
+            return d.to_string();
+        }
+        match self.chain.as_str() {
+            "bostrom" => "boot".into(),
+            "pussy" | "pussy-rc" => "pussy".into(),
+            other => other.to_string(),
+        }
+    }
+
+    /// `token(native_denom)` — the id a transfer of the native coin carries.
+    pub fn native_token(&self) -> [u8; 32] {
+        super::tx::token(&self.native_denom())
+    }
+
     /// Parse a cybermark status document.
     pub fn parse(body: &str) -> Result<Self, Error> {
         let mut fields = Vec::new();
@@ -346,6 +364,8 @@ mod tests {
         assert_eq!(s.root, "cd".repeat(32));
         assert!(!s.catching_up);
         assert_eq!(s.field("protocol"), Some("soft3/chain/1"));
+        assert_eq!(s.native_denom(), "pussy");
+        assert_eq!(s.native_token(), super::super::tx::token("pussy"));
     }
 
     #[test]
@@ -357,6 +377,10 @@ mod tests {
     fn chaosnet_status_has_no_chain_id() {
         let s = Status::parse("---\nchain: spacepussy-test\nheight: 3\ngenesis: 1757000000\n---\n").unwrap();
         assert_eq!(s.chain_id, None);
+        let b = Status::parse("---\nchain: bostrom\nheight: 3\n---\n").unwrap();
+        assert_eq!(b.native_denom(), "boot");
+        let m = Status::parse("---\nchain: mockchain\nheight: 3\ndenom: testpussy\n---\n").unwrap();
+        assert_eq!(m.native_denom(), "testpussy");
     }
 
     #[test]
