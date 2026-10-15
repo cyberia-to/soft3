@@ -541,19 +541,26 @@ first frame `(*, k)` with that URN, then exactly one `p` frame, then `b`
 frames, then `l` frames, in the canonical order below, nothing else. Its
 particle is the chain id.
 
-| type | name | data | size |
+| frame | name | data | size |
 |---|---|---|---|
-| `p` | params | `version: u32 (=1) ‖ name ‖ hrp ‖ denom ‖ time: u64 ‖ bits: u32 ‖ subsidy: u64 ‖ checkpoint_key: [u8;33] ‖ checkpoint_sunset: u64` where each string is `len: u8 ‖ utf8` | variable |
-| `b` | balance | `owner: [u8;32] ‖ token: [u8;32] ‖ amount: u64` | 72 |
-| `l` | link | `neuron: [u8;32] ‖ p: [u8;32] ‖ q: [u8;32] ‖ height: u64` | 104 |
+| `(~, p)` | params | `version: u32 (=1) ‖ name ‖ hrp ‖ denom ‖ time: u64 ‖ bits: u32 ‖ subsidy: u64 ‖ checkpoint_key: [u8;33] ‖ checkpoint_sunset: u64` where each string is `len: u8 ‖ utf8` | variable |
+| `($, b)` | balance | `owner: [u8;32] ‖ token: [u8;32] ‖ amount: u64` | 72 |
+| `(#, l)` | link | `neuron: [u8;32] ‖ p: [u8;32] ‖ q: [u8;32] ‖ height: u64` | 104 |
+
+A frame is `0x1F ‖ sigil ‖ render ‖ LEB128(len) ‖ data` as the `tade` crate
+encodes it (`Chunk::encode`); the pair column names `(sigil, render)`. A
+reader rejects any other pair, any other order, a second `p`, and trailing
+bytes — the file is canonical or it is not a genesis.
 
 Canonical order: `b` frames sorted by `(owner, token)` bytewise, no
 duplicates, `amount > 0`; `l` frames in the order of the source
 (`cyberlinks_indexed.csv.gz` is in chain order: ascending old height, then
 the tx order inside the block), duplicates kept (the old chain counted
-re-links). `subsidy` is written explicitly (computed by the pipeline from
-§3.5) so a reader needs no arithmetic to know it. `checkpoint_key` all-zero
-means no checkpoints (§5.3).
+re-links); the height-0 links of §4.2 (passports) precede the source links.
+`subsidy` is written explicitly (computed by the pipeline from §3.5) so a
+reader needs no arithmetic to know it. `checkpoint_key` all-zero means no
+checkpoints (§5.3) and is what the pipeline writes until the foundation key
+is set.
 
 Applying genesis: every `b` becomes a balance entry and a `coins` total; every
 `l` runs bbg `insert` for one link with `token = τ_native`, `amount = 0`,
@@ -582,9 +589,24 @@ Rules:
   `milliampere`, `millivolt`, `tocyb` on bostrom; `pussy`, `liquidpussy` and
   the rest on pussy; IBC and factory denoms carried under their full denom
   string as the token name;
-- owners: `secp256k1` pubkeys → `neuron_of`; the module/contract accounts
+- owners: `secp256k1` pubkeys → `neuron_of` (the pipeline recomputes the
+  address from the key and refuses a mismatch); the module/contract accounts
   and address-only accounts → `legacy_owner`; multisig and non-secp256k1 key
-  types → `legacy_owner` (claimable later by a fork rule, not by kind 3);
+  types → `legacy_owner` (claimable later by a fork rule, not by kind 3).
+  `account_id` is the bech32 payload: 20 bytes for a key account, 32 for a
+  contract (the passport contract is `legacy_owner(hrp, 32-byte id)`);
+- staking pools: the delegated and undelegating amounts returned to accounts
+  leave `bonded_tokens_pool` / `not_bonded_tokens_pool`; the rounding dust
+  the pools still hold stays on `bonded_tokens_pool` under `legacy_owner`,
+  so Σ of the native coin is exactly the bank supply at halt;
+- pools: each LP position dissolves into the pool's reserve denoms,
+  `floor(lp · reserve / pool_coin_supply)` per denom; the reserve account
+  keeps the rounding dust; pool coins are not carried; a drained pool (no
+  reserve left) dissolves to nothing;
+- u64: a `b` frame and a `coins` total carry a u64; a denom with any
+  balance or a total supply above 2^64 − 1 (18-decimal IBC vouchers) is not
+  carried at all and is listed in the genesis report; the native coin must
+  never be among them;
 - stake: delegated and undelegating balances are liquid at genesis on the
   phase-1 chain — there is no staking in a pure-PoW rule set. The launch-page
   decision "stake at genesis is bonded uniformly from the snapshot" is a
@@ -596,7 +618,10 @@ Rules:
   when not (2.37 % of bostrom particles) — and emits one naming link
   `hemera(cid_string) → particle` per re-addressed CID, authored by the
   genesis neuron `[0u8; 32]` at height 0, so the old address stays
-  resolvable in the graph;
+  resolvable in the graph. The first genesis fetches no bytes: every CID is
+  the black hole `hemera(cid_string)` and, the two identities coinciding,
+  no naming link is emitted; the content particle sparks when bytes
+  surface (file crate, row 20);
 - passports: each of the 47,837 bostrom passports becomes one genesis link
   `owner_neuron → hemera("passport:" ‖ nickname)`, height 0; the 8.97 T BOOT
   held by the passport contract stays under
@@ -607,14 +632,16 @@ Rules:
   TOCYB × 666 → CYB rule belongs to $CYB genesis (phase 3) and is not
   executed by the phase-1 chain;
 - pussy supply: `manifest.json` records `total_post_swap_pussy`
-  (1,152,075,800,167,936,256) with the minted-for-swap amount; the pipeline
-  uses balances after the swap, so S0 for pussy is that figure minus IBC
-  escrow handling as the pipeline documents it.
+  (1,152,075,800,167,936,256) with a hypothetical minted-for-swap amount
+  priced from pool reserves; no swap is executed at genesis (every denom is
+  carried as its own token instead), so S0 for pussy is the bank supply at
+  halt, 1,099,389,810,279,114,036, and `SUBSIDY = 10,458,426,657`.
 
-The pipeline is a deterministic program (`bostrom/snapshot` scripts extended)
-whose output file particle is published on the launch page and in the
-binary; two independent runs must produce byte-identical files
-(chain-conformance §6).
+The pipeline is a deterministic program — `soft3 genesis build` in
+`soft3/crate/src/genesis/` (`specs/genesis.md`; `chain/genesis.rs` consumes
+its output through `soft3::genesis::state::load`) — whose output file
+particle is published on the launch page and in the binary; two independent
+runs must produce byte-identical files (chain-conformance §10).
 
 ### 4.3 block 0
 

@@ -44,6 +44,7 @@ fn main() {
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
         "mine" => cmd_mine(&args[1..]),
+        "genesis" => cmd_genesis(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -213,6 +214,9 @@ fn cmd_node(args: &[String]) {
         println!("soft3 node — run spacepussy-test (cybergraph + bbg)");
         println!();
         println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+    println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
+    println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
+    println!("  soft3 genesis verify FILE [--root]");
         println!();
         println!("engine: cybergraph processor + authenticated bbg state");
         println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
@@ -458,6 +462,9 @@ fn print_help() {
     println!("  soft3 mine --address NEURON [--chain pussy|bostrom] [--node URL]");
     println!("             [--backend auto|cpu|metal|webgpu] [--threads N]");
     println!("  soft3 mine bench [--backend ...] [--threads N] [--seconds S]");
+    println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
+    println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
+    println!("  soft3 genesis verify FILE [--root]");
     println!("  soft3 manifesto");
     println!("  soft3 version");
     println!();
@@ -642,5 +649,121 @@ mod tests {
     fn hostname_fallback_defaults_when_neither_env_is_set() {
         let got = hostname_fallback_from(|_: &str| Err(std::env::VarError::NotPresent));
         assert_eq!(got, "soft3-node");
+    }
+}
+
+/// `soft3 genesis build|verify` — burial snapshot → genesis file (tade
+/// stream, `specs/chain.md` §4) → block-0 state root; `specs/genesis.md`.
+fn cmd_genesis(args: &[String]) {
+    use soft3::genesis::{self, Chain, Options};
+    let sub = args.first().map(|s| s.as_str()).unwrap_or("");
+    let value = |flag: &str| -> Option<String> {
+        args.iter().position(|a| a == flag).and_then(|i| args.get(i + 1)).cloned()
+    };
+    let has = |flag: &str| args.iter().any(|a| a == flag);
+    let print_root = |root: &Option<String>, block0: &Option<String>, blocked: &Option<std::collections::BTreeMap<String, String>>| {
+        match (root, blocked) {
+            (Some(r), _) => {
+                println!("  state_root {r}");
+                println!("  block0_id  {}", block0.as_deref().unwrap_or("-"));
+            }
+            (None, Some(blocked)) => {
+                println!("  state_root BLOCKED — dimensions over the lens commitment limit:");
+                for (d, why) in blocked {
+                    println!("    {d:<12} {why}");
+                }
+            }
+            (None, None) => println!("  state_root skipped (--no-root)"),
+        }
+    };
+    match sub {
+        "build" => {
+            let Some(chain) = value("--chain").and_then(|c| Chain::parse(&c)) else {
+                eprintln!("genesis build: --chain pussy|bostrom is required");
+                std::process::exit(2);
+            };
+            let Some(snapshot) = value("--snapshot") else {
+                eprintln!("genesis build: --snapshot DIR (holding manifest.json) is required");
+                std::process::exit(2);
+            };
+            let Some(out) = value("--out") else {
+                eprintln!("genesis build: --out FILE (the genesis .tade) is required");
+                std::process::exit(2);
+            };
+            let time = match value("--time") {
+                Some(t) => match t.parse::<u64>() {
+                    Ok(t) => Some(t),
+                    Err(_) => {
+                        eprintln!("genesis build: --time must be unix seconds");
+                        std::process::exit(2);
+                    }
+                },
+                None => None,
+            };
+            let options = Options {
+                cache: value("--cache").map(PathBuf::from).unwrap_or_else(|| Options::default_cache(&chain)),
+                root: !has("--no-root"),
+                export: value("--export").map(PathBuf::from),
+                time,
+            };
+            let started = std::time::Instant::now();
+            match genesis::build(chain, &PathBuf::from(snapshot), &PathBuf::from(&out), &options) {
+                Ok(r) => {
+                    println!("genesis {} · particle {}", r.chain, r.particle);
+                    println!("  file       {out} ({} bytes, sha256 {})", r.file_bytes, r.file_sha256);
+                    println!("  time       {}", r.time);
+                    println!("  S0         {}  subsidy {}", r.s0, r.subsidy);
+                    print_root(&r.state_root, &r.block0_id, &r.root_blocked);
+                    for (k, v) in &r.counts {
+                        println!("  {k:<34} {v}");
+                    }
+                    for (denom, (token, sum)) in &r.tokens {
+                        println!("  token:{denom:<28} {sum}  {token}");
+                    }
+                    if let Some(c) = &r.state_counts {
+                        for (k, v) in c {
+                            println!("  bbg:{k:<30} {v}");
+                        }
+                    }
+                    if let Some(f) = &r.state_fields {
+                        for (k, v) in f {
+                            println!("  fields:{k:<27} {v}");
+                        }
+                    }
+                    for (k, v) in &r.gaps {
+                        println!("  gap:{k} {v}");
+                    }
+                    println!("  elapsed {} s", started.elapsed().as_secs());
+                }
+                Err(e) => {
+                    eprintln!("genesis build failed: {e}");
+                    std::process::exit(1);
+                }
+            }
+        }
+        "verify" => {
+            let Some(path) = args.get(1).filter(|a| !a.starts_with("--")) else {
+                eprintln!("genesis verify: FILE is required");
+                std::process::exit(2);
+            };
+            match genesis::verify(&PathBuf::from(path), has("--root")) {
+                Ok(v) => {
+                    println!("genesis particle {}", v.particle);
+                    println!("  S0 {}  subsidy {}  b {}  l {}", v.s0, v.subsidy, v.b_frames, v.l_frames);
+                    if has("--root") {
+                        print_root(&v.state_root, &v.block0_id, &v.root_blocked);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("genesis verify failed: {e}");
+                    std::process::exit(1);
+                }
+            }
+        }
+        _ => {
+            eprintln!("usage: soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
+            eprintln!("       soft3 genesis verify FILE [--root]");
+            std::process::exit(2);
+        }
     }
 }

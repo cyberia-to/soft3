@@ -1,0 +1,37 @@
+# /etc/soft3/<chain>.peers.toml — bootstrap peers for one chain instance.
+#
+# Format (version 1):
+#   version = 1                      format version; the node rejects unknown versions
+#   chain   = "pussy"                must equal SOFT3_CHAIN; a peers file for the wrong chain is refused
+#   [[peer]]
+#   name  = "deimos"                 operator label, informational
+#   id    = "<endpoint id>"          radio endpoint id: the node's ed25519 public key, 64 lowercase hex chars,
+#                                    printed by `soft3 node id --home <home>` on that machine; empty string
+#                                    is allowed ONLY in the local harness (trust on first dial)
+#   addrs = ["ip:port", ...]         direct UDP addresses; v4 and v6 may both be listed
+#   relay = ""                       optional relay URL; the three cybernode machines dial direct, leave empty
+#
+# The node dials every peer at start, keeps the connection alive, and learns further
+# peers over gossip; the file is the floor, never the ceiling. Edit, then
+# `systemctl restart soft3-chain@<chain>` — the file is read at start only.
+
+version = 1
+chain = "pussy"
+
+[[peer]]
+name = "cyberproxy"
+id = ""
+addrs = ["167.235.28.94:7791", "[2a01:4f8:c0c:7c49::1]:7791"]
+relay = ""
+
+[[peer]]
+name = "deimos"
+id = ""
+addrs = ["195.201.105.229:7791", "[2a01:4f8:13a:215::2]:7791"]
+relay = ""
+
+[[peer]]
+name = "jupiter"
+id = ""
+addrs = ["88.198.18.156:7791", "[2a01:4f8:222:2906::2]:7791"]
+relay = ""

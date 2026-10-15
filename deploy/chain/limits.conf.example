@@ -1,0 +1,9 @@
+# /etc/systemd/system/soft3-chain@<chain>.service.d/limits.conf — per-machine resource limits.
+# cyberproxy (7.7 GB total, frappe + the 0.10.0 node already use ~5 GB): MemoryMax=2G
+# deimos (62 GB, 45 GB available): MemoryMax=16G
+# jupiter (62 GB, 20 GB available): MemoryMax=8G
+# Apply: sudo mkdir -p /etc/systemd/system/soft3-chain@pussy.service.d && sudo cp limits.conf.example \
+#        /etc/systemd/system/soft3-chain@pussy.service.d/limits.conf && sudo systemctl daemon-reload
+[Service]
+MemoryMax=2G
+MemoryHigh=1536M
