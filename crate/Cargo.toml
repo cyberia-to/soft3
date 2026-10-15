@@ -33,7 +33,8 @@ foculus = { version = "0.1.1", path = "../../foculus", default-features = false 
 hemera = { package = "cyber-hemera", version = "0.3" }
 # genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
 bbg = { version = "0.3", path = "../../bbg/rs" }
-mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", default-features = false }
+# mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`)
+mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", default-features = false, features = ["bridge"] }
 sha2 = "0.10"
 bech32 = "0.11"
 base64 = "0.22"

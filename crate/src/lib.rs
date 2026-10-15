@@ -3,6 +3,7 @@
 //! - [[network]] — spacepussy-test product network (soft3 chaosnet)
 //! - [[node]] — real soft3-node over cybergraph + bbg
 //! - [[genesis]] — burial snapshot → genesis manifest → bbg root (specs/genesis.md)
+//! - [[wallet]] — sign and submit phase-1 root chain transactions (specs/chain.md)
 //! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`, `soft3 genesis`
 //!
 //! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`
@@ -11,6 +12,7 @@
 pub mod genesis;
 pub mod network;
 pub mod node;
+pub mod wallet;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
