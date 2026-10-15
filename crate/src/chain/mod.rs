@@ -6,14 +6,18 @@
 //! over bytes; [`api`] is the surface the network, miner and HTTP layers
 //! code against.
 
+pub mod api;
+pub mod apply;
 pub mod bbg_state;
 pub mod daa;
 pub mod genesis;
 pub mod header;
 pub mod params;
 pub mod pow;
+pub mod select;
 pub mod sigs;
 pub mod state;
+pub mod store;
 pub mod tree;
 pub mod tx;
 pub mod u256;
