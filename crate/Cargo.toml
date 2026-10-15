@@ -31,6 +31,13 @@ stack = ["dep:cyb"]
 cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
 hemera = { package = "cyber-hemera", version = "0.3" }
+# genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
+bbg = { version = "0.3", path = "../../bbg/rs" }
+mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", default-features = false }
+sha2 = "0.10"
+bech32 = "0.11"
+base64 = "0.22"
+flate2 = "1"
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync
