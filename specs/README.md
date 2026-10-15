@@ -17,6 +17,7 @@ instances, explicit proof profiles and independently placed workers.
 | [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
 | [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
+| [genesis pipeline](genesis.md) | burial snapshot → the chain.md §4 genesis file (tade) → block-0 state root; owners, balances, particles, links, passports and the decisions behind them; debug export |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |
 | [languages](languages.md) | language contracts |
