@@ -25,22 +25,22 @@ pub fn reorg_allowed(tip_height: u64, fork_height: u64) -> bool {
 /// last 10, then doubling spacing back to genesis (chain-wire §3).
 pub fn locator_heights(tip_height: u64) -> Vec<u64> {
     let mut out = Vec::new();
-    let mut h = tip_height;
+    let mut last = tip_height;
     for _ in 0..10 {
-        out.push(h);
-        if h == 0 {
+        out.push(last);
+        if last == 0 {
             return out;
         }
-        h -= 1;
+        last -= 1;
     }
+    // `last` is now the next height below the ten; the first spaced entry
+    // is two below the last pushed, then the spacing doubles
+    last += 1;
     let mut step = 2u64;
-    loop {
-        if h < step {
-            break;
-        }
-        h -= step;
-        out.push(h);
-        if h == 0 {
+    while last >= step {
+        last -= step;
+        out.push(last);
+        if last == 0 {
             return out;
         }
         step = step.saturating_mul(2);

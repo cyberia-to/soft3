@@ -68,6 +68,18 @@ impl BbgBacked {
         }
     }
 
+    /// Wrap a loaded state (the genesis loader's) with its per-token sums,
+    /// given as `(token, amount)` contributions in any order.
+    pub fn from_bbg(bbg: BbgState, contributions: impl IntoIterator<Item = (Id, u64)>) -> Self {
+        let mut s = Self::new();
+        s.bbg = bbg;
+        for (token, amount) in contributions {
+            let e = s.sums.entry(token).or_insert(0);
+            *e = e.checked_add(amount).expect("genesis sums fit u64 (checked by the pipeline)");
+        }
+        s
+    }
+
     fn note(&mut self, e: UndoEntry) {
         if self.open {
             self.journal.push(e);
