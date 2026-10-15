@@ -1,0 +1,44 @@
+# soft3 root-chain HTTP API behind nginx — one snippet per chain instance.
+# Render: sed -e 's/@CHAIN@/pussy/g' -e 's/@BIND@/127.0.0.1:7781/g' nginx-chain-api.conf.template \
+#           | sudo tee /etc/nginx/snippets/soft3-chain-pussy.conf
+# Include inside the public 443 server block (cyb.ai on cyberproxy, deimos.cybernode.ai on deimos):
+#   include /etc/nginx/snippets/soft3-chain-pussy.conf;
+# The limit_conn zone must be declared once in the http{} context (nginx.conf or conf.d/soft3-chain.conf):
+#   limit_conn_zone $server_name zone=soft3_chain_@CHAIN@:1m;
+#
+# Why the caps: on 2026-10-15 the 0.10.0 chaosnet node queued 1,800 requests behind one mutex
+# because nginx let every abandoned client keep a thread upstream. Here at most 32 requests
+# are in flight to the node and an abandoned client is cut off upstream too.
+
+location = /@CHAIN@ {
+    return 301 /@CHAIN@/;
+}
+
+location /@CHAIN@/ {
+    limit_conn soft3_chain_@CHAIN@ 32;
+    limit_conn_status 503;
+
+    proxy_pass http://@BIND@/;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_connect_timeout 2s;
+    proxy_read_timeout 20s;
+    proxy_send_timeout 20s;
+    proxy_ignore_client_abort off;
+
+    client_max_body_size 8m;        # native-node.md: bodies are limited to 8 MiB
+}
+
+# the beacon poll (cyb bodies: GET /status every 15 s, 10 s call timeout) and the probe get a short lease
+location = /@CHAIN@/health {
+    proxy_pass http://@BIND@/health;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_connect_timeout 1s;
+    proxy_read_timeout 3s;
+}
