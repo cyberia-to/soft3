@@ -216,3 +216,34 @@ fn coinbase_amount_must_be_exact() {
     }
     assert_eq!(c.tip().height, 0);
 }
+
+/// The wallet's signer and the kernel's validator agree: a transfer, a
+/// cyberlink and a claim signed through `soft3::wallet` are admitted by
+/// `validate_tx` and mined, and `wallet::verify` accepts what the kernel
+/// signs.
+#[test]
+fn wallet_signed_transactions_pass_the_kernel_validator() {
+    use crate::wallet::{self, Signer};
+    let net = Net::new(2);
+    let mut c = net.open("wallet");
+    let chain = net.genesis.chain_id;
+    let miner = net.neurons[1];
+    let signer = Signer::from_key(net.keys[0].clone());
+    assert_eq!(wallet::parse32(&signer.neuron_hex()).unwrap(), net.neurons[0]);
+    let transfer = signer.transfer(&chain, 0, net.native, 9, miner, None).unwrap();
+    let link = signer.cyberlink(&chain, 1, token("boot"), token("pussy"), 1, net.native, 0, None).unwrap();
+    let dormant = Signer::from_key(key(net.dormant_key as u8));
+    let claim = dormant.claim(&chain, 0, None).unwrap();
+    for signed in [&transfer, &link, &claim] {
+        let info = c.validate_tx(&signed.bytes, &[Tx::decode(&transfer.bytes).unwrap()]).unwrap();
+        assert_eq!(info.txid, signed.txid, "wallet and kernel agree on the txid");
+        assert!(wallet::verify(&chain, &signed.bytes).is_ok());
+    }
+    mine(&mut c, miner, 0, &[transfer.bytes.clone(), link.bytes.clone(), claim.bytes.clone()]);
+    assert_eq!(c.nonce(&net.neurons[0]), 2);
+    assert_eq!(c.balance(&miner, &net.native), FUNDS + net.subsidy() + 9 + 224 + 257 + 140);
+    // and the kernel's own signing is what the wallet verifies
+    let kernel_signed = net.transfer(0, 2, miner, 1, 224);
+    assert!(wallet::verify(&chain, &kernel_signed).is_ok());
+    assert!(c.status().conserved);
+}

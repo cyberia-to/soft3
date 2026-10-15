@@ -43,6 +43,7 @@ fn main() {
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
         "genesis" => cmd_genesis(&args[1..]),
+        "conformance" => cmd_conformance(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
         other => {
             eprintln!("unknown command `{other}`");
@@ -215,6 +216,7 @@ fn cmd_node(args: &[String]) {
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
+    println!("  soft3 conformance bless|check chain [--genesis FILE]");
         println!();
         println!("engine: cybergraph processor + authenticated bbg state");
         println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
@@ -427,6 +429,63 @@ mod tests {
     fn hostname_fallback_defaults_when_neither_env_is_set() {
         let got = hostname_fallback_from(|_: &str| Err(std::env::VarError::NotPresent));
         assert_eq!(got, "soft3-node");
+    }
+}
+
+/// `soft3 conformance bless|check chain [--genesis FILE]` — the blessed
+/// vectors of chain-conformance.md in `conformance/chain.snap`
+/// (`chain::conformance`). `bless` writes, `check` compares; both take the
+/// pinned genesis file for the §10 entries (default
+/// `~/cyber/.cache/genesis/pussy.tade`, kept as committed when absent).
+fn cmd_conformance(args: &[String]) {
+    use soft3::chain::conformance;
+    let sub = args.first().map(|s| s.as_str()).unwrap_or("");
+    let target = args.get(1).map(|s| s.as_str()).unwrap_or("");
+    if !matches!(sub, "bless" | "check") || target != "chain" {
+        eprintln!("usage: soft3 conformance bless|check chain [--genesis FILE] [--snap FILE]");
+        std::process::exit(2);
+    }
+    let value = |flag: &str| -> Option<String> { args.iter().position(|a| a == flag).and_then(|i| args.get(i + 1)).cloned() };
+    let snap = value("--snap").map(PathBuf::from).unwrap_or_else(|| PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/../conformance/chain.snap")));
+    let genesis = value("--genesis").map(PathBuf::from).unwrap_or_else(|| {
+        let home = std::env::var("HOME").unwrap_or_else(|_| ".".into());
+        PathBuf::from(home).join("cyber/.cache/genesis/pussy.tade")
+    });
+    let committed = std::fs::read_to_string(&snap).map(|s| conformance::parse(&s)).unwrap_or_default();
+    let mut current = conformance::entries();
+    match std::fs::read(&genesis) {
+        Ok(bytes) => match conformance::genesis_entries("pussy", &bytes) {
+            Ok(e) => current.extend(e),
+            Err(e) => {
+                eprintln!("conformance: {} is not a genesis: {e}", genesis.display());
+                std::process::exit(1);
+            }
+        },
+        Err(_) => eprintln!("conformance: no genesis file at {} — §10 entries kept as committed", genesis.display()),
+    }
+    let drift = conformance::drift(&committed, &current);
+    for (label, was, now) in &drift {
+        let was = was.map(|w| soft3::wallet::hex(&w)).unwrap_or_else(|| "(new)".into());
+        println!("  {label}: {was} -> {}", soft3::wallet::hex(now));
+    }
+    match sub {
+        "check" => {
+            if drift.is_empty() {
+                println!("chain.snap: {} entries, no drift", current.len());
+            } else {
+                eprintln!("chain.snap: {} entries moved; re-bless and review", drift.len());
+                std::process::exit(1);
+            }
+        }
+        _ => {
+            let merged = conformance::merged(&committed, &current);
+            let date = conformance::utc_date();
+            if let Err(e) = std::fs::write(&snap, conformance::render(&merged, &date)) {
+                eprintln!("conformance: cannot write {}: {e}", snap.display());
+                std::process::exit(1);
+            }
+            println!("blessed {} entries into {} ({} moved)", merged.len(), snap.display(), drift.len());
+        }
     }
 }
 

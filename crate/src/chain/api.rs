@@ -156,6 +156,34 @@ pub struct Template {
     pub fees: u64,
 }
 
+fn hex(b: &[u8]) -> String {
+    b.iter().map(|x| format!("{x:02x}")).collect()
+}
+
+impl Template {
+    /// The `GET /template` answer of chain-wire §7, exactly.
+    pub fn json(&self, chain_name: &str, expires: u64) -> String {
+        format!(
+            "{{\"chain\":{},\"height\":{},\"prev\":\"{}\",\"header\":\"{}\",\"bits\":\"{:08x}\",\"target\":\"{}\",\"body\":\"{}\",\"expires\":{}}}",
+            serde_json::to_string(chain_name).unwrap_or_else(|_| "\"\"".into()),
+            self.header.height,
+            hex(&self.header.prev),
+            hex(&self.header.encode()),
+            self.header.bits,
+            hex(&self.target.to_le_bytes()),
+            hex(&self.body),
+            expires
+        )
+    }
+}
+
+impl Tip {
+    /// The `GET /tip` answer of chain-wire §7, exactly.
+    pub fn json(&self) -> String {
+        format!("{{\"height\":{},\"id\":\"{}\",\"chainwork\":\"{}\"}}", self.height, hex(&self.id), self.chainwork.to_decimal())
+    }
+}
+
 /// Finalized block stream for the shadow indexers (§7.3): emitted once a
 /// block is `FINALITY_DEPTH` deep, never reorged.
 #[derive(Clone, Debug, PartialEq, Eq)]

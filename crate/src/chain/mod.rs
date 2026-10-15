@@ -9,6 +9,7 @@
 pub mod api;
 pub mod apply;
 pub mod bbg_state;
+pub mod conformance;
 pub mod daa;
 pub mod engine;
 pub mod engine_tx;

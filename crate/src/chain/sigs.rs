@@ -72,7 +72,7 @@ pub fn claim_key_matches(sig: &[u8], account_id: &[u8; 20]) -> bool {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
 
     fn hex(b: &[u8]) -> String {
@@ -87,7 +87,7 @@ mod tests {
         out
     }
 
-    pub const ABANDON: &str =
+    pub(crate) const ABANDON: &str =
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
     pub fn abandon_key() -> mudra::SigningKey {

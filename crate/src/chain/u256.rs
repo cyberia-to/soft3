@@ -160,6 +160,23 @@ impl U256 {
         (q, r)
     }
 
+    /// Decimal rendering (the `chainwork` field of chain-wire §7).
+    pub fn to_decimal(self) -> String {
+        if self.is_zero() {
+            return "0".into();
+        }
+        let mut digits = Vec::new();
+        let mut v = self;
+        let ten = U256::from_u64(10);
+        while !v.is_zero() {
+            let (q, r) = v.div_rem(ten);
+            digits.push(b'0' + r.low_u64() as u8);
+            v = q;
+        }
+        digits.reverse();
+        String::from_utf8(digits).expect("ascii digits")
+    }
+
     pub fn to_u512(self) -> U512 {
         let mut limbs = [0u64; 8];
         limbs[..4].copy_from_slice(&self.0);
@@ -348,6 +365,14 @@ mod tests {
         assert_eq!(v, U256::ONE << 228);
         assert!(g.mul_u64(u64::MAX).shl(200).to_u256().is_none());
         assert_eq!(g.mul_u64(u64::MAX).shl(200).saturating_u256(), U256::MAX);
+    }
+
+    #[test]
+    fn decimal_rendering() {
+        assert_eq!(U256::ZERO.to_decimal(), "0");
+        assert_eq!(U256::from_u64(50_331_645).to_decimal(), "50331645");
+        assert_eq!((U256::ONE << 128).to_decimal(), "340282366920938463463374607431768211456");
+        assert_eq!(U256::MAX.to_decimal(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
     }
 
     #[test]
