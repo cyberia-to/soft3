@@ -30,5 +30,5 @@ mod tests;
 pub use api::{Block, BlockVerdict, ChainApi, ChainError, Event, HeaderVerdict, Template, Tip, TxInfo};
 pub use engine::Chain;
 pub use header::{BlockId, Header, HeaderError};
-pub use tx::{Tx, TxBody};
+pub use tx::{Body, Tx};
 pub use u256::U256;
