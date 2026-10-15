@@ -30,7 +30,7 @@ pub fn load(g: &Genesis) -> BbgState {
     }
     for b in &g.balances {
         let key = balance_key(&b.owner, &token_of(&b.denom));
-        let slot = s.balances.entry(key).or_insert(0);
+        let mut slot = s.balances.entry(key).or_insert(0);
         *slot = slot.checked_add(b.amount).expect("balance sum fits u64 (bounded by supply)");
     }
 
@@ -114,6 +114,10 @@ pub const BRAKEDOWN_MAX_VARIABLES: u32 = 20;
 /// Dimensions whose serialized size exceeds the Brakedown limit, with the
 /// variables they would need. Empty means `root()` can run.
 pub fn over_limit(s: &BbgState) -> BTreeMap<String, String> {
+    if s.root_version() == bbg::RootVersion::V2 {
+        // the keyed trie has no size cap (bbg specs/state.md § root versions)
+        return BTreeMap::new();
+    }
     let limit = 1u64 << BRAKEDOWN_MAX_VARIABLES;
     fields_per_dimension(s)
         .into_iter()
