@@ -2,11 +2,14 @@
 //!
 //! - [[network]] — spacepussy-test product network (soft3 chaosnet)
 //! - [[node]] — real soft3-node over cybergraph + bbg
-//! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`
+//! - [[chain]] — the phase-1 root chain (specs/chain.md); `chain::mine` is
+//!   the reference miner with CPU, Metal and WebGPU backends
+//! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`, `soft3 mine`
 //!
 //! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`
 //! (cybernode). Not the cosmos-sdk chain `space-pussy`.
 
+pub mod chain;
 pub mod network;
 pub mod node;
 

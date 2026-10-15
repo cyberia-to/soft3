@@ -22,15 +22,23 @@ path = "src/bin/soft3.rs"
 [workspace]
 
 [features]
-default = []
+# the reference miner ships with its GPU backends (specs/chain.md §8: the
+# first competent GPU kernel is the majority miner, so it must not be a secret)
+default = ["metal", "webgpu"]
 # full stack re-exports (heavy)
 stack = ["dep:cyb"]
+# `soft3 mine --backend metal`: hemera_mine on the Apple GPU (macOS; a no-op elsewhere)
+metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
+# `soft3 mine --backend webgpu`: hemera_mine through wgpu (Vulkan, DX12, Metal, GL)
+webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]
 
 [dependencies]
 # real node engine
 cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
-hemera = { package = "cyber-hemera", version = "0.3" }
+hemera = { package = "cyber-hemera", version = "0.3", path = "../../hemera/rs" }
+# header mining kernels (Metal, WebGPU) — lens release/0.2 `gpu/`
+cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync
