@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+# soft3-chain-check — health of one soft3 root-chain instance on this machine.
+#
+#   soft3-chain-check pussy            # full check, one line per probe, exit 0 ok / 1 degraded / 2 down
+#   soft3-chain-check --pre pussy      # ExecStartPre gate: clock synchronized, disk, env sanity (no HTTP)
+#   soft3-chain-check --json pussy     # same checks, one JSON object on stdout
+#
+# Install: sudo install -m 0755 soft3-chain-check /usr/local/bin/
+# Cron:    */5 * * * * cyber /usr/local/bin/soft3-chain-check pussy >> /var/log/soft3-chain/check-pussy.log 2>&1
+#
+# What "healthy" means here (assumptions from the spec in progress, specs/chain.md — see README.md):
+#   /health answers 200 within 2 s           the process accepts connections
+#   /status answers 200 within 10 s          the state lock is not convoyed (cyb bodies poll it every 15 s with a 10 s timeout)
+#   height advanced within SOFT3_STALE_SECS  the chain is producing or receiving blocks
+#   radio UDP port is bound                  the node is reachable for peers
+#   clock NTP-synchronized                   PoW timestamp rules need it
+#   free disk >= SOFT3_MIN_DISK_GIB          the log/bbg can grow
+#   threads < 512                            the 2026-10-15 convoy signature (1,800 threads) is caught early
+set -uo pipefail
+
+mode=full
+case "${1:-}" in
+  --pre)  mode=pre;  shift ;;
+  --json) mode=json; shift ;;
+esac
+chain="${1:-}"
+[[ -n "$chain" ]] || { echo "usage: soft3-chain-check [--pre|--json] <chain>" >&2; exit 2; }
+
+env_file="/etc/soft3/$chain.env"
+[[ -r "$env_file" ]] || { echo "DOWN env: missing $env_file"; exit 2; }
+# shellcheck disable=SC1090
+source "$env_file"
+: "${SOFT3_CHAIN:?SOFT3_CHAIN unset in $env_file}"
+: "${SOFT3_BIND:?SOFT3_BIND unset}"
+: "${SOFT3_RADIO:?SOFT3_RADIO unset}"
+stale_secs="${SOFT3_STALE_SECS:-600}"
+min_disk_gib="${SOFT3_MIN_DISK_GIB:-5}"
+home="/var/lib/soft3/$chain"
+unit="soft3-chain@$chain"
+radio_port="${SOFT3_RADIO##*:}"
+worst=0
+declare -a lines
+
+say() { # level name detail
+  local level="$1" name="$2" detail="$3"
+  lines+=("$level $name: $detail")
+  case "$level" in DEGRADED) (( worst < 1 )) && worst=1 ;; DOWN) worst=2 ;; esac
+}
+
+# --- machine-level checks (also the ExecStartPre gate) ---------------------------------------
+if [[ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" == "yes" ]]; then
+  say OK clock "NTP synchronized ($(timedatectl timesync-status 2>/dev/null | awk -F': *' '/Offset/{print $2}' | head -1))"
+else
+  say DOWN clock "system clock NOT NTP-synchronized — PoW timestamps would be rejected"
+fi
+
+if [[ -d "$home" ]]; then
+  free_gib=$(df -BG --output=avail "$home" 2>/dev/null | tail -1 | tr -dc '0-9')
+  if (( ${free_gib:-0} >= min_disk_gib )); then say OK disk "${free_gib} GiB free on $home"
+  else say DEGRADED disk "${free_gib:-?} GiB free on $home (< ${min_disk_gib})"; fi
+else
+  say DEGRADED disk "$home does not exist yet"
+fi
+
+if [[ "$SOFT3_CHAIN" != "$chain" ]]; then
+  say DOWN env "SOFT3_CHAIN='$SOFT3_CHAIN' but instance is '$chain'"
+else
+  say OK env "chain=$chain bind=$SOFT3_BIND radio=$SOFT3_RADIO"
+fi
+peers="/etc/soft3/$chain.peers.toml"
+if [[ -r "$peers" ]] && grep -qE "^chain *= *\"$chain\"" "$peers"; then
+  say OK peers "$(grep -c '^\[\[peer\]\]' "$peers") bootstrap peers in $peers"
+else
+  say DEGRADED peers "$peers missing or not for chain '$chain'"
+fi
+
+if [[ "$mode" == pre ]]; then
+  printf '%s\n' "${lines[@]}"
+  (( worst == 2 )) && exit 1 || exit 0
+fi
+
+# --- process-level checks ------------------------------------------------------------------------
+if systemctl is-active --quiet "$unit"; then
+  pid=$(systemctl show -p MainPID --value "$unit")
+  threads=$(ls "/proc/$pid/task" 2>/dev/null | wc -l | tr -d ' ')
+  if (( threads < 512 )); then say OK unit "$unit active pid=$pid threads=$threads"
+  else say DEGRADED unit "$unit pid=$pid has $threads threads — request convoy?"; fi
+else
+  say DOWN unit "$unit is not active"
+fi
+
+if ss -uln 2>/dev/null | awk '{print $5}' | grep -qE "[:.]$radio_port$"; then
+  say OK radio "udp/$radio_port bound"
+else
+  say DOWN radio "nothing bound on udp/$radio_port"
+fi
+
+code=$(curl -s -m 2 -o /dev/null -w '%{http_code}' "http://$SOFT3_BIND/health" || true)
+if [[ "$code" == 200 ]]; then say OK health "200"
+else say DOWN health "http $code (2 s budget)"; fi
+
+status_out=$(mktemp); trap 'rm -f "$status_out"' EXIT
+t0=$(date +%s.%N)
+code=$(curl -s -m 10 -o "$status_out" -w '%{http_code}' "http://$SOFT3_BIND/status" || true)
+t1=$(date +%s.%N)
+elapsed=$(awk -v a="$t0" -v b="$t1" 'BEGIN{printf "%.2f", b-a}')
+height=""; root=""
+if [[ "$code" == 200 ]]; then
+  # accept either the cybermark text form (`height 41248`) or JSON (`"height": 41248`)
+  height=$(grep -oE '"?height"?[ :=]+[0-9]+' "$status_out" | grep -oE '[0-9]+$' | head -1)
+  root=$(grep -oE '"?(bbg[-_])?root"?[ :=]+"?[0-9a-f]{8,}' "$status_out" | grep -oE '[0-9a-f]{8,}$' | head -1)
+  say OK status "200 in ${elapsed}s height=${height:-?} root=${root:0:12}"
+else
+  say DOWN status "http $code after ${elapsed}s (10 s budget)"
+fi
+
+# block progress, remembered between runs in the state dir
+mark="$home/.check-height"
+now=$(date +%s)
+if [[ -n "$height" ]]; then
+  if [[ -r "$mark" ]]; then
+    read -r last_h last_t < "$mark"
+    if (( height > last_h )); then
+      say OK progress "height $last_h -> $height"
+      echo "$height $now" > "$mark"
+    elif (( now - last_t > stale_secs )); then
+      say DEGRADED progress "height $height unchanged for $(( now - last_t )) s (> $stale_secs)"
+    else
+      say OK progress "height $height unchanged for $(( now - last_t )) s"
+    fi
+  else
+    echo "$height $now" > "$mark" 2>/dev/null && say OK progress "first sample height=$height"
+  fi
+fi
+
+if [[ "$mode" == json ]]; then
+  printf '{"chain":"%s","exit":%d,"checks":[' "$chain" "$worst"
+  sep=""
+  for l in "${lines[@]}"; do
+    lvl="${l%% *}"; rest="${l#* }"; name="${rest%%:*}"; detail="${rest#*: }"
+    printf '%s{"level":"%s","name":"%s","detail":"%s"}' "$sep" "$lvl" "$name" "${detail//\"/\\\"}"
+    sep=","
+  done
+  printf ']}\n'
+else
+  printf '%s %s\n' "$(date -u +%FT%TZ)" "$chain"
+  printf '  %s\n' "${lines[@]}"
+fi
+exit "$worst"
