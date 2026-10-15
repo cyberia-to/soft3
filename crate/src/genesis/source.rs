@@ -53,11 +53,22 @@ pub struct PassportSource {
     pub avatar: Option<String>,
 }
 
+/// One liquidity pool: its coin, reserves at halt and (pussy only) the
+/// reserve account; bostrom's extractor did not record the account.
+#[derive(Debug, Clone)]
+pub struct Pool {
+    pub id: String,
+    pub coin: String,
+    pub reserves: BTreeMap<String, u128>,
+    pub reserve_account: Option<String>,
+}
+
 /// The snapshot, parsed.
 pub struct Snapshot {
     pub manifest: SourceManifest,
     pub files: Vec<SourceFile>,
     pub supply: BTreeMap<String, u128>,
+    pub pools: Vec<Pool>,
     pub pubkeys: Vec<PubkeyRow>,
     pub balances: Vec<BalanceRow>,
     pub delegations: Vec<DelegationRow>,
@@ -81,9 +92,10 @@ impl Snapshot {
             manifest: read_manifest(manifest_path)?,
             files: files.to_vec(),
             supply: read_supply(path("supply.json")?)?,
+            pools: read_pools(path("pools.json")?)?,
             pubkeys: read_pubkeys(path("pubkeys.csv")?)?,
             balances: read_balances(path("balances.csv")?)?,
-            delegations: read_delegations(path("delegations.csv")?, chain.delegation_column)?,
+            delegations: read_delegations(path("delegations.csv")?)?,
             unbonding: read_unbonding(path("holdings.jsonl")?, chain.native)?,
             passports: read_passports(path("passports.jsonl")?)?,
             links: read_links(path("cyberlinks_indexed.csv.gz")?)?,
@@ -127,6 +139,33 @@ pub fn read_supply(path: &Path) -> io::Result<BTreeMap<String, u128>> {
         let amount = item.get("amount").and_then(Value::as_str).ok_or_else(|| invalid("supply: amount"))?;
         out.insert(denom.to_string(), parse_amount(amount, "supply")?);
     }
+    Ok(out)
+}
+
+pub fn read_pools(path: &Path) -> io::Result<Vec<Pool>> {
+    let value: Value = serde_json::from_slice(&std::fs::read(path)?)?;
+    let arr = value.as_array().ok_or_else(|| invalid("pools.json: not an array"))?;
+    let mut out = Vec::new();
+    for item in arr {
+        let id = match item.get("id") {
+            Some(Value::String(s)) => s.clone(),
+            Some(Value::Number(n)) => n.to_string(),
+            _ => return Err(invalid("pools.json: id")),
+        };
+        let coin = item.get("pool_coin_denom").and_then(Value::as_str).ok_or_else(|| invalid("pools.json: pool_coin_denom"))?;
+        let mut reserves = BTreeMap::new();
+        for (d, a) in item.get("reserves").and_then(Value::as_object).ok_or_else(|| invalid("pools.json: reserves"))? {
+            let amount = match a {
+                Value::String(s) => parse_amount(s, "pools.json")?,
+                Value::Number(n) => n.as_u64().map(u128::from).ok_or_else(|| invalid("pools.json: reserve not an integer"))?,
+                _ => return Err(invalid("pools.json: reserve")),
+            };
+            reserves.insert(d.clone(), amount);
+        }
+        let reserve_account = item.get("reserve_account_address").and_then(Value::as_str).map(str::to_string);
+        out.push(Pool { id, coin: coin.to_string(), reserves, reserve_account });
+    }
+    out.sort_by(|a, b| a.coin.cmp(&b.coin));
     Ok(out)
 }
 
@@ -178,18 +217,15 @@ pub fn read_balances(path: &Path) -> io::Result<Vec<BalanceRow>> {
     Ok(out)
 }
 
-pub fn read_delegations(path: &Path, column: &str) -> io::Result<Vec<DelegationRow>> {
+/// The fourth column carries the integer delegated amount; the extractors
+/// named it after the denom (`pussy`, `boot`), so only its position is fixed.
+pub fn read_delegations(path: &Path) -> io::Result<Vec<DelegationRow>> {
     let mut r = BufReader::new(std::fs::File::open(path)?);
     let mut header = String::new();
     r.read_line(&mut header)?;
     let got = split_csv(&header);
     if got.len() != 4 || got[..3] != ["delegator", "validator", "shares"] {
         return Err(invalid(format!("delegations.csv: header {got:?}")));
-    }
-    if got[3] != column {
-        // the extractors named the integer column after the denom; accept
-        // any name but record the contract's expectation in the error path
-        let _ = column;
     }
     let mut out = Vec::new();
     for line in r.lines() {

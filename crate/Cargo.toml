@@ -38,6 +38,7 @@ sha2 = "0.10"
 bech32 = "0.11"
 base64 = "0.22"
 flate2 = "1"
+tade = { version = "0.1", path = "../../tade/impl/rust" }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync

@@ -74,7 +74,8 @@ mod tests {
         assert_eq!(civil_to_unix(2000, 3, 1, 0, 0, 0), 951_868_800);
         assert_eq!(parse_timestamp("2022-10-03 20:28:53"), Some(1_664_828_933));
         assert_eq!(parse_timestamp("2026-06-14T08:36:41Z"), Some(1_781_426_201));
-        assert_eq!(super::super::LAUNCH_UNIX, 1_793_836_800);
+        assert_eq!(parse_timestamp("2026-11-05T13:37:00Z"), Some(super::super::PUSSY.genesis_time));
+        assert_eq!(parse_timestamp("2026-11-05T13:22:42Z"), Some(super::super::BOSTROM.genesis_time));
     }
 
     #[test]

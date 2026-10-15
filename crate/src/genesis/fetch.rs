@@ -9,7 +9,7 @@ use std::time::Duration;
 use serde_json::Value;
 
 use super::Chain;
-use super::tables::sha256_hex;
+use super::sha256_hex;
 
 /// One pinned snapshot file, verified against the source manifest.
 #[derive(Debug, Clone)]
@@ -33,6 +33,7 @@ pub struct SourceManifest {
 /// Files the pipeline needs, in the order they are read.
 pub const NEEDED: &[&str] = &[
     "supply.json",
+    "pools.json",
     "pubkeys.csv",
     "balances.csv",
     "delegations.csv",
