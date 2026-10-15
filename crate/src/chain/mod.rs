@@ -10,6 +10,8 @@ pub mod api;
 pub mod apply;
 pub mod bbg_state;
 pub mod daa;
+pub mod engine;
+pub mod engine_tx;
 pub mod genesis;
 pub mod header;
 pub mod params;
@@ -22,6 +24,11 @@ pub mod tree;
 pub mod tx;
 pub mod u256;
 
+#[cfg(test)]
+mod tests;
+
+pub use api::{Block, BlockVerdict, ChainApi, ChainError, Event, HeaderVerdict, Template, Tip, TxInfo};
+pub use engine::Chain;
 pub use header::{BlockId, Header, HeaderError};
 pub use tx::{Tx, TxBody};
 pub use u256::U256;

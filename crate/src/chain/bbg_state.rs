@@ -92,7 +92,7 @@ impl BbgBacked {
     }
 
     fn note_neuron(&mut self, id: Id) {
-        let before = self.bbg.neurons.get(&id).map(neuron_image);
+        let before = self.full_neuron(&id);
         self.note(UndoEntry::Neuron { id, before });
     }
 

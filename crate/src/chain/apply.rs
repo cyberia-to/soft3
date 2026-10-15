@@ -11,7 +11,7 @@ use super::params::{COINBASE_MATURITY, HEADER_BYTES, MAX_BLOCK_BYTES, MAX_BLOCK_
 use super::sigs::{self, legacy_owner, neuron_of, sig_pubkey, txid};
 use super::state::{Id, StateBackend, StateError, Undo};
 use super::tree::tx_root;
-use super::tx::{self, DecodeError, Tx, TxBody};
+use super::tx::{self, Body, DecodeError, Tx};
 
 /// The chain-level facts a transition needs (§0, §4).
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -160,12 +160,12 @@ pub fn decode_body(rules: &Rules, header: &Header, body: &[u8]) -> Result<Vec<De
         }
         let tx = Tx::decode(&raw).map_err(|e| BlockError::Tx { index: i, error: TxError::Decode(e) })?;
         match (&tx.body, i) {
-            (TxBody::Coinbase(c), 0) => {
-                if c.height != header.height {
-                    return Err(BlockError::CoinbaseHeight { expected: header.height, actual: c.height });
+            (Body::Coinbase { height, .. }, 0) => {
+                if *height != header.height {
+                    return Err(BlockError::CoinbaseHeight { expected: header.height, actual: *height });
                 }
             }
-            (TxBody::Coinbase(_), _) => return Err(BlockError::Tx { index: i, error: TxError::CoinbaseInBody }),
+            (Body::Coinbase { .. }, _) => return Err(BlockError::Tx { index: i, error: TxError::CoinbaseInBody }),
             (_, 0) => return Err(BlockError::CoinbasePosition),
             _ => {}
         }
@@ -200,56 +200,56 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
         return Err(TxError::Fee { min: min_fee, actual: fee });
     }
     match &tx.body {
-        TxBody::Coinbase(_) => Err(TxError::CoinbaseInBody),
-        TxBody::Transfer(t) => {
+        Body::Coinbase { .. } => Err(TxError::CoinbaseInBody),
+        Body::Transfer { from, nonce, token, amount, to, .. } => {
             if !sigs::verify(&rules.chain, tx) {
                 return Err(TxError::Signature);
             }
-            let expected = state.nonce(&t.from);
-            if t.nonce != expected {
-                return Err(TxError::Nonce { expected, actual: t.nonce });
+            let expected = state.nonce(from);
+            if *nonce != expected {
+                return Err(TxError::Nonce { expected, actual: *nonce });
             }
-            if t.token == rules.native {
-                let need = t.amount.checked_add(fee).ok_or(TxError::Overflow)?;
-                spendable(state, locked, &t.from, &rules.native, need)?;
+            if *token == rules.native {
+                let need = amount.checked_add(fee).ok_or(TxError::Overflow)?;
+                spendable(state, locked, from, &rules.native, need)?;
             } else {
-                spendable(state, locked, &t.from, &rules.native, fee)?;
-                let have = state.balance(&t.from, &t.token);
-                if have < t.amount {
-                    return Err(TxError::Insufficient { have, need: t.amount });
+                spendable(state, locked, from, &rules.native, fee)?;
+                let have = state.balance(from, token);
+                if have < *amount {
+                    return Err(TxError::Insufficient { have, need: *amount });
                 }
             }
-            state.debit(&t.from, &rules.native, fee)?;
-            state.debit(&t.from, &t.token, t.amount)?;
-            state.credit(&t.to, &t.token, t.amount)?;
-            state.bump_nonce(&t.from)?;
+            state.debit(from, &rules.native, fee)?;
+            state.debit(from, token, *amount)?;
+            state.credit(to, token, *amount)?;
+            state.bump_nonce(from)?;
             Ok(fee)
         }
-        TxBody::Cyberlink(l) => {
-            if l.p == l.q {
+        Body::Cyberlink { from, nonce, token, amount, p, q, valence, .. } => {
+            if p == q {
                 return Err(TxError::SelfLink);
             }
-            if l.amount != 0 {
-                return Err(TxError::Box(l.amount));
+            if *amount != 0 {
+                return Err(TxError::Box(*amount));
             }
             if !sigs::verify(&rules.chain, tx) {
                 return Err(TxError::Signature);
             }
-            let expected = state.nonce(&l.from);
-            if l.nonce != expected {
-                return Err(TxError::Nonce { expected, actual: l.nonce });
+            let expected = state.nonce(from);
+            if *nonce != expected {
+                return Err(TxError::Nonce { expected, actual: *nonce });
             }
-            spendable(state, locked, &l.from, &rules.native, fee)?;
-            state.debit(&l.from, &rules.native, fee)?;
-            state.link(&l.from, &l.p, &l.q, &l.token, 0, l.valence, height)?;
-            state.bump_nonce(&l.from)?;
+            spendable(state, locked, from, &rules.native, fee)?;
+            state.debit(from, &rules.native, fee)?;
+            state.link(from, p, q, token, 0, *valence, height)?;
+            state.bump_nonce(from)?;
             Ok(fee)
         }
-        TxBody::Claim(c) => {
+        Body::Claim { account_id, nonce, .. } => {
             let Some(pubkey) = sig_pubkey(&tx.sig) else {
                 return Err(TxError::Signature);
             };
-            if mudra::cosmos::account_id(&pubkey) != c.account_id {
+            if mudra::cosmos::account_id(&pubkey) != *account_id {
                 return Err(TxError::ClaimKey);
             }
             if !sigs::verify(&rules.chain, tx) {
@@ -257,10 +257,10 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
             }
             let subject = neuron_of(&pubkey);
             let expected = state.nonce(&subject);
-            if c.nonce != expected {
-                return Err(TxError::Nonce { expected, actual: c.nonce });
+            if *nonce != expected {
+                return Err(TxError::Nonce { expected, actual: *nonce });
             }
-            let dormant = legacy_owner(&rules.hrp, &c.account_id);
+            let dormant = legacy_owner(&rules.hrp, account_id);
             spendable(state, locked, &dormant, &rules.native, fee)?;
             state.debit(&dormant, &rules.native, fee)?;
             for token in state.tokens() {
@@ -282,7 +282,18 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
 /// block's and the journal is returned; on failure the state is the
 /// parent's again.
 pub fn apply_block<S: StateBackend>(rules: &Rules, header: &Header, txs: &[Decoded], state: &mut S, locked: &Locked) -> Result<Undo, BlockError> {
-    let TxBody::Coinbase(cb) = &txs.first().ok_or(BlockError::Empty)?.tx.body else {
+    let (root, undo) = transition(rules, header.height, txs, state, locked)?;
+    if root != header.state_root {
+        state.revert(&undo);
+        return Err(BlockError::StateRoot { expected: header.state_root, actual: root });
+    }
+    Ok(undo)
+}
+
+/// The transition without the root comparison: what a template builder
+/// runs to learn the root its header must carry. Same journal discipline.
+pub fn transition<S: StateBackend>(rules: &Rules, height: u64, txs: &[Decoded], state: &mut S, locked: &Locked) -> Result<(Id, Undo), BlockError> {
+    let Body::Coinbase { to: cb_to, amount: cb_amount, .. } = &txs.first().ok_or(BlockError::Empty)?.tx.body else {
         return Err(BlockError::CoinbasePosition);
     };
     let mut fees = 0u64;
@@ -290,26 +301,23 @@ pub fn apply_block<S: StateBackend>(rules: &Rules, header: &Header, txs: &[Decod
         fees = fees.checked_add(d.tx.fee()).ok_or(BlockError::Overflow)?;
     }
     let expected = rules.subsidy.checked_add(fees).ok_or(BlockError::Overflow)?;
-    if cb.amount != expected {
-        return Err(BlockError::CoinbaseAmount { expected, actual: cb.amount });
+    if *cb_amount != expected {
+        return Err(BlockError::CoinbaseAmount { expected, actual: *cb_amount });
     }
     state.begin();
     let result = (|| {
-        state.credit(&cb.to, &rules.native, cb.amount).map_err(|_| BlockError::Overflow)?;
+        state.credit(cb_to, &rules.native, *cb_amount).map_err(|_| BlockError::Overflow)?;
         state.mint(&rules.native, rules.subsidy).map_err(|_| BlockError::Overflow)?;
         for (i, d) in txs.iter().enumerate().skip(1) {
-            execute_tx(rules, &d.tx, d.raw.len(), state, locked, header.height).map_err(|error| BlockError::Tx { index: i, error })?;
+            execute_tx(rules, &d.tx, d.raw.len(), state, locked, height).map_err(|error| BlockError::Tx { index: i, error })?;
         }
-        state.set_height(header.height);
-        let root = state.root();
-        if root != header.state_root {
-            return Err(BlockError::StateRoot { expected: header.state_root, actual: root });
-        }
-        check_conservation(rules, state, header.height)
+        state.set_height(height);
+        check_conservation(rules, state, height)?;
+        Ok(state.root())
     })();
     let undo = state.commit();
     match result {
-        Ok(()) => Ok(undo),
+        Ok(root) => Ok((root, undo)),
         Err(e) => {
             state.revert(&undo);
             Err(e)

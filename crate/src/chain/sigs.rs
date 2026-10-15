@@ -3,8 +3,10 @@
 //! checkpoint statement (§5.3) and gossip topic ids (chain-wire §2).
 
 use super::header::hash32;
-use super::params::{DOMAIN_CHECKPOINT, DOMAIN_LEGACY, DOMAIN_SIGN, DOMAIN_TOPIC, DOMAIN_TXID};
-use super::tx::{SIG_BYTES, Tx, TxBody};
+use super::params::DOMAIN_CHECKPOINT;
+use super::tx::{Body, SIG_BYTES, Tx};
+
+pub use crate::wallet::tx::{legacy_owner, neuron_of, statement, token, topic, txid};
 
 pub type NeuronId = [u8; 32];
 
@@ -17,40 +19,9 @@ fn tagged(tag: &[u8], parts: &[&[u8]]) -> [u8; 32] {
     hash32(&buf)
 }
 
-/// `txid = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_bytes)`.
-pub fn txid(chain: &[u8; 32], tx_bytes: &[u8]) -> [u8; 32] {
-    tagged(DOMAIN_TXID, &[chain, tx_bytes])
-}
-
-/// `statement = hemera("soft3/chain/sign/v1\0" ‖ chain ‖ tx_bytes_without_sig)`.
-pub fn statement(chain: &[u8; 32], unsigned: &[u8]) -> [u8; 32] {
-    tagged(DOMAIN_SIGN, &[chain, unsigned])
-}
-
-/// `token(denom) = hemera(denom_bytes)` (§3.1).
-pub fn token(denom: &str) -> [u8; 32] {
-    hash32(denom.as_bytes())
-}
-
-/// `neuron_of(pubkey) = hemera(compressed pubkey)` — mudra's native id.
-pub fn neuron_of(pubkey: &[u8; 33]) -> NeuronId {
-    mudra::claim::neuron_of(pubkey)
-}
-
-/// `legacy_owner(hrp, account_id)`: the dormant owner of an address-only
-/// snapshot account (§2.8).
-pub fn legacy_owner(hrp: &str, account_id: &[u8; 20]) -> NeuronId {
-    tagged(DOMAIN_LEGACY, &[hrp.as_bytes(), account_id])
-}
-
 /// Statement a checkpoint signer signs (§5.3).
 pub fn checkpoint_statement(chain: &[u8; 32], height: u64, block_id: &[u8; 32]) -> [u8; 32] {
     tagged(DOMAIN_CHECKPOINT, &[chain, &height.to_le_bytes(), block_id])
-}
-
-/// Gossip topic id (chain-wire §2).
-pub fn topic(chain: &[u8; 32], name: &str) -> [u8; 32] {
-    tagged(DOMAIN_TOPIC, &[chain, name.as_bytes()])
 }
 
 /// The 33-byte public key inside an NSIG1 envelope, if well-formed.
@@ -65,10 +36,9 @@ pub fn sig_pubkey(sig: &[u8]) -> Option<[u8; 33]> {
 /// and 2, `neuron_of(sig.pubkey)` for a claim, none for a coinbase.
 pub fn subject(tx: &Tx) -> Option<NeuronId> {
     match &tx.body {
-        TxBody::Coinbase(_) => None,
-        TxBody::Transfer(t) => Some(t.from),
-        TxBody::Cyberlink(l) => Some(l.from),
-        TxBody::Claim(_) => sig_pubkey(&tx.sig).map(|pk| neuron_of(&pk)),
+        Body::Coinbase { .. } => None,
+        Body::Transfer { from, .. } | Body::Cyberlink { from, .. } => Some(*from),
+        Body::Claim { .. } => sig_pubkey(&tx.sig).map(|pk| neuron_of(&pk)),
     }
 }
 
@@ -87,10 +57,9 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
 pub fn sign(chain: &[u8; 32], tx: &mut Tx, key: &mudra::SigningKey) -> Result<(), mudra::Error> {
     let pubkey = mudra::cosmos::compressed(key.verifying_key());
     let subject = match &tx.body {
-        TxBody::Coinbase(_) => return Ok(()),
-        TxBody::Transfer(t) => t.from,
-        TxBody::Cyberlink(l) => l.from,
-        TxBody::Claim(_) => neuron_of(&pubkey),
+        Body::Coinbase { .. } => return Ok(()),
+        Body::Transfer { from, .. } | Body::Cyberlink { from, .. } => *from,
+        Body::Claim { .. } => neuron_of(&pubkey),
     };
     let st = statement(chain, &tx.encode_unsigned());
     tx.sig = mudra::neuron::sign(key, subject, st)?;
@@ -105,7 +74,6 @@ pub fn claim_key_matches(sig: &[u8], account_id: &[u8; 20]) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::tx::{Claim, Transfer};
 
     fn hex(b: &[u8]) -> String {
         b.iter().map(|x| format!("{x:02x}")).collect()
@@ -142,7 +110,7 @@ mod tests {
     #[test]
     fn conformance_section_6_transfer_statement() {
         let tx = Tx {
-            body: TxBody::Transfer(Transfer { from: [0x66; 32], nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 }),
+            body: Body::Transfer { from: [0x66; 32], nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 },
             sig: vec![],
         };
         let unsigned = tx.encode_unsigned();
@@ -170,7 +138,7 @@ mod tests {
         let key = abandon_key();
         let from = neuron_of(&mudra::cosmos::compressed(key.verifying_key()));
         let mut tx = Tx {
-            body: TxBody::Transfer(Transfer { from, nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 }),
+            body: Body::Transfer { from, nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 },
             sig: vec![],
         };
         sign(&chain, &mut tx, &key).unwrap();
@@ -189,18 +157,18 @@ mod tests {
         t.sig.push(0);
         assert!(!verify(&chain, &t));
         let mut t = tx.clone();
-        if let TxBody::Transfer(x) = &mut t.body {
-            x.amount = 6;
+        if let Body::Transfer { amount, .. } = &mut t.body {
+            *amount = 6;
         }
         assert!(!verify(&chain, &t), "statement changed");
         let mut t = tx.clone();
-        if let TxBody::Transfer(x) = &mut t.body {
-            x.from[0] ^= 1;
+        if let Body::Transfer { from, .. } = &mut t.body {
+            from[0] ^= 1;
         }
         assert!(!verify(&chain, &t), "subject changed");
         // signing a subject the key does not own fails
         let mut other = Tx {
-            body: TxBody::Transfer(Transfer { from: [0x66; 32], nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 }),
+            body: Body::Transfer { from: [0x66; 32], nonce: 0, token: token("pussy"), amount: 5, to: [0x77; 32], fee: 224 },
             sig: vec![],
         };
         assert!(sign(&chain, &mut other, &key).is_err());
@@ -213,7 +181,7 @@ mod tests {
         let key = abandon_key();
         let pk = mudra::cosmos::compressed(key.verifying_key());
         let mut tx = Tx {
-            body: TxBody::Claim(Claim { account_id: mudra::cosmos::account_id(&pk), nonce: 0, fee: 140 }),
+            body: Body::Claim { account_id: mudra::cosmos::account_id(&pk), nonce: 0, fee: 140 },
             sig: vec![],
         };
         sign(&chain, &mut tx, &key).unwrap();

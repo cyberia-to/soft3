@@ -43,6 +43,8 @@ pub struct Entry {
     pub header: Header,
     pub chainwork: U256,
     pub status: Status,
+    /// insertion order: the first-seen rule of §5.1 orders ties by it
+    pub seq: u64,
 }
 
 pub struct Store {
@@ -53,6 +55,7 @@ pub struct Store {
     main: PartitionHandle,
     index: HashMap<BlockId, Entry>,
     chain: Vec<BlockId>,
+    next_seq: u64,
 }
 
 fn err(e: fjall::Error) -> String {
@@ -63,17 +66,19 @@ fn entry_bytes(e: &Entry) -> Vec<u8> {
     let mut out = e.header.encode().to_vec();
     out.extend_from_slice(&e.chainwork.to_le_bytes());
     out.push(e.status as u8);
+    out.extend_from_slice(&e.seq.to_le_bytes());
     out
 }
 
 fn entry_from(b: &[u8]) -> Option<Entry> {
-    if b.len() != 168 + 32 + 1 {
+    if b.len() != 168 + 32 + 1 + 8 {
         return None;
     }
     Some(Entry {
         header: Header::decode_raw(&b[..168]).ok()?,
         chainwork: U256::from_le_bytes(b[168..200].try_into().ok()?),
         status: Status::from_u8(b[200])?,
+        seq: u64::from_le_bytes(b[201..209].try_into().ok()?),
     })
 }
 
@@ -83,10 +88,12 @@ impl Store {
         let part = |name: &str| ks.open_partition(name, PartitionCreateOptions::default()).map_err(err);
         let (headers, bodies, undo, main) = (part("headers")?, part("bodies")?, part("undo")?, part("main")?);
         let mut index = HashMap::new();
+        let mut next_seq = 0u64;
         for kv in headers.iter() {
             let (k, v) = kv.map_err(err)?;
             let id: BlockId = k.as_ref().try_into().map_err(|_| "corrupt header key".to_string())?;
             let e = entry_from(&v).ok_or_else(|| "corrupt header entry".to_string())?;
+            next_seq = next_seq.max(e.seq + 1);
             index.insert(id, e);
         }
         let mut chain = Vec::new();
@@ -98,7 +105,7 @@ impl Store {
             }
             chain.push(v.as_ref().try_into().map_err(|_| "corrupt main entry".to_string())?);
         }
-        Ok(Store { ks, headers, bodies, undo, main, index, chain })
+        Ok(Store { ks, headers, bodies, undo, main, index, chain, next_seq })
     }
 
     pub fn is_empty(&self) -> bool {
@@ -109,13 +116,18 @@ impl Store {
         self.index.get(id)
     }
 
+    pub fn iter(&self) -> impl Iterator<Item = (&BlockId, &Entry)> {
+        self.index.iter()
+    }
+
     pub fn contains(&self, id: &BlockId) -> bool {
         self.index.contains_key(id)
     }
 
     pub fn put_header(&mut self, header: Header, chainwork: U256, status: Status) -> Result<(), String> {
         let id = header.id();
-        let e = Entry { header, chainwork, status };
+        let e = Entry { header, chainwork, status, seq: self.next_seq };
+        self.next_seq += 1;
         self.headers.insert(id, entry_bytes(&e)).map_err(err)?;
         self.index.insert(id, e);
         Ok(())

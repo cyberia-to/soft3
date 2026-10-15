@@ -1,41 +1,11 @@
-//! Transaction root: a domain-separated hemera Merkle tree, odd nodes
-//! promoted unchanged (§1.7).
+//! Transaction root (§1.7): the wallet's Merkle functions, with the node's
+//! invariant that a block always carries its coinbase.
 
-use super::header::hash32;
-use super::params::{DOMAIN_LEAF, DOMAIN_NODE};
+pub use crate::wallet::tx::{leaf, node};
 
-pub fn leaf(tx_bytes: &[u8]) -> [u8; 32] {
-    let mut buf = Vec::with_capacity(DOMAIN_LEAF.len() + tx_bytes.len());
-    buf.extend_from_slice(DOMAIN_LEAF);
-    buf.extend_from_slice(tx_bytes);
-    hash32(&buf)
-}
-
-pub fn node(left: &[u8; 32], right: &[u8; 32]) -> [u8; 32] {
-    let mut buf = Vec::with_capacity(DOMAIN_NODE.len() + 64);
-    buf.extend_from_slice(DOMAIN_NODE);
-    buf.extend_from_slice(left);
-    buf.extend_from_slice(right);
-    hash32(&buf)
-}
-
-/// `tx_root` over transactions in body order; `txs` must be non-empty
-/// (a block always carries its coinbase).
+/// `tx_root` over transactions in body order; `txs` must be non-empty.
 pub fn tx_root(txs: &[Vec<u8>]) -> [u8; 32] {
-    assert!(!txs.is_empty(), "a block has at least its coinbase");
-    let mut level: Vec<[u8; 32]> = txs.iter().map(|t| leaf(t)).collect();
-    while level.len() > 1 {
-        let mut next = Vec::with_capacity(level.len().div_ceil(2));
-        for pair in level.chunks(2) {
-            if pair.len() == 2 {
-                next.push(node(&pair[0], &pair[1]));
-            } else {
-                next.push(pair[0]);
-            }
-        }
-        level = next;
-    }
-    level[0]
+    crate::wallet::tx::tx_root(txs).expect("a block has at least its coinbase")
 }
 
 #[cfg(test)]
@@ -46,18 +16,9 @@ mod tests {
         b.iter().map(|x| format!("{x:02x}")).collect()
     }
 
-    fn coinbase_vector() -> Vec<u8> {
-        let mut tx = vec![1u8, 0];
-        tx.extend_from_slice(&1u64.to_le_bytes());
-        tx.extend_from_slice(&[0x55; 32]);
-        tx.extend_from_slice(&10_000u64.to_le_bytes());
-        tx.extend_from_slice(&[0; 32]);
-        tx
-    }
-
     #[test]
     fn conformance_section_6_leaf_and_node() {
-        let cb = coinbase_vector();
+        let cb = super::super::tx::tests::coinbase().encode();
         assert_eq!(cb.len(), 82);
         let l = leaf(&cb);
         assert_eq!(hex(&l), "c2cb6adb74ed69c5672c495ccfb659e12b8f33db3be8caf6167a0d50b41893e6");

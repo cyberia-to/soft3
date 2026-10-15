@@ -77,8 +77,34 @@ pub const DOMAIN_CHECKPOINT: &[u8] = b"soft3/chain/checkpoint/v1\0";
 pub const DOMAIN_TOPIC: &[u8] = b"soft3/chain/topic/v1\0";
 
 /// `POW_LIMIT` as a target.
+///
+/// Under `cfg(test)` only, a thread-local override lets the simulated
+/// miner of the engine tests work at trivial targets (chain-conformance
+/// §9 "a private test genesis"); release binaries have no such hook.
 pub fn pow_limit() -> U256 {
+    #[cfg(test)]
+    if let Some(limit) = test_pow::LIMIT.with(|l| l.get()) {
+        return limit;
+    }
     U256::ONE << 236
+}
+
+#[cfg(test)]
+pub mod test_pow {
+    use super::U256;
+    use std::cell::Cell;
+
+    thread_local! {
+        pub static LIMIT: Cell<Option<U256>> = const { Cell::new(None) };
+    }
+
+    /// Raise the limit on this thread; targets up to 2^255 become legal.
+    pub fn relax() {
+        LIMIT.with(|l| l.set(Some(U256::ONE << 255)));
+    }
+
+    /// Canonical bits of 2^255: the test genesis target (one hash in two).
+    pub const EASY_BITS: u32 = 0x2100_8000;
 }
 
 /// The genesis target 2^232.

@@ -1,6 +1,6 @@
 //! The 168-byte header (§1.1), its id, and the canonical compact target (§1.3).
 
-use super::params::{HEADER_BYTES, POW_LIMIT_BITS, RULE_SET, pow_limit};
+use super::params::{HEADER_BYTES, RULE_SET, pow_limit};
 use super::u256::U256;
 
 pub type BlockId = [u8; 32];
@@ -189,9 +189,7 @@ pub fn decode_bits(bits: u32) -> Result<U256, BitsError> {
 pub fn clamp_bits(target: U256) -> u32 {
     let limit = pow_limit();
     let t = if target.is_zero() { U256::ONE } else if target > limit { limit } else { target };
-    let bits = encode_bits(t);
-    debug_assert!(bits <= POW_LIMIT_BITS);
-    bits
+    encode_bits(t)
 }
 
 #[cfg(test)]
@@ -262,6 +260,6 @@ mod tests {
         assert_eq!(decode_bits(0x0000_0000), Err(BitsError::Zero));
         assert_eq!(decode_bits(0x1f01_0000), Err(BitsError::AboveLimit));
         assert_eq!(clamp_bits(U256::ZERO), 0x0101_0000);
-        assert_eq!(clamp_bits(U256::ONE << 240), POW_LIMIT_BITS);
+        assert_eq!(clamp_bits(U256::ONE << 240), super::super::params::POW_LIMIT_BITS);
     }
 }
