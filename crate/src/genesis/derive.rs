@@ -251,6 +251,25 @@ pub fn derive(chain: &Chain, snap: &Snapshot, time: u64) -> io::Result<Derived> 
     }
     let s0 = *per_denom.get(native).ok_or_else(|| invalid(format!("no {native} in genesis")))?;
 
+    // a `b` frame and a `coins` total carry a u64; a denom with any balance
+    // or a total above 2^64 − 1 (18-decimal IBC vouchers) cannot be carried
+    // and is excluded whole, listed in the report. Never the native coin.
+    let excluded: BTreeSet<String> = bank
+        .iter()
+        .filter(|((_, denom), amount)| {
+            u64::try_from(**amount).is_err() || u64::try_from(per_denom[denom.as_str()]).is_err()
+        })
+        .map(|((_, denom), _)| denom.clone())
+        .collect();
+    if excluded.contains(native) {
+        return Err(invalid(format!("{native}: a balance exceeds u64")));
+    }
+    let excluded_rows = bank.iter().filter(|((_, d), _)| excluded.contains(d)).count() as u64;
+    bank.retain(|(_, d), _| !excluded.contains(d));
+    for d in &excluded {
+        per_denom.remove(d);
+    }
+
     // ── b frames ─────────────────────────────────────────────────────
     let mut balances = Vec::with_capacity(bank.len());
     let mut balance_rows = Vec::with_capacity(bank.len());
@@ -326,6 +345,8 @@ pub fn derive(chain: &Chain, snap: &Snapshot, time: u64) -> io::Result<Derived> 
     counts.insert("l_frames_source".into(), snap.links.len() as u64);
     counts.insert("l_frames_by_legacy_author".into(), by_legacy);
     counts.insert("tokens".into(), per_denom.len() as u64);
+    counts.insert("tokens_excluded_u64".into(), excluded.len() as u64);
+    counts.insert("balances_excluded_u64".into(), excluded_rows);
     counts.insert("particles".into(), particles.len() as u64);
     counts.insert("lp_positions_dissolved".into(), dissolved_positions);
     counts.insert("pools".into(), snap.pools.len() as u64);
@@ -339,6 +360,12 @@ pub fn derive(chain: &Chain, snap: &Snapshot, time: u64) -> io::Result<Derived> 
     counts.insert("delegated".into(), u64::try_from(moved).map_err(|_| invalid("moved"))?);
 
     let mut gaps = BTreeMap::new();
+    if !excluded.is_empty() {
+        gaps.insert(
+            "tokens_excluded_u64".into(),
+            format!("{} denoms with a balance or total above 2^64-1 are not carried (u64 b frames and coin totals): {}", excluded.len(), excluded.iter().cloned().collect::<Vec<_>>().join(" ")),
+        );
+    }
     let m = &snap.manifest.value;
     if let Some(n) = m.pointer("/graph_coverage/missing_early_links").and_then(serde_json::Value::as_u64) {
         gaps.insert("cyberlinks_unrecoverable".into(), format!("{n} early links never indexed and pruned on every node"));
