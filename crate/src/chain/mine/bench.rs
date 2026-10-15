@@ -2,9 +2,10 @@
 //! the conformance vector found by each (chain-conformance §5: the mined
 //! header at `GENESIS_BITS`, nonce 40,165,933).
 
-use super::local::{decode_bits, valid_pow, GENESIS_BITS};
 use super::run::{fmt_rate, rate};
+use super::target::{target_of, verifies};
 use super::{Backend, Job};
+use crate::chain::params::GENESIS_BITS;
 use std::time::{Duration, Instant};
 
 /// One backend's measurement.
@@ -33,7 +34,7 @@ pub fn vector_header() -> [u8; 168] {
 /// Measure `backend` for about `seconds` on a target nothing passes, then
 /// check it finds the vector nonce.
 pub fn measure(backend: &dyn Backend, seconds: f64) -> Result<Row, String> {
-    let target = decode_bits(GENESIS_BITS).expect("genesis bits");
+    let target = target_of(GENESIS_BITS)?;
     let header = vector_header();
     let dark = Job::new(&header, [1, 0, 0, 0]);
     // warm up (shader compile, buffers)
@@ -50,7 +51,7 @@ pub fn measure(backend: &dyn Backend, seconds: f64) -> Result<Row, String> {
     let seconds = t.elapsed().as_secs_f64();
     let job = Job::new(&header, target);
     let found = backend.search(&job, 40_165_000, 2_000)?;
-    let vector = found == Some(933) && valid_pow(&job.header_with(40_165_933), &target);
+    let vector = found == Some(933) && verifies(&job.header_with(40_165_933), &target);
     Ok(Row {
         backend: backend.name(),
         hashes,

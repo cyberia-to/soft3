@@ -95,7 +95,7 @@ impl super::Backend for Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::chain::mine::local::{pow2, valid_pow};
+    use crate::chain::mine::target::{pow2, verifies};
     use crate::chain::mine::Backend;
 
     #[test]
@@ -111,10 +111,10 @@ mod tests {
             .expect("a nonce");
         let one = Cpu::new(1);
         assert_eq!(one.search(&job, base, 1 << 15).expect("ok"), Some(i));
-        assert!(valid_pow(&job.header_with(base + i as u128), &job.target));
+        assert!(verifies(&job.header_with(base + i as u128), &job.target));
         for k in 0..i {
             assert!(
-                !valid_pow(&job.header_with(base + k as u128), &job.target),
+                !verifies(&job.header_with(base + k as u128), &job.target),
                 "{k}"
             );
         }

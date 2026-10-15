@@ -7,7 +7,7 @@
 //! side of the `2^64` boundary the kernels require.
 
 use super::api::{Client, Template, Verdict};
-use super::local::{decode_bits, valid_pow};
+use super::target::{target_of, verifies};
 use super::{Backend, Job};
 use std::sync::atomic::{AtomicBool, Ordering::Relaxed};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
@@ -87,9 +87,8 @@ pub fn mine_template(
 ) -> Result<Outcome, String> {
     let header = template.header_bytes()?;
     let bits = template.bits_u32()?;
-    let target =
-        decode_bits(bits).ok_or_else(|| format!("template bits {bits:#010x} are not canonical"))?;
-    if target != template.target_u256()? {
+    let target = target_of(bits)?;
+    if target != template.target_words()? {
         return Err("template target disagrees with its bits".into());
     }
     let job = Job::new(&header, target);
@@ -119,7 +118,7 @@ pub fn mine_template(
         if let Some(i) = found {
             let nonce = base + i as u128;
             let solved = job.header_with(nonce);
-            if !valid_pow(&solved, &target) {
+            if !verifies(&solved, &target) {
                 return Err(format!(
                     "{}: nonce {nonce:#x} does not verify natively",
                     backend.name()
@@ -257,6 +256,6 @@ mod tests {
         assert_eq!(fmt_rate(64_400.0), "64.4 kH/s");
         assert_eq!(fmt_rate(13_200_000.0), "13.20 MH/s");
         assert_eq!(rate(100, Duration::from_secs(2)), 50.0);
-        assert_eq!(expected(&super::super::local::pow2(232)), "2^24");
+        assert_eq!(expected(&super::super::target::pow2(232)), "2^24");
     }
 }

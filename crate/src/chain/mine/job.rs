@@ -15,10 +15,11 @@
 //! first nonce `base` and a `count`, the least `i < count` such that the
 //! digest of nonce `base + i` is below the target as a 256-bit
 //! little-endian integer — or none. Any backend's answer verifies with
-//! [`super::local::valid_pow`] on the header it came from, which is what
+//! [`super::target::verifies`] on the header it came from, which is what
 //! the tests pin.
 
-use super::local::{below, BITS_OFFSET, HEADER_BYTES, NONCE_OFFSET, U256};
+use super::target::{below, Words, BITS_OFFSET, NONCE_OFFSET};
+use crate::chain::params::HEADER_BYTES;
 use hemera::field::Goldilocks;
 
 /// Hemera's rate: eight limbs a block.
@@ -40,7 +41,7 @@ pub struct Job {
     pub tail_lane: usize,
     pub tail: u64,
     /// The target the digest must be strictly below.
-    pub target: U256,
+    pub target: Words,
     /// The header the job came from (nonce bytes as given), for
     /// [`Job::header_with`].
     pub header: [u8; HEADER_BYTES],
@@ -54,7 +55,7 @@ fn limb(b: &[u8]) -> u64 {
 
 impl Job {
     /// The job of a header at a target.
-    pub fn new(header: &[u8; HEADER_BYTES], target: U256) -> Self {
+    pub fn new(header: &[u8; HEADER_BYTES], target: Words) -> Self {
         let mut blocks = [[0u64; RATE]; 4];
         for (b, block) in blocks.iter_mut().enumerate().take(3) {
             for (i, l) in block.iter_mut().enumerate() {
@@ -128,7 +129,7 @@ pub fn absorb(job: &Job, s: &mut [Goldilocks; 16], b: usize) {
 }
 
 /// The digest limbs of a finished state.
-pub fn digest(s: &[Goldilocks; 16]) -> U256 {
+pub fn digest(s: &[Goldilocks; 16]) -> Words {
     core::array::from_fn(|i| s[i].as_canonical_u64())
 }
 
@@ -140,7 +141,8 @@ pub fn passes(job: &Job, s: &[Goldilocks; 16]) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::chain::mine::local::{block_id, from_bytes, pow2};
+    use crate::chain::header::hash32;
+    use crate::chain::mine::target::{from_bytes, pow2};
 
     #[test]
     fn single_state_sponge_is_hemera_hash() {
@@ -158,7 +160,7 @@ mod tests {
             }
             assert_eq!(
                 digest(&s),
-                from_bytes(&block_id(&job.header_with(n))),
+                from_bytes(&hash32(&job.header_with(n))),
                 "nonce {n}"
             );
         }

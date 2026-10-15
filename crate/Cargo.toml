@@ -31,6 +31,12 @@ stack = ["dep:cyb"]
 metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
 # `soft3 mine --backend webgpu`: hemera_mine through wgpu (Vulkan, DX12, Metal, GL)
 webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]
+# nonce inside bbg's NeuronRecord (DIMENSION_VERSION 3). Off until the bbg
+# PR carrying the field lands; on, the chain keeps nonces under state_root
+# as specs/chain.md §3.2 requires and the chain conformance snapshot moves.
+bbg-nonce = []
+# chain-conformance.md sections 1-9: vectors as tests (`cargo test --features chain-conformance`)
+chain-conformance = []
 
 [dependencies]
 # real node engine
@@ -47,9 +53,15 @@ bech32 = "0.11"
 base64 = "0.22"
 flate2 = "1"
 tade = { version = "0.1", path = "../../tade/impl/rust" }
+# chain store (specs/chain.md §3.6): headers, bodies, undo journals
+fjall = { version = "2", path = "../../bbg/rs/vendor/fjall" }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync
 ureq = { version = "2", default-features = false, features = ["tls"] }
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+# the known-answer key of chain-conformance §6 is BIP-39 derived
+mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", features = ["bridge"] }

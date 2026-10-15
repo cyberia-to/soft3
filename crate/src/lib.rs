@@ -3,8 +3,8 @@
 //! - [[network]] — spacepussy-test product network (soft3 chaosnet)
 //! - [[node]] — real soft3-node over cybergraph + bbg
 //! - [[genesis]] — burial snapshot → genesis manifest → bbg root (specs/genesis.md)
-//! - [[chain]] — the phase-1 root chain (specs/chain.md); `chain::mine` is
-//!   the reference miner with CPU, Metal and WebGPU backends
+//! - [[chain]] — the phase-1 proof-of-work root chain kernel (specs/chain.md);
+//!   `chain::mine` is the reference miner with CPU, Metal and WebGPU backends
 //! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`, `soft3 genesis`, `soft3 mine`
 //!
 //! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`

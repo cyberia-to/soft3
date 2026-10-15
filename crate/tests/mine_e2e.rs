@@ -5,10 +5,13 @@
 //! answers `409` to a header of the old tip, and drops the first template
 //! request so the client's retry is exercised.
 
+use soft3::chain::header::encode_bits;
 use soft3::chain::mine::api::{hex, unhex, Accepted, Submit, Template, Tip};
-use soft3::chain::mine::local::{decode_bits, encode_bits, to_bytes, valid_pow, POW_LIMIT_BITS};
 use soft3::chain::mine::run::{mine_template, Outcome, Settings};
+use soft3::chain::mine::target::{target_of, to_bytes, verifies};
 use soft3::chain::mine::{api::Client, select, Choice};
+use soft3::chain::params::POW_LIMIT_BITS;
+use soft3::chain::u256::U256;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering::Relaxed};
@@ -39,7 +42,7 @@ impl Node {
             prev: hex(&self.prev),
             header: hex(&h),
             bits: format!("{POW_LIMIT_BITS:08x}"),
-            target: hex(&to_bytes(&decode_bits(POW_LIMIT_BITS).unwrap())),
+            target: hex(&to_bytes(&target_of(POW_LIMIT_BITS).unwrap())),
             body: "01000000".into(),
             expires: 0,
         }
@@ -113,7 +116,7 @@ fn serve(listener: TcpListener, node: Arc<Mutex<Node>>, drops: Arc<AtomicU32>) {
                     "409 Conflict",
                     "{\"error\":\"stale template\"}",
                 );
-            } else if bits != POW_LIMIT_BITS || !valid_pow(&h, &decode_bits(bits).unwrap()) {
+            } else if bits != POW_LIMIT_BITS || !verifies(&h, &target_of(bits).unwrap()) {
                 respond(
                     &mut stream,
                     "422 Unprocessable Entity",
@@ -169,7 +172,10 @@ fn mines_two_blocks_against_a_mock_node_with_retry_and_stale_submit() {
     assert_eq!(drops.load(Relaxed), 0);
     assert_eq!(t1.height, 1);
     assert_eq!(t1.bits_u32().unwrap(), POW_LIMIT_BITS);
-    assert_eq!(encode_bits(&t1.target_u256().unwrap()), POW_LIMIT_BITS);
+    assert_eq!(
+        encode_bits(U256(t1.target_words().unwrap())),
+        POW_LIMIT_BITS
+    );
     let o = mine_template(
         &client,
         backend.as_ref(),
@@ -188,9 +194,9 @@ fn mines_two_blocks_against_a_mock_node_with_retry_and_stale_submit() {
     {
         let n = node.lock().unwrap();
         assert_eq!(n.accepted.len(), 1);
-        assert!(valid_pow(
+        assert!(verifies(
             &n.accepted[0],
-            &decode_bits(POW_LIMIT_BITS).unwrap()
+            &target_of(POW_LIMIT_BITS).unwrap()
         ));
         assert_eq!(&n.accepted[0][24..40], &nonce.to_le_bytes());
     }

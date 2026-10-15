@@ -2,7 +2,8 @@
 //! `POST /submit`, `GET /tip` — the JSON shapes and a blocking client with
 //! retry.
 
-use super::local::{from_bytes, HEADER_BYTES, U256};
+use super::target::{from_bytes, Words};
+use crate::chain::params::HEADER_BYTES;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
@@ -79,7 +80,7 @@ impl Template {
         })
     }
 
-    pub fn target_u256(&self) -> Result<U256, String> {
+    pub fn target_words(&self) -> Result<Words, String> {
         let b: [u8; 32] = unhex(&self.target)?
             .try_into()
             .map_err(|v: Vec<u8>| format!("template target is {} bytes, not 32", v.len()))?;
@@ -198,8 +199,8 @@ mod tests {
             prev: "11".repeat(32),
             header: "00".repeat(168),
             bits: "1e010000".into(),
-            target: hex(&crate::chain::mine::local::to_bytes(
-                &crate::chain::mine::local::pow2(232),
+            target: hex(&crate::chain::mine::target::to_bytes(
+                &crate::chain::mine::target::pow2(232),
             )),
             body: "0100000001000700".into(),
             expires: 1_793_885_850,
@@ -208,8 +209,8 @@ mod tests {
         assert_eq!(serde_json::from_str::<Template>(&s).unwrap(), t);
         assert_eq!(t.bits_u32().unwrap(), 0x1e01_0000);
         assert_eq!(
-            t.target_u256().unwrap(),
-            crate::chain::mine::local::pow2(232)
+            t.target_words().unwrap(),
+            crate::chain::mine::target::pow2(232)
         );
         assert_eq!(t.header_bytes().unwrap(), [0u8; 168]);
         assert!(

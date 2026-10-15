@@ -6,20 +6,21 @@
 //! solved header. Three backends answer one question identically
 //! ([`Backend::search`]): the CPU through hemera's batch permutation, Metal
 //! and WebGPU through lens's `hemera_mine` kernels — a nonce found by any
-//! of them verifies natively ([`local::valid_pow`]), which the tests pin
+//! of them verifies natively ([`target::verifies`]), which the tests pin
 //! per backend. `bench` measures them.
 //!
-//! Until `feat/chain-kernel` lands, [`local`] carries the bits codec, PoW
-//! check and ASERT the miner needs, pinned to the conformance vectors.
+//! Consensus questions go to the kernel (`chain::{header, pow, daa}`)
+//! through [`target`]; [`asert_sim`] is the 100× step audit.
 
 pub mod api;
+mod asert_sim;
 pub mod bench;
 pub mod cpu;
 #[cfg(any(feature = "metal", feature = "webgpu"))]
 pub mod gpu;
 pub mod job;
-pub mod local;
 pub mod run;
+pub mod target;
 
 pub use job::Job;
 
@@ -109,7 +110,7 @@ pub fn all(threads: usize) -> Vec<Box<dyn Backend>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use local::{pow2, valid_pow};
+    use target::{pow2, verifies};
 
     /// Every built backend returns the same index for the same dispatch,
     /// and its nonce verifies with `hemera::hash` — chain-conformance §5's
@@ -162,7 +163,7 @@ mod tests {
                 assert!(want.is_some(), "a nonce in the range");
             }
             if let Some(i) = want {
-                assert!(valid_pow(&job.header_with(base + i as u128), &job.target));
+                assert!(verifies(&job.header_with(base + i as u128), &job.target));
             }
             for b in &backends[1..] {
                 assert_eq!(
