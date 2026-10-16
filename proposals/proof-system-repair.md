@@ -8,6 +8,8 @@ date: 2026-10-09
 ---
 # one proof — the repair of zheng
 
+hemera note (2026-10-16): the hash row below is decided — hemera 0.4 (hemera#15: x⁷ in every round, 6 + 6 + 48 rounds, Poseidon2 reference matrices, 32-byte digest kept) is frozen on hemera `release/0.4` and under the public cryptanalysis campaign (`hemera/audit/campaign.md`); the "experimental / inverse-S-box" statements below are the 0.3 record.
+
 ## 0. goal
 
 fixed by the owner on 2026-10-09:
