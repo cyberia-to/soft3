@@ -131,6 +131,7 @@ pub(crate) mod tests {
             subsidy: 0,
             checkpoint_key: [0; 33],
             checkpoint_sunset: 0,
+            pool: crate::chain::pool::Pool::genesis(),
         }
     }
 
@@ -207,14 +208,14 @@ pub(crate) mod tests {
         };
         let g = Genesis::decode(&bytes).unwrap();
         let hex = |b: &[u8]| b.iter().map(|x| format!("{x:02x}")).collect::<String>();
-        assert_eq!(hex(&g.chain_id), "2a83e54fe395ffbd924fc74a54a5c805eeec5396f97bf4c73fced8631a9e61b5");
+        assert_eq!(hex(&g.chain_id), "1bb7d6aaf85330e77ba68044b7f9b683ac8a0a5936709cffa3820ce9714826a7");
         assert_eq!(g.s0(), 1_099_389_810_279_114_036);
         assert_eq!(g.subsidy(), 10_458_426_657);
         assert_eq!(g.params().time, 1_793_885_820);
         let mut s = g.state();
         let root = s.root();
         assert_eq!(hex(&root), "93e4660f0ef0f5216d14554188cb8aded53d598d8c80d87e4e1a811949e61fe8");
-        assert_eq!(hex(&g.block0(root).id()), "ad7e5f84c8723187b3ba3417bdc205803ea021c59706a7494a62fc85e5cfb06b");
+        assert_eq!(hex(&g.block0(root).id()), "5669e96ec2f93a600ebe8f3fdfbfaf6a2187a9626d550c3988cf1b4b6c92edd1");
         for t in s.tokens() {
             assert_eq!(s.token_sum(&t), s.supply(&t));
         }

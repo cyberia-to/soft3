@@ -1,36 +1,39 @@
 # chain-conformance.md §10 — the scalars beside conformance/chain.snap, written by the first pipeline run.
 # informational; the fingerprints in chain.snap are what --check compares.
 
-blessed = "2026-10-16"
-pipeline = "soft3 genesis build (crate/src/genesis, soft3 main + feat/bbg-nonce-on)"
-bbg = "feat/dimension-v3 (DIMENSION_VERSION 3: keyed-trie root, NeuronRecord.nonce, no zero rows)"
-# previous: bbg 1d39975 (DIMENSION_VERSION 2): pussy state_root f2296834…cbeb5827, block0_id b863ce28…b3eba304
+blessed = "2026-10-16"  # against hemera 0.3 (d5f0a09); re-blessed when hemera 0.4 (profile #15) lands
+pipeline = "soft3 genesis build (crate/src/genesis: params end with the pool record, chain.md §11.9; bbg dimension version 3)"
+bbg = "eb152fa2d386864ff98a673de8b14076081d2f0f (master, #43: DIMENSION_VERSION 3 — keyed-trie root, NeuronRecord.nonce, no zero rows)"
+# state roots before dimension version 3 (bbg 1d39975): pussy f2296834…cbeb5827
 lens = "release/0.2 (the trie root has no Brakedown cap)"
 
 [pussy]
-particle = "2a83e54fe395ffbd924fc74a54a5c805eeec5396f97bf4c73fced8631a9e61b5"
-file_sha256 = "461fbfb4db6d8760b4460702275af5c28b06659510df78cd6df72cf179ee2ab7"
-file_bytes = 3249582
+particle = "1bb7d6aaf85330e77ba68044b7f9b683ac8a0a5936709cffa3820ce9714826a7"
+file_sha256 = "71747fcfd2be17991e801864187e595ee62f37bd16f114c6544aeeb511e962ce"
+file_bytes = 3249657
 time = 1793885820
 s0 = "1099389810279114036"
 subsidy = 10458426657
 state_root = "93e4660f0ef0f5216d14554188cb8aded53d598d8c80d87e4e1a811949e61fe8"
-block0_id = "ad7e5f84c8723187b3ba3417bdc205803ea021c59706a7494a62fc85e5cfb06b"
+block0_id = "5669e96ec2f93a600ebe8f3fdfbfaf6a2187a9626d550c3988cf1b4b6c92edd1"
 b_frames = 1385
 l_frames = 29113
 tokens = 23
 source_manifest_sha256 = "b46cb327ca87222ceea095c6ade2eac2e5eef0cb9d3eaeff6ce7479a137ab4d1"
 known_answer_address_funded = false
+pool_tags = "d4ea8f2bc8ea618d61e715d95b90f58d6849c3cd9c91ec161b506e3081deb0d3c3af19d75bff949eb405124b57bbd41718647c532b1ddab0d23e70fe0e85816b"
+pool_empty_root = "9a47bbbcf994dc003f7ffa6be2a23af43b81ba728d1805315495a56aa41e5694dce7aecc60e83360d7f1e3bea50dcb5e8e3b414c05aa336b8516b8f2e5d73aa5"
+previous_particle = "2a83e54fe395ffbd924fc74a54a5c805eeec5396f97bf4c73fced8631a9e61b5"  # before the pool record (2026-10-15)
 
 [bostrom]
 status = "green: root commits under bbg dimension version 3 (audit/genesis-dimension-v3-2026-10-16.md)"
-particle = "50d829b8d4a9237386645652336269b4e6755ffd53f6c4bdf32f2783f4dc75db"
-file_sha256 = "7b7067934ad0387366874b4a0419761ddc5cd0aa026d6d97e5287be1afdbdde7"
-file_bytes = 330841445
+particle = "d984145f3a4975eb4ebba55a35aa73c6641dfcf0bc5cebdb55d36a0578ea5901"
+file_sha256 = "3b5624797b39338bee8be6cd9bfa482bbf530f3c82d0235ca4eaf48fe6670d60"
+file_bytes = 330841520
 time = 1793884962
 s0 = "482287925778234"
 subsidy = 4587974
 state_root = "ce3052f4f2e100a2d2e8edb8a7d38183e2fd0a5ca809ade693f34238df3da8d6"
-block0_id = "6e0d05e242e8b5017e5e57ace6fcb1975b38aab0b2e194014b821ea00aae070e"
+block0_id = "be6f8900ca6394a491e735947106513eeb1f35e30900d88453e2fb6d942a1565"
 b_frames = 93472
 l_frames = 2997569

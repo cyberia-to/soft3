@@ -530,6 +530,7 @@ fn cmd_chain(args: &[String]) {
                 params: Params {
                     version: 1, name: name.clone(), hrp: name.clone(), denom: name.clone(), time, bits,
                     subsidy: soft3::chain::params::subsidy(s0), checkpoint_key: [0; 33], checkpoint_sunset: soft3::chain::params::CHECKPOINT_SUNSET,
+                    pool: soft3::chain::pool::Pool::genesis(),
                 },
                 balances,
                 links: vec![],
@@ -932,6 +933,7 @@ fn cmd_genesis(args: &[String]) {
                     println!("  file       {out} ({} bytes, sha256 {})", r.file_bytes, r.file_sha256);
                     println!("  time       {}", r.time);
                     println!("  S0         {}  subsidy {}", r.s0, r.subsidy);
+                    println!("  pool       format {} depth {} anchor_window {} digest {} tags {}", r.pool.format, r.pool.depth, r.pool.anchor_window, r.pool.digest, r.pool.tags);
                     print_root(&r.state_root, &r.block0_id, &r.root_blocked);
                     for (k, v) in &r.counts {
                         println!("  {k:<34} {v}");
@@ -969,6 +971,11 @@ fn cmd_genesis(args: &[String]) {
                 Ok(v) => {
                     println!("genesis particle {}", v.particle);
                     println!("  S0 {}  subsidy {}  b {}  l {}", v.s0, v.subsidy, v.b_frames, v.l_frames);
+                    println!(
+                        "  pool format {} depth {} anchor_window {} digest {} tags {}",
+                        v.pool.format, v.pool.depth, v.pool.anchor_window, v.pool.digest, v.pool.tags
+                    );
+                    println!("  pool empty_root {}", v.pool.empty_root);
                     if has("--root") {
                         print_root(&v.state_root, &v.block0_id, &v.root_blocked);
                     }

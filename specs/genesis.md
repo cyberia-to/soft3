@@ -83,7 +83,11 @@ Integers only: micro-unit amounts are `u128` in derivation and must fit the
   particles and the old height. Duplicates kept.
 - **params** — `version 1`, `name`, `hrp`, `denom`, the chain's time,
   `bits = GENESIS_BITS`, `subsidy`, `checkpoint_key` all-zero (no key set
-  yet), `checkpoint_sunset = 525,600`.
+  yet), `checkpoint_sunset = 525,600`, then the pool record of chain.md
+  §11.10 (format 1, depth 40, anchor window 1,000, digest width 64,
+  tags digest `d4ea8f2b…816b` against hemera 0.3, 74 bytes). The pool is off at launch; the record is how
+  the chain id commits to its formats. `build` and `verify` print it with
+  the empty-tree anchor `E_40`, and both refuse any other record.
 
 ### block 0
 
@@ -123,7 +127,8 @@ record of a build.
 3. bijection: `l` frames = passports + source rows; accounts = auth
    accounts; particles = distinct CIDs; unique addresses and owner ids.
 4. determinism: two builds, identical bytes; `verify --root` re-derives
-   particle, root and block-0 id from the file alone.
+   particle, root and block-0 id from the file alone, and checks the pool
+   record byte for byte.
 5. spot checks: passport contract dormant under `legacy_owner`, staking-pool
    dust, first link author and height, every neuron owner recomputed from
    its pubkey, the known-answer key's address absent (chain-conformance §10).

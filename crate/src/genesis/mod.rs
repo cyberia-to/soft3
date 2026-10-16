@@ -28,6 +28,7 @@ use std::path::{Path, PathBuf};
 use sha2::{Digest, Sha256};
 
 pub use file::{GenesisFile, Params};
+pub use crate::chain::pool::{self, Pool};
 
 pub type Id = [u8; 32];
 
@@ -133,6 +134,8 @@ pub struct Report {
     pub time: u64,
     pub s0: String,
     pub subsidy: u64,
+    /// The frozen pool formats the chain id commits to (chain.md §11.10).
+    pub pool: PoolReport,
     pub state_root: Option<String>,
     pub block0_id: Option<String>,
     pub root_seconds: Option<u64>,
@@ -145,6 +148,32 @@ pub struct Report {
     pub gaps: BTreeMap<String, String>,
     pub source: BTreeMap<String, BTreeMap<String, String>>,
     pub bbg: &'static str,
+}
+
+/// The pool record of a genesis file, with the empty-tree anchor it implies.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
+pub struct PoolReport {
+    pub format: u32,
+    pub depth: u8,
+    pub anchor_window: u32,
+    /// bytes of a wide digest
+    pub digest: u8,
+    pub tags: String,
+    /// `E_depth`: the anchor of block 0 (no commitments yet).
+    pub empty_root: String,
+}
+
+impl PoolReport {
+    pub fn of(p: &Pool) -> Self {
+        Self {
+            format: p.format,
+            depth: p.depth,
+            anchor_window: p.anchor_window,
+            digest: p.digest,
+            tags: hex(&p.tags),
+            empty_root: hex(&pool::empty_root()),
+        }
+    }
 }
 
 /// Build the genesis file for `chain` from the snapshot directory holding
@@ -174,6 +203,7 @@ pub fn build(chain: Chain, snapshot: &Path, out: &Path, options: &Options) -> io
         time,
         s0: derived.file.native_supply().to_string(),
         subsidy: derived.file.params.subsidy,
+        pool: PoolReport::of(&derived.file.params.pool),
         state_root: None,
         block0_id: None,
         root_seconds: None,
@@ -262,6 +292,7 @@ pub fn verify(path: &Path, root: bool) -> io::Result<Verified> {
         subsidy: file.params.subsidy,
         b_frames: file.balances.len() as u64,
         l_frames: file.links.len() as u64,
+        pool: PoolReport::of(&file.params.pool),
         state_root: None,
         block0_id: None,
         root_blocked: None,
@@ -291,6 +322,7 @@ pub struct Verified {
     pub subsidy: u64,
     pub b_frames: u64,
     pub l_frames: u64,
+    pub pool: PoolReport,
     pub state_root: Option<String>,
     pub block0_id: Option<String>,
     pub root_blocked: Option<BTreeMap<String, String>>,
