@@ -23,4 +23,14 @@ source_manifest_sha256 = "b46cb327ca87222ceea095c6ade2eac2e5eef0cb9d3eaeff6ce747
 known_answer_address_funded = false
 
 [bostrom]
-status = "red: genesis file builds, state root blocked by the lens commitment limit (audit/genesis-2026-10-15.md)"
+status = "green: root commits under bbg dimension version 3 (audit/genesis-dimension-v3-2026-10-16.md)"
+particle = "50d829b8d4a9237386645652336269b4e6755ffd53f6c4bdf32f2783f4dc75db"
+file_sha256 = "7b7067934ad0387366874b4a0419761ddc5cd0aa026d6d97e5287be1afdbdde7"
+file_bytes = 330841445
+time = 1793884962
+s0 = "482287925778234"
+subsidy = 4587974
+state_root = "ce3052f4f2e100a2d2e8edb8a7d38183e2fd0a5ca809ade693f34238df3da8d6"
+block0_id = "6e0d05e242e8b5017e5e57ace6fcb1975b38aab0b2e194014b821ea00aae070e"
+b_frames = 93472
+l_frames = 2997569
