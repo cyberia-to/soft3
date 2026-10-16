@@ -81,12 +81,12 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 
 ## critical, and out of scope
 
-seven questions no component roadmap owned. [[soft3/proposals/rooted-civilization]] takes them as its phase A and B — they stay critical; they are no longer unowned. each one is ignorable today and existential at the first real scale.
+seven questions no roadmap in the stack currently owns. each one is ignorable today and existential at the first real scale.
 
 1. **the economics of writing.** φ* ranks particles, but who may write, and at what cost? lytics prices a signal at 0.042 s of PoW — one app's local answer. an open cybergraph with free writes drowns in spam on day one. [[tok]] is published; a live economy, and the bridge from the [[bostrom]] snapshot to it, is nowhere.
 2. **key lifecycle.** [[mudra]] derives and claims; nothing recovers, rotates, or revokes. a lost seed is a lost neuron forever, and one person on two devices is formally two neurons. for a state whose citizens are keys, identity loss is not a bug — it is a constitutional crisis without a constitution.
 3. **protocol upgrade.** foculus's parameters are derived and documented; the procedure for *changing* them on a running network does not exist. a hard fork of a φ*-converged network is undefined behavior.
-4. **deletion and liability.** an append-only content-addressed graph will be handed illegal bytes — every such network has been. right-to-be-forgotten versus content addressing, moderation versus censorship: the hardest political question, currently unasked.
+4. **information is legal.** there are no illegal bytes. an append-only content-addressed graph is handed every kind of byte and keeps all of them; that is the design, not a hazard. the protocol has one settled stance here, not an open question: no censor verb, no tombstone, no right to be forgotten against content addressing. a node holds and serves what it chooses — a local choice, never a protocol rule; focus decides what is seen; liability belongs to whoever acts on information, never to the record. what remains is engineering: replication that follows focus, so unloved bytes fade without anyone deleting them (storage economics, #5).
 5. **storage economics.** state grows forever; bbg makes reads provable but gives nobody a reason to hold the bytes. a filecoin-shaped hole between [[soft3/bbg|bbg]] and [[tok]].
 6. **adversarial audit.** the consensus theorem is conditional, the truth-serum unaudited, and mudra's cryptography is self-built. before real value moves, someone paid to break it must try. no roadmap budgets this.
 7. **operations.** one duplicated launchd job recently ate the strongest dev machine for hours. a network of nodes needs health, metrics and alerting as protocol citizens, not as an afterthought — networks die of boring things.
