@@ -27,7 +27,7 @@ and must reproduce the recorded block-0 root. Companion contracts:
 | bostrom | `bostrom/snapshot/manifest.json` | 25,120,712 · 2026-08-05T08:55:00Z | 1793884962 (2026-11-05T13:22:42Z) |
 
 Every file the manifest pins (`cid`, `sha256`, `bytes`) is fetched from IPFS
-into `~/cyber/.cache/snapshots/<chain>/` (never in git) and verified by
+into `~/.cache/cyber/snapshots/<chain>/` (never in git) and verified by
 sha256 and size on every run, cached or not. Files read: `supply.json`,
 `pools.json`, `pubkeys.csv`, `balances.csv`, `delegations.csv`,
 `holdings.jsonl` (only the integer `undelegating` per account),
