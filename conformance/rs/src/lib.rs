@@ -249,8 +249,8 @@ impl Manifest {
 // hemera bridge
 // ---------------------------------------------------------------------------
 
-/// The fingerprint function: cyber-hemera 0.3 (Poseidon2 over Goldilocks,
-/// 32-byte output).
+/// The fingerprint function: cyber-hemera 0.4, profile #15 (Poseidon2 over
+/// Goldilocks, 32-byte output).
 pub fn hemera_hash(bytes: &[u8]) -> [u8; 32] {
     *hemera::hash(bytes).as_bytes()
 }

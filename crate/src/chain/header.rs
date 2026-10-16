@@ -222,7 +222,7 @@ mod tests {
         assert_eq!(&bytes[24..40], &[0u8; 16]);
         assert_eq!(&bytes[40..72], &[0x11u8; 32]);
         assert_eq!(&bytes[136..], &[0x44u8; 32]);
-        assert_eq!(hex(&h.id()), "bdfbbff94e6e17eec9169932276825a0f4957f6f3a6af9030439979eacaeb58d");
+        assert_eq!(hex(&h.id()), "bdd7f2ef3a5a1c573b8d84a7a2aeedc95c6f8aa2139eea5c83946b33c4180c31");
         assert_eq!(Header::decode(&bytes, &[0x44; 32]).unwrap(), h);
         assert_eq!(Header::decode(&bytes[..167], &[0x44; 32]), Err(HeaderError::Length(167)));
         let mut long = bytes.to_vec();

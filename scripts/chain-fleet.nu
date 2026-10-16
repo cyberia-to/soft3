@@ -9,6 +9,7 @@
 #   nu scripts/chain-fleet.nu                         # run the fleet and assert the chain-wire scenarios
 #   nu scripts/chain-fleet.nu --bin target/release/soft3 --n 3 --secs 20 --threads 1 --keep
 #   nu scripts/chain-fleet.nu --chain pussy --genesis ./genesis.tade   # a real genesis file (no dev switches)
+#   nu scripts/chain-fleet.nu --http-base 17880 --radio-base 17890     # another port range when the default one is taken
 #
 # Scenarios asserted (specs/chain-wire.md): peers connect · headers/blocks gossip and the
 # heights converge · a late-joining node IBDs to the tip · a tx submitted to node 1 is mined
@@ -18,8 +19,8 @@
 # processes this script spawned are killed, by pid (recorded in $work/pids).
 
 const REQUIRED_FLAGS = ["--chain" "--home" "--bind" "--radio" "--peers" "--moniker"]
-const HTTP_BASE = 17780
-const RADIO_BASE = 17790
+const HTTP_BASE = 17780   # default --http-base
+const RADIO_BASE = 17790  # default --radio-base
 # the harness wallet: a fixed seed, funded in the dev genesis; never a launch-chain key
 const WALLET_SEED = "1111111111111111111111111111111111111111111111111111111111111111"
 const BOB = "7777777777777777777777777777777777777777777777777777777777777777"
@@ -29,10 +30,12 @@ def main [
   --bin: string                # node binary; default $SOFT3_BIN, then `soft3` on PATH
   --n: int = 3                 # nodes in the fleet (a fourth joins late)
   --secs: int = 20             # how long the fleet mines before the convergence check
-  --threads: int = 1           # CPU threads per `soft3 mine` process (1 ≈ a block per 4 s at the floor target)
+  --threads: int = 1           # CPU threads per `soft3 mine` process (1 ≈ a block per 10 s at the floor target on hemera 0.4, ~100 kH/s)
   --chain: string = "dev"      # chain name; `dev` gets a generated genesis and the /dev switches
   --genesis: string            # genesis.tade copied into every home; default: generated dev genesis
   --keep                       # keep the work dir on success
+  --http-base: int = 17780     # first HTTP port (node i binds http-base + i − 1)
+  --radio-base: int = 17790    # first radio UDP port
 ] {
   let bin = (resolve-bin $bin)
   print $"chain-fleet: ($n) nodes · chain ($chain) · binary ($bin)"
@@ -53,12 +56,12 @@ def main [
 
   # ── 2. ports must be free ──────────────────────────────────────────────────
   let plan = (0..$n | each {|i|
-    { i: ($i + 1), http: ($HTTP_BASE + $i), radio: ($RADIO_BASE + $i), moniker: $"fleet-($i + 1)" }
+    { i: ($i + 1), http: ($http_base + $i), radio: ($radio_base + $i), moniker: $"fleet-($i + 1)" }
   })
   for node in $plan {
     for port in [$node.http $node.radio] {
       let busy = (do { ^lsof -nP -i $":($port)" } | complete | get exit_code) == 0
-      if $busy { fail 2 $"port ($port) is in use; free it or change HTTP_BASE/RADIO_BASE" }
+      if $busy { fail 2 $"port ($port) is in use; free it or pass --http-base / --radio-base" }
     }
   }
   print $"  ok    ports free: http ($plan | get http | str join ',') radio ($plan | get radio | str join ',')"

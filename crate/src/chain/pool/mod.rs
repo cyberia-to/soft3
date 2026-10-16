@@ -161,7 +161,7 @@ fn tagged_secret(tag: &[u8], parts: &[&[u8]]) -> Wide {
 }
 
 /// A tree node (chain.md §11.4): `W(D_NODE ‖ left ‖ right)`, 147 bytes in.
-/// Cost at hemera 0.3: three absorbing permutations (56-byte rate blocks,
+/// Cost (hemera 0.4, same sponge as 0.3): three absorbing permutations (56-byte rate blocks,
 /// the last carrying the padding) and one more for the second squeeze —
 /// four, against one for the narrow node jet over 32-byte children.
 pub fn node(left: &Wide, right: &Wide) -> Wide {

@@ -1,6 +1,6 @@
 //! `soft3 mine bench`: hashes per second of every backend that opens, and
 //! the conformance vector found by each (chain-conformance §5: the mined
-//! header at `GENESIS_BITS`, nonce 40,165,933).
+//! header at `GENESIS_BITS`, nonce 934,636).
 
 use super::run::{fmt_rate, rate};
 use super::target::{target_of, verifies};
@@ -50,8 +50,8 @@ pub fn measure(backend: &dyn Backend, seconds: f64) -> Result<Row, String> {
     }
     let seconds = t.elapsed().as_secs_f64();
     let job = Job::new(&header, target);
-    let found = backend.search(&job, 40_165_000, 2_000)?;
-    let vector = found == Some(933) && verifies(&job.header_with(40_165_933), &target);
+    let found = backend.search(&job, 934_000, 2_000)?;
+    let vector = found == Some(636) && verifies(&job.header_with(934_636), &target);
     Ok(Row {
         backend: backend.name(),
         hashes,
