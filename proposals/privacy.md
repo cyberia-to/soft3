@@ -14,12 +14,20 @@ evidence: open
 
 ## 0. recommendation
 
-Build the permanent monetary core from private programmable notes, hash-based
-ownership and nullifiers, and a transparent zero-knowledge execution proof.
-Publish anonymous assertions and the public state computed from them. Compute
-with private witnesses at the neuron that possesses them. Require anonymous
-submission and private recovery as part of the product. Keep the native
-monetary law and its verification rules fixed at genesis.
+Build the permanent machine from private programmable notes and a mandatory
+collective computation layer. A neuron proves its own contribution locally,
+then submits that contribution encrypted. The network computes over the sealed
+contributions and reveals only the authorized aggregate and state effects.
+Local zero-knowledge proofs certify inputs; they cannot supply this joint
+computation by themselves.
+
+Select post-quantum threshold homomorphic encryption as the collective
+execution research baseline: an additive path for sums and bounded exact
+encrypted evaluation for functions that need more. Distributed key generation,
+controlled threshold release and publicly verifiable computation are part of
+that same layer. Keep individual spending authority with the note owner.
+Require anonymous submission and private recovery. Freeze the native monetary
+law, collective release policy and verification rules together at genesis.
 
 This is the architecture selected by this research. Its production freeze is
 blocked. The present harness is a useful implementation substrate; its current
@@ -40,12 +48,15 @@ are in [the research receipt](../audit/privacy-2026-10-16/README.md).
 
 ```mermaid
 flowchart LR
-    A[Neuron: secrets and notes] --> B[Local private execution and ZK proof]
+    A[Neuron: secrets and notes] --> B[Local execution, encryption and ZK proof]
     B --> C[Padded anonymous submission]
-    C --> D[Consensus: verify and apply]
-    D --> E[Public assertions and aggregates]
-    D --> F[Commitments and encrypted delivery]
+    C --> D[Consensus: verify and close input set]
+    D --> J[Encrypted joint computation]
+    J --> K[Verified threshold release]
+    K --> E[Authorized public aggregates]
+    K --> F[Private payout commitments and delivery]
     E --> G[Any bounded public program]
+    J --> L[Policy-bound encrypted outputs and programs]
     F --> H[Recipient: private recovery and next spend]
 ```
 
@@ -68,18 +79,19 @@ actual wire boundary.
 | surface | public by construction | protected |
 |---|---|---|
 | monetary transition | accepted root, nullifiers, new commitments, fee class, padded envelope, proof | input-note association, ownership, amounts, asset/policy data unless explicitly disclosed |
-| public assertion | particle pair and the application-approved public payload | author and its private authority/holdings |
-| public [[focus]] computation | the declared aggregate graph and result | identities behind its contributions |
+| public assertion | particle pair and the application-approved public payload | author, individual contribution weight and its private authority/holdings |
+| public [[focus]] computation | the authorized aggregate graph and result | individual summands and identities, subject to aggregate-output leakage |
 | private program | declared public IO and resource class | witness, private state and accesses inside that class |
 | settlement | accepted input-domain commitment, epoch, authorized aggregates, payout commitments | protected contributor assignment, marginal vector and private ego-net |
 | transport | declared schedule, packet class and service availability | assignment of originating connections to published assertions |
 
-The application must explicitly choose whether an individual assertion weight
-is public. Public per-assertion weights implement author privacy; hidden weights
-with public sums require the aggregation protocol in §6. Public per-neuron
-balance/focus/karma deltas are incompatible with claiming those same transitions
-are unlinkable. Private reputation must travel as an authenticated private state
-credential with controlled disclosure.
+For the requested machine, individual weights and protected reports stay
+hidden; the authorized aggregate becomes public. This makes §6 mandatory at
+genesis. A public particle pair discloses the target of an anonymous assertion,
+but does not authorize disclosure of its weight or author. Public per-neuron
+balance/focus/karma deltas conflict with concealing those same transitions.
+Private reputation travels as an authenticated private state credential with
+controlled disclosure.
 
 Authorized recipients and authors know their own interactions. A message can
 identify its author by its content; unique values, timing and outside facts can
@@ -104,12 +116,14 @@ in [sources.json](../audit/privacy-2026-10-16/sources.json).
 | resetting the live nullifier table preserves lifetime uniqueness | open unless an accepting proof authenticates all relevant spent history; an accumulator name and archived roots alone supply no such check |
 | public aggregates always conceal individual contributions | refuted: subtraction, a singleton batch and colluding contributors reveal exact values |
 
-The old [[privacy trilateral]] is useful as a list of tools. Its assertion that
-every privacy application requires ZK, FHE and MPC together is too strong.
-An owner can privately prove its own computation. Outsourcing computation on
-unknown plaintexts and distributing a decryption authority are additional jobs.
-Likewise, shared Goldilocks arithmetic alone establishes neither an FHE scheme
-nor its security, error bounds or efficiency.
+The [[privacy trilateral]] identifies three jobs that this collective machine
+actually needs: prove eligible inputs, compute jointly without exposing them,
+and distribute authority over disclosure. Owner-only private execution solves
+the first job. Threshold encrypted evaluation and distributed protocols solve
+the other jobs under their declared assumptions. A sum needs only additive
+homomorphism; arbitrary bounded joint functions need a more expressive secure
+computation protocol. Shared Goldilocks arithmetic alone establishes neither
+an FHE scheme nor its security, error bounds or efficiency.
 
 ## 3. the monetary kernel
 
@@ -127,7 +141,8 @@ cm   = H_security("note", chain, encode(note))
 nf   = PRF_nk("spent", chain, rho, cm)
 
 state = (note_commitment_root, persistent_nullifier_root,
-         public_graph_root, supply_state, protocol_context)
+         public_graph_root, collective_input_root, collective_key_context,
+         supply_state, protocol_context)
 ```
 
 `rho` is fresh high-entropy note randomness. `nk` is derived from, and bound to,
@@ -175,9 +190,15 @@ output preimages and application execution. The relation checks:
 5. Each input policy accepts the transition and all successor state/policy
    obligations hold. The native currency's conservation/issuance predicate is
    enforced outside application discretion.
-6. Public graph effects, encrypted delivery data and output commitments refer to
-   the same transition. The recovery profile defines which delivery-consistency
-   checks are proved, so an admitted payment has its promised recoverable data.
+6. Each encrypted collective contribution is bound to the same eligible private
+   state, declared computation, epoch key and output policy. The proof checks
+   encryption/plaintext consistency, bounded encoding and correct local
+   preprocessing. A proof of a valid commitment alone cannot authenticate an
+   unrelated ciphertext. Publishing the aggregate uses the separate relation
+   in §6; input admission never substitutes a plaintext individual weight.
+7. Encrypted delivery data and output commitments refer to the same transition.
+   The recovery profile defines which delivery-consistency checks are proved,
+   so an admitted payment has its promised recoverable data.
 
 Validators apply those verified effects atomically to their own canonical
 state. A historical-root membership proof does not establish present unspentness.
@@ -194,18 +215,32 @@ language; the frozen interpreter/relation supplies the meaning. Programs can
 implement timelocks, escrow, swaps, delegated rights and application-specific
 state transitions.
 
-Three kinds of computation have different witness requirements:
+The execution boundary follows who can know the inputs:
 
 | computation | chosen execution |
 |---|---|
 | custom program over published outputs | anyone executes it and can prove the result |
 | custom program over a neuron's own hidden notes | that neuron executes/proves locally; verifiers learn the permitted result |
-| custom program over hidden notes belonging to several independent neurons | explicit collaboration, MPC, or qualified encrypted evaluation; access policy and output disclosure are part of that application |
+| native aggregate over hidden contributions | mandatory encrypted aggregation and authorized threshold release, §6 |
+| custom program over sealed outputs belonging to several independent neurons | bounded threshold encrypted evaluation under the outputs' policies; no single evaluator receives the plaintext witnesses |
 
-An opaque commitment supplies binding, not the ability to evaluate arbitrary
-functions of its preimage. FHE enables ciphertext evaluation but still leaves
-key ownership, release policy and distributed decryption to solve. General
-FHE is therefore outside the mandatory monetary kernel.
+An opaque commitment supplies binding. Computing on its hidden preimage needs
+an additional protocol. In the selected research architecture anyone can
+evaluate an admitted bounded circuit over compatible ciphertexts and prove its
+execution; obtaining a plaintext result additionally requires the release
+policy and threshold protocol. A program returning one protected input is not
+automatically authorized just because its evaluation is correct. Native
+aggregate/reward functions have fixed release policies; application outputs
+carry explicit policies from creation.
+
+Owner-only spends can use local ZK without homomorphic evaluation. That
+optimization does not remove encrypted joint computation from the requested
+machine. Pure sums use the additive path. Bounded nonlinear circuits use exact
+leveled HE where its depth suffices; persistent composition beyond that depth
+requires a qualified refresh/bootstrapping protocol in the frozen profile.
+The research must establish these bounds before promising encrypted contracts.
+MPC is a valid alternative execution technique, but a sum-only primitive cannot
+implement general hidden-input contracts by itself.
 
 Freeze the interpretation, encodings, native monetary law, admission relation,
 proof verifier/parameters, accepted crypto profiles, resource bounds, conflict
@@ -235,9 +270,11 @@ and stake resource come from shielded notes. Anonymous membership alone gives
 no scarcity: Sybil resistance comes from the specified scarce resource and
 replay/exclusivity rules.
 
-Consensus can validate and order these proofs while reading the public graph.
-The basic [[focus]] calculation then runs on public data. Neither a global
-decryption key nor a private prover containing everybody's identity is needed.
+Consensus validates and orders the encrypted contributions, then closes their
+canonical input set. The collective protocol computes and releases the allowed
+aggregate graph. Only after that release can the basic [[focus]] calculation
+run on public data. The threshold key protects contributions until authorized
+release; no individual party is given the complete decryption key.
 
 If consensus itself requires private weighted votes, freeze a separate
 credential relation: lock eligible stake through the voting/slashing interval;
@@ -254,40 +291,146 @@ validator role can coexist with anonymous assertions, but that role's actions
 then have an explicitly public identity. Fully anonymous validators are a
 further consensus requirement, not an implication of P1.
 
-P3 is straightforward only when the miner already possesses every protected
-input needed for its computation. Its proof publishes the authenticated input
-scope, allowed result and payout commitments, while hiding the witness. Complete
-scope is essential: proving a result over a hand-picked subset changes rewards.
-If the function needs other neurons' unrevealed reports, §6 is mandatory.
+P3 requires a result proof over the complete admitted input scope and private
+payouts. A miner may prove a standalone marginal using its own witness. The
+epoch settlement also needs other neurons' protected reports and grouped
+contributions. Giving those witnesses to one miner would cross the privacy
+boundary even if the final proof hid them from everyone else. The collective
+protocol below is therefore required for this reward machine.
 
-## 6. the hard research boundary: secret collective inputs
+## 6. mandatory collective computation
 
-[[valence]], BTS scoring, hidden weights and private contributor-grouped
-settlement can need joint functions of inputs that no single prover knows.
-Local proofs alone do not solve this. A central prover receiving all those
-inputs violates the intended privacy boundary even if its final proof is ZK.
+### 6.1 decompose the actual aggregate
 
-For this lane, select bounded epoch MPC with authenticated input commitments
-and a publicly verifiable result as the research baseline. Use secure
-aggregation for genuinely additive parts; use an explicitly malicious-secure
-MPC relation for nonlinear scoring and witness-dependent settlement. Freeze
-the accepted input set before computing; bind all shares/proofs to that set;
-handle missing contributors, exclusions and exactly-once inclusion. Existing
-[secure aggregation](https://eprint.iacr.org/2017/281) establishes feasibility
-for sums under its own model, not a PQ implementation of our reward function.
+[[tru/specs/attention]] defines the effective adjacency as
 
-The protocol must specify the corruption threshold, participant selection,
-authenticated PQ channels, share consistency, distributed proof production,
-timeout/abort rules and recovery. A public proof of shares being processed
-correctly does not prove that the shares encode eligible complete inputs.
-Hashing Shamir coefficients does not by itself implement verifiable sharing.
+```text
+x_l(p,q)    = a(l) * kappa(nu(l)) * f(m(l))
+A_eff[p,q] = sum_l x_l(p,q)
+phi        = tri_kernel(A_eff)
+```
 
-Confidentiality depends on the stated non-collusion bound and, for proactive
-security, timely refresh and actual erasure. Offline contributors need durable
-shares/ciphertexts and a defined availability service. A long-lived threshold
-FHE key would transfer the same problem to a decryption committee and expose
-archived ciphertexts if enough shares later leak. Permissionless admission
-alone establishes no honest threshold.
+The efficient cut is local preprocessing, encrypted aggregation, authorized
+release, then public computation. When a neuron possesses authenticated
+witnesses for all factors at the accepted snapshot, it computes its `x_l`
+locally. It proves the factors, resource constraints and prescribed arithmetic,
+and encrypts that same `x_l`. The network sums the ciphertexts. It releases
+`A_eff` under the fixed disclosure policy, then anyone computes `phi` and
+custom programs over this public aggregate. If a factor is itself a joint
+secret, its calculation stays inside the collective protocol.
+
+This factorization is a proposed execution strategy, not a measured speedup.
+It preserves the distinction between a local nonlinear product and a nonlinear
+function of several independent secrets. Generic local ZK supplies no sum of
+unknown witnesses. The formulas and their exact source provenance are recorded
+in [the receipt](../audit/privacy-2026-10-16/README.md).
+
+### 6.2 the encrypted sum and its acceptance relation
+
+Use a common threshold public key for the admitted epoch/computation domain:
+
+```text
+c_l = Enc(pk_epoch, x_l; r_l)
+pi_l = ZK(eligible state, valid x_l, c_l encrypts that x_l,
+          domain, epoch, nullifier, output policy)
+
+B = finalized ordered set of accepted (c_l, pi_l, public routing data)
+C = AddHE(c_l for l in B)
+A = ThresholdRelease(C, root(B), program, policy)
+```
+
+`AddHE` denotes the selected scheme's ciphertext operation, not plaintext
+field addition. Independently addressed recipient ciphertexts are not already
+compatible aggregate inputs. The complete protocol must establish:
+
+- eligibility and encryption consistency for every input, exactly-once
+  inclusion of the canonical set, and binding to its accepted state snapshot;
+- canonical bounded integer/fixed-point encoding, prescribed rounding, maximum
+  batch size, no plaintext-modulus wraparound, and a decryption-failure budget;
+- recomputable or proved evaluation over exactly `root(B)`, and verifiable
+  threshold decryption bound to the approved result ciphertext and function;
+- disclosure of only the designated output slots, including sanitization of
+  unused packed slots and the distributed decryption transcript;
+- deterministic admission, exclusions, timeout, reorg and restart rules that
+  cannot turn retries into releases over attacker-chosen overlapping subsets.
+
+Publishing a correct decryption proof does not authorize that decryption.
+Honest key-share holders release only the finalized, policy-approved result.
+Accepting arbitrary result ciphertexts would create a decryption oracle for
+individual inputs. Threshold collusion remains a confidentiality assumption;
+public verification cannot stop enough colluding holders decrypting privately.
+
+For public `(p,q)`, routing to an aggregate bucket is public. Concealing the
+target as well requires padded vectors or an oblivious routing/histogram
+protocol; sparse ciphertext addresses otherwise reveal support. Even with
+public targets, singleton and incremental aggregates can reveal a weight.
+The release policy must resolve that leakage before claiming hidden weights.
+
+### 6.3 what summation cannot settle
+
+| function | required private work | allowed release |
+|---|---|---|
+| effective adjacency with locally available factors | local product proof, then encrypted sum | policy-approved aggregate adjacency |
+| focus on that released adjacency | ordinary public tri-kernel computation | focus and custom public computations |
+| valence/report totals | encrypted sums over the specified eligible domain | only approved totals/statistics |
+| BTS surprise | construct crowd references, then evaluate each protected report against them | the specified aggregate and private score/state updates |
+| contributor-grouped Shapley settlement | coalition-dependent evaluation using authenticated contributor grouping and the fixed sampling rule | authorized total, proof and encrypted payout/state updates |
+
+The inspected [[tru/specs/rewards]] working draft makes the obstacle explicit:
+surprise depends on the crowd collected at epoch close, and Shapley depends on
+`v(S + nu) - v(S)` for different contributor coalitions. The aggregate graph
+alone does not in general preserve the required contributor decomposition.
+Nor does summing standalone marginal proofs compute the joint settlement.
+An optimized BTS protocol might release sufficient crowd statistics and then
+use local proofs; that optimization is admissible only if those statistics and
+their repeated releases fit the leakage policy. This proposal makes no such
+unproven sufficiency claim for the full settlement function.
+
+Select exact threshold HE evaluation for the bounded joint circuit as the
+research baseline, with additive-only evaluation where the algebra allows it.
+Evaluate a malicious-secure MPC implementation of the same function as the
+comparison for cost and availability. These are ways to realize one fixed
+functionality; the production protocol must be chosen and reviewed before
+freeze. An approximate numeric evaluator cannot silently change monetary
+conservation or reward rounding. Programmable evaluation needs bounded control
+flow, private indexing where required, and an explicit depth/refresh budget.
+
+[Multiparty BFV research](https://eprint.iacr.org/2020/304) supplies a concrete
+RLWE-based starting point for public ciphertext evaluation with distributed
+keys. Its stated semi-honest model does not qualify this malicious environment.
+[OpenFHE's security notes](https://openfhe-development.readthedocs.io/en/latest/sphinx_rsts/intro/security.html)
+also distinguish library guarantees from active protocol security and warn
+about extra packed-slot disclosures. Existing
+[secure aggregation](https://eprint.iacr.org/2017/281) supplies a separate sum
+reference. None certifies our PQ parameter set, release policy or reward circuit.
+The native Goldilocks `mudra::veil` proposal remains unqualified; arithmetic
+alignment alone cannot justify freezing a new cryptosystem.
+
+### 6.4 distributed authority and lifetime
+
+Freeze distributed key generation, membership/selection, corruption threshold,
+authenticated PQ channels, share consistency, proof production, release rules,
+timeout/abort behavior and recovery. No party receives a master key. Hashing
+Shamir coefficients does not by itself implement verifiable sharing. Monetary
+spending keys stay independent of the collective decryption shares.
+
+Use epoch keys for transient contributions. Fixed rotation/resharing rules are
+part of the immutable protocol; new key instances do not change its algorithms.
+Confidentiality depends on the non-collusion bound and, for proactive security,
+timely refresh and actual erasure. Offline contributors need durable ciphertexts
+and availability. Live encrypted application state requires a specified key
+transition/refresh protocol; preserving access to that state also preserves an
+ongoing compromise risk. Erasure can protect finished epochs only where no
+remaining key path can decrypt their individual inputs. Permissionless
+admission alone establishes no honest threshold.
+
+Enough colluding key-share holders can expose the protected inputs. Too few
+available holders can halt aggregate release and dependent settlement. These
+are distinct safety/privacy/liveness conditions to price alongside consensus.
+A proof of correct evaluation closes neither condition. The freeze must choose
+an explicit failure outcome; automatic plaintext fallback breaks the promise.
+
+### 6.5 release leakage and the genesis decision
 
 Output leakage remains even with perfect MPC. If `S = sum(x_i)`, an adversary
 knowing every term except one recovers that last term. Publishing two exact
@@ -299,10 +442,10 @@ does not count independent honest participants. Differential privacy belongs
 to suitable analytics; monetary conservation and deterministic finality retain
 exact arithmetic.
 
-Decision: qualify this lane before activating any native reward/consensus rule
-that requires its protected inputs. If those rules define the intended native
-currency at genesis, the whole permanent genesis waits for this lane. Calling
-it an optional later privacy upgrade would change the owner's requirement.
+Decision: this collective layer is a genesis prerequisite. Owner-only ZK plus
+public individual outputs fails the requested machine. A sum-only encrypted
+layer also fails the general private settlement/contract requirement. Qualify
+the complete bounded function and its release policy before permanent genesis.
 
 ## 7. transport, delivery and recovery
 
@@ -446,6 +589,15 @@ witness maintenance; full/warm recovery; archive growth; and adversarial rejecti
 cost. Report medians and tails with committed revisions, hardware, parameters
 and commands. Device budgets include delivery construction and private reads.
 
+The collective fixture must include input-encryption proofs, the real adjacency
+sum, BTS and contributor-grouped settlement, evaluation/proof costs, key
+generation and refresh, all committee traffic, threshold release, private
+payout construction, and withholding/reorg recovery. Compare the additive
+path, bounded exact threshold HE and malicious-secure MPC at the same leakage
+and corruption model. Include packed-slot cleanup and private routing where
+claimed. A fast ciphertext sum or a fast local proof alone cannot establish
+end-to-end efficiency of this machine.
+
 Carry the existing warm device proving target of at most one second; the
 small/large proof and verification targets of [[proof-system-repair]] stay
 targets. Add explicit total transaction and network-delay budgets before the
@@ -454,11 +606,13 @@ If the required security and efficiency fail together, the final genesis waits.
 
 ## 10. research programme and closing conditions
 
-No new fundamental primitive is needed for private notes, owner-proved
-programs and anonymous public assertions. There is substantial engineering and
-cryptographic qualification work. The full hidden-input reward/consensus
-machine, compact PQ hiding proofs and their composition on this harness are
-research-grade. The work is bounded by questions with falsifiable outcomes.
+Existing primitives express private notes, encrypted sums and bounded joint
+computation. This does not establish that their composition meets this stack's
+permanent PQ, malicious-security and efficiency requirements. The full
+hidden-input reward/consensus machine and compact hiding proofs on this harness
+require cryptographic protocol research as well as engineering. The work is
+bounded by questions with falsifiable outcomes; its outcome may require a new
+protocol or may show that the fixed requirements do not fit the device budgets.
 
 | question | owner | closing evidence | blocks |
 |---|---|---|---|
@@ -466,21 +620,24 @@ research-grade. The work is bounded by questions with falsifiable outcomes.
 | G2: can the exact hash/proof composition meet the quantum and lifetime budgets? | hemera, lens, zheng | reviewed exact parameters, QROM/grinding/composition argument, hiding bound, independent verifier and adversarial fixtures | permanent genesis |
 | G3: does one complete private spend conserve value and remain spendable forever? | bbg, tok, mudra, zheng | malicious-prover tests for inflation, wraparound, forged authority, same/batch/cross-epoch double spends; archive and root-update recovery | permanent genesis |
 | G4: can contracts preserve private state under bounded execution? | nox, trident, joy | reference evaluation agrees with proof relation for authorization, calls, private reads, branches and successor policies; compiler semantics checked separately | programmable genesis |
-| G5: can secret collective inputs be settled without a privileged reader? | foculus, mudra, zheng, tru | a specified malicious-secure MPC protocol, threshold/availability model, complete-input proof and dropout/reorg/payout fixtures | native hidden-input settlement and any genesis requiring it |
+| G5: can secret collective inputs be aggregated and settled without a privileged reader? | foculus, mudra, zheng, tru | a specified malicious-secure PQ collective protocol; actual adjacency/BTS/Shapley circuits; input/evaluation/decryption proofs; threshold/availability model; disclosure, dropout, reorg and payout fixtures | permanent genesis |
 | G6: can a global observer link ingress or recovery to the published action? | radio, cybergraph, cyb, mudra | reviewed PQ mix/delivery composition; active attacks and realistic low-load/intersection experiments; key-private recovery | claimed end-to-end privacy |
 | G7: does the complete composition fit the product budgets? | joy, honeycrisp, soft3 | reproducible end-to-end cold/warm receipts under the accepted G1/G2 profile; sustained-load and hostile-input runs | permanent genesis |
 
-Run G1 first. Build the conventional hash-tree/private-note reference and
-conservative crypto baseline next. Close the proof/delivery security questions
-while measuring that complete relation. Develop the secret collective-input
-lane against the real valence/settlement function, not an unrelated private sum.
+Run G1 first, including the exact collective function and release boundary.
+Build the conventional hash-tree/private-note reference and the encrypted
+aggregate reference together. Close the proof/delivery security questions
+while measuring those complete relations. Extend the collective fixture to
+the real valence/settlement function; an unrelated private sum cannot close G5.
 Only after these converge should owner repositories receive final normative
 specs, wire changes and executable release gates.
 
-The strongest technical research investment is a compact, quantum-analyzed
-hiding proof for the actual nox relations, followed by a minimal-disclosure
-settlement protocol. Inventing a new KEM, a new commitment norm test or a new
-general FHE scheme is outside the selected baseline.
+The two load-bearing research investments are a minimal-disclosure, verifiable
+collective protocol and compact quantum-analyzed hiding proofs for its actual
+relations. Input validation, encrypted execution and threshold disclosure must
+be designed together. Start from existing exact lattice HE constructions;
+inventing a new KEM, a commitment norm test or a native-field FHE scheme is
+outside the selected baseline.
 
 Acceptance requires review of the exact deployed revisions and origin-pushed
 inputs, not an architecture diagram or a successful honest proof. Publish the
@@ -492,18 +649,21 @@ profile and one set of semantics; unresolved security rows keep it open.
 | alternative | disposition |
 |---|---|
 | publish now, hide old history later | historical disclosure is irreversible; useful rehearsal, different permanent promise |
-| FHE for every transfer and program | adds ciphertext/proving/key-management cost to work the owner can already perform privately; reserve it for applications that need encrypted evaluation |
-| one global threshold decryption key | makes confidentiality depend on cumulative committee compromise; outside the monetary kernel |
+| owner-only ZK and public individual outputs | omits the mandatory aggregation of protected contributions; fails the requested collective machine |
+| additive HE alone for the entire machine | handles sums after local preprocessing; insufficient for general joint private settlement and contracts |
+| FHE evaluation for every owner-only transfer | pays joint-computation costs where local private execution already suffices; use the local path for those spends |
+| one permanent threshold decryption key | accumulates compromise risk for archived contributions; select epoch keys and an explicit lifecycle for retained secret state |
 | classical curve commitments or recursive curve wrappers | retain a discrete-log security dependency; outside the PQ baseline |
 | CSIDH plus an unqualified native-field KEM | increases new cryptography on the irreversible path; use the standard delivery baseline and qualify anonymity explicitly |
 | aggregate everything into one proof | reduces verification overhead after qualification; does not erase network observations, public IO or the aggregator's learned witnesses |
 | keep every current byte and still claim the stronger security target | incompatible with the observed weak/narrow bindings and public signature profile |
 
-The proposed decision is concrete: private programmable notes and anonymous
-public assertions form the core; mandatory anonymous transport and recoverable
-delivery complete the product; bounded MPC handles genuinely joint secrets;
-the monetary law stays fixed. Freeze follows the evidence for that whole
-composition. The present research verdict on that freeze is no-go.
+The proposed decision is concrete: local ZK authenticates private programmable
+notes and encrypted contributions; mandatory threshold encrypted computation
+produces the collective result; distributed release exposes only authorized
+outputs; anonymous transport and recoverable delivery complete the product.
+The monetary law and release rules stay fixed. Freeze follows evidence for
+that whole composition. The present research verdict on that freeze is no-go.
 
 ## sources for the external constructions
 
@@ -519,6 +679,9 @@ These are construction references, not certification of our implementation:
 - [Secure aggregation](https://eprint.iacr.org/2017/281),
   [database privacy](https://www.microsoft.com/en-us/research/project/database-privacy/):
   private computation and the independent problem of information released by outputs.
+- [Multiparty BFV](https://eprint.iacr.org/2020/304),
+  [OpenFHE security notes](https://openfhe-development.readthedocs.io/en/latest/sphinx_rsts/intro/security.html):
+  distributed homomorphic computation references and their security-model limits.
 
 All external sources were opened on 2026-10-16. Local evidence takes precedence
 for claims about what this stack has actually implemented.

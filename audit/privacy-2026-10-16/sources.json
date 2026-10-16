@@ -552,6 +552,16 @@
       "selected_ref": "origin/master",
       "sha256": "c5d82803c831b1533bd096e84ecd897625dbfaf3c385d721258001bcbbdb2430",
       "read_command": "git -C /Users/master/cyber/foculus show 4ae1a79b55791e56e742bb34732212af7042ef25:src/marginal_cert.rs"
+    },
+    {
+      "id": "tru:specs/attention.md",
+      "repository": "tru",
+      "revision": "6b25e4e93defe22a08168c46224bc2bf44cef1a8",
+      "path": "specs/attention.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "6f6c04e8b2f4066b720e3209b3f4c367ae8716d7fd03cd55d25f44da9c56117b",
+      "read_command": "git -C /Users/master/cyber/tru show 6b25e4e93defe22a08168c46224bc2bf44cef1a8:specs/attention.md"
     }
   ]
 }

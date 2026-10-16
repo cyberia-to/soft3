@@ -62,8 +62,9 @@ git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:l
 ```
 
 The privacy core explicitly makes the cyberlink public and author private.
-That distinction supports anonymous public assertions as the main design.
-Hidden valence and marginal settlement remain additional requirements.
+This permits public assertion content, while protected weights and reports
+still require collective computation. Hidden valence and marginal settlement
+are mandatory parts of the requested machine's genesis scope.
 
 ### the private prover exists, with narrower evidence than the headline
 
@@ -152,6 +153,47 @@ certificate succinct does not conceal those public inputs. A hidden-witness
 statement and the origin/availability of its complete witness remain separate
 obligations.
 
+### the actual aggregate requires a collective protocol
+
+Commands:
+
+```text
+git -C /Users/master/cyber/tru show 6b25e4e93defe22a08168c46224bc2bf44cef1a8:specs/attention.md
+cat /Users/master/cyber/tru/specs/rewards.md
+```
+
+The attention source matches that revision. Its effective adjacency is the
+sum of per-contribution attention times karma times the market factor; focus
+is the tri-kernel fixed point over that aggregate. The proposed execution cut
+therefore has a concrete target: prove each locally available product, encrypt
+it, sum encrypted contributions, release the authorized adjacency, then compute
+public focus. This is algebraic decomposition, with no throughput claim.
+
+The rewards working snapshot, identified by its existing checksum in
+[sources.json](sources.json), explicitly distinguishes standalone propose from
+joint epoch settlement. BTS surprise depends on the crowd; Shapley evaluates
+coalitions of grouped contributions. Its current conservation correction also
+recognizes a nonlinear normalized fixed point. These observations support a
+joint hidden-input computation requirement. They do not certify the draft's
+economic claims, estimates, or consistency with all accepted component specs.
+
+The original research commit `ea413d43e5f3e4b52e11c589e41d2600f8c2ee25`
+placed private collective computation behind a conditional lane while its
+recommendation foregrounded owner-only proving and public assertions. That
+scope was too narrow for the owner's requested machine. The revised proposal
+makes encrypted aggregation and protected joint settlement mandatory genesis
+requirements, and separates additive preprocessing from general hidden-input
+evaluation. ZK input validity alone supplies neither computation nor disclosure
+authority over other neurons' contributions.
+
+The additional primary references opened on the receipt date were
+[multiparty BFV](https://eprint.iacr.org/2020/304) and
+[OpenFHE security notes](https://openfhe-development.readthedocs.io/en/latest/sphinx_rsts/intro/security.html).
+The former explicitly states a semi-honest model; the latter documents active
+security limits and unintended packed-slot disclosure. They motivate a concrete
+research baseline and its missing obligations. No malicious-secure PQ threshold
+implementation, parameter selection or aggregate benchmark was produced here.
+
 ## reproduced counterexamples
 
 Source under analysis:
@@ -206,6 +248,13 @@ All exited successfully. Local Markdown destinations, balanced code fences,
 proposal indexing, JSON source identifiers and the script/output checksum were
 also checked. This validates the research artifacts and existing release-engine
 tests; it does not exercise or qualify the proposed cryptographic implementation.
+
+The collective-computation correction was validated with the same commands
+on `ea413d43e5f3e4b52e11c589e41d2600f8c2ee25` plus its documentation changes.
+The release-engine suite again passed all 15 tests. The counterexample script,
+filename check, diff check, local Markdown links/fences and source-record
+uniqueness passed; both inspected tru files still matched their recorded
+checksums. These checks add no cryptographic performance or security evidence.
 
 ## external evidence and limits
 
