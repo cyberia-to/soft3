@@ -530,6 +530,7 @@ fn cmd_chain(args: &[String]) {
                 params: Params {
                     version: 1, name: name.clone(), hrp: name.clone(), denom: name.clone(), time, bits,
                     subsidy: soft3::chain::params::subsidy(s0), checkpoint_key: [0; 33], checkpoint_sunset: soft3::chain::params::CHECKPOINT_SUNSET,
+                    pool: soft3::chain::pool::Pool::genesis(),
                 },
                 balances,
                 links: vec![],
