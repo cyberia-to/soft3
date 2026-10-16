@@ -517,6 +517,77 @@ public individual outputs fails the requested machine. A sum-only encrypted
 layer also fails the general private settlement/contract requirement. Qualify
 the complete bounded function and its release policy before permanent genesis.
 
+### 6.7 persistent private state and autonomous authority
+
+Treat a network-held secret as a first-class capability governed by a committed
+policy. A secret-bearing service can preserve identity, authority and private
+memory across replacement of its physical executors. This is an operational
+foundation for a [[cy]] agent's continuity. Intelligence additionally requires
+an implemented learning/decision process, objectives, observations and feedback;
+secrecy alone establishes none of those properties.
+
+The required abstraction combines custody with the private transition:
+
+```text
+handle = (chain, object, policy, state_commitment, generation)
+(private_state_next, permitted_outputs, permitted_actions)
+    = authorized_transition(private_state, admitted_inputs)
+```
+
+The handle is an architectural sketch, with its concrete encoding still open.
+The accepted transition binds code, input set, prior state, resource bound,
+disclosure rule and successor state. Its execution keeps protected plaintext
+inside the qualified collective protocol; public verification checks the
+transition and its authorized effects. Signing an action, releasing a key to
+a recipient and evaluating over secret state are distinct operations. A generic
+decrypt-and-sign endpoint cannot stand in for their different policies.
+
+| capability | additional obligation beyond holding a key |
+|---|---|
+| persistent network identity and control of assets | policy-bound signing, finality, replay domains, and compatible external verification |
+| collective private aggregates, auctions and settlement | authenticated contributions, exact private evaluation and the release analysis in §6.6 |
+| private agent memory and strategy | confidential state access and transitions, private indexing where needed, successor-state availability |
+| learning or inference on private contributions | a qualified bounded computation, an output leakage policy and a separate data-quality/incentive argument |
+| conditional access and recovery | authorization of each recipient, explicit key delivery semantics and no promise to revoke knowledge already disclosed |
+
+Make the following boundaries part of the functionality before freeze:
+
+- Public programs over published results remain unrestricted. Programs over
+  protected inputs execute only within the object's admitted policy; returning
+  an individual input is itself disclosure. The ability to evaluate any circuit
+  does not authorize publication of every circuit's output.
+- Model outputs, trades, timings and access patterns can disclose private
+  state. Learning from private contributions needs its own leakage analysis;
+  cryptographic execution correctness does not establish truthful observations,
+  useful learning, resistance to poisoning or safe decisions.
+- A qualified threshold, timely refresh, honest erasure and availability remain
+  explicit assumptions. Refresh protects against the specified mobile attacker;
+  it cannot undo a complete reconstruction of a persistent secret. Public proofs
+  cannot demonstrate that a corrupted executor deleted a copy.
+- Classical secret state is copyable when enough holders cooperate. Canonical
+  continuity comes from the consensus and authorization rules; secrecy supplies
+  no physical unclonability. External actions must bind their own replay domain
+  and finalized authorization so competing histories cannot share authority.
+- Recovery must preserve the same authorization boundary. A universal recovery
+  authority able to recover every secret becomes part of every secret's threat
+  model. Hierarchical derivation from one master key supplies domain separation,
+  not independent protection against compromise of that master.
+
+Keep individual note spending authority with its owner. Separate service-secret
+domains and their policies; qualify which require independently generated keys.
+The learning process may update its memory under the frozen transition law.
+It receives no implied authority to rewrite monetary invariants, disclosure
+rules or the verifier. An unrestricted policy-upgrade capability would include
+the ability to authorize extraction of the entire protected state.
+
+ICP provides a deployed reference for threshold authority, resharing and vetKey
+delivery. Its documented standard canister execution has a different memory
+confidentiality boundary, and its cited primitives use classical groups.
+The [ICP comparison](../audit/privacy-2026-10-16/icp-comparison.md) records the
+working capabilities and their limits. This reference strengthens the case
+for a first-class secret service; it does not qualify our complete PQ private
+state machine. The obligations above belong to the existing pre-genesis gates.
+
 ## 7. transport, delivery and recovery
 
 ### anonymous ingress

@@ -209,6 +209,20 @@ partition-recovery and computation/consensus dependency obligations. The
 freeze unit is the complete implemented and validated protocol. None of these
 is designated for completion after launch.
 
+### distributed authority and private execution have different boundaries
+
+The [ICP comparison](icp-comparison.md) records deployed chain-key signatures,
+proactive key resharing and mainnet vetKey derivation from primary sources.
+It distinguishes policy-controlled key delivery from private computation over
+arbitrary persistent state, and application immutability from the underlying
+protocol's upgrade authority. Its source table records inspection scope and
+the access date. The comparison adds no execution benchmark or security audit.
+
+The proposal now makes policy-bound secret use, private state continuity and
+their relation to autonomous agents explicit. It also records limits imposed
+by authorized outputs, threshold compromise, copying, recovery and mutable
+policy authority. None of these obligations is deferred beyond genesis.
+
 ## reproduced counterexamples
 
 Source under analysis:
@@ -278,6 +292,14 @@ checks passed. Local Markdown links/fences, both source ledgers' identifier
 uniqueness, the new lifecycle-gate link and the recorded foculus/mudra checksums
 were checked with Python assertions. The release-engine and counterexample
 program sources were unchanged. These are artifact checks, not ECPSS tests.
+
+The autonomous-state/ICP addition was checked on
+`ee3bd0ddab2f1f7682412192e89937758f6f515c` plus its documentation changes.
+The same `python3 -m unittest discover -s release -p 'test_*.py' -v` command
+passed all 15 tests. `git diff --check` and
+`python3 scripts/check-filenames.py --root . --fs` passed. Python assertions
+checked local Markdown destinations, balanced fences, ICP reference definitions
+and the new proposal section target. No cryptographic program source changed.
 
 ## external evidence and limits
 
