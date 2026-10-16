@@ -100,12 +100,14 @@ prev 0, `tx_root = chain`, `state_root`, `chain = particle`) is hashed for
 `block0_id`. The pipeline's encoder reproduces the header vectors of
 chain-conformance §5 (tested).
 
-bbg at the pinned revision has no `NeuronRecord.nonce` and
-`DIMENSION_VERSION = 2`; when §3.2's change lands the root and block-0 id
-move and are re-blessed. The pipeline refuses to commit a root when a
-dimension exceeds the lens Brakedown limit (`2^20` field elements per
-dimension at the pinned lens) and reports `root_blocked` instead — the
-bostrom case, see the audit.
+The root is bbg dimension version 3 (bbg `specs/state.md` § dimension
+versions): every dimension leaf is a keyed-trie root (no size cap), every
+neuron record carries `nonce = 0`, a link with `amount 0` writes topology
+only (`axons_out`, `axons_in`; no particle record, no balance row), and a
+zero balance is an absent row. Both burials commit (pussy and bostrom,
+`audit/genesis-dimension-v3-2026-10-16.md`). `root_blocked` is reported only
+for a state explicitly pinned to the flat (v1) root, whose dimensions are
+capped at the lens Brakedown limit of `2^20` field elements.
 
 ## debug export
 

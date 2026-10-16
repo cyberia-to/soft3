@@ -217,7 +217,7 @@ revision, with `NeuronRecord.nonce` and `DIMENSION_VERSION = 3`:
 | empty state root | `root(BbgState::new())` |
 | genesis of the conformance net: one `b` frame (`owner = 0x66 × 32`, `token("pussy")`, 1,000,000), no links | genesis file bytes, its particle (chain id), block 0 id, state root |
 | after block 1: coinbase to `0x55 × 32`, the transfer of §6 | state root, balances of `0x55`, `0x66`, `0x77`, nonce of `0x66` = 1, `coins[token("pussy")].total_supply = 1,000,000 + SUBSIDY` |
-| after a cyberlink (amount 0: chain.md §10 item 2, decided 2026-10-15) | state root; `particles[q]`, `particles[axon]` and the axon lists exist at zero, author balance down by the fee, nonce 2 |
+| after a cyberlink (amount 0: chain.md §10 item 2, decided 2026-10-15) | state root; the axon lists hold `axon(p, q)` and no particle record is written (a conviction-free link writes topology only, bbg dimension version 3), author balance down by the fee, nonce 2 |
 | a cyberlink with amount 7 | rejected (`TxError::Box(7)`) — no boxes in rule set 1 |
 | conservation | Σ native balances == S0 + h · SUBSIDY at every height of a 200-block simulated chain with random valid txs, including a 3-block reorg |
 | coinbase maturity | spending block 1's subsidy at height 100 is rejected, at height 101 accepted |
