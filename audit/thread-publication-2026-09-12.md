@@ -6,6 +6,8 @@ date: 2026-09-12
 ---
 # Thread publication audit
 
+superseded by hemera 0.4 (2026-10-16): the hemera figures below (x⁻¹ partial rounds, 8 + 16 rounds, 144 constants, ~736 constraints) describe the 0.3 record; the frozen profile is x⁷ in every round, 6 + 6 + 48 rounds, 240 constants, ~1,440 constraints — `hemera/audit/profile-0.4-2026-10.md`.
+
 Scope: completed work from the Cyber node/storage, execution-model,
 Eidos/Hemera and Mudra research thread. Remote refs and GitHub releases were
 queried directly. Unrelated local projects and active source changes from

@@ -6,6 +6,8 @@ date: 2026-10-09
 ---
 # proof-system repair — status, 2026-10-09
 
+superseded by hemera 0.4 (2026-10-16): the hemera figures below (x⁻¹ partial rounds, 8 + 16 rounds, 144 constants, ~736 constraints) describe the 0.3 record; the frozen profile is x⁷ in every round, 6 + 6 + 48 rounds, 240 constants, ~1,440 constraints — `hemera/audit/profile-0.4-2026-10.md`.
+
 status of [[proof-system-repair]] across every repository it touches. evidence: the build stand `~/cyber/.rel04` (zheng v3 branch, nox/joy/trident `release/0.4`, lens `fix/public-execution-pcs`, bbg 1d39975, neuron fd24e76, hemera/strata/tade defaults) and the consumer sweep of the same day.
 
 ## phases

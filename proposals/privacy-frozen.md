@@ -10,6 +10,8 @@ evidence: audit/privacy-2026-10-16/
 ---
 # privacy, frozen — one pool, one proof, one material
 
+hemera note (2026-10-16): the hemera#15 decision this page waits for is taken — hemera 0.4 (x⁷ in every round, 6 + 6 + 48 rounds, 32-byte digest kept) is the frozen material on hemera `release/0.4`; the G3 campaign runs on it (`hemera/audit/campaign.md`).
+
 the question (owner, 2026-10-16): a privacy scheme that is as efficient as the harness allows today, quantum-safe, lets anyone compute custom things over its outputs, serves consensus, and above all is the machine everyone can speak into where nobody learns who said what and everyone learns what was said. and it must be frozen at launch like the hardware of a satellite: the currency becomes a material, like gold, that nobody can change afterwards.
 
 this page gives the decisions, the relation, what freezes at genesis and what freezes at rule set 2, what has to be researched before the pool can be switched on, and the acceptance gates. it is written against the harness as it stands on 2026-10-16: [[hemera]] over Goldilocks, [[nox]], [[zheng]] profiles 1, 2 (veil) and 6, [[lens]] WHIR, [[bbg]], [[mudra]], the [[chain|phase-1 root chain]] spec, and the measured figures of `audit/proof-latency-2026-10.md` and `zheng/audit/*-2026-10.md`.
