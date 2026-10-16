@@ -26,6 +26,12 @@ pub fn validate_tx(chain: &mut Chain, tx_bytes: &[u8], pending: &[Tx]) -> Result
         return Err(TxError::CoinbaseInBody);
     }
     let account = subject(&tx).ok_or(TxError::Signature)?;
+    // chain-wire §4 admission order: the signature before nonce, fee and
+    // balance (a block checks all of them; a mempool scores the peer by
+    // which one failed first)
+    if !super::sigs::verify(&chain.rules().chain, &tx) {
+        return Err(TxError::Signature);
+    }
     let nonce = tx.nonce().ok_or(TxError::CoinbaseInBody)?;
     let current = chain.nonce(&account);
     if nonce < current || nonce >= current.saturating_add(NONCE_WINDOW) {

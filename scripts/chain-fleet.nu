@@ -1,18 +1,21 @@
 #!/usr/bin/env nu
 # chain-fleet — three soft3 root-chain nodes on one machine, each with its own home,
-# HTTP bind, radio UDP port and bootstrap-peers file; the local rehearsal of
-# deploy/chain/README.md before anything touches the three cybernode machines.
-# Modeled on cyb/harness/fleet.sh.
+# HTTP bind, radio UDP port and bootstrap-peers file, on the consensus kernel, mined by
+# `soft3 mine --backend cpu` processes against their /template + /submit; the local
+# rehearsal of deploy/chain/README.md before anything touches the three cybernode
+# machines. Modeled on cyb/harness/fleet.sh.
 #
 #   nu scripts/chain-fleet.nu --check                 # validate the config and the binary, start nothing
 #   nu scripts/chain-fleet.nu                         # run the fleet and assert the chain-wire scenarios
-#   nu scripts/chain-fleet.nu --bin target/debug/soft3 --n 3 --secs 20 --keep
+#   nu scripts/chain-fleet.nu --bin target/release/soft3 --n 3 --secs 20 --threads 1 --keep
 #   nu scripts/chain-fleet.nu --chain pussy --genesis ./genesis.tade   # a real genesis file (no dev switches)
 #
 # Scenarios asserted (specs/chain-wire.md): peers connect · headers/blocks gossip and the
 # heights converge · a late-joining node IBDs to the tip · a tx submitted to node 1 is mined
 # by node 2 and visible on node 3 · a fork of depth 3 resolves to the heavier chain · a
-# killed node restarts and recovers. Only the processes this script spawned are killed.
+# killed node restarts and recovers. The dev genesis sits at the floor target (2^-20 per hash)
+# with genesis time two hours back, so ASERT stays at the floor for the whole run. Only the
+# processes this script spawned are killed, by pid (recorded in $work/pids).
 
 const REQUIRED_FLAGS = ["--chain" "--home" "--bind" "--radio" "--peers" "--moniker"]
 const HTTP_BASE = 17780
@@ -26,6 +29,7 @@ def main [
   --bin: string                # node binary; default $SOFT3_BIN, then `soft3` on PATH
   --n: int = 3                 # nodes in the fleet (a fourth joins late)
   --secs: int = 20             # how long the fleet mines before the convergence check
+  --threads: int = 1           # CPU threads per `soft3 mine` process (1 ≈ a block per 4 s at the floor target)
   --chain: string = "dev"      # chain name; `dev` gets a generated genesis and the /dev switches
   --genesis: string            # genesis.tade copied into every home; default: generated dev genesis
   --keep                       # keep the work dir on success
@@ -87,11 +91,9 @@ def main [
     return
   }
 
-  # ── 4. launch: node 1 mines solo (the first block needs no peer), node 2 mines, others follow
-  let plan = ($plan | each {|node|
-    let extra = (if $node.i == 1 { ["--mine" "--solo"] } else if $node.i == 2 { ["--mine"] } else { [] })
-    $node | insert extra $extra
-  })
+  # ── 4. launch: every node; `soft3 mine` works node 1 and node 2 (each its own coinbase address)
+  let plan = ($plan | each {|node| $node | insert miner ($"($node.i)" | fill -c ($node.i | into string) -w 64) | insert work $work })
+  "" | save -f $"($work)/pids"
   let pids = ($plan | first $n | each {|node| launch $bin $chain $genesis_file $node })
   print $"chain-fleet: launched pids ($pids | str join ' ')"
 
@@ -103,6 +105,9 @@ def main [
       return false
     }
     print $"  ok    all ($n) nodes answer /status"
+    let m1 = (miner-start $bin $chain ($fleet | get 0) $threads)
+    let m2 = (miner-start $bin $chain ($fleet | get 1) $threads)
+    print $"chain-fleet: soft3 mine --backend cpu --threads ($threads) on node-1 \(pid ($m1)\) and node-2 \(pid ($m2)\)"
 
     # peers connect
     if not (wait-for 30 {|| ($fleet | all {|node| (peer-count $node.http) >= 1 }) }) {
@@ -119,6 +124,10 @@ def main [
     }
     let h = (height-of (status-of ($fleet | first | get http)))
     if $h < 3 { print $"  FAIL  only ($h) blocks mined in ($secs) s"; return false }
+    let b1 = (^curl -s -m 3 $"http://127.0.0.1:(($fleet | get 1).http)/block/1" | from json)
+    let ids = ($fleet | each {|node| ^curl -s -m 3 $"http://127.0.0.1:($node.http)/block/1" | from json | get id } | uniq)
+    if ($ids | length) != 1 { print $"  FAIL  block 1 differs across nodes: ($ids | str join ' ')"; return false }
+    print $"  ok    block 1 ($b1.id | str substring 0..12)… mined by ($b1.miner | str substring 0..8)… is block 1 on every node"
     print $"  ok    heights agree at ($h) across ($n) nodes"
 
     if $chain != "dev" {
@@ -142,7 +151,7 @@ def main [
     let everyone = ($fleet | append $late)
 
     # ── 7. a tx submitted to node 1 is mined by node 2, visible on node 3 ───
-    mine $first.http false null
+    miner-stop $m1
     sleep 2sec
     let nonce = (^curl -s -m 3 $"http://127.0.0.1:($first.http)/nonce/($wallet)" | from json | get nonce)
     let tx = (^$bin chain tx --seed $WALLET_SEED --genesis $genesis_file --nonce $nonce --to $BOB --amount 5 | str trim)
@@ -155,14 +164,13 @@ def main [
     let mined_at = (tx-height $third.http $txid)
     let miner = (^curl -s -m 3 $"http://127.0.0.1:($third.http)/block/($mined_at)" | from json | get miner)
     let second = ($fleet | get 1)
-    let second_status = (status-of $second.http)
+    if $miner != $second.miner { print $"  FAIL  block ($mined_at) paid ($miner), not node-2's miner ($second.miner)"; return false }
     let bob = (^curl -s -m 3 $"http://127.0.0.1:($third.http)/balance/($BOB)" | parse -r 'balance: (?<b>\d+)' | first | get b | into int)
     if $bob != 5 { print $"  FAIL  bob holds ($bob) on node-3, expected 5"; return false }
-    print $"  ok    tx ($txid | str substring 0..8)… submitted to node-1, mined at ($mined_at) by ($miner | str substring 0..8)… \(node-2 mines, node-1 paused\), bob=5 on node-3"
-    let _ = $second_status
+    print $"  ok    tx ($txid | str substring 0..8)… submitted to node-1, mined at ($mined_at) by node-2's miner ($miner | str substring 0..8)…, bob=5 on node-3"
 
     # ── 8. a fork of depth 3 resolves to the heavier chain ─────────────────
-    mine $second.http false null
+    miner-stop $m2
     sleep 2sec
     if not (wait-for 30 {|| (converged $everyone) }) {
       print $"  FAIL  fleet did not settle before the fork: ($everyone | each {|node| $'node-($node.i)=(height-of (status-of $node.http))' } | str join ' ')"
@@ -170,21 +178,23 @@ def main [
     }
     let base = (height-of (status-of $first.http))
     isolate $late.http true
-    mine $late.http true true
-    if not (wait-for 60 {|| (height-of (status-of $late.http)) >= ($base + 5) }) { print "  FAIL  isolated node did not mine its fork"; return false }
-    mine $late.http false null
-    mine $first.http true true
-    if not (wait-for 60 {|| (height-of (status-of $first.http)) >= ($base + 3) }) { print "  FAIL  main chain did not extend"; return false }
-    mine $first.http false null
-    sleep 1sec
+    let ml = (miner-start $bin $chain $late $threads)
+    if not (wait-for 180 {|| (height-of (status-of $late.http)) >= ($base + 5) }) { print "  FAIL  isolated node did not mine its fork"; return false }
+    miner-stop $ml
+    let mm = (miner-start $bin $chain $first $threads)
+    if not (wait-for 180 {|| (height-of (status-of $first.http)) >= ($base + 3) }) { print "  FAIL  main chain did not extend"; return false }
+    miner-stop $mm
+    sleep 2sec
     let main_h = (height-of (status-of $first.http))
     let fork_h = (height-of (status-of $late.http))
     let fork_tip = (tip-of $late.http)
-    if $fork_h <= $main_h { print $"  FAIL  fork \(($fork_h)\) is not heavier than main \(($main_h)\)"; return false }
+    let main_work = (work-of $first.http)
+    let fork_work = (work-of $late.http)
+    if $fork_work <= $main_work { print $"  FAIL  fork \(($fork_h), work ($fork_work)\) is not heavier than main \(($main_h), work ($main_work)\)"; return false }
     isolate $late.http false
     let dial = ({ id: $first.id, addrs: [$"127.0.0.1:($first.radio)"] } | to json -r)
     ^curl -s -m 10 -X POST -d $dial $"http://127.0.0.1:($late.http)/dev/dial" | ignore
-    if not (wait-for 60 {|| ($fleet | all {|node| (tip-of $node.http) == $fork_tip }) }) {
+    if not (wait-for 120 {|| ($fleet | all {|node| (tip-of $node.http) == $fork_tip }) }) {
       print $"  FAIL  fleet did not reorg to the heavier fork: ($everyone | each {|node| $'node-($node.i)=(height-of (status-of $node.http))' } | str join ' ')"
       return false
     }
@@ -195,39 +205,55 @@ def main [
     let before = (height-of (status-of $victim.http))
     ^kill -9 ($pids | get 2)
     sleep 1sec
-    mine $first.http true true
+    let mr = (miner-start $bin $chain $first $threads)
     let new_pid = (launch $bin $chain $genesis_file $victim)
     print $"chain-fleet: node-3 killed and relaunched as pid ($new_pid)"
-    if not (wait-for 60 {||
+    if not (wait-for 120 {||
       let s = (status-of $victim.http)
-      ($s != null) and ((height-of $s) >= $before) and ((height-of $s) >= ((height-of (status-of $first.http)) - 1))
+      ($s != null) and ((height-of $s) > $before) and ((height-of $s) >= ((height-of (status-of $first.http)) - 1))
     }) {
       print $"  FAIL  node-3 did not recover: before ($before), now ((status-of $victim.http) | default '' | parse -r 'height: (?<h>\d+)')"
-      ^kill -9 $new_pid
       return false
     }
+    miner-stop $mr
     let after = (height-of (status-of $victim.http))
     let conserved = ((status-of $victim.http) | str contains "conserved: true")
-    ^kill $new_pid
     if not $conserved { print "  FAIL  conservation check failed after restart"; return false }
-    print $"  ok    node-3 recovered from disk: height ($before) before the kill, ($after) after restart, conserved"
-    ^kill $late_pid
+    print $"  ok    node-3 recovered from disk: height ($before) before the kill, ($after) after restart \(replayed, then synced\), conserved"
     true
   })
 
-  # ── cleanup — nothing we spawned outlives the fleet ──────────────────────
-  for pid in $pids { do -i { ^kill $pid } }
+  # ── cleanup — every pid this script spawned (nodes, the late joiner, the relaunch, miners), by pid only
+  let spawned = (open $"($work)/pids" | lines | where $it != "" | into int)
+  for pid in $spawned { do -i { ^kill $pid } | complete | ignore }
   sleep 1sec
-  for pid in $pids { do -i { ^kill -9 $pid } }
-  do -i { ^pkill -9 -f $"($work)/node-" }   # only processes whose homes are in our work dir
+  for pid in $spawned { do -i { ^kill -9 $pid } | complete | ignore }
   if $result and (not $keep) { rm -rf $work } else { print $"chain-fleet: artifacts kept in ($work)" }
   if $result { print "chain-fleet: GREEN" } else { fail 1 "chain-fleet: RED" }
 }
 
 def launch [bin: string, chain: string, genesis: string, node: record] {
-  let extra = ($node | get -o extra | default [] | str join ' ')
-  let cmd = $"exec ($bin) node --chain ($chain) --home ($node.home) --bind 127.0.0.1:($node.http) --radio 127.0.0.1:($node.radio) --peers ($node.home)/peers.toml --genesis ($genesis) --moniker ($node.moniker) --log-net ($extra) >> ($node.home)/stdout.log 2>&1 & echo $!"
-  ^bash -c $cmd | str trim | into int
+  let cmd = $"exec ($bin) node --chain ($chain) --home ($node.home) --bind 127.0.0.1:($node.http) --radio 127.0.0.1:($node.radio) --peers ($node.home)/peers.toml --genesis ($genesis) --moniker ($node.moniker) --log-net >> ($node.home)/stdout.log 2>&1 & echo $!"
+  let pid = (^bash -c $cmd | str trim | into int)
+  $"($pid)\n" | save -a $"($node.work)/pids"
+  $pid
+}
+
+# `soft3 mine --backend cpu` against one node's /template + /submit, paying the node's miner address
+def miner-start [bin: string, chain: string, node: record, threads: int] {
+  let cmd = $"exec ($bin) mine --chain ($chain) --node http://127.0.0.1:($node.http) --address ($node.miner) --backend cpu --threads ($threads) >> ($node.home)/mine.log 2>&1 & echo $!"
+  let pid = (^bash -c $cmd | str trim | into int)
+  $"($pid)\n" | save -a $"($node.work)/pids"
+  $pid
+}
+
+def miner-stop [pid: int] {
+  do -i { ^kill $pid }
+}
+
+# chainwork of a node's tip (decimal)
+def work-of [port: int] {
+  ^curl -s -m 3 $"http://127.0.0.1:($port)/tip" | from json | get chainwork | into int
 }
 
 def peers-file [chain: string, others: list<record>] {
@@ -286,11 +312,6 @@ def tx-height [port: int, txid: string] {
   let v = ($r.stdout | from json)
   let h = ($v | get -o height)
   if ($h == null) or ($h == "mempool") { null } else { $h }
-}
-
-def mine [port: int, on: bool, solo] {
-  let body = (if $solo == null { { on: $on } } else { { on: $on, solo: $solo } } | to json -r)
-  ^curl -s -m 3 -X POST -d $body $"http://127.0.0.1:($port)/dev/mine" | ignore
 }
 
 def isolate [port: int, on: bool] {

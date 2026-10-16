@@ -3,7 +3,7 @@
 //! - [`codec`] — header/tx codecs and hashes the wire needs (vectors of chain-conformance.md)
 //! - [`frames`] — the tade dialect `urn:cyberia:chain:1`
 //! - [`chain_view`] — the operations the wire asks of the consensus kernel
-//! - [`devchain`] — the minimal chain behind that trait until the kernel lands
+//! - [`kernel`] — that port implemented over the kernel's `ChainApi`
 //! - [`mempool`] — admission, nonce order, eviction (§4)
 //! - [`peers`] — limits, scoring, eclipse basics (§5)
 //! - [`transport`] — radio endpoint, bounded frame IO (§1)
@@ -16,10 +16,10 @@
 
 pub mod chain_view;
 pub mod codec;
-pub mod devchain;
 pub mod discovery;
 pub mod frames;
 pub mod gossip;
+pub mod kernel;
 pub mod mempool;
 pub mod peers;
 pub mod serve;

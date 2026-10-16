@@ -281,10 +281,12 @@ nothing else in the header may change between template and submit.
 `/status` fields (cybermark, one per line as today): `chain`, `protocol:
 soft3/chain/1`, `rule-set`, `activations`, `engine: chain+cybergraph+bbg`,
 `version`, `moniker`, `height`, `tip`, `chainwork`, `bits`, `next-bits`,
-`genesis`, `genesis-time`, `bbg-root`, `supply`, `conserved: true|false`,
-`subsidy`, `neurons`, `particles`, `axons`, `mempool`, `peers`,
-`outbound`, `checkpoint`, `catching-up`, `mining: true|false`, `storage:
-bbg-fjall`. true-cyber's sync probe reads `height`, `tip`, `catching-up` and
+`genesis` (the chain id — the genesis file's particle, what a wallet
+signs for), `genesis-block` (block 0's id), `genesis-time`, `bbg-root`,
+`supply`, `conserved: true|false`, `subsidy`, `neurons`, `particles`,
+`axons`, `mempool`, `peers`, `outbound`, `checkpoint`, `finalized`,
+`catching-up`, `mining: true|false` (a miner took a `/template` within the
+last 60 s; the node itself never mines), `storage: bbg-fjall`. true-cyber's sync probe reads `height`, `tip`, `catching-up` and
 `chain`, nothing else, so a chain node answers an unchanged client.
 
 Bounds: headers 64 KiB, bodies 8 MiB, one `Content-Length`, no transfer

@@ -1,12 +1,14 @@
 //! The mempool — chain-wire.md §4: admission order, per-neuron nonce
-//! ordering, fee floor, capacity with fee-per-byte eviction, 24 h expiry,
+//! ordering, capacity with fee-per-byte eviction, 24 h expiry,
 //! re-validation after a new tip, and block templates by fee per byte with
-//! nonce order preserved.
+//! nonce order preserved. The consensus questions of admission — signature,
+//! nonce window, fee floor, balances and coinbase maturity on the tip — are
+//! the kernel's (`ChainView::validate_tx` → `ChainApi::validate_tx`).
 
 use std::collections::{BTreeMap, HashMap};
 
-use super::chain_view::ChainView;
-use super::codec::{txid, Id, Tx, MAX_BLOCK_BYTES, MAX_BLOCK_TXS, MAX_TX_BYTES, MIN_FEE_PER_BYTE, NONCE_WINDOW, HEADER_BYTES};
+use super::chain_view::{ChainView, TxRefusal};
+use super::codec::{txid, Id, Tx, MAX_BLOCK_BYTES, MAX_BLOCK_TXS, MAX_TX_BYTES, NONCE_WINDOW, HEADER_BYTES};
 
 pub const CAPACITY_TXS: usize = 8192;
 pub const CAPACITY_BYTES: usize = 16 * 1024 * 1024;
@@ -18,10 +20,28 @@ pub enum AdmitError {
     Known,
     Signature,
     Nonce { current: u64, got: u64 },
+    /// inside the window but a lower nonce is missing from the pool
+    NonceGap { expected: u64, got: u64 },
     NonceOccupied,
     Fee { floor: u64, got: u64 },
-    Balance,
+    Balance(String),
     Kind,
+    /// valid encoding, signed, but against a transaction rule (self-link, …)
+    Rule(String),
+}
+
+impl From<TxRefusal> for AdmitError {
+    fn from(r: TxRefusal) -> Self {
+        match r {
+            TxRefusal::Decode(e) => AdmitError::Decode(e),
+            TxRefusal::Kind => AdmitError::Kind,
+            TxRefusal::Signature => AdmitError::Signature,
+            TxRefusal::Nonce { current, got } => AdmitError::Nonce { current, got },
+            TxRefusal::Fee { floor, got } => AdmitError::Fee { floor, got },
+            TxRefusal::Balance(why) => AdmitError::Balance(why),
+            TxRefusal::Rule(why) => AdmitError::Rule(why),
+        }
+    }
 }
 
 impl std::fmt::Display for AdmitError {
@@ -31,10 +51,12 @@ impl std::fmt::Display for AdmitError {
             AdmitError::Known => write!(f, "already in mempool"),
             AdmitError::Signature => write!(f, "invalid signature"),
             AdmitError::Nonce { current, got } => write!(f, "nonce {got} outside [{current}, {current} + {NONCE_WINDOW})"),
+            AdmitError::NonceGap { expected, got } => write!(f, "nonce {got}: nonce {expected} is not pending"),
             AdmitError::NonceOccupied => write!(f, "nonce already pending"),
             AdmitError::Fee { floor, got } => write!(f, "fee {got} below floor {floor}"),
-            AdmitError::Balance => write!(f, "insufficient spendable balance"),
+            AdmitError::Balance(why) => write!(f, "{why}"),
             AdmitError::Kind => write!(f, "kind not admissible"),
+            AdmitError::Rule(why) => write!(f, "{why}"),
         }
     }
 }
@@ -44,10 +66,10 @@ impl AdmitError {
     /// non-canonical encoding; +1 for a duplicate; nothing for balance races.
     pub fn score(&self) -> u32 {
         match self {
-            AdmitError::Signature | AdmitError::Decode(_) | AdmitError::Kind => 10,
+            AdmitError::Signature | AdmitError::Decode(_) | AdmitError::Kind | AdmitError::Rule(_) => 10,
             AdmitError::Nonce { .. } => 10,
             AdmitError::Known => 1,
-            AdmitError::NonceOccupied | AdmitError::Fee { .. } | AdmitError::Balance => 0,
+            AdmitError::NonceGap { .. } | AdmitError::NonceOccupied | AdmitError::Fee { .. } | AdmitError::Balance(_) => 0,
         }
     }
 }
@@ -72,24 +94,6 @@ pub struct Mempool {
     entries: HashMap<Id, Entry>,
     by_neuron: HashMap<Id, BTreeMap<u64, Id>>,
     bytes: usize,
-}
-
-/// Native debit of a tx: fee plus amount when the token is native.
-fn native_debit(tx: &Tx, native: &Id) -> u64 {
-    match tx {
-        Tx::Transfer { token, amount, fee, .. } | Tx::Cyberlink { token, amount, fee, .. } => {
-            if token == native { fee.saturating_add(*amount) } else { *fee }
-        }
-        Tx::Claim { fee, .. } => *fee,
-        Tx::Coinbase { .. } => 0,
-    }
-}
-
-fn token_debit(tx: &Tx, native: &Id) -> Option<(Id, u64)> {
-    match tx {
-        Tx::Transfer { token, amount, .. } | Tx::Cyberlink { token, amount, .. } if token != native && *amount > 0 => Some((*token, *amount)),
-        _ => None,
-    }
 }
 
 impl Mempool {
@@ -132,7 +136,9 @@ impl Mempool {
         next
     }
 
-    /// Admission in the order of chain-wire §4.
+    /// Admission in the order of chain-wire §4: size and syntax, duplicate,
+    /// then the kernel on the tip state with this neuron's lower pending
+    /// nonces applied first, then the nonce slot.
     pub fn admit(&mut self, bytes: &[u8], chain: &dyn ChainView, now: u64) -> Result<Id, AdmitError> {
         if bytes.len() > MAX_TX_BYTES {
             return Err(AdmitError::Decode(format!("{} bytes", bytes.len())));
@@ -141,49 +147,25 @@ impl Mempool {
         if matches!(tx, Tx::Coinbase { .. }) {
             return Err(AdmitError::Kind);
         }
-        let chain_id = chain.chain_id();
-        let id = txid(&chain_id, bytes);
+        let id = txid(&chain.chain_id(), bytes);
         if self.entries.contains_key(&id) {
             return Err(AdmitError::Known);
         }
-        if !tx.verify(&chain_id) {
-            return Err(AdmitError::Signature);
-        }
         let from = tx.subject().ok_or(AdmitError::Signature)?;
-        if let Tx::Claim { account_id, .. } = &tx {
-            let pubkey: [u8; 33] = tx.sig()[5..38].try_into().expect("33");
-            if mudra::cosmos::account_id(&pubkey) != *account_id {
-                return Err(AdmitError::Signature);
-            }
-        }
         let nonce = tx.nonce().ok_or(AdmitError::Kind)?;
-        let current = chain.nonce(&from);
-        if nonce < current || nonce >= current.saturating_add(NONCE_WINDOW) {
-            return Err(AdmitError::Nonce { current, got: nonce });
-        }
-        if self.by_neuron.get(&from).is_some_and(|m| m.contains_key(&nonce)) {
+        let pending: Vec<Vec<u8>> = self.lower_nonces(&from, nonce).map(|e| e.bytes.clone()).collect();
+        let admitted = chain.validate_tx(bytes, &pending).map_err(|r| match r {
+            // the kernel names a gap and a nonce beyond the window alike; only the latter is scored (§5)
+            TxRefusal::Nonce { current, got } if got > current && got < chain.nonce(&from).saturating_add(NONCE_WINDOW) => {
+                AdmitError::NonceGap { expected: current, got }
+            }
+            r => r.into(),
+        })?;
+        debug_assert_eq!(admitted.txid, id, "the wire and the kernel agree on txids");
+        if self.by_neuron.get(&admitted.account).is_some_and(|m| m.contains_key(&admitted.nonce)) {
             return Err(AdmitError::NonceOccupied);
         }
-        let floor = bytes.len() as u64 * MIN_FEE_PER_BYTE;
-        if tx.fee() < floor {
-            return Err(AdmitError::Fee { floor, got: tx.fee() });
-        }
-        let native = chain.native_token();
-        let payer = match &tx {
-            Tx::Claim { account_id, .. } => super::devchain::legacy_owner(&chain.hrp(), account_id),
-            _ => from,
-        };
-        let pending_native: u64 = self.lower_nonces(&from, nonce).map(|e| native_debit(&e.tx, &native)).sum();
-        if chain.spendable(&payer, &native) < pending_native.saturating_add(native_debit(&tx, &native)) {
-            return Err(AdmitError::Balance);
-        }
-        if let Some((token, amount)) = token_debit(&tx, &native) {
-            let pending: u64 = self.lower_nonces(&from, nonce).filter_map(|e| token_debit(&e.tx, &native)).filter(|(t, _)| *t == token).map(|(_, a)| a).sum();
-            if chain.spendable(&from, &token) < pending.saturating_add(amount) {
-                return Err(AdmitError::Balance);
-            }
-        }
-        self.insert(id, Entry { bytes: bytes.to_vec(), tx, from, nonce, added: now });
+        self.insert(id, Entry { bytes: bytes.to_vec(), tx, from: admitted.account, nonce: admitted.nonce, added: now });
         self.evict(now);
         Ok(id)
     }
@@ -301,40 +283,36 @@ impl Mempool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::chain::net::codec::{sign_tx, Tx};
-    use crate::chain::net::devchain::{dev_genesis, DevChain};
-
-    fn key(seed: u8) -> (mudra::SigningKey, Id) {
-        let key = mudra::SigningKey::from_bytes((&[seed; 32]).into()).unwrap();
-        let id = mudra::claim::neuron_of(&mudra::cosmos::compressed(key.verifying_key()));
-        (key, id)
-    }
-
-    fn transfer(chain: &DevChain, key: &mudra::SigningKey, from: Id, nonce: u64, amount: u64, fee: u64) -> Vec<u8> {
-        let tx = Tx::Transfer { from, nonce, token: chain.native_token(), amount, to: [7; 32], fee, sig: vec![] };
-        sign_tx(&chain.chain_id(), &tx, key).unwrap().encode()
-    }
+    use crate::chain::net::kernel::tests::{mine, scratch};
+    use crate::chain::tests::Net;
 
     #[test]
     fn admission_order_and_nonce_window() {
-        let (k, alice) = key(1);
-        let chain = DevChain::open(&dev_genesis("dev", 1, &[(alice, 10_000)]).encode(), None).unwrap();
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-admit");
+        let chain = &s.chain;
+        let alice = net.neurons[0];
         let mut pool = Mempool::new();
-        assert!(matches!(pool.admit(&[1, 9], &chain, 0), Err(AdmitError::Decode(_))));
-        let tx0 = transfer(&chain, &k, alice, 0, 100, 224);
-        let id = pool.admit(&tx0, &chain, 0).unwrap();
-        assert_eq!(pool.admit(&tx0, &chain, 0), Err(AdmitError::Known));
-        assert_eq!(pool.next_nonce(&chain, &alice), 1);
+        assert!(matches!(pool.admit(&[1, 9], chain, 0), Err(AdmitError::Decode(_))));
+        let tx0 = net.transfer(0, 0, [7; 32], 100, 300);
+        let id = pool.admit(&tx0, chain, 0).unwrap();
+        assert_eq!(pool.admit(&tx0, chain, 0), Err(AdmitError::Known));
+        assert_eq!(pool.next_nonce(chain, &alice), 1);
         let mut forged = tx0.clone();
         forged[50] ^= 1;
-        assert_eq!(pool.admit(&forged, &chain, 0), Err(AdmitError::Signature));
-        assert!(matches!(pool.admit(&transfer(&chain, &k, alice, 16, 1, 224), &chain, 0), Err(AdmitError::Nonce { .. })));
-        assert_eq!(pool.admit(&transfer(&chain, &k, alice, 0, 1, 224), &chain, 0), Err(AdmitError::NonceOccupied));
-        assert!(matches!(pool.admit(&transfer(&chain, &k, alice, 1, 1, 10), &chain, 0), Err(AdmitError::Fee { .. })));
-        // balance assumes lower nonces apply first: 10_000 − 324 leaves 9_676
-        assert_eq!(pool.admit(&transfer(&chain, &k, alice, 2, 9_500, 224), &chain, 0), Err(AdmitError::Balance));
-        assert!(pool.admit(&transfer(&chain, &k, alice, 2, 9_000, 224), &chain, 0).is_ok());
-        assert!(pool.admit(&transfer(&chain, &k, alice, 1, 100, 300), &chain, 0).is_ok());
+        assert_eq!(pool.admit(&forged, chain, 0), Err(AdmitError::Signature));
+        let beyond = pool.admit(&net.transfer(0, 16, [7; 32], 1, 300), chain, 0).unwrap_err();
+        assert!(matches!(beyond, AdmitError::Nonce { .. }) && beyond.score() == 10, "{beyond:?}");
+        let gap = pool.admit(&net.transfer(0, 2, [7; 32], 1, 300), chain, 0).unwrap_err();
+        assert!(matches!(gap, AdmitError::NonceGap { expected: 1, got: 2 }) && gap.score() == 0, "{gap:?}");
+        assert_eq!(pool.admit(&net.transfer(0, 0, [7; 32], 1, 300), chain, 0), Err(AdmitError::NonceOccupied));
+        assert!(matches!(pool.admit(&net.transfer(0, 1, [7; 32], 1, 10), chain, 0), Err(AdmitError::Fee { .. })));
+        // balances assume the lower nonces apply first
+        let funds = chain.balance(&alice, &chain.native_token());
+        let over = pool.admit(&net.transfer(0, 1, [7; 32], funds - 400 + 1, 300), chain, 0).unwrap_err();
+        assert!(matches!(over, AdmitError::Balance(_)), "{over:?}");
+        assert!(pool.admit(&net.transfer(0, 1, [7; 32], 100, 300), chain, 0).is_ok());
+        assert!(pool.admit(&net.transfer(0, 2, [7; 32], 100, 400), chain, 0).is_ok());
         let tpl = pool.template_txs();
         assert_eq!(tpl.len(), 3);
         assert_eq!(tpl[0], tx0, "nonce order beats fee order inside one neuron");
@@ -344,13 +322,14 @@ mod tests {
 
     #[test]
     fn eviction_and_revalidation() {
-        let (k, alice) = key(1);
-        let (k2, bob) = key(2);
-        let chain = DevChain::open(&dev_genesis("dev", 1, &[(alice, 1_000_000), (bob, 1_000_000)]).encode(), None).unwrap();
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-revalidate");
+        let chain = &s.chain;
+        let (alice, bob) = (net.neurons[0], net.neurons[1]);
         let mut pool = Mempool::new();
         for n in 0..8 {
-            pool.admit(&transfer(&chain, &k, alice, n, 1, 224 + n), &chain, 100).unwrap();
-            pool.admit(&transfer(&chain, &k2, bob, n, 1, 500), &chain, 100).unwrap();
+            pool.admit(&net.transfer(0, n, [7; 32], 1, 300 + n), chain, 100).unwrap();
+            pool.admit(&net.transfer(1, n, [7; 32], 1, 500), chain, 100).unwrap();
         }
         assert_eq!(pool.len(), 16);
         let tpl = pool.template_txs();
@@ -358,18 +337,15 @@ mod tests {
         assert_eq!(Tx::decode(&tpl[0]).unwrap().subject().unwrap(), bob, "higher fee per byte first");
         pool.evict(100 + MAX_AGE_SECS + 1);
         assert!(pool.is_empty());
-        pool.admit(&transfer(&chain, &k, alice, 0, 1, 224), &chain, 0).unwrap();
-        pool.admit(&transfer(&chain, &k, alice, 1, 1, 224), &chain, 0).unwrap();
-        // mine nonce 0 → nonce 1 stays, a stale copy of nonce 0 would be dropped
-        let (h, b) = chain.template(&[9; 32], &pool.template_txs()[..1], 100).unwrap();
-        let h = crate::chain::net::devchain::mine(h, 1 << 20).unwrap();
-        chain.accept_header(&h, 1000).unwrap();
-        chain.accept_block(&h, &b).unwrap();
-        pool.remove_mined(&chain, &b);
-        pool.revalidate(&chain, &[], 0);
+        pool.admit(&net.transfer(0, 0, [7; 32], 1, 300), chain, 0).unwrap();
+        pool.admit(&net.transfer(0, 1, [7; 32], 1, 300), chain, 0).unwrap();
+        // mine nonce 0 → nonce 1 stays
+        let (_, body) = mine(chain, &bob, &pool.template_txs()[..1]);
+        pool.remove_mined(chain, &body);
+        pool.revalidate(chain, &[], 0);
         assert_eq!(pool.len(), 1);
-        assert_eq!(pool.next_nonce(&chain, &alice), 2);
-        pool.revalidate(&chain, &[b.clone()], 0);
+        assert_eq!(pool.next_nonce(chain, &alice), 2);
+        pool.revalidate(chain, &[body.clone()], 0);
         assert_eq!(pool.len(), 1, "re-admitting a mined tx fails on nonce");
     }
 }

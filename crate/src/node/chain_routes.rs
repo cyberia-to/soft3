@@ -7,9 +7,10 @@ use std::sync::atomic::Ordering;
 
 use serde::Deserialize;
 
-use super::chain_node::ChainNode;
+use super::chain_node::{ChainNode, SubmitError};
 use super::http::{Error, Request, Response};
 use crate::chain::net::codec::{self, hex, txid, unhex32, Header, Tx};
+use crate::chain::net::mempool::AdmitError;
 use crate::chain::net::peers::Direction;
 
 fn json(value: serde_json::Value) -> Response {
@@ -62,13 +63,31 @@ fn header_json(h: &Header) -> serde_json::Value {
     })
 }
 
-fn tx_json(tx: &Tx) -> serde_json::Value {
+fn kind_name(tx: &Tx) -> &'static str {
     match tx {
-        Tx::Coinbase { height, to, amount, extra } => serde_json::json!({"kind": "coinbase", "height": height, "to": hex(to), "amount": amount, "extra": hex(extra)}),
-        Tx::Transfer { from, nonce, token, amount, to, fee, .. } => serde_json::json!({"kind": "transfer", "from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "to": hex(to), "fee": fee}),
-        Tx::Cyberlink { from, nonce, token, amount, p, q, valence, fee, .. } => serde_json::json!({"kind": "cyberlink", "from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "p": hex(p), "q": hex(q), "valence": valence, "fee": fee}),
-        Tx::Claim { account_id, nonce, fee, .. } => serde_json::json!({"kind": "claim", "account_id": hex(account_id), "nonce": nonce, "fee": fee}),
+        Tx::Coinbase { .. } => "coinbase",
+        Tx::Transfer { .. } => "transfer",
+        Tx::Cyberlink { .. } => "cyberlink",
+        Tx::Claim { .. } => "claim",
     }
+}
+
+/// The decoded fields of chain-wire §7 `GET /tx/{txid}`.
+fn tx_fields(tx: &Tx) -> serde_json::Value {
+    let mut v = match tx {
+        Tx::Coinbase { height, to, amount, extra } => serde_json::json!({"height": height, "to": hex(to), "amount": amount, "extra": hex(extra)}),
+        Tx::Transfer { from, nonce, token, amount, to, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "to": hex(to), "fee": fee}),
+        Tx::Cyberlink { from, nonce, token, amount, p, q, valence, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "p": hex(p), "q": hex(q), "valence": valence, "fee": fee}),
+        Tx::Claim { account_id, nonce, fee, .. } => serde_json::json!({"account_id": hex(account_id), "nonce": nonce, "fee": fee}),
+    };
+    if !tx.sig().is_empty() {
+        v["sig"] = hex(tx.sig()).into();
+    }
+    v
+}
+
+fn error(status: &'static str, code: &'static str, message: impl Into<String>) -> Error {
+    Error { status, code, message: message.into() }
 }
 
 fn block_json(node: &ChainNode, header: &Header, body: &[u8]) -> serde_json::Value {
@@ -95,14 +114,6 @@ struct TxBody {
 #[serde(deny_unknown_fields)]
 struct SubmitBody {
     header: String,
-}
-
-#[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-struct MineBody {
-    on: bool,
-    #[serde(default)]
-    solo: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -147,10 +158,8 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
             "soft3 · {} · chain+cybergraph+bbg\nmoniker {}\nheight {}\nGET /status /tip /header/H /block/H /blocks /tx/ID /nonce/N /balance/N /balances/N /mempool /peers /checkpoints /template?to=N /v2/history\nPOST /tx /submit\n",
             node.chain_name, node.moniker, node.chain.tip().height,
         ))),
-        ("GET", "/tip") => {
-            let tip = node.chain.tip();
-            Ok(json(serde_json::json!({"height": tip.height, "id": hex(&tip.id), "chainwork": tip.chainwork.to_decimal()})))
-        }
+        // chain-wire §7: the kernel renders the answer
+        ("GET", "/tip") => Ok(Response::bytes("application/json", format!("{}\n", node.kernel.tip_json()).into_bytes())),
         ("GET", p) if p.starts_with("/header/") => Ok(json(header_json(&id_or_height(node, &p["/header/".len()..])?))),
         ("GET", p) if p.starts_with("/block/") => {
             let header = id_or_height(node, &p["/block/".len()..])?;
@@ -178,29 +187,24 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
         ("GET", p) if p.starts_with("/tx/") => {
             let id = unhex32(&p["/tx/".len()..]).ok_or_else(|| Error::bad("txid is 64 hex chars"))?;
             let chain_id = node.chain.chain_id();
-            if let Some((height, block)) = node.chain.tx_location(&id) {
-                let (_, body) = node.chain.block(&block).ok_or_else(|| not_found("body_not_found", "body not held".into()))?;
-                let bytes = node.chain.txs_of(&body).into_iter().find(|t| txid(&chain_id, t) == id).ok_or_else(|| not_found("tx_not_found", "index stale".into()))?;
+            if let Some((height, block, index)) = node.chain.tx_location(&id) {
+                let (_, body) = node.chain.block(&block).ok_or_else(|| error("404 Not Found", "unknown", "unknown"))?;
+                let bytes = node.chain.txs_of(&body).into_iter().find(|t| txid(&chain_id, t) == id).ok_or_else(|| error("404 Not Found", "unknown", "unknown"))?;
                 let tx = Tx::decode(&bytes).map_err(|e| Error::bad(e.to_string()))?;
-                let mut v = tx_json(&tx);
-                v["txid"] = hex(&id).into();
-                v["height"] = height.into();
-                v["block"] = hex(&block).into();
-                v["hex"] = hex(&bytes).into();
-                return Ok(json(v));
+                return Ok(json(serde_json::json!({
+                    "txid": hex(&id), "kind": kind_name(&tx), "tx": tx_fields(&tx), "height": height, "block": hex(&block), "index": index,
+                })));
             }
             let pool = node.mempool.lock().expect("mempool");
-            let entry = pool.get(&id).ok_or_else(|| not_found("tx_not_found", format!("no transaction {}", hex(&id))))?;
-            let mut v = tx_json(&entry.tx);
-            v["txid"] = hex(&id).into();
-            v["height"] = "mempool".into();
-            v["hex"] = hex(&entry.bytes).into();
-            Ok(json(v))
+            let entry = pool.get(&id).ok_or_else(|| error("404 Not Found", "unknown", "unknown"))?;
+            Ok(json(serde_json::json!({
+                "txid": hex(&id), "kind": kind_name(&entry.tx), "tx": tx_fields(&entry.tx), "height": "mempool", "block": null, "index": null,
+            })))
         }
         ("GET", p) if p.starts_with("/nonce/") => {
-            let neuron = unhex32(&p["/nonce/".len()..]).ok_or_else(|| Error::bad("neuron is 64 hex chars"))?;
+            let neuron = unhex32(&p["/nonce/".len()..]).ok_or_else(|| Error::bad("not a 32-byte hex id"))?;
             let next = node.mempool.lock().expect("mempool").next_nonce(node.chain.as_ref(), &neuron);
-            Ok(json(serde_json::json!({"neuron": hex(&neuron), "nonce": next, "chain_nonce": node.chain.nonce(&neuron)})))
+            Ok(json(serde_json::json!({"neuron": hex(&neuron), "nonce": next, "confirmed": node.chain.nonce(&neuron)})))
         }
         ("GET", p) if p.starts_with("/balance/") => {
             let neuron = unhex32(&p["/balance/".len()..]).ok_or_else(|| Error::bad("neuron is 64 hex chars"))?;
@@ -239,16 +243,15 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
         ("GET", "/template") => {
             let to = query(q, "to")?.and_then(|t| unhex32(&t)).ok_or_else(|| Error::bad("to=<64 hex neuron> required"))?;
             let txs = node.mempool.lock().expect("mempool").template_txs();
-            let (header, body) = node.chain.template(&to, &txs, crate::chain::net::now_unix()).map_err(Error::bad)?;
-            let target = codec::decode_bits(header.bits).map(|t| hex(&t.to_le_bytes())).unwrap_or_default();
+            let (header, body) = node.chain.template(&to, &txs, crate::chain::net::now_unix()).map_err(|e| error("503 Service Unavailable", "no_template", e))?;
             let mut templates = node.templates.lock().expect("templates");
             templates.retain(|(_, h, _)| h.prev == header.prev);
             templates.push((header.id(), header, body.clone()));
-            templates.truncate(64);
-            Ok(json(serde_json::json!({
-                "chain": node.chain_name, "height": header.height, "prev": hex(&header.prev), "header": hex(&header.encode()),
-                "bits": format!("{:08x}", header.bits), "target": target, "body": hex(&body), "expires": 0,
-            })))
+            if templates.len() > 64 {
+                templates.remove(0);
+            }
+            node.last_template.store(crate::chain::net::now_unix(), Ordering::Relaxed);
+            Ok(Response::bytes("application/json", format!("{}\n", node.chain.template_json(&header, &body, 0)).into_bytes()))
         }
         ("POST", "/submit") => {
             let text = std::str::from_utf8(&request.body).map_err(|_| Error::bad("hex header expected"))?.trim();
@@ -257,15 +260,27 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
             let header = Header::decode(&bytes).map_err(|e| Error::bad(e.to_string()))?;
             match node.submit(header) {
                 Ok(id) => Ok(json(serde_json::json!({"id": hex(&id), "height": header.height}))),
-                Err("stale template") => Err(Error { status: "409 Conflict", code: "stale_template", message: "stale template".into() }),
-                Err(e) => Err(Error { status: "422 Unprocessable Content", code: "header_rejected", message: e.into() }),
+                Err(SubmitError::Stale) => Err(error("409 Conflict", "stale_template", "stale template")),
+                Err(SubmitError::Rejected(e)) => Err(error("422 Unprocessable Content", "header_rejected", e)),
             }
         }
         ("POST", "/tx") => {
             let bytes = body_hex(&request)?;
-            let id = node.mempool.lock().expect("mempool").admit(&bytes, node.chain.as_ref(), crate::chain::net::now_unix()).map_err(|e| Error { status: "400 Bad Request", code: "mempool_rejected", message: e.to_string() })?;
+            let tx = Tx::decode(&bytes).map_err(|e| error("400 Bad Request", "mempool_rejected", format!("decode: {e}")))?;
+            let id = txid(&node.chain.chain_id(), &bytes);
+            let admitted = node.mempool.lock().expect("mempool").admit(&bytes, node.chain.as_ref(), crate::chain::net::now_unix());
+            match admitted {
+                Ok(_) | Err(AdmitError::Known) => {}
+                Err(e) => return Err(error("400 Bad Request", "mempool_rejected", e.to_string())),
+            }
+            let (account, nonce) = {
+                let pool = node.mempool.lock().expect("mempool");
+                pool.get(&id).map(|e| (e.from, e.nonce)).unwrap_or_else(|| (tx.subject().unwrap_or([0; 32]), tx.nonce().unwrap_or(0)))
+            };
             node.runtime.block_on(node.net.publish_tx(&bytes));
-            Ok(json(serde_json::json!({"txid": hex(&id)})))
+            Ok(json(serde_json::json!({
+                "txid": hex(&id), "kind": kind_name(&tx), "size": bytes.len(), "fee": tx.fee(), "account": hex(&account), "nonce": nonce,
+            })))
         }
         ("GET", "/v2/history") => {
             let after = query_u64(q, "after")?;
@@ -301,14 +316,6 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
             Ok(json(serde_json::json!({"schema": "cyber/native-history/v1", "encoding": "chain-tx/v1-hex", "entries": entries, "next": next})))
         }
         ("POST", "/v1/link" | "/v1/pay" | "/v1/frame" | "/v2/frame" | "/v1/finalize") | ("GET", "/log") => Err(gone()),
-        ("POST", "/dev/mine") if node.dev => {
-            let body: MineBody = serde_json::from_slice(&request.body).map_err(|e| Error::bad(e.to_string()))?;
-            node.mining.store(body.on, Ordering::Relaxed);
-            if let Some(solo) = body.solo {
-                node.solo.store(solo, Ordering::Relaxed);
-            }
-            Ok(json(serde_json::json!({"mining": body.on, "solo": node.solo.load(Ordering::Relaxed)})))
-        }
         ("POST", "/dev/isolate") if node.dev => {
             let body: IsolateBody = serde_json::from_slice(&request.body).map_err(|e| Error::bad(e.to_string()))?;
             node.net.set_isolated(body.on);

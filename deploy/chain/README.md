@@ -74,7 +74,9 @@ Machine facts behind every number: `cybernode/servers/<host>/inventory-2026-10-1
    the release binary: three nodes on one machine must answer `/status` within
    60 s and agree on height; on the dev chain the script goes on to assert a
    late joiner's IBD, a transaction crossing the fleet, a depth-3 fork reorg
-   and a kill-and-restart recovery (receipt: `audit/chain/net-2026-10-15.md`).
+   and a kill-and-restart recovery, all on the consensus kernel with
+   `soft3 mine --backend cpu` processes doing the work (receipts:
+   `audit/chain/net-2026-10-15.md`, `audit/chain/slice-2026-10-16.md`).
 2. Same three steps on the machines with `SOFT3_CHAIN=pussy-rc` (the launch
    allow-list has it) on ports 7783/7793 if a dress rehearsal on real hosts is
    wanted; tear down with `systemctl disable --now soft3-chain@pussy-rc`
@@ -122,12 +124,12 @@ is a parameter or a line in one file above.
 
 | assumption | where it lands |
 |--|--|
-| CLI: `soft3 node --chain <id> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME`; `soft3 node id --home DIR` prints the radio endpoint id — **implemented** (soft3#187): `--home` is the chain directory (`radio.key`, `genesis.tade`, `blocks.tade`, `anchors`); `--genesis FILE` installs the genesis file into it (required for `pussy`/`bostrom` until the file is embedded) | unit `ExecStart`, harness probe, step A7 |
+| CLI: `soft3 node --chain <id> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME`; `soft3 node id --home DIR` prints the radio endpoint id — **implemented on the kernel** (soft3#187, slice 2026-10-16): `--home` is the chain directory (`radio.key`, `genesis.tade`, `blocks/` = the kernel's store, `anchors`); `--genesis FILE` installs the genesis file into it (required for `pussy`/`bostrom` until the file is embedded). The node does not mine: miners run `soft3 mine --node http://BIND --address NEURON` against `/template` + `/submit` | unit `ExecStart`, harness probe, step A7 |
 | chain ids in the launch set are `pussy`, `bostrom` (and `pussy-rc` for rehearsal) — from `crate/src/node/genesis.rs` on branch `launch/45-genesis-chain-allowlist`; protocol `soft3/<chain>/v1`, engine `cybergraph+bbg` | env `SOFT3_CHAIN`, harness placeholder genesis |
 | the radio endpoint id is the node's ed25519 public key, printed as 64 lowercase hex (radio `iroh-base` `PublicKey: Display`) | peers format `id` |
 | radio listens on one UDP port given by `--radio`; direct dial between the three machines, no relay | ufw rule, peers `relay = ""` |
 | HTTP API keeps `GET /health` and `GET /status` with `height` and the bbg root (cyb bodies poll `/status` every 15 s with a 10 s timeout, `cyb/shell/src/worlds/body/networks.rs`), bodies limited to 8 MiB (`specs/native-node.md`) | nginx snippet, check script |
-| block cadence: unknown — `SOFT3_STALE_SECS=600` is a placeholder until the PoW target interval is fixed | env, check `progress` |
+| block cadence: ASERT targets 30 s (chain.md §1.5, half-life 600 s); `SOFT3_STALE_SECS=600` = 20 missed blocks, keep unless launch hashrate says otherwise | env, check `progress` |
 | PoW timestamp rule tolerates clock error of seconds; timesyncd (SNTP, ms-level) is enough, chrony is optional | unit `time-sync.target`, check `clock` |
-| state is `$home/bbg` + `$home/blocks.tade` + `$home/genesis.tade` (a tade file, chain.md §4.1 — not `genesis.json`); a restart replays from disk (budget the replay time — the 0.10.0 node replays 41k signals in hours, see the incident) | state dir, `TimeoutStopSec`, step C T−15 |
-| the genesis file is produced by `soft3 genesis build` (specs/genesis.md) and copied byte-identical; `scripts/chain-fleet.nu` generates a dev genesis (`soft3 chain genesis-dev`) when none is given | step C T−15 |
+| state is `$home/blocks/` (headers, bodies, undo journals) + `$home/genesis.tade` (a tade file, chain.md §4.1 — not `genesis.json`); a restart replays every main-chain body on the genesis state and verifies the roots (§3.6) — measured locally in seconds for tens of blocks; budget it for the real height before genesis day | state dir, `TimeoutStopSec`, step C T−15 |
+| the genesis file is produced by `soft3 genesis build` (specs/genesis.md) and copied byte-identical; `scripts/chain-fleet.nu` generates a test genesis (`soft3 chain genesis-dev`: chain `dev`, floor target `POW_LIMIT_BITS`, genesis time two hours back) when none is given — never a launch chain | step C T−15 |

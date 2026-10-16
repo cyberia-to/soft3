@@ -132,10 +132,7 @@ struct NodeArgs {
     radio: Option<String>,
     peers: Option<PathBuf>,
     genesis: Option<PathBuf>,
-    mine: bool,
-    solo: bool,
-    miner: Option<String>,
-    mine_interval_ms: u64,
+    neuron: Option<String>,
     relay: bool,
     log_net: bool,
 }
@@ -162,7 +159,7 @@ fn parse_node_args(
 ) -> Result<NodeArgs, NodeArgError> {
     let mut out = NodeArgs {
         home: default_home, bind: default_bind, moniker: default_moniker, help: false, chain: None, home_set: false, bind_set: false,
-        radio: None, peers: None, genesis: None, mine: false, solo: false, miner: None, mine_interval_ms: 1000, relay: false, log_net: false,
+        radio: None, peers: None, genesis: None, neuron: None, relay: false, log_net: false,
     };
     let mut i = 0;
     while i < args.len() {
@@ -184,14 +181,7 @@ fn parse_node_args(
             "--radio" => out.radio = Some(value(&mut i, "--radio needs host:udp-port")?),
             "--peers" => out.peers = Some(PathBuf::from(value(&mut i, "--peers needs a file")?)),
             "--genesis" => out.genesis = Some(PathBuf::from(value(&mut i, "--genesis needs a file")?)),
-            "--miner" => out.miner = Some(value(&mut i, "--miner needs a 64-hex neuron")?),
-            "--mine-interval-ms" => {
-                out.mine_interval_ms = value(&mut i, "--mine-interval-ms needs a number")?
-                    .parse()
-                    .map_err(|_| NodeArgError::MissingValue("--mine-interval-ms needs a number"))?
-            }
-            "--mine" => out.mine = true,
-            "--solo" => out.solo = true,
+            "--neuron" => out.neuron = Some(value(&mut i, "--neuron needs a 64-hex neuron")?),
             "--relay" => out.relay = true,
             "--log-net" => out.log_net = true,
             "-h" | "--help" => {
@@ -259,7 +249,8 @@ fn cmd_node(args: &[String]) {
         println!();
         println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
         println!("  soft3 node --chain <pussy|bostrom|dev…> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME");
-        println!("             [--genesis FILE] [--mine [--solo] [--miner NEURON] [--mine-interval-ms N]] [--relay] [--log-net]");
+        println!("             [--genesis FILE] [--neuron NEURON] [--relay] [--log-net]");
+        println!("             (mining is `soft3 mine --node http://BIND --address NEURON`: /template + /submit)");
         println!("  soft3 node id --home DIR      # radio endpoint id (64 hex) for peers.toml");
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
@@ -288,14 +279,14 @@ fn cmd_node(args: &[String]) {
             eprintln!("--radio: {e}");
             std::process::exit(2);
         });
-        let miner = node_args.miner.as_deref().map(|m| soft3::chain::net::codec::unhex32(m).unwrap_or_else(|| {
-            eprintln!("--miner needs a 64-hex neuron id");
+        let neuron = node_args.neuron.as_deref().map(|m| soft3::chain::net::codec::unhex32(m).unwrap_or_else(|| {
+            eprintln!("--neuron needs a 64-hex neuron id");
             std::process::exit(2);
         }));
         let opts = node::chain_node::ChainOpts {
             home: if node_args.home_set { node_args.home } else { node::chain_node::default_home(&chain) },
             chain, genesis: node_args.genesis, radio: Some(radio), peers: node_args.peers, moniker: node_args.moniker,
-            mine: node_args.mine, solo: node_args.solo, miner, mine_interval: std::time::Duration::from_millis(node_args.mine_interval_ms),
+            neuron,
             relay: node_args.relay, log_net: node_args.log_net,
         };
         if let Err(e) = node::run_chain(opts, &bind) {
@@ -490,10 +481,13 @@ fn cmd_mine(args: &[String]) {
     }
 }
 
-/// `soft3 chain …` — dev helpers for the local harness (the wallet is true-cyber's).
+/// `soft3 chain …` — helpers for test chains and the local harness: a test
+/// genesis (any name but a launch chain's, the easiest target the kernel
+/// accepts), a key's neuron, a signed transfer or cyberlink (the wallet's
+/// codec, `soft3::wallet`).
 fn cmd_chain(args: &[String]) {
-    use soft3::chain::net::codec::{self, hex, unhex32, Tx};
-    use soft3::chain::net::devchain;
+    use soft3::chain::net::codec::{hex, unhex32};
+    use soft3::genesis::file::{Balance, GenesisFile, Params};
     let mut flags = std::collections::HashMap::new();
     let mut funds = Vec::new();
     let mut i = 1;
@@ -503,71 +497,74 @@ fn cmd_chain(args: &[String]) {
         if key == "fund" { funds.push(value); } else { flags.insert(key, value); }
         i += 2;
     }
-    let seed_key = |flags: &std::collections::HashMap<String, String>| -> mudra::SigningKey {
-        let seed = flags.get("seed").and_then(|s| unhex32(s)).unwrap_or_else(|| {
-            eprintln!("--seed <64 hex> required");
-            std::process::exit(2);
-        });
-        mudra::SigningKey::from_bytes((&seed).into()).unwrap_or_else(|e| {
-            eprintln!("seed: {e}");
-            std::process::exit(2);
-        })
+    let die = |msg: String| -> ! {
+        eprintln!("{msg}");
+        std::process::exit(2);
+    };
+    let wallet = |flags: &std::collections::HashMap<String, String>| -> soft3::wallet::Signer {
+        let seed = flags.get("seed").and_then(|s| unhex32(s)).unwrap_or_else(|| die("--seed <64 hex> required".into()));
+        soft3::wallet::Signer::from_secret(&seed).unwrap_or_else(|e| die(format!("seed: {e}")))
+    };
+    let num = |flags: &std::collections::HashMap<String, String>, k: &str, d: u64| -> u64 {
+        flags.get(k).map(|v| v.parse().unwrap_or_else(|_| die(format!("--{k}: not a number")))).unwrap_or(d)
     };
     match args.first().map(|s| s.as_str()) {
         Some("genesis-dev") => {
             let name = flags.get("name").cloned().unwrap_or_else(|| "dev".into());
-            let time = flags.get("time").and_then(|t| t.parse().ok()).unwrap_or_else(|| std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0) - 60);
-            let funded: Vec<([u8; 32], u64)> = funds.iter().filter_map(|f| {
-                let (n, a) = f.split_once('=')?;
-                Some((unhex32(n)?, a.parse().ok()?))
+            if node::chain_node::LAUNCH_CHAINS.contains(&name.as_str()) {
+                die(format!("`{name}` is a launch chain; its genesis comes from `soft3 genesis build`"));
+            }
+            let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+            // two hours of ASERT slack: the first ~240 blocks stay at the floor target
+            let time = num(&flags, "time", now.saturating_sub(7200));
+            let bits = flags.get("bits").map(|b| u32::from_str_radix(b.trim_start_matches("0x"), 16).unwrap_or_else(|_| die("--bits: 8 hex".into())))
+                .unwrap_or(soft3::chain::params::POW_LIMIT_BITS);
+            let native = soft3::chain::sigs::token(&name);
+            let mut balances: Vec<Balance> = funds.iter().map(|f| {
+                let (n, a) = f.split_once('=').unwrap_or_else(|| die(format!("--fund {f}: NEURON=AMOUNT")));
+                Balance { owner: unhex32(n).unwrap_or_else(|| die(format!("--fund {f}: neuron is 64 hex"))), token: native, amount: a.parse().unwrap_or_else(|_| die(format!("--fund {f}: amount"))) }
             }).collect();
-            let bytes = devchain::dev_genesis(&name, time, &funded).encode();
-            let out = flags.get("out").cloned().unwrap_or_else(|| "genesis.tade".into());
-            std::fs::write(&out, &bytes).unwrap_or_else(|e| {
-                eprintln!("{out}: {e}");
-                std::process::exit(1);
-            });
-            println!("{}", hex(&codec::hash(&bytes)));
-        }
-        Some("key") => {
-            let key = seed_key(&flags);
-            println!("{}", hex(&mudra::claim::neuron_of(&mudra::cosmos::compressed(key.verifying_key()))));
-        }
-        Some("tx") => {
-            let key = seed_key(&flags);
-            let from = mudra::claim::neuron_of(&mudra::cosmos::compressed(key.verifying_key()));
-            let genesis = flags.get("genesis").and_then(|g| std::fs::read(g).ok()).unwrap_or_else(|| {
-                eprintln!("--genesis <file> required (the chain id is its particle)");
-                std::process::exit(2);
-            });
-            let chain = codec::hash(&genesis);
-            let token = devchain::Genesis::decode(&genesis).map(|g| codec::token(&g.denom)).unwrap_or_else(|e| {
-                eprintln!("genesis: {e}");
-                std::process::exit(2);
-            });
-            let nonce = flags.get("nonce").and_then(|n| n.parse().ok()).unwrap_or(0);
-            let amount = flags.get("amount").and_then(|n| n.parse().ok()).unwrap_or(0);
-            let tx = match flags.get("kind").map(|k| k.as_str()).unwrap_or("transfer") {
-                "link" => Tx::Cyberlink {
-                    from, nonce, token, amount, p: flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]),
-                    q: flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]), valence: 0,
-                    fee: flags.get("fee").and_then(|f| f.parse().ok()).unwrap_or(257), sig: vec![],
+            balances.sort();
+            let s0: u64 = balances.iter().map(|b| b.amount).sum();
+            let file = GenesisFile {
+                params: Params {
+                    version: 1, name: name.clone(), hrp: name.clone(), denom: name.clone(), time, bits,
+                    subsidy: soft3::chain::params::subsidy(s0), checkpoint_key: [0; 33], checkpoint_sunset: soft3::chain::params::CHECKPOINT_SUNSET,
                 },
-                _ => Tx::Transfer {
-                    from, nonce, token, amount, to: flags.get("to").and_then(|t| unhex32(t)).unwrap_or([7; 32]),
-                    fee: flags.get("fee").and_then(|f| f.parse().ok()).unwrap_or(224), sig: vec![],
-                },
+                balances,
+                links: vec![],
             };
-            let signed = codec::sign_tx(&chain, &tx, &key).unwrap_or_else(|e| {
-                eprintln!("sign: {e}");
-                std::process::exit(1);
-            });
-            let bytes = signed.encode();
-            println!("{}", hex(&bytes));
-            eprintln!("txid {}", hex(&codec::txid(&chain, &bytes)));
+            let genesis = soft3::chain::genesis::Genesis::from_file(&file).unwrap_or_else(|e| die(format!("genesis: {e}")));
+            let out = flags.get("out").cloned().unwrap_or_else(|| "genesis.tade".into());
+            std::fs::write(&out, &genesis.bytes).unwrap_or_else(|e| die(format!("{out}: {e}")));
+            println!("{}", hex(&genesis.chain_id));
+        }
+        Some("key") => println!("{}", wallet(&flags).neuron_hex()),
+        Some("tx") => {
+            let w = wallet(&flags);
+            let bytes = flags.get("genesis").and_then(|g| std::fs::read(g).ok()).unwrap_or_else(|| die("--genesis <file> required (the chain id is its particle)".into()));
+            let genesis = soft3::chain::genesis::Genesis::decode(&bytes).unwrap_or_else(|e| die(format!("genesis: {e}")));
+            let token = genesis.native_token();
+            let nonce = num(&flags, "nonce", 0);
+            let amount = num(&flags, "amount", 0);
+            let fee = flags.get("fee").map(|_| num(&flags, "fee", 0));
+            let signed = match flags.get("kind").map(|k| k.as_str()).unwrap_or("transfer") {
+                "link" => {
+                    let p = flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]);
+                    let q = flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]);
+                    w.cyberlink(&genesis.chain_id, nonce, p, q, 0, token, amount, fee)
+                }
+                _ => {
+                    let to = flags.get("to").and_then(|t| unhex32(t)).unwrap_or([7; 32]);
+                    w.transfer(&genesis.chain_id, nonce, token, amount, to, fee)
+                }
+            }
+            .unwrap_or_else(|e| die(format!("sign: {e}")));
+            println!("{}", hex(&signed.bytes));
+            eprintln!("txid {}", signed.txid_hex());
         }
         _ => {
-            eprintln!("usage: soft3 chain genesis-dev [--name dev] [--time T] [--fund NEURON=AMOUNT]… --out FILE");
+            eprintln!("usage: soft3 chain genesis-dev [--name dev] [--time T] [--bits HEX] [--fund NEURON=AMOUNT]… --out FILE");
             eprintln!("       soft3 chain key --seed HEX32");
             eprintln!("       soft3 chain tx --seed HEX32 --genesis FILE --nonce N [--kind transfer|link] [--to N] [--amount A] [--fee F] [--p P --q Q]");
             std::process::exit(2);

@@ -1,24 +1,32 @@
-//! One chain node: the chain behind [`ChainView`], its mempool, the wire and
-//! an optional CPU miner, served over the HTTP adapter (chain_routes.rs).
+//! One chain node: the consensus kernel behind [`ChainView`]
+//! ([`KernelChain`]), its mempool and the wire, served over the HTTP adapter
+//! (chain_routes.rs). Mining is a separate process: `soft3 mine --node URL`
+//! speaks `/template` and `/submit` (chain-wire §7).
 //! `soft3 node --chain <name> --home DIR --bind HOST:PORT --radio HOST:UDP
 //! --peers FILE --moniker NAME` (deploy/chain/soft3-chain@.service).
 
 use std::io;
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 
-use crate::chain::net::chain_view::ChainView;
+use crate::chain::net::chain_view::{BlockVerdict, ChainView};
 use crate::chain::net::codec::{hex, Header, Id};
-use crate::chain::net::devchain::{self, DevChain};
+use crate::chain::net::kernel::KernelChain;
 use crate::chain::net::mempool::Mempool;
 use crate::chain::net::{discovery, Config, Net};
 
 /// Chains this binary launches; their genesis files are not embedded yet
 /// (the pipeline of chain.md §4.2 is the kernel's), so `--genesis` is required.
 pub const LAUNCH_CHAINS: &[&str] = &["pussy", "bostrom", "pussy-rc"];
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum SubmitError {
+    /// `prev` is no longer the tip, or the template was never handed out here
+    Stale,
+    /// pow, bits, time or the body (chain.md §5.5)
+    Rejected(String),
+}
 
 pub struct ChainOpts {
     pub chain: String,
@@ -27,28 +35,24 @@ pub struct ChainOpts {
     pub radio: Option<SocketAddr>,
     pub peers: Option<PathBuf>,
     pub moniker: String,
-    pub mine: bool,
-    pub solo: bool,
-    pub miner: Option<Id>,
-    pub mine_interval: Duration,
+    /// this node's neuron (follow-preferred dialing); default: hash of the radio key
+    pub neuron: Option<Id>,
     pub relay: bool,
     pub log_net: bool,
 }
 
 pub struct ChainNode {
     pub chain: Arc<dyn ChainView>,
+    pub kernel: Arc<KernelChain>,
     pub mempool: Arc<Mutex<Mempool>>,
     pub net: Arc<Net>,
     pub runtime: tokio::runtime::Runtime,
     pub moniker: String,
     pub chain_name: String,
     pub home: PathBuf,
-    pub mining: AtomicBool,
-    pub solo: AtomicBool,
-    pub miner: Id,
-    pub mine_interval: Duration,
-    pub mined: AtomicU64,
     pub started: u64,
+    /// unix second of the last `/template` handed out (an external miner works this node)
+    pub last_template: std::sync::atomic::AtomicU64,
     /// Templates handed out by `/template`, keyed by their zero-nonce id, valid for one tip.
     pub templates: Mutex<Vec<(Id, Header, Vec<u8>)>>,
     pub dev: bool,
@@ -82,13 +86,13 @@ impl ChainNode {
         if opts.genesis.is_some() && !opts.home.join("genesis.tade").exists() {
             std::fs::write(opts.home.join("genesis.tade"), &genesis_bytes)?;
         }
-        let chain = DevChain::open(&genesis_bytes, Some(&opts.home)).map_err(io::Error::other)?;
-        let name = chain.genesis().name;
+        let kernel = Arc::new(KernelChain::open(&genesis_bytes, &opts.home).map_err(io::Error::other)?);
+        let name = kernel.chain_name();
         if name != opts.chain {
             return Err(io::Error::other(format!("--chain {} but the genesis file names {name:?}", opts.chain)));
         }
         let dev = !LAUNCH_CHAINS.contains(&name.as_str());
-        let chain: Arc<dyn ChainView> = Arc::new(chain);
+        let chain: Arc<dyn ChainView> = kernel.clone();
         let mempool = Arc::new(Mutex::new(Mempool::new()));
         let bootstrap = match &opts.peers {
             Some(path) => {
@@ -103,60 +107,19 @@ impl ChainNode {
         };
         let runtime = tokio::runtime::Builder::new_multi_thread().enable_all().thread_name("chain-net").build()?;
         let key = crate::chain::net::transport::load_or_create_key(&opts.home.join("radio.key"))?;
-        let miner = opts.miner.unwrap_or_else(|| crate::chain::net::codec::hash(key.public().as_bytes()));
-        let cfg = Config { chain_dir: opts.home.clone(), radio_bind: opts.radio, relay: opts.relay, bootstrap, neuron: miner };
+        let neuron = opts.neuron.unwrap_or_else(|| crate::chain::net::codec::hash(key.public().as_bytes()));
+        let cfg = Config { chain_dir: opts.home.clone(), radio_bind: opts.radio, relay: opts.relay, bootstrap, neuron };
         let net = runtime.block_on(Net::start(cfg, chain.clone(), mempool.clone(), opts.log_net)).map_err(io::Error::other)?;
         let node = Arc::new(ChainNode {
-            chain, mempool, net: Arc::new(net), runtime, moniker: opts.moniker, chain_name: name, home: opts.home,
-            mining: AtomicBool::new(opts.mine), solo: AtomicBool::new(opts.solo), miner, mine_interval: opts.mine_interval,
-            mined: AtomicU64::new(0), started: crate::chain::net::now_unix(), templates: Mutex::new(Vec::new()), dev,
+            chain, kernel, mempool, net: Arc::new(net), runtime, moniker: opts.moniker, chain_name: name, home: opts.home,
+            started: crate::chain::net::now_unix(), last_template: Default::default(), templates: Mutex::new(Vec::new()), dev,
         });
-        let miner_node = node.clone();
-        std::thread::Builder::new().name("chain-miner".into()).spawn(move || miner_node.mine_loop())?;
         Ok(node)
     }
 
-    fn mine_loop(self: Arc<Self>) {
-        loop {
-            if !self.mining.load(Ordering::Relaxed) {
-                std::thread::sleep(Duration::from_millis(200));
-                continue;
-            }
-            let tip = self.chain.tip();
-            if !self.solo.load(Ordering::Relaxed) && !self.net.sync_quorum(tip.height) {
-                std::thread::sleep(Duration::from_secs(1));
-                continue;
-            }
-            let txs = self.mempool.lock().expect("mempool").template_txs();
-            let now = crate::chain::net::now_unix();
-            let Ok((header, body)) = self.chain.template(&self.miner, &txs, now) else {
-                std::thread::sleep(Duration::from_millis(200));
-                continue;
-            };
-            let mut candidate = header;
-            let mut solved = None;
-            let mut base = 0u64;
-            while solved.is_none() {
-                let mut h = candidate;
-                h.nonce = (base as u128).to_le_bytes();
-                solved = devchain::mine_from(h, base, 4096);
-                base += 4096;
-                if self.chain.tip().id != tip.id || !self.mining.load(Ordering::Relaxed) {
-                    break;
-                }
-                candidate = header;
-            }
-            let Some(solved) = solved else { continue };
-            if self.chain.accept_header(&solved, now + 1).is_ok() && matches!(self.chain.accept_block(&solved, &body), Ok(_)) {
-                self.mined.fetch_add(1, Ordering::Relaxed);
-                self.runtime.block_on(self.net.publish_header(&solved));
-            }
-            std::thread::sleep(self.mine_interval);
-        }
-    }
-
-    /// `POST /submit`: a solved header for a template handed out at this tip.
-    pub fn submit(&self, header: Header) -> Result<Id, &'static str> {
+    /// `POST /submit`: a solved header for a template handed out at this
+    /// tip; the kernel validates it with the template's body (§5.5 1–8).
+    pub fn submit(&self, header: Header) -> Result<Id, SubmitError> {
         let mut zero = header;
         zero.nonce = [0; 16];
         let key = zero.id();
@@ -164,15 +127,25 @@ impl ChainNode {
             let templates = self.templates.lock().expect("templates");
             templates.iter().find(|(k, _, _)| *k == key).map(|(_, _, b)| b.clone())
         };
-        let Some(body) = body else { return Err("stale template") };
+        let Some(body) = body else { return Err(SubmitError::Stale) };
         if header.prev != self.chain.tip().id {
-            return Err("stale template");
+            return Err(SubmitError::Stale);
         }
-        let now = crate::chain::net::now_unix();
-        self.chain.accept_header(&header, now).map_err(|_| "header rejected")?;
-        self.chain.accept_block(&header, &body).map_err(|_| "block rejected")?;
-        self.runtime.block_on(self.net.publish_header(&header));
-        Ok(header.id())
+        match self.chain.accept_block(&header, &body, crate::chain::net::now_unix()) {
+            Ok(BlockVerdict::NewTip) => {
+                self.runtime.block_on(self.net.publish_header(&header));
+                Ok(header.id())
+            }
+            Ok(BlockVerdict::Known) => Ok(header.id()),
+            Ok(other) => Err(SubmitError::Rejected(format!("not the new tip: {other:?}"))),
+            Err(e) => Err(SubmitError::Rejected(e.to_string())),
+        }
+    }
+
+    /// A miner asked for a template within the last minute.
+    pub fn mining(&self) -> bool {
+        let last = self.last_template.load(std::sync::atomic::Ordering::Relaxed);
+        last > 0 && crate::chain::net::now_unix().saturating_sub(last) < 60
     }
 
     pub fn status_cybermark(&self) -> String {
@@ -184,13 +157,14 @@ impl ChainNode {
         let peers = self.net.peers();
         let checkpoint = self.net.checkpoints().last().map(|c| c.height.to_string()).unwrap_or_else(|| "none".into());
         let bits = self.chain.header_at(tip.height).map(|h| h.bits).unwrap_or(0);
+        let next_bits = self.kernel.next_bits();
         format!(
-            "---\nparticle: status\nchain: {}\nprotocol: soft3/chain/1\nrule-set: {}\nactivations: 1@0\nengine: chain+cybergraph+bbg\nversion: {}\nmoniker: {}\nheight: {}\ntip: {}\nchainwork: {}\nbits: {:#010x}\nnext-bits: {:#010x}\ngenesis: {}\ngenesis-time: {}\nbbg-root: {}\nsupply: {}\nconserved: {}\nsubsidy: {}\nneurons: {}\nparticles: {}\naxons: {}\nmempool: {}\npeers: {}\noutbound: {}\nbest-header: {}\ncheckpoint: {}\ncatching-up: {}\nmining: {}\nstorage: bbg-fjall\nendpoint: {}\n---\nthe state of [[{}]] at height {}\n",
+            "---\nparticle: status\nchain: {}\nprotocol: soft3/chain/1\nrule-set: {}\nactivations: 1@0\nengine: chain+cybergraph+bbg\nversion: {}\nmoniker: {}\nheight: {}\ntip: {}\nchainwork: {}\nbits: {:#010x}\nnext-bits: {:#010x}\ngenesis: {}\ngenesis-block: {}\ngenesis-time: {}\nbbg-root: {}\nsupply: {}\nconserved: {}\nsubsidy: {}\nneurons: {}\nparticles: {}\naxons: {}\nmempool: {}\npeers: {}\noutbound: {}\nbest-header: {}\ncheckpoint: {}\nfinalized: {}\ncatching-up: {}\nmining: {}\nstorage: bbg-fjall\nendpoint: {}\n---\nthe state of [[{}]] at height {}\n",
             self.chain_name, self.chain.rule_set(), env!("CARGO_PKG_VERSION"), self.moniker.replace(['\n', '\r'], " "),
-            tip.height, hex(&tip.id), tip.chainwork.to_decimal(), bits, bits, hex(&self.chain.genesis_id()), self.chain.genesis_time(),
+            tip.height, hex(&tip.id), tip.chainwork.to_decimal(), bits, next_bits, hex(&self.chain.chain_id()), hex(&self.chain.genesis_id()), self.chain.genesis_time(),
             hex(&self.chain.state_root()), self.chain.supply(&native), self.chain.conserved(), self.chain.subsidy(), neurons, particles, axons,
             pool.len(), peers.len(), peers.iter().filter(|p| p.direction == crate::chain::net::peers::Direction::Outbound).count(),
-            best.height, checkpoint, self.net.catching_up(), self.mining.load(Ordering::Relaxed), hex(self.net.id().as_bytes()),
+            best.height, checkpoint, self.kernel.finalized_height(), self.net.catching_up(), self.mining(), hex(self.net.id().as_bytes()),
             self.chain_name, tip.height,
         )
     }

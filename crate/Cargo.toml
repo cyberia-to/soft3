@@ -75,3 +75,9 @@ serde = { version = "1", features = ["derive"] }
 [dev-dependencies]
 # the known-answer key of chain-conformance §6 is BIP-39 derived
 mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", features = ["bridge"] }
+
+# hemera is the proof of work: tests and the local harness mine real blocks
+# (chain-conformance §9) on a debug build, which an unoptimized permutation
+# makes minutes slower. Release builds are unaffected.
+[profile.dev.package.cyber-hemera]
+opt-level = 3

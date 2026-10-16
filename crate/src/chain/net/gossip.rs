@@ -9,7 +9,7 @@ use iroh_gossip::api::{Event, GossipReceiver};
 use n0_future::StreamExt;
 use radio::EndpointId;
 
-use super::chain_view::{BlockVerdict, HeaderVerdict};
+use super::chain_view::{BlockError, BlockVerdict, HeaderVerdict};
 use super::codec::{hash_tagged, txid, Header};
 use super::frames::{Checkpoint, Frame, FrameError, MAX_GOSSIP_BYTES};
 use super::peers::{Direction, Peer};
@@ -43,8 +43,9 @@ fn decode(inner: &Inner, from: &EndpointId, content: &[u8]) -> Option<Frame> {
 }
 
 pub(crate) async fn run_headers(inner: Arc<Inner>, mut rx: GossipReceiver) {
-    while let Some(Ok(event)) = rx.next().await {
-        let Event::Received(msg) = event else { continue };
+    // a lagged receiver (a burst beyond the channel) skips, it does not end the topic
+    while let Some(event) = rx.next().await {
+        let Ok(Event::Received(msg)) = event else { continue };
         let from = msg.delivered_from;
         if !ensure_peer(&inner, from) {
             continue;
@@ -109,14 +110,9 @@ pub(crate) async fn fetch_body(inner: Arc<Inner>, from: EndpointId, header: Head
     let from = conn.remote_id();
     match request(&conn, Frame::GetBlocks(vec![id])).await {
         Ok(frames) => match frames.first() {
-            Some(Frame::Block { header: got, body }) if got.id() == id => match inner.chain.accept_block(got, body) {
-                Ok(BlockVerdict::NewTip) | Ok(BlockVerdict::Stored) => {
-                    inner.peers.lock().expect("peers").note_served(&from);
-                    let _ = inner.sync_hint.try_send(super::sync::Hint::Tick);
-                }
-                Ok(_) => {}
-                Err(e) => inner.charge(&from, 10, &format!("block {}: {e}", header.height)),
-            },
+            Some(Frame::Block { header: got, body }) if got.id() == id => {
+                apply_fetched(&inner, &conn, got, body, header.height).await;
+            }
             Some(Frame::Block { .. }) => inner.charge(&from, 100, "body for a header we did not request"),
             _ if announcer => inner.charge(&from, 1, "announced a header it cannot serve"),
             _ => {
@@ -127,9 +123,77 @@ pub(crate) async fn fetch_body(inner: Arc<Inner>, from: EndpointId, header: Head
     }
 }
 
+/// Hand a fetched block to the kernel. When the kernel answers
+/// `NeedBodies` (a heavier chain whose ancestors' bodies we lack), fetch
+/// those bodies from the same peer in height order and resubmit them.
+pub(crate) async fn apply_fetched(inner: &Arc<Inner>, conn: &radio::endpoint::Connection, header: &Header, body: &[u8], height: u64) {
+    let from = conn.remote_id();
+    let mut pending = vec![(*header, body.to_vec())];
+    let mut rounds = 0;
+    while let Some((header, body)) = pending.pop() {
+        match inner.chain.accept_block(&header, &body, now_unix()) {
+            Ok(BlockVerdict::NewTip) | Ok(BlockVerdict::Stored) => {
+                inner.peers.lock().expect("peers").note_served(&from);
+                let _ = inner.sync_hint.try_send(super::sync::Hint::Tick);
+            }
+            Ok(BlockVerdict::Known) => {}
+            Ok(BlockVerdict::NeedBodies(ids)) => {
+                rounds += 1;
+                if rounds > 4 {
+                    // a long gap is the sync loop's job (ranges, many peers)
+                    let _ = inner.sync_hint.try_send(super::sync::Hint::Peer(from));
+                    return;
+                }
+                inner.say(&format!("block {height} needs {} ancestor bodies from {}", ids.len(), short(&from)));
+                let want: Vec<_> = ids.iter().copied().take(super::frames::MAX_RANGE as usize).collect();
+                match request(conn, Frame::GetBlocks(want.clone())).await {
+                    Ok(frames) => {
+                        // resubmit the announced block last, after its ancestors in height order
+                        pending.push((header, body));
+                        let mut got = Vec::new();
+                        for (id, frame) in want.iter().zip(frames) {
+                            match frame {
+                                Frame::Block { header: h, body: b } if h.id() == *id => got.push((h, b)),
+                                Frame::Block { .. } => {
+                                    inner.charge(&from, 10, "block differs from the validated header");
+                                    return;
+                                }
+                                _ => break,
+                            }
+                        }
+                        if got.is_empty() {
+                            let _ = inner.sync_hint.try_send(super::sync::Hint::Peer(from));
+                            return;
+                        }
+                        got.sort_by_key(|(h, _)| std::cmp::Reverse(h.height));
+                        pending.extend(got);
+                    }
+                    Err(e) => {
+                        inner.charge(&from, e.score(), &format!("ancestor bodies: {e}"));
+                        return;
+                    }
+                }
+            }
+            Err(BlockError::UnknownParent) => {
+                let _ = inner.sync_hint.try_send(super::sync::Hint::Peer(from));
+                return;
+            }
+            Err(e @ (BlockError::Held | BlockError::Refused(_) | BlockError::Store(_))) => {
+                inner.say(&format!("block {} from {}: {e}", header.height, short(&from)));
+                return;
+            }
+            Err(e) => {
+                inner.charge(&from, e.score(), &format!("block {}: {e}", header.height));
+                return;
+            }
+        }
+    }
+}
+
 pub(crate) async fn run_txs(inner: Arc<Inner>, mut rx: GossipReceiver) {
-    while let Some(Ok(event)) = rx.next().await {
-        let Event::Received(msg) = event else { continue };
+    // a lagged receiver (a burst beyond the channel) skips, it does not end the topic
+    while let Some(event) = rx.next().await {
+        let Ok(Event::Received(msg)) = event else { continue };
         let from = msg.delivered_from;
         if !ensure_peer(&inner, from) {
             continue;
@@ -167,8 +231,9 @@ pub(crate) fn checkpoint_valid(inner: &Inner, c: &Checkpoint) -> bool {
 }
 
 pub(crate) async fn run_checkpoints(inner: Arc<Inner>, mut rx: GossipReceiver) {
-    while let Some(Ok(event)) = rx.next().await {
-        let Event::Received(msg) = event else { continue };
+    // a lagged receiver (a burst beyond the channel) skips, it does not end the topic
+    while let Some(event) = rx.next().await {
+        let Ok(Event::Received(msg)) = event else { continue };
         let from = msg.delivered_from;
         if !ensure_peer(&inner, from) {
             continue;
@@ -198,6 +263,10 @@ pub(crate) async fn run_checkpoints(inner: Arc<Inner>, mut rx: GossipReceiver) {
                     }
                 };
                 if fresh {
+                    // the kernel holds it too: fork choice never crosses a held checkpoint (§5.3)
+                    if let Err(e) = inner.chain.accept_checkpoint(c.height, &c.block_id, &c.sig) {
+                        inner.say(&format!("checkpoint at {}: {e}", c.height));
+                    }
                     let _ = inner.checkpoints_tx.broadcast_neighbors(bytes::Bytes::from(Frame::Checkpoint(c).encode())).await;
                 }
             }

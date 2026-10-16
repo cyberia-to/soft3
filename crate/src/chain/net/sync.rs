@@ -12,7 +12,7 @@ use radio::EndpointId;
 use tokio::sync::mpsc;
 use tokio::task::JoinSet;
 
-use super::chain_view::{BlockVerdict, HeaderVerdict};
+use super::chain_view::{BlockError, BlockVerdict, HeaderVerdict};
 use super::codec::{Header, Id, U256};
 use super::frames::{Frame, MAX_HEADERS_PER_RESPONSE, MAX_RANGE};
 use super::transport::{request, WireError};
@@ -54,8 +54,13 @@ pub(crate) async fn run(inner: Arc<Inner>, mut rx: mpsc::Receiver<Hint>) {
     }
 }
 
-/// One sync pass: status-refresh, header sync from the best peer, then bodies.
+/// One sync pass: held headers, status-refresh, header sync from the best peer, then bodies.
 async fn pass(inner: &Arc<Inner>, preferred: Option<EndpointId>, refresh: bool) {
+    // headers that were ahead of our clock may be acceptable now: relay them
+    for header in inner.chain.retry_held(now_unix()) {
+        inner.note_relayed(header.id());
+        let _ = inner.headers_tx.broadcast_neighbors(bytes::Bytes::from(Frame::HeaderGossip(header).encode())).await;
+    }
     let ours = inner.chain.tip();
     // peers that claim more work, or a higher tip since their last status; every third tick, everyone
     let mut candidates: Vec<(U256, EndpointId)> = inner.peers.lock().expect("peers").iter()
@@ -201,14 +206,14 @@ pub(crate) async fn body_sync(inner: &Arc<Inner>) {
                 (peer, want, got)
             });
         }
-        let mut buffer: BTreeMap<u64, (Header, Vec<u8>)> = BTreeMap::new();
+        let mut buffer: BTreeMap<u64, (Header, Vec<u8>, EndpointId)> = BTreeMap::new();
         while let Some(Ok((peer, want, got))) = set.join_next().await {
             match got {
                 Ok(frames) => {
                     for ((height, id), frame) in want.iter().zip(frames) {
                         match frame {
                             Frame::Block { header, body } if header.id() == *id => {
-                                buffer.insert(*height, (header, body));
+                                buffer.insert(*height, (header, body, peer));
                             }
                             Frame::Block { .. } => {
                                 inner.charge(&peer, 10, "block differs from the validated header");
@@ -228,15 +233,16 @@ pub(crate) async fn body_sync(inner: &Arc<Inner>) {
             return;
         }
         let mut applied = 0;
-        for (height, (header, body)) in buffer {
-            match inner.chain.accept_block(&header, &body) {
-                Ok(BlockVerdict::NewTip) | Ok(BlockVerdict::Stored) | Ok(BlockVerdict::Known) => applied += 1,
-                Ok(BlockVerdict::DeepFork) => {
-                    inner.say(&format!("rejected deep fork at {height}"));
+        for (height, (header, body, peer)) in buffer {
+            match inner.chain.accept_block(&header, &body, now_unix()) {
+                // NeedBodies: stored; the next round's missing list carries the gap
+                Ok(BlockVerdict::NewTip) | Ok(BlockVerdict::Stored) | Ok(BlockVerdict::Known) | Ok(BlockVerdict::NeedBodies(_)) => applied += 1,
+                Err(e @ (BlockError::Held | BlockError::Refused(_) | BlockError::Store(_) | BlockError::UnknownParent)) => {
+                    inner.say(&format!("block {height}: {e}"));
                     return;
                 }
                 Err(e) => {
-                    inner.say(&format!("block {height} rejected: {e}"));
+                    inner.charge(&peer, e.score(), &format!("block {height}: {e}"));
                     return;
                 }
             }

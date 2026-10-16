@@ -1,4 +1,5 @@
-//! Adversarial wire tests against a real `soft3 node --chain dev` process
+//! Adversarial wire tests against a real `soft3 node --chain dev` process on
+//! the consensus kernel, mined by a real `soft3 mine --backend cpu` process
 //! (chain-wire.md §5, chain-conformance.md §11): oversized and malformed
 //! frames, a stream without the dialect, a wrong-chain status, a body
 //! pushed on gossip, a PoW-invalid header (never followed by a body
@@ -18,13 +19,13 @@ use radio::endpoint::Connection;
 use radio::protocol::{AcceptError, ProtocolHandler, Router};
 use radio::{Endpoint, EndpointAddr, EndpointId, SecretKey, TransportAddr};
 use soft3::chain::net::codec::{self, hex, topic_id, unhex32, Header};
-use soft3::chain::net::chain_view::ChainView;
-use soft3::chain::net::devchain::{dev_genesis, mine, DevChain, DEV_BITS};
+use soft3::chain::params::POW_LIMIT_BITS;
 use soft3::chain::net::frames::{Frame, Status, DIALECT, ERR_LIMIT, ERR_WRONG_CHAIN};
 use soft3::chain::net::transport::{self, read_frame, request, write_frame, ALPN};
 
 struct NodeProc {
     child: Child,
+    miner: Child,
     http: u16,
     radio: u16,
     home: PathBuf,
@@ -33,6 +34,8 @@ struct NodeProc {
 
 impl Drop for NodeProc {
     fn drop(&mut self) {
+        let _ = self.miner.kill();
+        let _ = self.miner.wait();
         let _ = self.child.kill();
         let _ = self.child.wait();
         let _ = std::fs::remove_dir_all(&self.home);
@@ -59,26 +62,66 @@ fn wait_until(secs: u64, mut f: impl FnMut() -> bool) -> bool {
     false
 }
 
-/// One mining dev node in a scratch home.
+/// A key's neuron, through the CLI the harness uses.
+const MINER: &str = "6666666666666666666666666666666666666666666666666666666666666666";
+
+/// One dev node in a scratch home, a test genesis at the floor target, and
+/// a `soft3 mine` process working it.
 fn spawn_node(label: &str) -> (NodeProc, Vec<u8>) {
     let home = std::env::temp_dir().join(format!("chain-adversary-{label}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&home);
     std::fs::create_dir_all(&home).unwrap();
-    let genesis = dev_genesis("dev", soft3::chain::net::now_unix() - 60, &[([0x66; 32], 1_000_000_000)]).encode();
-    let genesis_path = home.join("genesis.tade");
-    std::fs::write(&genesis_path, &genesis).unwrap();
     let bin = env!("CARGO_BIN_EXE_soft3");
+    let genesis_path = home.join("genesis.tade");
+    let made = Command::new(bin).args(["chain", "genesis-dev", "--name", "dev", "--fund", &format!("{MINER}=1000000000"), "--out"]).arg(&genesis_path).output().unwrap();
+    assert!(made.status.success(), "{}", String::from_utf8_lossy(&made.stderr));
+    let genesis = std::fs::read(&genesis_path).unwrap();
     let id = String::from_utf8(Command::new(bin).args(["node", "id", "--home"]).arg(&home).output().unwrap().stdout).unwrap().trim().to_owned();
     let (http, radio) = (free_port(), free_port());
     let log = std::fs::File::create(std::env::temp_dir().join(format!("chain-adversary-{label}.log"))).unwrap();
     let child = Command::new(bin)
         .args(["node", "--chain", "dev", "--home"]).arg(&home)
         .args(["--bind", &format!("127.0.0.1:{http}"), "--radio", &format!("127.0.0.1:{radio}"), "--genesis"]).arg(&genesis_path)
-        .args(["--moniker", label, "--mine", "--solo", "--log-net", "--mine-interval-ms", "500"])
+        .args(["--moniker", label, "--log-net"])
         .stdout(Stdio::null()).stderr(log).spawn().unwrap();
-    let node = NodeProc { child, http, radio, home, id };
+    let mine_log = std::fs::File::create(std::env::temp_dir().join(format!("chain-adversary-{label}-mine.log"))).unwrap();
+    let miner = Command::new(bin)
+        .args(["mine", "--chain", "dev", "--node", &format!("http://127.0.0.1:{http}"), "--address", MINER, "--backend", "cpu", "--threads", "2"])
+        .stdout(mine_log).stderr(Stdio::null()).spawn().unwrap();
+    let node = NodeProc { child, miner, http, radio, home, id };
     assert!(wait_until(30, || get(node.http, "/health") == "ok\n"), "node did not come up");
     (node, genesis)
+}
+
+/// Block 0's id, as the node publishes it.
+fn genesis_block(node: &NodeProc) -> [u8; 32] {
+    let v: serde_json::Value = serde_json::from_str(&get(node.http, "/header/0")).unwrap();
+    unhex32(v["id"].as_str().unwrap()).unwrap()
+}
+
+/// The ASERT bits the node expects next (`next-bits` of /status).
+fn next_bits(node: &NodeProc) -> u32 {
+    let status = get(node.http, "/status");
+    let line = status.lines().find(|l| l.starts_with("next-bits: ")).expect("next-bits");
+    u32::from_str_radix(line["next-bits: 0x".len()..].trim(), 16).unwrap()
+}
+
+fn pow_ok(h: &Header) -> bool {
+    soft3::chain::pow::valid_pow(&soft3::chain::header::Header::decode_raw(&h.encode()).unwrap())
+}
+
+/// Solve a header with the reference miner's CPU backend.
+fn solve(h: Header) -> Header {
+    use soft3::chain::mine::{cpu::Cpu, target::target_of, Backend, Job};
+    let job = Job::new(&h.encode(), target_of(h.bits).unwrap());
+    let cpu = Cpu::new(0);
+    let mut base = 0u128;
+    loop {
+        if let Some(i) = cpu.search(&job, base, 1 << 16).unwrap() {
+            return Header::decode(&job.header_with(base + i as u128)).unwrap();
+        }
+        base += 1 << 16;
+    }
 }
 
 fn node_addr(node: &NodeProc) -> EndpointAddr {
@@ -128,7 +171,7 @@ impl ProtocolHandler for BadServer {
                     }
                     Frame::GetBlocks(ids) => {
                         requests.fetch_add(ids.len(), Ordering::Relaxed);
-                        let header = announced.lock().unwrap().unwrap_or(Header { version: 1, height: 1, time: 1, bits: DEV_BITS, nonce: [0; 16], prev: [0; 32], tx_root: [0; 32], state_root: [0; 32], chain: [0; 32] });
+                        let header = announced.lock().unwrap().unwrap_or(Header { version: 1, height: 1, time: 1, bits: POW_LIMIT_BITS, nonce: [0; 16], prev: [0; 32], tx_root: [0; 32], state_root: [0; 32], chain: [0; 32] });
                         for _ in ids {
                             let _ = write_frame(&mut send, &Frame::Block { header, body: vec![9, 9, 9, 9, 9] }).await;
                         }
@@ -148,7 +191,7 @@ impl ProtocolHandler for BadServer {
 fn streams_frames_and_status_are_policed() {
     let (node, genesis) = spawn_node("streams");
     let chain = codec::hash(&genesis);
-    let genesis_id = DevChain::open(&genesis, None).unwrap().genesis_id();
+    let genesis_id = genesis_block(&node);
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         let ep = endpoint(1).await;
@@ -218,7 +261,7 @@ fn streams_frames_and_status_are_policed() {
 fn gossip_is_policed_and_bad_blocks_are_scored() {
     let (node, genesis) = spawn_node("gossip");
     let chain = codec::hash(&genesis);
-    let genesis_id = DevChain::open(&genesis, None).unwrap().genesis_id();
+    let genesis_id = genesis_block(&node);
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         // a peer that dials the node on the chain ALPN (so the node can ask it for bodies),
@@ -245,11 +288,10 @@ fn gossip_is_policed_and_bad_blocks_are_scored() {
         let tip_id = unhex32(tip["id"].as_str().unwrap()).unwrap();
         let height = tip["height"].as_u64().unwrap();
         let bogus = Header {
-            version: 1, height: height + 1, time: soft3::chain::net::now_unix(), bits: DEV_BITS, nonce: [0xff; 16],
+            version: 1, height: height + 1, time: soft3::chain::net::now_unix(), bits: next_bits(&node), nonce: [0xff; 16],
             prev: tip_id, tx_root: [3; 32], state_root: [4; 32], chain,
         };
-        let bogus = if bogus.valid_pow() { Header { nonce: [0xfe; 16], ..bogus } } else { bogus };
-        assert!(!bogus.valid_pow() || Header { nonce: [0xfd; 16], ..bogus }.valid_pow() == false);
+        let bogus = (0u8..=255).map(|n| Header { nonce: [n; 16], ..bogus }).find(|h| !pow_ok(h)).expect("a 2^-20 target fails almost every nonce");
         headers.broadcast_neighbors(bytes::Bytes::from(Frame::HeaderGossip(bogus).encode())).await.unwrap();
         assert!(wait_until(10, || !peer_listed(&node, &me)), "PoW-invalid header did not ban: {:?}", peer_score(&node, &me));
         assert_eq!(bad.requests.load(Ordering::Relaxed), 0, "the node asked for a body before checking PoW");
@@ -273,10 +315,10 @@ fn gossip_is_policed_and_bad_blocks_are_scored() {
         let tip_id = unhex32(tip["id"].as_str().unwrap()).unwrap();
         let height = tip["height"].as_u64().unwrap();
         let candidate = Header {
-            version: 1, height: height + 1, time: soft3::chain::net::now_unix() + 5, bits: DEV_BITS, nonce: [0; 16],
+            version: 1, height: height + 1, time: soft3::chain::net::now_unix() + 5, bits: next_bits(&node), nonce: [0; 16],
             prev: tip_id, tx_root: [3; 32], state_root: [4; 32], chain,
         };
-        let solved = mine(candidate, 1 << 20).expect("dev target");
+        let solved = solve(candidate);
         *bad.announced.lock().unwrap() = Some(solved);
         headers.broadcast_neighbors(bytes::Bytes::from(Frame::HeaderGossip(solved).encode())).await.unwrap();
         assert!(wait_until(15, || bad.requests.load(Ordering::Relaxed) > 0), "the node never asked for the body");
