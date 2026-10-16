@@ -278,15 +278,16 @@ a private test genesis):
 ## 12. the pool
 
 The formats of chain.md §11, frozen at genesis although rule set 2 is off.
-Computed on 2026-10-16 with `cyber-hemera` at `d5f0a09` (origin `main`)
-through the plain sponge's finalized state (`W`, chain.md §11.1),
-`hemera::permutation::permute` (the wide node, §11.4) and `hemera::hash`,
-by `crate/src/chain/pool/` (tests `chain::pool::tests`). They are blessed
+Computed on 2026-10-16 against hemera 0.3 (`cyber-hemera` at `d5f0a09`,
+origin `main`) through the hemera API alone — `Hasher::finalize_xof` for
+`W` (chain.md §11.1) and the tree node (§11.4), `hemera::hash` for the
+narrow values — by `crate/src/chain/pool/` (tests `chain::pool::tests`).
+The chain freezes hemera's profile #15 (hemera 0.4): every value below is
+re-blessed when it lands; the definitions do not move. They are blessed
 as `chain::pool@v1` entries of `conformance/chain.snap`; a snapshot line
 holds 32 bytes, so a wide value enters it as `hemera(value)`, its
 fingerprint, and the full values are quoted here. A moved value is a
-consensus change; if hemera#15 changes the permutation before genesis,
-the whole section is recomputed.
+consensus change once the profile is final.
 
 The sample: `chain = 0x44 × 32`, `sk = 0x01 × 32`. The input record was
 deposited by txid `0x33 × 32`: `token("pussy")`, value 5,
@@ -300,21 +301,21 @@ withdrawal, fee 1 in `token("pussy")`, two zero predicates, no notes.
 
 | value | 64 bytes, hex |
 |---|---|
-| `owner = W(D_OWNER ‖ sk)` | `4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192` `b978e845e5c1219f6fee304ed47a87c6ad3a346e7f1143daaea29ef3d1c00bde` |
-| input `rho = W(D_RHO ‖ 0x33 × 32 ‖ 00)` | `b0558434e4c530cb32f74f2716538f3a4018f687f3485a5cb87baac7519a6278` `c8a4969f892fe7ca56f7eb77fad1bed44ebe26d48f8f4b78a587417ecca41c08` |
-| input commitment | `d9f0d13cd7c4d70db9562a981fc091a49b37e28bd56c6a3cda341e7755da0148` `a9bc454ec62af618638e51f672206563c4dc74de577cfad25afee514d5ef7882` |
-| `nf_0 = W(D_NULL ‖ chain ‖ sk ‖ rho)` | `eb97b0b124d3a6661de612cdbff2ca7f15f2caa36516a5e71421c10fd94d2fa5` `0c8e0e6b44043394fde12c2c9651be839797ec82c2683415081940149549501c` |
-| output `rho = W(D_RHO ‖ nf_0 ‖ 00)` | `0bf55e96541553a99343c89533f1cb5ba822ddbf65870e2342f014d7e95b6d64` `21226be82763c54e940a0b1e4d3e07dc4191667c9249c4fc8adf4a9212a79879` |
-| output commitment | `d1a3a6df8e585762a8afad0e69f410e25b24087aa519cf94488b11556b4d41a5` `ba0eaf6ef0ae6613337eda7050cc2fbd9444255221343e753f74caf8a3cbbed5` |
-| `EMPTY = W(D_EMPTY)` | `ddba4580f44954d39ca84d40621f45c67865e630f98367b4afe012335af4d697` `259e100146589dd16eb0ed611797ccb79fe81a7badc7fdda09c18f87a5b49887` |
-| `E_1 = node(EMPTY, EMPTY, false)` | `3fbbafe208f8321e1c3ff25b545672b94ffd75b16e582553b07671d69e1c93fe` `89641d4dc38f7a47241686809694c52da9ea6873275b1b78852412c33d03d101` |
-| `E_40`, the empty tree root (anchor of block 0) | `80331b2b29ebebc85b67013ed49756242fbaf0c6c9938adeef7999d28bbed7bc` `056f47d0e1ab35c2df52ff6bd8310bc75ff63e159cb93a335838fdaaf4143bdc` |
-| root, input commitment at position 0 | `16bc60964ede197fb4b0f9a917563bc446c383021ca99dbceccfd394255d2748` `0b64bcc3d74e623f49735336d1b74f78ff3f2800ffb8b08a8eb199a42a3e12dd` |
-| root, input then output commitment at 0, 1 | `3520b02a96ba0cfb674ff905cf38c223ae045e74dc1f3fe834948f7ad6fbd9be` `a0df59c94501d942f358297b2db88e56ca702ecc1d25aa3d8a5e60d5aa16e13d` |
-| `spend_id = W(D_SPEND ‖ spend_public)` | `e69de85afc6829df8718d1f181936dbfd7ff9cdd2b14e6ff565791a4732aad18` `1e816d935850c0e2eb021c9e53ce0b9c42d248a12e01872cd7ee55183d507a1a` |
-| `vk_set` of no keys, `W(D_VK)` | `49bb5c21ebf22311045270ccd6e7888c6addaaba1a298b830387f6b58f232708` `66b18821a8b603a1a32834264ecb65a24d3b24823f45ff7ad12b092260edc96a` |
-| `statement_id`, `chain = 0x44 × 32`, height 1, that `vk_set`, the one spend | `783d66bfba635b5fb2c298b8c014f06f92a8dfe9d90dc04d7bcb2a6fc6e1fb72` `5d58647b66b75a26c41438d9f87fb7d9b4cf0e627d8e8a8ca5f413c7da46c6db` |
-| tags digest (chain.md §11.9) | `9ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15` `882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0` |
+| `owner = W(D_OWNER ‖ sk)` | `4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192` `4fa5ea90afb44e2c0b6fdb4e44f73a4fb75871585dd82a045f5437b8bf2804d1` |
+| input `rho = W(D_RHO ‖ 0x33 × 32 ‖ 00)` | `b0558434e4c530cb32f74f2716538f3a4018f687f3485a5cb87baac7519a6278` `64957b1830827cb887f1891d4b1ccd8332b90305877baf337874cecc64884df5` |
+| input commitment | `ed9978f9084ec076d54f3a1bb9350ba0790d3b9653a25eddab17de885dfe02ad` `e3605f8305587158b824563b27d5266dcad245e3ae099052a3f7cc8f09679e10` |
+| `nf_0 = W(D_NULL ‖ chain ‖ sk ‖ rho)` | `0ebf9e16b4aa514aeae994e73d7025c4ab57c07c78a29af6b59ccf7ddb30ddf4` `c19734334ea620404bdf5d217e3b4ffd27f792d02f96f1e6fd8da176990d9a12` |
+| output `rho = W(D_RHO ‖ nf_0 ‖ 00)` | `441308d075396e137754d32c31e61ff282d6805639c1367497716224ef67b3e3` `9c7ba2a4cfe639c2217af2e1e00b185891fe67f1dc40583f77da3087bcae2f5f` |
+| output commitment | `f0b6960da2f513503b78e976024fc4a82281ff3bac78c43c5479a3b543544fc7` `a3476fde0ac028afcdfcd10e31d095e2bb2f03402a6b0231763db2529123feff` |
+| `EMPTY = W(D_EMPTY)` | `ddba4580f44954d39ca84d40621f45c67865e630f98367b4afe012335af4d697` `ded638914f1c743794b1ffb5ec7925afd7b45f3f15e63b079f62309d520f5d87` |
+| `E_1 = node(EMPTY, EMPTY)` | `c6e624b5c564c0d29240b69361177f330f6c356add3a7618f961f0e885c55f2e` `8e5d56b10a0e60617d180d82d1b8f1eec22be80f6e7eab9c3bc5e3b5f8c00b5e` |
+| `E_40`, the empty tree root (anchor of block 0) | `9a47bbbcf994dc003f7ffa6be2a23af43b81ba728d1805315495a56aa41e5694` `dce7aecc60e83360d7f1e3bea50dcb5e8e3b414c05aa336b8516b8f2e5d73aa5` |
+| root, input commitment at position 0 | `43aa9acf61d319dfcd07279977c7d4003dabc650a164b289494baabad33d65b5` `faaea8b8a8d0d1b3d89e5c38428014e0a7c265ff56742bcaa8b3f777cf55949d` |
+| root, input then output commitment at 0, 1 | `08cf9f94103847bef249e37d862030e9014f6fb81a2ac95e9eabb4d4b6fe7b07` `63338b2b10e0daeef8434d3b7379eb311ea4b71f116966bb57c13fb59dcb8b12` |
+| `spend_id = W(D_SPEND ‖ spend_public)` | `0e44f7bef8232285056f2e99072db3b466662e2de3593869910d33437ddbf4f2` `34447ed1270cff7c22296947998760e0e2bc22077c8356b2cec1af04bc74a850` |
+| `vk_set` of no keys, `W(D_VK)` | `49bb5c21ebf22311045270ccd6e7888c6addaaba1a298b830387f6b58f232708` `77036a9fb7cc2cb72ec4158d615ab32f3fd62de6ca0360f081ea9b33ea2519c5` |
+| `statement_id`, `chain = 0x44 × 32`, height 1, that `vk_set`, the one spend | `b8b75b2d873ed6cdc06a32ee3ce16bf15ab2598673fe413a6d17906e8db08b0b` `d4d2c4033de75d6b5176fd41602ef6143326b8c7d838c48bcc2b2e49c7ed54d3` |
+| tags digest (chain.md §11.9) | `d4ea8f2bc8ea618d61e715d95b90f58d6849c3cd9c91ec161b506e3081deb0d3` `c3af19d75bff949eb405124b57bbd41718647c532b1ddab0d23e70fe0e85816b` |
 
 Narrow values: `T(token("pussy")) = hemera(D_TURNSTILE ‖ token("pussy"))`
 = `ddd4a6ce619bc990793a74eb6be61d0765390bc68f9e0ecef7db46597e6f4ae1`; the
@@ -340,9 +341,9 @@ window, digest width or tags (the genesis file is refused); a params frame
 without the pool record; a spend with 0 or 5 inputs, a repeated nullifier
 or commitment, `p = q`, a withdrawal flag 2, a withdrawal of 0, a note of
 2,049 bytes, more notes than outputs, a predicate missing, a trailing or a
-missing byte. The wide node equals its definition step by step (flags,
-length 16, two permutations), differs from the narrow node and from its
-root-flagged form; paths of the two-leaf tree verify from either side and
+missing byte. `W(x)` is the first two 32-byte squeezes of hemera's
+extendable output and begins with `hemera(x)`; the tree node is
+`W(D_NODE ‖ L ‖ R)` and depends on the order of its children; paths of the two-leaf tree verify from either side and
 a wrong side fails. A value of `u64::MAX` is a valid record value (values
 are integers, not limbs). The longest canonical spend encodes to 9,981
 bytes; a deposit is 384 bytes. Kinds 4 and 5 are rejected by the

@@ -24,7 +24,7 @@ pub fn vectors() -> Vec<(&'static str, Id)> {
         ("rho of output 0", fp(&rho_of_output(&nf0, 0))),
         ("predicate of the empty program", fp(&predicate_of(&[]))),
         ("empty leaf", fp(&empty_leaf())),
-        ("wide node E1", fp(&empty_roots()[1])),
+        ("node E1", fp(&empty_roots()[1])),
         ("empty root depth 40", fp(&empty_root())),
         ("turnstile key pussy", turnstile_key(&token_of("pussy"))),
         ("record", fp(&record.encode())),

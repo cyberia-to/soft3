@@ -1,14 +1,10 @@
 //! chain.md §11 / chain-conformance §12: the pool's formats.
 
 use super::*;
-use crate::genesis::{hex, token_of};
-
-fn hx(b: &[u8]) -> String {
-    hex(b)
-}
+use crate::genesis::token_of;
 
 #[test]
-fn wide_digest_is_the_whole_rate_of_one_finalization() {
+fn wide_digest_extends_hemera_and_is_canonical() {
     for x in [&b""[..], b"pussy", &[7u8; 200][..]] {
         let w = wide(x);
         assert_eq!(&w[..32], hemera::hash(x).as_bytes(), "the first four limbs are hemera(x)");
@@ -21,23 +17,28 @@ fn wide_digest_is_the_whole_rate_of_one_finalization() {
 }
 
 #[test]
-fn wide_node_is_two_permutations_and_not_the_narrow_node() {
+fn wide_digest_is_two_squeezes_of_the_xof() {
+    let x = b"soft3/pool/test\0";
+    let mut xof = {
+        let mut h = hemera::Hasher::new();
+        h.update(x);
+        h.finalize_xof()
+    };
+    let mut first = [0u8; 32];
+    let mut second = [0u8; 32];
+    xof.fill(&mut first);
+    xof.fill(&mut second);
+    let w = wide(x);
+    assert_eq!(&w[..32], &first);
+    assert_eq!(&w[32..], &second);
+}
+
+#[test]
+fn tree_node_is_the_tagged_wide_digest() {
     let (a, b) = (wide(b"a"), wide(b"b"));
-    // by hand: flags and length in the capacity, left, permute, right, permute
-    let mut s = [Goldilocks::new(0); 16];
-    s[9] = Goldilocks::new(2);
-    s[10] = Goldilocks::new(16);
-    for child in [&a, &b] {
-        for i in 0..8 {
-            s[i] = s[i] + Goldilocks::new(u64::from_le_bytes(child[i * 8..i * 8 + 8].try_into().unwrap()));
-        }
-        hemera::permutation::permute(&mut s);
-    }
-    assert_eq!(node(&a, &b, false), rate_bytes(&s));
-    assert_ne!(node(&a, &b, false), node(&b, &a, false), "order matters");
-    assert_ne!(node(&a, &b, false), node(&a, &b, true), "the root flag separates");
-    let narrow = hemera::tree::hash_node(&hemera::Hash::from_bytes(a[..32].try_into().unwrap()), &hemera::Hash::from_bytes(b[..32].try_into().unwrap()), false);
-    assert_ne!(&node(&a, &b, false)[..32], narrow.as_bytes());
+    assert_eq!(node(&a, &b), wide(&[D_NODE, &a[..], &b[..]].concat()));
+    assert_ne!(node(&a, &b), node(&b, &a), "order matters");
+    assert!(canonical(&node(&a, &b)));
 }
 
 #[test]
@@ -45,8 +46,8 @@ fn tree_roots_and_paths() {
     let e = empty_roots();
     assert_eq!(e.len(), 41);
     assert_eq!(e[0], wide(D_EMPTY));
-    assert_eq!(e[1], node(&e[0], &e[0], false));
-    assert_eq!(e[40], node(&e[39], &e[39], true));
+    assert_eq!(e[1], node(&e[0], &e[0]));
+    assert_eq!(e[40], node(&e[39], &e[39]));
     assert_eq!(root_of(&[]), e[40]);
     let (_, record, record2, _) = sample();
     let (c0, c1) = (record.commitment(), record2.commitment());
@@ -154,30 +155,3 @@ fn spend_encoding_is_canonical_and_strict() {
     assert_eq!(full.encode().unwrap().len(), MAX_SPEND_BYTES);
 }
 
-/// The 64-byte values chain-conformance §12 quotes.
-#[test]
-fn section_12_values() {
-    let (sk, record, record2, spend) = sample();
-    let nf0 = nullifier(&SAMPLE_CHAIN, &sk, &record.rho);
-    let stmt = block_statement_id(&block_statement(&SAMPLE_CHAIN, 1, &vk_set_digest(&[]), &[spend.id().unwrap()]));
-    let e = empty_roots();
-    for (got, want) in [
-        (hx(&tags_digest()), "9ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0"),
-        (hx(&Pool::genesis().encode()), "0100000028e8030000409ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0"),
-        (hx(&owner_of(&sk)), "4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192b978e845e5c1219f6fee304ed47a87c6ad3a346e7f1143daaea29ef3d1c00bde"),
-        (hx(&record.rho), "b0558434e4c530cb32f74f2716538f3a4018f687f3485a5cb87baac7519a6278c8a4969f892fe7ca56f7eb77fad1bed44ebe26d48f8f4b78a587417ecca41c08"),
-        (hx(&nf0), "eb97b0b124d3a6661de612cdbff2ca7f15f2caa36516a5e71421c10fd94d2fa50c8e0e6b44043394fde12c2c9651be839797ec82c2683415081940149549501c"),
-        (hx(&record2.rho), "0bf55e96541553a99343c89533f1cb5ba822ddbf65870e2342f014d7e95b6d6421226be82763c54e940a0b1e4d3e07dc4191667c9249c4fc8adf4a9212a79879"),
-        (hx(&e[0]), "ddba4580f44954d39ca84d40621f45c67865e630f98367b4afe012335af4d697259e100146589dd16eb0ed611797ccb79fe81a7badc7fdda09c18f87a5b49887"),
-        (hx(&e[1]), "3fbbafe208f8321e1c3ff25b545672b94ffd75b16e582553b07671d69e1c93fe89641d4dc38f7a47241686809694c52da9ea6873275b1b78852412c33d03d101"),
-        (hx(&e[40]), "80331b2b29ebebc85b67013ed49756242fbaf0c6c9938adeef7999d28bbed7bc056f47d0e1ab35c2df52ff6bd8310bc75ff63e159cb93a335838fdaaf4143bdc"),
-        (hx(&record.commitment()), "d9f0d13cd7c4d70db9562a981fc091a49b37e28bd56c6a3cda341e7755da0148a9bc454ec62af618638e51f672206563c4dc74de577cfad25afee514d5ef7882"),
-        (hx(&record2.commitment()), "d1a3a6df8e585762a8afad0e69f410e25b24087aa519cf94488b11556b4d41a5ba0eaf6ef0ae6613337eda7050cc2fbd9444255221343e753f74caf8a3cbbed5"),
-        (hx(&root_of(&[record.commitment()])), "16bc60964ede197fb4b0f9a917563bc446c383021ca99dbceccfd394255d27480b64bcc3d74e623f49735336d1b74f78ff3f2800ffb8b08a8eb199a42a3e12dd"),
-        (hx(&root_of(&[record.commitment(), record2.commitment()])), "3520b02a96ba0cfb674ff905cf38c223ae045e74dc1f3fe834948f7ad6fbd9bea0df59c94501d942f358297b2db88e56ca702ecc1d25aa3d8a5e60d5aa16e13d"),
-        (hx(&spend.id().unwrap()), "e69de85afc6829df8718d1f181936dbfd7ff9cdd2b14e6ff565791a4732aad181e816d935850c0e2eb021c9e53ce0b9c42d248a12e01872cd7ee55183d507a1a"),
-        (hx(&stmt), "783d66bfba635b5fb2c298b8c014f06f92a8dfe9d90dc04d7bcb2a6fc6e1fb725d58647b66b75a26c41438d9f87fb7d9b4cf0e627d8e8a8ca5f413c7da46c6db"),
-    ] {
-        assert_eq!(got, want);
-    }
-}

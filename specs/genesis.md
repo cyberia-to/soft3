@@ -85,7 +85,7 @@ Integers only: micro-unit amounts are `u128` in derivation and must fit the
   `bits = GENESIS_BITS`, `subsidy`, `checkpoint_key` all-zero (no key set
   yet), `checkpoint_sunset = 525,600`, then the pool record of chain.md
   §11.10 (format 1, depth 40, anchor window 1,000, digest width 64,
-  tags digest `9ecbb70a…34d0`, 74 bytes). The pool is off at launch; the record is how
+  tags digest `d4ea8f2b…816b` against hemera 0.3, 74 bytes). The pool is off at launch; the record is how
   the chain id commits to its formats. `build` and `verify` print it with
   the empty-tree anchor `E_40`, and both refuse any other record.
 

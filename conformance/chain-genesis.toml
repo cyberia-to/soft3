@@ -1,31 +1,31 @@
 # chain-conformance.md §10 — the scalars beside conformance/chain.snap, written by the first pipeline run.
 # informational; the fingerprints in chain.snap are what --check compares.
 
-blessed = "2026-10-16"
+blessed = "2026-10-16"  # against hemera 0.3 (d5f0a09); re-blessed when hemera 0.4 (profile #15) lands
 pipeline = "soft3 genesis build (crate/src/genesis, branch specs/pool-formats: params end with the pool record, chain.md §11.9)"
 bbg = "1d39975ad199b48c350fa4cc011cbf6f289480ee (DIMENSION_VERSION 2, no NeuronRecord.nonce)"
 lens = "release/0.2 (Brakedown MAX_VARIABLES = 20; the state roots are those of fix/public-execution-pcs)"
 
 [pussy]
-particle = "b7740bd23b559f4016fd26b71113107bda3133be19efbacf728328498398108c"
-file_sha256 = "374ffa24c91b897a39d11b71bced75c211517e0752a09cfbfafe25f834bf26d6"
+particle = "1bb7d6aaf85330e77ba68044b7f9b683ac8a0a5936709cffa3820ce9714826a7"
+file_sha256 = "71747fcfd2be17991e801864187e595ee62f37bd16f114c6544aeeb511e962ce"
 file_bytes = 3249657
 time = 1793885820
 s0 = "1099389810279114036"
 subsidy = 10458426657
 state_root = "f2296834490e79d855673b18b0f9eb5c8242e4f48761e85b645d60a8cbeb5827"
-block0_id = "50267e59ee8fc6ad1d342b6bb48de14f6ecda8a85785914a8b6c3016cb7abf78"
+block0_id = "40f267b58818ef051fb3c1dfe7f9e673e36c85974d17f565cbcbb3556da12d68"
 b_frames = 1385
 l_frames = 29113
 tokens = 23
 source_manifest_sha256 = "b46cb327ca87222ceea095c6ade2eac2e5eef0cb9d3eaeff6ce7479a137ab4d1"
 known_answer_address_funded = false
-pool_tags = "9ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0"
-pool_empty_root = "80331b2b29ebebc85b67013ed49756242fbaf0c6c9938adeef7999d28bbed7bc056f47d0e1ab35c2df52ff6bd8310bc75ff63e159cb93a335838fdaaf4143bdc"
+pool_tags = "d4ea8f2bc8ea618d61e715d95b90f58d6849c3cd9c91ec161b506e3081deb0d3c3af19d75bff949eb405124b57bbd41718647c532b1ddab0d23e70fe0e85816b"
+pool_empty_root = "9a47bbbcf994dc003f7ffa6be2a23af43b81ba728d1805315495a56aa41e5694dce7aecc60e83360d7f1e3bea50dcb5e8e3b414c05aa336b8516b8f2e5d73aa5"
 previous_particle = "2a83e54fe395ffbd924fc74a54a5c805eeec5396f97bf4c73fced8631a9e61b5"  # before the pool record (2026-10-15)
 
 [bostrom]
 status = "red: genesis file builds, state root blocked by the lens commitment limit (audit/genesis-2026-10-15.md)"
-particle = "e1af8603782407cb2444a1549892f61faa6697c93534f193a70e78d7f0ec122a"
-file_sha256 = "4c05bc032c95f6bd3a77660a169d0d5599964b1f22152b2e28c9df78895ce1c7"
+particle = "d984145f3a4975eb4ebba55a35aa73c6641dfcf0bc5cebdb55d36a0578ea5901"
+file_sha256 = "3b5624797b39338bee8be6cd9bfa482bbf530f3c82d0235ca4eaf48fe6670d60"
 file_bytes = 330841520

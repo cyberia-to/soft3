@@ -911,7 +911,7 @@ soft3/crate/src/chain/
   pow.rs          valid_pow, work, chainwork (u256 helpers, no floats)
   daa.rs          ASERT (§1.5), MTP
   tx.rs           kinds 0–3: encode/decode, txid, statement, verify (mudra)
-  pool/           §11: wide digest, record, rho, commitment, nullifier, wide node and tree, turnstile key, SPEND encoding, block statement, tags
+  pool/           §11: wide digest, record, rho, commitment, nullifier, tree node and tree, turnstile key, SPEND encoding, block statement, tags
   tree.rs         tx_root (§1.7)
   genesis.rs      tade genesis reader, apply, block 0, pipeline check
   state.rs        apply block on bbg (§3.4), conservation, nonce, maturity
@@ -987,11 +987,11 @@ of rule set 2 adds verifying keys (§11.10) and changes nothing written here.
 
 Notation as in the rest of this page: `hemera(x)` is the flat sponge
 `hemera::hash` (32 bytes), `‖` is concatenation, integers are
-little-endian. The values are computed against the hemera pinned for the
-phase-1 chain (`d5f0a09`); if the profile decision of hemera#15 changes the
-permutation before genesis, every value of this section and of
-chain-conformance §12 is recomputed and the genesis particle moves with
-them. Reference implementation: `crate/src/chain/pool/`; vectors:
+little-endian. Every value is computed through the hemera API, never from
+pinned constants. The chain freezes hemera's profile #15 (x⁷ in every
+round, 6 + 6 full rounds, 48 partial; hemera 0.4); the values quoted today
+are computed against hemera 0.3 (`d5f0a09`) and are re-blessed, with the
+genesis particle, when hemera 0.4 lands. The definitions do not change. Reference implementation: `crate/src/chain/pool/`; vectors:
 chain-conformance §12.
 
 ### 11.1 wide digests and canonical limbs
@@ -1007,18 +1007,17 @@ ids, data, link endpoints, the chain id, transparent card ids — never an
 authority over value or program.
 
 ```
-W(x) = rate(finalize(x))          // 64 bytes
+W(x) = xof(x)[0..64]              // two squeezes of 32 bytes
 ```
 
 `W` is hemera's own sponge, not a second hash: the plain mode of
-`hemera::Hasher` absorbs `x` exactly as `hemera(x)` does (7-byte packing,
-`0x01` padding, the byte count in capacity element 10, one final
-permutation), and `W(x)` is the whole rate of that finalized state —
-elements 0 to 7, each as its canonical 8-byte little-endian form. There is
-no extra squeeze: one finalization yields both, and `W(x)[0..32] =
-hemera(x)` by construction. Domain separation is the pool tag every `W`
-input begins with (§11.8); consensus never uses the narrow digest of a
-pool-tagged input.
+`hemera::Hasher` absorbs `x` exactly as `hemera(x)` does, and `W(x)` is the
+first 64 bytes of its extendable output (`Hasher::finalize_xof`) — the
+first squeeze is `hemera(x)` itself, the second follows one more
+permutation. Each 8-byte group is a canonical element. Domain separation
+is the pool tag every `W` input begins with (§11.9); consensus never uses
+the narrow digest of a pool-tagged input. Cost: one permutation more than
+`hemera(x)`.
 
 Canonical limbs: every 32-byte and 64-byte field of every pool encoding
 (records, deposits, `spend_public`, the statement) is read as 8-byte
@@ -1073,31 +1072,23 @@ digest).
   position `2^40 − 1` is invalid.
 - a leaf is the commitment itself (a tagged wide digest); an unfilled
   position holds `EMPTY = W(D_EMPTY)`.
-- a node is the wide node, hemera's permutation in tree mode over two
-  eight-limb children:
+- a node is the wide digest of its tagged children:
 
   ```
-  node(L, R, is_root):
-      state ← [0; 16]
-      state[9]  ← PARENT (2) | ROOT (1) if is_root      // hemera's tree flags, capacity
-      state[10] ← 16                                    // child elements absorbed; the narrow node leaves 0
-      state[0..8] += L ;  state ← permute(state)
-      state[0..8] += R ;  state ← permute(state)
-      node ← state[0..8]                               // 64 bytes
+  node(L, R) = W(D_NODE ‖ L ‖ R)                    // 19 + 64 + 64 = 147 bytes in
   ```
 
-  Cost: two permutations per node, where the narrow node jet
+  Cost at hemera's 56-byte rate (7-byte packing): three absorbing
+  permutations, the last carrying the padding, and one for the second
+  squeeze — four per node, where the narrow node jet
   (`hemera::tree::hash_node`, zheng#66) takes one over two four-limb
-  children in a single eight-element rate block. A depth-40 path is 80
-  permutations natively and 80 permutation rows in the circuit. A 48-byte
-  child (six limbs) would cost the same two permutations at width 16, so
-  the full rate is taken; a width-24 profile (hemera#15's alternative)
-  would absorb both children in one block. Every byte sponge state has
-  `state[9] = 0` and every narrow node `state[10] = 0`, so the three modes
-  never share a state.
-- `ROOT` is set on level 40 only. `E_0 = EMPTY`,
-  `E_i = node(E_{i−1}, E_{i−1}, i = 40)`; `E_40` is the root of the empty
-  tree. A path is verified leaf to root; bit `i` of the position set means
+  children. A depth-40 path is 160 permutations natively and in the
+  circuit. The construction uses only the sponge API; a dedicated wide
+  node jet (children absorbed as elements, two permutations at width 16,
+  one at width 24) would be a different format and can only be adopted
+  with a re-blessing before genesis, never after.
+- `E_0 = EMPTY`, `E_i = node(E_{i−1}, E_{i−1})`; `E_40` is the root of the
+  empty tree. The depth is fixed, so the root needs no flag of its own. A path is verified leaf to root; bit `i` of the position set means
   the sibling at level `i` is on the left.
 - `root_after(b)` is the tree root after every pool transaction of block
   `b`; `root_after(0) = E_40` (genesis holds no commitment, and rule-set-1
@@ -1287,19 +1278,18 @@ input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
 | `D_RHO` | `soft3/pool/rho/v1\0` | 18 | `736f6674332f706f6f6c2f72686f2f763100` |
 | `D_PRED` | `soft3/pool/predicate/v1\0` | 24 | `736f6674332f706f6f6c2f7072656469636174652f763100` |
 | `D_EMPTY` | `soft3/pool/empty/v1\0` | 20 | `736f6674332f706f6f6c2f656d7074792f763100` |
+| `D_NODE` | `soft3/pool/node/v1\0` | 19 | `736f6674332f706f6f6c2f6e6f64652f763100` |
 | `D_SPEND` | `soft3/pool/spend/v1\0` | 20 | `736f6674332f706f6f6c2f7370656e642f763100` |
 | `D_BLOCK` | `soft3/pool/block/v1\0` | 20 | `736f6674332f706f6f6c2f626c6f636b2f763100` |
 | `D_TURNSTILE` | `soft3/pool/turnstile/v1\0` | 24 | `736f6674332f706f6f6c2f7475726e7374696c652f763100` |
 | `D_VK` | `soft3/pool/vk/v1\0` | 17 | `736f6674332f706f6f6c2f766b2f763100` |
 | `D_TAGS` | `soft3/pool/tags/v1\0` | 19 | `736f6674332f706f6f6c2f746167732f763100` |
 
-The wide node carries no tag: it is separated by its capacity (§11.4).
+```
+tags = W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_NODE ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)
+```
 
-```
-tags = W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)
-     = 9ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15
-       882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0
-```
+Its value against hemera 0.3 is in chain-conformance §12.
 
 ### 11.10 what genesis commits to
 
@@ -1307,13 +1297,13 @@ The params frame of the genesis file (§4.1) ends with the pool record:
 
 ```
 pool = format: u32 (= 1) ‖ depth: u8 (= 40) ‖ anchor_window: u32 (= 1,000) ‖ digest: u8 (= 64) ‖ tags: [u8;64]      // 74 bytes
-     = 01000000 28 e8030000 40 9ecbb70a…34d0
+     = 01000000 28 e8030000 40 ‖ tags
 ```
 
 A reader rejects a genesis whose pool record differs in any byte from this
 one. `format = 1` names this section as a whole: the record, the
 derivations, the encodings, the caps (4 inputs, 4 outputs, 4 cyberlinks,
-2,048-byte notes), the wide node, limb conservation, the lifetime
+2,048-byte notes), the tree node, limb conservation, the lifetime
 nullifier set, the turnstile and the statement shape. Through the record
 the chain id commits to them, and through the chain id every transaction
 and header.

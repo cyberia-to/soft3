@@ -9,16 +9,18 @@
 //! else. The genesis `p` frame carries a [`Pool`] record whose tags digest
 //! is computed here; the chain id therefore commits to every constant below.
 //!
-//! Every consensus-critical digest of the pool is wide: 64 bytes, eight
-//! Goldilocks elements, the whole rate of hemera's finalized sponge state
-//! ([`wide`]); a wide tree node is two permutations ([`node`]). The 32-byte
-//! particle stays a locator (token, data, link endpoints, chain id).
+//! Every consensus-critical digest of the pool is wide: 64 bytes, two
+//! squeezes of hemera's own sponge ([`wide`], `Hasher::finalize_xof`); a
+//! tree node is the wide digest of its tagged children ([`node`]). Only the
+//! hemera API is used — no permutation constant, flag or capacity slot is
+//! pinned here. The 32-byte particle stays a locator (token, data, link
+//! endpoints, chain id).
 //! Integers only, little-endian; every 32- and 64-byte field is a sequence
 //! of 8-byte limbs, each `< p`, checked by every decoder.
 
 use std::io;
 
-use hemera::field::{Goldilocks, P};
+use hemera::field::P;
 
 use crate::genesis::{Id, hash32};
 
@@ -97,23 +99,14 @@ pub const D_NULL: &[u8] = b"soft3/pool/nullifier/v1\0";
 pub const D_RHO: &[u8] = b"soft3/pool/rho/v1\0";
 pub const D_PRED: &[u8] = b"soft3/pool/predicate/v1\0";
 pub const D_EMPTY: &[u8] = b"soft3/pool/empty/v1\0";
+pub const D_NODE: &[u8] = b"soft3/pool/node/v1\0";
 pub const D_SPEND: &[u8] = b"soft3/pool/spend/v1\0";
 pub const D_BLOCK: &[u8] = b"soft3/pool/block/v1\0";
 pub const D_TURNSTILE: &[u8] = b"soft3/pool/turnstile/v1\0";
 pub const D_VK: &[u8] = b"soft3/pool/vk/v1\0";
 pub const D_TAGS: &[u8] = b"soft3/pool/tags/v1\0";
 /// The tags in digest order.
-pub const TAGS: [&[u8]; 10] = [D_OWNER, D_CM, D_NULL, D_RHO, D_PRED, D_EMPTY, D_SPEND, D_BLOCK, D_TURNSTILE, D_VK];
-
-/// Capacity slots of the wide node (hemera's tree layout: `state[9]` flags,
-/// `state[10]` length).
-const NODE_FLAGS_IDX: usize = 9;
-const NODE_LEN_IDX: usize = 10;
-const FLAG_ROOT: u64 = 1;
-const FLAG_PARENT: u64 = 2;
-/// `state[10]` of a wide node: the 16 child elements it absorbs (a narrow
-/// `hash_node` leaves 0 there).
-const WIDE_NODE_LEN: u64 = 16;
+pub const TAGS: [&[u8]; 11] = [D_OWNER, D_CM, D_NULL, D_RHO, D_PRED, D_EMPTY, D_NODE, D_SPEND, D_BLOCK, D_TURNSTILE, D_VK];
 
 pub(crate) fn invalid(msg: impl Into<String>) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidData, msg.into())
@@ -137,30 +130,25 @@ fn cat(tag: &[u8], parts: &[&[u8]]) -> Vec<u8> {
     b
 }
 
-fn rate_bytes(state: &[Goldilocks; 16]) -> Wide {
-    let mut out = [0u8; WIDE_BYTES];
-    for (i, e) in state[..WIDE_LIMBS].iter().enumerate() {
-        out[i * 8..i * 8 + 8].copy_from_slice(&e.as_canonical_u64().to_le_bytes());
-    }
-    out
-}
-
-/// `W(x)`: hemera's plain sponge over `x` (7-byte input packing, `0x01`
-/// padding, length in the capacity), then the whole rate of the finalized
-/// state — eight elements, 64 bytes — from the same single final
-/// permutation. `W(x)[..32] = hemera(x)` by construction; separation from
-/// every other hemera input is the pool tag `x` begins with.
+/// `W(x)`: the first 64 bytes of hemera's extendable output over `x` — the
+/// plain sponge absorbs `x` exactly as `hemera(x)` does, then two squeezes
+/// of four elements each (`Hasher::finalize_xof`). `W(x)[..32] = hemera(x)`;
+/// separation from every other hemera input is the pool tag `x` begins with.
 pub fn wide(x: &[u8]) -> Wide {
     let mut h = hemera::Hasher::new();
     h.update(x);
-    rate_bytes(&h.finalize_state())
+    let mut out = [0u8; WIDE_BYTES];
+    h.finalize_xof().fill(&mut out);
+    out
 }
 
 /// [`wide`] in constant time, for inputs that carry `sk` (same digest).
 pub fn wide_secret(x: &[u8]) -> Wide {
     let mut h = hemera::Hasher::new_secret();
     h.update(x);
-    rate_bytes(&h.finalize_state())
+    let mut out = [0u8; WIDE_BYTES];
+    h.finalize_xof().fill(&mut out);
+    out
 }
 
 /// `W(tag ‖ parts…)`.
@@ -172,29 +160,16 @@ fn tagged_secret(tag: &[u8], parts: &[&[u8]]) -> Wide {
     wide_secret(&cat(tag, parts))
 }
 
-fn limbs(b: &Wide) -> [Goldilocks; WIDE_LIMBS] {
-    core::array::from_fn(|i| Goldilocks::new(u64::from_le_bytes(b[i * 8..i * 8 + 8].try_into().unwrap())))
-}
-
-/// The wide node (chain.md §11.4): `state = 0`, `state[9] = PARENT (| ROOT)`,
-/// `state[10] = 16`; add `left` into the rate, permute; add `right` into
-/// the rate, permute; the rate is the node. Two permutations. Children must
-/// be canonical (every limb `< p`).
-pub fn node(left: &Wide, right: &Wide, is_root: bool) -> Wide {
+/// A tree node (chain.md §11.4): `W(D_NODE ‖ left ‖ right)`, 147 bytes in.
+/// Cost at hemera 0.3: three absorbing permutations (56-byte rate blocks,
+/// the last carrying the padding) and one more for the second squeeze —
+/// four, against one for the narrow node jet over 32-byte children.
+pub fn node(left: &Wide, right: &Wide) -> Wide {
     debug_assert!(canonical(left) && canonical(right), "node children are canonical digests");
-    let mut s = [Goldilocks::new(0); 16];
-    s[NODE_FLAGS_IDX] = Goldilocks::new(FLAG_PARENT | if is_root { FLAG_ROOT } else { 0 });
-    s[NODE_LEN_IDX] = Goldilocks::new(WIDE_NODE_LEN);
-    for child in [left, right] {
-        for (i, e) in limbs(child).into_iter().enumerate() {
-            s[i] = s[i] + e;
-        }
-        hemera::permutation::permute(&mut s);
-    }
-    rate_bytes(&s)
+    tagged(D_NODE, &[left, right])
 }
 
-/// `W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)`,
+/// `W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_NODE ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)`,
 /// each tag with its NUL terminator.
 pub fn tags_digest() -> Wide {
     tagged(D_TAGS, &TAGS)
@@ -205,14 +180,14 @@ pub fn empty_leaf() -> Wide {
     wide(D_EMPTY)
 }
 
-/// `E_0 = EMPTY`, `E_i = node(E_{i−1}, E_{i−1}, i = DEPTH)`: the roots of
+/// `E_0 = EMPTY`, `E_i = node(E_{i−1}, E_{i−1})`: the roots of
 /// the empty subtrees of every height, `E_DEPTH` the root of the empty tree.
 pub fn empty_roots() -> Vec<Wide> {
     let mut e = Vec::with_capacity(DEPTH as usize + 1);
     e.push(empty_leaf());
     for i in 1..=DEPTH as usize {
         let below = e[i - 1];
-        e.push(node(&below, &below, i == DEPTH as usize));
+        e.push(node(&below, &below));
     }
     e
 }
@@ -232,11 +207,10 @@ pub fn root_of(leaves: &[Wide]) -> Wide {
     }
     let mut level: Vec<Wide> = leaves.to_vec();
     for i in 1..=DEPTH as usize {
-        let is_root = i == DEPTH as usize;
         let mut next = Vec::with_capacity(level.len().div_ceil(2));
         for pair in level.chunks(2) {
             let right = if pair.len() == 2 { pair[1] } else { empty[i - 1] };
-            next.push(node(&pair[0], &right, is_root));
+            next.push(node(&pair[0], &right));
         }
         level = next;
     }
@@ -251,8 +225,7 @@ pub fn root_from_path(leaf: &Wide, position: u64, siblings: &[Wide]) -> Option<W
     }
     let mut cur = *leaf;
     for (i, sib) in siblings.iter().enumerate() {
-        let is_root = i + 1 == DEPTH as usize;
-        cur = if (position >> i) & 1 == 1 { node(sib, &cur, is_root) } else { node(&cur, sib, is_root) };
+        cur = if (position >> i) & 1 == 1 { node(sib, &cur) } else { node(&cur, sib) };
     }
     Some(cur)
 }
