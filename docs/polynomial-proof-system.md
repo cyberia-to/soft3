@@ -195,7 +195,7 @@ the decider — the ONE verification that runs at the end of all folding — is 
 sumcheck replay:    k rounds of g_i(0) + g_i(1) = prev           20 ASSERT_EQ
 CCS evaluation:     Σ c_j × ∏(M_i · z)(r) = 0                   34 MUL + ASSERT_EQ
 Brakedown checks:   λ × log log N spot-checks                    1,280 MUL + ASSERT_EQ
-hemera seed:        1 call                                        736 constraints
+hemera seed:        1 call                                     ~1,440 constraints
                                                                   ─────────
 total with CCS jet:                                               ~2,070 constraints
 ```
@@ -219,7 +219,7 @@ hemera:        0 (challenges from existing Lens commitment)
 total:        ~89 constraints
 ```
 
-~89 constraints to verify ALL history from genesis. cheaper than one [[hemera]] permutation (736). the entire chain reduces to a ~200-byte accumulator verifiable in ~100 nanoseconds.
+~89 constraints to verify ALL history from genesis. cheaper than one [[hemera]] permutation (~1,440). the entire chain reduces to a ~200-byte accumulator verifiable in ~100 nanoseconds.
 
 ```
                     generic     + CCS jet    + batch      + algebraic FS

@@ -157,7 +157,7 @@
                       [`<td>seal</td>`, n("ML-KEM-768 · FIPS 203"), `<td>keys, messages</td>`, n("building")],
                       [`<td>private state</td>`, n("RLWE"), `<td>balances, links, queries</td>`, d("specified")],
                       [`<td>stealth</td>`, n("CSIDH-512"), `<td>addresses</td>`, d("research")],
-                  ], "no trusted setup anywhere; a hash is the only assumption the proof system makes — and hemera's own parameters are still marked experimental (inverse-S-box partial rounds, quantum collision not certified): the 128-bit claim waits for that analysis, soft3/proposals/proof-system-repair.md §5.") },
+                  ], "no trusted setup anywhere; a hash is the only assumption the proof system makes — and hemera's parameters were frozen as hemera 0.4 on 2026-10-16 (x⁷ in every round, 6 + 6 + 48 rounds, Poseidon2 reference matrices) and are under a public cryptanalysis campaign: the 128-bit claim waits for that campaign, hemera/audit/campaign.md.") },
                 { id: "determ", verb: "compute", name: "deterministic", line: "no floats, no clocks, no randomness: the same answer on every device", status: "live",
                   claim: "no floats, no clocks, no randomness: the same answer on every device",
                   why: "every number in the provable path is a field element — fixed-point over Goldilocks, never a float. time is work, a VDF delay, never a wall clock. order is not arrival: it emerges from convergence. so any device recomputes any result bit for bit, and that is what makes proofs, memoization and replay possible at all.",

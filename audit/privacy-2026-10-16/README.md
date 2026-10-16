@@ -9,6 +9,8 @@ status: findings
 
 # privacy freeze research receipt
 
+superseded by hemera 0.4 (2026-10-16): the hemera figures below (x⁻¹ partial rounds, 8 + 16 rounds, 144 constants, ~736 constraints) describe the 0.3 record; the frozen profile is x⁷ in every round, 6 + 6 + 48 rounds, 240 constants, ~1,440 constraints — `hemera/audit/profile-0.4-2026-10.md`.
+
 Evidence for [privacy, frozen](../../proposals/privacy-frozen.md) (§1–§5, §9).
 Written by a second session as the receipt of a competing draft (soft3 PR #190,
 `proposals/privacy.md`, branch `research/privacy-freeze-20261016`). The draft
