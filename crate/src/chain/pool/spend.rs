@@ -2,7 +2,7 @@
 
 use std::io;
 
-use super::{D_BLOCK, D_SPEND, MAX_INPUTS, MAX_LINKS, MAX_NOTE_BYTES, MAX_OUTPUTS, invalid, tagged};
+use super::{D_BLOCK, D_SPEND, MAX_INPUTS, MAX_LINKS, MAX_NOTE_BYTES, MAX_OUTPUTS, WIDE_BYTES, Wide, invalid, require_canonical, tagged};
 use crate::genesis::Id;
 
 /// A public cyberlink output of a spend.
@@ -11,7 +11,7 @@ pub struct Link {
     pub p: Id,
     pub q: Id,
     pub weight: u64,
-    pub payout: Id,
+    pub payout: Wide,
 }
 
 /// A transparent withdrawal output of a spend.
@@ -26,16 +26,16 @@ pub struct Withdrawal {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SpendPublic {
     pub chain: Id,
-    pub anchor: Id,
-    pub nullifiers: Vec<Id>,
-    pub commitments: Vec<Id>,
+    pub anchor: Wide,
+    pub nullifiers: Vec<Wide>,
+    pub commitments: Vec<Wide>,
     pub links: Vec<Link>,
     pub withdrawal: Option<Withdrawal>,
     pub fee_token: Id,
     pub fee: u64,
     /// one per input, then one per output
-    pub predicates: Vec<Id>,
-    /// at most one per output
+    pub predicates: Vec<Wide>,
+    /// at most one per output, note `i` for output `i`
     pub notes: Vec<Vec<u8>>,
 }
 
@@ -71,13 +71,27 @@ impl SpendPublic {
         if self.withdrawal.is_some_and(|w| w.amount == 0) {
             return Err(invalid("a withdrawal of 0 is written as no withdrawal"));
         }
-        Ok(())
+        require_canonical("spend chain", &self.chain)?;
+        require_canonical("spend anchor", &self.anchor)?;
+        for x in self.nullifiers.iter().chain(&self.commitments).chain(&self.predicates) {
+            require_canonical("spend digest", x)?;
+        }
+        for l in &self.links {
+            for x in [&l.p[..], &l.q[..], &l.payout[..]] {
+                require_canonical("spend link", x)?;
+            }
+        }
+        if let Some(w) = &self.withdrawal {
+            require_canonical("spend withdrawal to", &w.to)?;
+            require_canonical("spend withdrawal token", &w.token)?;
+        }
+        require_canonical("spend fee token", &self.fee_token)
     }
 
     /// Canonical bytes (chain.md §11.5).
     pub fn encode(&self) -> io::Result<Vec<u8>> {
         self.check()?;
-        let mut b = Vec::with_capacity(1_024);
+        let mut b = Vec::with_capacity(2_048);
         b.extend_from_slice(&self.chain);
         b.extend_from_slice(&self.anchor);
         b.push(self.nullifiers.len() as u8);
@@ -121,15 +135,15 @@ impl SpendPublic {
     pub fn decode(b: &[u8]) -> io::Result<Self> {
         let mut r = Cursor(b);
         let chain = r.id()?;
-        let anchor = r.id()?;
-        let n = r.u8()? as usize;
-        let nullifiers = (0..n).map(|_| r.id()).collect::<io::Result<Vec<_>>>()?;
-        let m = r.u8()? as usize;
-        let commitments = (0..m).map(|_| r.id()).collect::<io::Result<Vec<_>>>()?;
-        let k = r.u8()? as usize;
+        let anchor = r.wide()?;
+        let n = r.count(MAX_INPUTS, "inputs")?;
+        let nullifiers = (0..n).map(|_| r.wide()).collect::<io::Result<Vec<_>>>()?;
+        let m = r.count(MAX_OUTPUTS, "outputs")?;
+        let commitments = (0..m).map(|_| r.wide()).collect::<io::Result<Vec<_>>>()?;
+        let k = r.count(MAX_LINKS, "links")?;
         let mut links = Vec::with_capacity(k);
         for _ in 0..k {
-            links.push(Link { p: r.id()?, q: r.id()?, weight: r.u64()?, payout: r.id()? });
+            links.push(Link { p: r.id()?, q: r.id()?, weight: r.u64()?, payout: r.wide()? });
         }
         let withdrawal = match r.u8()? {
             0 => None,
@@ -138,11 +152,14 @@ impl SpendPublic {
         };
         let fee_token = r.id()?;
         let fee = r.u64()?;
-        let predicates = (0..n + m).map(|_| r.id()).collect::<io::Result<Vec<_>>>()?;
-        let c = r.u8()? as usize;
+        let predicates = (0..n + m).map(|_| r.wide()).collect::<io::Result<Vec<_>>>()?;
+        let c = r.count(m, "notes")?;
         let mut notes = Vec::with_capacity(c);
         for _ in 0..c {
             let len = u16::from_le_bytes(r.take(2)?.try_into().unwrap()) as usize;
+            if len > MAX_NOTE_BYTES {
+                return Err(invalid(format!("note of {len} bytes")));
+            }
             notes.push(r.take(len)?.to_vec());
         }
         if !r.0.is_empty() {
@@ -153,9 +170,9 @@ impl SpendPublic {
         Ok(s)
     }
 
-    /// `spend_id = hemera(D_SPEND ‖ encode)`: what the proof binds and
-    /// what the block-proof statement lists.
-    pub fn id(&self) -> io::Result<Id> {
+    /// `spend_id = W(D_SPEND ‖ encode)`: the spend's name in the
+    /// block-proof statement.
+    pub fn id(&self) -> io::Result<Wide> {
         Ok(tagged(D_SPEND, &[&self.encode()?]))
     }
 }
@@ -180,12 +197,22 @@ impl<'a> Cursor<'a> {
     fn id(&mut self) -> io::Result<Id> {
         Ok(self.take(32)?.try_into().unwrap())
     }
+    fn wide(&mut self) -> io::Result<Wide> {
+        Ok(self.take(WIDE_BYTES)?.try_into().unwrap())
+    }
+    fn count(&mut self, cap: usize, what: &str) -> io::Result<usize> {
+        let c = self.u8()? as usize;
+        if c > cap {
+            return Err(invalid(format!("{c} {what}, at most {cap}")));
+        }
+        Ok(c)
+    }
 }
 
 /// The block-proof statement (chain.md §11.7):
 /// `chain ‖ height ‖ vk_set ‖ count: u32 ‖ spend_id × count`.
-pub fn block_statement(chain: &Id, height: u64, vk_set: &Id, spend_ids: &[Id]) -> Vec<u8> {
-    let mut b = Vec::with_capacity(76 + 32 * spend_ids.len());
+pub fn block_statement(chain: &Id, height: u64, vk_set: &Wide, spend_ids: &[Wide]) -> Vec<u8> {
+    let mut b = Vec::with_capacity(108 + WIDE_BYTES * spend_ids.len());
     b.extend_from_slice(chain);
     b.extend_from_slice(&height.to_le_bytes());
     b.extend_from_slice(vk_set);
@@ -196,8 +223,8 @@ pub fn block_statement(chain: &Id, height: u64, vk_set: &Id, spend_ids: &[Id]) -
     b
 }
 
-/// `hemera(D_BLOCK ‖ block_statement)`: the block proof's public input.
-pub fn block_statement_id(statement: &[u8]) -> Id {
+/// `W(D_BLOCK ‖ block_statement)`: the block proof's public input.
+pub fn block_statement_id(statement: &[u8]) -> Wide {
     tagged(D_BLOCK, &[statement])
 }
 

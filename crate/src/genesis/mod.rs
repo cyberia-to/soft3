@@ -156,6 +156,8 @@ pub struct PoolReport {
     pub format: u32,
     pub depth: u8,
     pub anchor_window: u32,
+    /// bytes of a wide digest
+    pub digest: u8,
     pub tags: String,
     /// `E_depth`: the anchor of block 0 (no commitments yet).
     pub empty_root: String,
@@ -167,6 +169,7 @@ impl PoolReport {
             format: p.format,
             depth: p.depth,
             anchor_window: p.anchor_window,
+            digest: p.digest,
             tags: hex(&p.tags),
             empty_root: hex(&pool::empty_root()),
         }

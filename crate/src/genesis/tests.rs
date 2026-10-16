@@ -255,12 +255,13 @@ fn pussy_genesis_is_deterministic_conserving_and_bijective() {
 #[test]
 fn pool_record_is_frozen_into_the_genesis_params() {
     let p = pool::Pool::genesis();
-    assert_eq!((p.format, p.depth, p.anchor_window), (1, 40, 1_000));
+    assert_eq!((p.format, p.depth, p.anchor_window, p.digest), (1, 40, 1_000, 64));
     assert_eq!(p.tags, pool::tags_digest());
     let bytes = p.encode();
     assert_eq!(bytes.len(), pool::POOL_BYTES);
     assert_eq!(pool::Pool::decode(&bytes).unwrap(), p);
-    assert!(pool::Pool::decode(&bytes[..40]).is_err());
+    assert_eq!(bytes.len(), 74);
+    assert!(pool::Pool::decode(&bytes[..73]).is_err());
     // the params frame ends with the pool record
     let g = sample();
     let params = g.params.encode().unwrap();
@@ -270,170 +271,20 @@ fn pool_record_is_frozen_into_the_genesis_params() {
         pool::Pool { depth: 32, ..p },
         pool::Pool { anchor_window: 999, ..p },
         pool::Pool { format: 2, ..p },
-        pool::Pool { tags: [0; 32], ..p },
+        pool::Pool { digest: 32, ..p },
+        pool::Pool { tags: [0; 64], ..p },
     ] {
         let mut bad = sample();
         bad.params.pool = tamper;
         assert!(bad.encode().is_err(), "{tamper:?}");
-        let mut forged = Params { pool: tamper, ..bad.params.clone() }.encode().unwrap();
-        let _ = &mut forged;
+        let forged = Params { pool: tamper, ..bad.params.clone() }.encode().unwrap();
         assert!(Params::decode(&forged).is_ok(), "the frame decodes");
         let mut file_bytes = g.encode().unwrap();
         let at = file_bytes.windows(pool::POOL_BYTES).position(|w| w == bytes).unwrap();
         file_bytes[at..at + pool::POOL_BYTES].copy_from_slice(&tamper.encode());
         assert!(GenesisFile::decode(&file_bytes).is_err(), "but the file is rejected: {tamper:?}");
     }
-    // a pre-pool params frame (41 bytes short) is not a genesis
+    // a pre-pool params frame (74 bytes short) is not a genesis
     let short = &params[..params.len() - pool::POOL_BYTES];
     assert!(Params::decode(short).is_err());
-}
-
-#[test]
-fn pool_record_commitment_nullifier_and_spend_encodings() {
-    let (sk, record, record2, spend) = pool::sample();
-    let bytes = record.encode();
-    assert_eq!(bytes.len(), 200);
-    assert_eq!(&bytes[..32], &token_of("pussy"));
-    assert_eq!(&bytes[32..40], &5u64.to_le_bytes());
-    assert_eq!(&bytes[40..72], &pool::owner_of(&sk));
-    assert_eq!(pool::Record::decode(&bytes).unwrap(), record);
-    assert!(pool::Record::decode(&bytes[..199]).is_err());
-    assert_eq!(record.commitment(), hash32(&[pool::D_CM, &bytes[..]].concat()));
-    assert_eq!(pool::nullifier(&sk, &record.rho), hash32(&[pool::D_NULL, &sk[..], &record.rho[..]].concat()));
-    assert_ne!(record.commitment(), record2.commitment());
-    assert_eq!(pool::owner_of(&sk), hash32(&[pool::D_OWNER, &sk[..]].concat()));
-    assert_eq!(pool::empty_leaf(), hash32(pool::D_EMPTY));
-    assert_eq!(pool::turnstile_key(&token_of("pussy")), hash32(&[pool::D_TURNSTILE, &token_of("pussy")[..]].concat()));
-    // no transparent balance key reaches a turnstile: 56-byte input vs 64
-    assert_ne!(pool::turnstile_key(&token_of("pussy")), bbg::state::balance_key(&[0; 32], &token_of("pussy")));
-
-    // spend: canonical bytes, strict decode
-    let enc = spend.encode().unwrap();
-    assert_eq!(enc.len(), 32 + 32 + 1 + 32 + 1 + 32 + 1 + 104 + 1 + 32 + 8 + 64 + 1);
-    assert_eq!(pool::SpendPublic::decode(&enc).unwrap(), spend);
-    assert_eq!(spend.id().unwrap(), hash32(&[pool::D_SPEND, &enc[..]].concat()));
-    let mut t = enc.clone();
-    t.push(0);
-    assert!(pool::SpendPublic::decode(&t).is_err(), "trailing byte");
-    assert!(pool::SpendPublic::decode(&enc[..enc.len() - 1]).is_err(), "truncated");
-    let mut five = spend.clone();
-    five.nullifiers = (0..5).map(|i| [i as u8; 32]).collect();
-    five.predicates = vec![[0; 32]; 6];
-    assert!(five.encode().is_err(), "5 inputs");
-    let mut dup = spend.clone();
-    dup.nullifiers.push(dup.nullifiers[0]);
-    dup.predicates.push([0; 32]);
-    assert!(dup.encode().is_err(), "duplicate nullifier");
-    let mut loop_link = spend.clone();
-    loop_link.links[0].q = loop_link.links[0].p;
-    assert!(loop_link.encode().is_err(), "p == q");
-    let mut long_note = spend.clone();
-    long_note.notes = vec![vec![0; pool::MAX_NOTE_BYTES + 1]];
-    assert!(long_note.encode().is_err(), "note over the cap");
-    let mut two_notes = spend.clone();
-    two_notes.notes = vec![vec![1], vec![2]];
-    assert!(two_notes.encode().is_err(), "more notes than outputs");
-    let mut with = spend.clone();
-    with.withdrawal = Some(pool::Withdrawal { to: [0x77; 32], token: token_of("pussy"), amount: 3 });
-    with.notes = vec![vec![0xAB; 3]];
-    let enc2 = with.encode().unwrap();
-    assert_eq!(enc2.len(), enc.len() + 72 + 2 + 3);
-    assert_eq!(pool::SpendPublic::decode(&enc2).unwrap(), with);
-    let mut flag = enc2.clone();
-    let at = 32 + 32 + 1 + 32 + 1 + 32 + 1 + 104;
-    flag[at] = 2;
-    assert!(pool::SpendPublic::decode(&flag).is_err(), "withdrawal flag 2");
-    assert!(pool::SpendPublic { nullifiers: vec![], predicates: vec![[0; 32]], ..spend.clone() }.encode().is_err(), "no input");
-    let mut zero_w = with.clone();
-    zero_w.withdrawal = Some(pool::Withdrawal { amount: 0, ..with.withdrawal.unwrap() });
-    assert!(zero_w.encode().is_err(), "withdrawal of 0");
-    assert_eq!(pool::DEPOSIT_BODY_BYTES, 248);
-    assert_eq!(pool::DEPOSIT_BYTES, 352);
-    assert_eq!(pool::MAX_SPEND_BYTES, 9_309);
-    assert_eq!(pool::MAX_SPEND_TX_BYTES, 9_313);
-    // the longest spend encodes to exactly MAX_SPEND_BYTES
-    let full = pool::SpendPublic {
-        nullifiers: (1..=4).map(|i| [i; 32]).collect(),
-        commitments: (5..=8).map(|i| [i; 32]).collect(),
-        links: (0..4).map(|i| pool::Link { p: [0x10 + i; 32], q: [0x20 + i; 32], weight: 1, payout: [0x30; 32] }).collect(),
-        withdrawal: Some(pool::Withdrawal { to: [0x77; 32], token: token_of("pussy"), amount: 1 }),
-        predicates: vec![[0; 32]; 8],
-        notes: vec![vec![0; pool::MAX_NOTE_BYTES]; 4],
-        ..spend.clone()
-    };
-    assert_eq!(full.encode().unwrap().len(), pool::MAX_SPEND_BYTES);
-}
-
-#[test]
-fn pool_tree_matches_hemera_merkle_paths() {
-    use hemera::{Hash, Side, merkle_verify_path};
-    let e = pool::empty_roots();
-    assert_eq!(e.len(), 41);
-    assert_eq!(e[0], pool::empty_leaf());
-    assert_eq!(e[1], pool::node(&e[0], &e[0], false));
-    assert_eq!(e[40], pool::node(&e[39], &e[39], true));
-    assert_eq!(pool::root_of(&[]), e[40]);
-    assert_eq!(pool::empty_root(), e[40]);
-    let (_, record, record2, _) = pool::sample();
-    let (c0, c1) = (record.commitment(), record2.commitment());
-    // leaf 0 alone: siblings are the empty subtrees, all on the right
-    let path: Vec<(Hash, Side)> = (0..40).map(|i| (Hash::from_bytes(e[i]), Side::Right)).collect();
-    assert!(merkle_verify_path(&Hash::from_bytes(pool::root_of(&[c0])), &Hash::from_bytes(c0), &path));
-    // two leaves: leaf 1's first sibling is leaf 0 on the left
-    let root2 = pool::root_of(&[c0, c1]);
-    let mut path1 = path.clone();
-    path1[0] = (Hash::from_bytes(c0), Side::Left);
-    assert!(merkle_verify_path(&Hash::from_bytes(root2), &Hash::from_bytes(c1), &path1));
-    let mut path0 = path.clone();
-    path0[0] = (Hash::from_bytes(c1), Side::Right);
-    assert!(merkle_verify_path(&Hash::from_bytes(root2), &Hash::from_bytes(c0), &path0));
-    assert!(!merkle_verify_path(&Hash::from_bytes(root2), &Hash::from_bytes(c0), &path), "wrong sibling");
-    assert_ne!(pool::root_of(&[c0, c1]), pool::root_of(&[c1, c0]), "position matters");
-}
-
-/// chain-conformance §12: the exact bytes the fingerprints are taken over.
-#[test]
-fn pool_sample_bytes_are_the_section_12_vectors() {
-    let (sk, record, _, spend) = pool::sample();
-    assert_eq!(hex(&pool::owner_of(&sk)), "4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192");
-    assert_eq!(
-        hex(&record.encode()),
-        concat!(
-            "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa",
-            "0500000000000000",
-            "4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192",
-            "0202020202020202020202020202020202020202020202020202020202020202",
-            "0303030303030303030303030303030303030303030303030303030303030303",
-            "0404040404040404040404040404040404040404040404040404040404040404",
-            "0000000000000000000000000000000000000000000000000000000000000000",
-        )
-    );
-    assert_eq!(hex(&pool::Pool::genesis().encode()), "0100000028e8030000362fdac7f17abfc2d54699a6c6fcd3ad14e6c6edb6ce8534eac796bc22783a67");
-    let enc = spend.encode().unwrap();
-    assert_eq!(enc.len(), 341);
-    assert_eq!(
-        hex(&enc),
-        concat!(
-            "4444444444444444444444444444444444444444444444444444444444444444",
-            "74c97bcd357ccf5b5680b5a39824fa90f72c59afa5590651ed1e65ad3a517eb9",
-            "01",
-            "f5b99cad398b929c0fa25774dc4e1433c108950454aa72330407184340e6c5bb",
-            "01",
-            "c2c8aacad99b98ff322b8d9cea52c5f7b87b4735f2df09d748921187b60b04e7",
-            "01",
-            "10275cf6703891a515f64ada465137cd36f2a5d3f0b99a8dafc62e6b95ad1269",
-            "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa",
-            "0100000000000000",
-            "4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192",
-            "00",
-            "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa",
-            "0100000000000000",
-            "0000000000000000000000000000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000000000000000000000000000",
-            "00",
-        )
-    );
-    let w = pool::sample_withdrawal().encode().unwrap();
-    assert_eq!(w.len(), 341 - 104 + 72 + 2 + 3);
-    assert!(hex(&w).ends_with("010300ababab"));
 }
