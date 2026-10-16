@@ -69,11 +69,12 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "bbg"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "cyber-hemera",
  "cyber-lens",
  "cyber-nox",
+ "neuron-id",
  "strata-nebu",
  "zheng",
 ]
@@ -164,14 +165,14 @@ dependencies = [
 
 [[package]]
 name = "cyber-hemera"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "cyber-lens"
-version = "0.1.3"
+version = "0.2.0"
 dependencies = [
  "cyber-lens-assayer",
  "cyber-lens-binius",
@@ -179,11 +180,12 @@ dependencies = [
  "cyber-lens-core",
  "cyber-lens-ikat",
  "cyber-lens-porphyry",
+ "cyber-lens-rspcs",
 ]
 
 [[package]]
 name = "cyber-lens-assayer"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "cyber-lens-brakedown",
  "cyber-lens-core",
@@ -202,7 +204,7 @@ dependencies = [
 
 [[package]]
 name = "cyber-lens-brakedown"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "cyber-hemera",
  "cyber-lens-core",
@@ -222,7 +224,7 @@ dependencies = [
 
 [[package]]
 name = "cyber-lens-ikat"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "cyber-lens-brakedown",
  "cyber-lens-core",
@@ -232,7 +234,7 @@ dependencies = [
 
 [[package]]
 name = "cyber-lens-porphyry"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "cyber-hemera",
  "cyber-lens-core",
@@ -240,8 +242,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "cyber-lens-rspcs"
+version = "0.1.0"
+dependencies = [
+ "cyber-hemera",
+ "cyber-lens-core",
+ "serde",
+ "strata-nebu",
+]
+
+[[package]]
 name = "cyber-nox"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "cyber-hemera",
  "cyber-lens-brakedown",
@@ -276,6 +288,7 @@ version = "0.1.1"
 dependencies = [
  "bbg",
  "cyber-hemera",
+ "cyber-nox",
  "foculus",
  "inf-eval",
  "inf-parse",
@@ -312,6 +325,7 @@ dependencies = [
  "bbg",
  "clap",
  "cyber-hemera",
+ "cyber-lens",
  "cyber-tok",
  "cyber-tru",
  "rand",
@@ -839,14 +853,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "zeroize"
+version = "1.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e13084392c5e4bc371903e2935a5eaeed24905a7511356b883835e18a78f6879"
+
+[[package]]
 name = "zheng"
-version = "0.3.3"
+version = "0.4.0"
 dependencies = [
  "cyber-hemera",
  "cyber-lens",
  "cyber-nox",
+ "getrandom",
  "serde",
  "strata-nebu",
+ "zeroize",
 ]
 
 [[package]]

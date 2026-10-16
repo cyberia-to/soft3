@@ -31,7 +31,7 @@ a `Conformant` impl that admits two encodings of the same value is a bug.
 fingerprint(value) = hemera(canonical_encoding(value))
 ```
 
-hemera is cyber-hemera 0.4 (Poseidon2 over Goldilocks, x⁷ in every round, 6 + 6 + 48 rounds, 32-byte output; frozen 2026-10-16 — the snapshots computed against 0.3 are re-blessed by the code sweep); a
+hemera is cyber-hemera 0.4, profile #15 (Poseidon2 over Goldilocks, x⁷ in every round, 6 + 6 + 48 rounds, 32-byte output; frozen 2026-10-16 — `chain.snap` is re-blessed on 0.4 (soft3 `audit/chain/hemera-0.4-2026-10-16.md`); the stack snapshots in `snapshots/` still carry the 0.3 bless until zheng builds against 0.4); a
 different output width is a different fingerprint function and does not
 compile. 32 bytes, Goldilocks-field-aligned, proof-friendly. the fingerprint is the snapshot.
 

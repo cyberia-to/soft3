@@ -133,15 +133,18 @@ Both sides read as 256-bit little-endian integers; equality fails. Genesis
 (height 0) is exempt: its id is pinned by the genesis file, not mined.
 
 Expected hashes per block are `2^256 / (target + 1)`, the block's work (§5.1).
-Measured 2026-10-15 on an M4 Max, one core, `hemera::hash` over 168 bytes
-from a scratch release build against `~/cyber/hemera/rs` (phase1.toml pin):
-64,400 H/s — about 15 µs per header, far from the 0.3 µs-per-permutation
-figure of steps-blocks-epochs §7, which is the permutation alone on the
-optimized path. Ten cores give order 0.6 MH/s per machine; three such
-machines together order 1–2 MH/s (the cybernode boxes are x86 and must be
-measured separately). The genesis target (2^232,
-2^24 ≈ 16.8 M expected hashes) is sized so one such machine finds a block in
-about half a minute at that rate, and the DAA takes over from there. A
+Measured 2026-10-16 on an M4 Max, one core, `hemera::hash` over 168 bytes
+from a release build against hemera 0.4 (`release/0.4` `7237a23`, the
+phase1.toml pin), a linear nonce search through `Header::id` / `valid_pow`
+on a shared machine: 90,300 H/s — about 11 µs per header (hemera 0.3 on
+2026-10-15: 64,400 H/s, 15 µs; 0.4's single permutation is 2.2× faster,
+the sponge over 168 bytes 1.4×), far from the µs-per-permutation figure of
+steps-blocks-epochs §7, which is the permutation alone on the optimized
+path. Ten cores give order 0.9 MH/s per machine; three such machines
+together order 2–3 MH/s (the cybernode boxes are x86 and must be measured
+separately). The genesis target (2^232, 2^24 ≈ 16.8 M expected hashes) is
+sized so one such machine finds a block in about twenty seconds at that
+rate, and the DAA takes over from there. A
 honeycrisp or GPU hemera kernel will be one to three orders faster; the
 chain does not care, ASERT does (§1.5), and §8 says what it means.
 
@@ -171,7 +174,7 @@ A header is invalid unless `bits == encode(decode(bits))` and
 `0x1e010000` ↔ 2^232 (canonical, `GENESIS_BITS`); `0x1d100000` ↔ 2^228
 (canonical); `0x1e001000` decodes to 2^228 too and is rejected;
 `0x1d800000` is rejected (sign). `POW_LIMIT` = 2^236 is the floor: at the
-measured 64 kH/s one laptop core mines a floor block in about 16 s, so the
+measured 90 kH/s one laptop core mines a floor block in about 12 s, so the
 chain never stalls below one laptop core. Vectors in chain-conformance §2.
 
 ### 1.4 timestamps
@@ -861,7 +864,7 @@ The work function: hemera is a Goldilocks Poseidon2 variant, GPU-friendly
 (quantus precedent, goldilocks-parano1d §P2). There is no rental market for
 hemera hash power, which removes the cheapest 51 % path (NiceHash-style) and
 leaves the expensive one (a GPU farm pointed at the chain). The measured CPU
-rate (64 kH/s per core, §1.2) makes the gap wide: a single GPU running a
+rate (90 kH/s per core, §1.2) makes the gap wide: a single GPU running a
 competent hemera kernel is expected to out-hash every CPU miner on the
 network at launch, so the first GPU is the majority miner until a second
 arrives. Against that the chain has the reorg limit and the checkpoints,
@@ -987,9 +990,10 @@ Notation as in the rest of this page: `hemera(x)` is the flat sponge
 `hemera::hash` (32 bytes), `‖` is concatenation, integers are
 little-endian. Every value is computed through the hemera API, never from
 pinned constants. The chain freezes hemera's profile #15 (x⁷ in every
-round, 6 + 6 full rounds, 48 partial; hemera 0.4); the values quoted today
-are computed against hemera 0.3 (`d5f0a09`) and are re-blessed, with the
-genesis particle, when hemera 0.4 lands. The definitions do not change. Reference implementation: `crate/src/chain/pool/`; vectors:
+round, 6 + 6 full rounds, 48 partial; hemera 0.4, `release/0.4` `7237a23`);
+every value quoted is computed against it (re-blessed 2026-10-16 from the
+0.3 values, with the genesis particle; the definitions did not change).
+Reference implementation: `crate/src/chain/pool/`; vectors:
 chain-conformance §12.
 
 ### 11.1 wide digests and canonical limbs
@@ -1287,7 +1291,7 @@ input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
 tags = W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_NODE ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)
 ```
 
-Its value against hemera 0.3 is in chain-conformance §12.
+Its value against hemera 0.4 is in chain-conformance §12.
 
 ### 11.10 what genesis commits to
 

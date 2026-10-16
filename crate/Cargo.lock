@@ -268,7 +268,7 @@ dependencies = [
 name = "bbg"
 version = "0.3.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens 0.2.0",
  "cyber-nox 0.3.0",
  "fjall",
@@ -789,10 +789,6 @@ dependencies = [
 [[package]]
 name = "cyber-hemera"
 version = "0.3.1"
-
-[[package]]
-name = "cyber-hemera"
-version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ebcf7ffcd69170adde7e792826d7cececda962ea220b9834c6535bbc71e5a6df"
 
@@ -800,6 +796,10 @@ checksum = "ebcf7ffcd69170adde7e792826d7cececda962ea220b9834c6535bbc71e5a6df"
 name = "cyber-hemera"
 version = "0.3.1"
 source = "git+https://github.com/cyberia-to/hemera?rev=d5f0a09539360934fb32db9b2e15a91995607db6#d5f0a09539360934fb32db9b2e15a91995607db6"
+
+[[package]]
+name = "cyber-hemera"
+version = "0.4.0"
 
 [[package]]
 name = "cyber-lens"
@@ -854,7 +854,7 @@ dependencies = [
 name = "cyber-lens-binius"
 version = "0.1.1"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-core 0.1.2",
  "strata-kuro 0.1.1",
 ]
@@ -885,7 +885,7 @@ dependencies = [
 name = "cyber-lens-brakedown"
 version = "0.2.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-core 0.1.2",
  "strata-nebu 0.1.1",
 ]
@@ -894,7 +894,7 @@ dependencies = [
 name = "cyber-lens-core"
 version = "0.1.2"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "strata-core 0.1.1",
  "strata-nebu 0.1.1",
  "strata-proof 0.1.1",
@@ -917,7 +917,7 @@ name = "cyber-lens-gpu"
 version = "0.1.1"
 dependencies = [
  "aruminium",
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-rspcs",
  "pollster",
  "strata-nebu 0.1.1",
@@ -961,7 +961,7 @@ dependencies = [
 name = "cyber-lens-porphyry"
 version = "0.2.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-core 0.1.2",
  "strata-genies 0.1.1",
 ]
@@ -970,7 +970,7 @@ dependencies = [
 name = "cyber-lens-rspcs"
 version = "0.1.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-core 0.1.2",
  "strata-nebu 0.1.1",
 ]
@@ -983,7 +983,7 @@ dependencies = [
  "bech32",
  "bip32",
  "bip39",
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "k256",
  "neuron-id",
  "ripemd",
@@ -1006,7 +1006,7 @@ dependencies = [
 name = "cyber-nox"
 version = "0.3.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-brakedown 0.2.0",
  "cyber-lens-core 0.1.2",
  "strata-nebu 0.1.1",
@@ -1260,7 +1260,7 @@ dependencies = [
 name = "cyber-tok"
 version = "0.1.1"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-tru 0.1.1",
  "neuron-id",
 ]
@@ -1279,7 +1279,7 @@ dependencies = [
 name = "cyber-tru"
 version = "0.1.1"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "memmap2",
  "serde",
  "strata-nebu 0.1.1",
@@ -1306,7 +1306,7 @@ name = "cybergraph"
 version = "0.1.1"
 dependencies = [
  "bbg 0.3.0",
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-nox 0.3.0",
  "foculus 0.1.3",
  "inf-eval 0.1.0",
@@ -1795,7 +1795,7 @@ dependencies = [
  "anyhow",
  "bbg 0.3.0",
  "clap",
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens 0.2.0",
  "cyber-tok 0.1.1",
  "cyber-tru 0.1.1",
@@ -4609,7 +4609,7 @@ dependencies = [
  "bech32",
  "bytes",
  "cyb",
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens-gpu",
  "cyber-mudra",
  "cyber-radio",
@@ -6280,7 +6280,7 @@ dependencies = [
 name = "zheng"
 version = "0.4.0"
 dependencies = [
- "cyber-hemera 0.3.1",
+ "cyber-hemera 0.4.0",
  "cyber-lens 0.2.0",
  "cyber-nox 0.3.0",
  "getrandom 0.3.4",

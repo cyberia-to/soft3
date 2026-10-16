@@ -82,8 +82,8 @@ mod tests {
             h[136..168].fill(0x44);
             h
         };
-        assert!(verifies(&h(40_165_933), &pow2(232)));
-        assert!(!verifies(&h(40_165_933), &pow2(228)));
-        assert!(!verifies(&h(40_165_932), &pow2(232)));
+        assert!(verifies(&h(934_636), &pow2(232)));
+        assert!(!verifies(&h(934_636), &pow2(228)));
+        assert!(!verifies(&h(934_635), &pow2(232)));
     }
 }

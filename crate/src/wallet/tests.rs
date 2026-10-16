@@ -25,10 +25,10 @@ fn signer() -> Signer {
 // §1 hemera anchors
 #[test]
 fn hemera_anchors() {
-    assert_eq!(hex(hemera::hash(b"").as_bytes()), "a67a71b221e6bdd6442a20432bf5d74c885d89e5dfbeec3ec4e334cb806d563c");
-    assert_eq!(hex(&token("boot")), "10275cf6703891a515f64ada465137cd36f2a5d3f0b99a8dafc62e6b95ad1269");
-    assert_eq!(hex(&token("pussy")), "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa");
-    assert_eq!(hex(hemera::hash(&[0u8; 168]).as_bytes()), "ba560d1fd2ed380e09ef8e526e8817504cce6e71363c12081537751e4f761754");
+    assert_eq!(hex(hemera::hash(b"").as_bytes()), "9e89f2487be432e48c27e24e6945adffe6918c8b5d6a62061e70e0bebd657326");
+    assert_eq!(hex(&token("boot")), "1d443e1103abbd0aebe4abaf3fadc203160a471e9accb9b6e0a73804ea785b3b");
+    assert_eq!(hex(&token("pussy")), "87a70ff9ed0638fc9fafb1a30f57c5ad2ebe5155c48702c50bdbb2ece87f6a71");
+    assert_eq!(hex(hemera::hash(&[0u8; 168]).as_bytes()), "355fd03315a5ceb056cda53d11ff7b9755167182d59ff9e31134d69d33bdf0f6");
 }
 
 // §6 coinbase
@@ -39,11 +39,11 @@ fn coinbase_vector() {
     assert_eq!(bytes.len(), 82);
     assert_eq!(hex(&bytes[..10]), "01000100000000000000");
     assert_eq!(hex(&bytes[42..50]), "1027000000000000");
-    assert_eq!(hex(&txid(&CHAIN, &bytes)), "d7662bdbf363831e4f2efd77967f684db927cf04576f7e82bb8f1872e333cc51");
+    assert_eq!(hex(&txid(&CHAIN, &bytes)), "6cf0e4d280e6d5cbb5c7fef566d28913b17249cb4a6fdecf9c59ad3f0995c3f9");
     let l = leaf(&bytes);
-    assert_eq!(hex(&l), "c2cb6adb74ed69c5672c495ccfb659e12b8f33db3be8caf6167a0d50b41893e6");
+    assert_eq!(hex(&l), "514d5d57388046e2cd534c69a789bf09e329678cedbabcff4cc9a439e8c0fe9c");
     assert_eq!(tx_root(std::slice::from_ref(&bytes)), Some(l));
-    assert_eq!(hex(&node(&l, &l)), "3685e0a5b8bce069a4ef54da15f56393cd5e64dc6d10701d247a4663b7d922c1");
+    assert_eq!(hex(&node(&l, &l)), "9d68ac9b03293ba25059ceb5d601e3c6ddae700e05343c190fdd4c8eea6c595b");
     assert_eq!(tx_root(&[bytes.clone(), bytes.clone()]), Some(node(&l, &l)));
     // three leaves: the odd one is promoted, not duplicated
     assert_eq!(tx_root(&[bytes.clone(), bytes.clone(), bytes.clone()]), Some(node(&node(&l, &l), &l)));
@@ -68,11 +68,11 @@ fn transfer_statement_vector() {
     let expected = format!(
         "0101{}0000000000000000{}0500000000000000{}e000000000000000",
         "66".repeat(32),
-        "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa",
+        "87a70ff9ed0638fc9fafb1a30f57c5ad2ebe5155c48702c50bdbb2ece87f6a71",
         "77".repeat(32)
     );
     assert_eq!(hex(&unsigned), expected);
-    assert_eq!(hex(&statement(&CHAIN, &unsigned)), "c7e4a223871018bb9f3f64466b45df3a2962ff344776df2960600dfc49cf4a6f");
+    assert_eq!(hex(&statement(&CHAIN, &unsigned)), "41e149559c98af20b62db3e02ac2dfd4c62568f695d92986f9c274a7d62d12a7");
 }
 
 // §7 identities and the known-answer key
@@ -80,12 +80,12 @@ fn transfer_statement_vector() {
 fn known_answer_key_identities() {
     let s = signer();
     assert_eq!(hex(&s.pubkey), "024f4e2ad99c34d60b9ba6283c9431a8418af8673212961f97a77b6377fcd05b62");
-    assert_eq!(s.neuron_hex(), "31284576301bacb9c2cad6379244f856dc32c751c38c3b0af4c5c886fd0ed741");
+    assert_eq!(s.neuron_hex(), "55c76c9f172b850eaa82e4c6defe13b1d80d983c29d81526eb94d2c8199b0fd2");
     assert_eq!(hex(&s.account_id), "28ff5c6d57d8cfd492b6fb42614536ed648e01fd");
     assert_eq!(s.address("pussy").unwrap(), "pussy19rl4cm2hmr8afy4kldpxz3fka4jguq0a4l8rzm");
-    assert_eq!(hex(&s.legacy_owner("pussy")), "cca6f468fe834711fc1e672c21ba95ee7028ed9af6915fbc7b95b449ef0cdbc0");
-    assert_eq!(hex(&legacy_owner("pussy", &[0x99; 20])), "d5e54c499456ee690e5c82a3d2119a8180a2e13f832df5254757a41f5e6d509d");
-    assert_eq!(hex(&topic(&CHAIN, "headers")), "1f003a48b0506c0ea85cb893abc83c6b6a2603adea7e62f9fe6997692f9f8b8b");
+    assert_eq!(hex(&s.legacy_owner("pussy")), "4382c7f5d008648955902bb95ef7a6a3cdce9e9c9181a553b9858a73341ce373");
+    assert_eq!(hex(&legacy_owner("pussy", &[0x99; 20])), "5384913f850b453826161f40676a431d912c38c112d944ed85aab22c59889f22");
+    assert_eq!(hex(&topic(&CHAIN, "headers")), "598b569691c3dc0cc6ee22e1cc7a595ee747e33c1b49defc69bc26c831bbd7a8");
 }
 
 // §6 signed transfer: verifies; flipped bytes, truncations and another chain fail

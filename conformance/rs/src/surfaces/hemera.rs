@@ -1,4 +1,4 @@
-//! hemera — the fingerprint function itself (cyber-hemera 0.3, 32-byte output).
+//! hemera — the fingerprint function itself (cyber-hemera 0.4, profile #15, 32-byte output).
 //!
 //! Scenarios cover hemera's published vectors (`hemera/vectors/hemera.json`),
 //! sponge rate boundaries (56-byte blocks), the chunk tree across the

@@ -21,9 +21,9 @@ mod tests {
         let cb = super::super::tx::tests::coinbase().encode();
         assert_eq!(cb.len(), 82);
         let l = leaf(&cb);
-        assert_eq!(hex(&l), "c2cb6adb74ed69c5672c495ccfb659e12b8f33db3be8caf6167a0d50b41893e6");
+        assert_eq!(hex(&l), "514d5d57388046e2cd534c69a789bf09e329678cedbabcff4cc9a439e8c0fe9c");
         assert_eq!(tx_root(std::slice::from_ref(&cb)), l);
-        assert_eq!(hex(&node(&l, &l)), "3685e0a5b8bce069a4ef54da15f56393cd5e64dc6d10701d247a4663b7d922c1");
+        assert_eq!(hex(&node(&l, &l)), "9d68ac9b03293ba25059ceb5d601e3c6ddae700e05343c190fdd4c8eea6c595b");
     }
 
     #[test]

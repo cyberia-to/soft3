@@ -36,33 +36,33 @@ fn id32(hex_str: &str) -> [u8; 32] {
 
 #[test]
 fn hemera_anchors_of_chain_conformance_section_1() {
-    assert_eq!(hex(&hash32(b"")), "a67a71b221e6bdd6442a20432bf5d74c885d89e5dfbeec3ec4e334cb806d563c");
-    assert_eq!(hex(&token_of("boot")), "10275cf6703891a515f64ada465137cd36f2a5d3f0b99a8dafc62e6b95ad1269");
-    assert_eq!(hex(&token_of("pussy")), "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa");
-    assert_eq!(hex(&hash32(&[0u8; 168])), "ba560d1fd2ed380e09ef8e526e8817504cce6e71363c12081537751e4f761754");
+    assert_eq!(hex(&hash32(b"")), "9e89f2487be432e48c27e24e6945adffe6918c8b5d6a62061e70e0bebd657326");
+    assert_eq!(hex(&token_of("boot")), "1d443e1103abbd0aebe4abaf3fadc203160a471e9accb9b6e0a73804ea785b3b");
+    assert_eq!(hex(&token_of("pussy")), "87a70ff9ed0638fc9fafb1a30f57c5ad2ebe5155c48702c50bdbb2ece87f6a71");
+    assert_eq!(hex(&hash32(&[0u8; 168])), "355fd03315a5ceb056cda53d11ff7b9755167182d59ff9e31134d69d33bdf0f6");
 }
 
 #[test]
 fn header_vector_of_chain_conformance_section_5() {
     let h = file::header_bytes(1, 1, 1_762_349_000, 0x1d10_0000, [0u8; 16], &[0x11; 32], &[0x22; 32], &[0x33; 32], &[0x44; 32]);
     assert_eq!(&h[..24], &unhex(concat!("01000000", "0100000000000000", "c84f0b6900000000", "0000101d")).unwrap()[..]);
-    assert_eq!(hex(&file::block_id(&h)), "bdfbbff94e6e17eec9169932276825a0f4957f6f3a6af9030439979eacaeb58d");
+    assert_eq!(hex(&file::block_id(&h)), "bdd7f2ef3a5a1c573b8d84a7a2aeedc95c6f8aa2139eea5c83946b33c4180c31");
     let mut nonce = [0u8; 16];
-    nonce[..8].copy_from_slice(&40_165_933u64.to_le_bytes());
+    nonce[..8].copy_from_slice(&934_636u64.to_le_bytes());
     let h = file::header_bytes(1, 1, 1_793_885_850, 0x1e01_0000, nonce, &[0x11; 32], &[0x22; 32], &[0x33; 32], &[0x44; 32]);
-    assert_eq!(hex(&file::block_id(&h)), "d1eec40d1db983bb3df0946890538bec4ba9712fb26b82316efc6b162f000000");
+    assert_eq!(hex(&file::block_id(&h)), "a3dc0cdb7c69e1d4986c388effe1612613b1b71f2c2ca49084bc0730da000000");
 }
 
 #[test]
 fn legacy_owner_vectors_of_chain_conformance_section_6() {
     assert_eq!(
         hex(&legacy_owner("pussy", &[0x99; 20])),
-        "d5e54c499456ee690e5c82a3d2119a8180a2e13f832df5254757a41f5e6d509d"
+        "5384913f850b453826161f40676a431d912c38c112d944ed85aab22c59889f22"
     );
     let account_id = unhex("28ff5c6d57d8cfd492b6fb42614536ed648e01fd").unwrap();
     assert_eq!(
         hex(&legacy_owner("pussy", &account_id)),
-        "cca6f468fe834711fc1e672c21ba95ee7028ed9af6915fbc7b95b449ef0cdbc0"
+        "4382c7f5d008648955902bb95ef7a6a3cdce9e9c9181a553b9858a73341ce373"
     );
     let (hrp, data) = bech32::decode("pussy19rl4cm2hmr8afy4kldpxz3fka4jguq0a4l8rzm").unwrap();
     assert_eq!(hrp.as_str(), "pussy");
@@ -70,7 +70,7 @@ fn legacy_owner_vectors_of_chain_conformance_section_6() {
     let pk = unhex("024f4e2ad99c34d60b9ba6283c9431a8418af8673212961f97a77b6377fcd05b62").unwrap();
     assert_eq!(
         hex(&mudra::claim::neuron_of(&pk)),
-        "31284576301bacb9c2cad6379244f856dc32c751c38c3b0af4c5c886fd0ed741"
+        "55c76c9f172b850eaa82e4c6defe13b1d80d983c29d81526eb94d2c8199b0fd2"
     );
     assert_eq!(mudra::cosmos::account_id(&pk).to_vec(), account_id);
 }
@@ -195,7 +195,7 @@ fn pussy_genesis_is_deterministic_conserving_and_bijective() {
     assert_eq!(g.native_supply().to_string(), ra.s0);
     assert_eq!(g.params.subsidy, 1_099_389_810_279_114_036u64 / 105_120_000);
     assert_eq!(ra.tokens["pussy"].1, ra.s0);
-    assert_eq!(ra.tokens["pussy"].0, "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa");
+    assert_eq!(ra.tokens["pussy"].0, "87a70ff9ed0638fc9fafb1a30f57c5ad2ebe5155c48702c50bdbb2ece87f6a71");
     let mut sums: BTreeMap<[u8; 32], u128> = BTreeMap::new();
     for bal in &g.balances {
         *sums.entry(bal.token).or_insert(0) += u128::from(bal.amount);

@@ -208,14 +208,14 @@ pub(crate) mod tests {
         };
         let g = Genesis::decode(&bytes).unwrap();
         let hex = |b: &[u8]| b.iter().map(|x| format!("{x:02x}")).collect::<String>();
-        assert_eq!(hex(&g.chain_id), "1bb7d6aaf85330e77ba68044b7f9b683ac8a0a5936709cffa3820ce9714826a7");
+        assert_eq!(hex(&g.chain_id), "bae85f40d9f508664b5214107551be95d3f188d9585a899178c23e80886720e5");
         assert_eq!(g.s0(), 1_099_389_810_279_114_036);
         assert_eq!(g.subsidy(), 10_458_426_657);
         assert_eq!(g.params().time, 1_793_885_820);
         let mut s = g.state();
         let root = s.root();
-        assert_eq!(hex(&root), "93e4660f0ef0f5216d14554188cb8aded53d598d8c80d87e4e1a811949e61fe8");
-        assert_eq!(hex(&g.block0(root).id()), "5669e96ec2f93a600ebe8f3fdfbfaf6a2187a9626d550c3988cf1b4b6c92edd1");
+        assert_eq!(hex(&root), "a360798987fb821f3bb7e07c66947e91e1eacb4278a834972c32ea8b3054b8b2");
+        assert_eq!(hex(&g.block0(root).id()), "bcb1e9b0826283172993108dc22c52b457e1582f8148adf035046d976288092f");
         for t in s.tokens() {
             assert_eq!(s.token_sum(&t), s.supply(&t));
         }

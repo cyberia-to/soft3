@@ -56,7 +56,7 @@ mod tests {
     #[test]
     fn test_header_fails_its_own_target() {
         let h = base();
-        assert_eq!(h.id()[31], 0x8d);
+        assert_eq!(h.id()[31], 0x31);
         assert!(!valid_pow(&h));
         let mut genesis = h;
         genesis.height = 0;
@@ -68,7 +68,7 @@ mod tests {
         let mut h = base();
         h.bits = GENESIS_BITS;
         h.time = 1_793_885_850;
-        h.nonce = 40_165_933u128.to_le_bytes();
+        h.nonce = 934_636u128.to_le_bytes();
         let bytes = h.encode();
         assert_eq!(
             hex(&bytes[..40]),
@@ -76,15 +76,15 @@ mod tests {
                 .to_string()
                 + "9a86ec6a00000000"
                 + "0000011e"
-                + "2de26402000000000000000000000000"
+                + "ec420e00000000000000000000000000"
         );
-        assert_eq!(hex(&h.id()), "d1eec40d1db983bb3df0946890538bec4ba9712fb26b82316efc6b162f000000");
+        assert_eq!(hex(&h.id()), "a3dc0cdb7c69e1d4986c388effe1612613b1b71f2c2ca49084bc0730da000000");
         assert!(valid_pow(&h));
         let mut harder = h;
         harder.bits = 0x1d10_0000;
-        assert!(!valid_pow(&harder), "2^228 needs byte 28 below 0x10; it is 0x2f");
+        assert!(!valid_pow(&harder), "2^228 needs byte 28 below 0x10; it is 0xda");
         let mut previous_nonce = h;
-        previous_nonce.nonce = 40_165_932u128.to_le_bytes();
+        previous_nonce.nonce = 934_635u128.to_le_bytes();
         assert!(!valid_pow(&previous_nonce));
     }
 

@@ -38,7 +38,7 @@ chain-conformance = []
 # real node engine
 cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
-hemera = { package = "cyber-hemera", version = "0.3", path = "../../hemera/rs" }
+hemera = { package = "cyber-hemera", version = "0.4", path = "../../hemera/rs" }
 # header mining kernels (Metal, WebGPU) — lens release/0.2 `gpu/`
 cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
 # genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)

@@ -114,7 +114,7 @@ mod tests {
 
     /// Every built backend returns the same index for the same dispatch,
     /// and its nonce verifies with `hemera::hash` — chain-conformance §5's
-    /// mined header is one of the jobs (the known nonce 40,165,933).
+    /// mined header is one of the jobs (the known nonce 934,636).
     #[test]
     fn every_backend_agrees_and_verifies() {
         let backends = all(4);
@@ -131,9 +131,9 @@ mod tests {
         let jobs = [
             (
                 Job::new(&vector, pow2(232)),
-                40_165_000u128,
+                934_000u128,
                 2_000u32,
-                Some(933u32),
+                Some(636u32),
             ),
             (
                 Job::new(&[0x3cu8; 168], pow2(246)),

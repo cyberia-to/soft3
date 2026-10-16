@@ -660,10 +660,10 @@ mod tests {
 
     #[test]
     fn hemera_anchors() {
-        assert_eq!(hex(&hash(b"")), "a67a71b221e6bdd6442a20432bf5d74c885d89e5dfbeec3ec4e334cb806d563c");
-        assert_eq!(hex(&token("boot")), "10275cf6703891a515f64ada465137cd36f2a5d3f0b99a8dafc62e6b95ad1269");
-        assert_eq!(hex(&token("pussy")), "8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa");
-        assert_eq!(hex(&hash(&[0u8; 168])), "ba560d1fd2ed380e09ef8e526e8817504cce6e71363c12081537751e4f761754");
+        assert_eq!(hex(&hash(b"")), "9e89f2487be432e48c27e24e6945adffe6918c8b5d6a62061e70e0bebd657326");
+        assert_eq!(hex(&token("boot")), "1d443e1103abbd0aebe4abaf3fadc203160a471e9accb9b6e0a73804ea785b3b");
+        assert_eq!(hex(&token("pussy")), "87a70ff9ed0638fc9fafb1a30f57c5ad2ebe5155c48702c50bdbb2ece87f6a71");
+        assert_eq!(hex(&hash(&[0u8; 168])), "355fd03315a5ceb056cda53d11ff7b9755167182d59ff9e31134d69d33bdf0f6");
     }
 
     #[test]
@@ -710,7 +710,7 @@ mod tests {
         assert_eq!(&bytes[..4], &[1, 0, 0, 0]);
         assert_eq!(&bytes[12..20], &[0xc8, 0x4f, 0x0b, 0x69, 0, 0, 0, 0]);
         assert_eq!(&bytes[20..24], &[0, 0, 0x10, 0x1d]);
-        assert_eq!(hex(&header.id()), "bdfbbff94e6e17eec9169932276825a0f4957f6f3a6af9030439979eacaeb58d");
+        assert_eq!(hex(&header.id()), "bdd7f2ef3a5a1c573b8d84a7a2aeedc95c6f8aa2139eea5c83946b33c4180c31");
         assert!(!header.valid_pow());
         assert_eq!(Header::decode(&bytes).unwrap(), header);
         assert!(Header::decode(&bytes[..167]).is_err());
@@ -724,14 +724,14 @@ mod tests {
         let mut header = test_header();
         header.bits = 0x1e010000;
         header.time = 1793885850;
-        header.nonce = 40165933u128.to_le_bytes();
-        assert_eq!(hex(&header.id()), "d1eec40d1db983bb3df0946890538bec4ba9712fb26b82316efc6b162f000000");
+        header.nonce = 934636u128.to_le_bytes();
+        assert_eq!(hex(&header.id()), "a3dc0cdb7c69e1d4986c388effe1612613b1b71f2c2ca49084bc0730da000000");
         assert!(header.valid_pow());
         let mut harder = header;
         harder.bits = 0x1d100000;
         assert!(!harder.valid_pow());
         let mut before = header;
-        before.nonce = 40165932u128.to_le_bytes();
+        before.nonce = 934635u128.to_le_bytes();
         assert!(!before.valid_pow());
     }
 
@@ -740,11 +740,11 @@ mod tests {
         let tx = Tx::Coinbase { height: 1, to: [0x55; 32], amount: 10_000, extra: [0; 32] };
         let bytes = tx.encode();
         assert_eq!(bytes.len(), 82);
-        assert_eq!(hex(&txid(&[0x44; 32], &bytes)), "d7662bdbf363831e4f2efd77967f684db927cf04576f7e82bb8f1872e333cc51");
+        assert_eq!(hex(&txid(&[0x44; 32], &bytes)), "6cf0e4d280e6d5cbb5c7fef566d28913b17249cb4a6fdecf9c59ad3f0995c3f9");
         let leaf = tx_leaf(&bytes);
-        assert_eq!(hex(&leaf), "c2cb6adb74ed69c5672c495ccfb659e12b8f33db3be8caf6167a0d50b41893e6");
+        assert_eq!(hex(&leaf), "514d5d57388046e2cd534c69a789bf09e329678cedbabcff4cc9a439e8c0fe9c");
         assert_eq!(tx_root(&[bytes.clone()]), leaf);
-        assert_eq!(hex(&tx_node(&leaf, &leaf)), "3685e0a5b8bce069a4ef54da15f56393cd5e64dc6d10701d247a4663b7d922c1");
+        assert_eq!(hex(&tx_node(&leaf, &leaf)), "9d68ac9b03293ba25059ceb5d601e3c6ddae700e05343c190fdd4c8eea6c595b");
         assert_eq!(Tx::decode(&bytes).unwrap(), tx);
     }
 
@@ -755,7 +755,7 @@ mod tests {
         };
         let unsigned = tx.encode_unsigned();
         assert_eq!(unsigned.len(), 122);
-        assert_eq!(hex(&statement(&[0x44; 32], &unsigned)), "c7e4a223871018bb9f3f64466b45df3a2962ff344776df2960600dfc49cf4a6f");
+        assert_eq!(hex(&statement(&[0x44; 32], &unsigned)), "41e149559c98af20b62db3e02ac2dfd4c62568f695d92986f9c274a7d62d12a7");
         assert_eq!(tx.encode().len(), 224);
     }
 
@@ -802,7 +802,7 @@ mod tests {
 
     #[test]
     fn topic_vector() {
-        assert_eq!(hex(&topic_id(&[0x44; 32], "headers")), "1f003a48b0506c0ea85cb893abc83c6b6a2603adea7e62f9fe6997692f9f8b8b");
+        assert_eq!(hex(&topic_id(&[0x44; 32], "headers")), "598b569691c3dc0cc6ee22e1cc7a595ee747e33c1b49defc69bc26c831bbd7a8");
     }
 
     #[test]
