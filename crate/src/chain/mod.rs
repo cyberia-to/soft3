@@ -4,7 +4,7 @@
 //!
 //! Module map follows chain.md §9.1. Consensus modules are pure functions
 //! over bytes; [`api`] is the surface the network, miner and HTTP layers
-//! code against.
+//! code against; [`mine`] is the reference miner (`soft3 mine`).
 
 pub mod api;
 pub mod apply;
@@ -16,6 +16,7 @@ pub mod engine_api;
 pub mod engine_tx;
 pub mod genesis;
 pub mod header;
+pub mod mine;
 pub mod params;
 pub mod pow;
 pub mod select;

@@ -1,5 +1,6 @@
 //! soft3 CLI — default network is **spacepussy-test** (soft3 chaosnet).
 
+use soft3::chain::mine;
 use soft3::network::{self, Network};
 use soft3::node;
 use std::path::PathBuf;
@@ -42,6 +43,7 @@ fn main() {
         }
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
+        "mine" => cmd_mine(&args[1..]),
         "genesis" => cmd_genesis(&args[1..]),
         "conformance" => cmd_conformance(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
@@ -233,6 +235,186 @@ fn cmd_node(args: &[String]) {
     }
 }
 
+/// Parsed `soft3 mine` flags.
+#[derive(Debug, PartialEq, Eq)]
+struct MineArgs {
+    bench: bool,
+    chain: String,
+    node: Option<String>,
+    address: Option<String>,
+    backend: String,
+    threads: usize,
+    seconds: u64,
+    help: bool,
+}
+
+/// Parse `soft3 mine`'s argv. Pure: every error is returned.
+fn parse_mine_args(args: &[String]) -> Result<MineArgs, NodeArgError> {
+    let mut a = MineArgs {
+        bench: false,
+        chain: "pussy".into(),
+        node: None,
+        address: None,
+        backend: "auto".into(),
+        threads: 0,
+        seconds: 5,
+        help: false,
+    };
+    let mut i = 0;
+    let value = |args: &[String], i: usize, what: &'static str| -> Result<String, NodeArgError> {
+        args.get(i).cloned().ok_or(NodeArgError::MissingValue(what))
+    };
+    while i < args.len() {
+        match args[i].as_str() {
+            "bench" if i == 0 => a.bench = true,
+            "--chain" => {
+                i += 1;
+                a.chain = value(args, i, "--chain needs pussy|bostrom")?;
+            }
+            "--node" => {
+                i += 1;
+                a.node = Some(value(args, i, "--node needs a URL")?);
+            }
+            "--address" | "--to" => {
+                i += 1;
+                a.address = Some(value(args, i, "--address needs a neuron (64 hex)")?);
+            }
+            "--backend" => {
+                i += 1;
+                a.backend = value(args, i, "--backend needs auto|cpu|metal|webgpu")?;
+            }
+            "--threads" => {
+                i += 1;
+                a.threads = value(args, i, "--threads needs a number")?
+                    .parse()
+                    .map_err(|_| NodeArgError::Unknown("--threads: not a number".into()))?;
+            }
+            "--seconds" => {
+                i += 1;
+                a.seconds = value(args, i, "--seconds needs a number")?
+                    .parse()
+                    .map_err(|_| NodeArgError::Unknown("--seconds: not a number".into()))?;
+            }
+            "-h" | "--help" => a.help = true,
+            other => return Err(NodeArgError::Unknown(other.to_string())),
+        }
+        i += 1;
+    }
+    Ok(a)
+}
+
+/// The node of a chain when `--node` is absent (chain-wire §7 binds).
+fn default_node(chain: &str) -> Option<String> {
+    match chain {
+        "pussy" => Some("http://127.0.0.1:7781".into()),
+        "bostrom" => Some("http://127.0.0.1:7782".into()),
+        _ => None,
+    }
+}
+
+fn cmd_mine(args: &[String]) {
+    let a = match parse_mine_args(args) {
+        Ok(a) => a,
+        Err(NodeArgError::MissingValue(msg)) => {
+            eprintln!("{msg}");
+            std::process::exit(2);
+        }
+        Err(NodeArgError::Unknown(flag)) => {
+            eprintln!("unknown mine flag `{flag}`");
+            std::process::exit(2);
+        }
+    };
+    if a.help {
+        println!("soft3 mine — reference miner of the phase-1 root chain (specs/chain.md)");
+        println!();
+        println!("  soft3 mine --address NEURON [--chain pussy|bostrom] [--node URL]");
+        println!("             [--backend auto|cpu|metal|webgpu] [--threads N]");
+        println!(
+            "  soft3 mine bench [--backend auto|cpu|metal|webgpu] [--threads N] [--seconds S]"
+        );
+        println!();
+        println!(
+            "grinds hemera(header) < target over the 16-byte nonce; GET /template, POST /submit"
+        );
+        println!("(chain-wire §7); the template is refreshed when GET /tip moves.");
+        println!();
+        println!("defaults:");
+        println!("  --chain    pussy");
+        println!("  --node     http://127.0.0.1:7781 (pussy) · :7782 (bostrom)");
+        println!("  --backend  auto (metal, else webgpu, else cpu)");
+        println!("  --threads  every core (cpu)");
+        println!("  --seconds  5 (bench)");
+        return;
+    }
+    let choice: mine::Choice = match a.backend.parse() {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("{e}");
+            std::process::exit(2);
+        }
+    };
+    if a.bench {
+        let backends = match choice {
+            mine::Choice::Auto => mine::all(a.threads),
+            c => match mine::select(c, a.threads) {
+                Ok(b) => vec![b],
+                Err(e) => {
+                    eprintln!("{e}");
+                    std::process::exit(1);
+                }
+            },
+        };
+        let mut rows = Vec::new();
+        for b in &backends {
+            eprintln!("measuring {} for {}s…", b.name(), a.seconds);
+            match mine::bench::measure(b.as_ref(), a.seconds as f64) {
+                Ok(r) => rows.push(r),
+                Err(e) => eprintln!("{}: {e}", b.name()),
+            }
+        }
+        print!("{}", mine::bench::table(&rows));
+        if rows.iter().any(|r| !r.vector) {
+            std::process::exit(1);
+        }
+        return;
+    }
+    let Some(address) = a.address else {
+        eprintln!("--address NEURON is required (the coinbase goes to it)");
+        std::process::exit(2);
+    };
+    if address.len() != 64 || !address.bytes().all(|b| b.is_ascii_hexdigit()) {
+        eprintln!("--address must be a neuron id: 64 hex characters");
+        std::process::exit(2);
+    }
+    let Some(node) = a.node.or_else(|| default_node(&a.chain)) else {
+        eprintln!(
+            "unknown chain `{}` (pussy|bostrom), or pass --node",
+            a.chain
+        );
+        std::process::exit(2);
+    };
+    let backend = match mine::select(choice, a.threads) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("{e}");
+            std::process::exit(1);
+        }
+    };
+    let settings = mine::run::Settings {
+        chain: a.chain,
+        node,
+        address: address.to_lowercase(),
+        tip_poll: std::time::Duration::from_secs(2),
+        refresh: std::time::Duration::from_secs(30),
+        report: std::time::Duration::from_secs(5),
+    };
+    let stop = std::sync::atomic::AtomicBool::new(false);
+    if let Err(e) = mine::run::run(backend.as_ref(), &settings, &stop, &|m| println!("{m}")) {
+        eprintln!("soft3 mine failed: {e}");
+        std::process::exit(1);
+    }
+}
+
 /// Real-environment hostname fallback: `$HOSTNAME`, else `$HOST`, else the
 /// literal default. Thin wrapper over [`hostname_fallback_from`] so the
 /// fallback chain itself is testable without mutating process-wide env vars.
@@ -279,6 +461,9 @@ fn print_help() {
     println!("  soft3 status              # alias of sync");
     println!("  soft3 network [name]      # print endpoints");
     println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+    println!("  soft3 mine --address NEURON [--chain pussy|bostrom] [--node URL]");
+    println!("             [--backend auto|cpu|metal|webgpu] [--threads N]");
+    println!("  soft3 mine bench [--backend ...] [--threads N] [--seconds S]");
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
@@ -398,6 +583,43 @@ mod tests {
         ];
         let parsed = parse_node_args(&args, home, bind, moniker).ok().unwrap();
         assert_eq!(parsed.moniker, "second");
+    }
+
+    #[test]
+    fn mine_args_parse() {
+        let a = parse_mine_args(&[]).ok().unwrap();
+        assert_eq!(a.chain, "pussy");
+        assert_eq!(a.backend, "auto");
+        assert!(!a.bench);
+        let args: Vec<String> = [
+            "bench",
+            "--backend",
+            "cpu",
+            "--threads",
+            "3",
+            "--seconds",
+            "2",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+        let a = parse_mine_args(&args).ok().unwrap();
+        assert!(a.bench && a.backend == "cpu" && a.threads == 3 && a.seconds == 2);
+        let args: Vec<String> = ["--address"].iter().map(|s| s.to_string()).collect();
+        assert!(matches!(
+            parse_mine_args(&args),
+            Err(NodeArgError::MissingValue(_))
+        ));
+        let args: Vec<String> = ["--bogus"].iter().map(|s| s.to_string()).collect();
+        assert!(matches!(
+            parse_mine_args(&args),
+            Err(NodeArgError::Unknown(_))
+        ));
+        assert_eq!(
+            default_node("bostrom").as_deref(),
+            Some("http://127.0.0.1:7782")
+        );
+        assert_eq!(default_node("x"), None);
     }
 
     #[test]

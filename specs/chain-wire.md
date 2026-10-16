@@ -272,8 +272,10 @@ POST /submit   {"header":"<hex168: the solved header>"}
   400 {"error":"<reason>"}                malformed request
 ```
 
-A template is tied to its `prev`: a miner polls `GET /tip` and refreshes
-when `id` moves; the 16-byte nonce (bytes 24..40) is the miner's alone and
+A template is tied to its `prev`: a miner polls `GET /tip` (every 2 s in
+the reference miner, `soft3 mine`, `crate/src/chain/mine/api.rs`) and
+refreshes when `id` moves, and refreshes anyway after 30 s to pick up new
+transactions; a miner may check that `target` and `bits` agree. The 16-byte nonce (bytes 24..40) is the miner's alone and
 nothing else in the header may change between template and submit.
 
 `/status` fields (cybermark, one per line as today): `chain`, `protocol:

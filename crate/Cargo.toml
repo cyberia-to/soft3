@@ -22,9 +22,15 @@ path = "src/bin/soft3.rs"
 [workspace]
 
 [features]
-default = []
+# the reference miner ships with its GPU backends (specs/chain.md §8: the
+# first competent GPU kernel is the majority miner, so it must not be a secret)
+default = ["metal", "webgpu"]
 # full stack re-exports (heavy)
 stack = ["dep:cyb"]
+# `soft3 mine --backend metal`: hemera_mine on the Apple GPU (macOS; a no-op elsewhere)
+metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
+# `soft3 mine --backend webgpu`: hemera_mine through wgpu (Vulkan, DX12, Metal, GL)
+webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]
 # nonce inside bbg's NeuronRecord (DIMENSION_VERSION 3). Off until the bbg
 # PR carrying the field lands; on, the chain keeps nonces under state_root
 # as specs/chain.md §3.2 requires and the chain conformance snapshot moves.
@@ -37,6 +43,8 @@ chain-conformance = []
 cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
 foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
 hemera = { package = "cyber-hemera", version = "0.3", path = "../../hemera/rs" }
+# header mining kernels (Metal, WebGPU) — lens release/0.2 `gpu/`
+cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
 # genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
 bbg = { version = "0.3", path = "../../bbg/rs" }
 # mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`)
