@@ -2,12 +2,14 @@
 //! bbg-backed state, the checkpoints and the validation order of §5.5.
 //! Headers are validated in steps 1–5 and stored; bodies run steps 6–8 on
 //! the parent state; fork choice (§5.1–§5.3) moves the tip with the undo
-//! journals. Mempool and template entry points live in [`super::engine_tx`].
+//! journals. The [`ChainApi`](super::api::ChainApi) impl is in
+//! [`super::engine_api`]; mempool and template entry points in
+//! [`super::engine_tx`].
 
 use std::collections::{HashSet, VecDeque};
 use std::path::Path;
 
-use super::api::{Block, BlockVerdict, ChainApi, ChainError, Event, HeaderVerdict, Status, Tip};
+use super::api::{BlockVerdict, ChainError, Event};
 use super::apply::{self, Decoded, Locked, Rules};
 use super::bbg_state::BbgBacked;
 use super::daa::{median_time_past, next_bits};
@@ -15,7 +17,7 @@ use super::genesis::Genesis;
 use super::header::{BlockId, Header};
 use super::params::{COINBASE_MATURITY, FINALITY_DEPTH, MAX_FUTURE_DRIFT, MTP_WINDOW, RULE_SET, rule_set_at};
 use super::pow::{chainwork, valid_pow};
-use super::select::{self, Checkpoint, Checkpoints};
+use super::select::{self, Checkpoints};
 use super::state::{Id, StateBackend};
 use super::store::{self, Store};
 use super::tx::Body;
@@ -24,20 +26,20 @@ use super::u256::U256;
 const REJECTED_CAPACITY: usize = 4_096;
 
 pub struct Chain {
-    genesis: Genesis,
-    rules: Rules,
-    store: Store,
-    state: BbgBacked,
-    checkpoints: Checkpoints,
+    pub(super) genesis: Genesis,
+    pub(super) rules: Rules,
+    pub(super) store: Store,
+    pub(super) state: BbgBacked,
+    pub(super) checkpoints: Checkpoints,
     /// main-chain coinbases `(height, to, amount)` still inside maturity
-    coinbases: VecDeque<(u64, Id, u64)>,
-    rejected: HashSet<BlockId>,
-    rejected_order: VecDeque<BlockId>,
+    pub(super) coinbases: VecDeque<(u64, Id, u64)>,
+    pub(super) rejected: HashSet<BlockId>,
+    pub(super) rejected_order: VecDeque<BlockId>,
     /// the most work any non-invalid header carries; when the tip has it,
     /// there is nothing to consider
-    heaviest: U256,
-    finalized: u64,
-    events: Vec<Event>,
+    pub(super) heaviest: U256,
+    pub(super) finalized: u64,
+    pub(super) events: Vec<Event>,
 }
 
 impl Chain {
@@ -111,11 +113,11 @@ impl Chain {
         &self.state
     }
 
-    fn entry(&self, id: &BlockId) -> Option<&store::Entry> {
+    pub(super) fn entry(&self, id: &BlockId) -> Option<&store::Entry> {
         self.store.get(id)
     }
 
-    fn tip_id(&self) -> BlockId {
+    pub(super) fn tip_id(&self) -> BlockId {
         self.store.tip().expect("genesis is always present").1
     }
 
@@ -143,7 +145,7 @@ impl Chain {
         }
     }
 
-    fn invalidate(&mut self, id: BlockId) {
+    pub(super) fn invalidate(&mut self, id: BlockId) {
         let _ = self.store.set_status(&id, store::Status::Invalid);
         self.remember_rejected(id);
     }
@@ -178,7 +180,7 @@ impl Chain {
     }
 
     /// Steps 1–5 without storing.
-    fn check_header(&self, header: &Header, now: u64) -> Result<U256, ChainError> {
+    pub(super) fn check_header(&self, header: &Header, now: u64) -> Result<U256, ChainError> {
         header.check_syntax(&self.rules.chain).map_err(ChainError::Header)?;
         match rule_set_at(header.height) {
             Some(rs) if rs == RULE_SET => {}
@@ -212,7 +214,7 @@ impl Chain {
     }
 
     /// Apply a block whose parent is the tip (steps 7–8), then extend.
-    fn extend(&mut self, header: &Header, txs: &[Decoded]) -> Result<(), ChainError> {
+    pub(super) fn extend(&mut self, header: &Header, txs: &[Decoded]) -> Result<(), ChainError> {
         let id = header.id();
         let locked = self.locked_at(header.height);
         let undo = match apply::apply_block(&self.rules, header, txs, &mut self.state, &locked) {
@@ -327,7 +329,7 @@ impl Chain {
     }
 
     /// Does the reorg limit or a checkpoint floor forbid switching to `id`?
-    fn own_chain_blocked(&self, id: &BlockId) -> bool {
+    pub(super) fn own_chain_blocked(&self, id: &BlockId) -> bool {
         let Ok((fork_height, _)) = self.path_from_main(id) else { return false };
         let deep = !select::reorg_allowed(self.store.tip_height(), fork_height);
         let below_floor = self.checkpoints.floor().is_some_and(|f| fork_height < f);
@@ -378,7 +380,7 @@ impl Chain {
         Ok(BlockVerdict::Reorganized { old_tip, depth })
     }
 
-    fn after_tip_move(&mut self) -> Result<(), ChainError> {
+    pub(super) fn after_tip_move(&mut self) -> Result<(), ChainError> {
         self.store.persist().map_err(ChainError::Store)?;
         let new_final = self.store.tip_height().saturating_sub(FINALITY_DEPTH);
         while self.finalized < new_final {
@@ -394,174 +396,6 @@ impl Chain {
     }
 }
 
-impl ChainApi for Chain {
-    fn chain_id(&self) -> Id {
-        self.rules.chain
-    }
-
-    fn genesis(&self) -> &Genesis {
-        &self.genesis
-    }
-
-    fn tip(&self) -> Tip {
-        let (height, id) = self.store.tip().expect("genesis present");
-        let e = self.entry(&id).expect("tip stored");
-        Tip { height, id, chainwork: e.chainwork, header: e.header }
-    }
-
-    fn status(&self) -> Status {
-        let tip = self.tip();
-        let native = self.rules.native;
-        let conserved = apply::check_conservation(&self.rules, &self.state, tip.height).is_ok();
-        Status {
-            chain: self.rules.chain,
-            name: self.genesis.params().name.clone(),
-            rule_set: RULE_SET,
-            height: tip.height,
-            tip: tip.id,
-            chainwork: tip.chainwork,
-            bits: tip.header.bits,
-            next_bits: next_bits(self.genesis.anchor(), &tip.header),
-            genesis_block: self.store.main_at(0).unwrap_or([0; 32]),
-            genesis_time: self.genesis.params().time,
-            state_root: tip.header.state_root,
-            supply: self.state.supply(&native),
-            conserved,
-            subsidy: self.rules.subsidy,
-            neurons: self.state.neuron_count(),
-            particles: self.state.particle_count(),
-            axons: self.state.axon_count(),
-            checkpoint: self.checkpoints.floor(),
-            finalized: self.finalized,
-        }
-    }
-
-    fn header(&self, id: &BlockId) -> Option<Header> {
-        self.entry(id).map(|e| e.header)
-    }
-
-    fn header_at(&self, height: u64) -> Option<Header> {
-        self.store.main_at(height).and_then(|id| self.header(&id))
-    }
-
-    fn headers(&self, from: u64, count: usize) -> Vec<Header> {
-        self.store.main_range(from, count).iter().filter_map(|id| self.header(id)).collect()
-    }
-
-    fn block(&self, id: &BlockId) -> Option<Block> {
-        let header = self.header(id)?;
-        let body = if header.height == 0 { Vec::new() } else { self.store.body(id)? };
-        Some(Block { header, body })
-    }
-
-    fn blocks(&self, from: u64, count: usize) -> Vec<Block> {
-        self.store.main_range(from, count).iter().filter_map(|id| self.block(id)).collect()
-    }
-
-    fn chainwork(&self, id: &BlockId) -> Option<U256> {
-        self.entry(id).map(|e| e.chainwork)
-    }
-
-    fn locator(&self) -> Vec<BlockId> {
-        select::locator_heights(self.store.tip_height()).iter().filter_map(|h| self.store.main_at(*h)).collect()
-    }
-
-    fn ancestor_at(&self, id: &BlockId, height: u64) -> Option<BlockId> {
-        self.store.ancestor_at(id, height)
-    }
-
-    fn balance(&self, owner: &Id, token: &Id) -> u64 {
-        self.state.balance(owner, token)
-    }
-
-    fn nonce(&self, neuron: &Id) -> u64 {
-        self.state.nonce(neuron)
-    }
-
-    fn supply(&self, token: &Id) -> u64 {
-        self.state.supply(token)
-    }
-
-    fn finalized_height(&self) -> u64 {
-        self.finalized
-    }
-
-    fn accept_header(&mut self, header: &Header, now: u64) -> Result<HeaderVerdict, ChainError> {
-        let id = header.id();
-        if self.rejected.contains(&id) {
-            return Err(ChainError::Rejected(id));
-        }
-        if let Some(e) = self.entry(&id) {
-            return if e.status == store::Status::Invalid { Err(ChainError::Rejected(id)) } else { Ok(HeaderVerdict::Known) };
-        }
-        let work = self.check_header(header, now)?;
-        self.store.put_header(*header, work, store::Status::Header).map_err(ChainError::Store)?;
-        self.heaviest = self.heaviest.max(work);
-        Ok(HeaderVerdict::Accepted)
-    }
-
-    fn accept_block(&mut self, block: &Block, now: u64) -> Result<BlockVerdict, ChainError> {
-        let id = block.id();
-        self.accept_header(&block.header, now)?;
-        if self.entry(&id).is_some_and(|e| e.status == store::Status::Valid) {
-            return self.try_advance().map(|v| if v == BlockVerdict::Stored { BlockVerdict::Known } else { v });
-        }
-        let mut stored_new = false;
-        if !self.store.has_body(&id) {
-            stored_new = true;
-            let txs = match apply::decode_body(&self.rules, &block.header, &block.body) {
-                Ok(txs) => txs,
-                Err(e) => {
-                    self.invalidate(id);
-                    return Err(ChainError::Block(e));
-                }
-            };
-            self.store.put_body(&id, &block.body).map_err(ChainError::Store)?;
-            self.store.set_status(&id, store::Status::Body).map_err(ChainError::Store)?;
-            if block.header.prev == self.tip_id() {
-                self.extend(&block.header, &txs)?;
-                self.after_tip_move()?;
-                let _ = self.try_advance();
-                return Ok(BlockVerdict::Extended);
-            }
-        }
-        match self.try_advance() {
-            Ok(BlockVerdict::Known) if stored_new => Ok(BlockVerdict::Stored),
-            Ok(v) => Ok(v),
-            // a blocked candidate elsewhere is not this block's fault: only
-            // report the error when this block's own chain is the blocked one
-            Err(e) if self.own_chain_blocked(&id) => Err(e),
-            Err(_) => Ok(BlockVerdict::Stored),
-        }
-    }
-
-    fn accept_checkpoint(&mut self, cp: &Checkpoint) -> Result<bool, ChainError> {
-        let new = self.checkpoints.accept(&self.rules.chain, cp).map_err(ChainError::CheckpointRejected)?;
-        if new && self.store.main_at(cp.height).is_some_and(|id| id != cp.block_id) {
-            // our main chain contradicts the checkpoint: it is not our chain
-            // any more — the net layer resyncs from peers that carry it
-            eprintln!("chain: checkpoint at {} contradicts the main chain", cp.height);
-        }
-        Ok(new)
-    }
-
-    fn checkpoints(&self) -> Vec<(u64, BlockId)> {
-        self.checkpoints.held().map(|(h, id)| (*h, *id)).collect()
-    }
-
-    fn validate_tx(&mut self, tx_bytes: &[u8], pending: &[super::tx::Tx]) -> Result<super::api::TxInfo, super::apply::TxError> {
-        super::engine_tx::validate_tx(self, tx_bytes, pending)
-    }
-
-    fn header_template(&mut self, to: Id, time: u64, mempool: &[Vec<u8>]) -> Result<super::api::Template, ChainError> {
-        super::engine_tx::header_template(self, to, time, mempool)
-    }
-
-    fn take_events(&mut self) -> Vec<Event> {
-        std::mem::take(&mut self.events)
-    }
-}
-
 impl Chain {
     pub(super) fn state_mut(&mut self) -> &mut BbgBacked {
         &mut self.state
@@ -572,7 +406,8 @@ impl Chain {
     }
 
     pub(super) fn tip_header(&self) -> Header {
-        self.tip().header
+        let id = self.tip_id();
+        self.entry(&id).expect("tip stored").header
     }
 
     pub(super) fn genesis_anchor(&self) -> super::daa::Anchor {

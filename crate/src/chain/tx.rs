@@ -21,7 +21,10 @@ pub struct Tx {
     pub sig: Vec<u8>,
 }
 
-/// Encoded size of a kind, or `None` outside rule set 1.
+/// Encoded size of a kind, or `None` outside rule set 1. Every later kind
+/// — the pool's deposit and the cores' kinds ≥ 4 (chain.md §7.2, §11) —
+/// is rejected here until the activation table (`params::ACTIVATIONS`)
+/// names the rule set that admits it.
 pub fn size_of_kind(kind: u8) -> Option<usize> {
     Kind::from_byte(kind).ok().map(Kind::total_bytes)
 }

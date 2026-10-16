@@ -12,6 +12,7 @@ pub mod bbg_state;
 pub mod conformance;
 pub mod daa;
 pub mod engine;
+pub mod engine_api;
 pub mod engine_tx;
 pub mod genesis;
 pub mod header;
