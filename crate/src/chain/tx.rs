@@ -169,8 +169,11 @@ pub(crate) mod tests {
             v2[0] = 2;
             assert!(Tx::decode(&v2).unwrap_err().contains("version 2"));
             let mut k4 = bytes.clone();
-            k4[1] = 4;
+            k4[1] = 4; // the pool's deposit (chain.md §11.7)
             assert!(Tx::decode(&k4).unwrap_err().contains("kind 4"));
+            let mut k5 = bytes.clone();
+            k5[1] = 5;
+            assert!(Tx::decode(&k5).unwrap_err().contains("kind 5"), "the pool's spend is not a rule-set-1 kind");
         }
     }
 

@@ -8,6 +8,7 @@ use std::path::PathBuf;
 
 use super::derive::{OwnerKind, legacy_owner, module_address, particle_of_cid};
 use super::file::{self, Balance, GenesisFile, Link, Params};
+use super::pool;
 use super::{Chain, Options, PUSSY, build, hash32, hex, state, token_of, unhex, verify};
 
 fn home() -> PathBuf {
@@ -87,6 +88,7 @@ fn sample() -> GenesisFile {
         subsidy: file::subsidy_of(1_000_000).unwrap(),
         checkpoint_key: [0u8; 33],
         checkpoint_sunset: file::CHECKPOINT_SUNSET,
+        pool: pool::Pool::genesis(),
     };
     GenesisFile {
         params,
@@ -246,4 +248,43 @@ fn pussy_genesis_is_deterministic_conserving_and_bijective() {
     assert!(ra.gaps.contains_key("cyberlinks_unrecoverable"));
     let _ = OwnerKind::Neuron;
     let _ = std::fs::remove_dir_all(&dir);
+}
+
+// ── the pool: formats frozen at genesis (chain.md §11, chain-conformance §12) ──
+
+#[test]
+fn pool_record_is_frozen_into_the_genesis_params() {
+    let p = pool::Pool::genesis();
+    assert_eq!((p.format, p.depth, p.anchor_window, p.digest), (1, 40, 1_000, 64));
+    assert_eq!(p.tags, pool::tags_digest());
+    let bytes = p.encode();
+    assert_eq!(bytes.len(), pool::POOL_BYTES);
+    assert_eq!(pool::Pool::decode(&bytes).unwrap(), p);
+    assert_eq!(bytes.len(), 74);
+    assert!(pool::Pool::decode(&bytes[..73]).is_err());
+    // the params frame ends with the pool record
+    let g = sample();
+    let params = g.params.encode().unwrap();
+    assert_eq!(&params[params.len() - pool::POOL_BYTES..], &bytes[..]);
+    // any other pool record is not a genesis: encode and decode both refuse
+    for tamper in [
+        pool::Pool { depth: 32, ..p },
+        pool::Pool { anchor_window: 999, ..p },
+        pool::Pool { format: 2, ..p },
+        pool::Pool { digest: 32, ..p },
+        pool::Pool { tags: [0; 64], ..p },
+    ] {
+        let mut bad = sample();
+        bad.params.pool = tamper;
+        assert!(bad.encode().is_err(), "{tamper:?}");
+        let forged = Params { pool: tamper, ..bad.params.clone() }.encode().unwrap();
+        assert!(Params::decode(&forged).is_ok(), "the frame decodes");
+        let mut file_bytes = g.encode().unwrap();
+        let at = file_bytes.windows(pool::POOL_BYTES).position(|w| w == bytes).unwrap();
+        file_bytes[at..at + pool::POOL_BYTES].copy_from_slice(&tamper.encode());
+        assert!(GenesisFile::decode(&file_bytes).is_err(), "but the file is rejected: {tamper:?}");
+    }
+    // a pre-pool params frame (74 bytes short) is not a genesis
+    let short = &params[..params.len() - pool::POOL_BYTES];
+    assert!(Params::decode(short).is_err());
 }

@@ -69,6 +69,7 @@ impl Net {
                 subsidy: super::params::subsidy(s0),
                 checkpoint_key: pubkey(&checkpoint_key),
                 checkpoint_sunset: super::params::CHECKPOINT_SUNSET,
+                pool: super::pool::Pool::genesis(),
             },
             balances,
             links: vec![Link { neuron: neurons[0], p: [1; 32], q: [2; 32], height: 7 }],

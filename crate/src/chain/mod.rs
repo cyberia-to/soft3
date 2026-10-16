@@ -21,6 +21,7 @@ pub mod header;
 pub mod mine;
 pub mod net;
 pub mod params;
+pub mod pool;
 pub mod pow;
 pub mod select;
 pub mod sigs;

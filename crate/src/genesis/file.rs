@@ -4,6 +4,7 @@
 //! ```text
 //! (*, k)  "urn:cyberia:chain-genesis:1"
 //! (~, p)  params      version u32 ‖ name ‖ hrp ‖ denom ‖ time u64 ‖ bits u32 ‖ subsidy u64 ‖ checkpoint_key [33] ‖ checkpoint_sunset u64
+//!                     ‖ pool: format u32 ‖ depth u8 ‖ anchor_window u32 ‖ digest u8 ‖ tags [64]   (the frozen pool formats, chain.md §11.10)
 //! ($, b)  balance     owner [32] ‖ token [32] ‖ amount u64              (sorted by (owner, token), unique, amount > 0)
 //! (#, l)  link        neuron [32] ‖ p [32] ‖ q [32] ‖ height u64         (source order, duplicates kept)
 //! ```
@@ -14,6 +15,7 @@
 use std::io;
 
 use super::Id;
+use crate::chain::pool::{POOL_BYTES, Pool};
 
 pub const DIALECT: &str = "urn:cyberia:chain-genesis:1";
 pub const VERSION: u32 = 1;
@@ -40,6 +42,9 @@ pub struct Params {
     pub subsidy: u64,
     pub checkpoint_key: [u8; 33],
     pub checkpoint_sunset: u64,
+    /// The pool's frozen formats (rule set 2, off at launch): the chain id
+    /// commits to them through this record.
+    pub pool: Pool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -87,6 +92,7 @@ impl Params {
         d.extend_from_slice(&self.subsidy.to_le_bytes());
         d.extend_from_slice(&self.checkpoint_key);
         d.extend_from_slice(&self.checkpoint_sunset.to_le_bytes());
+        d.extend_from_slice(&self.pool.encode());
         Ok(d)
     }
 
@@ -101,8 +107,9 @@ impl Params {
         let subsidy = r.u64()?;
         let checkpoint_key = r.array::<33>()?;
         let checkpoint_sunset = r.u64()?;
+        let pool = Pool::decode(r.take(POOL_BYTES)?)?;
         r.end()?;
-        Ok(Self { version, name, hrp, denom, time, bits, subsidy, checkpoint_key, checkpoint_sunset })
+        Ok(Self { version, name, hrp, denom, time, bits, subsidy, checkpoint_key, checkpoint_sunset, pool })
     }
 }
 
@@ -240,6 +247,7 @@ impl GenesisFile {
         if self.params.version != VERSION {
             return Err(invalid(format!("params version {}", self.params.version)));
         }
+        self.params.pool.check()?;
         for w in self.balances.windows(2) {
             let a = (&w[0].owner, &w[0].token);
             let b = (&w[1].owner, &w[1].token);
