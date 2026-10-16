@@ -1,32 +1,42 @@
 ---
-title: self — a private neuron that acts
+title: self — the private state machine that acts
 tags: cyber, soft3, proposal, self, cy, neuron, research
 crystal-type: process
 crystal-domain: cyber
 kind: proposal
 status: draft
 date: 2026-10-16
-alias: private self, autonomous private neuron, network self
+alias: private self, autonomous private neuron, network self, self — a private neuron that acts
 depends-on: soft3/proposals/privacy-frozen
 evidence: open
 ---
 
-# self — a private neuron that acts
+# self — the private state machine that acts
 
 ## 0. decision
 
-Make self a private persistent [[neuron]] whose fixed transition law gives it
-authority to receive observations, maintain memory, decide and perform bounded
-actions. Its identity and accepted history continue across replacement of its
-physical executors. The network may instantiate such a neuron to act on its own
-behalf; its authority is limited by the same declared law and budgets as any
-other instance. No implicit authority over other neurons follows from that role.
+The first reason to build self is to make the complete private protocol work.
+Privacy over contributions held by many neurons needs a persistent private
+state machine that holds distributed secrets, advances their lifecycle and
+uses or reveals them only under fixed rules. That machine is the core of self.
+The network's first self instance runs its own privacy service: admitting
+protected contributions, computing aggregates, authorizing disclosure and
+preserving those obligations across replacement of executors.
 
-Self depends on [privacy](privacy-frozen.md). Privacy supplies anonymous participation,
-protected state, joint computation and distributed use of secrets. Self supplies
-the meaning of that state, which events advance it, what it may decide, and which
-effects it may authorize. This proposal owns the complete private agent process.
-The privacy proposal owns the complete private protocol it consumes.
+Self and [privacy](privacy-frozen.md#01-mutual-dependency-with-self) are mutually
+dependent. Privacy supplies the cryptographic protection and proof mechanisms
+that make self's state private. Self supplies the persistent rules and accepted
+history that make the network's use of those mechanisms a complete private
+protocol. The two proposals specify different responsibilities in one composed
+machine; both and their joint behavior must be qualified before that machine
+is frozen and launched.
+
+The same core supports a private persistent [[neuron]] that receives
+observations, maintains memory, decides and performs bounded actions. A fixed
+transition program is enough for the privacy service. Models, learning and
+objectives extend its applications. An instance's identity and accepted history
+continue across replacement of its physical executors, and its authority stays
+within its declared law and budgets.
 
 Select existing component homes. [[neuron]] owns subject/runtime records and
 durable execution; [[cy]] owns the agent's declaration, decisions and permission
@@ -37,35 +47,101 @@ of identities, state, cryptography or consensus.
 
 This is a draft research and composition decision. Its exact private execution
 profile, authority relation and failure protocol require implementation and
-qualification before launch. The split creates independent questions and
-acceptance receipts, with one combined gate for launching a private self.
-The complete private self waits for those gates before its own immutable
-launch. The root chain's separate activation schedule is recorded in privacy
-§1.13; this draft makes no claim that a deployed private self exists today.
+qualification. The privacy service and self's secret-state kernel share the
+closing gate S0/G6; an autonomous agent instance also closes S1–S6. The root
+chain's separate activation schedule remains recorded in privacy §1.13. The
+complete private protocol includes the joint-computation machine described here.
 
-## 1. the boundary between the proposals
+## 1. why privacy needs self, and self needs privacy
+
+The proposed aggregate service must remember the accepted input set, function,
+key generation, disclosure history and remaining release budget. It must carry
+that state through failures and changes of executors. Otherwise a committee can
+be asked to decrypt an individual input, repeat an exhausted query or release
+conflicting results. Encryption and a proof of arithmetic supply only part of
+this functionality; the accepted state transition supplies its operational law.
+
+| direction | required capability |
+|---|---|
+| privacy → self core | a persistent private state machine for input admission, secret lifecycle, authorized evaluation/release, replay protection, recovery and failure handling |
+| self core → privacy | hiding commitments, protected state and access, authenticated private inputs, qualified PQ joint computation, proofs and distributed secret operations |
+| agent applications → composed core | private memory, standing orders, bounded decisions and effects over the same accepted state and authority rules |
+
+Privacy's aggregate machine therefore instantiates self's core. The monetary
+conservation relation stays independently enforced. Owner-held private spends
+use the pool's own proof path; the requested complete machine additionally
+includes private computation over many independent neurons' contributions.
+Its completeness gate includes the self core. Model-driven decisions in [[cy]]
+consume that core through a separate application interface.
+
+### 1.1 the first self instance is the privacy service
+
+Its conceptual state, with exact encodings still to be specified, is:
+
+```text
+privacy_service_state = (domain, fixed_law, privacy_profile,
+                         accepted_predecessor, key_generation,
+                         role_assignment, protected_state_binding,
+                         closed_input_set, approved_function,
+                         release_history, allowances, pending_obligations)
+
+step(state, admitted_event, cryptographic_evidence)
+    -> (next_state, permitted_secret_operations, authorized_disclosures)
+```
+
+Public commitments authenticate the history; secret shares and protected
+records are distributed according to the privacy profile. Each field's public
+or hidden representation belongs in the joint leakage model. The state machine
+admits contributions, closes an input set, evaluates the approved function,
+authorizes the exact release after finality, and records that release before
+another request can consume its allowance. Resharing, erasure, executor
+replacement, failure and retirement are transitions under the same fixed law.
+Each secret domain has its own scope and compromise analysis.
+
+An honest threshold releases only on evidence binding the domain, predecessor,
+key generation, input set, function and final decision. The proof establishes
+correctness; the threshold protocol and its corruption assumptions establish
+confidentiality. A colluding reconstruction threshold can disclose secrets
+outside the law. That failure remains explicit in the threat model, together
+with mobile corruption, erasure assumptions and availability. The machine's
+rules do not turn threshold custody into an unconditional secrecy guarantee.
+
+[Can a Public Blockchain Keep a Secret?](https://eprint.iacr.org/2020/464)
+studies long-term secret custody with specified use/release conditions and
+resharing across changing hidden committees under a mobile-adversary model.
+[YOSO](https://eprint.iacr.org/2021/210) separates protocol roles from their
+physical assignment. These motivate the separation of a continuing logical
+service from replaceable executors here; a qualified PQ construction and its
+composition with this stack remain research obligations.
+
+### 1.2 ownership and bootstrap
 
 | concern | privacy owns | self owns |
 |---|---|---|
-| secrecy | leakage/adversary model and concrete PQ construction | which application observations, memory and decisions must be protected |
-| state | hiding bindings, encrypted persistence, private access and recovery | subject/program identity, logical predecessor and accepted continuation |
-| computation | authenticated inputs and verifiable bounded private evaluation | the transition law, trigger, decision procedure and permitted state changes |
-| disclosure | enforcement of admitted release relations and safe threshold use | the instance's permitted disclosures and actions within those relations |
-| continuity | succession of shares/keys and protected data under changing executors | continuing the same neuron, its tasks, allowances and unresolved effects |
-| consensus | private admission/settlement and their finality dependencies | binding a decision and effect to an accepted state and finality certificate |
-| failure | cryptographic/network fault bounds and failure evidence | suspension, reconciliation, retirement and resource exhaustion semantics |
+| secrecy | leakage/adversary model and concrete PQ construction | the state, events and allowed disclosures of the service and its applications |
+| state | hiding bindings, encrypted persistence and private access mechanisms | canonical predecessor, accepted continuation, release history and allowances |
+| computation | authenticated inputs and verifiable bounded private evaluation | the fixed transition law, admitted input set and permitted secret operations |
+| disclosure | cryptographic enforcement and safe threshold use | authorization against accepted state, finality, prior releases and remaining budget |
+| continuity | DKG, resharing, erasure and protected recovery mechanisms | when generations change, which history continues and how pending obligations survive |
+| consensus | privacy of admission/settlement and the joint security argument | state/effect binding to the admitted finality certificate |
+| failure | cryptographic/network fault bounds and failure evidence | suspension, recovery, exhaustion and retirement transitions |
 
-The dependency is [privacy §1.7 and G6](privacy-frozen.md#5-the-gates-and-whether-this-is-research):
-protected evaluation, distributed secret custody and release of an authorized
-result. The shared service contract must specify context binding (network,
-subject, program, policy, predecessor and input set), protected state and reads,
-bounded verifiable evaluation, finalized release, secret succession, recovery,
-failure evidence and resource classes. These are requirements for the privacy
-profile consumed by self; its exact interface remains open before S1 and S6.
-Changing self's model or objectives cannot widen that interface's guarantees.
-Privacy's aggregate and monetary rules remain executable without loading self
-or consulting its decisions. An application admission policy is data to the
-protocol's fixed verifier, with no reverse dependency on cy.
+The reciprocal dependency is a composition contract. Implementation starts
+from explicit bootstrap inputs: public parameters, an admitted initial state,
+a qualified role-assignment/authentication profile, recipient channels and the
+selected key-generation protocol. These establish the first protected state.
+That state then advances using the cryptographic mechanisms. Agent objectives
+enter through the higher application interface. No step may require a secret
+or aggregate that the same unfinished step is meant to create.
+
+The shared interface binds network, subject, program, policy, predecessor,
+key generation and input set. It covers protected reads, bounded evaluation,
+finalized release, secret succession, recovery, failure evidence and resource
+charges. Consensus admission uses the declared bootstrap or prior accepted
+state; any private feedback into later consensus has a separately specified
+ordering. S0/G6 must close this schedule and failure behavior before launch.
+The two proposals share this interface and its conformance fixtures; component
+modules implement it through the existing ownership boundaries.
 
 The [execution model](../specs/execution-model.md) remains the composition rule:
 machine, environment, proof, network and executor are separate selections.
@@ -235,8 +311,9 @@ a qualified PQ implementation nor a performance claim for this design.
 
 ## 6. conformance to privacy and joint freeze
 
-| self obligation | privacy contract/gate consumed | composition evidence required |
+| shared obligation | privacy contract/gate | composition evidence required |
 |---|---|---|
+| privacy service implemented by self core | §1.7 joint secrets, G4–G6 ↔ S0 | complete admitted-input → evaluation → authorized-release lifecycle, bootstrap and succession under one fixed law |
 | private subject and action authority | §2 authority relation, §6.4 predicates; G3–G5 | wrong subject/domain/program/policy/predecessor rejected; linkability matches the declared profile |
 | persistent private memory and execution | §1.7 joint evaluation; G1, G2, G4–G6 | actual protected transition, correct successor, private reads and qualified proof/evaluation composition |
 | autonomous action and disclosure | §1.7 authorized release; G4, G6 | only an admitted final transition can authorize the exact output/effect; no individual-input decryption oracle |
@@ -244,18 +321,30 @@ a qualified PQ implementation nor a performance claim for this design.
 | private messages and recovery | §1.2 delivery, §6.6 recovery; G7 | declared identity/traffic leakage, complete encrypted history and access-private recovery |
 | sustainable operation | §6.2 measured budgets, G6 collective costs | complete lifecycle receipt including computation, storage, succession, transport and recovery costs |
 
-Own closing gates:
+The shared core gate and the additional agent gates:
 
 | gate | closing evidence |
 |---|---|
+| S0: privacy service core | joint with G6: exact state and fixed law, bootstrap, binding of inputs/functions/results, stateful release accounting, finality, key succession/erasure, recovery and resource/failure outcomes; privacy's G4/G5 qualify the leakage and cryptographic composition; required for the complete private protocol |
 | S1: subject and law | exact profile/record definitions, authority and disclosure semantics, fixed invariants and accepted migration rules |
 | S2: autonomous private transition | creator offline; authenticated input/timer wakes bounded computation; accepted private state and permitted action agree with the reference relation |
 | S3: effect confinement | forged/expanded grants, wrong domains, stale state and unfinalized output cannot dispatch; native duplicates and external uncertain outcomes follow their stated protocols |
 | S4: complete lifecycle | creation, funding, concurrent candidates, worker loss, succession, partition recovery, exhaustion, pause and retirement preserve history, allowances and obligations |
 | S5: learning boundary | any claimed private model workload stays within its declared boundary and costs; adversarial proposals cannot widen authority or disclosure |
-| S6: end-to-end closure | privacy gates and S1–S5 pass on exact committed implementations; security/composition review, adversarial fixtures and measured product budgets cover the advertised behavior |
+| S6: end-to-end closure | privacy gates and S0–S5 pass on exact committed implementations; security/composition review, adversarial fixtures and measured product budgets cover the advertised behavior |
 
-Use a small autonomous private neuron as the first integration fixture: it keeps
+The first integration fixture is the privacy service itself: independent
+neurons contribute encrypted inputs; a fixed aggregate is evaluated over the
+closed set; only its admitted result is released. Continue through executor
+replacement while retaining release history and pending obligations. Reject
+individual-input decryption, wrong functions or key generations, stale and
+unfinalized results, repeated/exhausted releases and rollback after disclosure.
+Exercise missing roles, interrupted resharing and bootstrap/consensus stalls.
+The G4 analysis states what even an authorized exact aggregate reveals.
+This single fixture belongs to both S0 and G6; all advertised functions still
+need their own leakage, correctness, failure and cost evidence.
+
+The next fixture exercises an autonomous private neuron: it keeps
 a secret preference and finite allowance, consumes an authorized collective
 aggregate, decides whether to emit a cyberlink or make a bounded native payment,
 records the outcome and continues after executor replacement. The creator stays
@@ -263,20 +352,21 @@ offline. Inject duplicate messages, stale results, forbidden disclosures,
 exhaustion and crashes around commit/dispatch. This is a proposed experiment;
 no result or benchmark is claimed here.
 
-That fixture establishes a test path, with the complete declared workload set
-still required for acceptance. Private aggregate/reward computation remains in
-privacy's own fixtures. Each proposal has its own evidence; the requested
-private self launches only when both and their composition are qualified.
-Unresolved rows block the immutable private self launch.
+These fixtures establish a test path, with the complete declared workload set
+still required for acceptance. Privacy and self retain separate responsibilities
+and share the S0/G6 receipt. The complete private protocol closes that joint
+receipt before its immutable launch; an autonomous agent launch additionally
+closes S1–S6. Neither proposal can mark the shared private machine complete
+while the other's core obligations remain open.
 
 ## 7. implementation homes and repository decision
 
 | owner | work assigned by this proposal |
 |---|---|
-| soft3 | cross-component contract, privacy dependency, profile/conformance matrix and joint acceptance receipts |
-| neuron | existing subject/program model, private authority bindings, durable invocation/continuation/effect records and network execution profile |
+| soft3 | reciprocal privacy/self contract, profile/conformance matrix and shared S0/G6 acceptance receipt |
+| neuron | secret-state kernel and privacy-service lifecycle, existing subject/program model, durable invocation/continuation/effect records and network execution profile |
 | cy | soul/ward decision semantics, objectives, observation handling, standing orders and agent-level lifecycle composition |
-| mudra | privacy-owned key distribution, encrypted computation/delivery and scoped secret operations consumed by self |
+| mudra | privacy cryptography, key distribution, encrypted computation/delivery and secret operations invoked by the self core under its accepted law |
 | cybergraph, bbg | shared authenticated history, encrypted records and atomic state publication; no second canonical agent database |
 | foculus | network admission/finality and canonical continuation; consume the privacy protocol without depending on the agent's objectives |
 | nox, trident, joy, zheng, lens | existing execution/compiler/proof contracts and qualified protected backend integration |
@@ -297,6 +387,8 @@ proposed network guarantees are recorded in the
 [research receipt](https://github.com/cyberia-to/soft3/blob/764d90f71e4fd800532548d76ec61829a791d970/audit/self-2026-10-16/README.md).
 That receipt describes the original split on PR #190. This restored draft
 points to the reconciled `privacy-frozen.md` and its current gate numbering;
-the older receipt's privacy links and genesis wording remain historical.
+the older receipt's one-way dependency, privacy links and genesis wording remain
+historical. This draft makes the shared secret-state kernel explicit in both
+proposals and assigns its acceptance to S0/G6.
 Existing accepted specs,
 component registry, release pins and implementation claims are unchanged.

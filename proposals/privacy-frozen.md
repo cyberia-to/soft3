@@ -4,6 +4,7 @@ crystal-type: process
 crystal-domain: cyber
 alias: frozen privacy, the shielded pool, privacy proposal, P1 P2 P3 frozen, privacy research, anonymous machine
 status: proposed
+depends-on: soft3/proposals/self
 date: 2026-10-16
 reconciled: 2026-10-16 with the second draft of the same day (soft3 PR #190), §9
 evidence: audit/privacy-2026-10-16/
@@ -26,6 +27,39 @@ two moments freeze, and they freeze different things. the genesis of 2026-11-05 
 
 fundamental research is needed, and its core is two items, not ten: hash-only zero-knowledge proofs of ≤ 64 KB (today 165–419 KB), and verifying those proofs inside the block proof so that a block stays one proof. the third gate is not research but time: cryptanalysis of hemera, the material itself. the reconciliation adds two gates the pool cannot switch on without (a written leakage model, and the lifetime security argument of the composition) and two that gate other things (settlement over secret inputs held by many neurons; anonymity against a global network observer), §5.
 
+## 0.1 mutual dependency with self
+
+The complete private protocol depends on [self's private state-machine core](self.md#1-why-privacy-needs-self-and-self-needs-privacy).
+Its first instance runs the network's privacy service: it admits encrypted
+contributions, fixes the input set and permitted function, carries key and
+state generations through executor replacement, and releases only the result
+authorized by the accepted history. The machine remembers previous disclosures,
+remaining allowances and pending obligations. These are protocol state with a
+fixed transition law, required to make joint computation and controlled release
+work over time.
+
+The dependency runs both ways. Privacy supplies the cryptographic mechanisms
+that protect self's state and operations; self supplies the persistent use and
+release rules that make those mechanisms the complete private service. The
+ownership boundary is mechanisms and leakage/security arguments in privacy,
+state-machine law and lifecycle in self, with one shared interface and
+conformance receipt. Privacy's service instantiates that core with a fixed
+program. Agent models and objectives are further applications of the core.
+
+G6 and [self S0](self.md#6-conformance-to-privacy-and-joint-freeze) close together:
+bootstrap, accepted state, input/function/result binding, disclosure accounting,
+finality, secret succession, recovery, resource bounds and failure behavior.
+G4 and G5 qualify the corresponding leakage and security composition. A
+threshold compromise can disclose protected state despite the fixed law; the
+construction retains its stated corruption and erasure assumptions.
+
+The pool's owner-held spend path has the separate scope and activation gates
+below. The complete private machine requested here additionally includes joint
+computation and requires the shared self core before its own immutable launch.
+A pool activation qualifies that pool; the complete private-protocol claim
+requires S0/G6 and every other gate of its declared functionality. The root
+chain's existing activation schedule remains the one in §1.13.
+
 ## 1. the thirteen decisions
 
 each is final for this design; the alternatives are named once and not reopened.
@@ -42,7 +76,7 @@ each is final for this design; the alternatives are named once and not reopened.
    |---|---|
    | a program over public outputs (φ*, markets, indexes) | anyone; it is indexing and needs no protocol |
    | a program over one neuron's own hidden records (owner-held witness) | that neuron, locally, proving the result with a zheng proof; verifiers learn what the program declares public |
-   | a program over hidden inputs held by several independent neurons (joint secret input: valence positions and serum reports, BTS surprise against the crowd, contributor-grouped Shapley settlement, hidden weights) | collective computation: each neuron proves and encrypts its own contribution, the network evaluates over the closed input set, a threshold release discloses only the authorized result; threshold homomorphic encryption (additive for sums after local preprocessing, bounded exact evaluation beyond) as the baseline, malicious-secure MPC as the comparison; or the function is redefined over public or owner-held inputs; gate G6 |
+   | a program over hidden inputs held by several independent neurons (joint secret input: valence positions and serum reports, BTS surprise against the crowd, contributor-grouped Shapley settlement, hidden weights) | collective computation: each neuron proves and encrypts its own contribution, the network evaluates over the closed input set, a threshold release discloses only the authorized result; threshold homomorphic encryption (additive for sums after local preprocessing, bounded exact evaluation beyond) as the baseline, malicious-secure MPC as the comparison; or the function is redefined over public or owner-held inputs; self's state-machine core enforces the persistent input/release lifecycle; joint gate G6/S0 |
 
    no homomorphic or threshold scheme enters consensus soundness. a later rule set may adopt a threshold encryption layer for the confidentiality of contributions only: every input-encryption, evaluation and decryption step is checked by a zheng proof over hemera, so a lattice break or a colluding key committee discloses contributions and never forges a result, the same failure class as the KEM of §1.2. its other failure, a committee too small to release, halts the dependent settlement; the rule set names that outcome, and it is never a plaintext fallback. mudra's native-field `veil` (TFHE) remains unqualified and is not that layer. a central prover that receives everyone's secret inputs is not a solution to the third row even if its output proof is zero knowledge.
 8. one proof per block. the miner folds every transaction's proof into the block proof (the constant-size profile of `zheng/specs/recursion.md`: 64,213 B worst case, verify 2.5 ms on 16 threads). nodes verify the block proof and never the transactions' proofs. raw transaction proofs travel only in the mempool, where size costs bandwidth, not consensus. the block budget of 256 KiB therefore holds whatever a transaction proof weighs. the reference semantics stays the per-transaction relation: the block-proof statement is defined as the conjunction of the transactions' `SPEND` statements, and a reference validator that checks raw proofs one by one must reach the same verdict on every block of the conformance corpus (G2). the aggregator learns no spend secrets; it folds proofs, not witnesses.
@@ -137,10 +171,10 @@ yes. G1, G4 and G5 are research with uncertain outcomes; G2 is engineering on th
 | G3 · the material | the profile decision of [hemera#15](https://github.com/cyberia-to/hemera/pull/15) taken before genesis (it is the one-profile decision of `cyber/whitepaper.md` §4.4: S-box in every round, round counts by a stated rule, digest width; the inverse-round degree argument is withdrawn by hemera's own research); then a published cryptanalysis campaign against the pinned profile with a bounty, third-party algebraic analysis (Gröbner, interpolation, the partial-round structure) | external, time | the decision: before 2026-11-05; the campaign: months, in parallel with the transparent chain, which bets on the same material | the pool waits; a hash break in a pool is undetectable counterfeit, bounded only by the turnstile (§1.5) |
 | G4 · the leakage model | a written observer and corruption model for `SPEND`, link outputs, settlement and every released aggregate: what a node, a miner, a relay and a coalition of contributors learn; the author-swap game (two honest authors exchanging otherwise identical public assertions are indistinguishable under the declared network and corruption assumptions); sparse, overlapping and colluding releases analyzed with their residual leakage stated | research, specification | 2–4 sessions | the pool waits: without it the privacy claim of §0 has no content to prove G1 and G5 against |
 | G5 · lifetime security | the deployed composition argued in the quantum random-oracle model (Fiat–Shamir, grinding, multi-target and lifetime losses, nested verification inside the block proof); the zero-knowledge error within a stated lifetime budget — today's ledger bounds it by `types · log(m) / p`, about 2^-58.4 in its own example (`zheng/specs/soundness.md` on `release/0.4`), an upper bound and not a leak, but not a lifetime budget either; fresh hiding entropy per proof; the pool digests at ≥ 128-bit generic quantum collision; an independent verifier and adversarial fixtures; SHA-3 as the comparison baseline | research | 4–8 sessions, outcome uncertain | the pool waits; security parameters are never lowered to pass G1 |
-| G6 · secret inputs held by many | for every function whose inputs no single prover holds (valence positions and serum reports, launch row 29; hidden per-link weights; BTS surprise; contributor-grouped Shapley settlement): the exact function written as a bounded circuit and decomposed (local products proved by their owners, encrypted sums, what needs joint evaluation); a post-quantum threshold encryption protocol (baseline: exact RLWE threshold HE, multiparty BFV as the starting point, whose own model is semi-honest) or malicious-secure MPC, compared at the same leakage and corruption model; distributed key generation, epoch keys with fixed resharing and erasure, a stated corruption threshold and its liveness failure outcome; zheng proofs of input-encryption consistency, evaluation over exactly the closed input set and decryption bound to the approved result (a key committee that decrypts arbitrary ciphertexts is a decryption oracle for individual inputs); canonical bounded encodings with no plaintext-modulus wraparound and a decryption-failure budget; packed-slot sanitization; a release policy whose singleton, incremental and overlapping releases are analyzed under G4; dropout, exclusion, reorg and payout fixtures | research | open | blocks the rule set that activates that function (weights beyond public products, valence, private settlement), not the pool and not genesis; a central prover holding everyone's inputs is not a fallback |
+| G6 · secret inputs held by many | for every function whose inputs no single prover holds (valence positions and serum reports, launch row 29; hidden per-link weights; BTS surprise; contributor-grouped Shapley settlement): the exact function written as a bounded circuit and decomposed (local products proved by their owners, encrypted sums, what needs joint evaluation); a post-quantum threshold encryption protocol (baseline: exact RLWE threshold HE, multiparty BFV as the starting point, whose own model is semi-honest) or malicious-secure MPC, compared at the same leakage and corruption model; distributed key generation, epoch keys with fixed resharing and erasure, a stated corruption threshold and its liveness failure outcome; zheng proofs of input-encryption consistency, evaluation over exactly the closed input set and decryption bound to the approved result (a key committee that decrypts arbitrary ciphertexts is a decryption oracle for individual inputs); canonical bounded encodings with no plaintext-modulus wraparound and a decryption-failure budget; packed-slot sanitization; a release policy whose singleton, incremental and overlapping releases are analyzed under G4; dropout, exclusion, reorg and payout fixtures; [self S0](self.md#6-conformance-to-privacy-and-joint-freeze) passed on the same service state/law, bootstrap and release-accounting fixtures | research | open | blocks the complete private service and the rule set that activates that function (weights beyond public products, valence, private settlement), not the pool and not genesis; a central prover holding everyone's inputs is not a fallback |
 | G7 · network anonymity | a reviewed post-quantum mix and delivery composition (fixed packet classes, whole-bundle padding, independent delay, cover traffic reaching the observed layer, replay defenses, an authenticated relay directory); active, low-load and intersection experiments; key-private recipient delivery for the KEM envelope | research and engineering | open | blocks the claim, not the pool: wallets state the relay-level guarantee of §1.11 until it passes |
 
-the order is G2 first (it is needed whatever G1 yields), G4 at once (it defines what G1 and G5 must hide), G1 and G5 in parallel, hemera#15 before genesis and the G3 campaign from then. G6 runs against the real attention sum, valence, BTS and settlement functions, not an unrelated private sum, and its first deliverable is the decision of §1.6 (public products or hidden weights); G7 runs in radio. the transparent root chain does not wait for any of them (`cyber/launch.md`, decision 2026-10-15).
+the order is G2 first (it is needed whatever G1 yields), G4 at once (it defines what G1 and G5 must hide), G1 and G5 in parallel, hemera#15 before genesis and the G3 campaign from then. G6 closes jointly with self S0 on one privacy-service state machine. It runs against the real attention sum, valence, BTS and settlement functions, not an unrelated private sum, and its first deliverable is the decision of §1.6 (public products or hidden weights); G7 runs in radio. the transparent root chain does not wait for any of them (`cyber/launch.md`, decision 2026-10-15).
 
 ## 6. acceptance
 
@@ -175,7 +209,7 @@ the pool is switched on (rule set 2) when all hold:
 
 ## 9. the second draft, reconciled
 
-on 2026-10-16, within the hour of this page, another session of the same owner opened soft3 PR #190: `proposals/privacy.md`, "privacy — a frozen anonymous machine", with a research receipt. it selects the same architecture — private programmable notes, hash-based ownership and nullifiers, anonymous public assertions — and reaches the opposite launch verdict: the current public chain cannot be the genesis of a permanently private post-quantum currency, so defer the irreversible monetary freeze until its gates close. this section is the reconciliation; the PR was closed unmerged, its receipt moved to [audit/privacy-2026-10-16](../audit/privacy-2026-10-16/README.md), and nothing of it remains a second proposal. the draft has two commits: ea413d4, reconciled by soft3 #191 in the subsections up to "dropped", and b011039, pushed at 10:29 UTC while #191 was being written, reconciled in "the revision" at the end.
+on 2026-10-16, within the hour of this page, another session of the same owner opened soft3 PR #190: `proposals/privacy.md`, "privacy — a frozen anonymous machine", with a research receipt. it selects the same architecture — private programmable notes, hash-based ownership and nullifiers, anonymous public assertions — and reaches the opposite launch verdict: the current public chain cannot be the genesis of a permanently private post-quantum currency, so defer the irreversible monetary freeze until its gates close. this section is the reconciliation; the PR was closed unmerged and its receipt moved to [audit/privacy-2026-10-16](../audit/privacy-2026-10-16/README.md). This page owns the reconciled privacy design; [self](self.md) separately owns the private state-machine law and lifecycle required by §0.1. the draft has two commits: ea413d4, reconciled by soft3 #191 in the subsections up to "dropped", and b011039, pushed at 10:29 UTC while #191 was being written, reconciled in "the revision" at the end.
 
 ### the conflict, resolved
 
@@ -220,7 +254,7 @@ gate mapping, the second draft's numbering to this page's: its G1 (leakage) → 
 - direct transaction verification as the consensus rule: a 165–419 KB proof fills a 256 KiB block; kept as reference semantics only.
 - a mandatory mix layer as a freeze condition: the network is not consensus and is versioned freely; the guarantee it would add is gated as a claim instead.
 - "if hidden-input rewards define the currency, the whole genesis waits": the currency at genesis is the transparent root chain with a frozen supply; hidden-input functions arrive by the rule set G6 opens.
-- the second proposal page itself: one question, one page.
+- the duplicate privacy proposal page: this page owns privacy; self owns the coupled private state-machine question (§0.1).
 
 ### the revision: encrypted collective computation
 
