@@ -45,7 +45,7 @@ rev = "44bd5bfec5cb6764123ea513a33a26c0877a488c"
 name = "bbg"
 repo = "cyberia-to/bbg"
 branch = "master"
-rev = "a3c9a0c22bfb78ef891265f9e2cd25838ef77c2d"
+rev = "eb152fa2d386864ff98a673de8b14076081d2f0f"
 
 [[sibling]]
 name = "radio"
