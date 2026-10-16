@@ -1,0 +1,16 @@
+{
+  "scope": "counterexamples to simplified prose; not production exploits",
+  "soft3_base_prefix": "8525b17",
+  "script_sha256": "b6a384ee742b4a92a863290fb5883091773a173252976c9b85dbfc394e0bb2e3",
+  "goldilocks_prime": 18446744069414584321,
+  "bbg_displayed_components_cancel_to_value": 7,
+  "bbg_norm_accepts_nonzero_imbalance": true,
+  "field_only_conservation_accepts_integer_output": 18446744069414584321,
+  "singleton_release_recovers_delta": 7,
+  "colluders_recover_remaining_contribution": 17,
+  "live_only_reset_forgets_spend": true,
+  "single_field_identifier_alias": [
+    0,
+    18446744069414584321
+  ]
+}
