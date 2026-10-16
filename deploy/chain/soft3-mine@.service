@@ -1,0 +1,26 @@
+# soft3 reference miner against the local chain node — one instance per chain: soft3-mine@pussy-rc.
+# Parameters: /etc/soft3/<chain>.mine.env (SOFT3_MINE_NODE, SOFT3_MINE_ADDRESS, SOFT3_MINE_BACKEND, SOFT3_MINE_THREADS).
+# The node does not mine (chain-wire §7: GET /template, POST /submit); this unit is the miner beside it.
+[Unit]
+Description=soft3 miner (%i) — hemera PoW against the local node
+After=soft3-chain@%i.service
+Wants=soft3-chain@%i.service
+ConditionPathExists=/etc/soft3/%i.mine.env
+
+[Service]
+Type=simple
+User=cyber
+Group=cyber
+EnvironmentFile=/etc/soft3/%i.mine.env
+ExecStart=/home/cyber/soft3-chain/bin/soft3 mine --chain %i --node ${SOFT3_MINE_NODE} --address ${SOFT3_MINE_ADDRESS} --backend ${SOFT3_MINE_BACKEND} --threads ${SOFT3_MINE_THREADS}
+Restart=always
+RestartSec=10
+Nice=10
+CPUSchedulingPolicy=batch
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
