@@ -1,0 +1,557 @@
+{
+  "date": "2026-10-16",
+  "soft3_base": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+  "scope": "read-only source inspection; external papers support construction choices, not release certification",
+  "origin_default_heads_after_fetch": {
+    "soft3": {
+      "ref": "refs/remotes/origin/main",
+      "revision": "bc1104a7eedb7456f966a3e70a72eee3fdc84961"
+    },
+    "hemera": {
+      "ref": "refs/remotes/origin/main",
+      "revision": "d5f0a09539360934fb32db9b2e15a91995607db6"
+    },
+    "zheng": {
+      "ref": "refs/remotes/origin/master",
+      "revision": "5733dfdcc15cbc22fce9f5877b37515d005b8c44"
+    },
+    "lens": {
+      "ref": "refs/remotes/origin/master",
+      "revision": "8b26cef6587bee6a686f2cf163f6a8496931ee6a"
+    },
+    "mudra": {
+      "ref": "refs/remotes/origin/master",
+      "revision": "186c0f22871e72ac5d27396d893998865fc604d4"
+    },
+    "foculus": {
+      "ref": "refs/remotes/origin/master",
+      "revision": "4ae1a79b55791e56e742bb34732212af7042ef25"
+    },
+    "bbg": {
+      "ref": "refs/remotes/origin/master",
+      "revision": "ecaebc1f77dbc9f60b0adc55797dc40ddc4c3550"
+    }
+  },
+  "files": [
+    {
+      "id": "cyberia:dev.md",
+      "repository": "cyberia",
+      "revision": "1751270b14227343e12da265555436cb2b618873",
+      "path": "dev.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "cc5acefe7f3bb235a9f516efc4c20ab87cafa5c8d56d37102b0cd0a316bcb103",
+      "read_command": "git -C /Users/master/cyber/cyberia show 1751270b14227343e12da265555436cb2b618873:dev.md"
+    },
+    {
+      "id": "cyber:privacy.md",
+      "repository": "cyber",
+      "revision": "db51aa9bb6dd7fa3dc877123e06b8c636f6ab990",
+      "path": "privacy.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "99611dcf7522310ecc4013f27a93e4a66c028c76612964c0b7f34d8b24cfef77",
+      "read_command": "git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:privacy.md"
+    },
+    {
+      "id": "cyber:research/privacy trilateral.md",
+      "repository": "cyber",
+      "revision": "db51aa9bb6dd7fa3dc877123e06b8c636f6ab990",
+      "path": "research/privacy trilateral.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "808006f243dcb07204f5e08865c9a83d4ab745c6eec31d2d4e8d00927aaf7a37",
+      "read_command": "git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:research/privacy trilateral.md"
+    },
+    {
+      "id": "cyber:research/hashing and confidentiality.md",
+      "repository": "cyber",
+      "revision": "db51aa9bb6dd7fa3dc877123e06b8c636f6ab990",
+      "path": "research/hashing and confidentiality.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "360650a189eebffb959d77118016d3d15255fdf26e8cbd1621a159b4f3eba7ec",
+      "read_command": "git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:research/hashing and confidentiality.md"
+    },
+    {
+      "id": "cyber:launch.md",
+      "repository": "cyber",
+      "revision": "db51aa9bb6dd7fa3dc877123e06b8c636f6ab990",
+      "path": "launch.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "82a25f93be7be5b88c357fad587715a38361fe506a074953ea8926999758b383",
+      "read_command": "git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:launch.md"
+    },
+    {
+      "id": "cyber:audit/cryptography-2026-10-08.md",
+      "repository": "cyber",
+      "revision": "db51aa9bb6dd7fa3dc877123e06b8c636f6ab990",
+      "path": "audit/cryptography-2026-10-08.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "eeb0b7de593ab0e0b124e28e2360210707228dcba7ab591319343f8bcd8ee6a7",
+      "read_command": "git -C /Users/master/cyber/cyber show db51aa9bb6dd7fa3dc877123e06b8c636f6ab990:audit/cryptography-2026-10-08.md"
+    },
+    {
+      "id": "bbg:specs/privacy.md",
+      "repository": "bbg",
+      "revision": "c75b68574dd8291311a9a6e9a61fe96b1f5781e0",
+      "path": "specs/privacy.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "a13f92cb419d8b13fcd7ed471c95d5570f70655beab47752f7f49ab1bdb7d436",
+      "read_command": "git -C /Users/master/cyber/bbg show c75b68574dd8291311a9a6e9a61fe96b1f5781e0:specs/privacy.md"
+    },
+    {
+      "id": "bbg:docs/explanation/polynomial-privacy.md",
+      "repository": "bbg",
+      "revision": "c75b68574dd8291311a9a6e9a61fe96b1f5781e0",
+      "path": "docs/explanation/polynomial-privacy.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "0d45d58e4c9f4ea1b29a71626156b54a06d73fdb41bbfd902a276479f82ff940",
+      "read_command": "git -C /Users/master/cyber/bbg show c75b68574dd8291311a9a6e9a61fe96b1f5781e0:docs/explanation/polynomial-privacy.md"
+    },
+    {
+      "id": "bbg:specs/neuron-state.md",
+      "repository": "bbg",
+      "revision": "c75b68574dd8291311a9a6e9a61fe96b1f5781e0",
+      "path": "specs/neuron-state.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "7d3733ac98318ec0f0b357295cc4934ede4b24027fba388b814f5537a9f11804",
+      "read_command": "git -C /Users/master/cyber/bbg show c75b68574dd8291311a9a6e9a61fe96b1f5781e0:specs/neuron-state.md"
+    },
+    {
+      "id": "mudra:specs/identity.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/identity.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "c37ca48f9e33ec88626238d758790a6148348c6349b33a19d411a43bd7d35ece",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/identity.md"
+    },
+    {
+      "id": "mudra:specs/stealth.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/stealth.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "c015a6a6eb952b563ada912cca22c7bafdde11ebb9dc9c95ece1e47afab4890a",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/stealth.md"
+    },
+    {
+      "id": "mudra:specs/veil.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/veil.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "fab35b3c731ca15a450bfe222aac42082ccc88ba15c6c73b85c0e98886e41960",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/veil.md"
+    },
+    {
+      "id": "mudra:specs/seal.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/seal.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "77ba7c61a3c6fe0d2857bc05f8576d91e88e20acaf7395fc183d5fae8e612ac4",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/seal.md"
+    },
+    {
+      "id": "mudra:specs/private-recovery.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/private-recovery.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "66e3e48e2a39d015a1d1bf25b86f161fc3ff52c986c9ddb88a753077be7bc035",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/private-recovery.md"
+    },
+    {
+      "id": "mudra:specs/props/private-recovery-index.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/props/private-recovery-index.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "2e2318bc99cc7f4e1cce05a6814725c7104c7e5654e187b4860a663b7335406a",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/props/private-recovery-index.md"
+    },
+    {
+      "id": "mudra:audit/signature-optimality/local-decisions.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "audit/signature-optimality/local-decisions.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "5bae7a8964ee95cf3ba2f827f75df04ef986ea7d396f18face6b034e7066fc40",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:audit/signature-optimality/local-decisions.md"
+    },
+    {
+      "id": "mudra:audit/signature-optimality/neptune-privacy.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "audit/signature-optimality/neptune-privacy.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "1f4d7131052a150967db84dad2dcc8a1a940b3a327008165598c1b89b4380a44",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:audit/signature-optimality/neptune-privacy.md"
+    },
+    {
+      "id": "hemera:specs/README.md",
+      "repository": "hemera",
+      "revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "path": "specs/README.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "e23a940725940284e06715a671ac561205bbc1f145c37ccf06efaaefcc03ece1",
+      "read_command": "git -C /Users/master/cyber/hemera show 2bb9bb623cd97fb685acd7b9882518a2901723af:specs/README.md"
+    },
+    {
+      "id": "hemera:rs/src/params.rs",
+      "repository": "hemera",
+      "revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "path": "rs/src/params.rs",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "f4466d29a00067be3002486a62789328562cc2d19b4d088cdac928ad365e66e7",
+      "read_command": "git -C /Users/master/cyber/hemera show 2bb9bb623cd97fb685acd7b9882518a2901723af:rs/src/params.rs"
+    },
+    {
+      "id": "hemera:audit/0.3.1.md",
+      "repository": "hemera",
+      "revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "path": "audit/0.3.1.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "1497dd217dff4d5e56780b2f40d0aee9a0b743b13eee695807f6a91b8ad9644f",
+      "read_command": "git -C /Users/master/cyber/hemera show 2bb9bb623cd97fb685acd7b9882518a2901723af:audit/0.3.1.md"
+    },
+    {
+      "id": "hemera:research/permutation-decision.md",
+      "repository": "hemera",
+      "revision": "2bb9bb623cd97fb685acd7b9882518a2901723af",
+      "path": "research/permutation-decision.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "42b2dc782fe6bd352cce70b55f106b1991329ed0e1b142d4fa9983dece147036",
+      "read_command": "git -C /Users/master/cyber/hemera show 2bb9bb623cd97fb685acd7b9882518a2901723af:research/permutation-decision.md"
+    },
+    {
+      "id": "zheng:audit/private-execution-release.md",
+      "repository": "zheng",
+      "revision": "5ae689e1d1966529c322a4283005565458937b69",
+      "path": "audit/private-execution-release.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "4acc09cbf690085c2a53929f0cf81ee95d187675d0731aa80bc3fefd58d922ff",
+      "read_command": "git -C /Users/master/cyber/zheng show 5ae689e1d1966529c322a4283005565458937b69:audit/private-execution-release.md"
+    },
+    {
+      "id": "zheng:rs/src/execution/private.rs",
+      "repository": "zheng",
+      "revision": "5ae689e1d1966529c322a4283005565458937b69",
+      "path": "rs/src/execution/private.rs",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "e318bfa24b4c6a753f62b16a523c0fc41d8b01f0a52192d431175d1c2647de98",
+      "read_command": "git -C /Users/master/cyber/zheng show 5ae689e1d1966529c322a4283005565458937b69:rs/src/execution/private.rs"
+    },
+    {
+      "id": "zheng:rs/src/execution/private_state.rs",
+      "repository": "zheng",
+      "revision": "5ae689e1d1966529c322a4283005565458937b69",
+      "path": "rs/src/execution/private_state.rs",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "1d7f4b68438ec8303fad17e0baceed94d1c3b127f896f6fa29105e37d5e82eb3",
+      "read_command": "git -C /Users/master/cyber/zheng show 5ae689e1d1966529c322a4283005565458937b69:rs/src/execution/private_state.rs"
+    },
+    {
+      "id": "foculus:specs/protocol.md",
+      "repository": "foculus",
+      "revision": "9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744",
+      "path": "specs/protocol.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "9ef9f016e580b16a2fce0ad442eae526d4cc8646d5cf41dc1b09db01c97927f7",
+      "read_command": "git -C /Users/master/cyber/foculus show 9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744:specs/protocol.md"
+    },
+    {
+      "id": "foculus:specs/fold-mining.md",
+      "repository": "foculus",
+      "revision": "9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744",
+      "path": "specs/fold-mining.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "1b3a08227220c81233096ade735b0b53b39295a44f7fc603fcf6f15d91ebd3bb",
+      "read_command": "git -C /Users/master/cyber/foculus show 9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744:specs/fold-mining.md"
+    },
+    {
+      "id": "foculus:src/settlement.rs",
+      "repository": "foculus",
+      "revision": "9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744",
+      "path": "src/settlement.rs",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "fc68277f6d60570263e85ef0e73cbbbcc58fad543473f55a3d468d408601f477",
+      "read_command": "git -C /Users/master/cyber/foculus show 9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744:src/settlement.rs"
+    },
+    {
+      "id": "foculus:src/marginal_cert.rs",
+      "repository": "foculus",
+      "revision": "9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744",
+      "path": "src/marginal_cert.rs",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "c5d82803c831b1533bd096e84ecd897625dbfaf3c385d721258001bcbbdb2430",
+      "read_command": "git -C /Users/master/cyber/foculus show 9e32aa688e0f03ffa8fd9a3c099bc7e50cc8c744:src/marginal_cert.rs"
+    },
+    {
+      "id": "tru:specs/rewards.md",
+      "repository": "tru",
+      "revision": "6b25e4e93defe22a08168c46224bc2bf44cef1a8",
+      "path": "specs/rewards.md",
+      "source": "working-tree",
+      "matches_revision": false,
+      "sha256": "32a438e08a9f5af48fbb6ee5bfd9558a1e73d0b93f715497499d8702e9e6e721",
+      "read_command": "cat /Users/master/cyber/tru/specs/rewards.md"
+    },
+    {
+      "id": "cybergraph:docs/private-retrieval.md",
+      "repository": "cybergraph",
+      "revision": "0eae7ae9fa116ae51fc4ec6d2cd0941c12e86212",
+      "path": "docs/private-retrieval.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "5ad7275dd8d66d65ab8ce400cb4022d4e7d76dcf7d1a1f327377d331422add2d",
+      "read_command": "git -C /Users/master/cyber/cybergraph show 0eae7ae9fa116ae51fc4ec6d2cd0941c12e86212:docs/private-retrieval.md"
+    },
+    {
+      "id": "soft3:proposals/term.md",
+      "repository": "soft3",
+      "revision": "24e1d0890750e4d73d2708151ef161cb2d8f2115",
+      "path": "proposals/term.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "bca74f385be5c0957c330f033cae416adfd5653725a8f05aec0629ac19b2b208",
+      "read_command": "git -C /Users/master/cyber/soft3 show 24e1d0890750e4d73d2708151ef161cb2d8f2115:proposals/term.md"
+    },
+    {
+      "id": "soft3:proposals/steps-blocks-epochs.md",
+      "repository": "soft3",
+      "revision": "24e1d0890750e4d73d2708151ef161cb2d8f2115",
+      "path": "proposals/steps-blocks-epochs.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "e98e8b66e522872631ef50b60c697548acbf108a6c9ce9481f79a63a9ee74edc",
+      "read_command": "git -C /Users/master/cyber/soft3 show 24e1d0890750e4d73d2708151ef161cb2d8f2115:proposals/steps-blocks-epochs.md"
+    },
+    {
+      "id": "soft3:proposals/goldilocks-parano1d.md",
+      "repository": "soft3",
+      "revision": "24e1d0890750e4d73d2708151ef161cb2d8f2115",
+      "path": "proposals/goldilocks-parano1d.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "966bc3360509d35b9a70e3b55047848d48c89952c60ed0c5f4beedc7660cfa94",
+      "read_command": "git -C /Users/master/cyber/soft3 show 24e1d0890750e4d73d2708151ef161cb2d8f2115:proposals/goldilocks-parano1d.md"
+    },
+    {
+      "id": "soft3:specs/execution-model.md",
+      "repository": "soft3",
+      "revision": "24e1d0890750e4d73d2708151ef161cb2d8f2115",
+      "path": "specs/execution-model.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "427ac3c5244845dd15a124045db4ef8a6aea61874a7a51baa553010e6e377d85",
+      "read_command": "git -C /Users/master/cyber/soft3 show 24e1d0890750e4d73d2708151ef161cb2d8f2115:specs/execution-model.md"
+    },
+    {
+      "id": "soft3@HEAD:CLAUDE.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "CLAUDE.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "6950c46fa1560c27bd993b9ccf8d0cc1892e84cf30288f842bdcad956eab734c",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:CLAUDE.md"
+    },
+    {
+      "id": "soft3@HEAD:proposals/README.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "proposals/README.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "079039a6542402a00c5b3b312cb8aeb6273c446a536b2bd489e3b2ca0ca58b90",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:proposals/README.md"
+    },
+    {
+      "id": "soft3@HEAD:proposals/proof-system-repair.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "proposals/proof-system-repair.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "2f75b8b41d43b1047dd296fbf894113bbb6e23d49a3623ef13c47d29553432eb",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:proposals/proof-system-repair.md"
+    },
+    {
+      "id": "soft3@HEAD:specs/chain.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "specs/chain.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "5877ab0f66385e2063c630c745eea85cd009635dc757345ef7b930c6076f308b",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:specs/chain.md"
+    },
+    {
+      "id": "soft3@HEAD:specs/chain-wire.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "specs/chain-wire.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "3dd0469a04b5aac0f819d112a804c5047fb4d76f30e2b4fa4d7cda8c0eb7ca85",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:specs/chain-wire.md"
+    },
+    {
+      "id": "soft3@HEAD:specs/chain-conformance.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "specs/chain-conformance.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "33b0e50851be90d0f8a3a399e19b4436d121b16e48d7b8239d1b44663426504a",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:specs/chain-conformance.md"
+    },
+    {
+      "id": "soft3@HEAD:specs/execution-model.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "specs/execution-model.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "427ac3c5244845dd15a124045db4ef8a6aea61874a7a51baa553010e6e377d85",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:specs/execution-model.md"
+    },
+    {
+      "id": "soft3@HEAD:release/phase1.toml",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "release/phase1.toml",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "edbff9a7de181ce0df103ec8ec0e1d93403d8a2c9c31fa54ff1f09b7b40d24af",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:release/phase1.toml"
+    },
+    {
+      "id": "soft3@HEAD:crate/src/wallet/mod.rs",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "crate/src/wallet/mod.rs",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "5a61eaede208e13ff71a15e45a377b2cbda209b01f778ea8dc8cf95e8d8a1049",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:crate/src/wallet/mod.rs"
+    },
+    {
+      "id": "soft3@HEAD:crate/src/wallet/tx.rs",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "crate/src/wallet/tx.rs",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "c948ce82de4e252af45aa4e97025e5a8b9e75f66ab59bcadafdcc9697c5ac777",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:crate/src/wallet/tx.rs"
+    },
+    {
+      "id": "soft3@HEAD:audit/proof-latency-2026-10.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "audit/proof-latency-2026-10.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "79f731d9e08ca5f2e0162c6bbdd44e270d239caebaf62116cc75841b66ce9169",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:audit/proof-latency-2026-10.md"
+    },
+    {
+      "id": "soft3@HEAD:audit/proof-system-repair-status-2026-10-09.md",
+      "repository": "soft3",
+      "revision": "8525b174fa227f7def0e368d6ea64e135fdf063a",
+      "path": "audit/proof-system-repair-status-2026-10-09.md",
+      "source": "git-object",
+      "selected_ref": "HEAD",
+      "sha256": "e58932715245051df89cddc63a47c7078c9b8ad7f8fb22e52ac80889ae6d1d5e",
+      "read_command": "git -C /Users/master/cyber/.worktrees/soft3-privacy-freeze show 8525b174fa227f7def0e368d6ea64e135fdf063a:audit/proof-system-repair-status-2026-10-09.md"
+    },
+    {
+      "id": "zheng@origin/release/0.4:specs/soundness.md",
+      "repository": "zheng",
+      "revision": "09308d7134914e940a41474ad12a772f6b1e92d7",
+      "path": "specs/soundness.md",
+      "source": "git-object",
+      "selected_ref": "origin/release/0.4",
+      "sha256": "afa8ec7133f11527c44d805837bce81686be56a3b21b492e2ad15d84d4a2ef7a",
+      "read_command": "git -C /Users/master/cyber/zheng show 09308d7134914e940a41474ad12a772f6b1e92d7:specs/soundness.md"
+    },
+    {
+      "id": "zheng@origin/release/0.4:rs/src/execution/veil/coins.rs",
+      "repository": "zheng",
+      "revision": "09308d7134914e940a41474ad12a772f6b1e92d7",
+      "path": "rs/src/execution/veil/coins.rs",
+      "source": "git-object",
+      "selected_ref": "origin/release/0.4",
+      "sha256": "85a152c8e58d178872b0a4503c74a32435d69dd8695f6c496a1b494272b992cf",
+      "read_command": "git -C /Users/master/cyber/zheng show 09308d7134914e940a41474ad12a772f6b1e92d7:rs/src/execution/veil/coins.rs"
+    },
+    {
+      "id": "zheng@origin/release/0.4:audit/veil-coins-2026-10.md",
+      "repository": "zheng",
+      "revision": "09308d7134914e940a41474ad12a772f6b1e92d7",
+      "path": "audit/veil-coins-2026-10.md",
+      "source": "git-object",
+      "selected_ref": "origin/release/0.4",
+      "sha256": "3619543bfc6b0b44294cba6acbde404c14138634234f72f1fb3e438797a92672",
+      "read_command": "git -C /Users/master/cyber/zheng show 09308d7134914e940a41474ad12a772f6b1e92d7:audit/veil-coins-2026-10.md"
+    },
+    {
+      "id": "hemera@origin/main:specs/README.md",
+      "repository": "hemera",
+      "revision": "d5f0a09539360934fb32db9b2e15a91995607db6",
+      "path": "specs/README.md",
+      "source": "git-object",
+      "selected_ref": "origin/main",
+      "sha256": "50376b3d9101a8aa3885b02249289c2aaf73195f6e6ca431fc4b76b72ff7c056",
+      "read_command": "git -C /Users/master/cyber/hemera show d5f0a09539360934fb32db9b2e15a91995607db6:specs/README.md"
+    },
+    {
+      "id": "hemera@origin/main:rs/src/params.rs",
+      "repository": "hemera",
+      "revision": "d5f0a09539360934fb32db9b2e15a91995607db6",
+      "path": "rs/src/params.rs",
+      "source": "git-object",
+      "selected_ref": "origin/main",
+      "sha256": "bf5b2cb5a80697d272546425bddcdf2cb2bfe7e08367ae7c793a0922088f2a91",
+      "read_command": "git -C /Users/master/cyber/hemera show d5f0a09539360934fb32db9b2e15a91995607db6:rs/src/params.rs"
+    },
+    {
+      "id": "foculus@origin/master:src/marginal_cert.rs",
+      "repository": "foculus",
+      "revision": "4ae1a79b55791e56e742bb34732212af7042ef25",
+      "path": "src/marginal_cert.rs",
+      "source": "git-object",
+      "selected_ref": "origin/master",
+      "sha256": "c5d82803c831b1533bd096e84ecd897625dbfaf3c385d721258001bcbbdb2430",
+      "read_command": "git -C /Users/master/cyber/foculus show 4ae1a79b55791e56e742bb34732212af7042ef25:src/marginal_cert.rs"
+    }
+  ]
+}
