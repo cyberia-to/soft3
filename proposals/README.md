@@ -11,13 +11,17 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
-| [privacy, frozen — one pool, one proof, one material](privacy-frozen.md) | proposed | 2026-10-16 | the machine everyone speaks into: one shielded pool of records under hemera, spending = a hash-only zero-knowledge proof of key knowledge, speaking = spending (a cyberlink is a public output, the author is the spent record), programs as predicates on records, one proof per block, a transparent turnstile so a broken proof can never inflate supply; one material in consensus (hemera, pool digests ≥ 48 B for 128-bit quantum collision), ML-KEM-1024 only for note delivery; thirteen decisions, the SPEND relation; immutable in two steps — genesis 2026-11-05 freezes material, supply and formats, rule set 2 pins the pool's relation and keys forever, privacy holds from rule set 2 and is not retroactive; gates G1 zk ≤ 64 KB, G2 proofs inside the block proof, G3 hemera (hemera#15 before genesis, then cryptanalysis), G4 leakage model, G5 lifetime security (QROM, hiding budget), G6 secret inputs held by many (MPC, gates valence not the pool), G7 network anonymity (gates the claim); per-link weights publish one product proven from private karma and will, never its factors; a threshold-encryption layer for hidden contributions is a later rule set behind G6, confidentiality only; §9 reconciles the same-day second draft (PR #190, both commits, closed): its evidence and six reproducible counterexamples in [audit/privacy-2026-10-16](../audit/privacy-2026-10-16/README.md) |
-| [one proof — the repair of zheng](proof-system-repair.md) | proposed | 2026-10-09 | goal ≤ 64 KB (≤ 20 KB for small statements, 16 the stretch) · post-quantum · verify ≤ 1 ms · constant size: one field, one hash, Reed–Solomon + WHIR, Spartan over CCS, ARC accumulation; §0 goal · §2 what is broken (why the old constant-size claim was never real) · §3 design · §4 recursion — accumulation does the daily work, recursion only for composition · §5 phases and gates · §C the ledger of stale claims · §A the Merkle question (why trees are a lower bound for hash-only, the attack on the flat-hash design, the levers to 15–20 KB) · §B lattices — what they buy (the accumulator) and what they do not (bytes) |
-| [the network in planes](network-planes.md) | proposed | 2026-10-07 | foculus → `sync` · `foculus` · `solong` in one workspace, one arrow; radio keeps its fork and hands the reconciliation cores to sync; the epoch certificate stops carrying the payout |
-| [tade — one exchange format](tade-one-exchange.md) | proposed | 2026-10-07 | one format from the wire to the screen: payload is the canonical nox noun, tade annotates, spark is the catalog of the render byte, postcard and serde_json leave the stack |
-| [vault has its own home](vault-secret-custody.md) | superseded | 2026-09-16 | vault became a repository (now an organ of [[cy]]) |
+| [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
+| [rooted civilization](rooted-civilization.md) | proposed | 2026-10-13 | the properties the stack still owes, in four phases |
+| [term](term.md) | proposed | 2026-10-13 | programmable rights and provable clearing |
+| [proof-gated chain on goldilocks](goldilocks-parano1d.md) | proposed | 2026-10-13 | what to port from parano1d, and what to skip |
+| [steps, blocks, epochs](steps-blocks-epochs.md) | proposed | 2026-10-12 | the consensus clock and the five specs before chain code |
+| [one proof](proof-system-repair.md) | proposed | 2026-10-09 | the repair of zheng: ≤ 64 KB, post-quantum, constant size |
+| [the network in planes](network-planes.md) | proposed | 2026-10-07 | foculus splits into sync, foculus and solong |
+| [tade, one exchange format](tade-one-exchange.md) | proposed | 2026-10-07 | one format from the wire to the screen |
+| [vault has its own home](vault-secret-custody.md) | superseded | 2026-09-16 | vault became a repository, now an organ of cy |
 | [one component, one page](component-page-canon.md) | draft | 2026-08-12 | every component answers at one canonical address |
-| [cybergraph + sync + tade](cybergraph-sync-tade-architecture.md) | implemented | 2026-06-07 | cybergraph as the one API, foculus owns structural sync, tade is the wire substrate |
+| [cybergraph + sync + tade](cybergraph-sync-tade-architecture.md) | implemented | 2026-06-07 | cybergraph as the one API over sync and tade |
 
 statuses: **proposed** — agreed picture, not built · **draft** — still being argued · **implemented** — closed by its last merge · **superseded** — overtaken by a later decision, kept as the record.
 
