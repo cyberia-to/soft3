@@ -9,14 +9,17 @@ status: findings
 
 # privacy freeze research receipt
 
-Evidence for [privacy, frozen](../../proposals/privacy-frozen.md) (§4, §5, §9).
+Evidence for [privacy, frozen](../../proposals/privacy-frozen.md) (§1–§5, §9).
 Written by a second session as the receipt of a competing draft (soft3 PR #190,
-`proposals/privacy.md`, branch `research/privacy-freeze-20261016`); that draft was
-reconciled into privacy-frozen.md on 2026-10-16 and closed unmerged. Its decisions
-live in the decisions diff of privacy-frozen.md §9; its evidence lives here. This
-is source research and algebraic counterexample reproduction. It is not a production cryptographic
-audit, a complete implementation review, a new prover benchmark, or an exploit
-against a deployed network.
+`proposals/privacy.md`, branch `research/privacy-freeze-20261016`). The draft
+has two commits: ea413d4, reconciled by soft3 #191, and b011039, pushed at
+10:29 UTC while #191 was being written, which makes encrypted collective
+computation a genesis requirement; it is reconciled by the follow-up in
+privacy-frozen.md §9. The PR was closed unmerged on 2026-10-16; its decisions
+live in the decisions diff of privacy-frozen.md §9, its evidence lives here.
+This is source research and algebraic counterexample reproduction. It is not a
+production cryptographic audit, a complete implementation review, a new prover
+benchmark, or an exploit against a deployed network.
 
 ## provenance
 
@@ -215,12 +218,17 @@ not a requirement. Exact snapshots are in [sources.json](sources.json).
 | resetting the live nullifier table preserves lifetime uniqueness | open unless an accepting proof authenticates all relevant spent history; an accumulator name and archived roots alone supply no such check |
 | public aggregates always conceal individual contributions | refuted: subtraction, a singleton batch and colluding contributors reveal exact values |
 
-The old privacy trilateral (`cyber/research/privacy trilateral.md`) is useful as
-a list of tools. Its assertion that every privacy application requires ZK, FHE
-and MPC together is too strong: an owner can privately prove its own
-computation; outsourcing computation on unknown plaintexts and distributing a
-decryption authority are additional jobs. Shared Goldilocks arithmetic alone
-establishes neither an FHE scheme nor its security, error bounds or efficiency.
+On the privacy trilateral (`cyber/research/privacy trilateral.md`) the draft
+changed its reading between its two commits. The first (ea413d4) called the
+claim that every privacy application needs ZK, FHE and MPC together too strong,
+since an owner can privately prove its own computation. The revision (b011039)
+reads the trilateral as three jobs the collective machine does need: prove
+eligible inputs, compute jointly without exposing them, and distribute
+authority over disclosure. Owner-only private execution covers the first job;
+threshold encrypted evaluation or distributed protocols cover the other two
+under their declared assumptions. Both versions agree that shared Goldilocks
+arithmetic alone establishes neither an FHE scheme nor its security, error
+bounds or efficiency.
 
 ## reproduced counterexamples
 
