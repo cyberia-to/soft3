@@ -129,12 +129,18 @@ impl From<io::Error> for Error {
     }
 }
 
-pub(super) fn handle_client(mut stream: TcpStream, node: &Mutex<Node>) -> io::Result<()> {
+pub(super) fn handle_client(stream: TcpStream, node: &Mutex<Node>) -> io::Result<()> {
+    handle_client_with(stream, |request| super::routes::route(node, request))
+}
+
+/// Serve one connection with any router — the chaosnet node's or a chain node's.
+pub(super) fn handle_client_with(
+    mut stream: TcpStream,
+    route: impl FnOnce(Request) -> Result<Response, Error>,
+) -> io::Result<()> {
     stream.set_read_timeout(Some(Duration::from_secs(30)))?;
     stream.set_write_timeout(Some(Duration::from_secs(30)))?;
-    let response = read_request(&mut stream)
-        .and_then(|request| super::routes::route(node, request))
-        .unwrap_or_else(Error::response);
+    let response = read_request(&mut stream).and_then(route).unwrap_or_else(Error::response);
     response.write(&mut stream)
 }
 

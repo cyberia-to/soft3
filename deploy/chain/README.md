@@ -72,7 +72,9 @@ Machine facts behind every number: `cybernode/servers/<host>/inventory-2026-10-1
 
 1. `nu scripts/chain-fleet.nu --check` then `nu scripts/chain-fleet.nu` with
    the release binary: three nodes on one machine must answer `/status` within
-   60 s and agree on height.
+   60 s and agree on height; on the dev chain the script goes on to assert a
+   late joiner's IBD, a transaction crossing the fleet, a depth-3 fork reorg
+   and a kill-and-restart recovery (receipt: `audit/chain/net-2026-10-15.md`).
 2. Same three steps on the machines with `SOFT3_CHAIN=pussy-rc` (the launch
    allow-list has it) on ports 7783/7793 if a dress rehearsal on real hosts is
    wanted; tear down with `systemctl disable --now soft3-chain@pussy-rc`
@@ -120,12 +122,12 @@ is a parameter or a line in one file above.
 
 | assumption | where it lands |
 |--|--|
-| CLI: `soft3 node --chain <id> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME`; `soft3 node id --home DIR` prints the radio endpoint id | unit `ExecStart`, harness probe, step A7 |
+| CLI: `soft3 node --chain <id> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME`; `soft3 node id --home DIR` prints the radio endpoint id — **implemented** (soft3#187): `--home` is the chain directory (`radio.key`, `genesis.tade`, `blocks.tade`, `anchors`); `--genesis FILE` installs the genesis file into it (required for `pussy`/`bostrom` until the file is embedded) | unit `ExecStart`, harness probe, step A7 |
 | chain ids in the launch set are `pussy`, `bostrom` (and `pussy-rc` for rehearsal) — from `crate/src/node/genesis.rs` on branch `launch/45-genesis-chain-allowlist`; protocol `soft3/<chain>/v1`, engine `cybergraph+bbg` | env `SOFT3_CHAIN`, harness placeholder genesis |
 | the radio endpoint id is the node's ed25519 public key, printed as 64 lowercase hex (radio `iroh-base` `PublicKey: Display`) | peers format `id` |
 | radio listens on one UDP port given by `--radio`; direct dial between the three machines, no relay | ufw rule, peers `relay = ""` |
 | HTTP API keeps `GET /health` and `GET /status` with `height` and the bbg root (cyb bodies poll `/status` every 15 s with a 10 s timeout, `cyb/shell/src/worlds/body/networks.rs`), bodies limited to 8 MiB (`specs/native-node.md`) | nginx snippet, check script |
 | block cadence: unknown — `SOFT3_STALE_SECS=600` is a placeholder until the PoW target interval is fixed | env, check `progress` |
 | PoW timestamp rule tolerates clock error of seconds; timesyncd (SNTP, ms-level) is enough, chrony is optional | unit `time-sync.target`, check `clock` |
-| state is `$home/bbg` + `$home/log` + `genesis.json`; a restart replays from disk (budget the replay time — the 0.10.0 node replays 41k signals in hours, see the incident) | state dir, `TimeoutStopSec` |
-| genesis.json for the root chain is produced elsewhere (bostrom burial → cybergraph genesis replay, launch rows 14/43) and copied byte-identical | step C T−15 |
+| state is `$home/bbg` + `$home/blocks.tade` + `$home/genesis.tade` (a tade file, chain.md §4.1 — not `genesis.json`); a restart replays from disk (budget the replay time — the 0.10.0 node replays 41k signals in hours, see the incident) | state dir, `TimeoutStopSec`, step C T−15 |
+| the genesis file is produced by `soft3 genesis build` (specs/genesis.md) and copied byte-identical; `scripts/chain-fleet.nu` generates a dev genesis (`soft3 chain genesis-dev`) when none is given | step C T−15 |

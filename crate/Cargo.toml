@@ -47,15 +47,24 @@ hemera = { package = "cyber-hemera", version = "0.3", path = "../../hemera/rs" }
 cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
 # genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
 bbg = { version = "0.3", path = "../../bbg/rs" }
-# mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`)
+# mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`); the chain verifies NSIG1
 mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", default-features = false, features = ["bridge"] }
 sha2 = "0.10"
 bech32 = "0.11"
 base64 = "0.22"
 flate2 = "1"
+# tade framing: the genesis file and the chain wire dialect
 tade = { version = "0.1", path = "../../tade/impl/rust" }
 # chain store (specs/chain.md §3.6): headers, bodies, undo journals
 fjall = { version = "2", path = "../../bbg/rs/vendor/fjall" }
+# phase-1 root chain wire (specs/chain-wire.md): radio transport, gossip
+radio = { package = "cyber-radio", version = "0.1", path = "../../radio/iroh" }
+iroh-gossip = { version = "0.96", path = "../../radio/iroh-gossip" }
+tokio = { version = "1.44", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
+n0-future = "0.3"
+rand = "0.9"
+toml = "0.8"
+bytes = "1"
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync

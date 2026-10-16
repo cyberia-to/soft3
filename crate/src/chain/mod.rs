@@ -17,6 +17,7 @@ pub mod engine_tx;
 pub mod genesis;
 pub mod header;
 pub mod mine;
+pub mod net;
 pub mod params;
 pub mod pow;
 pub mod select;
