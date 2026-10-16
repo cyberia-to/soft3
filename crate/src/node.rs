@@ -3,6 +3,8 @@
 //! Acceptance, economics and recovery are owned by Cybergraph and BBG.
 //! See `soft3/specs/native-node.md` for the HTTP and storage lifecycle contract.
 
+pub mod chain_node;
+mod chain_routes;
 mod genesis;
 mod http;
 mod requests;
@@ -183,6 +185,37 @@ pub fn run(home: PathBuf, bind: &str, moniker: &str) -> io::Result<()> {
                 let node = Arc::clone(&node);
                 thread::spawn(move || {
                     if let Err(error) = http::handle_client(stream, &node) {
+                        eprintln!("  request error: {error}");
+                    }
+                });
+            }
+            Err(error) => eprintln!("  accept error: {error}"),
+        }
+    }
+    Ok(())
+}
+
+/// Run a phase-1 chain node (specs/chain.md): open the chain, start the
+/// wire, serve the HTTP surface of chain-wire §7 on `bind`.
+pub fn run_chain(opts: chain_node::ChainOpts, bind: &str) -> io::Result<()> {
+    let listener = TcpListener::bind(bind)?;
+    let node = chain_node::ChainNode::open(opts)?;
+    let tip = node.chain.tip();
+    eprintln!(
+        "soft3 node · chain {} · moniker={} · home={}",
+        node.chain_name, node.moniker, node.home.display()
+    );
+    eprintln!("  endpoint {}", hex(node.net.id().as_bytes()));
+    for s in node.net.bound() {
+        eprintln!("  radio    {s}");
+    }
+    eprintln!("  http     {bind}; height {}; tip {}", tip.height, hex(&tip.id));
+    for stream in listener.incoming() {
+        match stream {
+            Ok(stream) => {
+                let node = Arc::clone(&node);
+                thread::spawn(move || {
+                    if let Err(error) = http::handle_client_with(stream, |request| chain_routes::route(&node, request)) {
                         eprintln!("  request error: {error}");
                     }
                 });

@@ -44,6 +44,7 @@ fn main() {
         "status" | "sync" => cmd_sync(net),
         "node" => cmd_node(&args[1..]),
         "mine" => cmd_mine(&args[1..]),
+        "chain" => cmd_chain(&args[1..]),
         "genesis" => cmd_genesis(&args[1..]),
         "conformance" => cmd_conformance(&args[1..]),
         "help" | "-h" | "--help" => print_help(),
@@ -124,6 +125,16 @@ struct NodeArgs {
     bind: String,
     moniker: String,
     help: bool,
+    // phase-1 root chain (specs/chain.md); `--chain` selects it over spacepussy-test
+    chain: Option<String>,
+    home_set: bool,
+    bind_set: bool,
+    radio: Option<String>,
+    peers: Option<PathBuf>,
+    genesis: Option<PathBuf>,
+    neuron: Option<String>,
+    relay: bool,
+    log_net: bool,
 }
 
 /// Why [`parse_node_args`] could not resolve a flag set.
@@ -146,54 +157,76 @@ fn parse_node_args(
     default_bind: String,
     default_moniker: String,
 ) -> Result<NodeArgs, NodeArgError> {
-    let mut home = default_home;
-    let mut bind = default_bind;
-    let mut moniker = default_moniker;
+    let mut out = NodeArgs {
+        home: default_home, bind: default_bind, moniker: default_moniker, help: false, chain: None, home_set: false, bind_set: false,
+        radio: None, peers: None, genesis: None, neuron: None, relay: false, log_net: false,
+    };
     let mut i = 0;
     while i < args.len() {
+        let value = |i: &mut usize, what: &'static str| -> Result<String, NodeArgError> {
+            *i += 1;
+            args.get(*i).cloned().ok_or(NodeArgError::MissingValue(what))
+        };
         match args[i].as_str() {
             "--home" => {
-                i += 1;
-                home = PathBuf::from(
-                    args.get(i)
-                        .ok_or(NodeArgError::MissingValue("--home needs a path"))?,
-                );
+                out.home = PathBuf::from(value(&mut i, "--home needs a path")?);
+                out.home_set = true;
             }
             "--bind" => {
-                i += 1;
-                bind = args
-                    .get(i)
-                    .ok_or(NodeArgError::MissingValue("--bind needs host:port"))?
-                    .clone();
+                out.bind = value(&mut i, "--bind needs host:port")?;
+                out.bind_set = true;
             }
-            "--moniker" => {
-                i += 1;
-                moniker = args
-                    .get(i)
-                    .ok_or(NodeArgError::MissingValue("--moniker needs a name"))?
-                    .clone();
-            }
+            "--moniker" => out.moniker = value(&mut i, "--moniker needs a name")?,
+            "--chain" => out.chain = Some(value(&mut i, "--chain needs a name (pussy|bostrom|dev…)")?),
+            "--radio" => out.radio = Some(value(&mut i, "--radio needs host:udp-port")?),
+            "--peers" => out.peers = Some(PathBuf::from(value(&mut i, "--peers needs a file")?)),
+            "--genesis" => out.genesis = Some(PathBuf::from(value(&mut i, "--genesis needs a file")?)),
+            "--neuron" => out.neuron = Some(value(&mut i, "--neuron needs a 64-hex neuron")?),
+            "--relay" => out.relay = true,
+            "--log-net" => out.log_net = true,
             "-h" | "--help" => {
-                return Ok(NodeArgs {
-                    home,
-                    bind,
-                    moniker,
-                    help: true,
-                });
+                out.help = true;
+                return Ok(out);
             }
             other => return Err(NodeArgError::Unknown(other.to_string())),
         }
         i += 1;
     }
-    Ok(NodeArgs {
-        home,
-        bind,
-        moniker,
-        help: false,
-    })
+    Ok(out)
+}
+
+/// `soft3 node id --home DIR` — the radio endpoint id (ed25519 public key,
+/// 64 lowercase hex), created on first call; what peers.toml wants.
+fn cmd_node_id(args: &[String]) {
+    let mut home = None;
+    let mut i = 0;
+    while i < args.len() {
+        if args[i] == "--home" {
+            i += 1;
+            home = args.get(i).map(PathBuf::from);
+        } else {
+            eprintln!("usage: soft3 node id --home DIR");
+            std::process::exit(2);
+        }
+        i += 1;
+    }
+    let Some(home) = home else {
+        eprintln!("usage: soft3 node id --home DIR");
+        std::process::exit(2);
+    };
+    match node::chain_node::endpoint_id(&home) {
+        Ok(id) => println!("{id}"),
+        Err(e) => {
+            eprintln!("soft3 node id: {e}");
+            std::process::exit(1);
+        }
+    }
 }
 
 fn cmd_node(args: &[String]) {
+    if args.first().map(|s| s.as_str()) == Some("id") {
+        return cmd_node_id(&args[1..]);
+    }
     let parsed = parse_node_args(
         args,
         node::default_home(),
@@ -212,21 +245,54 @@ fn cmd_node(args: &[String]) {
         }
     };
     if node_args.help {
-        println!("soft3 node — run spacepussy-test (cybergraph + bbg)");
+        println!("soft3 node — run spacepussy-test (cybergraph + bbg) or a phase-1 root chain");
         println!();
         println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
+        println!("  soft3 node --chain <pussy|bostrom|dev…> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME");
+        println!("             [--genesis FILE] [--neuron NEURON] [--relay] [--log-net]");
+        println!("             (mining is `soft3 mine --node http://BIND --address NEURON`: /template + /submit)");
+        println!("  soft3 node id --home DIR      # radio endpoint id (64 hex) for peers.toml");
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
     println!("  soft3 conformance bless|check chain [--genesis FILE]");
         println!();
-        println!("engine: cybergraph processor + authenticated bbg state");
-        println!("API:    GET /status /stats /root  POST /v1/link /v1/finalize");
+        println!("engine: cybergraph processor + authenticated bbg state; chain: PoW root chain (specs/chain.md, chain-wire.md)");
+        println!("API:    GET /status /stats /root  POST /v1/link (chaosnet)  ·  chain: GET /tip /block /tx /peers …  POST /tx /submit");
         println!();
         println!("defaults:");
-        println!("  --home    ~/.spacepussy-test");
-        println!("  --bind    {}", Network::DEFAULT.local_bind());
+        println!("  --home    ~/.spacepussy-test · chain: ~/.soft3/<chain>");
+        println!("  --bind    {} · pussy 127.0.0.1:7781 · bostrom 127.0.0.1:7782 · dev 127.0.0.1:17781", Network::DEFAULT.local_bind());
+        println!("  --radio   pussy 0.0.0.0:7791 · bostrom 0.0.0.0:7792 · dev 127.0.0.1:0");
         println!("  --moniker <hostname>");
+        return;
+    }
+    if let Some(chain) = node_args.chain {
+        let (http, radio) = match chain.as_str() {
+            "pussy" => ("127.0.0.1:7781", "0.0.0.0:7791"),
+            "bostrom" => ("127.0.0.1:7782", "0.0.0.0:7792"),
+            "pussy-rc" => ("127.0.0.1:7783", "0.0.0.0:7793"),
+            _ => ("127.0.0.1:17781", "127.0.0.1:0"),
+        };
+        let bind = if node_args.bind_set { node_args.bind.clone() } else { http.to_string() };
+        let radio = node_args.radio.clone().unwrap_or_else(|| radio.to_string()).parse().unwrap_or_else(|e| {
+            eprintln!("--radio: {e}");
+            std::process::exit(2);
+        });
+        let neuron = node_args.neuron.as_deref().map(|m| soft3::chain::net::codec::unhex32(m).unwrap_or_else(|| {
+            eprintln!("--neuron needs a 64-hex neuron id");
+            std::process::exit(2);
+        }));
+        let opts = node::chain_node::ChainOpts {
+            home: if node_args.home_set { node_args.home } else { node::chain_node::default_home(&chain) },
+            chain, genesis: node_args.genesis, radio: Some(radio), peers: node_args.peers, moniker: node_args.moniker,
+            neuron,
+            relay: node_args.relay, log_net: node_args.log_net,
+        };
+        if let Err(e) = node::run_chain(opts, &bind) {
+            eprintln!("soft3 node failed: {e}");
+            std::process::exit(1);
+        }
         return;
     }
     if let Err(e) = node::run(node_args.home, &node_args.bind, &node_args.moniker) {
@@ -415,6 +481,97 @@ fn cmd_mine(args: &[String]) {
     }
 }
 
+/// `soft3 chain …` — helpers for test chains and the local harness: a test
+/// genesis (any name but a launch chain's, the easiest target the kernel
+/// accepts), a key's neuron, a signed transfer or cyberlink (the wallet's
+/// codec, `soft3::wallet`).
+fn cmd_chain(args: &[String]) {
+    use soft3::chain::net::codec::{hex, unhex32};
+    use soft3::genesis::file::{Balance, GenesisFile, Params};
+    let mut flags = std::collections::HashMap::new();
+    let mut funds = Vec::new();
+    let mut i = 1;
+    while i < args.len() {
+        let key = args[i].trim_start_matches("--").to_string();
+        let value = args.get(i + 1).cloned().unwrap_or_default();
+        if key == "fund" { funds.push(value); } else { flags.insert(key, value); }
+        i += 2;
+    }
+    let die = |msg: String| -> ! {
+        eprintln!("{msg}");
+        std::process::exit(2);
+    };
+    let wallet = |flags: &std::collections::HashMap<String, String>| -> soft3::wallet::Signer {
+        let seed = flags.get("seed").and_then(|s| unhex32(s)).unwrap_or_else(|| die("--seed <64 hex> required".into()));
+        soft3::wallet::Signer::from_secret(&seed).unwrap_or_else(|e| die(format!("seed: {e}")))
+    };
+    let num = |flags: &std::collections::HashMap<String, String>, k: &str, d: u64| -> u64 {
+        flags.get(k).map(|v| v.parse().unwrap_or_else(|_| die(format!("--{k}: not a number")))).unwrap_or(d)
+    };
+    match args.first().map(|s| s.as_str()) {
+        Some("genesis-dev") => {
+            let name = flags.get("name").cloned().unwrap_or_else(|| "dev".into());
+            if node::chain_node::LAUNCH_CHAINS.contains(&name.as_str()) {
+                die(format!("`{name}` is a launch chain; its genesis comes from `soft3 genesis build`"));
+            }
+            let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+            // two hours of ASERT slack: the first ~240 blocks stay at the floor target
+            let time = num(&flags, "time", now.saturating_sub(7200));
+            let bits = flags.get("bits").map(|b| u32::from_str_radix(b.trim_start_matches("0x"), 16).unwrap_or_else(|_| die("--bits: 8 hex".into())))
+                .unwrap_or(soft3::chain::params::POW_LIMIT_BITS);
+            let native = soft3::chain::sigs::token(&name);
+            let mut balances: Vec<Balance> = funds.iter().map(|f| {
+                let (n, a) = f.split_once('=').unwrap_or_else(|| die(format!("--fund {f}: NEURON=AMOUNT")));
+                Balance { owner: unhex32(n).unwrap_or_else(|| die(format!("--fund {f}: neuron is 64 hex"))), token: native, amount: a.parse().unwrap_or_else(|_| die(format!("--fund {f}: amount"))) }
+            }).collect();
+            balances.sort();
+            let s0: u64 = balances.iter().map(|b| b.amount).sum();
+            let file = GenesisFile {
+                params: Params {
+                    version: 1, name: name.clone(), hrp: name.clone(), denom: name.clone(), time, bits,
+                    subsidy: soft3::chain::params::subsidy(s0), checkpoint_key: [0; 33], checkpoint_sunset: soft3::chain::params::CHECKPOINT_SUNSET,
+                },
+                balances,
+                links: vec![],
+            };
+            let genesis = soft3::chain::genesis::Genesis::from_file(&file).unwrap_or_else(|e| die(format!("genesis: {e}")));
+            let out = flags.get("out").cloned().unwrap_or_else(|| "genesis.tade".into());
+            std::fs::write(&out, &genesis.bytes).unwrap_or_else(|e| die(format!("{out}: {e}")));
+            println!("{}", hex(&genesis.chain_id));
+        }
+        Some("key") => println!("{}", wallet(&flags).neuron_hex()),
+        Some("tx") => {
+            let w = wallet(&flags);
+            let bytes = flags.get("genesis").and_then(|g| std::fs::read(g).ok()).unwrap_or_else(|| die("--genesis <file> required (the chain id is its particle)".into()));
+            let genesis = soft3::chain::genesis::Genesis::decode(&bytes).unwrap_or_else(|e| die(format!("genesis: {e}")));
+            let token = genesis.native_token();
+            let nonce = num(&flags, "nonce", 0);
+            let amount = num(&flags, "amount", 0);
+            let fee = flags.get("fee").map(|_| num(&flags, "fee", 0));
+            let signed = match flags.get("kind").map(|k| k.as_str()).unwrap_or("transfer") {
+                "link" => {
+                    let p = flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]);
+                    let q = flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]);
+                    w.cyberlink(&genesis.chain_id, nonce, p, q, 0, token, amount, fee)
+                }
+                _ => {
+                    let to = flags.get("to").and_then(|t| unhex32(t)).unwrap_or([7; 32]);
+                    w.transfer(&genesis.chain_id, nonce, token, amount, to, fee)
+                }
+            }
+            .unwrap_or_else(|e| die(format!("sign: {e}")));
+            println!("{}", hex(&signed.bytes));
+            eprintln!("txid {}", signed.txid_hex());
+        }
+        _ => {
+            eprintln!("usage: soft3 chain genesis-dev [--name dev] [--time T] [--bits HEX] [--fund NEURON=AMOUNT]… --out FILE");
+            eprintln!("       soft3 chain key --seed HEX32");
+            eprintln!("       soft3 chain tx --seed HEX32 --genesis FILE --nonce N [--kind transfer|link] [--to N] [--amount A] [--fee F] [--p P --q Q]");
+            std::process::exit(2);
+        }
+    }
+}
+
 /// Real-environment hostname fallback: `$HOSTNAME`, else `$HOST`, else the
 /// literal default. Thin wrapper over [`hostname_fallback_from`] so the
 /// fallback chain itself is testable without mutating process-wide env vars.
@@ -464,6 +621,9 @@ fn print_help() {
     println!("  soft3 mine --address NEURON [--chain pussy|bostrom] [--node URL]");
     println!("             [--backend auto|cpu|metal|webgpu] [--threads N]");
     println!("  soft3 mine bench [--backend ...] [--threads N] [--seconds S]");
+    println!("  soft3 node --chain <pussy|bostrom|dev> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME");
+    println!("  soft3 node id --home DIR");
+    println!("  soft3 chain genesis-dev|key|tx …   # dev helpers");
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
