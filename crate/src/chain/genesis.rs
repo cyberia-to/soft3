@@ -213,8 +213,8 @@ pub(crate) mod tests {
         assert_eq!(g.params().time, 1_793_885_820);
         let mut s = g.state();
         let root = s.root();
-        assert_eq!(hex(&root), "f2296834490e79d855673b18b0f9eb5c8242e4f48761e85b645d60a8cbeb5827");
-        assert_eq!(hex(&g.block0(root).id()), "b863ce2877524e718bb51ea6dc7c5aba9540860f08d70162348d8e84b3eba304");
+        assert_eq!(hex(&root), "93e4660f0ef0f5216d14554188cb8aded53d598d8c80d87e4e1a811949e61fe8");
+        assert_eq!(hex(&g.block0(root).id()), "ad7e5f84c8723187b3ba3417bdc205803ea021c59706a7494a62fc85e5cfb06b");
         for t in s.tokens() {
             assert_eq!(s.token_sum(&t), s.supply(&t));
         }

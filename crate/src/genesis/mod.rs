@@ -188,7 +188,7 @@ pub fn build(chain: Chain, snapshot: &Path, out: &Path, options: &Options) -> io
             .collect(),
         gaps: derived.gaps.clone(),
         source: source_pins(&snap),
-        bbg: "pinned bbg (DIMENSION_VERSION 2, no NeuronRecord.nonce)",
+        bbg: "bbg dimension version 3 (keyed-trie root, NeuronRecord.nonce)",
     };
     if options.root {
         let started = std::time::Instant::now();

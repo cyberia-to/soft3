@@ -432,7 +432,7 @@ leaves the rest empty but committed:
 
 | dimension | written by | content |
 |---|---|---|
-| particles | cyberlink | `energy += amount` on `q`, `weight += amount` on `axon(p,q)`; records created at zero on first touch |
+| particles | cyberlink with `amount > 0` | `energy += amount` on `q`, `weight += amount` on `axon(p,q)`; a link with `amount = 0` (every link in rule set 1) writes no particle record — bbg keeps no all-zero rows |
 | axons_out, axons_in | cyberlink | `axon(p,q)` appended once per `(p,q)` |
 | neurons | all | `NeuronRecord { focus, karma, stake, nonce }`; phase 1 writes `nonce` only, the other three stay 0 |
 | coins | coinbase, genesis | `CoinRecord { total_supply }` per token |
@@ -440,7 +440,8 @@ leaves the rest empty but committed:
 | locations, cards, files, time, signals, intents, A(x), N(x) | nobody | empty; their commitments are constants of the empty dimension |
 
 Change requested of bbg (rung 3, one field): `NeuronRecord.nonce: u64`, with
-`DIMENSION_VERSION` bumped to 3. The alternative — storing nonces as a
+`DIMENSION_VERSION` bumped to 3 — landed (bbg dimension version 3,
+2026-10-16). The alternative — storing nonces as a
 pseudo-token balance — avoids the change and leaves a permanent hack in the
 state; rejected.
 
@@ -460,16 +461,13 @@ compression over the 11 dimension commitments, A, N and stats) after the
 block's transactions are applied in order, coinbase first. The root is
 refreshed once per block, never per transaction.
 
-Honest cost statement: `compute_root` today recommits every dimension in
-full (cyber/launch row 43; measured quadratic on import). Per block this is
-O(state), not O(changes · log n). For pussy (29 K links, ~3 K accounts) it is
-milliseconds and launch proceeds. For bostrom (2.9 M links, 3.1 M particles,
-61 K accounts) it is tens of seconds per block on one machine and genesis
-replay is impossible until bbg's incremental commitments land — which is why
-bostrom waits on row 43. The dimension serialization also falls back from
-Brakedown to a hemera digest above 2^16 field elements
-(`BRAKEDOWN_EVAL_CAP`); the root stays deterministic, look proofs for those
-dimensions are unavailable, and nothing in phase 1 needs them.
+Cost: every bbg dimension leaf is a keyed-trie root (bbg dimension
+version 3, launch row 43): a block costs O(changes · log n) hemera
+compressions — measured 0.4–0.9 ms per link from 10 K to 3 M links, flat —
+and there is no dimension size cap, so bostrom's genesis commits (bbg
+`audit/commit-cost-2026-10-15.md`, soft3
+`audit/genesis-dimension-v3-2026-10-16.md`). Look proofs over trie leaves
+need zheng to open trie paths; nothing in phase 1 needs them.
 
 ### 3.4 transition and conservation
 

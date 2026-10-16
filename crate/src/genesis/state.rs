@@ -6,10 +6,10 @@
 //! `valence 0`) authored by `neuron` at chain height 0; every distinct owner
 //! and link author gets a neuron record. Nothing else is written.
 //!
-//! bbg at the pinned revision has no `NeuronRecord.nonce` yet (chain.md
-//! §3.2 asks for it with `DIMENSION_VERSION = 3`); when it lands, the root
-//! moves and the blessed vector is re-blessed — a consensus change by
-//! definition.
+//! The root is bbg dimension version 3: keyed-trie dimension leaves (no size
+//! cap, O(changes · log n) per block), `NeuronRecord.nonce` (0 at genesis),
+//! a conviction-free link writes topology only, a zero balance is an absent
+//! row. A moved root is a consensus change; the blessed vectors move with it.
 
 use std::collections::BTreeMap;
 
@@ -25,16 +25,19 @@ pub fn load(g: &GenesisFile) -> BbgState {
     let native = token_of(&g.params.denom);
 
     for b in &g.balances {
-        s.neurons.entry(b.owner).or_insert(NeuronRecord { focus: 0, karma: 0, stake: 0 });
+        s.neurons.entry(b.owner).or_insert(NeuronRecord { focus: 0, karma: 0, stake: 0, nonce: 0 });
         let key = balance_key(&b.owner, &b.token);
-        let slot = s.balances.entry(key).or_insert(0);
-        *slot = slot.checked_add(b.amount).expect("balance fits u64 (unique (owner, token) checked)");
-        let coin = s.coins.entry(b.token).or_insert(CoinRecord { total_supply: 0 });
+        if b.amount > 0 {
+            // a zero balance is an absent row (bbg dimension version 3)
+            let mut slot = s.balances.entry(key).or_insert(0);
+            *slot = slot.checked_add(b.amount).expect("balance fits u64 (unique (owner, token) checked)");
+        }
+        let mut coin = s.coins.entry(b.token).or_insert(CoinRecord { total_supply: 0 });
         coin.total_supply = coin.total_supply.checked_add(b.amount).expect("token supply fits u64 (checked in derive)");
     }
 
     for l in &g.links {
-        s.neurons.entry(l.neuron).or_insert(NeuronRecord { focus: 0, karma: 0, stake: 0 });
+        s.neurons.entry(l.neuron).or_insert(NeuronRecord { focus: 0, karma: 0, stake: 0, nonce: 0 });
         let signal = Signal {
             neuron: l.neuron,
             links: vec![Cyberlink { from: l.p, to: l.q, token: native, amount: 0, valence: 0 }],
@@ -48,8 +51,11 @@ pub fn load(g: &GenesisFile) -> BbgState {
     s
 }
 
-/// Field elements each committed dimension serializes to (bbg `dim_serialize`:
-/// 3 header fields, then 8 key limbs + the record's values per entry).
+/// Field elements each committed dimension serializes to in the flat table
+/// layout (bbg `dim_serialize`: 3 header fields, then 8 key limbs + the
+/// record's values per entry). Informational: the root (trie, `RootVersion::
+/// V2`) has no size cap; the flat layout is what a v1 / state-certificate
+/// reader of the whole dimension would need.
 pub fn fields_per_dimension(s: &BbgState) -> BTreeMap<String, u64> {
     const HEADER: u64 = 3;
     const KEY: u64 = 8;
@@ -59,7 +65,7 @@ pub fn fields_per_dimension(s: &BbgState) -> BTreeMap<String, u64> {
     c.insert("particles".into(), entries(s.particles.len(), 6));
     c.insert("axons_out".into(), list(&s.axons_out));
     c.insert("axons_in".into(), list(&s.axons_in));
-    c.insert("neurons".into(), entries(s.neurons.len(), 3));
+    c.insert("neurons".into(), entries(s.neurons.len(), 4));
     c.insert("locations".into(), entries(s.locations.len(), 2));
     c.insert("coins".into(), entries(s.coins.len(), 1));
     c.insert("cards".into(), entries(s.cards.len(), 8));
@@ -70,13 +76,16 @@ pub fn fields_per_dimension(s: &BbgState) -> BTreeMap<String, u64> {
     c
 }
 
-/// `lens::brakedown::MAX_VARIABLES`: one dimension commitment holds at most
-/// `2^20` field elements at the pinned lens revision.
+/// `lens::brakedown::MAX_VARIABLES`: one flat (v1) dimension commitment holds
+/// at most `2^20` field elements.
 pub const BRAKEDOWN_MAX_VARIABLES: u32 = 20;
 
-/// Dimensions whose serialized size exceeds the Brakedown limit. Empty means
-/// `root()` can run.
+/// Dimensions a flat (v1) root could not commit. Empty under the trie root
+/// (the default), which has no cap; `root()` can always run then.
 pub fn over_limit(s: &BbgState) -> BTreeMap<String, String> {
+    if s.root_version() != bbg::RootVersion::V1 {
+        return BTreeMap::new();
+    }
     let limit = 1u64 << BRAKEDOWN_MAX_VARIABLES;
     fields_per_dimension(s)
         .into_iter()

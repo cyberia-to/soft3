@@ -1,10 +1,11 @@
 # chain-conformance.md §10 — the scalars beside conformance/chain.snap, written by the first pipeline run.
 # informational; the fingerprints in chain.snap are what --check compares.
 
-blessed = "2026-10-15"
-pipeline = "soft3 genesis build (crate/src/genesis, branch launch/14-genesis-build)"
-bbg = "1d39975ad199b48c350fa4cc011cbf6f289480ee (DIMENSION_VERSION 2, no NeuronRecord.nonce)"
-lens = "fix/public-execution-pcs (Brakedown MAX_VARIABLES = 20)"
+blessed = "2026-10-16"
+pipeline = "soft3 genesis build (crate/src/genesis, soft3 main + feat/bbg-nonce-on)"
+bbg = "feat/dimension-v3 (DIMENSION_VERSION 3: keyed-trie root, NeuronRecord.nonce, no zero rows)"
+# previous: bbg 1d39975 (DIMENSION_VERSION 2): pussy state_root f2296834…cbeb5827, block0_id b863ce28…b3eba304
+lens = "release/0.2 (the trie root has no Brakedown cap)"
 
 [pussy]
 particle = "2a83e54fe395ffbd924fc74a54a5c805eeec5396f97bf4c73fced8631a9e61b5"
@@ -13,8 +14,8 @@ file_bytes = 3249582
 time = 1793885820
 s0 = "1099389810279114036"
 subsidy = 10458426657
-state_root = "f2296834490e79d855673b18b0f9eb5c8242e4f48761e85b645d60a8cbeb5827"
-block0_id = "b863ce2877524e718bb51ea6dc7c5aba9540860f08d70162348d8e84b3eba304"
+state_root = "93e4660f0ef0f5216d14554188cb8aded53d598d8c80d87e4e1a811949e61fe8"
+block0_id = "ad7e5f84c8723187b3ba3417bdc205803ea021c59706a7494a62fc85e5cfb06b"
 b_frames = 1385
 l_frames = 29113
 tokens = 23

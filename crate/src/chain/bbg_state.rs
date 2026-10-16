@@ -4,11 +4,8 @@
 //! therefore under `state_root`. The per-token running sums are derived
 //! bookkeeping for the conservation check (§3.4), never committed.
 //!
-//! Nonce placement: with the `bbg-nonce` feature the nonce is
-//! `NeuronRecord.nonce` (bbg DIMENSION_VERSION 3, the change requested in
-//! §3.2). Without it — until the bbg PR carrying the field lands — the
-//! nonce sits in a side map beside the state, outside the root; the journal
-//! and every rule are identical, only the root differs.
+//! The nonce is `NeuronRecord.nonce` (bbg dimension version 3, the change
+//! §3.2 requested), so every nonce is under `state_root`.
 
 use std::collections::BTreeMap;
 
@@ -21,8 +18,6 @@ use super::state::{Id, StateBackend, StateError, Undo, UndoEntry};
 pub struct BbgBacked {
     pub bbg: BbgState,
     sums: BTreeMap<Id, u64>,
-    #[cfg(not(feature = "bbg-nonce"))]
-    nonces: BTreeMap<Id, u64>,
     journal: Vec<UndoEntry>,
     open: bool,
 }
@@ -34,18 +29,11 @@ impl Default for BbgBacked {
 }
 
 fn neuron_image(r: &NeuronRecord) -> [u64; 4] {
-    #[cfg(feature = "bbg-nonce")]
-    let nonce = r.nonce;
-    #[cfg(not(feature = "bbg-nonce"))]
-    let nonce = 0;
-    [r.focus, r.karma, r.stake, nonce]
+    [r.focus, r.karma, r.stake, r.nonce]
 }
 
 fn neuron_from(img: [u64; 4]) -> NeuronRecord {
-    #[cfg(feature = "bbg-nonce")]
-    return NeuronRecord { focus: img[0], karma: img[1], stake: img[2], nonce: img[3] };
-    #[cfg(not(feature = "bbg-nonce"))]
-    NeuronRecord { focus: img[0], karma: img[1], stake: img[2] }
+    NeuronRecord { focus: img[0], karma: img[1], stake: img[2], nonce: img[3] }
 }
 
 fn particle_image(r: &ParticleRecord) -> [u64; 6] {
@@ -61,8 +49,6 @@ impl BbgBacked {
         Self {
             bbg: BbgState::new(),
             sums: BTreeMap::new(),
-            #[cfg(not(feature = "bbg-nonce"))]
-            nonces: BTreeMap::new(),
             journal: Vec::new(),
             open: false,
         }
@@ -106,39 +92,18 @@ impl BbgBacked {
         self.note(UndoEntry::TokenSum { token, before });
     }
 
-    #[cfg(not(feature = "bbg-nonce"))]
-    fn nonce_image(&self, id: &Id) -> Option<[u64; 4]> {
-        let n = self.nonces.get(id).copied();
-        let r = self.bbg.neurons.get(id).map(neuron_image);
-        match (r, n) {
-            (None, None) => None,
-            (r, n) => {
-                let mut img = r.unwrap_or([0; 4]);
-                img[3] = n.unwrap_or(0);
-                Some(img)
-            }
-        }
-    }
-
-    /// the neuron record image with the nonce wherever it lives
+    /// the neuron record image, nonce included
     fn full_neuron(&self, id: &Id) -> Option<[u64; 4]> {
-        #[cfg(feature = "bbg-nonce")]
-        return self.bbg.neurons.get(id).map(neuron_image);
-        #[cfg(not(feature = "bbg-nonce"))]
-        self.nonce_image(id)
+        self.bbg.neurons.get(id).map(neuron_image)
     }
 
     fn write_neuron(&mut self, id: Id, img: Option<[u64; 4]>) {
         match img {
             None => {
                 self.bbg.neurons.remove(&id);
-                #[cfg(not(feature = "bbg-nonce"))]
-                self.nonces.remove(&id);
             }
             Some(img) => {
                 self.bbg.neurons.insert(id, neuron_from(img));
-                #[cfg(not(feature = "bbg-nonce"))]
-                self.nonces.insert(id, img[3]);
             }
         }
     }
@@ -151,9 +116,8 @@ impl BbgBacked {
     }
 
     fn dirty(&mut self) {
-        // any journaled write invalidates bbg's cached root; bbg exposes no
-        // public "mark dirty", so refresh lazily in `root()` instead
-        let _ = &self.bbg;
+        // every write goes through bbg's committed maps, which keep the
+        // dimension commitments current; nothing to mark
     }
 }
 
@@ -215,7 +179,8 @@ impl StateBackend for BbgBacked {
         let sum = self.sums.get(token).copied().unwrap_or(0).checked_add(amount).ok_or(StateError::Overflow)?;
         self.note_balance(key);
         self.note_sum(*token);
-        self.bbg.balances.insert(key, next);
+        // a zero balance is an absent row (bbg dimension version 3)
+        self.set_balance(key, (next > 0).then_some(next));
         self.sums.insert(*token, sum);
         self.dirty();
         Ok(())
@@ -229,7 +194,7 @@ impl StateBackend for BbgBacked {
         }
         self.note_balance(key);
         self.note_sum(*token);
-        self.bbg.balances.insert(key, have - amount);
+        self.set_balance(key, (have > amount).then_some(have - amount));
         let sum = self.sums.get(token).copied().unwrap_or(0);
         self.sums.insert(*token, sum - amount);
         self.dirty();
@@ -320,26 +285,14 @@ impl StateBackend for BbgBacked {
                         self.bbg.particles.insert(*id, particle_from(*img));
                     }
                 },
-                UndoEntry::AxonsOut { p, before } => match before {
-                    None => {
-                        self.bbg.axons_out.remove(p);
-                    }
-                    Some(n) => {
-                        if let Some(v) = self.bbg.axons_out.get_mut(p) {
-                            v.truncate(*n as usize);
-                        }
-                    }
-                },
-                UndoEntry::AxonsIn { q, before } => match before {
-                    None => {
-                        self.bbg.axons_in.remove(q);
-                    }
-                    Some(n) => {
-                        if let Some(v) = self.bbg.axons_in.get_mut(q) {
-                            v.truncate(*n as usize);
-                        }
-                    }
-                },
+                UndoEntry::AxonsOut { p, before } => {
+                    // lists are append-only within a block: drop the appends
+                    self.bbg.axons_out.truncate(p, before.unwrap_or(0) as usize);
+                }
+                UndoEntry::AxonsIn { q, before } => {
+                    // lists are append-only within a block: drop the appends
+                    self.bbg.axons_in.truncate(q, before.unwrap_or(0) as usize);
+                }
                 UndoEntry::AxonEdge { axon, existed } => {
                     if !existed {
                         self.bbg.axon_edges.remove(axon);
@@ -356,9 +309,8 @@ impl StateBackend for BbgBacked {
                 UndoEntry::Height { before } => self.bbg.height = *before,
             }
         }
-        // bbg caches its root until a mutation through its own API; the
-        // reverts above bypass that, so force the next root() to recompute
-        self.bbg.refresh_root();
+        // the reverts above go through bbg's committed maps: the root is
+        // current without a refresh
     }
 }
 
