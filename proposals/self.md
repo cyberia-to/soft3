@@ -23,7 +23,7 @@ The network's first self instance runs its own privacy service: admitting
 protected contributions, computing aggregates, authorizing disclosure and
 preserving those obligations across replacement of executors.
 
-Self and [privacy](privacy-frozen.md#01-mutual-dependency-with-self) are mutually
+Self and [privacy](privacy-frozen.md#privacy-self-dependency) are mutually
 dependent. Privacy supplies the cryptographic protection and proof mechanisms
 that make self's state private. Self supplies the persistent rules and accepted
 history that make the network's use of those mechanisms a complete private

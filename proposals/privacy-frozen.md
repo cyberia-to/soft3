@@ -27,6 +27,8 @@ two moments freeze, and they freeze different things. the genesis of 2026-11-05 
 
 fundamental research is needed, and its core is two items, not ten: hash-only zero-knowledge proofs of ≤ 64 KB (today 165–419 KB), and verifying those proofs inside the block proof so that a block stays one proof. the third gate is not research but time: cryptanalysis of hemera, the material itself. the reconciliation adds two gates the pool cannot switch on without (a written leakage model, and the lifetime security argument of the composition) and two that gate other things (settlement over secret inputs held by many neurons; anonymity against a global network observer), §5.
 
+<a id="privacy-self-dependency"></a>
+
 ## 0.1 mutual dependency with self
 
 The complete private protocol depends on [self's private state-machine core](self.md#1-why-privacy-needs-self-and-self-needs-privacy).
