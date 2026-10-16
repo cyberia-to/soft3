@@ -211,17 +211,20 @@ is designated for completion after launch.
 
 ### distributed authority and private execution have different boundaries
 
-The [ICP comparison](icp-comparison.md) records deployed chain-key signatures,
+The [ICP comparison](../self-2026-10-16/icp-comparison.md) records deployed chain-key signatures,
 proactive key resharing and mainnet vetKey derivation from primary sources.
 It distinguishes policy-controlled key delivery from private computation over
 arbitrary persistent state, and application immutability from the underlying
 protocol's upgrade authority. Its source table records inspection scope and
 the access date. The comparison adds no execution benchmark or security audit.
 
-The proposal now makes policy-bound secret use, private state continuity and
-their relation to autonomous agents explicit. It also records limits imposed
-by authorized outputs, threshold compromise, copying, recovery and mutable
-policy authority. None of these obligations is deferred beyond genesis.
+This analysis originally accompanied privacy §6.7. It now belongs to the
+separate [self proposal](../../proposals/self.md) and its research receipt.
+Privacy retains the generic confidential computation/custody/release contract
+needed by notes and aggregates. Self consumes that contract for identity,
+decisions, bounded authority and a continuing agent lifecycle. The separation
+preserves both complete pre-genesis obligations and removes the agent semantics
+from the privacy proposal.
 
 ## reproduced counterexamples
 

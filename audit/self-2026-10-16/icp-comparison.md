@@ -1,6 +1,7 @@
 ---
 title: network secrets, autonomous state and ICP
-tags: soft3, audit, privacy, research, icp
+tags: soft3, audit, self, privacy, research, icp
+alias: soft3/audit/privacy-2026-10-16/icp-comparison
 crystal-type: report
 crystal-domain: cyber
 date: 2026-10-16
@@ -9,7 +10,8 @@ status: findings
 
 # network secrets, autonomous state and ICP
 
-Companion to [privacy §6.7](../../proposals/privacy.md#67-persistent-private-state-and-autonomous-authority).
+Companion to [self](../../proposals/self.md), consuming the
+[privacy service contract](../../proposals/privacy.md#11-service-boundary-for-dependent-programs).
 This is a primary-source comparison and architectural analysis, performed on
 soft3 `ee3bd0ddab2f1f7682412192e89937758f6f515c` plus this documentation change.
 No ICP node was run, no deployed canister was audited, and no performance or
@@ -30,7 +32,7 @@ The paper [vetKeys: How a Blockchain Can Keep Many Secrets][7] introduces
 verifiably encrypted threshold key derivation and derives applications from a
 shared root secret. Its abstract was inspected, not its full proof or deployed
 implementation. This is a closely relevant parallel line of work to
-[ECPSS/YOSO](network-secret-lineage.md); this review establishes no historical
+[ECPSS/YOSO](../privacy-2026-10-16/network-secret-lineage.md); this review establishes no historical
 derivation of one construction from the other.
 
 ## boundaries that matter for soft3
@@ -44,7 +46,7 @@ cannot be imported as a PQ implementation.
 
 Subnet membership and creation are governed through registered nodes and NNS
 proposals [6]. That deployment model does not supply the hidden ephemeral
-role-assignment guarantee selected in §6.4. Proactive refresh and anonymity of
+role-assignment guarantee selected in [privacy §6.4](../../proposals/privacy.md#64-the-network-holds-the-secret-through-evolving-hidden-roles). Proactive refresh and anonymity of
 the next physical executor address different attacks; neither replaces the
 other's assumptions.
 

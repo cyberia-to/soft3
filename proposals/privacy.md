@@ -1,5 +1,5 @@
 ---
-title: privacy — a frozen anonymous machine
+title: privacy — a frozen private protocol
 tags: cyber, soft3, proposal, privacy, research, mudra, zheng, bbg, foculus
 crystal-type: process
 crystal-domain: cyber
@@ -10,11 +10,11 @@ alias: privacy research, frozen privacy, anonymous machine
 evidence: open
 ---
 
-# privacy — a frozen anonymous machine
+# privacy — a frozen private protocol
 
 ## 0. recommendation
 
-Build the permanent machine from private programmable notes and a mandatory
+Build the permanent protocol from private programmable notes and a mandatory
 collective computation layer. A neuron proves its own contribution locally,
 then submits that contribution encrypted. The network computes over the sealed
 contributions and reveals only the authorized aggregate and state effects.
@@ -28,6 +28,13 @@ controlled threshold release and publicly verifiable computation are part of
 that same layer. Keep individual spending authority with the note owner.
 Require anonymous submission and private recovery. Freeze the native monetary
 law, collective release policy and verification rules together at genesis.
+
+This proposal owns the private protocol: anonymous participation, private
+value/state, collective computation, distributed secret custody and controlled
+disclosure. [Self](self.md) separately owns the private neuron's identity,
+decision process, authority to act and logical lifecycle. Self consumes the
+service boundary in §1.1. This protocol remains complete for ordinary neurons
+and collective settlement without importing an agent or its objectives.
 
 This is the architecture selected by this research. Its production freeze is
 blocked. The present harness is a useful implementation substrate; its current
@@ -99,6 +106,36 @@ Authorized recipients and authors know their own interactions. A message can
 identify its author by its content; unique values, timing and outside facts can
 also identify it. The privacy game conditions on those intentional disclosures.
 An unconditional promise that nobody can ever infer an author is unattainable.
+
+### 1.1 service boundary for dependent programs
+
+The following is the proposal-level contract consumed by [self](self.md) and
+other private programs. Exact encodings, constructions and operating bounds
+remain qualification work under the gates in §10. A supported profile must
+provide all required rows together; implementing a ciphertext API alone cannot
+close this contract.
+
+| service | this protocol provides | dependent program supplies |
+|---|---|---|
+| context binding | authentication of the exact network, profile, program/policy, accepted predecessor, input set and resource class | the intended relation and its authenticated authorization context |
+| protected state | hiding commitments, encrypted data availability/recovery and private access within the declared metadata budget | application state semantics and retention requirements |
+| private evaluation | verifiable bounded evaluation over admissible private inputs; successor ciphertexts and commitments | the admitted transition and its bounded computation |
+| authorized release | output/key use bound to that evaluation, finalized authorization and the fixed disclosure relation | the permitted recipient, output or action relation; permission itself remains subject to proof and admission |
+| secret continuity | qualified key generation, resharing, erasure, key retirement and encrypted-state succession under the stated corruption/availability model | durable references to the correct state and service domain |
+| private delivery | anonymous ingress and recipient delivery with explicit traffic/access leakage | message meaning, recipient policy and admissible response semantics |
+| failure evidence | distinguish rejection, unavailable work and accepted results; preserve the authorized state without a weaker confidentiality fallback | application handling of those outcomes within its fixed rules |
+
+An application cannot expand the protocol's disclosure relation or change its
+security profile by presenting a valid execution proof. A dependent program's
+policy must satisfy the admitted relation before any protected result is
+released. Native aggregation/settlement keeps its own fixed authorization and
+does not consult self. Generic state transitions and secret succession belong
+here because private notes, encrypted programs and aggregates already need them.
+
+Changes to this contract require review of the dependent proposal's conformance
+matrix. The dependency is `self -> privacy`. Separate research receipts preserve
+that direction; a launch containing the requested private self must close both
+sets of gates and their composition before genesis.
 
 ## 2. what the workspace actually establishes
 
@@ -516,77 +553,6 @@ Decision: this collective layer is a genesis prerequisite. Owner-only ZK plus
 public individual outputs fails the requested machine. A sum-only encrypted
 layer also fails the general private settlement/contract requirement. Qualify
 the complete bounded function and its release policy before permanent genesis.
-
-### 6.7 persistent private state and autonomous authority
-
-Treat a network-held secret as a first-class capability governed by a committed
-policy. A secret-bearing service can preserve identity, authority and private
-memory across replacement of its physical executors. This is an operational
-foundation for a [[cy]] agent's continuity. Intelligence additionally requires
-an implemented learning/decision process, objectives, observations and feedback;
-secrecy alone establishes none of those properties.
-
-The required abstraction combines custody with the private transition:
-
-```text
-handle = (chain, object, policy, state_commitment, generation)
-(private_state_next, permitted_outputs, permitted_actions)
-    = authorized_transition(private_state, admitted_inputs)
-```
-
-The handle is an architectural sketch, with its concrete encoding still open.
-The accepted transition binds code, input set, prior state, resource bound,
-disclosure rule and successor state. Its execution keeps protected plaintext
-inside the qualified collective protocol; public verification checks the
-transition and its authorized effects. Signing an action, releasing a key to
-a recipient and evaluating over secret state are distinct operations. A generic
-decrypt-and-sign endpoint cannot stand in for their different policies.
-
-| capability | additional obligation beyond holding a key |
-|---|---|
-| persistent network identity and control of assets | policy-bound signing, finality, replay domains, and compatible external verification |
-| collective private aggregates, auctions and settlement | authenticated contributions, exact private evaluation and the release analysis in §6.6 |
-| private agent memory and strategy | confidential state access and transitions, private indexing where needed, successor-state availability |
-| learning or inference on private contributions | a qualified bounded computation, an output leakage policy and a separate data-quality/incentive argument |
-| conditional access and recovery | authorization of each recipient, explicit key delivery semantics and no promise to revoke knowledge already disclosed |
-
-Make the following boundaries part of the functionality before freeze:
-
-- Public programs over published results remain unrestricted. Programs over
-  protected inputs execute only within the object's admitted policy; returning
-  an individual input is itself disclosure. The ability to evaluate any circuit
-  does not authorize publication of every circuit's output.
-- Model outputs, trades, timings and access patterns can disclose private
-  state. Learning from private contributions needs its own leakage analysis;
-  cryptographic execution correctness does not establish truthful observations,
-  useful learning, resistance to poisoning or safe decisions.
-- A qualified threshold, timely refresh, honest erasure and availability remain
-  explicit assumptions. Refresh protects against the specified mobile attacker;
-  it cannot undo a complete reconstruction of a persistent secret. Public proofs
-  cannot demonstrate that a corrupted executor deleted a copy.
-- Classical secret state is copyable when enough holders cooperate. Canonical
-  continuity comes from the consensus and authorization rules; secrecy supplies
-  no physical unclonability. External actions must bind their own replay domain
-  and finalized authorization so competing histories cannot share authority.
-- Recovery must preserve the same authorization boundary. A universal recovery
-  authority able to recover every secret becomes part of every secret's threat
-  model. Hierarchical derivation from one master key supplies domain separation,
-  not independent protection against compromise of that master.
-
-Keep individual note spending authority with its owner. Separate service-secret
-domains and their policies; qualify which require independently generated keys.
-The learning process may update its memory under the frozen transition law.
-It receives no implied authority to rewrite monetary invariants, disclosure
-rules or the verifier. An unrestricted policy-upgrade capability would include
-the ability to authorize extraction of the entire protected state.
-
-ICP provides a deployed reference for threshold authority, resharing and vetKey
-delivery. Its documented standard canister execution has a different memory
-confidentiality boundary, and its cited primitives use classical groups.
-The [ICP comparison](../audit/privacy-2026-10-16/icp-comparison.md) records the
-working capabilities and their limits. This reference strengthens the case
-for a first-class secret service; it does not qualify our complete PQ private
-state machine. The obligations above belong to the existing pre-genesis gates.
 
 ## 7. transport, delivery and recovery
 
