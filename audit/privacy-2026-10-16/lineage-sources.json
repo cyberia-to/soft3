@@ -1,0 +1,249 @@
+{
+  "date": "2026-10-16",
+  "scope": "Primary-source lineage review; inspection depth recorded individually; no implementation certification or benchmark",
+  "sources": [
+    {
+      "id": "ecpss",
+      "title": "Can a Public Blockchain Keep a Secret?",
+      "url": "https://eprint.iacr.org/2020/464",
+      "source_revision_date": "2020-09-29",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and TCC publication text: introduction, construction overview, applications, related work and communication/adversary definitions; later PDF follow-up fetches returned HTTP 403.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2020/464"
+          }
+        ]
+      },
+      "additional_primary_url": "https://iacr.org/archive/tcc2020/12550126/12550126.pdf"
+    },
+    {
+      "id": "churp",
+      "title": "CHURP: Dynamic-Committee Proactive Secret Sharing",
+      "url": "https://eprint.iacr.org/2019/017",
+      "source_revision_date": null,
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and author publication page; CCS 2019. Full security proof not reviewed.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2019/017"
+          }
+        ]
+      },
+      "additional_primary_url": "https://www.fanzhang.me/publications/19-churp/"
+    },
+    {
+      "id": "yoso",
+      "title": "YOSO: You Only Speak Once / Secure MPC with Stateless Ephemeral Roles",
+      "url": "https://eprint.iacr.org/2021/210",
+      "source_revision_date": "2021-06-12",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2021/210"
+          }
+        ]
+      }
+    },
+    {
+      "id": "yolo-yoso",
+      "title": "YOLO YOSO: Fast and Simple Encryption and Secret Sharing in the YOSO Model",
+      "url": "https://eprint.iacr.org/2022/242",
+      "source_revision_date": "2022-12-05",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2022/242"
+          }
+        ]
+      }
+    },
+    {
+      "id": "etf",
+      "title": "Encryption to the Future: A Paradigm for Sending Secret Messages to Future (Anonymous) Committees",
+      "url": "https://eprint.iacr.org/2021/1423",
+      "source_revision_date": "2022-09-12",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2021/1423"
+          }
+        ]
+      }
+    },
+    {
+      "id": "constant-round",
+      "title": "Constant-Round YOSO MPC Without Setup",
+      "url": "https://eprint.iacr.org/2022/187",
+      "source_revision_date": "2023-07-04",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2022/187"
+          }
+        ]
+      }
+    },
+    {
+      "id": "adaptivity",
+      "title": "Taming Adaptivity in YOSO Protocols: The Modular Way",
+      "url": "https://eprint.iacr.org/2023/1077",
+      "source_revision_date": "2023-07-24",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata, including its correction notice.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2023/1077"
+          }
+        ]
+      }
+    },
+    {
+      "id": "packed",
+      "title": "Towards Scalable YOSO MPC via Packed Secret-Sharing",
+      "url": "https://eprint.iacr.org/2025/635",
+      "source_revision_date": "2026-04-11",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and indexed construction-overview excerpt; no implementation review.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2025/635"
+          }
+        ]
+      }
+    },
+    {
+      "id": "async-yoso",
+      "title": "Asynchronous YOSO a la Paillier",
+      "url": "https://eprint.iacr.org/2025/128",
+      "source_revision_date": "2025-10-06",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2025/128"
+          }
+        ]
+      }
+    },
+    {
+      "id": "committee-size",
+      "title": "Towards Practical Committee Sizes in YOSO MPC",
+      "url": "https://eprint.iacr.org/2026/919",
+      "source_revision_date": "2026-05-14",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and author talk abstract; full PDF unavailable through browser tool. No performance or resilience parameters adopted.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2026/919"
+          }
+        ]
+      },
+      "additional_primary_url": "https://theory.cs.tsinghua.edu.cn/post/26-10-15towards-practical-committee-sizes-in-yoso-mpc/"
+    },
+    {
+      "id": "lwe-dl-pvss",
+      "title": "Practical Non-interactive Publicly Verifiable Secret Sharing with Thousands of Parties",
+      "url": "https://eprint.iacr.org/2021/1397",
+      "source_revision_date": "2022-05-10",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract explicitly names LWE encryption and DL Bulletproofs.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2021/1397"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lattice-pvss",
+      "title": "A Generic Framework for Practical Lattice-Based Non-interactive Publicly Verifiable Secret Sharing",
+      "url": "https://eprint.iacr.org/2025/901",
+      "source_revision_date": "2025-11-08",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata; full PDF fetch returned HTTP 403. Construction not audited.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2025/901"
+          }
+        ]
+      }
+    },
+    {
+      "id": "standard-pvss",
+      "title": "Publicly Verifiable Secret Sharing: Generic Constructions and Lattice-Based Instantiations in the Standard Model",
+      "url": "https://arxiv.org/html/2504.14381v1",
+      "source_revision_date": "2025-04-19",
+      "accessed": "2026-10-16",
+      "inspection": "Version 1 HTML: introduction, contribution, PVSS syntax, setup and generic construction. Full proof not audited.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://arxiv.org/html/2504.14381v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "no-erasure",
+      "title": "Proactive Secret Sharing without Erasures",
+      "url": "https://eprint.iacr.org/2026/1072",
+      "source_revision_date": "2026-09-12",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata; quantum-computing and witness-encryption requirements taken from abstract.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2026/1072"
+          }
+        ]
+      }
+    },
+    {
+      "id": "async-pss",
+      "title": "On the (Im)possibility of Asynchronous Proactive Secret Sharing",
+      "url": "https://eprint.iacr.org/2026/2018",
+      "source_revision_date": "2026-09-14",
+      "accessed": "2026-10-16",
+      "inspection": "Primary abstract and revision metadata only; no theorem-specific bound asserted.",
+      "read_command": {
+        "tool": "web.run",
+        "open": [
+          {
+            "ref_id": "https://eprint.iacr.org/2026/2018"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -194,6 +194,21 @@ security limits and unintended packed-slot disclosure. They motivate a concrete
 research baseline and its missing obligations. No malicious-secure PQ threshold
 implementation, parameter selection or aggregate benchmark was produced here.
 
+### a network-held secret needs a complete lifecycle
+
+The owner's literature lead was resolved to
+[Can a Public Blockchain Keep a Secret?](https://eprint.iacr.org/2020/464).
+The [lineage review](network-secret-lineage.md) follows ECPSS, YOSO, anonymous
+handoff, adaptive composition, PQ PVSS and later timing/erasure work. Its
+[source ledger](lineage-sources.json) records access dates, source revisions and
+which texts were inspected only at abstract level.
+
+The resulting proposal selects hidden evolving roles with proactive secret
+state propagation. It adds explicit genesis, erasure, key retirement,
+partition-recovery and computation/consensus dependency obligations. The
+freeze unit is the complete implemented and validated protocol. None of these
+is designated for completion after launch.
+
 ## reproduced counterexamples
 
 Source under analysis:
@@ -255,6 +270,14 @@ The release-engine suite again passed all 15 tests. The counterexample script,
 filename check, diff check, local Markdown links/fences and source-record
 uniqueness passed; both inspected tru files still matched their recorded
 checksums. These checks add no cryptographic performance or security evidence.
+
+The network-secret lineage addition was checked on
+`b0110398e6279593515cb24271d9b5ebaa972a8a` plus its documentation changes:
+the same release-engine command passed all 15 tests, and the diff/filename
+checks passed. Local Markdown links/fences, both source ledgers' identifier
+uniqueness, the new lifecycle-gate link and the recorded foculus/mudra checksums
+were checked with Python assertions. The release-engine and counterexample
+program sources were unchanged. These are artifact checks, not ECPSS tests.
 
 ## external evidence and limits
 

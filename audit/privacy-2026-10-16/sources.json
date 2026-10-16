@@ -562,6 +562,16 @@
       "matches_revision": true,
       "sha256": "6f6c04e8b2f4066b720e3209b3f4c367ae8716d7fd03cd55d25f44da9c56117b",
       "read_command": "git -C /Users/master/cyber/tru show 6b25e4e93defe22a08168c46224bc2bf44cef1a8:specs/attention.md"
+    },
+    {
+      "id": "mudra:specs/quorum.md",
+      "repository": "mudra",
+      "revision": "8b19098fd394c459ba01dd98cb6081d469dc27c7",
+      "path": "specs/quorum.md",
+      "source": "working-tree",
+      "matches_revision": true,
+      "sha256": "81029fefc97faeffcc75abb2646868bd3dceb4a4d637905e5d3e1a1a917dff27",
+      "read_command": "git -C /Users/master/cyber/mudra show 8b19098fd394c459ba01dd98cb6081d469dc27c7:specs/quorum.md"
     }
   ]
 }

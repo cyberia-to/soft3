@@ -35,10 +35,12 @@ cryptographic and network profiles do not establish the requested guarantee.
 The research question is whether this particular composition can meet the
 security and device budgets, with explicit leakage, before permanent genesis.
 
-For the owner's satellite requirement, the launch verdict is: defer the
-irreversible monetary genesis until the gates below close. The existing public
-chain can exercise the harness under its existing contract. It cannot count as
-the genesis of the permanently private, post-quantum currency described here.
+The freeze unit is the complete implemented protocol: private inputs, joint
+computation, consensus, disclosure, secret-state succession, transport, recovery
+and every failure transition. All of it must work before the irreversible
+monetary genesis. A primitive, a happy-path demonstration or a plan to complete
+any of these functions after launch cannot satisfy the freeze. The present
+proposal is a research specification; it is not a complete qualified protocol.
 
 This page proposes a decision. `draft` follows the proposals registry: owner
 acceptance and implementation remain outstanding. Existing accepted specs,
@@ -406,31 +408,99 @@ reference. None certifies our PQ parameter set, release policy or reward circuit
 The native Goldilocks `mudra::veil` proposal remains unqualified; arithmetic
 alignment alone cannot justify freezing a new cryptosystem.
 
-### 6.4 distributed authority and lifetime
+### 6.4 the network holds the secret through evolving hidden roles
 
-Freeze distributed key generation, membership/selection, corruption threshold,
-authenticated PQ channels, share consistency, proof production, release rules,
-timeout/abort behavior and recovery. No party receives a master key. Hashing
-Shamir coefficients does not by itself implement verifiable sharing. Monetary
-spending keys stay independent of the collective decryption shares.
+Select evolving-committee proactive secret sharing (ECPSS), extended through
+YOSO-style verifiable state propagation, as the secret-custody research
+architecture. [Can a Public Blockchain Keep a Secret?](https://eprint.iacr.org/2020/464)
+constructs sharing and resharing to hidden successor committees, addressing the
+targeted-corruption problem of small public committees. Its secrecy relies on
+bounded mobile corruption, erasure and a specified communication model. The
+[lineage review](../audit/privacy-2026-10-16/network-secret-lineage.md) separates
+that result from later constructions and from this proposal's design decisions.
 
-Use epoch keys for transient contributions. Fixed rotation/resharing rules are
-part of the immutable protocol; new key instances do not change its algorithms.
-Confidentiality depends on the non-collusion bound and, for proactive security,
-timely refresh and actual erasure. Offline contributors need durable ciphertexts
-and availability. Live encrypted application state requires a specified key
-transition/refresh protocol; preserving access to that state also preserves an
-ongoing compromise risk. Erasure can protect finished epochs only where no
-remaining key path can decrypt their individual inputs. Permissionless
-admission alone establishes no honest threshold.
+Apply the following requirements to every secret-bearing role:
 
-Enough colluding key-share holders can expose the protected inputs. Too few
-available holders can halt aggregate release and dependent settlement. These
-are distinct safety/privacy/liveness conditions to price alongside consensus.
-A proof of correct evaluation closes neither condition. The freeze must choose
-an explicit failure outcome; automatic plaintext fallback breaks the promise.
+1. Assign the role without exposing its physical holder before its work is
+   finished. Selection is weighted by the frozen scarce-resource rule; naming
+   anonymous addresses alone supplies no corruption bound.
+2. Deliver shares to the hidden role through a PQ receiver-anonymous channel
+   with the required selective-opening/adaptive security. Binding a public key
+   to an undisclosed holder needs an actual construction.
+3. Verify input shares and compute the bounded operation, successor sharings,
+   proof and any authorized partial result. The full service secret is never
+   reconstructed at one machine.
+4. Prepare the complete outgoing message; erase shares, masks, decryption keys
+   and other state that would recover them; only then publish. Retransmission
+   may replay that same prepared public message. A second secret-dependent
+   message requires a fresh role and a proved protocol transition.
+5. Successor roles privately recover fresh shares from publicly verifiable
+   encrypted handoff data. A live secret continues across changing holders;
+   old shares are not accumulated as if they belonged to one sharing.
 
-### 6.5 release leakage and the genesis decision
+This is an implementation requirement derived from the selected architecture,
+not a claim that a generic threshold library already implements YOSO.
+Interactive DKG, refresh and threshold decryption must themselves fit the role
+schedule. A holder cannot reveal its identity during decryption and then retain
+the same share to serve later requests. Nor may private recovery restore an
+erased protocol share from an old device backup. Ordinary note recovery and
+ephemeral service-role state have different retention rules.
+
+Distinguish share refresh from key rotation. Refresh changes the shares of the
+same secret; it preserves the ability to decrypt ciphertexts under that key.
+Fresh domain/epoch keys limit the exposure of completed computations only after
+every decrypting path has been retired. Persistent encrypted application state
+needs a qualified state/key transition. The frozen protocol includes these
+repeating transitions from genesis. Executing them is ordinary operation of
+the fixed protocol, with no algorithm upgrade or new authority.
+
+Bound corruptions over the entire refresh/handoff window, including retained
+access to decryption keys, and state how compromised machines recover. Erasure
+is an assumption about honest execution; a public proof cannot prove that a
+machine forgot a copy. No key backup may silently defeat it. Confidentiality
+and availability thresholds, offline roles, targeted denial of service,
+selection bias and repeated-committee lifetime failure all need joint bounds.
+The network must preserve and use the secret under those bounds. A live
+decryption threshold controlled by the adversary still violates confidentiality.
+
+The original ECPSS theorem uses synchronized authenticated broadcast.
+[[foculus/specs/protocol]] describes partial synchrony and domain-local finality.
+Those models do not compose by naming an epoch. A stopped consensus clock can
+leave a secret exposed to continuing real-time compromise. Before freeze,
+the concrete protocol must close that partition/refresh model and guaranteed
+completion after permitted outages; a timeout and permanent halt alone do not
+meet the fully working protocol requirement.
+
+### 6.5 close the computation/consensus dependency
+
+Use the last finalized public snapshot to authenticate the next computation's
+eligibility, input closure, role-selection context and release authorization.
+The current secret result cannot be a prerequisite for finalizing its own
+release request. Proposed dependency:
+
+```text
+finalized state S_e
+  -> eligible encrypted input set B_e and fixed function/policy
+  -> canonical certificate for B_e under the existing finalized context
+  -> verifiable private computation + policy-bound threshold result
+  -> atomic aggregate/payout/state transition to S_(e+1)
+```
+
+This is a required pre-genesis consensus design change wherever the current
+rules create that circular dependency. Handoff continuity must also function
+when application input is empty or application settlement is delayed.
+Certificate domains include chain, finalized root, role generation, input root,
+program and release policy. Forks cannot reuse a one-time role or decrypt
+conflicting subsets. Initialization must generate the first distributed secret
+and establish eligibility/randomness without a hidden trusted dealer or a
+beacon that already requires the missing secret.
+
+The complete protocol must instantiate this dependency with foculus agreement,
+data availability and conflict rules. No existing foculus theorem is being
+claimed for the changed relation. Encryption validity, committee secrecy,
+public verification and consensus finality require one end-to-end argument.
+
+### 6.6 release leakage and the genesis decision
 
 Output leakage remains even with perfect MPC. If `S = sum(x_i)`, an adversary
 knowing every term except one recovers that last term. Publishing two exact
@@ -621,6 +691,7 @@ protocol or may show that the fixed requirements do not fit the device budgets.
 | G3: does one complete private spend conserve value and remain spendable forever? | bbg, tok, mudra, zheng | malicious-prover tests for inflation, wraparound, forged authority, same/batch/cross-epoch double spends; archive and root-update recovery | permanent genesis |
 | G4: can contracts preserve private state under bounded execution? | nox, trident, joy | reference evaluation agrees with proof relation for authorization, calls, private reads, branches and successor policies; compiler semantics checked separately | programmable genesis |
 | G5: can secret collective inputs be aggregated and settled without a privileged reader? | foculus, mudra, zheng, tru | a specified malicious-secure PQ collective protocol; actual adjacency/BTS/Shapley circuits; input/evaluation/decryption proofs; threshold/availability model; disclosure, dropout, reorg and payout fixtures | permanent genesis |
+| G5a: can the same network preserve and use its secret across its entire lifecycle? | foculus, mudra, radio, zheng | hidden role assignment, PQ verifiable handoff, erasure/backup model, genesis without circular trust, corruption-window analysis, partition recovery and a proof that release does not depend on its own secret result | permanent genesis |
 | G6: can a global observer link ingress or recovery to the published action? | radio, cybergraph, cyb, mudra | reviewed PQ mix/delivery composition; active attacks and realistic low-load/intersection experiments; key-private recovery | claimed end-to-end privacy |
 | G7: does the complete composition fit the product budgets? | joy, honeycrisp, soft3 | reproducible end-to-end cold/warm receipts under the accepted G1/G2 profile; sustained-load and hostile-input runs | permanent genesis |
 
@@ -630,7 +701,9 @@ aggregate reference together. Close the proof/delivery security questions
 while measuring those complete relations. Extend the collective fixture to
 the real valence/settlement function; an unrelated private sum cannot close G5.
 Only after these converge should owner repositories receive final normative
-specs, wire changes and executable release gates.
+specs, wire changes and executable release gates. Production freeze additionally
+requires the complete implementation and end-to-end evidence under that one
+profile. None of these obligations is deferred to a post-launch privacy phase.
 
 The two load-bearing research investments are a minimal-disclosure, verifiable
 collective protocol and compact quantum-analyzed hiding proofs for its actual
@@ -652,7 +725,7 @@ profile and one set of semantics; unresolved security rows keep it open.
 | owner-only ZK and public individual outputs | omits the mandatory aggregation of protected contributions; fails the requested collective machine |
 | additive HE alone for the entire machine | handles sums after local preprocessing; insufficient for general joint private settlement and contracts |
 | FHE evaluation for every owner-only transfer | pays joint-computation costs where local private execution already suffices; use the local path for those spends |
-| one permanent threshold decryption key | accumulates compromise risk for archived contributions; select epoch keys and an explicit lifecycle for retained secret state |
+| a permanent public committee with static shares | allows targeted and cumulative compromise; use hidden evolving roles, proactive resharing and explicit domain-key retirement |
 | classical curve commitments or recursive curve wrappers | retain a discrete-log security dependency; outside the PQ baseline |
 | CSIDH plus an unqualified native-field KEM | increases new cryptography on the irreversible path; use the standard delivery baseline and qualify anonymity explicitly |
 | aggregate everything into one proof | reduces verification overhead after qualification; does not erase network observations, public IO or the aggregator's learned witnesses |
@@ -662,6 +735,7 @@ The proposed decision is concrete: local ZK authenticates private programmable
 notes and encrypted contributions; mandatory threshold encrypted computation
 produces the collective result; distributed release exposes only authorized
 outputs; anonymous transport and recoverable delivery complete the product.
+ECPSS/YOSO-style succession preserves the service secret through changing roles.
 The monetary law and release rules stay fixed. Freeze follows evidence for
 that whole composition. The present research verdict on that freeze is no-go.
 
