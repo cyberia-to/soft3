@@ -224,6 +224,58 @@ The existing adapter (native-node.md: bounds, request identity, error codes
 | `GET /v2/history?after=POSITION&limit=N` | `cyber/native-history/v1` entries | kept; each entry gains `height`, `block` and `txid`; `encoding: CGOP-v1-hex` kept for cyberlink entries |
 | `POST /v1/link`, `/v1/pay`, `/v1/frame`, `/v2/frame`, `GET /log` | `410 Gone` on chain nodes, with a pointer to `POST /tx` | the unsigned chaosnet ingress has no place on a public chain; `spacepussy-test` keeps them |
 
+Answer shapes the kernel fixes (hex lowercase, bytes in wire order,
+integers as JSON numbers, u256 as decimal strings; unknown fields in a
+request are rejected). The wallet (`soft3::wallet::client`) reads these;
+the node implements them over `chain::api`:
+
+```
+GET /tip
+  200 {"height":H,"id":"<hex32>","chainwork":"<decimal u256>"}
+
+GET /nonce/{neuron}
+  200 {"neuron":"<hex32>","nonce":N,"confirmed":C}
+      nonce = the next nonce a transaction may carry (confirmed + the
+      mempool's consecutive pending txs of this account); confirmed = the
+      state's `neurons[ν].nonce` at the tip
+  400 {"error":"<reason>"}                 not a 32-byte hex id
+
+POST /tx   body: application/octet-stream tx bytes, or JSON {"tx":"<hex>"}
+  200 {"txid":"<hex32>","kind":"transfer|cyberlink|claim","size":B,"fee":F,
+       "account":"<hex32>","nonce":N}       admitted (or already present) and relayed
+  400 {"error":"<reason>"}                 decode, signature, nonce, fee, balance,
+                                           maturity — the reason text of chain::apply::TxError
+  410 {"error":"..."}                      on a chaosnet node (no chain)
+
+GET /tx/{txid}
+  200 {"txid":"<hex32>","kind":"<name>","tx":{<decoded fields>},
+       "height":H|"mempool","block":"<hex32>"|null,"index":I|null}
+      decoded fields: coinbase {height,to,amount,extra}; transfer
+      {from,nonce,token,amount,to,fee}; cyberlink {from,nonce,token,amount,
+      p,q,valence,fee}; claim {account_id,nonce,fee}; plus "sig":"<hex102>"
+      for signed kinds; 32-byte ids and sigs hex, amounts numbers, valence
+      −1|0|1
+  404 {"error":"unknown"}                  never seen, dropped, or pruned
+
+GET /template?to={neuron}
+  200 {"chain":"<name>","height":H,"prev":"<hex32: tip id>",
+       "header":"<hex168: candidate with nonce zero>","bits":"<hex8>",
+       "target":"<hex32: the 32 LE bytes of decode(bits)>","body":"<hex>",
+       "expires":<unix second, 0 = none>}
+      `chain::api::Template::json` renders exactly this; `target` repeats
+      `bits` decoded so an external worker needs no compact codec
+
+POST /submit   {"header":"<hex168: the solved header>"}
+  200 {"id":"<hex32>","height":H}         accepted and relayed
+  409 {"error":"stale template"}          prev is no longer the tip
+  422 {"error":"<reason>"}                pow, bits or syntax (chain.md §5.5 1–5)
+  400 {"error":"<reason>"}                malformed request
+```
+
+A template is tied to its `prev`: a miner polls `GET /tip` and refreshes
+when `id` moves; the 16-byte nonce (bytes 24..40) is the miner's alone and
+nothing else in the header may change between template and submit.
+
 `/status` fields (cybermark, one per line as today): `chain`, `protocol:
 soft3/chain/1`, `rule-set`, `activations`, `engine: chain+cybergraph+bbg`,
 `version`, `moniker`, `height`, `tip`, `chainwork`, `bits`, `next-bits`,

@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, conformance_gate, source_gates
+from train_gates import Gates, chain_genesis_gate, conformance_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -122,6 +122,11 @@ class ReleaseTests(unittest.TestCase):
     def test_warning_is_red_even_with_zero_exit(self):
         gates = Gates(self.root, self.sources, "stack")
         self.assertFalse(gates.run("warning", ["python3", "-c", "print('warning: fixture')"], self.root))
+
+    def test_chain_genesis_without_the_file_is_blocked_not_green(self):
+        gates = Gates(self.root / "out", self.sources, "aarch64-apple-darwin")
+        self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis"))
+        self.assertEqual(gates.rows[-1]["result"], "blocked")
 
     def test_conformance_scaffold_is_blocked_not_green(self):
         manifest = self.root / "soft3/conformance/rs/Cargo.toml"

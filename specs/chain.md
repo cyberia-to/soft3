@@ -940,20 +940,26 @@ than 2 h — on mimas like everything else.
 Decisions this page could not settle alone, each with the default the
 implementation uses until the owner says otherwise.
 
-| # | question | default here |
-|---|---|---|
-| 1 | subsidy rate (§3.5): 1 %/yr constant, 0.5 %, or a halving schedule | 1 %/yr constant, no halving |
-| 2 | locked cyberlink boxes (§2.4): lock until the cores add withdraw, or disallow `amount > 0` entirely in phase 1 | lock; withdraw arrives with rule set 2 |
-| 3 | genesis stake (§4.2): make delegated/undelegating balances liquid, or hold them dormant until staking activates | liquid |
-| 4 | the 8.97 T BOOT on the passport contract | dormant under `legacy_owner`, untouched |
-| 5 | TOCYB × 666 → CYB | not executed; TOCYB carried as a coin; phase 3 |
-| 6 | `FINALITY_DEPTH` 120 (1 h) vs parano1d's 18 (9 min) | 120 — a canary with low hash rate should be slow to finalize |
-| 7 | checkpoint sunset at 6 months vs owner-switched | hard sunset 525,600 blocks plus operator switch |
-| 8 | fee floor 1 unit/byte on both chains (very different unit values) | 1 unit/byte; revisit when a market exists |
-| 9 | block time 30 s vs 60 s | 30 s |
-| 10 | `NeuronRecord.nonce` in bbg vs chain-side nonce table outside the root | in bbg, under the root |
-| 11 | multisig / non-secp256k1 legacy accounts | dormant; a later rule set adds their claim |
-| 12 | the particle definition (row 19) | `hemera(bytes)`, 32 bytes, as every crate computes today |
+Owner decisions 2026-10-15 (recorded by the kernel implementation,
+`crate/src/chain/`): every default below stands **except item 2** — in
+rule set 1 a cyberlink's `amount` must be 0; there are no locked boxes,
+and weights arrive with a later rule set. The kernel rejects
+`amount > 0` (`TxError::Box`).
+
+| # | question | default here | decided |
+|---|---|---|---|
+| 1 | subsidy rate (§3.5): 1 %/yr constant, 0.5 %, or a halving schedule | 1 %/yr constant, no halving | 1 %/yr, kept |
+| 2 | locked cyberlink boxes (§2.4): lock until the cores add withdraw, or disallow `amount > 0` entirely in phase 1 | lock; withdraw arrives with rule set 2 | **amount must be 0** in rule set 1 (no boxes); weights with a later rule set |
+| 3 | genesis stake (§4.2): make delegated/undelegating balances liquid, or hold them dormant until staking activates | liquid | liquid, kept |
+| 4 | the 8.97 T BOOT on the passport contract | dormant under `legacy_owner`, untouched | dormant, kept |
+| 5 | TOCYB × 666 → CYB | not executed; TOCYB carried as a coin; phase 3 | TOCYB as a coin, kept |
+| 6 | `FINALITY_DEPTH` 120 (1 h) vs parano1d's 18 (9 min) | 120 — a canary with low hash rate should be slow to finalize | 120, kept |
+| 7 | checkpoint sunset at 6 months vs owner-switched | hard sunset 525,600 blocks plus operator switch | sunset 525,600 + switch, kept |
+| 8 | fee floor 1 unit/byte on both chains (very different unit values) | 1 unit/byte; revisit when a market exists | 1 unit/byte, kept |
+| 9 | block time 30 s vs 60 s | 30 s | 30 s, kept |
+| 10 | `NeuronRecord.nonce` in bbg vs chain-side nonce table outside the root | in bbg, under the root | in bbg, kept |
+| 11 | multisig / non-secp256k1 legacy accounts | dormant; a later rule set adds their claim | dormant, kept |
+| 12 | the particle definition (row 19) | `hemera(bytes)`, 32 bytes, as every crate computes today | `hemera(bytes)`, kept |
 
 ## 11. acceptance
 

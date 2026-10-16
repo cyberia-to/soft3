@@ -106,6 +106,24 @@ def conformance_gate(gates, soft3):
                       CONFORMANCE_RUNNER, "--", "conformance", "--check"], soft3, timeout=900)
 
 
+GENESIS_ENV = "SOFT3_GENESIS_DIR"
+
+
+def chain_genesis_gate(gates, soft3, genesis_dir=None):
+    """chain-conformance.md §10 in the release train: the pussy genesis file
+    (pinned snapshot inputs, `soft3 genesis build`) must reproduce the blessed
+    particle, state root and block-0 id in soft3/conformance/chain.snap. The
+    file lives outside git (SOFT3_GENESIS_DIR, default ~/cyber/.cache/genesis);
+    a train without it is blocked, never green."""
+    directory = Path(genesis_dir or os.environ.get(GENESIS_ENV) or Path.home() / "cyber/.cache/genesis")
+    genesis = directory / "pussy.tade"
+    if not genesis.is_file():
+        return gates.blocked("stack-chain-genesis", f"no pussy genesis file at {genesis} (set {GENESIS_ENV})")
+    return gates.run("stack-chain-genesis",
+                     ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--",
+                      "conformance", "check", "chain", "--genesis", str(genesis)], soft3, timeout=900)
+
+
 def boot_status(binary, gates):
     if not binary.is_file():
         return gates.blocked("node-status", "release executable was not built")
@@ -160,6 +178,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
         conformance_gate(gates, directory / "soft3")
+        chain_genesis_gate(gates, directory / "soft3")
     if component == "soft3":
         crate = root / "crate"
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)

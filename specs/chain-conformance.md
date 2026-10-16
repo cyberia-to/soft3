@@ -217,7 +217,8 @@ revision, with `NeuronRecord.nonce` and `DIMENSION_VERSION = 3`:
 | empty state root | `root(BbgState::new())` |
 | genesis of the conformance net: one `b` frame (`owner = 0x66 × 32`, `token("pussy")`, 1,000,000), no links | genesis file bytes, its particle (chain id), block 0 id, state root |
 | after block 1: coinbase to `0x55 × 32`, the transfer of §6 | state root, balances of `0x55`, `0x66`, `0x77`, nonce of `0x66` = 1, `coins[token("pussy")].total_supply = 1,000,000 + SUBSIDY` |
-| after a cyberlink with amount 7 | `balances[H(axon ‖ token)] = 7`, `particles[q].energy = 7`, `particles[axon].weight = 7`, author balance down by 7 + fee |
+| after a cyberlink (amount 0: chain.md §10 item 2, decided 2026-10-15) | state root; `particles[q]`, `particles[axon]` and the axon lists exist at zero, author balance down by the fee, nonce 2 |
+| a cyberlink with amount 7 | rejected (`TxError::Box(7)`) — no boxes in rule set 1 |
 | conservation | Σ native balances == S0 + h · SUBSIDY at every height of a 200-block simulated chain with random valid txs, including a 3-block reorg |
 | coinbase maturity | spending block 1's subsidy at height 100 is rejected, at height 101 accepted |
 
@@ -279,6 +280,9 @@ a private test genesis):
 `cargo test -p soft3 --features chain-conformance` runs sections 1–9 and 11
 on every commit; section 10 runs in the release train (`stack-chain-genesis`
 gate) because it needs the pinned snapshot inputs. Blessed values are
-written by `soft3 conformance bless chain` and reviewed in the PR that moves
-them. The report of each run goes to `soft3/audit/chain/conformance-<date>.md`
+written by `soft3 conformance bless chain` into `conformance/chain.snap`
+(and checked by `soft3 conformance check chain`); the genesis entries of
+§10 need the genesis file (`--genesis FILE`, default
+`~/cyber/.cache/genesis/pussy.tade`) and are kept as they are when it is
+absent. They are reviewed in the PR that moves them. The report of each run goes to `soft3/audit/chain/conformance-<date>.md`
 with the revision and the command, per the audit doctrine.
