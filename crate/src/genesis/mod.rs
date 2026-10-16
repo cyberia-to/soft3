@@ -117,7 +117,7 @@ pub struct Options {
 impl Options {
     pub fn default_cache(chain: &Chain) -> PathBuf {
         let home = std::env::var("HOME").unwrap_or_else(|_| ".".into());
-        Path::new(&home).join("cyber").join(".cache").join("snapshots").join(chain.name)
+        Path::new(&home).join(".cache").join("cyber").join("snapshots").join(chain.name)
     }
 }
 

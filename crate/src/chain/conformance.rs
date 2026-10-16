@@ -286,7 +286,7 @@ mod tests {
         let committed = parse(&std::fs::read_to_string(path).expect("conformance/chain.snap"));
         let mut current = entries();
         let home = std::env::var("HOME").unwrap_or_default();
-        let pussy = std::path::Path::new(&home).join("cyber/.cache/genesis/pussy.tade");
+        let pussy = std::path::Path::new(&home).join(".cache/cyber/genesis/pussy.tade");
         if let Ok(bytes) = std::fs::read(&pussy) {
             current.extend(genesis_entries("pussy", &bytes).unwrap());
         }

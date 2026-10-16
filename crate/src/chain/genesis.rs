@@ -196,12 +196,12 @@ pub(crate) mod tests {
     }
 
     /// chain-conformance §10 against the real pussy file when it is cached
-    /// (`soft3 genesis build` writes ~/cyber/.cache/genesis/pussy.tade);
+    /// (`soft3 genesis build` writes ~/.cache/cyber/genesis/pussy.tade);
     /// the release gate `stack-chain-genesis` runs the same comparison.
     #[test]
     fn pussy_genesis_matches_the_blessed_vectors_when_cached() {
         let home = std::env::var("HOME").unwrap_or_default();
-        let path = std::path::Path::new(&home).join("cyber/.cache/genesis/pussy.tade");
+        let path = std::path::Path::new(&home).join(".cache/cyber/genesis/pussy.tade");
         let Ok(bytes) = std::fs::read(&path) else {
             eprintln!("skipped: {} not cached", path.display());
             return;

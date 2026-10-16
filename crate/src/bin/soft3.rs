@@ -819,7 +819,7 @@ mod tests {
 /// vectors of chain-conformance.md in `conformance/chain.snap`
 /// (`chain::conformance`). `bless` writes, `check` compares; both take the
 /// pinned genesis file for the §10 entries (default
-/// `~/cyber/.cache/genesis/pussy.tade`, kept as committed when absent).
+/// `~/.cache/cyber/genesis/pussy.tade`, kept as committed when absent).
 fn cmd_conformance(args: &[String]) {
     use soft3::chain::conformance;
     let sub = args.first().map(|s| s.as_str()).unwrap_or("");
@@ -832,7 +832,7 @@ fn cmd_conformance(args: &[String]) {
     let snap = value("--snap").map(PathBuf::from).unwrap_or_else(|| PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/../conformance/chain.snap")));
     let genesis = value("--genesis").map(PathBuf::from).unwrap_or_else(|| {
         let home = std::env::var("HOME").unwrap_or_else(|_| ".".into());
-        PathBuf::from(home).join("cyber/.cache/genesis/pussy.tade")
+        PathBuf::from(home).join(".cache/cyber/genesis/pussy.tade")
     });
     let committed = std::fs::read_to_string(&snap).map(|s| conformance::parse(&s)).unwrap_or_default();
     let mut current = conformance::entries();

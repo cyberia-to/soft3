@@ -1,6 +1,6 @@
 //! Genesis pipeline tests. Pure tests always run; the snapshot-backed test
 //! runs when the space-pussy snapshot manifest and its fetched cache exist
-//! (`~/cyber/space-pussy/snapshot/manifest.json`, `~/cyber/.cache/snapshots/pussy`)
+//! (`~/cyber/space-pussy/snapshot/manifest.json`, `~/.cache/cyber/snapshots/pussy`)
 //! and skips otherwise — no network inside `cargo test`.
 
 use std::collections::{BTreeMap, BTreeSet};

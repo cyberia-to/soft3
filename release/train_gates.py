@@ -113,9 +113,9 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None):
     """chain-conformance.md §10 in the release train: the pussy genesis file
     (pinned snapshot inputs, `soft3 genesis build`) must reproduce the blessed
     particle, state root and block-0 id in soft3/conformance/chain.snap. The
-    file lives outside git (SOFT3_GENESIS_DIR, default ~/cyber/.cache/genesis);
+    file lives outside git (SOFT3_GENESIS_DIR, default ~/.cache/cyber/genesis);
     a train without it is blocked, never green."""
-    directory = Path(genesis_dir or os.environ.get(GENESIS_ENV) or Path.home() / "cyber/.cache/genesis")
+    directory = Path(genesis_dir or os.environ.get(GENESIS_ENV) or Path.home() / ".cache/cyber/genesis")
     genesis = directory / "pussy.tade"
     if not genesis.is_file():
         return gates.blocked("stack-chain-genesis", f"no pussy genesis file at {genesis} (set {GENESIS_ENV})")
