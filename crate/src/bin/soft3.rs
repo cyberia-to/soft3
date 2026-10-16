@@ -932,6 +932,7 @@ fn cmd_genesis(args: &[String]) {
                     println!("  file       {out} ({} bytes, sha256 {})", r.file_bytes, r.file_sha256);
                     println!("  time       {}", r.time);
                     println!("  S0         {}  subsidy {}", r.s0, r.subsidy);
+                    println!("  pool       format {} depth {} anchor_window {} tags {}", r.pool.format, r.pool.depth, r.pool.anchor_window, r.pool.tags);
                     print_root(&r.state_root, &r.block0_id, &r.root_blocked);
                     for (k, v) in &r.counts {
                         println!("  {k:<34} {v}");
@@ -969,6 +970,11 @@ fn cmd_genesis(args: &[String]) {
                 Ok(v) => {
                     println!("genesis particle {}", v.particle);
                     println!("  S0 {}  subsidy {}  b {}  l {}", v.s0, v.subsidy, v.b_frames, v.l_frames);
+                    println!(
+                        "  pool format {} depth {} anchor_window {} tags {}",
+                        v.pool.format, v.pool.depth, v.pool.anchor_window, v.pool.tags
+                    );
+                    println!("  pool empty_root {}", v.pool.empty_root);
                     if has("--root") {
                         print_root(&v.state_root, &v.block0_id, &v.root_blocked);
                     }

@@ -275,10 +275,95 @@ a private test genesis):
   `POST /tx` with a bad signature → `400`; `/v2/history` entries carry
   `height`, `block`, `txid`; legacy ingress → `410`.
 
-## 12. running
+## 12. the pool
 
-`cargo test -p soft3 --features chain-conformance` runs sections 1–9 and 11
-on every commit; section 10 runs in the release train (`stack-chain-genesis`
+The formats of chain.md §11, frozen at genesis although rule set 2 is off.
+Computed on 2026-10-16 with `cyber-hemera` at `d5f0a09` (origin `main`)
+through `hemera::hash` and `hemera::tree::hash_node`, by
+`crate/src/chain/pool/`, and blessed as `chain::pool@v1` entries of
+`conformance/chain.snap`. A moved value is a consensus change.
+
+The sample: `sk = 0x01 × 32`; input record `token("pussy")`, value 5,
+`owner = hemera(D_OWNER ‖ sk)`, `rho = 0x02 × 32`, `r = 0x03 × 32`,
+`data = 0x04 × 32`, predicate zero; output record the same with value 4,
+`rho = 0x05 × 32`, `r = 0x06 × 32`. The spend: `chain = 0x44 × 32`, anchor
+= the root of the tree holding the input's commitment at position 0, the
+input's nullifier, the output's commitment, one cyberlink
+`(token("boot"), token("pussy"), weight 1, payout = owner)`, no withdrawal,
+fee 1 in `token("pussy")`, two zero predicates, no notes.
+
+Record bytes (200; fields of chain.md §11.1 in order):
+
+```
+8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa   token("pussy")
+0500000000000000                                                   value 5
+4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192   owner
+0202020202020202020202020202020202020202020202020202020202020202   rho
+0303030303030303030303030303030303030303030303030303030303030303   r
+0404040404040404040404040404040404040404040404040404040404040404   data
+0000000000000000000000000000000000000000000000000000000000000000   predicate
+```
+
+Spend public inputs (341 bytes; chain.md §11.5 in order):
+
+```
+4444444444444444444444444444444444444444444444444444444444444444   chain
+74c97bcd357ccf5b5680b5a39824fa90f72c59afa5590651ed1e65ad3a517eb9   anchor
+01 f5b99cad398b929c0fa25774dc4e1433c108950454aa72330407184340e6c5bb   n = 1, nullifier
+01 c2c8aacad99b98ff322b8d9cea52c5f7b87b4735f2df09d748921187b60b04e7   m = 1, commitment
+01 10275cf6703891a515f64ada465137cd36f2a5d3f0b99a8dafc62e6b95ad1269   k = 1, p = token("boot")
+   8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa   q = token("pussy")
+   0100000000000000                                                 weight 1
+   4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192   payout
+00                                                                  w = 0
+8cffbea0ac348d13febcee5b2848f916f501237d3ed8966167a31bafddf18ffa   fee token
+0100000000000000                                                   fee 1
+0000000000000000000000000000000000000000000000000000000000000000   predicate of the input
+0000000000000000000000000000000000000000000000000000000000000000   predicate of the output
+00                                                                  c = 0
+```
+
+The second spend: the same input, one output of value 2 (`rho = 0x05 × 32`,
+`r = 0x06 × 32`), no cyberlink, a withdrawal of 2 `token("pussy")` to
+`0x77 × 32`, fee 1, one note `ab ab ab` (314 bytes, ending
+`… 01 0300 ababab`).
+
+| vector | value |
+|---|---|
+| `owner = hemera(D_OWNER ‖ sk)` | `4424760142c6837ead0542693ce6ad7d827c8e2c836bea4fa5bab44f7c22c192` |
+| tags digest (chain.md §11.8) | `362fdac7f17abfc2d54699a6c6fcd3ad14e6c6edb6ce8534eac796bc22783a67` |
+| genesis pool record (41 bytes, chain.md §11.9) | `0100000028e8030000362fdac7f17abfc2d54699a6c6fcd3ad14e6c6edb6ce8534eac796bc22783a67` |
+| `EMPTY = hemera(D_EMPTY)` | `ddba4580f44954d39ca84d40621f45c67865e630f98367b4afe012335af4d697` |
+| `E_1 = hash_node(EMPTY, EMPTY, false)` | `9b2a1622a8177d0b1a431e283f8191f749e533c92be6d364e31b4f3220c896ab` |
+| `E_39` | `df534e8d094f51b75ee6268c532a25afa0b6436f8b568114f270dd2954192734` |
+| `E_40`, the empty tree root (anchor of block 0) | `4d8681dd3449327fa76ce217e8bed764067d1c3bad428aac8fcfb11e7ecc8499` |
+| `T(token("pussy"))` (chain.md §11.4) | `ddd4a6ce619bc990793a74eb6be61d0765390bc68f9e0ecef7db46597e6f4ae1` |
+| `hemera(record bytes)` | `7b39ede9082e3ea2dfc5cb24b72914000127ac2eb42971f06e9d8731e911a06d` |
+| commitment of the input | `983d0b892ca90b8ab19526e9a3f4c87349cdadbf956b97187755f8af5cee756f` |
+| nullifier of the input | `f5b99cad398b929c0fa25774dc4e1433c108950454aa72330407184340e6c5bb` |
+| commitment of the output | `c2c8aacad99b98ff322b8d9cea52c5f7b87b4735f2df09d748921187b60b04e7` |
+| root, input commitment at position 0 | `74c97bcd357ccf5b5680b5a39824fa90f72c59afa5590651ed1e65ad3a517eb9` |
+| root, input then output commitment at 0, 1 | `dea3054b23f666a3d60b94c4588d37a52705177c12992f2f70120b09f2b7d3ef` |
+| `hemera(spend public bytes)` | `970073e4562d9bf2e0692b3b625c5a0b1e059f119aca4e60bb0b059cf4990c1e` |
+| `spend_id = hemera(D_SPEND ‖ spend public)` | `c4135697aeb219f4ff1e6cd2e18ae387fb5ffb1ce4d6e34809b80968186eb1f7` |
+| `hemera(second spend bytes)` | `349b43b37496e9dd7f4d471c0df8ebaef6dc7cd1324202ee319a07b29e15b95b` |
+| `vk_set` of no keys, `hemera(D_VK)` | `49bb5c21ebf22311045270ccd6e7888c6addaaba1a298b830387f6b58f232708` |
+| `statement_id`, `chain = 0x44 × 32`, height 1, that `vk_set`, the one spend | `c006302fb2c77b9fa4ef645ff3ede7a7dc18685d33f7aee7e1467514f8ac8853` |
+
+Rejections the harness carries: a 199- or 201-byte record; a pool record
+differing in format, depth, window or tags (the genesis file is refused); a
+params frame without the pool record; a spend with 0 or 5 inputs, 5
+outputs or 5 cyberlinks, a repeated nullifier or commitment, `p = q`, a
+withdrawal flag 2, a withdrawal of 0, a note of 2,049 bytes, more notes
+than outputs, a trailing or a missing byte. Merkle paths of the two-leaf
+tree verify under `hemera::merkle_verify_path` and a wrong sibling fails.
+The longest canonical spend encodes to 9,309 bytes; a deposit is 352
+bytes. Kinds 4 and 5 are rejected by the rule-set-1 decoder (§6).
+
+## 13. running
+
+`cargo test -p soft3 --features chain-conformance` runs sections 1–9, 11
+and 12 on every commit; section 10 runs in the release train (`stack-chain-genesis`
 gate) because it needs the pinned snapshot inputs. Blessed values are
 written by `soft3 conformance bless chain` into `conformance/chain.snap`
 (and checked by `soft3 conformance check chain`); the genesis entries of
