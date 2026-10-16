@@ -208,14 +208,14 @@ pub(crate) mod tests {
         };
         let g = Genesis::decode(&bytes).unwrap();
         let hex = |b: &[u8]| b.iter().map(|x| format!("{x:02x}")).collect::<String>();
-        assert_eq!(hex(&g.chain_id), "36534057c3e0b99dc7d57445d15ada26e86093592a6a88dedcf4c886e1286ae4");
+        assert_eq!(hex(&g.chain_id), "b7740bd23b559f4016fd26b71113107bda3133be19efbacf728328498398108c");
         assert_eq!(g.s0(), 1_099_389_810_279_114_036);
         assert_eq!(g.subsidy(), 10_458_426_657);
         assert_eq!(g.params().time, 1_793_885_820);
         let mut s = g.state();
         let root = s.root();
         assert_eq!(hex(&root), "f2296834490e79d855673b18b0f9eb5c8242e4f48761e85b645d60a8cbeb5827");
-        assert_eq!(hex(&g.block0(root).id()), "21b76951705a4284412f3b4633971de8bca715f057ad2dbb0070f8c8b6effbe1");
+        assert_eq!(hex(&g.block0(root).id()), "50267e59ee8fc6ad1d342b6bb48de14f6ecda8a85785914a8b6c3016cb7abf78");
         for t in s.tokens() {
             assert_eq!(s.token_sum(&t), s.supply(&t));
         }

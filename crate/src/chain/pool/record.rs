@@ -1,11 +1,11 @@
-//! The pool's record and the genesis pool record (chain.md §11.1, §11.9).
+//! The pool's record and the genesis pool record (chain.md §11.2, §11.10).
 
 use std::io;
 
 use super::{ANCHOR_WINDOW, D_CM, DEPTH, FORMAT, POOL_BYTES, RECORD_BYTES, WIDE_BYTES, Wide, invalid, require_canonical, tagged, tags_digest};
 use crate::genesis::{Id, hex};
 
-/// A pool record (chain.md §11.1): 296 bytes, every 32- and 64-byte field
+/// A pool record (chain.md §11.2): 296 bytes, every 32- and 64-byte field
 /// canonical (each 8-byte limb `< p`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Record {
@@ -65,7 +65,7 @@ impl Record {
     }
 }
 
-/// The pool record of the genesis `p` frame (chain.md §4.1, §11.9).
+/// The pool record of the genesis `p` frame (chain.md §4.1, §11.10).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Pool {
     pub format: u32,

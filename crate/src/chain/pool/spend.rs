@@ -1,4 +1,4 @@
-//! The `SPEND` public inputs and the block-proof statement (chain.md §11.5, §11.7).
+//! The `SPEND` public inputs and the block-proof statement (chain.md §11.6, §11.8).
 
 use std::io;
 
@@ -22,7 +22,7 @@ pub struct Withdrawal {
     pub amount: u64,
 }
 
-/// The public inputs of `SPEND` (chain.md §11.5).
+/// The public inputs of `SPEND` (chain.md §11.6).
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SpendPublic {
     pub chain: Id,
@@ -88,7 +88,7 @@ impl SpendPublic {
         require_canonical("spend fee token", &self.fee_token)
     }
 
-    /// Canonical bytes (chain.md §11.5).
+    /// Canonical bytes (chain.md §11.6).
     pub fn encode(&self) -> io::Result<Vec<u8>> {
         self.check()?;
         let mut b = Vec::with_capacity(2_048);
@@ -209,7 +209,7 @@ impl<'a> Cursor<'a> {
     }
 }
 
-/// The block-proof statement (chain.md §11.7):
+/// The block-proof statement (chain.md §11.8):
 /// `chain ‖ height ‖ vk_set ‖ count: u32 ‖ spend_id × count`.
 pub fn block_statement(chain: &Id, height: u64, vk_set: &Wide, spend_ids: &[Wide]) -> Vec<u8> {
     let mut b = Vec::with_capacity(108 + WIDE_BYTES * spend_ids.len());

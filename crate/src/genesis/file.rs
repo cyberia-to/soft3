@@ -4,7 +4,7 @@
 //! ```text
 //! (*, k)  "urn:cyberia:chain-genesis:1"
 //! (~, p)  params      version u32 ‖ name ‖ hrp ‖ denom ‖ time u64 ‖ bits u32 ‖ subsidy u64 ‖ checkpoint_key [33] ‖ checkpoint_sunset u64
-//!                     ‖ pool: format u32 ‖ depth u8 ‖ anchor_window u32 ‖ digest u8 ‖ tags [64]   (the frozen pool formats, chain.md §11.9)
+//!                     ‖ pool: format u32 ‖ depth u8 ‖ anchor_window u32 ‖ digest u8 ‖ tags [64]   (the frozen pool formats, chain.md §11.10)
 //! ($, b)  balance     owner [32] ‖ token [32] ‖ amount u64              (sorted by (owner, token), unique, amount > 0)
 //! (#, l)  link        neuron [32] ‖ p [32] ‖ q [32] ‖ height u64         (source order, duplicates kept)
 //! ```

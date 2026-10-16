@@ -38,7 +38,7 @@ pub type Wide = [u8; WIDE_BYTES];
 
 /// Pool format version written into the genesis `p` frame.
 pub const FORMAT: u32 = 1;
-/// Bytes of a wide digest (chain.md §11.2).
+/// Bytes of a wide digest (chain.md §11.1).
 pub const WIDE_BYTES: usize = 64;
 /// Limbs of a wide digest.
 pub const WIDE_LIMBS: usize = 8;
@@ -90,7 +90,7 @@ pub const MAX_SPEND_BYTES: usize = 32
 /// Spend total: envelope 2 + `len: u16` + public inputs (no signature).
 pub const MAX_SPEND_TX_BYTES: usize = 2 + 2 + MAX_SPEND_BYTES;
 
-// Domain tags — chosen once, documented in chain.md §11.8, never reused.
+// Domain tags — chosen once, documented in chain.md §11.9, never reused.
 pub const D_OWNER: &[u8] = b"soft3/pool/owner/v1\0";
 pub const D_CM: &[u8] = b"soft3/pool/cm/v1\0";
 pub const D_NULL: &[u8] = b"soft3/pool/nullifier/v1\0";
@@ -176,7 +176,7 @@ fn limbs(b: &Wide) -> [Goldilocks; WIDE_LIMBS] {
     core::array::from_fn(|i| Goldilocks::new(u64::from_le_bytes(b[i * 8..i * 8 + 8].try_into().unwrap())))
 }
 
-/// The wide node (chain.md §11.3): `state = 0`, `state[9] = PARENT (| ROOT)`,
+/// The wide node (chain.md §11.4): `state = 0`, `state[9] = PARENT (| ROOT)`,
 /// `state[10] = 16`; add `left` into the rate, permute; add `right` into
 /// the rate, permute; the rate is the node. Two permutations. Children must
 /// be canonical (every limb `< p`).

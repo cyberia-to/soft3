@@ -134,7 +134,7 @@ pub struct Report {
     pub time: u64,
     pub s0: String,
     pub subsidy: u64,
-    /// The frozen pool formats the chain id commits to (chain.md §11.9).
+    /// The frozen pool formats the chain id commits to (chain.md §11.10).
     pub pool: PoolReport,
     pub state_root: Option<String>,
     pub block0_id: Option<String>,

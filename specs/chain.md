@@ -75,9 +75,10 @@ coin, read from the genesis file (§4).
 | `NONCE_WINDOW` | 16 | nonces ahead admitted to mempool | §2.5 |
 | `MEMPOOL` | 8,192 txs / 16 MiB | — | chain-wire §4 |
 | `MAX_REORG` | `FINALITY_DEPTH` − 1 = 119 | blocks | §5.2 |
-| `POOL_DEPTH` | 40 | commitment-tree levels (rule set 2, frozen at genesis) | §11.3 |
-| `ANCHOR_WINDOW` | 1,000 | blocks (rule set 2, frozen at genesis) | §11.3 |
-| `MAX_SPEND_TX_BYTES` | 9,313 | bytes of a kind-5 transaction (rule set 2) | §11.6 |
+| `POOL_DEPTH` | 40 | commitment-tree levels (rule set 2, frozen at genesis) | §11.4 |
+| `POOL_DIGEST` | 64 | bytes of every wide pool digest (frozen at genesis) | §11.1 |
+| `ANCHOR_WINDOW` | 1,000 | blocks (rule set 2, frozen at genesis) | §11.4 |
+| `MAX_SPEND_TX_BYTES` | 9,985 | bytes of a kind-5 transaction (rule set 2) | §11.7 |
 
 Rationale for the two that matter most: T = 30 s is the interval parano1d
 measured its way to (15 → 20 → 30) for a proof-gated chain; our blocks carry
@@ -291,7 +292,7 @@ tx = version: u8 (= 1) ‖ kind: u8 ‖ body ‖ sig
 
 Any other `version` or `kind` is invalid under rule set 1; kinds 4 (deposit)
 and 5 (spend) are the pool's, formats frozen at genesis, valid only from rule
-set 2 (§11.6). Fixed sizes: a
+set 2 (§11.7). Fixed sizes: a
 decoder knows the length from the second byte; trailing or missing bytes are
 a decode error.
 
@@ -457,7 +458,7 @@ the fix the launch page asks for.
 
 No nullifiers, no private commitments: phase 1 is an account model with
 nonces; `A(x)` and `N(x)` stay empty until the pool activates (§11), and the
-pool's turnstile keys `T(τ)` in the balances dimension (§11.4) stay absent.
+pool's turnstile keys `T(τ)` in the balances dimension (§11.5) stay absent.
 
 ### 3.3 state root per block
 
@@ -549,7 +550,7 @@ particle is the chain id.
 
 | frame | name | data | size |
 |---|---|---|---|
-| `(~, p)` | params | `version: u32 (=1) ‖ name ‖ hrp ‖ denom ‖ time: u64 ‖ bits: u32 ‖ subsidy: u64 ‖ checkpoint_key: [u8;33] ‖ checkpoint_sunset: u64 ‖ pool: [u8;41]` where each string is `len: u8 ‖ utf8` and `pool` is the frozen pool record of §11.9 | variable |
+| `(~, p)` | params | `version: u32 (=1) ‖ name ‖ hrp ‖ denom ‖ time: u64 ‖ bits: u32 ‖ subsidy: u64 ‖ checkpoint_key: [u8;33] ‖ checkpoint_sunset: u64 ‖ pool: [u8;74]` where each string is `len: u8 ‖ utf8` and `pool` is the frozen 74-byte pool record of §11.10 | variable |
 | `($, b)` | balance | `owner: [u8;32] ‖ token: [u8;32] ‖ amount: u64` | 72 |
 | `(#, l)` | link | `neuron: [u8;32] ‖ p: [u8;32] ‖ q: [u8;32] ‖ height: u64` | 104 |
 
@@ -910,7 +911,7 @@ soft3/crate/src/chain/
   pow.rs          valid_pow, work, chainwork (u256 helpers, no floats)
   daa.rs          ASERT (§1.5), MTP
   tx.rs           kinds 0–3: encode/decode, txid, statement, verify (mudra)
-  pool/           §11: record, commitment, nullifier, tree, turnstile key, SPEND encoding, block statement, tags
+  pool/           §11: wide digest, record, rho, commitment, nullifier, wide node and tree, turnstile key, SPEND encoding, block statement, tags
   tree.rs         tx_root (§1.7)
   genesis.rs      tade genesis reader, apply, block 0, pipeline check
   state.rs        apply block on bbg (§3.4), conservation, nonce, maturity
@@ -977,87 +978,163 @@ The pool is the shielded money of
 [privacy, frozen](../proposals/privacy-frozen.md): one tree of hemera
 commitments, spends proven in zero knowledge by a hash-only zheng proof,
 cyberlinks as public outputs of spends, one folded proof per block. It is
-off at launch: rule set 1 knows none of its transaction kinds. What is on
-board at genesis is the material and the formats of this section. The
-genesis `p` frame ends with the pool record of §11.9, so the chain id
-commits to every constant below; the activation of rule set 2 adds
-verifying keys (§11.10) and changes nothing written here.
+off at launch: rule set 1 knows none of its transaction kinds, and the
+chain is public until rule set 2 activates; privacy is not retroactive
+(proposal §1.13). What is on board at genesis is the material and the
+formats of this section. The genesis `p` frame ends with the pool record
+of §11.9, so the chain id commits to every constant below; the activation
+of rule set 2 adds verifying keys (§11.10) and changes nothing written here.
 
 Notation as in the rest of this page: `hemera(x)` is the flat sponge
-`hemera::hash`, `‖` is concatenation, integers are little-endian, ids are
-32 bytes. Every value has one byte form. Reference implementation:
-`crate/src/chain/pool/`; vectors: chain-conformance §12.
+`hemera::hash` (32 bytes), `‖` is concatenation, integers are
+little-endian. The values are computed against the hemera pinned for the
+phase-1 chain (`d5f0a09`); if the profile decision of hemera#15 changes the
+permutation before genesis, every value of this section and of
+chain-conformance §12 is recomputed and the genesis particle moves with
+them. Reference implementation: `crate/src/chain/pool/`; vectors:
+chain-conformance §12.
 
-### 11.1 record
+### 11.1 wide digests and canonical limbs
+
+Every consensus-critical digest of the pool — owner, rho, commitment,
+nullifier, predicate binding, tree node, spend id, statement id, verifying
+key set, tags — is wide: 64 bytes, eight Goldilocks elements. A 32-byte
+hemera digest has about 85 bits of generic quantum collision resistance
+(Brassard–Høyer–Tapp, `2^(n/3)`); eight elements give about 170, above the
+128 the proposal requires (§1.3: at least 48 bytes), and a format frozen at
+genesis can never be widened. The 32-byte particle stays a locator — token
+ids, data, link endpoints, the chain id, transparent card ids — never an
+authority over value or program.
 
 ```
-record = token: [u8;32] ‖ value: u64 ‖ owner: [u8;32] ‖ rho: [u8;32] ‖ r: [u8;32] ‖ data: [u8;32] ‖ predicate: [u8;32]
+W(x) = rate(finalize(x))          // 64 bytes
+```
+
+`W` is hemera's own sponge, not a second hash: the plain mode of
+`hemera::Hasher` absorbs `x` exactly as `hemera(x)` does (7-byte packing,
+`0x01` padding, the byte count in capacity element 10, one final
+permutation), and `W(x)` is the whole rate of that finalized state —
+elements 0 to 7, each as its canonical 8-byte little-endian form. There is
+no extra squeeze: one finalization yields both, and `W(x)[0..32] =
+hemera(x)` by construction. Domain separation is the pool tag every `W`
+input begins with (§11.8); consensus never uses the narrow digest of a
+pool-tagged input.
+
+Canonical limbs: every 32-byte and 64-byte field of every pool encoding
+(records, deposits, `spend_public`, the statement) is read as 8-byte
+little-endian limbs, and every limb must be `< p = 2^64 − 2^32 + 1`. A
+decoder refuses a limb `≥ p`: a field element `x` and `x + p` would name
+one value twice. Integers (`value`, `weight`, `amount`, `fee`, counts,
+lengths) are not limbs and take any value of their type.
+
+### 11.2 record
+
+```
+record = token: [u8;32] ‖ value: u64 ‖ owner: [u8;64] ‖ rho: [u8;64] ‖ r: [u8;32] ‖ data: [u8;32] ‖ predicate: [u8;64]
 ```
 
 | field | bytes | offset | meaning |
 |---|---|---|---|
-| `token` | 32 | 0 | token id (§3.1) |
-| `value` | 8 | 32 | amount of `token`, u64 |
-| `owner` | 32 | 40 | `hemera(D_OWNER ‖ sk)`, `sk` a 32-byte secret |
-| `rho` | 32 | 72 | uniqueness nonce |
-| `r` | 32 | 104 | commitment randomness |
-| `data` | 32 | 136 | a particle; zero bytes = none |
-| `predicate` | 32 | 168 | the particle of a nox program that must accept every transaction creating or spending the record; zero bytes = none |
+| `token` | 32 | 0 | token id (§3.1), a locator |
+| `value` | 8 | 32 | amount of `token`, any u64 |
+| `owner` | 64 | 40 | `W(D_OWNER ‖ sk)`, `sk` a 32-byte secret |
+| `rho` | 64 | 104 | uniqueness nonce, derived (§11.3), never chosen by a sender |
+| `r` | 32 | 168 | commitment randomness |
+| `data` | 32 | 200 | a particle; zero bytes = none |
+| `predicate` | 64 | 232 | predicate binding `W(D_PRED ‖ program)` over the nox program's canonical bytes; zero bytes = none |
 
-200 bytes, fixed. Every 200-byte string is a record and nothing else is.
-Two records of one `sk` with one `rho` share a nullifier, so only one of
-them can ever be spent; wallets derive `rho` so that this does not happen.
+296 bytes, fixed, every limb canonical.
 
-### 11.2 owner, commitment, nullifier
+### 11.3 owner, rho, commitment, nullifier
 
 ```
-owner      = hemera(D_OWNER ‖ sk)                  // 20 + 32 bytes in
-commitment = hemera(D_CM ‖ record)                 // 17 + 200 bytes in
-nullifier  = hemera(D_NULL ‖ sk ‖ rho)             // 24 + 32 + 32 bytes in
+owner      = W(D_OWNER ‖ sk)                       // 20 + 32 bytes in
+commitment = W(D_CM ‖ record)                      // 17 + 296 bytes in
+nullifier  = W(D_NULL ‖ chain ‖ sk ‖ rho)          // 24 + 32 + 32 + 64 bytes in
+rho_j      = W(D_RHO ‖ nf_0 ‖ j: u8)               // output j of a spend whose first nullifier is nf_0; 18 + 64 + 1 in
+rho        = W(D_RHO ‖ txid ‖ 0: u8)               // a deposited record, txid of its deposit (§2.1); 18 + 32 + 1 in
 ```
 
-Inputs that carry `sk` are hashed in constant time (`hemera::hash_secret`,
-the same digest).
+`chain` is the chain id: a nullifier of pussy is never one of bostrom.
+The rho of every output is derived inside the proof from the spend's first
+nullifier, and the rho of a deposit by every node from its txid; the two
+seeds differ in length (64 and 32 bytes, the length is in the capacity),
+so the derivations never meet. Since nullifiers are unique for the life of
+the chain (§11.5), no two records ever share a rho, and no sender can give
+two records one nullifier to make one of them unspendable. Inputs carrying
+`sk` are hashed in constant time (`hemera::Hasher::new_secret`, the same
+digest).
 
-### 11.3 commitment tree and anchors
+### 11.4 commitment tree and anchors
 
 - one tree of depth 40: positions `0 … 2^40 − 1`, filled in append order —
   blocks in height order, transactions in body order, a transaction's
   commitments in their listed order. A transaction that would append past
   position `2^40 − 1` is invalid.
-- a leaf is the commitment itself (it is already a tagged hemera digest);
-  an unfilled position holds `EMPTY = hemera(D_EMPTY)`.
-- a node is `hash_node(L, R, is_root)` = `hemera::tree::hash_node`, the
-  node jet of zheng#66: one permutation, the parent flag in the capacity,
-  the root flag added on level 40 only. Paths verify with
-  `hemera::merkle_verify_path`, leaf to root; bit `i` of the position set
-  means the sibling at level `i` is on the left.
-- empty subtrees: `E_0 = EMPTY`, `E_i = hash_node(E_{i−1}, E_{i−1}, i = 40)`;
-  `E_40` is the root of the empty tree.
+- a leaf is the commitment itself (a tagged wide digest); an unfilled
+  position holds `EMPTY = W(D_EMPTY)`.
+- a node is the wide node, hemera's permutation in tree mode over two
+  eight-limb children:
+
+  ```
+  node(L, R, is_root):
+      state ← [0; 16]
+      state[9]  ← PARENT (2) | ROOT (1) if is_root      // hemera's tree flags, capacity
+      state[10] ← 16                                    // child elements absorbed; the narrow node leaves 0
+      state[0..8] += L ;  state ← permute(state)
+      state[0..8] += R ;  state ← permute(state)
+      node ← state[0..8]                               // 64 bytes
+  ```
+
+  Cost: two permutations per node, where the narrow node jet
+  (`hemera::tree::hash_node`, zheng#66) takes one over two four-limb
+  children in a single eight-element rate block. A depth-40 path is 80
+  permutations natively and 80 permutation rows in the circuit. A 48-byte
+  child (six limbs) would cost the same two permutations at width 16, so
+  the full rate is taken; a width-24 profile (hemera#15's alternative)
+  would absorb both children in one block. Every byte sponge state has
+  `state[9] = 0` and every narrow node `state[10] = 0`, so the three modes
+  never share a state.
+- `ROOT` is set on level 40 only. `E_0 = EMPTY`,
+  `E_i = node(E_{i−1}, E_{i−1}, i = 40)`; `E_40` is the root of the empty
+  tree. A path is verified leaf to root; bit `i` of the position set means
+  the sibling at level `i` is on the left.
 - `root_after(b)` is the tree root after every pool transaction of block
   `b`; `root_after(0) = E_40` (genesis holds no commitment, and rule-set-1
   blocks append none).
 - anchor window: a spend in block `h` is valid only if its `anchor` equals
   `root_after(b)` for some `b` with `max(0, h − 1,000) ≤ b ≤ h − 1`. A
-  spend therefore never anchors on commitments of its own block; a node
-  keeps the last 1,000 roots.
+  spend never anchors on commitments of its own block; a node keeps the
+  last 1,000 roots. A membership proof against a historical root proves
+  that a record existed, never that it is unspent; unspentness is the
+  nullifier check of §11.5.
 
-### 11.4 the turnstile
+### 11.5 the nullifier set and the turnstile
+
+The nullifier set is lifetime: every nullifier ever revealed stays in it,
+and it is never reset, pruned by epoch or rebuilt from a live window (an
+epoch reset accepts an already spent nullifier; proposal §1.10). A node
+may compact its storage only where an authenticated proof of
+non-membership over the whole history still rejects every old nullifier.
+A spend is invalid if any of its nullifiers is in the set or appears twice
+in its block.
 
 ```
-T(τ) = hemera(D_TURNSTILE ‖ τ)                     // 24 + 32 = 56 bytes in
+T(τ) = hemera(D_TURNSTILE ‖ τ)                     // 24 + 32 = 56 bytes in, 32 bytes out
 ```
 
 `T(τ)` is a raw key of bbg's balances dimension (§3.2) holding the pool's
-counter for token `τ`. A transparent balance key `hemera(owner ‖ τ)`
-hashes 64 bytes; hemera encodes the input length in the capacity, so no
-transfer, coinbase, claim or genesis frame can address `T(τ)` without a
-hemera collision. The counter is absent — zero — at genesis and is under
-`state_root` from block 0.
+counter for token `τ`: a key of the transparent ledger, 32 bytes like every
+balance key. A transparent key `hemera(owner ‖ τ)` hashes 64 bytes and the
+input length is in the capacity, so no transfer, coinbase, claim or genesis
+frame can address `T(τ)`; aiming one at it is a preimage search against a
+fixed target among the chain's few genesis tokens, about 2^128 by Grover.
+The counter is absent — zero — at genesis and is under `state_root` from
+block 0.
 
 | event | effect |
 |---|---|
-| deposit of `value` of `τ` (§11.6) | `T(τ) += value` |
+| deposit of `value` of `τ` (§11.7) | `T(τ) += value` |
 | withdrawal `(to, τ, amount)` of a spend | `T(τ) −= amount`; `balances[hemera(to ‖ τ)] += amount` |
 | fee `(τ_f, fee)` of a spend | `T(τ_f) −= fee`; paid to the block's miner through the coinbase |
 
@@ -1073,120 +1150,131 @@ system or of hemera counterfeits at most `T(τ)` and never raises the supply.
 Conservation (§3.4) is unchanged — deposits and withdrawals move value
 between keys of one dimension, and the per-token sums include `T(τ)`.
 
-### 11.5 the SPEND public inputs
+### 11.6 the SPEND public inputs
 
 One relation, `SPEND`. Its public inputs, encoded:
 
 ```
 spend_public = chain: [u8;32]
-             ‖ anchor: [u8;32]
-             ‖ n: u8 ‖ nullifier[32] × n
-             ‖ m: u8 ‖ commitment[32] × m
-             ‖ k: u8 ‖ (p[32] ‖ q[32] ‖ weight: u64 ‖ payout[32]) × k
+             ‖ anchor: [u8;64]
+             ‖ n: u8 ‖ nullifier[64] × n
+             ‖ m: u8 ‖ commitment[64] × m
+             ‖ k: u8 ‖ (p[32] ‖ q[32] ‖ weight: u64 ‖ payout[64]) × k
              ‖ w: u8 ‖ (to[32] ‖ token[32] ‖ amount: u64) × w
              ‖ fee_token: [u8;32] ‖ fee: u64
-             ‖ predicate[32] × (n + m)
+             ‖ predicate[64] × (n + m)
              ‖ c: u8 ‖ (len: u16 ‖ note[len]) × c
 ```
 
 Canonical form, checked by every decoder:
 
 - `1 ≤ n ≤ 4` inputs, `0 ≤ m ≤ 4` outputs, `0 ≤ k ≤ 4` cyberlinks,
-  `w ∈ {0, 1}`, `0 ≤ c ≤ m` notes;
+  `w ∈ {0, 1}`, `0 ≤ c ≤ m` notes; a count over its cap is refused before
+  anything it counts is read;
 - no nullifier twice and no commitment twice within one spend;
 - every cyberlink has `p ≠ q`;
 - a withdrawal has `amount > 0` (no withdrawal is written `w = 0`);
-- the predicates are those of the inputs in order, then of the outputs in
-  order; zero bytes means none;
-- every note has `len ≤ 2,048`; notes are opaque to consensus (ciphertexts
-  for the recipients, ML-KEM-768 under mudra `seal` by wallet convention);
-- no trailing bytes. The longest canonical encoding is 9,309 bytes.
+- the predicates are the bindings of the inputs in order, then of the
+  outputs in order; zero bytes means none;
+- note `i` belongs to output `i`; every note has `len ≤ 2,048`; notes are
+  opaque to consensus (an ML-KEM-1024 envelope bound to its output
+  commitment, by wallet convention, proposal §1.2);
+- every limb canonical (§11.1); no trailing bytes. The longest canonical
+  encoding is 9,981 bytes.
 
 A cyberlink output `(p, q, weight, payout)` is public: `weight` is a u64
 that does not enter the value equation below; `payout` is an owner value
-(§11.2) that receives what the link earns. The `chain` field is the chain
-id (genesis particle). The spend's name in the block statement is
+(§11.3) that receives what the link earns. The spend's name in the block
+statement is
 
 ```
-spend_id = hemera(D_SPEND ‖ spend_public)
+spend_id = W(D_SPEND ‖ spend_public)
 ```
 
 The witness: the input records, their Merkle paths and `sk`, the output
 records, the predicate programs' witnesses. Checks inside the proof, fixed
 with the relation:
 
-1. every input record has `owner = hemera(D_OWNER ‖ sk)` and its commitment
-   sits in the tree at `anchor` (§11.3);
-2. every nullifier is `hemera(D_NULL ‖ sk ‖ rho)` of its input;
-3. per token `τ`: Σ input values = Σ output values + `fee`·[τ = fee_token]
-   + `amount`·[τ = token of the withdrawal], every value a u64 and no sum
-   wrapping;
-4. every output commitment is `hemera(D_CM ‖ record)` of its output record;
+1. every input record is canonical, has `owner = W(D_OWNER ‖ sk)`, and its
+   commitment sits in the tree at `anchor` (§11.4);
+2. every nullifier is `W(D_NULL ‖ chain ‖ sk ‖ rho)` of its input;
+3. conservation as integers, never modulo `p`: every value, `fee` and
+   `amount` is a u64 held as two 32-bit limbs, each range-checked
+   `< 2^32`; per token `τ`, Σ input values and Σ output values +
+   `fee`·[τ = fee_token] + `amount`·[τ = token of the withdrawal] are each
+   summed limb by limb with explicit carries into a third limb (at most
+   six terms a side, below 2^67), and the two sums are equal limb for limb (the
+   u64 value `p` is zero in the field and would pass a field equation);
+4. every output commitment is `W(D_CM ‖ record)` of its canonical output
+   record, and output `j`'s rho is `W(D_RHO ‖ nf_0 ‖ j)`;
 5. every predicate of an input or an output, run on `spend_public` and its
    own witness, accepts (the nox machine relation, `zheng/specs/machine.md`);
+   predicates only add constraints and never relax checks 1–4;
 6. the public outputs are those the records and predicates declare.
 
 Checks outside the proof, by every node: `chain` equals the chain id; the
-anchor is in the window (§11.3); no nullifier is already spent or repeated
-in the block; the turnstile stays non-negative (§11.4); `fee_token` is the
-native token and `fee ≥ len(tx) · MIN_FEE_PER_BYTE`; the block proof
-verifies (§11.7).
+anchor is in the window (§11.4); no nullifier is in the lifetime set or
+repeated in the block (§11.5); the turnstile stays non-negative; `fee_token`
+is the native token and `fee ≥ len(tx) · MIN_FEE_PER_BYTE`; the block proof
+verifies (§11.8).
 
-### 11.6 transaction kinds 4 and 5
+### 11.7 transaction kinds 4 and 5
 
 | kind | name | body bytes | sig | total bytes |
 |---|---|---|---|---|
-| 4 | deposit | 248 | NSIG1 (102) | 352 |
-| 5 | spend | `2 + len` | none | `4 + len`, at most 9,313 |
+| 4 | deposit | 280 | NSIG1 (102) | 384 |
+| 5 | spend | `2 + len` | none | `4 + len`, at most 9,985 |
 
 ```
-deposit = from: neuron[32] ‖ nonce: u64 ‖ record[200] ‖ fee: u64
+deposit = from: neuron[32] ‖ nonce: u64 ‖ token: [u8;32] ‖ value: u64 ‖ owner: [u8;64] ‖ r: [u8;32] ‖ data: [u8;32] ‖ predicate: [u8;64] ‖ fee: u64
 spend   = len: u16 ‖ spend_public[len]
 ```
 
 The envelope, `txid` and the signing statement are those of §2.1.
 
-Deposit (transparent to commitment, no proof): signed by `from` as kinds 1
-and 2; the nonce rule of §2.5; `fee ≥ 352 · MIN_FEE_PER_BYTE` in the native
-coin; `record.value > 0`; `from` holds `record.value` of `record.token`
-(the native coin also covers the fee and respects maturity, §2.2). Effects:
-`balances[hemera(from ‖ token)] −= value`, `T(token) += value`, the fee to
-the coinbase, `commitment(record)` appended to the tree, `nonce += 1`. The
-record travels in the clear, so the chain computes the commitment itself.
-A deposit reveals that record's owner and `rho`; its later nullifier still
-needs `sk`, so the spend of a deposited record is not linkable to the
-deposit by anything but value and timing. Wallets deposit to a one-time
+Deposit (transparent to commitment, no proof): the record without its rho,
+which the node derives as `W(D_RHO ‖ txid ‖ 0)`. Signed by `from` as kinds
+1 and 2; the nonce rule of §2.5; `fee ≥ 384 · MIN_FEE_PER_BYTE` in the
+native coin; `value > 0`; every limb canonical; `from` holds `value` of
+`token` (the native coin also covers the fee and respects maturity, §2.2).
+Effects: `balances[hemera(from ‖ token)] −= value`, `T(token) += value`,
+the fee to the coinbase, `commitment(record)` appended to the tree,
+`nonce += 1`. A deposit reveals that record's owner and rho; its later
+nullifier still needs `sk`, so the spend of a deposited record is linkable
+to the deposit by value and timing only. Wallets deposit to a one-time
 `sk` and spend into fresh records.
 
 Spend: no signature — authorization is knowledge of `sk` inside the proof;
 `len` is the exact length of a canonical `spend_public`. Effects, in this
-order: the nullifiers join the spent set; the commitments are appended; the
-withdrawal and the fee leave the turnstile (§11.4); the cyberlinks are
+order: the nullifiers join the lifetime set; the commitments are appended;
+the withdrawal and the fee leave the turnstile (§11.5); the cyberlinks are
 public cyberlinks. The transaction's own proof travels in the mempool only
-(chain-wire §4), never in a block. A spend is bounded by 9,313 bytes, not
+(chain-wire §4), never in a block. A spend is bounded by 9,985 bytes, not
 by `MAX_TX_BYTES`; a deposit fits `MAX_TX_BYTES`.
 
 Under rule set 1 the decoder knows neither kind (§2.1): a block carrying
 one is invalid.
 
-### 11.7 the block-proof statement
+### 11.8 the block-proof statement
 
 A block of rule set 2 with at least one spend carries one folded proof (the
 constant-size profile of `zheng/specs/recursion.md`) whose public input is
 
 ```
-statement    = chain: [u8;32] ‖ height: u64 ‖ vk_set: [u8;32] ‖ count: u32 ‖ spend_id[32] × count
-statement_id = hemera(D_BLOCK ‖ statement)
-vk_set       = hemera(D_VK ‖ (len: u32 ‖ vk) × v)
+statement    = chain: [u8;32] ‖ height: u64 ‖ vk_set: [u8;64] ‖ count: u32 ‖ spend_id[64] × count
+statement_id = W(D_BLOCK ‖ statement)
+vk_set       = W(D_VK ‖ (len: u32 ‖ vk) × v)
 ```
 
 `spend_id`s are listed in body order, one per kind-5 transaction; `vk_set`
 digests the rule set's verifying keys in the order its activation entry
-lists them. The proof attests that every listed spend satisfies `SPEND`
-under those keys. Nodes verify this proof and never a transaction's proof.
-A block without spends carries no proof.
+lists them. The statement is defined as the conjunction of the listed
+spends' `SPEND` statements under those keys: a reference validator that
+checks raw transaction proofs one by one reaches the same verdict on every
+block. Nodes verify the block proof and never a transaction's proof. A
+block without spends carries no proof.
 
-### 11.8 domain tags
+### 11.9 domain tags
 
 Chosen once, ASCII with a terminating NUL byte, never reused for any other
 input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
@@ -1196,6 +1284,8 @@ input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
 | `D_OWNER` | `soft3/pool/owner/v1\0` | 20 | `736f6674332f706f6f6c2f6f776e65722f763100` |
 | `D_CM` | `soft3/pool/cm/v1\0` | 17 | `736f6674332f706f6f6c2f636d2f763100` |
 | `D_NULL` | `soft3/pool/nullifier/v1\0` | 24 | `736f6674332f706f6f6c2f6e756c6c69666965722f763100` |
+| `D_RHO` | `soft3/pool/rho/v1\0` | 18 | `736f6674332f706f6f6c2f72686f2f763100` |
+| `D_PRED` | `soft3/pool/predicate/v1\0` | 24 | `736f6674332f706f6f6c2f7072656469636174652f763100` |
 | `D_EMPTY` | `soft3/pool/empty/v1\0` | 20 | `736f6674332f706f6f6c2f656d7074792f763100` |
 | `D_SPEND` | `soft3/pool/spend/v1\0` | 20 | `736f6674332f706f6f6c2f7370656e642f763100` |
 | `D_BLOCK` | `soft3/pool/block/v1\0` | 20 | `736f6674332f706f6f6c2f626c6f636b2f763100` |
@@ -1203,40 +1293,47 @@ input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
 | `D_VK` | `soft3/pool/vk/v1\0` | 17 | `736f6674332f706f6f6c2f766b2f763100` |
 | `D_TAGS` | `soft3/pool/tags/v1\0` | 19 | `736f6674332f706f6f6c2f746167732f763100` |
 
+The wide node carries no tag: it is separated by its capacity (§11.4).
+
 ```
-tags = hemera(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_EMPTY ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)
-     = 362fdac7f17abfc2d54699a6c6fcd3ad14e6c6edb6ce8534eac796bc22783a67
+tags = W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY ‖ D_SPEND ‖ D_BLOCK ‖ D_TURNSTILE ‖ D_VK)
+     = 9ecbb70a03e0db94653d96e7a23a3684cc9a43b78592b7bdd1afbd94afbc3c15
+       882a865b62acb7492544f0e8a59c9397c33e9853ef5ac0b89ff0377f8fd734d0
 ```
 
-### 11.9 what genesis commits to
+### 11.10 what genesis commits to
 
 The params frame of the genesis file (§4.1) ends with the pool record:
 
 ```
-pool = format: u32 (= 1) ‖ depth: u8 (= 40) ‖ anchor_window: u32 (= 1,000) ‖ tags: [u8;32]      // 41 bytes
-     = 01000000 28 e8030000 362fdac7…3a67
+pool = format: u32 (= 1) ‖ depth: u8 (= 40) ‖ anchor_window: u32 (= 1,000) ‖ digest: u8 (= 64) ‖ tags: [u8;64]      // 74 bytes
+     = 01000000 28 e8030000 40 9ecbb70a…34d0
 ```
 
 A reader rejects a genesis whose pool record differs in any byte from this
 one. `format = 1` names this section as a whole: the record, the
-encodings, the caps (4 inputs, 4 outputs, 4 cyberlinks, 2,048-byte notes),
-the turnstile and the statement shape. Through the record the chain id
-commits to them, and through the chain id every transaction and header.
+derivations, the encodings, the caps (4 inputs, 4 outputs, 4 cyberlinks,
+2,048-byte notes), the wide node, limb conservation, the lifetime
+nullifier set, the turnstile and the statement shape. Through the record
+the chain id commits to them, and through the chain id every transaction
+and header.
 
-### 11.10 rule sets
+### 11.11 rule sets
 
 - Rule set 1 (launch): kinds 4 and 5 are unknown and invalid; `T(τ)` is
   zero for every token; the tree is empty and every `root_after(b)` is
-  `E_40`. Nothing in rule set 1 reads or writes pool state.
+  `E_40`; the nullifier set is empty. Nothing in rule set 1 reads or
+  writes pool state, and everything it records is public forever.
 - Rule set 2 (the pool) activates by the activation table (§7.1) when the
-  gates of the proposal pass. Its activation entry carries the verifying
-  key set of `SPEND` and of the block proof — and nothing else of this
-  section: no format, tag, depth, window or accounting rule changes with
-  it. A verifying key set, once in a rule set, is never changed; a new one
-  is a new rule set.
+  gates of the proposal pass; the privacy promise holds from its
+  activation height. Its activation entry carries the verifying key set
+  of `SPEND` and of the block proof — and nothing else of this section: no
+  format, tag, width, depth, window or accounting rule changes with it. A
+  verifying key set, once in a rule set, is never changed; a new one is a
+  new rule set.
 - Where rule set 2 stores the commitment list and the nullifier set under
   `state_root` (bbg's A and N dimensions, empty and committed today, §3.2)
-  is its choice; the tree root of §11.3 is a function of the append order
+  is its choice; the tree root of §11.4 is a function of the append order
   alone and is what anchors and proofs use.
 
 ## 12. acceptance
