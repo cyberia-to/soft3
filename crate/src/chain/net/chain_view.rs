@@ -196,6 +196,13 @@ pub trait ChainView: Send + Sync + 'static {
     /// Mempool admission on the tip state, `pending` (this account's lower
     /// nonces, wire bytes) applied first; never mutates the chain.
     fn validate_tx(&self, tx: &[u8], pending: &[Vec<u8>]) -> Result<Admitted, TxRefusal>;
+    /// One account's transactions in nonce order, each admitted with its
+    /// predecessors in the list applied first (the re-validation of
+    /// chain-wire §4); the default asks [`ChainView::validate_tx`] per
+    /// transaction, the kernel does it in one pass.
+    fn validate_run(&self, txs: &[Vec<u8>]) -> Vec<Result<Admitted, TxRefusal>> {
+        (0..txs.len()).map(|i| self.validate_tx(&txs[i], &txs[..i])).collect()
+    }
     fn balance(&self, owner: &Id, token: &Id) -> u64;
     /// Balance minus immature coinbase credits.
     fn spendable(&self, owner: &Id, token: &Id) -> u64;
