@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, chain_genesis_gate, conformance_gate, source_gates
+from train_gates import Gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -127,6 +127,25 @@ class ReleaseTests(unittest.TestCase):
         gates = Gates(self.root / "out", self.sources, "aarch64-apple-darwin")
         self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
+
+    def test_simulation_without_the_pinned_checkout_is_blocked_not_green(self):
+        gates = Gates(self.root / "out", self.sources, "stack")
+        self.assertFalse(simulation_gate(gates, self.root))
+        self.assertEqual(gates.rows[-1]["result"], "blocked")
+
+    def test_simulation_gate_runs_the_gate_suite_from_the_checkout(self):
+        manifest = self.root / "simulation/chain/Cargo.toml"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text('[package]\nname = "simulation-chain"\nversion = "0.1.0"\n')
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.object(Gates, "run", return_value=True) as run:
+            self.assertTrue(simulation_gate(gates, self.root))
+        name, argv, cwd = run.call_args.args[:3]
+        self.assertEqual(name, "simulation-gate")
+        self.assertEqual(argv[:3], ["cargo", "run", "--locked"])
+        self.assertIn("gate", argv)
+        self.assertEqual(cwd, self.root / "simulation")
+        self.assertIn(str(self.root / "out" / "simulation-gate.md"), argv)
 
     def test_conformance_scaffold_is_blocked_not_green(self):
         manifest = self.root / "soft3/conformance/rs/Cargo.toml"

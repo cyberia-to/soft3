@@ -1,0 +1,23 @@
+# Every soft3 merge runs the chain simulator's gate suite against the merged
+# revision (cyberia-to/simulation .github/workflows/gate.yml listens for
+# `soft3-merged`). gh only; the simulation also runs every six hours, so a
+# missed dispatch is caught there.
+name: Notify simulation
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: dispatch soft3-merged to cyberia-to/simulation
+        env:
+          GH_TOKEN: ${{ secrets.CYBER_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "no dispatch token; the six-hourly run covers it"; exit 0; fi
+          gh api repos/cyberia-to/simulation/dispatches -f event_type=soft3-merged -f "client_payload[sha]=$GITHUB_SHA" || echo "dispatch failed; the six-hourly run covers it"

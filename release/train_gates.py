@@ -124,6 +124,30 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None):
                       "conformance", "check", "chain", "--genesis", str(genesis)], soft3, timeout=900)
 
 
+SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
+
+
+def simulation_gate(gates, directory):
+    """The chain simulator (cyberia-to/simulation, pinned in release/phase1.toml):
+    N in-process nodes on this soft3 revision's kernel behind the wire's port,
+    a simulated network, miners at simulated hashrate shares grinding real
+    headers, adversaries and the economy's strategies, with liveness, safety,
+    conservation, determinism, resource and economy-bound invariants. The
+    `gate` suite (SOFT3_SIMULATION_SUITE overrides) runs in about ten minutes;
+    its verdict table lands beside the receipts as simulation-gate.md, its
+    JSONL metrics under simulation/. A train without the pinned checkout is
+    blocked, never green; any failed invariant is red (expected reds — known
+    open findings reproduced on purpose — are not)."""
+    sim = directory / "simulation"
+    if not (sim / "chain/Cargo.toml").is_file():
+        return gates.blocked("simulation-gate", "no simulation checkout: pin cyberia-to/simulation in release/phase1.toml")
+    suite = os.environ.get(SIMULATION_SUITE_ENV, "gate")
+    return gates.run("simulation-gate",
+                     ["cargo", "run", "--locked", "--quiet", "--profile", "sim", "-p", "simulation-chain", "--", suite,
+                      "--out", str(gates.output / "simulation"), "--md", str(gates.output / "simulation-gate.md"),
+                      "--budget", "1500"], sim, timeout=3600)
+
+
 def boot_status(binary, gates):
     if not binary.is_file():
         return gates.blocked("node-status", "release executable was not built")
@@ -179,6 +203,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
         conformance_gate(gates, directory / "soft3")
         chain_genesis_gate(gates, directory / "soft3")
+        simulation_gate(gates, directory)
     if component == "soft3":
         crate = root / "crate"
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)
