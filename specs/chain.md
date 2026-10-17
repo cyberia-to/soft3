@@ -845,8 +845,9 @@ transition whose proof verifies its parents' proofs, proved first and mined
 second; the canary blocks of rule set 1 are proven after the fact, and a rule
 set before `CHECKPOINT_SUNSET` makes the block proof a validity condition. Its
 one rule binds every later rule set: nothing activates that the block relation
-cannot express. It also records a conflict with §2.7: the block relation needs
-hash-only authorization, and NSIG1 is secp256k1 ECDSA.
+cannot express. §2.7 stands as written (owner, 2026-10-17): pussy and bostrom
+carry NSIG1 until their balances are claimed, and their block proofs prove
+those signatures; the CYB chain is separate and has no ECDSA from genesis.
 
 ## 8. security model
 
