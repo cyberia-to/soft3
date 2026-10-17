@@ -562,10 +562,23 @@ fn cmd_chain(args: &[String]) {
             let amount = num(&flags, "amount", 0);
             let fee = flags.get("fee").map(|_| num(&flags, "fee", 0));
             let signed = match flags.get("kind").map(|k| k.as_str()).unwrap_or("transfer") {
+                // chain-economy §3: amount > 0 locks native stake with the valence
                 "link" => {
                     let p = flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]);
                     let q = flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]);
-                    w.cyberlink(&genesis.chain_id, nonce, p, q, 0, token, amount, fee)
+                    let valence: i8 = flags.get("valence").map(|v| v.parse().unwrap_or_else(|_| die("--valence: -1, 0 or 1".into()))).unwrap_or(0);
+                    w.cyberlink(&genesis.chain_id, nonce, p, q, valence, token, amount, fee)
+                }
+                "unlock" => {
+                    let p = flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]);
+                    let q = flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]);
+                    w.unlock(&genesis.chain_id, nonce, p, q, amount, fee)
+                }
+                "payout" => {
+                    let p = flags.get("p").and_then(|p| unhex32(p)).unwrap_or([1; 32]);
+                    let q = flags.get("q").and_then(|q| unhex32(q)).unwrap_or([2; 32]);
+                    let to = flags.get("payout").and_then(|t| unhex32(t)).unwrap_or_else(|| die("--payout <64 hex> required".into()));
+                    w.payout(&genesis.chain_id, nonce, p, q, to, fee)
                 }
                 _ => {
                     let to = flags.get("to").and_then(|t| unhex32(t)).unwrap_or([7; 32]);
@@ -579,7 +592,7 @@ fn cmd_chain(args: &[String]) {
         _ => {
             eprintln!("usage: soft3 chain genesis-dev [--name dev] [--time T] [--bits HEX] [--fund NEURON=AMOUNT]… --out FILE");
             eprintln!("       soft3 chain key --seed HEX32");
-            eprintln!("       soft3 chain tx --seed HEX32 --genesis FILE --nonce N [--kind transfer|link] [--to N] [--amount A] [--fee F] [--p P --q Q]");
+            eprintln!("       soft3 chain tx --seed HEX32 --genesis FILE --nonce N [--kind transfer|link|unlock|payout] [--to N] [--amount A] [--fee F] [--p P --q Q] [--valence V] [--payout OWNER]");
             std::process::exit(2);
         }
     }

@@ -144,9 +144,9 @@ impl Signer {
     pub fn sign(&self, chain: &[u8; 32], tx: Tx) -> Result<SignedTx, Error> {
         tx.check_rules()?;
         let subject = match &tx {
-            Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } => *from,
             Tx::Claim { .. } => self.neuron,
             Tx::Coinbase { .. } => return Err(Error::Rule("a coinbase is not signed".into())),
+            other => other.from().expect("signed kinds 1, 2, 6, 7 carry from"),
         };
         let mut bytes = tx.encode_unsigned();
         let statement = tx::statement(chain, &bytes);
@@ -193,6 +193,21 @@ impl Signer {
         )
     }
 
+    /// Unlock `amount` of this neuron's stake on `card(self, p, q)` (kind 6,
+    /// chain-economy §3.4); valid once `MIN_LOCK` blocks have passed since
+    /// the position's last increase.
+    pub fn unlock(&self, chain: &[u8; 32], nonce: u64, p: [u8; 32], q: [u8; 32], amount: u64, fee: Option<u64>) -> Result<SignedTx, Error> {
+        let fee = fee.unwrap_or(Kind::Unlock.min_fee());
+        self.sign(chain, Tx::Unlock { from: self.neuron, nonce, p, q, amount, fee })
+    }
+
+    /// Point the rewards of `card(self, p, q)` at `payout` (kind 7,
+    /// chain-economy §3.5).
+    pub fn payout(&self, chain: &[u8; 32], nonce: u64, p: [u8; 32], q: [u8; 32], payout: [u8; 32], fee: Option<u64>) -> Result<SignedTx, Error> {
+        let fee = fee.unwrap_or(Kind::Payout.min_fee());
+        self.sign(chain, Tx::Payout { from: self.neuron, nonce, p, q, payout, fee })
+    }
+
     /// The claim that moves every balance of this key's dormant legacy
     /// owner to `neuron_of(pubkey)` (chain.md §2.8). The fee is paid by the
     /// dormant owner.
@@ -217,7 +232,7 @@ pub fn verify(chain: &[u8; 32], bytes: &[u8]) -> Result<(Tx, Option<[u8; 32]>), 
     pubkey.copy_from_slice(&sig[5..38]);
     let signer = tx::neuron_of(&pubkey);
     let subject = match &tx {
-        Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } => *from,
+        Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } | Tx::Unlock { from, .. } | Tx::Payout { from, .. } => *from,
         Tx::Claim { account_id, .. } => {
             if mudra::cosmos::account_id(&pubkey) != *account_id {
                 return Err(Error::Key("claim account id is not derived by the signing key".into()));

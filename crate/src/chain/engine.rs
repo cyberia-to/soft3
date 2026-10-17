@@ -8,14 +8,19 @@
 
 use std::collections::{HashSet, VecDeque};
 use std::path::Path;
+use std::sync::Arc;
 
 use super::api::{BlockVerdict, ChainError, Event};
 use super::apply::{self, Decoded, Locked, Rules};
 use super::bbg_state::BbgBacked;
 use super::daa::{median_time_past, next_bits};
+use super::economy::focus::{FocusEngine, Tru};
+use super::economy::run::Economy;
+use super::economy::settle::SettleResult;
+use super::economy::weights::GenesisWeights;
 use super::genesis::Genesis;
 use super::header::{BlockId, Header};
-use super::params::{COINBASE_MATURITY, FINALITY_DEPTH, MAX_FUTURE_DRIFT, MTP_WINDOW, RULE_SET, rule_set_at};
+use super::params::{COINBASE_MATURITY, EpochClock, FINALITY_DEPTH, MAX_FUTURE_DRIFT, MTP_WINDOW, RULE_SET, rule_set_at};
 use super::pow::{chainwork, valid_pow};
 use super::select::{self, Checkpoints};
 use super::state::{Id, StateBackend};
@@ -40,25 +45,57 @@ pub struct Chain {
     pub(super) heaviest: U256,
     pub(super) finalized: u64,
     pub(super) events: Vec<Event>,
+    /// the focus economy's snapshots, settlement workers and outcomes
+    pub(super) economy: Economy,
+}
+
+/// The launch chains: they run the spec's epoch clock and nothing else.
+pub const LAUNCH_CHAINS: &[&str] = &["pussy", "bostrom"];
+
+/// How a chain is opened beyond its genesis file.
+#[derive(Clone, Default)]
+pub struct OpenOptions {
+    pub checkpoints: bool,
+    /// a shortened epoch clock for a test or dev net; ignored (the spec's
+    /// clock is used) for the launch chains
+    pub clock: Option<EpochClock>,
+    /// the φ* engine; tru's epoch engine when `None`
+    pub engine: Option<Arc<dyn FocusEngine>>,
+    /// gradient nodes on the epoch path; 1 (the midpoint) when 0
+    pub quadrature: usize,
+    /// compute settlements inline instead of on worker threads
+    pub inline_settlement: bool,
 }
 
 impl Chain {
     /// Open or create the chain under `home` (`home/blocks` is the store).
     /// A store whose block 0 differs from the genesis file refuses to open.
     pub fn open(home: &Path, genesis_bytes: &[u8], checkpoints_enabled: bool) -> Result<Chain, ChainError> {
+        let clock = EpochClock::from_env();
+        Chain::open_with(home, genesis_bytes, OpenOptions { checkpoints: checkpoints_enabled, clock, ..Default::default() })
+    }
+
+    pub fn open_with(home: &Path, genesis_bytes: &[u8], opts: OpenOptions) -> Result<Chain, ChainError> {
         let genesis = Genesis::decode(genesis_bytes).map_err(|e| ChainError::Store(e.to_string()))?;
+        let launch = LAUNCH_CHAINS.contains(&genesis.params().name.as_str());
+        let clock = match opts.clock {
+            Some(c) if !launch && c.valid() => c,
+            _ => EpochClock::SPEC,
+        };
         let rules = Rules {
             chain: genesis.chain_id,
             native: genesis.native_token(),
             hrp: genesis.params().hrp.clone(),
             subsidy: genesis.subsidy(),
             s0: genesis.s0(),
+            clock,
         };
         std::fs::create_dir_all(home).map_err(|e| ChainError::Store(e.to_string()))?;
         let mut store = Store::open(&home.join("blocks")).map_err(ChainError::Store)?;
         let mut state = genesis.state();
-        let block0 = genesis.block0(state.root());
-        let checkpoints = Checkpoints::new(genesis.params().checkpoint_key, checkpoints_enabled);
+        let root0 = state.root();
+        let block0 = genesis.block0(root0);
+        let checkpoints = Checkpoints::new(genesis.params().checkpoint_key, opts.checkpoints);
         if store.is_empty() {
             store.put_header(block0, U256::ZERO, store::Status::Valid).map_err(ChainError::Store)?;
             store.push_main(block0.id()).map_err(ChainError::Store)?;
@@ -66,6 +103,11 @@ impl Chain {
         } else if store.main_at(0) != Some(block0.id()) {
             return Err(ChainError::Genesis);
         }
+        let engine: Arc<dyn FocusEngine> = opts.engine.unwrap_or_else(|| Arc::new(Tru::for_node()));
+        let mut economy = Economy::new(GenesisWeights::from_file(&genesis.file), engine, clock, Some(home.join("epochs")));
+        economy.background = !opts.inline_settlement;
+        economy.quadrature = opts.quadrature.max(1);
+        economy.on_boundary(&state, 0, block0.id(), root0, rules.s0, None);
         let mut chain = Chain {
             genesis,
             rules,
@@ -78,6 +120,7 @@ impl Chain {
             heaviest: U256::ZERO,
             finalized: 0,
             events: Vec::new(),
+            economy,
         };
         chain.replay()?;
         chain.heaviest = chain.store.iter().filter(|(_, e)| e.status != store::Status::Invalid).map(|(_, e)| e.chainwork).max().unwrap_or(U256::ZERO);
@@ -95,10 +138,41 @@ impl Chain {
             let body = self.store.body(&id).ok_or_else(|| ChainError::Store(format!("missing body at {h}")))?;
             let txs = apply::decode_body(&self.rules, &header, &body).map_err(ChainError::Block)?;
             let locked = Locked::at(self.coinbases.make_contiguous(), h);
-            apply::apply_block(&self.rules, &header, &txs, &mut self.state, &locked).map_err(ChainError::Block)?;
+            self.apply_on_tip(&header, &txs, &locked).map_err(ChainError::Block)?;
             self.push_coinbase(h, &txs);
         }
+        self.economy.prune(tip);
         Ok(())
+    }
+
+    /// The settlement the block at `height` (on the main tip) must carry,
+    /// if one is due: the result reading the main chain's boundaries of
+    /// epochs E − 1 and E (chain-economy §2.5).
+    pub(super) fn settlement_for(&mut self, height: u64) -> Option<Arc<SettleResult>> {
+        let e = self.rules.clock.settles_at(height)?;
+        let prev = self.store.main_at(self.rules.clock.boundary(e - 1))?;
+        let cur = self.store.main_at(self.rules.clock.boundary(e))?;
+        self.economy.result(&prev, &cur)
+    }
+
+    /// Steps 7–8 for a block whose parent is the main tip, with the
+    /// economy's side effects: the settlement result in, the outcome kept,
+    /// the boundary snapshot taken and its settlement started.
+    fn apply_on_tip(&mut self, header: &Header, txs: &[Decoded], locked: &Locked) -> Result<super::state::Undo, apply::BlockError> {
+        let settle = self.settlement_for(header.height);
+        let applied = apply::apply_block(&self.rules, header, txs, &mut self.state, locked, settle.as_deref())?;
+        let id = header.id();
+        if let Some(outcome) = applied.settled {
+            self.economy.record_outcome(id, outcome);
+        }
+        let clock = self.rules.clock;
+        if clock.is_boundary(header.height) {
+            let epoch = clock.epoch(header.height);
+            let prev = self.store.main_at(clock.boundary(epoch - 1));
+            let supply = self.rules.supply_at(header.height);
+            self.economy.on_boundary(&self.state, epoch, id, header.state_root, supply, prev);
+        }
+        Ok(applied.undo)
     }
 
     pub fn rules(&self) -> &Rules {
@@ -217,8 +291,11 @@ impl Chain {
     pub(super) fn extend(&mut self, header: &Header, txs: &[Decoded]) -> Result<(), ChainError> {
         let id = header.id();
         let locked = self.locked_at(header.height);
-        let undo = match apply::apply_block(&self.rules, header, txs, &mut self.state, &locked) {
+        let undo = match self.apply_on_tip(header, txs, &locked) {
             Ok(undo) => undo,
+            // a settlement this node cannot compute is its own condition,
+            // never the block's fault (chain-economy §2.5: it waits)
+            Err(e @ apply::BlockError::Settlement { .. }) => return Err(ChainError::Block(e)),
             Err(e) => {
                 self.invalidate(id);
                 return Err(ChainError::Block(e));
@@ -382,6 +459,7 @@ impl Chain {
 
     pub(super) fn after_tip_move(&mut self) -> Result<(), ChainError> {
         self.store.persist().map_err(ChainError::Store)?;
+        self.economy.prune(self.store.tip_height());
         let new_final = self.store.tip_height().saturating_sub(FINALITY_DEPTH);
         while self.finalized < new_final {
             let h = self.finalized + 1;

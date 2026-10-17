@@ -1,6 +1,7 @@
 //! Engine tests on a private test genesis with a simulated miner
 //! (chain-conformance §8–§9). The harness here; scenarios in the siblings.
 
+mod economy;
 mod forks;
 mod rules;
 mod simulate;
@@ -10,7 +11,8 @@ use std::path::PathBuf;
 use crate::genesis::file::{Balance, GenesisFile, Link};
 
 use super::api::{Block, ChainApi, Template};
-use super::engine::Chain;
+use super::engine::{Chain, OpenOptions};
+use super::params::EpochClock;
 use super::genesis::{Genesis, Params};
 use super::header::Header;
 use super::params::test_pow;
@@ -32,6 +34,10 @@ pub struct Net {
     pub checkpoint_key: mudra::SigningKey,
     pub native: Id,
     pub dormant_key: usize,
+    /// a short epoch clock for economy tests; `None` = the spec's clock
+    pub clock: Option<EpochClock>,
+    pub engine: Option<std::sync::Arc<dyn super::economy::focus::FocusEngine>>,
+    pub inline_settlement: bool,
     dirs: std::cell::RefCell<Vec<PathBuf>>,
 }
 
@@ -47,13 +53,18 @@ impl Net {
     /// `accounts` funded neurons, one dormant legacy owner (claimable by
     /// key `accounts`), checkpoints signed by key 99, target 2^255.
     pub fn new(accounts: u8) -> Net {
+        Net::with_funds(accounts, FUNDS)
+    }
+
+    /// As [`Net::new`] with `funds` per account.
+    pub fn with_funds(accounts: u8, funds: u64) -> Net {
         test_pow::relax();
         let keys: Vec<_> = (0..accounts).map(key).collect();
         let neurons: Vec<Id> = keys.iter().map(|k| neuron_of(&pubkey(k))).collect();
         let checkpoint_key = key(99);
         let native = token("pussy");
         let dormant = legacy_owner("pussy", &mudra::cosmos::account_id(&pubkey(&key(accounts))));
-        let mut balances: Vec<Balance> = neurons.iter().map(|n| Balance { owner: *n, token: native, amount: FUNDS }).collect();
+        let mut balances: Vec<Balance> = neurons.iter().map(|n| Balance { owner: *n, token: native, amount: funds }).collect();
         balances.push(Balance { owner: dormant, token: native, amount: 10_000 });
         balances.push(Balance { owner: dormant, token: token("other"), amount: 5 });
         balances.sort();
@@ -74,7 +85,18 @@ impl Net {
             balances,
             links: vec![Link { neuron: neurons[0], p: [1; 32], q: [2; 32], height: 7 }],
         };
-        Net { genesis: Genesis::from_file(&file).unwrap(), keys, neurons, checkpoint_key, native, dormant_key: accounts as usize, dirs: Default::default() }
+        Net {
+            genesis: Genesis::from_file(&file).unwrap(),
+            keys,
+            neurons,
+            checkpoint_key,
+            native,
+            dormant_key: accounts as usize,
+            clock: None,
+            engine: None,
+            inline_settlement: false,
+            dirs: Default::default(),
+        }
     }
 
     pub fn subsidy(&self) -> u64 {
@@ -93,13 +115,36 @@ impl Net {
         dir.push(format!("soft3-chain-test-{label}-{}-{seq}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         self.dirs.borrow_mut().push(dir.clone());
-        Chain::open(&dir, &self.genesis.bytes, checkpoints).unwrap()
+        Chain::open_with(&dir, &self.genesis.bytes, self.options(checkpoints)).unwrap()
+    }
+
+    fn options(&self, checkpoints: bool) -> OpenOptions {
+        OpenOptions { checkpoints, clock: self.clock, engine: self.engine.clone(), inline_settlement: self.inline_settlement, quadrature: 1 }
     }
 
     /// Reopen the store of chain `index` (recovery path).
     pub fn reopen(&self, index: usize) -> Chain {
         let dir = self.dirs.borrow()[index].clone();
-        Chain::open(&dir, &self.genesis.bytes, true).unwrap()
+        Chain::open_with(&dir, &self.genesis.bytes, self.options(true)).unwrap()
+    }
+
+    pub fn unlock(&self, from: usize, nonce: u64, p: Id, q: Id, amount: u64, fee: u64) -> Vec<u8> {
+        let mut tx = Tx { body: Body::Unlock { from: self.neurons[from], nonce, p, q, amount, fee }, sig: vec![] };
+        sigs::sign(&self.genesis.chain_id, &mut tx, &self.keys[from]).unwrap();
+        tx.encode()
+    }
+
+    pub fn payout(&self, from: usize, nonce: u64, p: Id, q: Id, payout: Id, fee: u64) -> Vec<u8> {
+        let mut tx = Tx { body: Body::Payout { from: self.neurons[from], nonce, p, q, payout, fee }, sig: vec![] };
+        sigs::sign(&self.genesis.chain_id, &mut tx, &self.keys[from]).unwrap();
+        tx.encode()
+    }
+
+    /// A cyberlink naming another token (a staked one is invalid).
+    pub fn link_token(&self, from: usize, nonce: u64, token: Id, p: Id, q: Id, amount: u64, valence: i8, fee: u64) -> Vec<u8> {
+        let mut tx = Tx { body: Body::Cyberlink { from: self.neurons[from], nonce, token, amount, p, q, valence, fee }, sig: vec![] };
+        sigs::sign(&self.genesis.chain_id, &mut tx, &self.keys[from]).unwrap();
+        tx.encode()
     }
 
     pub fn transfer(&self, from: usize, nonce: u64, to: Id, amount: u64, fee: u64) -> Vec<u8> {

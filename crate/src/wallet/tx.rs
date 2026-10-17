@@ -24,8 +24,12 @@ const LEAF_TAG: &[u8] = b"soft3/chain/leaf/v1\0";
 const NODE_TAG: &[u8] = b"soft3/chain/node/v1\0";
 const LEGACY_TAG: &[u8] = b"soft3/chain/legacy/v1\0";
 const TOPIC_TAG: &[u8] = b"soft3/chain/topic/v1\0";
+const CARD_TAG: &[u8] = b"soft3/chain/card/v1\0";
+const STAKE_TAG: &[u8] = b"soft3/chain/stake/v1\0";
+const FOCUS_TAG: &[u8] = b"soft3/chain/focus/v1\0";
 
-/// Transaction kinds of rule set 1 (chain.md §2.1).
+/// Transaction kinds of rule set 1 (chain.md §2.1; kinds 6 and 7 are the
+/// focus economy's, chain-economy §3.4–§3.5).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Kind {
@@ -33,6 +37,8 @@ pub enum Kind {
     Transfer = 1,
     Cyberlink = 2,
     Claim = 3,
+    Unlock = 6,
+    Payout = 7,
 }
 
 impl Kind {
@@ -42,6 +48,8 @@ impl Kind {
             1 => Ok(Self::Transfer),
             2 => Ok(Self::Cyberlink),
             3 => Ok(Self::Claim),
+            6 => Ok(Self::Unlock),
+            7 => Ok(Self::Payout),
             other => Err(Error::Encoding(format!("unknown tx kind {other}"))),
         }
     }
@@ -53,6 +61,8 @@ impl Kind {
             Self::Transfer => 120,
             Self::Cyberlink => 153,
             Self::Claim => 36,
+            Self::Unlock => 120,
+            Self::Payout => 144,
         }
     }
 
@@ -76,6 +86,8 @@ impl Kind {
             Self::Transfer => "transfer",
             Self::Cyberlink => "cyberlink",
             Self::Claim => "claim",
+            Self::Unlock => "unlock",
+            Self::Payout => "payout",
         }
     }
 }
@@ -96,6 +108,12 @@ pub enum Tx {
         fee: u64,
     },
     Claim { account_id: [u8; 20], nonce: u64, fee: u64 },
+    /// kind 6: return `amount` of the stake of `card(from, p, q)` to `from`
+    /// once `MIN_LOCK` has passed since its last increase (chain-economy §3.4)
+    Unlock { from: [u8; 32], nonce: u64, p: [u8; 32], q: [u8; 32], amount: u64, fee: u64 },
+    /// kind 7: point the rewards of `card(from, p, q)` at `payout`
+    /// (chain-economy §3.5)
+    Payout { from: [u8; 32], nonce: u64, p: [u8; 32], q: [u8; 32], payout: [u8; 32], fee: u64 },
 }
 
 impl Tx {
@@ -105,6 +123,8 @@ impl Tx {
             Tx::Transfer { .. } => Kind::Transfer,
             Tx::Cyberlink { .. } => Kind::Cyberlink,
             Tx::Claim { .. } => Kind::Claim,
+            Tx::Unlock { .. } => Kind::Unlock,
+            Tx::Payout { .. } => Kind::Payout,
         }
     }
 
@@ -112,9 +132,11 @@ impl Tx {
     pub fn nonce(&self) -> Option<u64> {
         match self {
             Tx::Coinbase { .. } => None,
-            Tx::Transfer { nonce, .. } | Tx::Cyberlink { nonce, .. } | Tx::Claim { nonce, .. } => {
-                Some(*nonce)
-            }
+            Tx::Transfer { nonce, .. }
+            | Tx::Cyberlink { nonce, .. }
+            | Tx::Claim { nonce, .. }
+            | Tx::Unlock { nonce, .. }
+            | Tx::Payout { nonce, .. } => Some(*nonce),
         }
     }
 
@@ -122,7 +144,22 @@ impl Tx {
     pub fn fee(&self) -> Option<u64> {
         match self {
             Tx::Coinbase { .. } => None,
-            Tx::Transfer { fee, .. } | Tx::Cyberlink { fee, .. } | Tx::Claim { fee, .. } => Some(*fee),
+            Tx::Transfer { fee, .. }
+            | Tx::Cyberlink { fee, .. }
+            | Tx::Claim { fee, .. }
+            | Tx::Unlock { fee, .. }
+            | Tx::Payout { fee, .. } => Some(*fee),
+        }
+    }
+
+    /// The neuron that signs: `from` of kinds 1, 2, 6 and 7; none for a
+    /// coinbase or a claim (whose subject is the signing key's neuron).
+    pub fn from(&self) -> Option<[u8; 32]> {
+        match self {
+            Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } | Tx::Unlock { from, .. } | Tx::Payout { from, .. } => {
+                Some(*from)
+            }
+            Tx::Coinbase { .. } | Tx::Claim { .. } => None,
         }
     }
 
@@ -145,6 +182,9 @@ impl Tx {
             if !(-1..=1).contains(valence) {
                 return Err(Error::Rule(format!("valence {valence} outside -1..=1")));
             }
+        }
+        if let Tx::Unlock { amount: 0, .. } = self {
+            return Err(Error::Rule("unlock of 0 does nothing".into()));
         }
         Ok(())
     }
@@ -183,6 +223,22 @@ impl Tx {
             Tx::Claim { account_id, nonce, fee } => {
                 out.extend_from_slice(account_id);
                 out.extend_from_slice(&nonce.to_le_bytes());
+                out.extend_from_slice(&fee.to_le_bytes());
+            }
+            Tx::Unlock { from, nonce, p, q, amount, fee } => {
+                out.extend_from_slice(from);
+                out.extend_from_slice(&nonce.to_le_bytes());
+                out.extend_from_slice(p);
+                out.extend_from_slice(q);
+                out.extend_from_slice(&amount.to_le_bytes());
+                out.extend_from_slice(&fee.to_le_bytes());
+            }
+            Tx::Payout { from, nonce, p, q, payout, fee } => {
+                out.extend_from_slice(from);
+                out.extend_from_slice(&nonce.to_le_bytes());
+                out.extend_from_slice(p);
+                out.extend_from_slice(q);
+                out.extend_from_slice(payout);
                 out.extend_from_slice(&fee.to_le_bytes());
             }
         }
@@ -235,6 +291,8 @@ impl Tx {
                 Tx::Cyberlink { from, nonce, token, amount, p, q, valence, fee: r.u64() }
             }
             Kind::Claim => Tx::Claim { account_id: r.arr20(), nonce: r.u64(), fee: r.u64() },
+            Kind::Unlock => Tx::Unlock { from: r.arr32(), nonce: r.u64(), p: r.arr32(), q: r.arr32(), amount: r.u64(), fee: r.u64() },
+            Kind::Payout => Tx::Payout { from: r.arr32(), nonce: r.u64(), p: r.arr32(), q: r.arr32(), payout: r.arr32(), fee: r.u64() },
         };
         let sig = if kind.signed() {
             let mut sig = [0u8; SIG_BYTES];
@@ -352,6 +410,24 @@ pub fn topic(chain: &[u8; 32], name: &str) -> [u8; 32] {
 /// `axon(p, q) = hemera(p ‖ q)` — the particle a cyberlink's box binds to.
 pub fn axon(p: &[u8; 32], q: &[u8; 32]) -> [u8; 32] {
     h(&[p, q])
+}
+
+/// `card(author, p, q) = hemera("soft3/chain/card/v1\0" ‖ author ‖ p ‖ q)` —
+/// the position id of a staked cyberlink (chain-economy §3.1).
+pub fn card_id(author: &[u8; 32], p: &[u8; 32], q: &[u8; 32]) -> [u8; 32] {
+    h(&[CARD_TAG, author, p, q])
+}
+
+/// `stake_key(card) = hemera("soft3/chain/stake/v1\0" ‖ card)`: the raw
+/// balances key holding a position's stake (chain-economy §3.1).
+pub fn stake_key(card: &[u8; 32]) -> [u8; 32] {
+    h(&[STAKE_TAG, card])
+}
+
+/// `focus_key(token) = hemera("soft3/chain/focus/v1\0" ‖ token)`: the raw
+/// balances key of the focus pool (chain-economy §3.1).
+pub fn focus_key(token: &[u8; 32]) -> [u8; 32] {
+    h(&[FOCUS_TAG, token])
 }
 
 /// `balance_key(owner, token) = hemera(owner ‖ token)`.

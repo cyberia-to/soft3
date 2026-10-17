@@ -76,7 +76,13 @@ fn tx_refusal(e: TxError) -> TxRefusal {
         TxError::Nonce { expected, actual } => TxRefusal::Nonce { current: expected, got: actual },
         TxError::Fee { min, actual } => TxRefusal::Fee { floor: min, got: actual },
         e @ (TxError::Insufficient { .. } | TxError::Immature { .. }) => TxRefusal::Balance(e.to_string()),
-        e @ (TxError::SelfLink | TxError::Box(_) | TxError::Overflow) => TxRefusal::Rule(e.to_string()),
+        e @ (TxError::SelfLink
+        | TxError::StakeToken
+        | TxError::Valence { .. }
+        | TxError::NoCard
+        | TxError::Locked { .. }
+        | TxError::UnlockAmount { .. }
+        | TxError::Overflow) => TxRefusal::Rule(e.to_string()),
     }
 }
 
@@ -184,6 +190,11 @@ pub struct KernelChain {
 }
 
 impl KernelChain {
+    /// The economy's read surface (chain-economy §11), as JSON.
+    pub fn economy(&self, f: impl FnOnce(&Chain) -> Option<serde_json::Value>) -> Option<serde_json::Value> {
+        f(&self.lock().chain)
+    }
+
     /// Open (or create) the chain under `home` (`home/blocks` is the store);
     /// a restart replays the main chain on the genesis state (§3.6).
     pub fn open(genesis_bytes: &[u8], home: &Path) -> Result<KernelChain, String> {

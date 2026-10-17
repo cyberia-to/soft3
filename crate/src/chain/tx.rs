@@ -9,6 +9,8 @@ pub const COINBASE_BYTES: usize = Kind::Coinbase.total_bytes();
 pub const TRANSFER_BYTES: usize = Kind::Transfer.total_bytes();
 pub const CYBERLINK_BYTES: usize = Kind::Cyberlink.total_bytes();
 pub const CLAIM_BYTES: usize = Kind::Claim.total_bytes();
+pub const UNLOCK_BYTES: usize = Kind::Unlock.total_bytes();
+pub const PAYOUT_BYTES: usize = Kind::Payout.total_bytes();
 
 /// Why bytes are not a rule-set-1 transaction (the wallet codec's reason).
 pub type DecodeError = String;
@@ -21,10 +23,11 @@ pub struct Tx {
     pub sig: Vec<u8>,
 }
 
-/// Encoded size of a kind, or `None` outside rule set 1. Every later kind
-/// — the pool's deposit and the cores' kinds ≥ 4 (chain.md §7.2, §11) —
-/// is rejected here until the activation table (`params::ACTIVATIONS`)
-/// names the rule set that admits it.
+/// Encoded size of a kind, or `None` outside rule set 1. Rule set 1 is
+/// kinds 0–3 and the economy's 6 (unlock) and 7 (payout); the pool's
+/// deposit and spend (4, 5) and the reserved 8–10 (chain-economy §3.5) are
+/// rejected here until the activation table (`params::ACTIVATIONS`) names
+/// the rule set that admits them.
 pub fn size_of_kind(kind: u8) -> Option<usize> {
     Kind::from_byte(kind).ok().map(Kind::total_bytes)
 }
@@ -68,13 +71,10 @@ impl Tx {
         Ok(Tx { body, sig: sig.map(|s| s.to_vec()).unwrap_or_default() })
     }
 
-    /// The signing neuron of kinds 1 and 2; `None` for a coinbase or a claim
-    /// (whose subject is derived from the signature's key).
+    /// The signing neuron of kinds 1, 2, 6 and 7; `None` for a coinbase or
+    /// a claim (whose subject is derived from the signature's key).
     pub fn from(&self) -> Option<[u8; 32]> {
-        match &self.body {
-            Body::Transfer { from, .. } | Body::Cyberlink { from, .. } => Some(*from),
-            _ => None,
-        }
+        self.body.from()
     }
 
     pub fn nonce(&self) -> Option<u64> {
@@ -154,9 +154,11 @@ pub(crate) mod tests {
                 },
                 CYBERLINK_BYTES,
             ),
-            (Tx { body: Body::Claim { account_id: [9; 20], nonce: 3, fee: 140 }, sig }, CLAIM_BYTES),
+            (Tx { body: Body::Claim { account_id: [9; 20], nonce: 3, fee: 140 }, sig: sig.clone() }, CLAIM_BYTES),
+            (Tx { body: Body::Unlock { from: [0x66; 32], nonce: 4, p: [2; 32], q: [3; 32], amount: 7, fee: 224 }, sig: sig.clone() }, UNLOCK_BYTES),
+            (Tx { body: Body::Payout { from: [0x66; 32], nonce: 5, p: [2; 32], q: [3; 32], payout: [0x77; 32], fee: 248 }, sig }, PAYOUT_BYTES),
         ];
-        assert_eq!([COINBASE_BYTES, TRANSFER_BYTES, CYBERLINK_BYTES, CLAIM_BYTES], [82, 224, 257, 140]);
+        assert_eq!([COINBASE_BYTES, TRANSFER_BYTES, CYBERLINK_BYTES, CLAIM_BYTES, UNLOCK_BYTES, PAYOUT_BYTES], [82, 224, 257, 140, 224, 248]);
         for (tx, size) in txs {
             let bytes = tx.encode();
             assert_eq!(bytes.len(), size);
@@ -174,6 +176,11 @@ pub(crate) mod tests {
             let mut k5 = bytes.clone();
             k5[1] = 5;
             assert!(Tx::decode(&k5).unwrap_err().contains("kind 5"), "the pool's spend is not a rule-set-1 kind");
+            for reserved in [8u8, 9, 10] {
+                let mut k = bytes.clone();
+                k[1] = reserved;
+                assert!(Tx::decode(&k).unwrap_err().contains(&format!("kind {reserved}")), "chain-economy §3.5: kinds 8–10 are reserved");
+            }
         }
     }
 

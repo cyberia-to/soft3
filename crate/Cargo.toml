@@ -41,6 +41,9 @@ foculus = { version = "0.1.1", path = "../../foculus", default-features = false 
 hemera = { package = "cyber-hemera", version = "0.4", path = "../../hemera/rs" }
 # header mining kernels (Metal, WebGPU) — lens release/0.2 `gpu/`
 cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
+# φ*, J and the syntropy gradient of the focus economy (chain-economy §4–§5;
+# tru specs/epoch.md): the epoch engine every full node runs at settlement
+tru = { package = "cyber-tru", version = "0.1", path = "../../tru/rs" }
 # genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
 bbg = { version = "0.3", path = "../../bbg/rs" }
 # mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`); the chain verifies NSIG1

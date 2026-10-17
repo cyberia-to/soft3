@@ -13,6 +13,8 @@ pub mod apply;
 pub mod bbg_state;
 pub mod conformance;
 pub mod daa;
+pub mod economy;
+pub mod economy_api;
 pub mod engine;
 pub mod engine_api;
 pub mod engine_tx;

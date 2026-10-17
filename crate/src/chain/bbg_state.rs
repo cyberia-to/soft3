@@ -5,19 +5,29 @@
 //! bookkeeping for the conservation check (§3.4), never committed.
 //!
 //! The nonce is `NeuronRecord.nonce` (bbg dimension version 3, the change
-//! §3.2 requested), so every nonce is under `state_root`.
+//! §3.2 requested), so every nonce is under `state_root`. Positions are
+//! `CardRecord { owner, particle, author, valence, since }` in the cards
+//! dimension (version 4, chain-economy §3.2); stakes and the focus pool are
+//! raw keys of the balances dimension. The high-water marks and the economy
+//! scalars are kernel state: pure functions of the chain's history,
+//! journaled here for reorgs, not committed (the epoch records reach the
+//! root through `time`, the payouts through the balances).
 
 use std::collections::BTreeMap;
 
 use bbg::state::{axon_id, balance_key};
-use bbg::types::{CoinRecord, NeuronRecord, ParticleRecord};
+use bbg::types::{CardRecord, CoinRecord, NeuronRecord, ParticleRecord, Valence};
 use bbg::{BbgState, Cyberlink, Signal};
 
-use super::state::{Id, StateBackend, StateError, Undo, UndoEntry};
+use super::state::{Card, Id, Mark, Scalars, StateBackend, StateError, Undo, UndoEntry};
 
 pub struct BbgBacked {
     pub bbg: BbgState,
     sums: BTreeMap<Id, u64>,
+    /// high-water marks per axon (chain-economy §5.3): node-side, a pure
+    /// function of the chain's history, journaled for reorgs
+    marks: BTreeMap<Id, Mark>,
+    scalars: Scalars,
     journal: Vec<UndoEntry>,
     open: bool,
 }
@@ -49,8 +59,48 @@ impl BbgBacked {
         Self {
             bbg: BbgState::new(),
             sums: BTreeMap::new(),
+            marks: BTreeMap::new(),
+            scalars: Scalars::default(),
             journal: Vec::new(),
             open: false,
+        }
+    }
+
+    /// The position as bbg's dimension-version-4 record
+    /// (`CardRecord { owner, particle, author, valence, since }`, chain-economy §3.2).
+    fn card_record(c: &Card) -> CardRecord {
+        CardRecord {
+            owner: c.owner,
+            particle: c.particle,
+            author: c.author,
+            valence: Valence::from_i8(c.valence).expect("valence checked on decode"),
+            since: c.since,
+        }
+    }
+
+    fn card_from(r: &CardRecord) -> Card {
+        Card { owner: r.owner, particle: r.particle, author: r.author, valence: r.valence.to_i8(), since: r.since }
+    }
+
+    fn write_card(&mut self, id: Id, card: Option<Card>) {
+        match card {
+            None => {
+                self.bbg.cards.remove(&id);
+            }
+            Some(c) => {
+                self.bbg.cards.insert(id, Self::card_record(&c));
+            }
+        }
+    }
+
+    fn write_time(&mut self, height: u64, value: Option<Id>) {
+        match value {
+            None => {
+                self.bbg.time.remove(&height);
+            }
+            Some(v) => {
+                self.bbg.time.insert(height, v);
+            }
         }
     }
 
@@ -179,7 +229,7 @@ impl StateBackend for BbgBacked {
         let sum = self.sums.get(token).copied().unwrap_or(0).checked_add(amount).ok_or(StateError::Overflow)?;
         self.note_balance(key);
         self.note_sum(*token);
-        // a zero balance is an absent row (bbg dimension version 3)
+        // a zero balance is an absent row (bbg dimension versions 3–4)
         self.set_balance(key, (next > 0).then_some(next));
         self.sums.insert(*token, sum);
         self.dirty();
@@ -254,6 +304,96 @@ impl StateBackend for BbgBacked {
         Ok(())
     }
 
+    fn raw_balance(&self, key: &Id) -> u64 {
+        self.bbg.balances.get(key).copied().unwrap_or(0)
+    }
+
+    fn credit_raw(&mut self, key: &Id, token: &Id, amount: u64) -> Result<(), StateError> {
+        if amount == 0 {
+            return Ok(());
+        }
+        let have = self.raw_balance(key);
+        let next = have.checked_add(amount).ok_or(StateError::Overflow)?;
+        let sum = self.sums.get(token).copied().unwrap_or(0).checked_add(amount).ok_or(StateError::Overflow)?;
+        self.note_balance(*key);
+        self.note_sum(*token);
+        self.set_balance(*key, Some(next));
+        self.sums.insert(*token, sum);
+        Ok(())
+    }
+
+    fn debit_raw(&mut self, key: &Id, token: &Id, amount: u64) -> Result<(), StateError> {
+        if amount == 0 {
+            return Ok(());
+        }
+        let have = self.raw_balance(key);
+        if have < amount {
+            return Err(StateError::Insufficient { have, need: amount });
+        }
+        self.note_balance(*key);
+        self.note_sum(*token);
+        self.set_balance(*key, (have > amount).then_some(have - amount));
+        let sum = self.sums.get(token).copied().unwrap_or(0);
+        self.sums.insert(*token, sum - amount);
+        Ok(())
+    }
+
+    fn card(&self, id: &Id) -> Option<Card> {
+        self.bbg.cards.get(id).map(Self::card_from)
+    }
+
+    fn set_card(&mut self, id: &Id, card: Option<Card>) {
+        let before = self.card(id);
+        self.note(UndoEntry::Card { id: *id, before });
+        self.write_card(*id, card);
+    }
+
+    fn cards(&self) -> Vec<(Id, Card)> {
+        self.bbg.cards.iter().map(|(id, r)| (*id, Self::card_from(r))).collect()
+    }
+
+    fn axon_edge(&self, axon: &Id) -> Option<(Id, Id)> {
+        self.bbg.axon_edges.get(axon).copied()
+    }
+
+    fn marks(&self) -> Vec<(Id, Mark)> {
+        self.marks.iter().map(|(a, m)| (*a, *m)).collect()
+    }
+
+    fn set_mark(&mut self, axon: &Id, mark: Option<Mark>) {
+        let before = self.marks.get(axon).copied();
+        if before == mark {
+            return;
+        }
+        self.note(UndoEntry::Mark { axon: *axon, before });
+        match mark {
+            None => self.marks.remove(axon),
+            Some(m) => self.marks.insert(*axon, m),
+        };
+    }
+
+    fn scalars(&self) -> Scalars {
+        self.scalars
+    }
+
+    fn set_scalars(&mut self, s: Scalars) {
+        if s == self.scalars {
+            return;
+        }
+        self.note(UndoEntry::Scalars { before: self.scalars });
+        self.scalars = s;
+    }
+
+    fn time(&self, height: u64) -> Option<Id> {
+        self.bbg.time.get(&height).copied()
+    }
+
+    fn set_time(&mut self, height: u64, value: Id) {
+        let before = self.time(height);
+        self.note(UndoEntry::Time { height, before });
+        self.write_time(height, Some(value));
+    }
+
     fn begin(&mut self) {
         self.journal.clear();
         self.open = true;
@@ -307,6 +447,17 @@ impl StateBackend for BbgBacked {
                     }
                 },
                 UndoEntry::Height { before } => self.bbg.height = *before,
+                UndoEntry::Card { id, before } => self.write_card(*id, *before),
+                UndoEntry::Mark { axon, before } => match before {
+                    None => {
+                        self.marks.remove(axon);
+                    }
+                    Some(m) => {
+                        self.marks.insert(*axon, *m);
+                    }
+                },
+                UndoEntry::Scalars { before } => self.scalars = *before,
+                UndoEntry::Time { height, before } => self.write_time(*height, *before),
             }
         }
         // the reverts above go through bbg's committed maps: the root is

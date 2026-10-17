@@ -47,6 +47,104 @@ pub const NONCE_WINDOW: u64 = 16;
 /// Deepest reorganization a node performs (§5.2).
 pub const MAX_REORG: u64 = FINALITY_DEPTH - 1;
 
+// ── the focus economy (chain-economy §0) ───────────────────────────────
+
+/// `EPOCH_LENGTH` (L): blocks per epoch; the boundary of epoch E is height
+/// `E · L` (chain-economy §2.1–§2.2).
+pub const EPOCH_LENGTH: u64 = 240;
+/// `SETTLE_DELAY` (D) = `FINALITY_DEPTH`: settlement of epoch E is a step of
+/// the block at `boundary(E) + D` (chain-economy §2.5).
+pub const SETTLE_DELAY: u64 = FINALITY_DEPTH;
+/// `MIN_LOCK`: blocks a position's stake stays locked after its last
+/// increase (chain-economy §3.4). Must be at least `L + D`.
+pub const MIN_LOCK: u64 = 20_160;
+/// `FOCUS_MAX_BPS`: the focus pool's cap on the subsidy, basis points (§6.1).
+pub const FOCUS_MAX_BPS: u64 = 5_000;
+/// `POOL_RELEASE`: an epoch's budget is `pool / POOL_RELEASE` (§5.5).
+pub const POOL_RELEASE: u64 = 4;
+/// `R_MAX_PPM`: a position earns at most this many ppm of its added stake
+/// per settlement (§5.5).
+pub const R_MAX_PPM: u64 = 10_000;
+/// `HWM_KEEP` = 65,410 / 65,536 per epoch: the high-water mark decay
+/// (half-life 360 epochs, §5.3).
+pub const HWM_KEEP_NUM: u64 = 65_410;
+pub const HWM_KEEP_DEN: u64 = 65_536;
+/// `PHI_STEPS`: tri-kernel steps per cold solve (§4.4); tru's `EpochParams`
+/// fixes the value at the phase1.toml pin.
+pub const PHI_STEPS: usize = 48;
+/// `SETTLE_BUDGET`: seconds of reference settlement compute (§7.2).
+pub const SETTLE_BUDGET_SECS: u64 = 900;
+/// `RHO_LAUNCH`, `KARMA_LAUNCH`: the surprise weight and karma of every
+/// active position and neuron at genesis (§5.4, §3.7). Both are 1, so they
+/// multiply nothing; named here so the reports rule set has one place to
+/// replace them.
+pub const RHO_LAUNCH: u64 = 1;
+pub const KARMA_LAUNCH: u64 = 1;
+
+/// Economy domain tags (chain-economy §3.1), each ending in NUL.
+pub const DOMAIN_CARD: &[u8] = b"soft3/chain/card/v1\0";
+pub const DOMAIN_STAKE: &[u8] = b"soft3/chain/stake/v1\0";
+pub const DOMAIN_FOCUS: &[u8] = b"soft3/chain/focus/v1\0";
+pub const DOMAIN_PHI: &[u8] = b"soft3/chain/phi/v1\0";
+pub const DOMAIN_EPOCH: &[u8] = b"soft3/chain/epoch/v1\0";
+pub const DOMAIN_PAYOUT_LEAF: &[u8] = b"soft3/chain/payout-leaf/v1\0";
+pub const DOMAIN_PAYOUT_NODE: &[u8] = b"soft3/chain/payout-node/v1\0";
+
+/// The epoch clock of one chain. The launch chains run [`EpochClock::SPEC`]
+/// and nothing else; a private test or dev net may shorten the clock (the
+/// way a test genesis relaxes the PoW limit) so a settlement happens inside
+/// a test run. The rules are the same functions of `(L, D, MIN_LOCK)`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct EpochClock {
+    pub length: u64,
+    pub delay: u64,
+    pub min_lock: u64,
+}
+
+impl EpochClock {
+    pub const SPEC: EpochClock = EpochClock { length: EPOCH_LENGTH, delay: SETTLE_DELAY, min_lock: MIN_LOCK };
+
+    /// `L ≥ D + 1` (one settlement in flight) and `MIN_LOCK ≥ L + D` (stake
+    /// added in an epoch is still locked at its settlement), §2.2, §3.4.
+    pub fn valid(&self) -> bool {
+        self.delay >= 1 && self.length > self.delay && self.min_lock >= self.length + self.delay
+    }
+
+    /// `epoch(h) = ceil(h / L)`; height 0 is epoch 0 (§2.1).
+    pub fn epoch(&self, h: u64) -> u64 {
+        h.div_ceil(self.length)
+    }
+
+    /// `boundary(E) = E · L`, the last block of epoch E.
+    pub fn boundary(&self, e: u64) -> u64 {
+        e * self.length
+    }
+
+    pub fn is_boundary(&self, h: u64) -> bool {
+        h % self.length == 0
+    }
+
+    /// `settle(E) = boundary(E) + D`.
+    pub fn settle(&self, e: u64) -> u64 {
+        self.boundary(e) + self.delay
+    }
+
+    /// The epoch E ≥ 1 whose settlement is a step of the block at `h`.
+    pub fn settles_at(&self, h: u64) -> Option<u64> {
+        (h > self.delay && (h - self.delay) % self.length == 0).then(|| (h - self.delay) / self.length).filter(|e| *e >= 1)
+    }
+
+    /// A dev or test clock from `SOFT3_DEV_EPOCH=L:D:MIN_LOCK`; `None` when
+    /// unset or invalid. Never consulted for a launch chain.
+    pub fn from_env() -> Option<EpochClock> {
+        let v = std::env::var("SOFT3_DEV_EPOCH").ok()?;
+        let mut it = v.split(':').map(|x| x.trim().parse::<u64>());
+        let (Some(Ok(length)), Some(Ok(delay)), Some(Ok(min_lock))) = (it.next(), it.next(), it.next()) else { return None };
+        let c = EpochClock { length, delay, min_lock };
+        c.valid().then_some(c)
+    }
+}
+
 /// The rule set this implementation speaks (§7.1).
 pub const RULE_SET: u16 = 1;
 
@@ -170,6 +268,21 @@ mod tests {
         assert_eq!(rule_set_at(0), Some(1));
         assert_eq!(rule_set_at(u64::MAX), Some(1));
         assert_eq!(MAX_REORG, 119);
+    }
+
+    #[test]
+    fn epoch_clock_matches_chain_economy_section_10() {
+        let c = EpochClock::SPEC;
+        assert!(c.valid());
+        assert_eq!((c.epoch(0), c.epoch(1), c.epoch(240), c.epoch(241)), (0, 1, 1, 2));
+        assert_eq!(c.settle(1), 360);
+        assert_eq!(c.settles_at(360), Some(1));
+        assert_eq!(c.settles_at(600), Some(2));
+        assert_eq!((c.settles_at(120), c.settles_at(359), c.settles_at(240)), (None, None, None));
+        assert!(MIN_LOCK >= EPOCH_LENGTH + SETTLE_DELAY);
+        assert!(!EpochClock { length: 10, delay: 10, min_lock: 20 }.valid());
+        assert!(!EpochClock { length: 10, delay: 5, min_lock: 14 }.valid());
+        assert!(EpochClock { length: 10, delay: 5, min_lock: 15 }.valid());
     }
 
     #[test]

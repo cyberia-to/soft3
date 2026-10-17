@@ -69,6 +69,8 @@ fn kind_name(tx: &Tx) -> &'static str {
         Tx::Transfer { .. } => "transfer",
         Tx::Cyberlink { .. } => "cyberlink",
         Tx::Claim { .. } => "claim",
+        Tx::Unlock { .. } => "unlock",
+        Tx::Payout { .. } => "payout",
     }
 }
 
@@ -79,6 +81,8 @@ fn tx_fields(tx: &Tx) -> serde_json::Value {
         Tx::Transfer { from, nonce, token, amount, to, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "to": hex(to), "fee": fee}),
         Tx::Cyberlink { from, nonce, token, amount, p, q, valence, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "p": hex(p), "q": hex(q), "valence": valence, "fee": fee}),
         Tx::Claim { account_id, nonce, fee, .. } => serde_json::json!({"account_id": hex(account_id), "nonce": nonce, "fee": fee}),
+        Tx::Unlock { from, nonce, p, q, amount, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "p": hex(p), "q": hex(q), "amount": amount, "fee": fee}),
+        Tx::Payout { from, nonce, p, q, payout, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "p": hex(p), "q": hex(q), "payout": hex(payout), "fee": fee}),
     };
     if !tx.sig().is_empty() {
         v["sig"] = hex(tx.sig()).into();
@@ -162,7 +166,7 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
             )))
         }
         ("GET", "/") => Ok(Response::text(format!(
-            "soft3 · {} · chain+cybergraph+bbg\nmoniker {}\nheight {}\nGET /status /tip /header/H /block/H /blocks /tx/ID /nonce/N /balance/N /balances/N /mempool /peers /checkpoints /template?to=N /v2/history\nPOST /tx /submit\n",
+            "soft3 · {} · chain+cybergraph+bbg\nmoniker {}\nheight {}\nGET /status /tip /header/H /block/H /blocks /tx/ID /nonce/N /balance/N /balances/N /mempool /peers /checkpoints /template?to=N /v2/history /economy /epoch/E /epochs /focus /focus/P /card/C /cards/N\nPOST /tx /submit\n",
             node.chain_name, node.moniker, node.chain.tip().height,
         ))),
         // chain-wire §7: the kernel renders the answer
@@ -208,6 +212,33 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
                 "txid": hex(&id), "kind": kind_name(&entry.tx), "tx": tx_fields(&entry.tx), "height": "mempool", "block": null, "index": null,
             })))
         }
+        // chain-economy §11
+        ("GET", p) if p.starts_with("/epoch/") => {
+            let e: u64 = p["/epoch/".len()..].parse().map_err(|_| Error::bad("epoch is a number"))?;
+            node.kernel.economy(|c| c.epoch_json(e)).map(json).ok_or_else(|| not_found("epoch_not_settled", format!("epoch {e} is not settled on this chain")))
+        }
+        ("GET", "/epochs") => {
+            let after = query(q, "after")?.map(|v| v.parse::<u64>()).transpose().map_err(|_| Error::bad("after is a number"))?.unwrap_or(0);
+            let limit = query(q, "limit")?.map(|v| v.parse::<usize>()).transpose().map_err(|_| Error::bad("limit is a number"))?.unwrap_or(100);
+            Ok(json(node.kernel.economy(|c| Some(c.epochs_json(after, limit))).unwrap_or_default()))
+        }
+        ("GET", "/focus") => {
+            let top = query(q, "top")?.map(|v| v.parse::<usize>()).transpose().map_err(|_| Error::bad("top is a number"))?.unwrap_or(20);
+            node.kernel.economy(|c| c.focus_top_json(top)).map(json).ok_or_else(|| not_found("focus_not_computed", "no settled epoch with φ* on this node yet".into()))
+        }
+        ("GET", p) if p.starts_with("/focus/") => {
+            let particle = unhex32(&p["/focus/".len()..]).ok_or_else(|| Error::bad("particle is 64 hex chars"))?;
+            node.kernel.economy(|c| c.focus_json(&particle)).map(json).ok_or_else(|| not_found("no_focus", "the particle has no focus at the last settled epoch".into()))
+        }
+        ("GET", p) if p.starts_with("/card/") => {
+            let card = unhex32(&p["/card/".len()..]).ok_or_else(|| Error::bad("card is 64 hex chars"))?;
+            node.kernel.economy(|c| c.card_json(&card)).map(json).ok_or_else(|| not_found("card_not_found", "no position with this id".into()))
+        }
+        ("GET", p) if p.starts_with("/cards/") => {
+            let neuron = unhex32(&p["/cards/".len()..]).ok_or_else(|| Error::bad("neuron is 64 hex chars"))?;
+            Ok(json(node.kernel.economy(|c| Some(c.cards_json(&neuron))).unwrap_or_default()))
+        }
+        ("GET", "/economy") => Ok(json(node.kernel.economy(|c| Some(c.economy_status())).unwrap_or_default())),
         ("GET", p) if p.starts_with("/nonce/") => {
             let neuron = unhex32(&p["/nonce/".len()..]).ok_or_else(|| Error::bad("not a 32-byte hex id"))?;
             let next = node.mempool.lock().expect("mempool").next_nonce(node.chain.as_ref(), &neuron);
