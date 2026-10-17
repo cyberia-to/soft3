@@ -23,7 +23,7 @@ use std::time::Instant;
 use super::super::params::EpochClock;
 use super::super::state::{Id, StateBackend};
 use super::focus::{FocusEngine, FocusGraph};
-use super::settle::{Earner, FocusOut, Outcome, SettleResult, Snapshot, compute};
+use super::settle::{Earner, FocusOut, Outcome, SettleResult, Snapshot, compute_with};
 use super::weights::GenesisWeights;
 use super::wide::W;
 use super::Mark;
@@ -45,6 +45,9 @@ pub struct Economy {
     pub clock: EpochClock,
     /// compute on worker threads (the node); `false` computes inline
     pub background: bool,
+    /// gradient nodes on the epoch's path (1 = the midpoint, chain-economy
+    /// §5.1); part of every cached result's key
+    pub quadrature: usize,
     snapshots: HashMap<Id, Arc<Snapshot>>,
     jobs: HashMap<Key, JoinHandle<(SettleResult, u64)>>,
     done: HashMap<Key, Arc<SettleResult>>,
@@ -66,6 +69,7 @@ impl Economy {
             engine,
             clock,
             background: true,
+            quadrature: 1,
             snapshots: HashMap::new(),
             jobs: HashMap::new(),
             done: HashMap::new(),
@@ -97,6 +101,7 @@ impl Economy {
     fn cache_path(&self, key: &Key) -> Option<PathBuf> {
         let dir = self.dir.as_ref()?;
         let mut buf = self.engine.id().as_bytes().to_vec();
+        buf.extend_from_slice(&(self.quadrature as u32).to_le_bytes());
         buf.extend_from_slice(&key.0);
         buf.extend_from_slice(&key.1);
         Some(dir.join(format!("{}.settle", hex(hemera::hash(&buf).as_bytes()))))
@@ -122,6 +127,7 @@ impl Economy {
         let (weights, engine, syntropy, timings) = (self.weights.clone(), self.engine.clone(), self.syntropy.clone(), self.timings.clone());
         let path = self.cache_path(&key);
         let epoch = b.epoch;
+        let quadrature = self.quadrature;
         let job = move || {
             let t0 = Instant::now();
             let prev_j = syntropy.lock().expect("syntropy map").get(&a.block_id).copied();
@@ -130,7 +136,7 @@ impl Economy {
                 syntropy.lock().expect("syntropy map").insert(a.block_id, j);
                 j
             });
-            let r = compute(&a, &b, &weights, engine.as_ref(), Some(prev_j));
+            let r = compute_with(&a, &b, &weights, engine.as_ref(), Some(prev_j), quadrature);
             let millis = t0.elapsed().as_millis() as u64;
             syntropy.lock().expect("syntropy map").insert(b.block_id, r.syntropy);
             timings.lock().expect("timings").push(Timing { epoch: r.epoch, millis, particles: r.particles, axons: r.axons });

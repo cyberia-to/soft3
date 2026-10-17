@@ -136,6 +136,19 @@ pub struct SettleResult {
 /// The three solves and the attribution (§5.1–§5.4). `prev_focus` is
 /// `(J(φ*_{E−1}))` when the node still holds it; otherwise it is solved.
 pub fn compute(prev: &Snapshot, cur: &Snapshot, weights: &GenesisWeights, engine: &dyn FocusEngine, prev_syntropy: Option<i128>) -> SettleResult {
+    compute_with(prev, cur, weights, engine, prev_syntropy, 1)
+}
+
+/// [`compute`] with `quadrature` gradient nodes on the path from `A_prev`
+/// to `A_cur` (1 = the midpoint of chain-economy §5.1).
+pub fn compute_with(
+    prev: &Snapshot,
+    cur: &Snapshot,
+    weights: &GenesisWeights,
+    engine: &dyn FocusEngine,
+    prev_syntropy: Option<i128>,
+    quadrature: usize,
+) -> SettleResult {
     let a_prev = prev.adjacency(weights);
     let a_cur = cur.adjacency(weights);
     let a_mid = midpoint(&a_prev, &a_cur);
@@ -144,12 +157,14 @@ pub fn compute(prev: &Snapshot, cur: &Snapshot, weights: &GenesisWeights, engine
     let g_cur = FocusGraph::build(&a_cur);
     let focus = engine.focus(&g_cur);
     let prev_syntropy = prev_syntropy.unwrap_or_else(|| engine.focus(&FocusGraph::build(&a_prev)).syntropy);
-    // solves 2 and 3: the fixed point of A_mid and the adjoint gradient there
-    let grad = engine.gradient(&FocusGraph::build(&a_mid));
+    // solves 2 and 3: the fixed point of A_mid and the adjoint gradient
+    // there (one quadrature node); k > 1 nodes integrate the gradient
+    // along the straight path, Gauss–Legendre, weights at 2^32
+    let path = gradient_path(&a_prev, &a_cur, &a_mid, quadrature, engine);
     let grad_of = |p: &Id, q: &Id| -> i128 {
-        match a_mid.binary_search_by(|(x, y, _)| (x, y).cmp(&(p, q))) {
-            Ok(i) => grad[i],
-            Err(_) => 0, // [A_mid_pq > 0] fails: no credit
+        match path.binary_search_by(|(x, y, _)| (x, y).cmp(&(p, q))) {
+            Ok(i) => path[i].2,
+            Err(_) => 0, // absent at every node ([A_mid_pq > 0] fails): no credit
         }
     };
 
@@ -247,6 +262,45 @@ pub fn compute(prev: &Snapshot, cur: &Snapshot, weights: &GenesisWeights, engine
         marks,
         focus: Arc::new(FocusOut { particles: g_cur.particles, phi: focus.phi, syntropy: focus.syntropy, digest }),
     }
+}
+
+/// Gauss–Legendre nodes `t` and weights `w` on `[0, 1]` at 2^32 (weights
+/// sum to 2^32) — the same table as tru's `integrated::gauss_legendre`.
+pub fn gauss_legendre(k: usize) -> Vec<(u64, u64)> {
+    tru::focusing::epoch::integrated::gauss_legendre(k)
+}
+
+/// The path gradient per axon present at some node, ascending by `p ‖ q`:
+/// `g(A_mid)` for one node, `Σ_t w_t · g(A_prev + t·ΔA) / 2^32` for k.
+fn gradient_path(a_prev: &[(Id, Id, u128)], a_cur: &[(Id, Id, u128)], a_mid: &[(Id, Id, u128)], k: usize, engine: &dyn FocusEngine) -> Vec<(Id, Id, i128)> {
+    if k <= 1 {
+        let g = engine.gradient(&FocusGraph::build(a_mid));
+        return a_mid.iter().zip(g).map(|((p, q, _), g)| (*p, *q, g)).collect();
+    }
+    // the union of both snapshots with (A_prev, A_cur)
+    let mut union: BTreeMap<(Id, Id), (u128, u128)> = BTreeMap::new();
+    for (p, q, w) in a_prev {
+        union.entry((*p, *q)).or_default().0 = *w;
+    }
+    for (p, q, w) in a_cur {
+        union.entry((*p, *q)).or_default().1 = *w;
+    }
+    let mut total: BTreeMap<(Id, Id), i128> = BTreeMap::new();
+    for (t, w) in gauss_legendre(k) {
+        let at: Vec<(Id, Id, u128)> = union
+            .iter()
+            .map(|((p, q), (a, b))| {
+                let d = *b as i128 - *a as i128;
+                (*p, *q, (*a as i128 + ((t as i128 * d) >> 32)).max(0) as u128)
+            })
+            .filter(|x| x.2 > 0)
+            .collect();
+        let g = engine.gradient(&FocusGraph::build(&at));
+        for ((p, q, _), gk) in at.iter().zip(g) {
+            *total.entry((*p, *q)).or_insert(0) += (w as i128 * gk) >> 32;
+        }
+    }
+    total.into_iter().map(|((p, q), g)| (p, q, g)).collect()
 }
 
 /// The epoch record of §5.6.

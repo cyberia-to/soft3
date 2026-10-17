@@ -242,3 +242,73 @@ fn attribution_is_linear_in_stake_and_valence_cancels() {
     assert_eq!(hedge.earners[0].card, card_id(&[7; 32], &b, &cc));
 }
 
+
+/// A deterministic random graph of `n` particles and `m` axons.
+fn random_axons(n: u64, m: u64, seed: u64) -> Vec<(Id, Id, u128)> {
+    let mut s = seed;
+    let mut next = || {
+        s = s.wrapping_add(0x9E37_79B9_7F4A_7C15);
+        let mut z = s;
+        z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+        z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+        z ^ (z >> 31)
+    };
+    let id = |i: u64| -> Id { *hemera::hash(&i.to_le_bytes()).as_bytes() };
+    let mut map = std::collections::BTreeMap::new();
+    for _ in 0..m {
+        let (a, b) = (next() % n, next() % n);
+        if a != b {
+            *map.entry((id(a), id(b))).or_insert(0u128) += 1 + (next() % 1_000_000) as u128;
+        }
+    }
+    map.into_iter().map(|((p, q), w)| (p, q, w)).collect()
+}
+
+#[test]
+fn tru_engine_digest_threads_and_scale() {
+    use super::focus::Tru;
+    let axons = random_axons(300, 1_500, 7);
+    let g = FocusGraph::build(&axons);
+    let one = Tru::new(1);
+    let f = one.focus(&g);
+    // the chain's digest is hemera over tru's preimage
+    let tru_axons: Vec<tru::focusing::epoch::Axon> = axons.iter().map(|(p, q, w)| tru::focusing::epoch::Axon { from: *p, to: *q, weight: *w }).collect();
+    let t = tru::focusing::epoch::phi(&tru_axons, &one.params);
+    assert_eq!(t.particles, g.particles);
+    assert_eq!(phi_digest(&f.phi), *hemera::hash(&t.preimage()).as_bytes());
+    let mass: u128 = f.phi.iter().map(|x| *x as u128).sum();
+    assert!(mass.abs_diff(1 << 60) < 1 << 40, "φ is a distribution at 2^60: {mass}");
+    // thread count never changes a bit
+    let eight = Tru::new(8);
+    assert_eq!(eight.focus(&g), f);
+    assert_eq!(eight.gradient(&g), one.gradient(&g));
+}
+
+#[test]
+fn quadrature_is_a_parameter_and_one_node_is_the_midpoint() {
+    use super::focus::Tru;
+    use super::settle::{Position, Snapshot, compute_with};
+    use super::weights::GenesisWeights;
+    let axons = random_axons(60, 200, 11);
+    let weights = GenesisWeights { axons: axons.iter().map(|(p, q, w)| (*p, *q, *w as u64)).collect(), total: 0, at_floor: 0 };
+    let snap = |epoch: u64, positions: Vec<Position>| Snapshot { epoch, height: epoch * 10, block_id: [epoch as u8; 32], state_root: [0; 32], active: positions.iter().map(|p| p.stake).sum(), positions, marks: Default::default(), supply: 1 << 40 };
+    let positions: Vec<Position> = {
+        let mut v: Vec<Position> = axons
+            .iter()
+            .take(20)
+            .enumerate()
+            .map(|(i, (p, q, _))| Position { card: card_id(&[i as u8; 32], p, q), axon: axon_of(p, q), p: *p, q: *q, owner: [i as u8; 32], valence: if i % 2 == 0 { 1 } else { -1 }, stake: 500_000 })
+            .collect();
+        v.sort_by(|a, b| a.card.cmp(&b.card));
+        v
+    };
+    let e = Tru::new(2);
+    let one = compute_with(&snap(1, vec![]), &snap(2, positions.clone()), &weights, &e, None, 1);
+    let two = compute_with(&snap(1, vec![]), &snap(2, positions.clone()), &weights, &e, None, 2);
+    assert!(!one.earners.is_empty());
+    assert_eq!(one.phi, two.phi, "φ*_E does not depend on the quadrature");
+    // the two rules agree on who earns for most positions on a smooth path
+    let who = |r: &super::settle::SettleResult| r.earners.iter().map(|x| x.card).collect::<std::collections::BTreeSet<_>>();
+    let common = who(&one).intersection(&who(&two)).count();
+    assert!(common * 4 >= who(&one).len() * 3, "{} of {}", common, who(&one).len());
+}

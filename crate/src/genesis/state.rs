@@ -6,10 +6,13 @@
 //! `valence 0`) authored by `neuron` at chain height 0; every distinct owner
 //! and link author gets a neuron record. Nothing else is written.
 //!
-//! The root is bbg dimension version 3: keyed-trie dimension leaves (no size
+//! The root is bbg dimension version 4: keyed-trie dimension leaves (no size
 //! cap, O(changes · log n) per block), `NeuronRecord.nonce` (0 at genesis),
 //! a conviction-free link writes topology only, a zero balance is an absent
-//! row. A moved root is a consensus change; the blessed vectors move with it.
+//! row, and the cards dimension holds positions (`CardRecord { owner,
+//! particle, author, valence, since }`, empty at genesis — chain-economy
+//! §3.2). The version enters every trie leaf, so a moved version moves the
+//! root; the blessed vectors move with it.
 
 use std::collections::BTreeMap;
 
@@ -28,7 +31,7 @@ pub fn load(g: &GenesisFile) -> BbgState {
         s.neurons.entry(b.owner).or_insert(NeuronRecord { focus: 0, karma: 0, stake: 0, nonce: 0 });
         let key = balance_key(&b.owner, &b.token);
         if b.amount > 0 {
-            // a zero balance is an absent row (bbg dimension version 3)
+            // a zero balance is an absent row (bbg dimension versions 3–4)
             let mut slot = s.balances.entry(key).or_insert(0);
             *slot = slot.checked_add(b.amount).expect("balance fits u64 (unique (owner, token) checked)");
         }
@@ -68,7 +71,7 @@ pub fn fields_per_dimension(s: &BbgState) -> BTreeMap<String, u64> {
     c.insert("neurons".into(), entries(s.neurons.len(), 4));
     c.insert("locations".into(), entries(s.locations.len(), 2));
     c.insert("coins".into(), entries(s.coins.len(), 1));
-    c.insert("cards".into(), entries(s.cards.len(), 8));
+    c.insert("cards".into(), entries(s.cards.len(), 28));
     c.insert("files".into(), entries(s.files.len(), 2));
     c.insert("time".into(), entries(s.time.len(), 4));
     c.insert("signals".into(), entries(s.signals.len(), 14));

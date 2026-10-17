@@ -14,7 +14,7 @@ use super::api::{BlockVerdict, ChainError, Event};
 use super::apply::{self, Decoded, Locked, Rules};
 use super::bbg_state::BbgBacked;
 use super::daa::{median_time_past, next_bits};
-use super::economy::focus::{FocusEngine, Reference};
+use super::economy::focus::{FocusEngine, Tru};
 use super::economy::run::Economy;
 use super::economy::settle::SettleResult;
 use super::economy::weights::GenesisWeights;
@@ -59,8 +59,10 @@ pub struct OpenOptions {
     /// a shortened epoch clock for a test or dev net; ignored (the spec's
     /// clock is used) for the launch chains
     pub clock: Option<EpochClock>,
-    /// the φ* engine; the reference engine when `None`
+    /// the φ* engine; tru's epoch engine when `None`
     pub engine: Option<Arc<dyn FocusEngine>>,
+    /// gradient nodes on the epoch path; 1 (the midpoint) when 0
+    pub quadrature: usize,
     /// compute settlements inline instead of on worker threads
     pub inline_settlement: bool,
 }
@@ -101,9 +103,10 @@ impl Chain {
         } else if store.main_at(0) != Some(block0.id()) {
             return Err(ChainError::Genesis);
         }
-        let engine: Arc<dyn FocusEngine> = opts.engine.unwrap_or_else(|| Arc::new(Reference::default()));
+        let engine: Arc<dyn FocusEngine> = opts.engine.unwrap_or_else(|| Arc::new(Tru::for_node()));
         let mut economy = Economy::new(GenesisWeights::from_file(&genesis.file), engine, clock, Some(home.join("epochs")));
         economy.background = !opts.inline_settlement;
+        economy.quadrature = opts.quadrature.max(1);
         economy.on_boundary(&state, 0, block0.id(), root0, rules.s0, None);
         let mut chain = Chain {
             genesis,

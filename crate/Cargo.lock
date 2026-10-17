@@ -4613,6 +4613,7 @@ dependencies = [
  "cyber-lens-gpu",
  "cyber-mudra",
  "cyber-radio",
+ "cyber-tru 0.1.1",
  "cybergraph 0.1.1",
  "fjall",
  "flate2",

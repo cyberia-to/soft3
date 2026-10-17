@@ -23,10 +23,10 @@ use super::weights::Axon;
 pub const PHI_BITS: u32 = 60;
 /// The scale of `ln` inside the solves.
 pub const LN_BITS: u32 = 40;
-/// The scale of the gradient: `∂J/∂A` in nats per token at 2^100
-/// (φ at 2^60 times λ at 2^40). Attribution multiplies it by a stake
-/// change and divides it out only as a ratio (§5.3, §5.5), so the scale
-/// cancels in every payout.
+/// The scale of the reference engine's gradient: `∂J/∂A` in nats per
+/// token at 2^100 (φ at 2^60 times λ at 2^40); tru's is 2^112. Attribution
+/// multiplies it by a stake change and divides it out only as a ratio
+/// (§5.3, §5.5), so the scale cancels in every payout.
 pub const GRAD_BITS: u32 = PHI_BITS + LN_BITS;
 
 /// The canonical input of one solve (§4.3).
@@ -98,6 +98,59 @@ pub trait FocusEngine: Send + Sync {
     /// 2^[`GRAD_BITS`]: one forward solve to the fixed point of `g`, one
     /// adjoint solve, one read per edge (§5.1).
     fn gradient(&self, g: &FocusGraph) -> Vec<i128>;
+}
+
+/// tru's epoch engine (tru `specs/epoch.md`, `tru::focusing::epoch`): the
+/// tri-kernel over the canonical axon list, `PHI_STEPS` steps cold, φ at
+/// 2^60, the adjoint gradient at 2^112. Thread count never changes a bit.
+pub struct Tru {
+    pub params: tru::focusing::epoch::EpochParams,
+}
+
+impl Tru {
+    /// The consensus parameters with `threads` workers.
+    pub fn new(threads: usize) -> Tru {
+        let mut params = tru::focusing::epoch::EpochParams::default();
+        params.steps = super::super::params::PHI_STEPS;
+        params.threads = threads.max(1);
+        Tru { params }
+    }
+
+    /// Worker threads for a node: the cores less one for the block path,
+    /// at most 8.
+    pub fn for_node() -> Tru {
+        let cores = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+        Tru::new(cores.saturating_sub(1).clamp(1, 8))
+    }
+
+    fn axons(g: &FocusGraph) -> Vec<tru::focusing::epoch::Axon> {
+        (0..g.edges())
+            .map(|e| tru::focusing::epoch::Axon { from: g.particles[g.src[e] as usize], to: g.particles[g.dst[e] as usize], weight: g.weight[e] })
+            .collect()
+    }
+}
+
+impl Default for Tru {
+    fn default() -> Self {
+        Tru::new(1)
+    }
+}
+
+impl FocusEngine for Tru {
+    fn id(&self) -> &'static str {
+        // the pinned tru revision: a new pin is a new id (and new vectors)
+        "tru-epoch-1ea853e"
+    }
+
+    fn focus(&self, g: &FocusGraph) -> Focus {
+        let f = tru::focusing::epoch::phi(&Self::axons(g), &self.params);
+        debug_assert_eq!(f.particles, g.particles, "both index particles by ascending id");
+        Focus { phi: f.phi, syntropy: f.syntropy }
+    }
+
+    fn gradient(&self, g: &FocusGraph) -> Vec<i128> {
+        tru::focusing::epoch::gradient(&Self::axons(g), &self.params).by_axon
+    }
 }
 
 /// `ln 2` at 2^40.

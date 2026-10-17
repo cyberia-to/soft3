@@ -119,7 +119,7 @@ impl Net {
     }
 
     fn options(&self, checkpoints: bool) -> OpenOptions {
-        OpenOptions { checkpoints, clock: self.clock, engine: self.engine.clone(), inline_settlement: self.inline_settlement }
+        OpenOptions { checkpoints, clock: self.clock, engine: self.engine.clone(), inline_settlement: self.inline_settlement, quadrature: 1 }
     }
 
     /// Reopen the store of chain `index` (recovery path).

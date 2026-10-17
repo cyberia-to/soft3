@@ -5,31 +5,25 @@
 //! bookkeeping for the conservation check (§3.4), never committed.
 //!
 //! The nonce is `NeuronRecord.nonce` (bbg dimension version 3, the change
-//! §3.2 requested), so every nonce is under `state_root`.
+//! §3.2 requested), so every nonce is under `state_root`. Positions are
+//! `CardRecord { owner, particle, author, valence, since }` in the cards
+//! dimension (version 4, chain-economy §3.2); stakes and the focus pool are
+//! raw keys of the balances dimension. The high-water marks and the economy
+//! scalars are kernel state: pure functions of the chain's history,
+//! journaled here for reorgs, not committed (the epoch records reach the
+//! root through `time`, the payouts through the balances).
 
 use std::collections::BTreeMap;
 
 use bbg::state::{axon_id, balance_key};
-use bbg::types::{CardRecord, CoinRecord, NeuronRecord, ParticleRecord};
+use bbg::types::{CardRecord, CoinRecord, NeuronRecord, ParticleRecord, Valence};
 use bbg::{BbgState, Cyberlink, Signal};
 
 use super::state::{Card, Id, Mark, Scalars, StateBackend, StateError, Undo, UndoEntry};
 
-/// The economy fields of a card beyond bbg's `CardRecord { owner, particle }`:
-/// `(author, valence, since)`.
-///
-/// chain-economy §3.2 asks bbg for `CardRecord { owner, particle, author,
-/// valence, since }` at dimension version 4 (bbg branch `feat/positions-v4`).
-/// Until that lands the three fields live here, journaled like the rest,
-/// and only `owner` and `particle` are under `state_root`; the swap to
-/// the v4 record replaces [`BbgBacked::card_record`] and
-/// [`BbgBacked::card_from`] and moves every root once.
-type CardExt = (Id, i8, u64);
-
 pub struct BbgBacked {
     pub bbg: BbgState,
     sums: BTreeMap<Id, u64>,
-    card_ext: BTreeMap<Id, CardExt>,
     /// high-water marks per axon (chain-economy §5.3): node-side, a pure
     /// function of the chain's history, journaled for reorgs
     marks: BTreeMap<Id, Mark>,
@@ -65,7 +59,6 @@ impl BbgBacked {
         Self {
             bbg: BbgState::new(),
             sums: BTreeMap::new(),
-            card_ext: BTreeMap::new(),
             marks: BTreeMap::new(),
             scalars: Scalars::default(),
             journal: Vec::new(),
@@ -73,24 +66,29 @@ impl BbgBacked {
         }
     }
 
+    /// The position as bbg's dimension-version-4 record
+    /// (`CardRecord { owner, particle, author, valence, since }`, chain-economy §3.2).
     fn card_record(c: &Card) -> CardRecord {
-        CardRecord { owner: c.owner, particle: c.particle }
+        CardRecord {
+            owner: c.owner,
+            particle: c.particle,
+            author: c.author,
+            valence: Valence::from_i8(c.valence).expect("valence checked on decode"),
+            since: c.since,
+        }
     }
 
-    fn card_from(&self, id: &Id, r: &CardRecord) -> Card {
-        let (author, valence, since) = self.card_ext.get(id).copied().expect("card fields beside every card record");
-        Card { owner: r.owner, particle: r.particle, author, valence, since }
+    fn card_from(r: &CardRecord) -> Card {
+        Card { owner: r.owner, particle: r.particle, author: r.author, valence: r.valence.to_i8(), since: r.since }
     }
 
     fn write_card(&mut self, id: Id, card: Option<Card>) {
         match card {
             None => {
                 self.bbg.cards.remove(&id);
-                self.card_ext.remove(&id);
             }
             Some(c) => {
                 self.bbg.cards.insert(id, Self::card_record(&c));
-                self.card_ext.insert(id, (c.author, c.valence, c.since));
             }
         }
     }
@@ -231,7 +229,7 @@ impl StateBackend for BbgBacked {
         let sum = self.sums.get(token).copied().unwrap_or(0).checked_add(amount).ok_or(StateError::Overflow)?;
         self.note_balance(key);
         self.note_sum(*token);
-        // a zero balance is an absent row (bbg dimension version 3)
+        // a zero balance is an absent row (bbg dimension versions 3–4)
         self.set_balance(key, (next > 0).then_some(next));
         self.sums.insert(*token, sum);
         self.dirty();
@@ -341,7 +339,7 @@ impl StateBackend for BbgBacked {
     }
 
     fn card(&self, id: &Id) -> Option<Card> {
-        self.bbg.cards.get(id).map(|r| self.card_from(id, r))
+        self.bbg.cards.get(id).map(Self::card_from)
     }
 
     fn set_card(&mut self, id: &Id, card: Option<Card>) {
@@ -351,7 +349,7 @@ impl StateBackend for BbgBacked {
     }
 
     fn cards(&self) -> Vec<(Id, Card)> {
-        self.bbg.cards.iter().map(|(id, r)| (*id, self.card_from(id, r))).collect()
+        self.bbg.cards.iter().map(|(id, r)| (*id, Self::card_from(r))).collect()
     }
 
     fn axon_edge(&self, axon: &Id) -> Option<(Id, Id)> {
