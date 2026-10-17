@@ -218,6 +218,9 @@ The existing adapter (native-node.md: bounds, request identity, error codes
 | `GET /mempool` | txids and byte total | new |
 | `GET /peers` | per peer: endpoint id, direction, best header, score | new |
 | `GET /checkpoints` | the checkpoints held | new |
+| `GET /epoch/{E}`, `GET /epochs?after=E&limit=N` | epoch records and payout lists | new, chain-economy §11 |
+| `GET /focus/{particle}`, `GET /focus?top=N` | φ* of the last settled epoch | new, chain-economy §11 |
+| `GET /card/{id}`, `GET /cards/{neuron}` | positions and their stake | new, chain-economy §11 |
 | `GET /template?to={neuron}` | header with zero nonce (hex), target, body (hex) | mining template for external workers; expires with the tip |
 | `POST /submit` | hex header of a solved template | accepted blocks are relayed; `409` if the template is stale |
 | `POST /tx` | body `application/octet-stream` tx bytes, or JSON `{"tx": "hex"}` | returns txid; mempool admission errors are `400` with the reason |

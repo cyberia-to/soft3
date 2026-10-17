@@ -13,16 +13,23 @@ alias: chain spec, root chain, phase-1 chain, soft3 chain, pussy chain, bostrom 
 The root chain of phase 1 is a public proof-of-work chain on the soft3
 harness: hemera as the work function, bbg as the state, mudra NSIG1 as the
 signature, cyber-radio as the wire, tade as the framing. It carries exactly
-three things a neuron can do — mine, transfer, cyberlink — and nothing else.
-The four phase-1 cores (settlement mining, fold, foculus consensus, privacy)
-run beside it in shadow mode as indexers and activate later by a scheduled
-fork (§7).
+four things a neuron can do — mine, transfer, cyberlink with stake, and be
+paid for the focus its stake creates. The focus economy — epochs of a fixed
+number of blocks, φ* over the staked graph, settlement of Δφ⁺ to staked
+links by recomputation on every node, the subsidy split between miners and
+the focus pool — is consensus from genesis and is specified in
+[chain-economy](chain-economy.md). The pool (privacy, §11) is rule set 2;
+the ticket lottery and fold are the scaling rule set of chain-economy §7.3.
 
-Owner decision 2026-10-15, recorded here as the contract: "pure PoW, public
-chain, no features — mining, transfers, cyberlinks — on the whole soft3
-harness; the four phase-1 cores run in shadow mode as indexers and activate
-later by scheduled fork". Spec before code: implementation starts from this
-page, [chain-wire](chain-wire.md) and [chain-conformance](chain-conformance.md).
+Owner decision 2026-10-15: "pure PoW, public chain, no features — mining,
+transfers, cyberlinks — on the whole soft3 harness; the four phase-1 cores
+run in shadow mode as indexers and activate later by scheduled fork".
+Superseded in part by the owner's order of 2026-10-17 ("the goal is foculus,
+stakes with valence, and mining — not just relaunching a network on the new
+stack"): ordering stays proof of work, and the cores' economy ships in
+consensus at genesis, no shadow mode (chain-economy.md). Spec before code:
+implementation starts from this page, [chain-economy](chain-economy.md),
+[chain-wire](chain-wire.md) and [chain-conformance](chain-conformance.md).
 
 Two chains run the same binary from two genesis files: pussy on
 2026-11-05 13:37:00 UTC, bostrom at 13:22:42 UTC on the day bbg row 43 of
@@ -79,6 +86,7 @@ coin, read from the genesis file (§4).
 | `POOL_DIGEST` | 64 | bytes of every wide pool digest (frozen at genesis) | §11.1 |
 | `ANCHOR_WINDOW` | 1,000 | blocks (rule set 2, frozen at genesis) | §11.4 |
 | `MAX_SPEND_TX_BYTES` | 9,985 | bytes of a kind-5 transaction (rule set 2) | §11.7 |
+| economy constants | `EPOCH_LENGTH` 240, `SETTLE_DELAY` 120, `MIN_LOCK` 20,160, `FOCUS_MAX_BPS` 5,000, … | — | chain-economy §0 |
 
 Rationale for the two that matter most: T = 30 s is the interval parano1d
 measured its way to (15 → 20 → 30) for a proof-gated chain; our blocks carry
@@ -292,10 +300,13 @@ tx = version: u8 (= 1) ‖ kind: u8 ‖ body ‖ sig
 | 1 | transfer | 120 | NSIG1 (102) | 224 |
 | 2 | cyberlink | 153 | NSIG1 (102) | 257 |
 | 3 | claim | 36 | NSIG1 (102) | 140 |
+| 6 | unlock | 120 | NSIG1 (102) | 224 |
+| 7 | payout | 144 | NSIG1 (102) | 248 |
 
-Any other `version` or `kind` is invalid under rule set 1; kinds 4 (deposit)
-and 5 (spend) are the pool's, formats frozen at genesis, valid only from rule
-set 2 (§11.7). Fixed sizes: a
+Kinds 6 and 7 are the economy's (chain-economy §3.4–§3.5). Any other
+`version` or `kind` is invalid under rule set 1; kinds 4 (deposit) and 5
+(spend) are the pool's, formats frozen at genesis, valid only from rule set
+2 (§11.7); kinds 8–10 are reserved (chain-economy §3.5). Fixed sizes: a
 decoder knows the length from the second byte; trailing or missing bytes are
 a decode error.
 
@@ -316,7 +327,9 @@ height: u64 ‖ to: neuron[32] ‖ amount: u64 ‖ extra: [u8; 32]
 
 - `height` equals the block height (prevents identical coinbases in two
   blocks, hence identical txids);
-- `amount == SUBSIDY + Σ fees of the block's other txs`, exactly; less is
+- `amount == SUBSIDY − cut(h) + Σ fees of the block's other txs`, exactly,
+  where `cut(h)` is the focus pool's share of the subsidy
+  (chain-economy §6.1–§6.2, credited to the pool in the same step); less is
   invalid too (no burning by omission — supply must be a pure function of
   height, §3.5);
 - `extra` is free: pool extranonce, a commitment, zeros;
@@ -345,12 +358,13 @@ from: neuron[32] ‖ nonce: u64 ‖ token: [u8;32] ‖ amount: u64 ‖ p: partic
 The cyberlink `(p, q, token, amount, valence)` per
 [cybergraph/specs/cyberlink.md](../../cybergraph/specs/cyberlink.md), authored
 by neuron `from`. `p ≠ q`; `valence ∈ {−1, 0, +1}` (any other byte is
-invalid). The box: `amount` of `token` leaves `from`'s balance and is bound
-to the axon-particle `axon(p, q) = hemera(p ‖ q)` (bbg's `axon_id`):
-`balances[H(axon ‖ token)] += amount`. In phase 1 the box is locked — there is
-no withdraw transaction; withdraw and transfer of boxes arrive with the
-cores' activation (§7). `amount = 0` is a bare assertion and is the common
-case. State effects are exactly bbg's `insert` for one link (§3.2).
+invalid). `amount > 0` locks `amount` of the native coin (no other token)
+as stake on the position `card(from, p, q)` with this valence: the stake is
+the balance at `stake_key(card)`, unlocked by kind 6 after `MIN_LOCK`, and
+earns at epoch settlement when it adds weight that raises syntropy — the
+whole rule is chain-economy §3–§5. `amount = 0` is a bare assertion,
+topology only. Every link calls bbg's `insert` with `amount = 0` (the axon
+lists); stake accounting is the chain's (§3.2).
 
 Why two neuron-signed kinds and not one: the two actions have different state
 footprints (a transfer touches two balances; a link touches two particles,
@@ -436,17 +450,19 @@ balance of `legacy_owner(hrp, account_id)` (all tokens) moves to
 
 ### 3.2 bbg dimensions used
 
-The state is one `bbg::BbgState`; the chain writes six of its dimensions and
-leaves the rest empty but committed:
+The state is one `bbg::BbgState`; the chain writes seven of its dimensions
+and leaves the rest empty but committed:
 
 | dimension | written by | content |
 |---|---|---|
-| particles | cyberlink with `amount > 0` | `energy += amount` on `q`, `weight += amount` on `axon(p,q)`; a link with `amount = 0` (every link in rule set 1) writes no particle record — bbg keeps no all-zero rows |
+| particles | nobody | bbg's `insert` is called with `amount = 0` for every link, so no particle record is written; φ* is published by digest (chain-economy §5.6) |
+| cards | cyberlink with `amount > 0`, kinds 6 and 7 | one `CardRecord { owner, particle, author, valence, since }` per position (bbg dimension version 4, chain-economy §3.2) |
+| time | settlement blocks | `time[settle(E)] = hemera(D_EPOCH ‖ epoch record)` (chain-economy §5.6) |
 | axons_out, axons_in | cyberlink | `axon(p,q)` appended once per `(p,q)` |
 | neurons | all | `NeuronRecord { focus, karma, stake, nonce }`; phase 1 writes `nonce` only, the other three stay 0 |
 | coins | coinbase, genesis | `CoinRecord { total_supply }` per token |
-| balances | all | `hemera(owner ‖ token) → u64` |
-| locations, cards, files, time, signals, intents, A(x), N(x) | nobody | empty; their commitments are constants of the empty dimension |
+| balances | all | `hemera(owner ‖ token) → u64`, plus the raw keys `stake_key(card)` and `focus_key(τ_native)` (chain-economy §3.1) |
+| locations, files, signals, intents, A(x), N(x) | nobody | empty; their commitments are constants of the empty dimension |
 
 Change requested of bbg (rung 3, one field): `NeuronRecord.nonce: u64`, with
 `DIMENSION_VERSION` bumped to 3 — landed (bbg dimension version 3,
@@ -485,7 +501,8 @@ For a block B at height h on state S:
 
 ```
 S' = S
-apply coinbase: balances[H(to ‖ τ)] += amount ; coins[τ].total_supply += SUBSIDY
+apply coinbase: balances[H(to ‖ τ)] += amount ; balances[focus_key(τ)] += cut(h) ; coins[τ].total_supply += SUBSIDY
+if h == settle(E): settle epoch E (chain-economy §5)
 for tx in body[1..]:
     check nonce, signature, balances (every debit ≥ 0 after), kind rules
     apply; neurons[from].nonce += 1
@@ -495,7 +512,7 @@ assert state_root(B) == root(S')
 Invariant checked by the node after every block and exposed in `/status`:
 
 ```
-Σ balances[·, τ_native] (incl. boxes and dormant) == S0 + h · SUBSIDY
+Σ balances[·, τ_native] (incl. stakes, focus pool and dormant) == S0 + h · SUBSIDY
 Σ balances[·, τ]        == genesis supply of τ        for every other token
 ```
 
@@ -517,7 +534,10 @@ by scheduled fork (§7); the envelope does not change.
 SUBSIDY = floor(S0 / 105,120,000)        // = S0 · 1 % / BLOCKS_PER_YEAR
 ```
 
-constant per block, 1 % of genesis supply per year, no halving. For bostrom
+constant per block, 1 % of genesis supply per year, no halving. From
+genesis the subsidy is split each epoch between the miner and the focus
+pool by `θ^½` of the active stake, at most half to the pool
+(chain-economy §6); the total minted per block is unchanged. For bostrom
 (S0 ≈ 1.15 × 10^15 BOOT) about 1.1 × 10^7 BOOT per block; for pussy
 (S0 ≈ 1.15 × 10^18 PUSSY) about 1.1 × 10^10 PUSSY per block. Rationale for
 constant-and-small: the only purpose is to pay the security floor of a canary
@@ -575,7 +595,9 @@ Applying genesis: every `b` becomes a balance entry and a `coins` total; every
 `valence = 0`, authored by `neuron` at `height` (the old height is carried as
 data in the link record for indexers; the chain's own height of every genesis
 link is 0); every distinct owner and link author gets a neuron record with
-`nonce = 0`. The resulting root is `state_root` of block 0.
+`nonce = 0`. The resulting root is `state_root` of block 0. Every `l` frame
+also carries a genesis weight for φ*, computed by every node from the file
+alone and stored nowhere (chain-economy §4.1, §8).
 
 ### 4.2 derivation from the burial
 
@@ -615,11 +637,12 @@ Rules:
   balance or a total supply above 2^64 − 1 (18-decimal IBC vouchers) is not
   carried at all and is listed in the genesis report; the native coin must
   never be among them;
-- stake: delegated and undelegating balances are liquid at genesis on the
-  phase-1 chain — there is no staking in a pure-PoW rule set. The launch-page
-  decision "stake at genesis is bonded uniformly from the snapshot" is a
-  cores-era rule; the shadow staking indexer reads `delegations.csv` and the
-  activation fork may re-bond from it;
+- stake: delegated and undelegating balances are liquid at genesis; no
+  coin is locked without its holder's signature. The launch-page decision
+  "stake at genesis is bonded uniformly from the snapshot" is met on the
+  rank axis instead: every genesis link carries a passive genesis weight,
+  its author's genesis balance spread over the author's links
+  (chain-economy §4.1, §8), which moves φ* and earns nothing;
 - particles: the old `particle_from`/`particle_to` are IPFS CIDs; the
   pipeline re-addresses each per cyber/launch row 20 — `hemera(bytes)` when
   the bytes are in the burial blockstore, black hole `hemera(cid_string)`
@@ -785,30 +808,36 @@ first months is run by someone reading the launch page.
 `version >> 16` are miner signal bits: a miner may set them to advertise
 readiness for a rule set; they are informational, never consensus.
 
-### 7.2 what rule set 2 brings
+### 7.2 what later rule sets bring
 
-Rule set 2 ("cores") is the activation of settlement mining, fold, foculus
-consensus and privacy. It is specified by the cores' own pages; this page
-only reserves what the chain must leave room for:
+Since 2026-10-17 rule set 1 carries the focus economy (chain-economy.md):
+epochs, φ*, staked links with valence, settlement by recomputation, the
+subsidy split. Rule set 2 is the pool (§11). The ticket lottery and fold
+(chain-economy §7.3) and the reports rule set (chain-economy §7.4) follow
+by scheduled fork. The list below is what the chain leaves room for:
 
 - the pool (§11): kinds 4 and 5, the turnstile, the commitment tree and the
   block proof, with every format frozen at genesis — rule set 2 brings only
   its verifying keys;
-- further tx kinds ≥ 6 (settlement ticket, fold step, box withdraw/transfer,
-  stake lock) — kinds are a u8, 250 remain;
-- the coinbase `extra` field as the commitment slot for the epoch
-  accumulator / beacon when they become consensus;
+- further tx kinds ≥ 8 (settlement ticket 8, fold step 9, report 10;
+  kinds 6 unlock and 7 payout are rule set 1) — kinds are a u8;
+- the coinbase `extra` field as the commitment slot for the fold
+  accumulator when it becomes consensus (the epoch beacon is the boundary
+  block id, chain-economy §2.3);
 - the subsidy envelope re-targeted from the header hash to the settlement
   ticket (rewards.md §8), with the same `SUBSIDY` unless the activation
   table says otherwise;
-- bbg dimensions today left empty (signals, time, A, N) start to be written;
+- bbg dimensions today left empty (signals, A, N) start to be written;
   the root construction is unchanged, so rule-set-1 roots remain verifiable.
 
 ### 7.3 shadow indexers
 
-The four cores run on every full node as indexers in phase 1: processes (or
-threads) that read the block stream after validation and publish derived
-results nobody is obliged to believe. The chain gives them exactly one
+Since 2026-10-17 foculus's epoch clock and settlement are consensus
+(chain-economy.md) and are no longer indexers; what remains in shadow mode
+is privacy (until rule set 2) and the ticket/fold path (until its rule set).
+They run on every full node as indexers: processes (or threads) that read
+the block stream after validation and publish derived results nobody is
+obliged to believe. The chain gives them exactly one
 interface, the finalized block stream:
 
 - `GET /v2/history?after=POSITION&limit=N` (existing contract) extended to
@@ -821,9 +850,8 @@ What each reads and publishes:
 
 | indexer | reads | publishes (shadow topic / HTTP) |
 |---|---|---|
-| foculus consensus | the public graph (links), block clock | epoch boundaries `B_E` as if blocks were ticks (foculus/specs/epoch.md), φ*-finality verdicts; `/shadow/foculus` |
-| settlement mining | the graph, the epoch beacon it derives from block ids | settlement tickets and the per-epoch Shapley estimate (rewards.md §7); `/shadow/settlement` |
-| fold | published tickets | cluster accumulators and decider outputs; `/shadow/fold` |
+| settlement tickets | the graph, the beacon `block_id(boundary(E))` | sampled tickets and their Shapley estimate compared against the consensus settlement (chain-economy §7.3); `/shadow/settlement` |
+| fold | shadow tickets | cluster accumulators and decider outputs; `/shadow/fold` |
 | privacy | the tx stream | P1–P3 leakage reports on the public wire, stealth-address trial balances; `/shadow/privacy` |
 
 Shadow topics are gossip topics named `shadow/<core>` (chain-wire §2), not
@@ -868,7 +896,7 @@ What is and is not protected at launch, stated plainly.
 | mempool / network DoS | bounded pools and rate limits (chain-wire §4–5); not load-tested at launch |
 | key loss | no recovery; a neuron is its key |
 | privacy | none on the chain: author, amounts and links are public. P1–P3 are shadow until rule set 2 switches on the pool (§11), whose formats genesis already fixes |
-| settlement / ranking correctness | not a chain property in phase 1; shadow outputs carry no money |
+| settlement / ranking correctness | consensus: every full node recomputes φ* and the settlement of every epoch, and the epoch record is under `state_root` (chain-economy §5.6); a node that disagrees halts at the settlement block |
 
 The work function: hemera is a Goldilocks Poseidon2 variant, GPU-friendly
 (quantus precedent, goldilocks-parano1d §P2). There is no rental market for
@@ -910,8 +938,9 @@ here; and a separate `chain` crate would either sit on the same rung (no
 gain) or pull radio below cybergraph (a violation). Dependencies point down
 only: `hemera` (commit), `bbg` and `cybergraph` (graph), `mudra` and
 `neuron-id` (language rung, identity), `tok` (conservation arithmetic),
-`tade` (framing), `radio` (transport), `foculus` only for the shadow indexer
-(feature `shadow`). cyb and cyber consume `soft3`; nothing in `soft3` names
+`tru` (φ* and its gradient, chain-economy §4–§5), `tade` (framing),
+`radio` (transport), `foculus` only for the shadow indexer (feature
+`shadow`). cyb and cyber consume `soft3`; nothing in `soft3` names
 them.
 
 ```
@@ -932,7 +961,8 @@ soft3/crate/src/chain/
   miner.rs        template, nonce loop (CPU; pool template out), coinbase extra
   wire/           radio: topics, sync, discovery, limits (chain-wire)
   api.rs          HTTP routes (chain-wire §6) on the existing http.rs server
-  shadow/         feature `shadow`: foculus/settlement/fold/privacy indexers over Event
+  economy/        chain-economy: epochs and snapshots, genesis weights, settlement over tru, emission split
+  shadow/         feature `shadow`: ticket/fold/privacy indexers over Event
 ```
 
 Each file stays under 500 lines (quality doctrine); `wire/` and `shadow/` are
@@ -963,15 +993,16 @@ Decisions this page could not settle alone, each with the default the
 implementation uses until the owner says otherwise.
 
 Owner decisions 2026-10-15 (recorded by the kernel implementation,
-`crate/src/chain/`): every default below stands **except item 2** — in
-rule set 1 a cyberlink's `amount` must be 0; there are no locked boxes,
-and weights arrive with a later rule set. The kernel rejects
-`amount > 0` (`TxError::Box`).
+`crate/src/chain/`): every default below stands except item 2. Item 2 was
+decided "amount must be 0" on 2026-10-15 and is superseded by the order of
+2026-10-17: a cyberlink with `amount > 0` locks native stake on its
+position, unlocked by kind 6 after `MIN_LOCK` (chain-economy §3); the
+kernel's `TxError::Box` goes.
 
 | # | question | default here | decided |
 |---|---|---|---|
 | 1 | subsidy rate (§3.5): 1 %/yr constant, 0.5 %, or a halving schedule | 1 %/yr constant, no halving | 1 %/yr, kept |
-| 2 | locked cyberlink boxes (§2.4): lock until the cores add withdraw, or disallow `amount > 0` entirely in phase 1 | lock; withdraw arrives with rule set 2 | **amount must be 0** in rule set 1 (no boxes); weights with a later rule set |
+| 2 | locked cyberlink boxes (§2.4): lock until the cores add withdraw, or disallow `amount > 0` entirely in phase 1 | lock; withdraw arrives with rule set 2 | 2026-10-15 amount must be 0; superseded 2026-10-17: stake locks with the link, unlock after seven days (chain-economy §3) |
 | 3 | genesis stake (§4.2): make delegated/undelegating balances liquid, or hold them dormant until staking activates | liquid | liquid, kept |
 | 4 | the 8.97 T BOOT on the passport contract | dormant under `legacy_owner`, untouched | dormant, kept |
 | 5 | TOCYB × 666 → CYB | not executed; TOCYB carried as a coin; phase 3 | TOCYB as a coin, kept |
@@ -1345,8 +1376,10 @@ implementation, two nodes on two machines mine and sync pussy-rc from the
 real genesis file for 24 h with zero conservation failures, a third node
 joins from the graph alone (bootstrap list emptied) and reaches the tip, a
 rented-hash-rate rehearsal (one GPU box) produces a reorg that the reorg
-limit and checkpoints bound as specified, and cyb reads the chain through
-the HTTP surface of chain-wire §6. Receipts go to `soft3/audit/chain/`.
+limit and checkpoints bound as specified, every node agrees on every epoch
+record of the 24 h run and settles bostrom's graph within `SETTLE_BUDGET`
+(chain-economy §10), and cyb reads the chain through the HTTP surface of
+chain-wire §6. Receipts go to `soft3/audit/chain/`.
 
 See [chain-wire](chain-wire.md) for the network, [chain-conformance](chain-conformance.md)
 for the vectors, [native-node](native-node.md) for the HTTP acceptance contract
