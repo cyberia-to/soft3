@@ -98,10 +98,29 @@ pub(crate) async fn header_sync(inner: &Arc<Inner>, peer: EndpointId, conn: &rad
         inner.disconnect(&peer, "wrong chain");
         return Err(WireError::Protocol("peer on another chain"));
     }
-    if let Some(p) = inner.peers.lock().expect("peers").get_mut(&peer) {
-        p.best_height = s.height;
-        p.best_tip = s.tip;
-        p.chainwork = s.chainwork;
+    let ask_checkpoints = match inner.peers.lock().expect("peers").get_mut(&peer) {
+        Some(p) => {
+            p.best_height = s.height;
+            p.best_tip = s.tip;
+            p.chainwork = s.chainwork;
+            !std::mem::replace(&mut p.checkpoints_asked, true)
+        }
+        None => false,
+    };
+    // §3.1 step 1: a new connection also brings the peer's checkpoints above
+    // ours. Without it a late joiner — or any node after a restart, holding
+    // none — waits up to an hour for the next one to be signed, and meanwhile
+    // follows a heavier rewrite deeper than MAX_REORG (simulation
+    // audit/network-2026-10.md, `reorg-140-checkpoints-unfetched`).
+    if ask_checkpoints && inner.chain.checkpoint_key().is_some() {
+        let from_height = inner.checkpoints.lock().expect("checkpoints").last().map(|c| c.height + 1).unwrap_or(0);
+        if let Ok(frames) = request(conn, Frame::GetCheckpoints { from_height }).await {
+            for f in frames {
+                if let Frame::Checkpoint(c) = f {
+                    super::gossip::hold_checkpoint(inner, &peer, &c);
+                }
+            }
+        }
     }
     let theirs = U256::from_le_bytes(&s.chainwork);
     if theirs <= inner.chain.best_header().chainwork && inner.chain.header(&s.tip).is_some() {

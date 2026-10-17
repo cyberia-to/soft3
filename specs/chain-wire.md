@@ -86,7 +86,10 @@ larger than `MAX_BLOCK_BYTES + 16` is a protocol error.
 On every new connection and whenever a gossiped header has an unknown
 parent:
 
-1. exchange `s`; disconnect on chain or genesis mismatch; if the peer's
+1. exchange `s`; disconnect on chain or genesis mismatch; on a new
+   connection also send `k` from our highest held checkpoint (a node that
+   just started holds none and would otherwise follow a rewrite deeper than
+   `MAX_REORG` until the next checkpoint is signed); if the peer's
    `chainwork` is not greater than ours and its tip is known, stop;
 2. `g` with our locator; validate every returned header through steps 1–5
    of chain.md §5.5 against our header store; repeat `g` from the last
