@@ -12,6 +12,10 @@ Architecture contract: [execution model](../specs/execution-model.md).
 It defines VM/OS ownership, open-ended network instances, proof-profile
 selection and worker placement. The substrate explanation follows below.
 
+[Verified bootstrap](verified-bootstrap.md) separates the development order,
+source-to-artifact ceremony and open acceptance gates for the reviewed nox root,
+Trident, Rs and complete paired stack.
+
 soft3 is thirty-one components. the components are not the foundation. each one — [[hemera]], [[lens]], [[zheng]], [[bbg]], [[tru]], the rest — is the same substrate specialized to one job. that substrate is three claims:
 
 soft3 is **one mind**, reachable in **many languages**, growing into an **open world**.
