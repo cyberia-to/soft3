@@ -79,6 +79,23 @@ impl AdmitError {
     }
 }
 
+/// The score a relayed transaction's refusal costs the peer that sent it
+/// (chain-wire §5). A nonce beyond our window is what an honest relay sends
+/// whenever its chain holds blocks ours does not yet (ahead, or on the other
+/// side of a one-block race): a busy account fills its 16-nonce window on
+/// every block. So it costs +1, like a duplicate — and nothing when the peer
+/// announced a tip above ours. A peer streaming such nonces still reaches
+/// the ban in a second at the transaction rate limit; at +10 the race
+/// banned honest relays within 25 minutes of a flood (simulation
+/// audit/network-2026-10.md, `flood`).
+pub fn relay_charge(e: &AdmitError, peer_height: u64, our_height: u64) -> u32 {
+    match e {
+        AdmitError::Nonce { .. } if peer_height > our_height => 0,
+        AdmitError::Nonce { .. } => 1,
+        e => e.score(),
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Entry {
     pub bytes: Vec<u8>,
@@ -408,6 +425,15 @@ mod tests {
         assert_eq!(e.score(), 0, "{e:?}");
         let beyond = pool.admit(&net.transfer(0, 1 + NONCE_WINDOW, [7; 32], 1, 300), chain, 0).unwrap_err();
         assert_eq!(beyond.score(), 10, "{beyond:?}");
+    }
+
+    #[test]
+    fn a_relayed_nonce_beyond_our_window_is_a_race_not_an_offence() {
+        let beyond = AdmitError::Nonce { current: 20, got: 37 };
+        assert_eq!(relay_charge(&beyond, 101, 100), 0, "the peer announced a higher tip");
+        assert_eq!(relay_charge(&beyond, 100, 100), 1, "a relay race costs what a duplicate costs");
+        assert_eq!(relay_charge(&AdmitError::Signature, 101, 100), 10);
+        assert_eq!(relay_charge(&AdmitError::Stale { current: 5, got: 3 }, 0, 100), 0);
     }
 
     #[test]

@@ -213,7 +213,11 @@ pub(crate) async fn run_txs(inner: Arc<Inner>, mut rx: GossipReceiver) {
                         let _ = inner.txs_tx.broadcast_neighbors(bytes::Bytes::from(Frame::Tx(bytes).encode())).await;
                     }
                     Err(super::mempool::AdmitError::Known) if inner.recently_relayed(&id) => {}
-                    Err(e) => inner.charge(&from, e.score(), &format!("tx: {e}")),
+                    Err(e) => {
+                        let peer_height = inner.peers.lock().expect("peers").get(&from).map(|p| p.best_height).unwrap_or(0);
+                        let points = super::mempool::relay_charge(&e, peer_height, inner.chain.tip().height);
+                        inner.charge(&from, points, &format!("tx: {e}"));
+                    }
                 }
             }
             Some(Frame::Block { .. }) => inner.charge(&from, 100, "body on gossip"),
