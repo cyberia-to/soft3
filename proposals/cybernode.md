@@ -59,7 +59,7 @@ product and instance are one thing, not two products: the execution model alread
 
 1. **rung 7 is cybernode.** every ladder, registry and page that names rung 7 says cybernode: soft3.org ladder, `status.md`, `roadmap/stack-completeness.md`, `roadmap/terms-map.md`, the cyber wiki.
 2. **soft3 means the stack and nothing else.** the soft3 repository returns to its charter: contracts, interfaces, the release train. no node, chain, wallet or deploy code stays in it.
-3. **one binary, many instances, as data.** `cybernode` runs pussy, bostrom and later the CYB chain from configuration ([[chain]] §4.4 already says "two chains, one binary"); an instance manifest selects networks and roles.
+3. **one binary, many instances, as data.** `cybernode` runs pussy, bostrom and later the CYB chain from configuration ([[chain]] §4.4 already says "two chains, one binary"). what a network is comes from its repository ([[network-repos]]: `space-pussy`, `bostrom`, `true-cyber`); which networks a deployment runs, with which roles, comes from the instance manifest.
 4. **the code moves unchanged.** `crate/src/{chain,genesis,node,node.rs,network.rs,wallet,bin}` move to the cybernode repository as the crate `cybernode` (the name is free on crates.io, checked 2026-10-17). the move changes paths and names only; the chain conformance vectors and the chain fleet prove that no behaviour changed.
 5. **two repositories, split by secrecy.** `cyberia-to/cybernode` becomes the public component: code, specs, instance manifests without secrets, audits. the current private operations repository is renamed (proposed `cyberia-to/cybernode-ops`) and keeps secrets, inventory and runbooks. no secret crosses into the public repository, and the tracked secrets of the private one are moved out of git as part of the rename (§6.2).
 6. **the node's specs move with it, and moved means moved.** chain.md, chain-wire.md, chain-conformance.md, genesis.md, native-node.md and routing.md go to `cybernode/specs/`; the soft3 copies are deleted, every link is updated, the proposals that cite them ([[proven-present]], [[privacy-frozen]], [[steps-blocks-epochs]], [[goldilocks-parano1d]]) point at the new paths. soft3/specs keeps the execution model, releases, the release manifest, terms, types, languages, filenames, the vault and kadek compositions.
@@ -120,7 +120,7 @@ timing against genesis (2026-11-05): C0–C3 are a rename and a move with zero b
 ## 7. open, and who decides
 
 1. **the private repository's new name** — `cybernode-ops` proposed. renaming on GitHub keeps a redirect until a repository of the old name is created, which C1 does deliberately; every script that clones the old name is updated in the same phase. owner.
-2. **true-cyber and its `cyber` binary.** today the thin product client ("product face") beside the node. either it becomes `cybernode`'s client mode, or it stays the product face of rung 9. it is never yanked either way. owner.
+2. **true-cyber and its `cyber` binary — settled by [[network-repos]].** true-cyber becomes the repository that defines the cyber network (CYB); its client commands move into cybernode; the crate stays resolvable.
 3. **before or after genesis** for C2 (§6). owner.
 4. **the explorer's face.** the index is a node role; whether its pages are served by the node, rendered in cyb, or both. cybernode with cyb.
 5. **the label of the rung** — "network" kept, or "node". owner.
