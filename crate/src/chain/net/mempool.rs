@@ -199,7 +199,8 @@ impl Mempool {
             self.remove(&id);
         }
         while self.entries.len() > CAPACITY_TXS || self.bytes > CAPACITY_BYTES {
-            let victim = self.entries.iter().min_by_key(|(_, e)| (e.fee_per_byte(), u64::MAX - e.added)).map(|(id, _)| *id);
+            // ties broken by txid: every node evicts the same transaction (a HashMap's order is per process)
+            let victim = self.entries.iter().min_by_key(|(id, e)| (e.fee_per_byte(), u64::MAX - e.added, **id)).map(|(id, _)| *id);
             match victim {
                 Some(id) => {
                     // evicting a nonce leaves its successors unspendable; drop them too
@@ -318,6 +319,31 @@ mod tests {
         assert_eq!(tpl[0], tx0, "nonce order beats fee order inside one neuron");
         assert!(pool.remove(&id).is_some());
         assert_eq!(pool.len(), 2);
+    }
+
+    /// chain-wire §4 re-admits the whole pool after every tip and replays an
+    /// account's pending lower nonces on every admission; each of those
+    /// passes must not re-run the secp256k1 verification of a signature
+    /// already verified (simulation audit/network-2026-10.md, `flood`: an
+    /// 8,192-transaction pool cost seconds of verification per block).
+    #[test]
+    fn a_signature_is_verified_once_however_often_the_pool_readmits_it() {
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-verify-once");
+        let chain = &s.chain;
+        let mut pool = Mempool::new();
+        let before = crate::chain::sigs::verifications();
+        for n in 0..16 {
+            pool.admit(&net.transfer(0, n, [7; 32], 1, 300 + n), chain, 0).unwrap();
+        }
+        for _ in 0..4 {
+            pool.revalidate(chain, &[], 0);
+        }
+        let txs = pool.template_txs();
+        assert_eq!(txs.len(), 16);
+        chain.template(&net.neurons[1], &txs, 1_000).unwrap();
+        let checks = crate::chain::sigs::verifications() - before;
+        assert!(checks <= 16, "{checks} signature verifications for 16 transactions");
     }
 
     #[test]

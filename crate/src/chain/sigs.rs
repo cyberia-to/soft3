@@ -49,7 +49,81 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
         return tx.is_coinbase() && tx.sig.is_empty();
     };
     let st = statement(chain, &tx.encode_unsigned());
-    mudra::neuron::verify_statement(subject, st, &tx.sig)
+    let key = verified::key(&subject, &st, &tx.sig);
+    if verified::contains(&key) {
+        return true;
+    }
+    #[cfg(test)]
+    VERIFICATIONS.with(|c| c.set(c.get() + 1));
+    let ok = mudra::neuron::verify_statement(subject, st, &tx.sig);
+    if ok {
+        verified::insert(key);
+    }
+    ok
+}
+
+/// Signatures that verified, so a transaction is verified once however
+/// often it is executed: mempool admission replays an account's pending
+/// lower nonces, re-validation after every tip re-admits the whole pool,
+/// the template executes it again and so does the block. `verify` is a
+/// pure function of (subject, statement, signature) and the key commits to
+/// all three, so a hit returns exactly what a recomputation would; only
+/// successes are kept, in a bounded first-in-first-out set.
+mod verified {
+    use std::collections::{HashSet, VecDeque};
+    use std::sync::{Mutex, OnceLock};
+
+    use sha2::{Digest, Sha256};
+
+    /// Two mempools' worth (chain-wire §4: 8,192 transactions).
+    pub const CAPACITY: usize = 1 << 16;
+
+    #[derive(Default)]
+    struct Set {
+        keys: HashSet<[u8; 32]>,
+        order: VecDeque<[u8; 32]>,
+    }
+
+    fn set() -> &'static Mutex<Set> {
+        static SET: OnceLock<Mutex<Set>> = OnceLock::new();
+        SET.get_or_init(Default::default)
+    }
+
+    pub fn key(subject: &[u8; 32], statement: &[u8; 32], sig: &[u8]) -> [u8; 32] {
+        let mut h = Sha256::new();
+        h.update(subject);
+        h.update(statement);
+        h.update(sig);
+        h.finalize().into()
+    }
+
+    pub fn contains(key: &[u8; 32]) -> bool {
+        set().lock().map(|s| s.keys.contains(key)).unwrap_or(false)
+    }
+
+    pub fn insert(key: [u8; 32]) {
+        if let Ok(mut s) = set().lock() {
+            if s.keys.insert(key) {
+                s.order.push_back(key);
+                if s.order.len() > CAPACITY {
+                    if let Some(old) = s.order.pop_front() {
+                        s.keys.remove(&old);
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+thread_local! {
+    static VERIFICATIONS: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
+}
+
+/// secp256k1 verifications run on this thread (tests count them).
+#[cfg(test)]
+pub fn verifications() -> u64 {
+    VERIFICATIONS.with(|c| c.get())
 }
 
 /// Sign a kind-1/2/3/6/7 transaction with `key`; the subject is derived from the
