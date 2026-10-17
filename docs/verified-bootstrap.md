@@ -15,10 +15,10 @@ remain open. The ceremony below describes future work, not commands already run.
 
 This page owns the cross-component order and trust boundary. Component work and
 acceptance checks live in the
-[Trident VB0–VB8 plan](https://github.com/cyberia-to/trident/blob/docs/0.4-dual-implementation-bootstrap/roadmap/verified-bootstrap.md)
+[Trident VB0–VB8 plan](https://github.com/cyberia-to/trident/blob/release/0.4/roadmap/verified-bootstrap.md)
 and the
-[Rs RS0–RS9 plan](https://github.com/cyberia-to/rs/blob/docs/verified-bootstrap-rs/roadmap/verified-bootstrap.md).
-The links name the coordinating feature branches until their owner merges them.
+[Rs RS0–RS9 plan](https://github.com/cyberia-to/rs/blob/master/roadmap/verified-bootstrap.md).
+Both plans are merged: Trident's on its `release/0.4` line (trident#123), Rs's on `master`.
 Specifications and implementations stay with each component owner; future
 receipts belong in each owner's `audit/verified-bootstrap/`.
 
