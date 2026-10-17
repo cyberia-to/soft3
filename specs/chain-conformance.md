@@ -221,7 +221,7 @@ revision, with `NeuronRecord.nonce` and `DIMENSION_VERSION = 3`:
 | genesis of the conformance net: one `b` frame (`owner = 0x66 × 32`, `token("pussy")`, 1,000,000), no links | genesis file bytes, its particle (chain id), block 0 id, state root |
 | after block 1: coinbase to `0x55 × 32`, the transfer of §6 | state root, balances of `0x55`, `0x66`, `0x77`, nonce of `0x66` = 1, `coins[token("pussy")].total_supply = 1,000,000 + SUBSIDY` |
 | after a cyberlink (amount 0: chain.md §10 item 2, decided 2026-10-15) | state root; the axon lists hold `axon(p, q)` and no particle record is written (a conviction-free link writes topology only, bbg dimension version 3), author balance down by the fee, nonce 2 |
-| a cyberlink with amount 7 | rejected (`TxError::Box(7)`) — no boxes in rule set 1 |
+| a cyberlink with amount 7, native token | accepted since 2026-10-17: the card `card(from, p, q)` is created and 7 moves to its stake key (chain-economy §3.3); the `TxError::Box(7)` vector is retired. With a non-native token: rejected |
 | conservation | Σ native balances == S0 + h · SUBSIDY at every height of a 200-block simulated chain with random valid txs, including a 3-block reorg |
 | coinbase maturity | spending block 1's subsidy at height 100 is rejected, at height 101 accepted |
 
@@ -355,8 +355,8 @@ rule-set-1 decoder (§6).
 
 ## 13. running
 
-`cargo test -p soft3 --features chain-conformance` runs sections 1–9, 11
-and 12 on every commit; section 10 runs in the release train (`stack-chain-genesis`
+`cargo test -p soft3 --features chain-conformance` runs sections 1–9, 11,
+12 and 14 on every commit; section 10 runs in the release train (`stack-chain-genesis`
 gate) because it needs the pinned snapshot inputs. Blessed values are
 written by `soft3 conformance bless chain` into `conformance/chain.snap`
 (and checked by `soft3 conformance check chain`); the genesis entries of
@@ -364,3 +364,37 @@ written by `soft3 conformance bless chain` into `conformance/chain.snap`
 `~/.cache/cyber/genesis/pussy.tade`) and are kept as they are when it is
 absent. They are reviewed in the PR that moves them. The report of each run goes to `soft3/audit/chain/conformance-<date>.md`
 with the revision and the command, per the audit doctrine.
+
+## 14. the focus economy
+
+The vectors of [chain-economy](chain-economy.md) §10, computed on
+2026-10-17 with `cyber-hemera` 0.4 at `7237a23` through `hemera::hash` and
+with Python integers; the rest `blessed`.
+
+```
+card(0x66 × 32, token("boot"), token("pussy")) = 74f0a211d177f290e9c95a6e7edb65cd8705ea96d9713a841d5a086f6476b5b4
+stake_key(that card)                             = f7e0cbf8e5cfc501b7e3098b238bce8451b3b0a7fa2e42b69724801115c6b08a
+focus_key(token("pussy"))                        = 0fae8671376d879515b2736c2d6d51eafdd9ff40055aa84aaff6e17a0beed4b9
+payout_leaf(that card, 0x77 × 32, 1,000)         = 63c3867a76af023aa6417e5a945612289906e8352ea69fe4aea259ce5b152115
+payout_node(leaf, leaf)                          = 240a852c1bd8f641f65d6b3746a72a08c0930e5d1bd1feafe4b9cdab914a6ec2
+phi digest, n = 2, φ = [2^59, 2^59]              = 3351bfa40d6eaa24c8e2b8755d900dbcd3c3015730a5efcfdf9b6e14c7019a8a
+```
+
+| case (pussy `S0`, `SUBSIDY`) | value |
+|---|---|
+| `focus_bps` at active = 0, S0/10⁴, S0/100, S0/4, S0 | 0, 99, 999, 5,000, 5,000 |
+| `cut` at 1,000 bps; miner share | 1,045,842,665; 9,412,583,992 + fees |
+| `cut` at 5,000 bps; miner share | 5,229,213,328; 5,229,213,329 + fees |
+| mark decay, H = 1,000,000, S = 0: after 1 epoch, after 360 | 998,077; 500,047 |
+| budget 1,000, x = [1, 1, 1] | pay [333, 333, 333]; 1 stays in the pool |
+| budget 10⁶, x = [3, 1], Δs = [10⁶, 10⁹] | caps [10,000, 10⁷]; pay [10,000, 250,000]; 740,000 stays |
+| `epoch(240)`, `epoch(241)`, `settle(1)` | 1, 2, 360 |
+
+`blessed`: the transaction vectors of kinds 2 (with stake), 6 and 7; the
+genesis weights of the conformance genesis and of pussy's genesis file;
+φ*_0 of pussy's genesis single-threaded and with 8 threads (equal); a
+2-epoch chain with a +1, a 0 and a −1 lock (epoch record, payouts, pool,
+root); the new-high relock; the reorg pair (a reorg above the boundary
+reproduces the record, a reorg of the boundary changes it); conservation
+over 2,000 simulated blocks including settlement blocks. The list and
+the scenarios are chain-economy §10.
