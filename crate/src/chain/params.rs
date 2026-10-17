@@ -189,7 +189,38 @@ pub fn pow_limit() -> U256 {
     if let Some(limit) = test_pow::LIMIT.with(|l| l.get()) {
         return limit;
     }
+    #[cfg(feature = "sim")]
+    if sim_pow::relaxed() {
+        return U256::ONE << 255;
+    }
     U256::ONE << 236
+}
+
+/// The out-of-tree twin of [`test_pow`], behind the `sim` feature: the
+/// network simulator (cyberia-to/simulation) runs many in-process nodes on
+/// a private test genesis and needs the same trivial targets on every
+/// thread (settlement workers included), so the switch is process-wide.
+/// Without the feature the module does not exist and `POW_LIMIT` is 2^236;
+/// a node binary never enables it. The launch genesis files keep their
+/// 2^232 target either way; the simulator runs them in a process that
+/// never calls [`sim_pow::relax`].
+#[cfg(feature = "sim")]
+pub mod sim_pow {
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    static RELAXED: AtomicBool = AtomicBool::new(false);
+
+    /// Raise the limit for the whole process; targets up to 2^255 become legal.
+    pub fn relax() {
+        RELAXED.store(true, Ordering::SeqCst);
+    }
+
+    pub fn relaxed() -> bool {
+        RELAXED.load(Ordering::SeqCst)
+    }
+
+    /// Canonical bits of 2^255 (one hash in two), as `test_pow::EASY_BITS`.
+    pub const EASY_BITS: u32 = 0x2100_8000;
 }
 
 #[cfg(test)]
