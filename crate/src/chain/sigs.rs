@@ -49,7 +49,20 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
         return tx.is_coinbase() && tx.sig.is_empty();
     };
     let st = statement(chain, &tx.encode_unsigned());
+    #[cfg(test)]
+    VERIFICATIONS.with(|c| c.set(c.get() + 1));
     mudra::neuron::verify_statement(subject, st, &tx.sig)
+}
+
+#[cfg(test)]
+thread_local! {
+    static VERIFICATIONS: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
+}
+
+/// secp256k1 verifications run on this thread (tests count them).
+#[cfg(test)]
+pub fn verifications() -> u64 {
+    VERIFICATIONS.with(|c| c.get())
 }
 
 /// Sign a kind-1/2/3/6/7 transaction with `key`; the subject is derived from the
