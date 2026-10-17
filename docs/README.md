@@ -271,5 +271,6 @@ building a new component is specializing the same substrate to a new job. it com
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
 | [[soft3/proposals/proof-system-repair\|proof-system repair]] | the technical companion to "one form/one proof" above — what broke in the old zheng design, the repaired design and the gates each phase must pass |
 | [[soft3/docs/oikos\|oikos]] | one token, one chain: every neuron roots a home book, the complete ledger of its issuer's obligations; the two settlement protocols and the four foundations it still needs |
+| [[soft3/docs/polynomial-state-across-the-stack\|polynomial state across the stack]] | the March 2026 cascade of the one-polynomial decision through the three trinity pillars — quantum, privacy, AI — kept whole as an explainer, each projection marked measured, refuted as stated, or open |
 
 see [[soft3]] for the component stack and the troika compass.
