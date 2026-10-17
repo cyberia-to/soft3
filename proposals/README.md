@@ -11,6 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
+| [the repositories](repositories.md) | draft | 2026-10-17 | a repository is the door of what stays; parts fold into products, sketches into the lab |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
 | [the proven present](proven-present.md) | proposed | 2026-10-17 | every block proven, its proof verifying its parents': the present proves the past |
 | [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
