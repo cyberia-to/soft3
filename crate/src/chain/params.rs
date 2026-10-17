@@ -72,6 +72,11 @@ pub const HWM_KEEP_DEN: u64 = 65_536;
 /// `PHI_STEPS`: tri-kernel steps per cold solve (§4.4); tru's `EpochParams`
 /// fixes the value at the phase1.toml pin.
 pub const PHI_STEPS: usize = 48;
+/// `ATTR_NODES`: Gauss–Legendre nodes of the attribution path gradient
+/// (§5.1, amended 2026-10-17 from the one-node midpoint; chosen against
+/// exact Shapley in tru audit/epoch-settlement-2026-10.md §6). The ground
+/// weight of §4.4 (`GROUND` = in-weight / 4) is tru's `EpochParams` default.
+pub const ATTR_NODES: usize = 4;
 /// `SETTLE_BUDGET`: seconds of reference settlement compute (§7.2).
 pub const SETTLE_BUDGET_SECS: u64 = 900;
 /// `RHO_LAUNCH`, `KARMA_LAUNCH`: the surprise weight and karma of every

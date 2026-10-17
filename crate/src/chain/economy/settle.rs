@@ -136,7 +136,7 @@ pub struct SettleResult {
 /// The three solves and the attribution (§5.1–§5.4). `prev_focus` is
 /// `(J(φ*_{E−1}))` when the node still holds it; otherwise it is solved.
 pub fn compute(prev: &Snapshot, cur: &Snapshot, weights: &GenesisWeights, engine: &dyn FocusEngine, prev_syntropy: Option<i128>) -> SettleResult {
-    compute_with(prev, cur, weights, engine, prev_syntropy, 1)
+    compute_with(prev, cur, weights, engine, prev_syntropy, super::super::params::ATTR_NODES)
 }
 
 /// [`compute`] with `quadrature` gradient nodes on the path from `A_prev`
@@ -297,7 +297,10 @@ fn gradient_path(a_prev: &[(Id, Id, u128)], a_cur: &[(Id, Id, u128)], a_mid: &[(
             .collect();
         let g = engine.gradient(&FocusGraph::build(&at));
         for ((p, q, _), gk) in at.iter().zip(g) {
-            *total.entry((*p, *q)).or_insert(0) += (w as i128 * gk) >> 32;
+            // ⌊w·g / 2^32⌋, 256-bit wide (tru/specs/epoch.md §4)
+            let wg = tru::focusing::epoch::fixed::mul_wide_floor(w as i128, gk, 32);
+            let t = total.entry((*p, *q)).or_insert(0);
+            *t = t.saturating_add(wg);
         }
     }
     total.into_iter().map(|((p, q), g)| (p, q, g)).collect()

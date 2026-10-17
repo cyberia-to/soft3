@@ -61,7 +61,7 @@ pub struct OpenOptions {
     pub clock: Option<EpochClock>,
     /// the φ* engine; tru's epoch engine when `None`
     pub engine: Option<Arc<dyn FocusEngine>>,
-    /// gradient nodes on the epoch path; 1 (the midpoint) when 0
+    /// gradient nodes on the epoch path; `ATTR_NODES` (the protocol) when 0
     pub quadrature: usize,
     /// compute settlements inline instead of on worker threads
     pub inline_settlement: bool,
@@ -106,7 +106,7 @@ impl Chain {
         let engine: Arc<dyn FocusEngine> = opts.engine.unwrap_or_else(|| Arc::new(Tru::for_node()));
         let mut economy = Economy::new(GenesisWeights::from_file(&genesis.file), engine, clock, Some(home.join("epochs")));
         economy.background = !opts.inline_settlement;
-        economy.quadrature = opts.quadrature.max(1);
+        economy.quadrature = if opts.quadrature == 0 { super::params::ATTR_NODES } else { opts.quadrature };
         economy.on_boundary(&state, 0, block0.id(), root0, rules.s0, None);
         let mut chain = Chain {
             genesis,
