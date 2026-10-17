@@ -5,7 +5,7 @@ crystal-domain: cyber
 alias: proven present, the present proves the past, prove first mine second, state proof, history proof, block proof, O(1) bootstrap
 status: proposed
 date: 2026-10-17
-revised: 2026-10-17 — every block, not every checkpoint interval; no shadow stage; no "when it fits" (owner)
+revised: 2026-10-17 — every block, not every checkpoint interval; no shadow stage; no "when it fits"; ECDSA only on pussy and bostrom until claimed, CYB without it from genesis (owner)
 ---
 # the proven present — the present proves the past
 
@@ -73,7 +73,14 @@ each is final for this design; alternatives are named once.
 6. **the proof carries the work.** `W(B)` is public. a newcomer picks, among valid tip proofs for its chain, the greatest `W`; the reorg limit (chain §5.2) binds nodes that already follow a tip. how a newcomer chooses across a fork deeper than `FINALITY_DEPTH` is written into chain §5 with the activation (§6.5).
 7. **one material.** the proof is hash-only over [[hemera]] and Goldilocks, the profile-6 family of [[zheng]]. nothing in it may introduce a second assumption ([[privacy-frozen]] §1.1).
 8. **the canary blocks are proven after the fact.** the blocks produced before the block proof becomes a validity condition (rule set 1 from 2026-11-05) are proven by catch-up provers in order, from genesis to the tip, until the proving keeps pace with the chain; from the activation height every block carries its own. a node may verify the catch-up proofs before the activation; it must verify the block proof from the activation.
-9. **authorization is hash-only.** a neuron authorizes a step by proving, inside the step's proof, knowledge of the secret its neuron id commits to — no public key and no signature on the wire, as in the pool ([[privacy-frozen]] §1.4) and in parano1d. this collides with the root chain spec as it stands: chain §2.7 authorizes every transfer, cyberlink and claim with mudra NSIG1, a secp256k1 ECDSA signature (`mudra/specs/neuron-auth.md`, "native secp256k1 statement authentication"), which is non-native arithmetic in a Goldilocks circuit and the most expensive thing a block relation could contain. the resolution, for the owner before genesis (§6.1): authorization in the chain becomes hash-only; secp256k1 remains only where a legacy key must be proven once — the claim of a burial balance (chain §2.8, mudra legacy bridge) — and is proven at its price, once per account, never per transaction.
+9. **authorization is hash-only where it is frozen; ECDSA lives only where legacy keys live.** in a proven step a neuron authorizes by proving, inside the step's proof, knowledge of the secret its neuron id commits to — no public key and no signature on the wire, as in the pool ([[privacy-frozen]] §1.4) and in parano1d. the owner's plan of 2026-10-17 decides where ECDSA may exist at all:
+
+   | chain | authorization | why |
+   |---|---|---|
+   | **pussy** and **bostrom** (PUSSY, BOOT) | secp256k1 ECDSA (mudra NSIG1, chain §2.7) as specified, for as long as balances remain unclaimed; in time it moves into contracts | the burial balances belong to legacy secp256k1 keys; those chains exist to carry them until they are claimed. their block proofs pay the ECDSA cost, and the canary blocks are proven once, after the fact (§2.8) |
+   | **cyb** (the CYB chain) | hash-only from its genesis. no ECDSA in its genesis, its rule sets or its consensus — not even a little | CYB is the money whose material is frozen at genesis ([[privacy-frozen]] §1.1); a classical signature in it would be a permanent second assumption |
+
+   CYB launches as early as the proving and the encryption reach a stable construction, and it launches without transfers: its first rule set carries claims only. a claim never verifies a secp256k1 signature in CYB's consensus; the legacy key was already checked where it lives — on pussy or bostrom — and the claim proves, against that chain's proven state, the lock or burn that names the CYB neuron. this is the proven present used across chains: CYB verifies a pussy or bostrom state by its proof, never by its signatures.
 10. **the bodies' retention follows the proofs.** while blocks without proofs are final (before the activation), nodes stay archival (chain §3.6). from the activation, a node that keeps the state and the tip's proof is a full validator, and keeping bodies is a service, not a duty.
 11. **every rule set extends the relation before it activates.** rule set 2 (the pool, settlement, fold, foculus) does not activate until the block relation covers its kinds, dimensions and block-proof statement. this is the cross-cutting rule, and its owner is whoever writes the rule set.
 
@@ -86,7 +93,7 @@ measured on Apple M4 Max with hemera 0.3; every figure is re-measured after the 
 | constant-size recursive proof (zheng profile 6, `release/0.4`) | IVC with the verifier in the step + wrap chain, ≤ 64 KiB, verify ≤ 1 ms | final proof 63,865 B; verify 5.3–5.7 ms on one thread, min 2.8 ms on 16; verifying key 8,978,744 B; IVC step 1.12 s, wrap chain 18.9 s on Metal; prover peak 19.5 GB (`audit/wrap-fastverify-2026-10.md`, `audit/ivc-speed-2-2026-10.md`) | verify ×5; the key's size for phones; a merge of `k` parents, not one |
 | one proof per block (zheng PR #70, G2) | the block's step proofs folded into one | draft: 100 transactions → 61,708 B, verify 3.04 ms, prove 1,752.7 s on one Metal machine | ≈ 58× from 100 tx per 30 s on one machine; the structural lever named in its receipt is aggregation by accumulation; the distributed tree of §2.5 is not built |
 | the block relation | header, work, ASERT, coinbase, steps, nonces, fees, conservation over bbg | none: validation is native Rust (chain §0, "nox programs are not required") | all of it (S1) |
-| authorization | hash-only, inside the step proof | NSIG1, secp256k1 ECDSA on every transaction (chain §2.7) | a pre-genesis decision (§6.1) |
+| authorization | pussy, bostrom: NSIG1 until the balances are claimed, then contracts; CYB: hash-only from genesis | pussy and bostrom: NSIG1, secp256k1 ECDSA on every transaction (chain §2.7); CYB: no chain yet | NSIG1 inside the block relation for pussy and bostrom (S1); CYB waits for a stable proving and encryption construction |
 | the state root in a circuit | bbg root = hemera fold over 14 leaves, dimensions as keyed hemera tries (bbg `rs/src/root.rs`, dimension version 3) | native only, but the hash is already the circuit's own | trie updates as a relation (S1) |
 | a place for the proof | the block carries `π(B)`; bbg `Checkpoint { root, acc: Option<CheckpointProof>, height }` | the header has no proof field; the slot is always `None` | the rule set that adds it (S4) |
 | bootstrap from the tip | state snapshot + tip proof | replay from genesis, or a foundation checkpoint | sync messages and the node mode (S5) |
@@ -105,7 +112,7 @@ a note on sources: the zheng specs on `master` describe the retired Brakedown li
 | [[bbg]] | trie insert/update/delete and the 14-leaf fold as relations; snapshots of every dimension authenticated by `R`; the filled `Checkpoint` slot | S1, S5 |
 | [[zheng]] | the step relation, the merge of `k` parent proofs with folded steps, the distributed aggregation tree; verify ≤ 1 ms; a verifying key a phone can hold | S1–S3, S6 |
 | [[nox]] / [[trident]] | the block rules and every step kind as bounded programs with a cost known before they run; ASERT and the subsidy are integer-only already (chain §1.5) | S1 |
-| [[mudra]] | hash-only neuron authorization proved inside a step; secp256k1 confined to the one-time legacy claim, with its proof | S0–S1 |
+| [[mudra]] | NSIG1 as a sub-relation of the pussy and bostrom block proofs; hash-only neuron authorization proved inside a step, for CYB from genesis | S1 |
 | [[joy]] | proving steps on the author's device (CPU, Metal, WebGPU, same bytes, ≤ 1 s, [[proof-system-repair]] §0) and merges on aggregators | S1–S3 |
 | [[radio]] / sync | carrying step proofs to aggregators and block proofs with blocks; serving `(snapshot, tip proof)` to newcomers | S3, S5 |
 | [[cyb]] | proving its own steps; a light client that checks the tip's proof and reads against `R` | S3, S6 |
@@ -119,8 +126,8 @@ each phase closes on its last merge, with a receipt in `audit/`. the order of S1
 
 | phase | what | acceptance |
 |---|---|---|
-| **S0 — before genesis (now → 2026-11-05)** | the owner's decision on authorization (§6.1) and its landing in chain §2.7 and mudra; the node writes the conformance corpus from height 0 — every block with its native verdict and `R`, plus a generator of invalid blocks; chain §7.4 points here | decision recorded in chain §2.7; corpus job running on pussy from genesis |
-| **S1 — the block relation** | the steps of rule set 1 with hash-only authorization, header (hemera work under the compact target), timestamps (MTP, drift), ASERT, coinbase and subsidy, nonces, fees, conservation, bbg trie updates and the root fold — one relation; the legacy claim's secp256k1 proof as its own sub-relation | relation verdict = native verdict on the whole corpus, including every generated invalid block and a bit-flip scan; rows and prove time per step kind in the receipt |
+| **S0 — before genesis (now → 2026-11-05)** | pussy and bostrom keep NSIG1 as specified (§2.9); the node writes the conformance corpus from height 0 — every block with its native verdict and `R`, plus a generator of invalid blocks; chain §7.4 points here | corpus job running on pussy from genesis |
+| **S1 — the block relation** | the steps of rule set 1 with their NSIG1 signatures as a sub-relation, header (hemera work under the compact target), timestamps (MTP, drift), ASERT, coinbase and subsidy, nonces, fees, conservation, bbg trie updates and the root fold — one relation | relation verdict = native verdict on the whole corpus, including every generated invalid block and a bit-flip scan; rows and prove time per step kind in the receipt |
 | **S2 — the recursive block proof** | `π(B)` verifying its parents' proofs and its folded steps; catch-up proving from genesis to the tip (§2.8); every new block published with its proof as soon as the catch-up reaches the tip | a proof for every block of pussy from genesis to the current tip, each ≤ 64 KiB, each verifying its parent; two independent provers give byte-identical public inputs |
 | **S3 — the proof inside the block time** | the distributed tree of §2.5: authors prove steps, aggregators fold, the producer merges; GPU paths; the levers of zheng PR #70 §4 (aggregation by accumulation) | over a day of real load on pussy, every block's proof is complete before its work is searched, within `BLOCK_TIME`, on hardware a miner owns; the latency distribution in the receipt |
 | **S4 — activation: a block without its proof is invalid** | the rule set that adds the proof field, makes `π(B)` a validity condition and "prove first, mine second" the template rule; checkpoints by key end | activated before `CHECKPOINT_SUNSET` (height 525,600 — about 2027-05-06 for pussy); from it, no state of the chain depends on a key or on a replay |
@@ -129,7 +136,7 @@ each phase closes on its last merge, with a receipt in `audit/`. the order of S1
 
 ## 6. open, and who closes it
 
-1. **authorization before genesis.** chain §2.7 and the chain kernel authorize with secp256k1 ECDSA today. the formats freeze at genesis; changing them afterwards is a rule set. the owner decides before 2026-11-05 whether rule set 1 already authorizes hash-only, or whether the canary carries ECDSA until the activation rule set replaces it (and the catch-up proves those signatures once, at their price). soft3 chain, mudra.
+1. **authorization — decided 2026-10-17 (§2.9).** pussy and bostrom carry ECDSA until their balances are claimed; CYB has none. what stays open: the exact claim relation of CYB — a proof against pussy's or bostrom's proven state of a lock or burn naming a CYB neuron — and the stable proving and encryption construction that sets CYB's launch date. soft3 chain, mudra, zheng.
 2. **who pays the provers.** the step author proves its own step; aggregators and the producer's merge need a reward — the tier-2 fold subsidy of settlement mining (tru `specs/rewards.md` §7–8), fees, or the block subsidy. owner decision before S4.
 3. **verify ≤ 1 ms.** today ×5 short on one thread. zheng.
 4. **the verifying key on a phone.** 8.98 MB today. zheng with cyb, before S6.
