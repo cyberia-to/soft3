@@ -381,7 +381,10 @@ impl Chain {
                 continue;
             }
             if let Some(floor) = self.checkpoints.floor() {
-                if fork_height < floor {
+                // reorganizing below the floor is what a checkpoint forbids;
+                // a tip still under it moves up through it (a chain that
+                // excludes it is caught by `violation` below)
+                if fork_height < floor && tip_height >= floor {
                     let expected = self.checkpoints.get(floor).unwrap_or([0; 32]);
                     first_error.get_or_insert(ChainError::Checkpoint { height: floor, expected });
                     continue;
@@ -431,8 +434,9 @@ impl Chain {
     /// Does the reorg limit or a checkpoint floor forbid switching to `id`?
     pub(super) fn own_chain_blocked(&self, id: &BlockId) -> bool {
         let Ok((fork_height, _)) = self.path_from_main(id) else { return false };
-        let deep = !select::reorg_allowed(self.store.tip_height(), fork_height);
-        let below_floor = self.checkpoints.floor().is_some_and(|f| fork_height < f);
+        let tip_height = self.store.tip_height();
+        let deep = !select::reorg_allowed(tip_height, fork_height);
+        let below_floor = self.checkpoints.floor().is_some_and(|f| fork_height < f && tip_height >= f);
         let vetoed = self.entry(id).is_some_and(|e| e.status == store::Status::Invalid);
         deep || below_floor || vetoed
     }
