@@ -114,7 +114,14 @@ pub(crate) async fn fetch_body(inner: Arc<Inner>, from: EndpointId, header: Head
                 apply_fetched(&inner, &conn, got, body, header.height).await;
             }
             Some(Frame::Block { .. }) => inner.charge(&from, 100, "body for a header we did not request"),
-            _ if announcer => inner.charge(&from, 1, "announced a header it cannot serve"),
+            // header-first (chain-wire §2): the announcer relayed the header
+            // before its own body fetch finished — a race, not an offence
+            // (§5 charges nothing for it). Charged +1 it banned honest relays
+            // after ~2 h at two blocks a minute against a decay of one point
+            // a minute (simulation audit/network-2026-10.md, partition-long).
+            _ if announcer => {
+                let _ = inner.sync_hint.try_send(super::sync::Hint::Peer(from));
+            }
             _ => {
                 let _ = inner.sync_hint.try_send(super::sync::Hint::Tick);
             }
