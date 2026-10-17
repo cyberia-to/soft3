@@ -121,6 +121,7 @@ timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identi
 3. **space-pussy's go-cyber code.** a `legacy/` directory in the repository, or a separate archived repository (for example `go-space-pussy`), so that the repository root is the network's definition. owner.
 4. **the network key.** who signs `endpoints.toml` and the lock: the foundation key of chain §5.3 for pussy and bostrom, and for cyber a key that is not ECDSA. owner.
 5. **bounds of the rule set.** which consensus values a network may change within a rule set, and which only by a new rule set. cybernode spec.
+6. **conflict with the repositories draft (soft3 PR #220, open, 2026-10-17).** that draft folds `true-cyber` into the `cyber` repository and archives `bostrom` and `space-pussy` as monuments of the bootloader. this page, on the owner's instruction of the same day, keeps all three as the repositories that define their networks; only the go-cyber code inside `space-pussy` is a monument (decision 10). the two must be reconciled before either merges its moves. owner.
 
 ## 7. sources
 
