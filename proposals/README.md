@@ -11,7 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
-| [a network is a repository](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define their networks; cybernode takes them as input |
+| [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
 | [the proven present](proven-present.md) | proposed | 2026-10-17 | every block proven, its proof verifying its parents': the present proves the past |
 | [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
