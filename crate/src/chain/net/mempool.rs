@@ -199,7 +199,8 @@ impl Mempool {
             self.remove(&id);
         }
         while self.entries.len() > CAPACITY_TXS || self.bytes > CAPACITY_BYTES {
-            let victim = self.entries.iter().min_by_key(|(_, e)| (e.fee_per_byte(), u64::MAX - e.added)).map(|(id, _)| *id);
+            // ties broken by txid: every node evicts the same transaction (a HashMap's order is per process)
+            let victim = self.entries.iter().min_by_key(|(id, e)| (e.fee_per_byte(), u64::MAX - e.added, **id)).map(|(id, _)| *id);
             match victim {
                 Some(id) => {
                     // evicting a nonce leaves its successors unspendable; drop them too
