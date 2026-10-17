@@ -30,6 +30,8 @@ one honest symmetry: parano1d's own FRI soundness beyond unique decoding is *con
 
 ## 2. why the goldilocks port is smaller
 
+revision 2026-10-17: accumulation alone does not give a constant-size proof (zheng `release/0.4` `audit/accumulation-2026-10.md` §6); every block carries a recursive proof of its parents, as parano1d's does, at 64 KB instead of 1 MB — see [[proven-present]].
+
 parano1d's size is recursion tax: `noid_recursive` (94 kLOC) + `noid_ivc_core` (73 kLOC) + `noid_gkr` (27 kLOC) exist because every block re-verifies the parent's complete proof transcript in-circuit, over a frozen, bank-authenticated matrix (`history_step_bank`, two-class, build-time pinned). swap the hash and the bank invalidates — the binary proof stack is all-or-nothing and cannot be half-reused.
 
 the zheng design never pays that tax: each step proves only its own `apply`; the ARC fold chains steps; an epoch decider certifies the accumulator. the ~200 kLOC of recursion machinery maps to the fold+decider already specced in [[proof-system-repair]] (~30 field ops + 1 hash per fold). what remains to build is the **chain machine** — the part parano1d demonstrates is ~40 % of the work: block production, mempool, DAA, retention, p2p consensus, rpc, node.
