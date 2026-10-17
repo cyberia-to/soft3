@@ -199,9 +199,7 @@ impl Mempool {
             self.remove(&id);
         }
         while self.entries.len() > CAPACITY_TXS || self.bytes > CAPACITY_BYTES {
-            // ties broken by txid: every node evicts the same transaction (a HashMap's order is per process)
-            let victim = self.entries.iter().min_by_key(|(id, e)| (e.fee_per_byte(), u64::MAX - e.added, **id)).map(|(id, _)| *id);
-            match victim {
+            match self.victim() {
                 Some(id) => {
                     // evicting a nonce leaves its successors unspendable; drop them too
                     let (from, nonce) = { let e = &self.entries[&id]; (e.from, e.nonce) };
@@ -213,6 +211,13 @@ impl Mempool {
                 None => break,
             }
         }
+    }
+
+    /// The next eviction: the lowest fee per byte, then the newest; ties
+    /// broken by txid, so every node evicts the same transaction (a
+    /// HashMap's order is per process).
+    fn victim(&self) -> Option<Id> {
+        self.entries.iter().min_by_key(|(id, e)| (e.fee_per_byte(), u64::MAX - e.added, **id)).map(|(id, _)| *id)
     }
 
     /// After a new tip: drop txs now invalid (nonces and balances moved) and
@@ -344,6 +349,46 @@ mod tests {
         chain.template(&net.neurons[1], &txs, 1_000).unwrap();
         let checks = crate::chain::sigs::verifications() - before;
         assert!(checks <= 16, "{checks} signature verifications for 16 transactions");
+    }
+
+    /// chain-wire §4 orders by fee per byte; the integer `fee / len`
+    /// rounds every fee below twice the floor to 1, so a transaction paying
+    /// 1.9× the floor ranked with the flood at the floor and lost every tie
+    /// to the smaller neuron id (simulation `flood`: 40 % of the honest
+    /// premium transactions never mined). Found by the chain simulator.
+    #[test]
+    fn fee_rate_is_compared_exactly() {
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-fee-rate");
+        let chain = &s.chain;
+        // the premium payer is the account whose neuron id sorts last
+        let (cheap, rich) = if net.neurons[0] < net.neurons[1] { (0, 1) } else { (1, 0) };
+        let mut pool = Mempool::new();
+        let floor = net.transfer(cheap, 0, [7; 32], 1, 224);
+        let premium = net.transfer(rich, 0, [7; 32], 1, 224 * 3 / 2);
+        pool.admit(&floor, chain, 0).unwrap();
+        pool.admit(&premium, chain, 0).unwrap();
+        assert_eq!(pool.template_txs()[0], premium, "1.5× the floor goes first");
+        assert_eq!(pool.victim(), Some(txid(&chain.chain_id(), &floor)), "the floor payer is evicted first");
+    }
+
+    /// chain-wire §5 charges +10 for a nonce *beyond* the window; a nonce
+    /// below the current one is a transaction already mined — an honest
+    /// peer relays those whenever a block races its gossip. Charging them
+    /// banned honest relays in the simulator's flood within minutes.
+    #[test]
+    fn a_stale_nonce_is_not_scored() {
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-stale");
+        let chain = &s.chain;
+        let tx = net.transfer(0, 0, [7; 32], 1, 300);
+        let (_, body) = mine(chain, &net.neurons[1], std::slice::from_ref(&tx));
+        assert_eq!(chain.txs_of(&body).len(), 2);
+        let mut pool = Mempool::new();
+        let e = pool.admit(&tx, chain, 0).unwrap_err();
+        assert_eq!(e.score(), 0, "{e:?}");
+        let beyond = pool.admit(&net.transfer(0, 1 + NONCE_WINDOW, [7; 32], 1, 300), chain, 0).unwrap_err();
+        assert_eq!(beyond.score(), 10, "{beyond:?}");
     }
 
     #[test]
