@@ -245,4 +245,191 @@ mod tests {
         assert!(Network::parse("bostrom").is_none());
         assert!(Network::is_bootloader_name("space-pussy"));
     }
+
+    #[test]
+    fn every_spacepussy_test_alias_parses() {
+        for alias in [
+            "spacepussy-test",
+            "space-pussy-test",
+            "spacepussy_test",
+            "sptest",
+            "soft3-test",
+            "soft3",
+            "test",
+            "default",
+        ] {
+            assert_eq!(
+                Network::parse(alias),
+                Some(Network::SpacePussyTest),
+                "alias {alias:?} should parse"
+            );
+        }
+    }
+
+    #[test]
+    fn parse_is_case_insensitive_and_trims_whitespace() {
+        assert_eq!(Network::parse("SPACEPUSSY-TEST"), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("  soft3  "), Some(Network::SpacePussyTest));
+        assert_eq!(Network::parse("  SpTest  "), Some(Network::SpacePussyTest));
+    }
+
+    #[test]
+    fn parse_rejects_unknown_names() {
+        assert!(Network::parse("").is_none());
+        assert!(Network::parse("mainnet").is_none());
+        assert!(Network::parse("spacepussy-test-typo").is_none());
+    }
+
+    #[test]
+    fn every_bootloader_name_is_recognized_and_rejected() {
+        for name in ["space-pussy", "spacepussy", "pussy", "sp", "bostrom", "boot"] {
+            assert!(Network::is_bootloader_name(name), "{name:?} should be a bootloader name");
+            assert!(Network::parse(name).is_none(), "{name:?} should not parse as a soft3 network");
+        }
+        assert!(!Network::is_bootloader_name("soft3"));
+    }
+
+    #[test]
+    fn is_bootloader_name_is_case_insensitive_and_trims_whitespace() {
+        assert!(Network::is_bootloader_name("  BOSTROM  "));
+        assert!(Network::is_bootloader_name("Space-Pussy"));
+    }
+
+    #[test]
+    fn accessors_describe_spacepussy_test() {
+        let n = Network::SpacePussyTest;
+        assert_eq!(n.chain_id(), "spacepussy-test");
+        assert_eq!(n.bech32_prefix(), "pussy");
+        assert_eq!(n.denom(), "testpussy");
+        assert_eq!(n.rpc(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.lcd(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.index(), "https://cyb.ai/spacepussy-test");
+        assert_eq!(n.websocket(), "wss://cyb.ai/spacepussy-test/ws");
+        assert_eq!(n.local_bind(), "127.0.0.1:7780");
+        assert_eq!(n.role(), "soft3 chaosnet (product default)");
+    }
+
+    #[test]
+    fn display_matches_chain_id() {
+        assert_eq!(Network::SpacePussyTest.to_string(), "spacepussy-test");
+    }
+
+    fn blank_status() -> SyncStatus {
+        SyncStatus {
+            network: Network::DEFAULT,
+            reachable: true,
+            http_status: Some(200),
+            chain_id: Network::DEFAULT.chain_id().into(),
+            moniker: String::new(),
+            latest_height: 0,
+            earliest_height: 0,
+            catching_up: false,
+            bbg_root: String::new(),
+            engine: String::new(),
+            signals: 0,
+            particles: 0,
+            axons: 0,
+            body_preview: String::new(),
+        }
+    }
+
+    #[test]
+    fn enrich_reads_full_status_json() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {
+                "node_info": {"network": "pussy-rc", "moniker": "beacon-1", "engine": "foculus/1"},
+                "sync_info": {
+                    "latest_block_height": 41000,
+                    "earliest_block_height": 1,
+                    "catching_up": true,
+                    "bbg_root": "abcd1234",
+                },
+                "soft3": {"signals": 12, "particles": 7, "axons": 3},
+            }
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.chain_id, "pussy-rc");
+        assert_eq!(st.moniker, "beacon-1");
+        assert_eq!(st.engine, "foculus/1");
+        assert_eq!(st.latest_height, 41000);
+        assert_eq!(st.earliest_height, 1);
+        assert!(st.catching_up);
+        assert_eq!(st.bbg_root, "abcd1234");
+        assert_eq!(st.signals, 12);
+        assert_eq!(st.particles, 7);
+        assert_eq!(st.axons, 3);
+    }
+
+    #[test]
+    fn enrich_falls_back_to_protocol_when_engine_absent() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {"node_info": {"protocol": "soft3/pussy-rc/v1"}}
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.engine, "soft3/pussy-rc/v1");
+    }
+
+    #[test]
+    fn enrich_prefers_engine_over_protocol_when_both_present() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "result": {"node_info": {"engine": "foculus/1", "protocol": "soft3/pussy-rc/v1"}}
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.engine, "foculus/1");
+    }
+
+    #[test]
+    fn enrich_tolerates_missing_result_wrapper() {
+        let mut st = blank_status();
+        let body = serde_json::json!({
+            "node_info": {"moniker": "flat-1"},
+            "sync_info": {"latest_block_height": 5},
+        })
+        .to_string();
+        enrich_from_status_json(&mut st, &body);
+        assert_eq!(st.moniker, "flat-1");
+        assert_eq!(st.latest_height, 5);
+    }
+
+    #[test]
+    fn enrich_leaves_defaults_on_empty_object() {
+        let mut st = blank_status();
+        enrich_from_status_json(&mut st, "{}");
+        assert_eq!(st.moniker, "");
+        assert_eq!(st.latest_height, 0);
+        assert!(!st.catching_up);
+    }
+
+    #[test]
+    fn enrich_does_not_panic_on_malformed_json() {
+        let mut st = blank_status();
+        enrich_from_status_json(&mut st, "not json at all {{{");
+        assert_eq!(st.chain_id, Network::DEFAULT.chain_id());
+    }
+
+    #[test]
+    fn json_u64_reads_native_number() {
+        let v = serde_json::json!({"n": 42});
+        assert_eq!(json_u64(v.get("n")), Some(42));
+    }
+
+    #[test]
+    fn json_u64_reads_numeric_string() {
+        let v = serde_json::json!({"n": "42"});
+        assert_eq!(json_u64(v.get("n")), Some(42));
+    }
+
+    #[test]
+    fn json_u64_none_on_missing_or_non_numeric() {
+        let v = serde_json::json!({"n": "not-a-number"});
+        assert_eq!(json_u64(v.get("n")), None);
+        assert_eq!(json_u64(v.get("missing")), None);
+        assert_eq!(json_u64(None), None);
+    }
 }
