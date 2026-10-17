@@ -20,6 +20,9 @@ pub enum AdmitError {
     Known,
     Signature,
     Nonce { current: u64, got: u64 },
+    /// below the account's current nonce: already mined — what an honest
+    /// peer relays when a block races its gossip (never scored)
+    Stale { current: u64, got: u64 },
     /// inside the window but a lower nonce is missing from the pool
     NonceGap { expected: u64, got: u64 },
     NonceOccupied,
@@ -51,6 +54,7 @@ impl std::fmt::Display for AdmitError {
             AdmitError::Known => write!(f, "already in mempool"),
             AdmitError::Signature => write!(f, "invalid signature"),
             AdmitError::Nonce { current, got } => write!(f, "nonce {got} outside [{current}, {current} + {NONCE_WINDOW})"),
+            AdmitError::Stale { current, got } => write!(f, "nonce {got} already used (current {current})"),
             AdmitError::NonceGap { expected, got } => write!(f, "nonce {got}: nonce {expected} is not pending"),
             AdmitError::NonceOccupied => write!(f, "nonce already pending"),
             AdmitError::Fee { floor, got } => write!(f, "fee {got} below floor {floor}"),
@@ -63,13 +67,14 @@ impl std::fmt::Display for AdmitError {
 
 impl AdmitError {
     /// chain-wire §5: +10 for a bad signature, a nonce beyond the window or a
-    /// non-canonical encoding; +1 for a duplicate; nothing for balance races.
+    /// non-canonical encoding; +1 for a duplicate; nothing for balance races
+    /// or for a nonce already used (a relay that a block overtook).
     pub fn score(&self) -> u32 {
         match self {
             AdmitError::Signature | AdmitError::Decode(_) | AdmitError::Kind | AdmitError::Rule(_) => 10,
             AdmitError::Nonce { .. } => 10,
             AdmitError::Known => 1,
-            AdmitError::NonceGap { .. } | AdmitError::NonceOccupied | AdmitError::Fee { .. } | AdmitError::Balance(_) => 0,
+            AdmitError::Stale { .. } | AdmitError::NonceGap { .. } | AdmitError::NonceOccupied | AdmitError::Fee { .. } | AdmitError::Balance(_) => 0,
         }
     }
 }
@@ -84,9 +89,17 @@ pub struct Entry {
 }
 
 impl Entry {
+    /// Rounded down: for display. Ordering uses [`rate_cmp`], exact.
     pub fn fee_per_byte(&self) -> u64 {
         self.tx.fee() / self.bytes.len() as u64
     }
+}
+
+/// `fee_a / len_a` against `fee_b / len_b`, exactly (cross products in
+/// u128): an integer `fee / len` would rank every fee below twice the floor
+/// equal to the floor.
+fn rate_cmp(fee_a: u64, len_a: usize, fee_b: u64, len_b: usize) -> std::cmp::Ordering {
+    (fee_a as u128 * len_b as u128).cmp(&(fee_b as u128 * len_a as u128))
 }
 
 #[derive(Default)]
@@ -159,6 +172,7 @@ impl Mempool {
             TxRefusal::Nonce { current, got } if got > current && got < chain.nonce(&from).saturating_add(NONCE_WINDOW) => {
                 AdmitError::NonceGap { expected: current, got }
             }
+            TxRefusal::Nonce { current, got } if got < chain.nonce(&from) => AdmitError::Stale { current, got },
             r => r.into(),
         })?;
         debug_assert_eq!(admitted.txid, id, "the wire and the kernel agree on txids");
@@ -199,9 +213,7 @@ impl Mempool {
             self.remove(&id);
         }
         while self.entries.len() > CAPACITY_TXS || self.bytes > CAPACITY_BYTES {
-            // ties broken by txid: every node evicts the same transaction (a HashMap's order is per process)
-            let victim = self.entries.iter().min_by_key(|(id, e)| (e.fee_per_byte(), u64::MAX - e.added, **id)).map(|(id, _)| *id);
-            match victim {
+            match self.victim() {
                 Some(id) => {
                     // evicting a nonce leaves its successors unspendable; drop them too
                     let (from, nonce) = { let e = &self.entries[&id]; (e.from, e.nonce) };
@@ -213,6 +225,16 @@ impl Mempool {
                 None => break,
             }
         }
+    }
+
+    /// The next eviction: the lowest fee per byte, then the newest; ties
+    /// broken by txid, so every node evicts the same transaction (a
+    /// HashMap's order is per process).
+    fn victim(&self) -> Option<Id> {
+        self.entries
+            .iter()
+            .min_by(|(ia, a), (ib, b)| rate_cmp(a.tx.fee(), a.bytes.len(), b.tx.fee(), b.bytes.len()).then(b.added.cmp(&a.added)).then(ia.cmp(ib)))
+            .map(|(id, _)| *id)
     }
 
     /// After a new tip: drop txs now invalid (nonces and balances moved) and
@@ -238,12 +260,14 @@ impl Mempool {
     /// Transactions for a block: fee per byte descending, each neuron's
     /// nonces in order, within the budgets of chain.md §1.6.
     pub fn template_txs(&self) -> Vec<Vec<u8>> {
-        let mut heads: Vec<(u64, Id)> = self.by_neuron.iter().map(|(n, m)| (*n, *m.values().next().expect("non-empty"))).map(|(n, id)| (self.entries[&id].fee_per_byte(), n)).collect();
+        // (fee, length) of each neuron's next transaction: fee per byte, exactly
+        let rate = |id: &Id| (self.entries[id].tx.fee(), self.entries[id].bytes.len());
+        let mut heads: Vec<((u64, usize), Id)> = self.by_neuron.iter().map(|(n, m)| (rate(m.values().next().expect("non-empty")), *n)).collect();
         let mut cursor: HashMap<Id, u64> = HashMap::new();
         let mut out = Vec::new();
         let mut bytes = HEADER_BYTES + 4 + 82;
         while out.len() + 1 < MAX_BLOCK_TXS {
-            heads.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
+            heads.sort_by(|a, b| rate_cmp(b.0 .0, b.0 .1, a.0 .0, a.0 .1).then(a.1.cmp(&b.1)));
             let Some((_, neuron)) = heads.first().copied() else { break };
             let m = &self.by_neuron[&neuron];
             let next_nonce = cursor.get(&neuron).copied().unwrap_or_else(|| *m.keys().next().expect("non-empty"));
@@ -261,9 +285,9 @@ impl Mempool {
             cursor.insert(neuron, next_nonce + 1);
             match m.get(&(next_nonce + 1)) {
                 Some(next) => {
-                    let fpb = self.entries[next].fee_per_byte();
+                    let r = rate(next);
                     if let Some(h) = heads.iter_mut().find(|(_, n)| *n == neuron) {
-                        h.0 = fpb;
+                        h.0 = r;
                     }
                 }
                 None => heads.retain(|(_, n)| *n != neuron),
@@ -344,6 +368,46 @@ mod tests {
         chain.template(&net.neurons[1], &txs, 1_000).unwrap();
         let checks = crate::chain::sigs::verifications() - before;
         assert!(checks <= 16, "{checks} signature verifications for 16 transactions");
+    }
+
+    /// chain-wire §4 orders by fee per byte; the integer `fee / len`
+    /// rounds every fee below twice the floor to 1, so a transaction paying
+    /// 1.9× the floor ranked with the flood at the floor and lost every tie
+    /// to the smaller neuron id (simulation `flood`: 40 % of the honest
+    /// premium transactions never mined). Found by the chain simulator.
+    #[test]
+    fn fee_rate_is_compared_exactly() {
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-fee-rate");
+        let chain = &s.chain;
+        // the premium payer is the account whose neuron id sorts last
+        let (cheap, rich) = if net.neurons[0] < net.neurons[1] { (0, 1) } else { (1, 0) };
+        let mut pool = Mempool::new();
+        let floor = net.transfer(cheap, 0, [7; 32], 1, 224);
+        let premium = net.transfer(rich, 0, [7; 32], 1, 224 * 3 / 2);
+        pool.admit(&floor, chain, 0).unwrap();
+        pool.admit(&premium, chain, 0).unwrap();
+        assert_eq!(pool.template_txs()[0], premium, "1.5× the floor goes first");
+        assert_eq!(pool.victim(), Some(txid(&chain.chain_id(), &floor)), "the floor payer is evicted first");
+    }
+
+    /// chain-wire §5 charges +10 for a nonce *beyond* the window; a nonce
+    /// below the current one is a transaction already mined — an honest
+    /// peer relays those whenever a block races its gossip. Charging them
+    /// banned honest relays in the simulator's flood within minutes.
+    #[test]
+    fn a_stale_nonce_is_not_scored() {
+        let net = Net::new(2);
+        let s = scratch(&net, "pool-stale");
+        let chain = &s.chain;
+        let tx = net.transfer(0, 0, [7; 32], 1, 300);
+        let (_, body) = mine(chain, &net.neurons[1], std::slice::from_ref(&tx));
+        assert_eq!(chain.txs_of(&body).len(), 2);
+        let mut pool = Mempool::new();
+        let e = pool.admit(&tx, chain, 0).unwrap_err();
+        assert_eq!(e.score(), 0, "{e:?}");
+        let beyond = pool.admit(&net.transfer(0, 1 + NONCE_WINDOW, [7; 32], 1, 300), chain, 0).unwrap_err();
+        assert_eq!(beyond.score(), 10, "{beyond:?}");
     }
 
     #[test]
