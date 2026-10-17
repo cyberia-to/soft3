@@ -129,12 +129,19 @@ struct DialBody {
     addrs: Vec<String>,
 }
 
-fn body_hex(request: &Request) -> Result<Vec<u8>, Error> {
-    let text = std::str::from_utf8(&request.body).map_err(|_| Error::bad("expected hex or JSON"))?.trim();
+/// `POST /tx` body (chain-wire §7): `application/octet-stream` tx bytes, or
+/// JSON `{"tx":"hex"}`, or bare hex text. A body that is not UTF-8, or is
+/// UTF-8 but neither JSON nor hex, is the raw wire bytes — what
+/// `soft3::wallet` (cyber, cyb) sends.
+fn tx_body(body: &[u8]) -> Result<Vec<u8>, Error> {
+    let Ok(text) = std::str::from_utf8(body) else { return Ok(body.to_vec()) };
+    let text = text.trim();
     let hex_str = if text.starts_with('{') {
         serde_json::from_str::<TxBody>(text).map_err(|e| Error::bad(e.to_string()))?.tx
-    } else {
+    } else if !text.is_empty() && text.bytes().all(|b| b.is_ascii_hexdigit()) {
         text.to_owned()
+    } else {
+        return Ok(body.to_vec());
     };
     (0..hex_str.len()).step_by(2).map(|i| u8::from_str_radix(hex_str.get(i..i + 2).ok_or_else(|| Error::bad("odd hex length"))?, 16).map_err(|_| Error::bad("invalid hex"))).collect()
 }
@@ -265,7 +272,7 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
             }
         }
         ("POST", "/tx") => {
-            let bytes = body_hex(&request)?;
+            let bytes = tx_body(&request.body)?;
             let tx = Tx::decode(&bytes).map_err(|e| error("400 Bad Request", "mempool_rejected", format!("decode: {e}")))?;
             let id = txid(&node.chain.chain_id(), &bytes);
             let admitted = node.mempool.lock().expect("mempool").admit(&bytes, node.chain.as_ref(), crate::chain::net::now_unix());
@@ -333,3 +340,32 @@ pub(super) fn route(node: &ChainNode, request: Request) -> Result<Response, Erro
     }
 }
 
+
+#[cfg(test)]
+mod tx_body_tests {
+    use super::tx_body;
+
+    #[test]
+    fn raw_hex_and_json_bodies_decode_to_the_same_bytes() {
+        // a transfer-shaped body: kind byte, then bytes that are not UTF-8
+        let raw: Vec<u8> = [1u8, 0, 0, 0].iter().copied().chain((0..=255u8).rev()).collect();
+        assert!(std::str::from_utf8(&raw).is_err());
+        let hex: String = raw.iter().map(|b| format!("{b:02x}")).collect();
+        assert_eq!(tx_body(&raw).unwrap(), raw, "application/octet-stream");
+        assert_eq!(tx_body(hex.as_bytes()).unwrap(), raw, "hex text");
+        assert_eq!(tx_body(format!("{hex}\n").as_bytes()).unwrap(), raw, "hex text with newline");
+        assert_eq!(tx_body(format!("{{\"tx\":\"{hex}\"}}").as_bytes()).unwrap(), raw, "JSON");
+    }
+
+    #[test]
+    fn utf8_raw_bytes_that_are_not_hex_pass_through() {
+        let raw = b"\x01\x00\x00\x00 plain ascii is not hex".to_vec();
+        assert_eq!(tx_body(&raw).unwrap(), raw);
+    }
+
+    #[test]
+    fn malformed_json_and_odd_hex_are_rejected() {
+        assert!(tx_body(b"{\"tx\": 5}").is_err());
+        assert!(tx_body(b"abc").is_err());
+    }
+}
