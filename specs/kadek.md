@@ -39,7 +39,7 @@ architecture, and hardware decoders are accelerators, never prerequisites.
 | Cyb (body) | Product assembly: demux → decode → texture/speaker output; A/V sync on the audio clock |
 | Spark | Rendering decoded frames as textures inside the existing shader pipeline |
 | Honeycrisp | Apple Silicon kernel backend (Metal/AMX) behind the KernelProvider trait |
-| Radio / Tape | Qualified framing and transport of media particles; no codec authority |
+| Radio / Tade | Qualified framing and transport of media particles; no codec authority |
 | Soft3 | This composition contract; conformance evidence flows through kadek/audit into release validation |
 
 1. Kadek owns codec truth. No component re-implements entropy decoding,
