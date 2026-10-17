@@ -312,3 +312,81 @@ fn quadrature_is_a_parameter_and_one_node_is_the_midpoint() {
     let common = who(&one).intersection(&who(&two)).count();
     assert!(common * 4 >= who(&one).len() * 3, "{} of {}", common, who(&one).len());
 }
+
+/// chain-economy §7.2: settlement cost on the real genesis graphs. Run with
+/// `SOFT3_COST_CHAINS=pussy,bostrom SOFT3_COST_THREADS=1,7 cargo test --release
+/// --lib settlement_cost -- --ignored --nocapture`; reads
+/// `~/.cache/cyber/genesis/<chain>.tade`.
+#[test]
+#[ignore]
+fn settlement_cost_on_genesis_files() {
+    use super::focus::Tru;
+    use super::settle::{Position, Snapshot, compute};
+    use super::weights::GenesisWeights;
+    use std::time::Instant;
+    let home = std::env::var("HOME").unwrap();
+    let chains = std::env::var("SOFT3_COST_CHAINS").unwrap_or_else(|_| "pussy".into());
+    let threads: Vec<usize> = std::env::var("SOFT3_COST_THREADS").unwrap_or_else(|_| "1".into()).split(',').map(|t| t.parse().unwrap()).collect();
+    for chain in chains.split(',') {
+        let path = std::path::Path::new(&home).join(format!(".cache/cyber/genesis/{chain}.tade"));
+        let t = Instant::now();
+        let g = crate::chain::genesis::Genesis::decode(&std::fs::read(&path).unwrap()).unwrap();
+        let load = t.elapsed();
+        let t = Instant::now();
+        let weights = GenesisWeights::from_file(&g.file);
+        let wt = t.elapsed();
+        eprintln!(
+            "{chain}: decode {load:?}, genesis weights {wt:?}: {} axons, Σ G {}, {} frames at the floor, digest {}",
+            weights.axons.len(),
+            weights.total,
+            weights.at_floor,
+            hex(&weights.digest())
+        );
+        // epoch 1: 1,000 +1 positions and 1,000 −1 positions on genesis axons
+        let mut positions: Vec<Position> = weights
+            .axons
+            .iter()
+            .step_by((weights.axons.len() / 2_000).max(1))
+            .take(2_000)
+            .enumerate()
+            .map(|(i, (p, q, g))| Position {
+                card: card_id(&[(i % 251) as u8; 32], p, q),
+                axon: axon_of(p, q),
+                p: *p,
+                q: *q,
+                owner: [1; 32],
+                valence: if i % 2 == 0 { 1 } else { -1 },
+                stake: (*g / 2).max(1),
+            })
+            .collect();
+        positions.sort_by(|a, b| a.card.cmp(&b.card));
+        let snap = |epoch: u64, positions: Vec<Position>| Snapshot {
+            epoch,
+            height: epoch * 240,
+            block_id: [epoch as u8; 32],
+            state_root: [0; 32],
+            active: positions.iter().map(|p| p.stake).sum(),
+            positions,
+            marks: Default::default(),
+            supply: g.s0(),
+        };
+        let (prev, cur) = (snap(0, vec![]), snap(1, positions));
+        for &th in &threads {
+            let e = Tru::new(th);
+            let t = Instant::now();
+            let f0 = e.focus(&FocusGraph::build(&prev.adjacency(&weights)));
+            let phi0 = t.elapsed();
+            let t = Instant::now();
+            let r = compute(&prev, &cur, &weights, &e, Some(f0.syntropy));
+            let settle = t.elapsed();
+            eprintln!(
+                "{chain} threads {th}: φ*_0 {phi0:?} (digest {}, J {}), settlement (φ*_E + gradient at A_mid + attribution) {settle:?}: {} particles, {} axons, {} earners",
+                hex(&phi_digest(&f0.phi)),
+                f0.syntropy,
+                r.particles,
+                r.axons,
+                r.earners.len()
+            );
+        }
+    }
+}

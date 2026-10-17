@@ -19,6 +19,7 @@
 
 pub mod focus;
 pub mod run;
+pub mod vectors;
 pub mod settle;
 pub mod weights;
 pub mod wide;
