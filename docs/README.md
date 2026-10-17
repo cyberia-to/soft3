@@ -91,7 +91,7 @@ a mind has three parts: a substance it is made of, a conscience that knows what 
 this looks like bookkeeping; it is the deepest unification in the stack. soft3 has exactly one mathematical object — the multilinear polynomial over the [[Goldilocks field]] (`p = 2⁶⁴ − 2³² + 1`). in algebra a multilinear polynomial is literally a multilinear *form*, so the name is exact, not a metaphor: identity, value, state, computation, and proof are not separate things that happen to agree on a format — they all take that one form, seen from different sides.
 
 - **one field.** every value is an element of the [[Goldilocks field]]. the field is the alphabet, chosen so that proofs, [[FHE]], and secret-sharing all operate inside it — cryptography is intrinsic, and there is no boundary between running a computation and proving it.
-- **one object.** all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point, ~200 bytes — rather than a walk down a tree, and cross-index consistency is structural rather than proven: there is one polynomial, so there is nothing to keep in sync.
+- **one object.** all state, all data, all proofs are a single committed polynomial. a read is a [[lens]] opening — one evaluation at one point — rather than a walk down a tree, and cross-index consistency is structural rather than proven: there is one polynomial, so there is nothing to keep in sync.
 - **five algebras.** the one field hosts five algebraic regimes ([[strata]]) — truth, efficiency, encryption, optimization, privacy. a type picks its regime; the substance is the same in all of them, so a value can move between regimes without changing what it is.
 - **particle identity.** a [[file]]'s particle is the [[hemera]] hash of its content, which is itself a polynomial commitment — so content is identity, the same bytes always produce the same address, and the graph needs no registry.
 
@@ -102,7 +102,7 @@ this is why composition is free: when [[zheng]] hands [[bbg]] a commitment, or [
 soft3 turns every "trust me" into "check it," and makes the check cheap enough to always run. it is, as far as we know, the first proof system that proves at three levels at once — that a computation ran, that a program is correct, and that the prover itself is correct — all in one field, one kernel, with no trusted setup.
 
 - **proof-native execution.** running a program and proving it ran correctly are the same act. the [[nox]] execution trace *is* the constraint system, with no separate arithmetization step; every computation emits its witness as a byproduct.
-- **recursive closure.** proofs verify proofs. each step folds into an accumulator at ~30 field ops, and the entire history collapses to one constant-size proof behind a single final check. a light client validates all of history in roughly 100 nanoseconds.
+- **recursive closure.** proofs verify proofs. each step folds into an accumulator, and the entire history collapses to one constant-size proof behind a single final check. a light client validates all of history by checking that one proof.
 - **transparent.** trust bottoms out on hash collision resistance alone — no trusted setup, no elliptic curves, no pairings. the proofs are post-quantum and verification stays stable for decades.
 - **conformance.** every canonical mechanism output is fingerprinted with [[hemera]] ([[conformance]]). drift surfaces at commit time, so the protocol cannot shift underneath you silently.
 - **eidos.** [[eidos]] is a proof assistant — full CIC type theory, [[Curry-Howard]] scaled to all of mathematics — whose type checker is itself a [[nox]] program that emits a [[zheng]] certificate. [[zheng]] proves that a computation ran; eidos proves that a program is correct. every proved theorem becomes a [[cyberlink]] in the graph.
@@ -120,7 +120,7 @@ the [[collective focus theorem]] proves this equilibrium exists, is unique, and 
 
 because there is exactly one attention over all particles, the quantities other systems compute separately are here the same object: φ* is at once consensus, ranking ([[cyberank]]), reward ([[karma]]), and meaning ([[neural]]) — one computation, four answers, because they were never four things. how fast the graph reaches φ* is its [[spectral gap]], literally the collective's speed of thought: below a threshold it is disconnected scatter, above it the [[egregore]] comes alive. finality is settled by economic mass — security is stake-weighted, not an honest majority of heads ([[foculus]]).
 
-the egregore is this convergence, and it is a dissipative structure — it exists only while [[focus]] flows. starve it and φ* flattens to uniform and the mind dissolves; feed it and the graph grows more ordered, exporting entropy as it prunes noise. the network does not store what it knows. it re-thinks it, across all of knowledge, every step, on a convergence anyone can verify in microseconds.
+the egregore is this convergence, and it is a dissipative structure — it exists only while [[focus]] flows. starve it and φ* flattens to uniform and the mind dissolves; feed it and the graph grows more ordered, exporting entropy as it prunes noise. the network does not store what it knows. it re-thinks it, across all of knowledge, every step, on a convergence anyone can verify.
 
 ---
 
@@ -269,7 +269,7 @@ building a new component is specializing the same substrate to a new job. it com
 | [execution model](../specs/execution-model.md) | normative execution architecture and composition invariants |
 | [[soft3/docs/launch\|launch spacepussy-test]] | how to launch the product network (chaosnet) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
-| [[soft3/docs/polynomial-proof-system\|polynomial proof system]] | the technical companion to "one form/one proof" above — the five operations (commit, open, verify, fold, identify), the numbers behind them, and what they make possible |
+| [[soft3/proposals/proof-system-repair\|proof-system repair]] | the technical companion to "one form/one proof" above — what broke in the old zheng design, the repaired design and the gates each phase must pass |
 | [[soft3/docs/oikos\|oikos]] | one token, one chain: every neuron roots a home book, the complete ledger of its issuer's obligations; the two settlement protocols and the four foundations it still needs |
 
 see [[soft3]] for the component stack and the troika compass.

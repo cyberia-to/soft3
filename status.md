@@ -23,7 +23,7 @@ each component has a readiness state. **live** — carries real traffic today. *
 | [[lens]] | commit | published | [0.1.3](https://github.com/cyberia-to/lens/releases/tag/v0.1.3) | [0.1.3](https://crates.io/crates/cyber-lens) | 5 PCS backends, one per algebra · serde for Commitment/Opening |
 | [[cybics/mass|mass]] |  |  |  |  |  |
 | [[soft3/cybergraph\|cybergraph]] | link | live | [0.1.1](https://github.com/cyberia-to/cybergraph/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cybergraph) | jets · memos · types · knowledge |
-| [[soft3/bbg\|bbg]] | store | live | [0.2.1](https://github.com/cyberia-to/bbg/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · ~200B proofs · QueryProof serde |
+| [[soft3/bbg\|bbg]] | store | live | [0.2.1](https://github.com/cyberia-to/bbg/releases/tag/v0.2.1) | [0.2.1](https://crates.io/crates/bbg) | 1 polynomial · 10 dims · QueryProof serde |
 | [[neuron]] | act | local | — | — | neuron identity and runtime · source in [neuron](https://github.com/cyberia-to/neuron) |
 | [[file]] | name | local | — | — | file identity and representation · source in [file](https://github.com/cyberia-to/file) |
 | [[fs]] | mount | spec | — | — | particles · patches · sync · repo is empty |
