@@ -69,7 +69,7 @@ impl Economy {
             engine,
             clock,
             background: true,
-            quadrature: 1,
+            quadrature: super::super::params::ATTR_NODES,
             snapshots: HashMap::new(),
             jobs: HashMap::new(),
             done: HashMap::new(),

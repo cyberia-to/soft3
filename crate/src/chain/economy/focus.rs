@@ -139,7 +139,7 @@ impl Default for Tru {
 impl FocusEngine for Tru {
     fn id(&self) -> &'static str {
         // the pinned tru revision: a new pin is a new id (and new vectors)
-        "tru-epoch-1ea853e"
+        "tru-epoch-e660d1e"
     }
 
     fn focus(&self, g: &FocusGraph) -> Focus {

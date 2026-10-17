@@ -378,7 +378,12 @@ focus_key(token("pussy"))                        = 0fae8671376d879515b2736c2d6d5
 payout_leaf(that card, 0x77 × 32, 1,000)         = 63c3867a76af023aa6417e5a945612289906e8352ea69fe4aea259ce5b152115
 payout_node(leaf, leaf)                          = 240a852c1bd8f641f65d6b3746a72a08c0930e5d1bd1feafe4b9cdab914a6ec2
 phi digest, n = 2, φ = [2^59, 2^59]              = 3351bfa40d6eaa24c8e2b8755d900dbcd3c3015730a5efcfdf9b6e14c7019a8a
+phi digest, tru's conformance graph              = e0ff79997aa697bced38e2cdedb823b189892982bae411933ec623007de18fc8
 ```
+
+The conformance graph, its φ*, J, gradient and 4-node path gradient are
+defined in chain-economy §10 (amended 2026-10-17: `GROUND` 1/4,
+`ATTR_NODES` 4).
 
 | case (pussy `S0`, `SUBSIDY`) | value |
 |---|---|

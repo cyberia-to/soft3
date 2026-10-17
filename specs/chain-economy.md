@@ -65,7 +65,9 @@ are chain.md §0.
 | `POOL_RELEASE` | 4 | budget = pool / 4 per settlement | §5.5 |
 | `R_MAX_PPM` | 10,000 | parts per million of a position's new stake, per settlement | §5.5 |
 | `HWM_KEEP` | 65,410 / 65,536 | per epoch (half-life 360 epochs = 30 days) | §5.3 |
-| `PHI_STEPS` | 48 (recommended; fixed by tru's `EpochParams` at the phase1.toml pin) | tri-kernel steps per solve | §4.4 |
+| `PHI_STEPS` | 48 (fixed by tru's `EpochParams`; measured: ℓ1 to the converged φ* ≈ 10⁻¹⁰ on bostrom) | tri-kernel steps per solve | §4.4 |
+| `GROUND` | 1/4 of a particle's in-weight (amended 2026-10-17) | teleporting ground weight of every out-row | §4.4 |
+| `ATTR_NODES` | 4 Gauss–Legendre nodes (amended 2026-10-17; was the one-node midpoint) | gradient evaluations per settlement | §5.1 |
 | `SETTLE_BUDGET` | 900 | seconds of reference settlement compute | §7.2 |
 | `RHO_LAUNCH` | 1 | surprise weight of every active position | §5.4 |
 | `KARMA_LAUNCH` | 1 | karma multiplier of every neuron | §3.7 |
@@ -431,6 +433,15 @@ J(φ)   = syntropy, tru/specs/focusing.md (D_KL(φ ‖ u) over the graph's parti
   depends on a power iteration, a convergence test or a warm start enters
   consensus: a cold start makes settlement of epoch E a function of `G_{E−1}`
   and `G_E` alone, so a node can check any epoch from its two snapshots.
+- continuity (amended 2026-10-17): every particle's out-row carries a
+  ground weight `w0_p = ⌊in_p / 4⌋` that teleports to the stake prior, so the
+  row normalises by `out_p + w0_p` (tru/specs/epoch.md §2). Without it a
+  particle with focus and no out-axon sends all of it to the prior and its
+  first out-axon, at any positive weight, redirects all of it — φ* jumps, and
+  no gradient attributes a jump (measured: median error 34–45 % against exact
+  Shapley on such epochs; with the ground and four nodes 0.65–3.0 %, tru
+  audit/epoch-settlement-2026-10.md §6). A particle without in-weight is
+  unchanged, one without out-weight is pure teleport as before.
 - arithmetic: integer and fixed point only (tru/specs/arithmetic.md); the
   result must not depend on thread count; division and rounding rules are
   tru's and are pinned by the vectors. At 3 M particles a mean focus entry
@@ -440,17 +451,23 @@ J(φ)   = syntropy, tru/specs/focusing.md (D_KL(φ ‖ u) over the graph's parti
 
 ## 5. settlement
 
-### 5.1 the three solves
+### 5.1 the solves
 
-Settlement of epoch E reads `G_{E−1}` and `G_E` and computes:
+Settlement of epoch E reads `G_{E−1}` and `G_E` and computes (amended
+2026-10-17: four path nodes instead of the one midpoint):
 
 ```
 A_prev = A(G_{E−1}),  A_cur = A(G_E)                         // §4.2
-A_mid  = floor((A_prev + A_cur) / 2)  per axon               // axons present in either
+A_i    = A_prev + floor(t_i · (A_cur − A_prev) / 2^32)       // per axon present in either, i = 1..ATTR_NODES
 φ*_E   = φ*(A_cur)                                           // solve 1, published (§5.6)
-φ_mid  = φ*(A_mid)                                           // solve 2
-g      = ∂J(φ*(A))/∂A at A = A_mid, one adjoint solve        // solve 3
+g_i    = ∂J(φ*(A))/∂A at A = A_i                             // per node: one forward, one adjoint solve
+ḡ      = Σ_i floor(w_i · g_i / 2^32)                          // tru `path_gradient`
 ```
+
+`(t_i, w_i)` are the Gauss–Legendre nodes and weights on `[0, 1]` at 2^32
+(tru/specs/epoch.md §4): `t` = 298207500, 1417379916, 2877587380,
+3996759796; `w` = 747012592, 1400471056, 1400471056, 747012592 (the
+weights sum to exactly 2^32). A settlement is 1 + 2 · 4 = 9 solves.
 
 `g_pq` is the derivative of syntropy at the fixed point with respect to the
 weight of axon `(p, q)`, propagated through the fixed-point map by its
@@ -459,13 +476,15 @@ the reshaping of the landscape, ⟨∇_A J, ΔA⟩, never the induced shift of
 φ). The adjoint iterates `λ ← ∇_φ J + (∂F/∂φ)ᵀ λ` from `λ = 0` for
 `PHI_STEPS` steps and then reads `g = λᵀ ∂F/∂A`; tru/specs owns the
 transposed operators and the scale of `g` (a signed fixed-point integer per
-present axon of `A_mid`; zero for absent axons).
+present axon of `A_i`; zero for absent axons).
 
-The midpoint is the one-point quadrature of the integrated gradient along
-the straight path from `A_prev` to `A_cur`, i.e. the Aumann–Shapley value
-of rewards.md §4 with one gradient evaluation: exact when J is quadratic
-along the path, and with error third order in the epoch's change otherwise.
-One solve serves every position, which is decision 4.
+`ḡ` is the four-node Gauss–Legendre quadrature of the integrated gradient
+along the straight path from `A_prev` to `A_cur`, i.e. the Aumann–Shapley
+value of rewards.md §4. The node count was chosen by measurement against
+exact Shapley (tru audit/epoch-settlement-2026-10.md §6): one node (the
+midpoint) stays near 6 % median error whenever a particle appears; four
+nodes hold every class of change under 5 % and weight changes ≤ 30 % at
+0.04 %. One path gradient serves every position, which is decision 4.
 
 ### 5.2 attribution per position
 
@@ -474,7 +493,7 @@ for v = −1:
 
 ```
 Δs(c) = s_E(c) − s_{E−1}(c)        // stake on c's side; a card absent at a boundary has s = 0 there
-a(c)  = Δs(c) · σ(c) · g_pq · [A_mid_pq > 0]                  // signed, 256-bit integer
+a(c)  = Δs(c) · σ(c) · ḡ_pq                                  // signed, 256-bit integer (ḡ is 0 where the axon is absent at every node)
 ```
 
 A card that changed side between the two boundaries (unlocked to zero and
@@ -693,7 +712,7 @@ market and paid inference, both cut from phase 1.
   (chain.md §1), paid `SUBSIDY − cut + fees`. The work is synthetic, the
   bootstrap puzzle of rewards.md §8 that hands out the initial stake;
 - settlement by recomputation: every full node computes every epoch's
-  three solves and checks the settlement block bit for bit. Nobody is paid
+  solves (§5.1) and checks the settlement block bit for bit. Nobody is paid
   for this computation; it is the cost of validating, as checking
   signatures is. The miner of the settlement block chooses nothing in it.
 
@@ -705,24 +724,23 @@ approximation) instead of estimated by sampling.
 
 ### 7.2 cost bound
 
-Measured 2026-10-17 on an M4 Max, one core, tru master's
-`FocusingGraph::build` + `iterate` (the legacy 2⁻³² engine) over the burial
-graphs with the genesis weights of §4.1 (receipt
-`audit/chain/economy-cost-2026-10-17.md`):
+Measured 2026-10-17 on an M4 Max with tru's epoch engine
+(tru/specs/epoch.md; receipt tru audit/epoch-settlement-2026-10.md §2, §6;
+amended 2026-10-17 — the figures of the legacy 2⁻³² engine this section first
+carried, 48 s and 2.8 GB for one bostrom solve, are superseded). Bostrom:
+2.85 M axons over 3.06 M particles (synthetic stake on the burial graph).
 
-| graph | links | particles | build | per step | steps derived | one cold solve | peak RSS |
-|---|---|---|---|---|---|---|---|
-| pussy | 29,112 | 15,967 | 0.14 s | 16.5 ms | 24 | 0.54 s | — |
-| bostrom | 2,949,732 | 2,914,272 | 24.3 s | 1.20 s | 19 | 48 s | 2.8 GB |
+| | one thread | twelve threads |
+|---|---|---|
+| build the canonical graph | 1.5–2.1 s | — |
+| one cold solve, `PHI_STEPS` = 48 | 6.0–6.3 s | 0.8–1.1 s |
+| settlement: solve 1 + `ATTR_NODES` = 4 path nodes (forward + adjoint each) + 40,307 positions | 75 s | 17–19 s |
+| heap of one call: φ / gradient / 4-node path gradient | 677 / 1,019 / 1,323 MB | — |
 
-At `PHI_STEPS = 48` one bostrom solve is about 24 + 58 = 82 s; a
-settlement is two forward solves and one adjoint (estimated at the cost of
-a forward solve), about 4–5 minutes of one core, against the one-hour
-window of D blocks: a 12× margin, and `SETTLE_BUDGET` = 900 s (a quarter of
-the window) holds up to about three times bostrom's graph at linear
-scaling. tru's epoch engine (in progress) adds threads with bit-identical
-output, which moves the bound further; its figures replace these when it
-lands.
+Results are bit-identical across thread counts. Against the one-hour window
+of D blocks a single core has a 48× margin, and `SETTLE_BUDGET` = 900 s (a
+quarter of the window) holds up to about twelve times bostrom's graph on one
+core at linear scaling.
 
 Worst case by construction: at most `MAX_BLOCK_TXS · L` = 245,760 positions
 change per epoch, so the graph grows by at most that many axons per epoch
@@ -815,13 +833,13 @@ exist; a lock on an existing link is a new high on an empty side).
 | self-linking cycles | stake a ring p→q→p to concentrate focus (syntropy rises) | the pulse is paid once per new high (§5.3) and capped at 1 % of the added stake; teleport bounds the mass a ring holds; the ring's stake is locked seven days; residual: concentration is paid as knowledge — rewards.md §15's self-dealing frontier, bounded here by capital, not closed |
 | stake recycling | unlock and relock to be paid again for the same edge | the new-high rule pays only above the decayed mark; a second key does not help (the mark is per axon side); yield of recycling ≤ the mark's decay, 50 % per 30 days of a stake that must sit locked 7 days per cycle |
 | honest restaker penalty (cost of the above) | restoring an edge abandoned within the month earns little | accepted; the mark decays with half-life 30 days |
-| last-block timing | lock in the last block of an epoch after seeing the epoch's links | all links of an epoch are one coalition at one midpoint gradient: a late copy on the same axon splits that axon's credit pro rata and lowers the gradient for both; a boundary miner can delay rivals' locks by one epoch (MEV, bounded by one epoch's ordering) |
+| last-block timing | lock in the last block of an epoch after seeing the epoch's links | all links of an epoch are one coalition at one path gradient (§5.1): a late copy on the same axon splits that axon's credit pro rata and lowers the gradient for both; a boundary miner can delay rivals' locks by one epoch (MEV, bounded by one epoch's ordering) |
 | hedging | +1 and −1 on the same axon (two keys) | attributions cancel exactly; capital doubled for the same credit |
 | capital censorship | `v = −1` stake to zero an edge | costs locked capital equal to the edge's weight, outbid by `v ≥ 0` stake; earns only if zeroing raised syntropy |
 | quiet-epoch capture | the only earner of an empty epoch | takes at most a quarter of the pool, and at most 1 % of its added stake |
 | reorg around the boundary | replace the boundary block to change the snapshot | possible below depth 120 at the price of the blocks; settlement waits until depth 120 (§2.5); every candidate boundary costs a block and forces at most one recompute |
 | boundary withholding (beacon grind) | discard a found boundary block | nothing reads the beacon at genesis; for the ticket rule set the bias costs a block reward per draw (§2.3) |
-| settlement DoS | make the recompute too slow to finish in D blocks | linear cost, 12× measured margin at bostrom's size, growth bounded by fees per axon; the ticket rule set is the scaling exit (§7.3) |
+| settlement DoS | make the recompute too slow to finish in D blocks | linear cost, 48× measured margin on one core at bostrom's size (§7.2), growth bounded by fees per axon; the ticket rule set is the scaling exit (§7.3) |
 | nondeterminism | thread count, node order, rounding differ across nodes | canonical order (§4.3), fixed steps (§4.4), tru's integer arithmetic, φ* committed by digest under `state_root` (§5.6): any divergence halts the divergent node at `settle(E)` instead of forking value silently |
 | payout censorship | a miner omits a payout | payouts are a state transition of the height, not transactions |
 | rich-get-richer | idle capital compounding | only stake that adds new weight earns, once, and only active stake; passive stake and genesis weight earn nothing (rewards.md §9) |
@@ -842,7 +860,17 @@ focus_key(token("pussy"))                        = 0fae8671376d879515b2736c2d6d5
 payout_leaf(that card, 0x77 × 32, 1,000)         = 63c3867a76af023aa6417e5a945612289906e8352ea69fe4aea259ce5b152115
 payout_node(leaf, leaf)                          = 240a852c1bd8f641f65d6b3746a72a08c0930e5d1bd1feafe4b9cdab914a6ec2
 phi digest, n = 2, φ = [2^59, 2^59]              = 3351bfa40d6eaa24c8e2b8755d900dbcd3c3015730a5efcfdf9b6e14c7019a8a
+phi digest, tru's conformance graph (below)      = e0ff79997aa697bced38e2cdedb823b189892982bae411933ec623007de18fc8
 ```
+
+tru's conformance graph (amended 2026-10-17, tru `rs/tests/epoch_settlement.rs`
+`vector_graph`): particles `[b; 32]` for b = 1..5, axons (1,2) 1,000,000,
+(2,3) 2,500,000, (3,1) 700,000, (1,4) 4,000,000, (4,2) 1,200,000,
+(5,3) 3,000,000, (2,5) 900,000; `EpochParams::default()` (`PHI_STEPS` 48,
+`GROUND` 1/4): φ* = [219310425963150397, 244918065555344491,
+314071252939911789, 227905484039409407, 146716275947897466], J =
+31829771616584911. The per-axon gradient and the 4-node path gradient of a
+fixed change of it are pinned in the same test file.
 
 Integers (pussy `S0`, `SUBSIDY`):
 
@@ -920,13 +948,19 @@ this page implements.
 | 5 | standing yield: stake earns only when it adds new weight (the pulse), or also an annuity on the growth of its target's focus (rewards.md §11) | pulse only at genesis; the annuity with the reports rule set |
 | 6 | the 2026-09-18 decision "the migrated graph would pay nothing": met as "ranks from block 0, pays when its authors stake", rather than paying genesis links directly | as specified |
 
+Decided 2026-10-17 (coordinator, owner-delegated): the dangling switch is
+fixed in φ* — the teleporting ground weight `GROUND` (§4.4) — rather than
+accepted as an under-payment of first out-links; the attribution runs
+`ATTR_NODES` = 4 Gauss–Legendre nodes (§5.1). Ground and node count were chosen by measurement (tru
+audit/epoch-settlement-2026-10.md §6).
+
 ## 13. implementation map
 
 | owner | change |
 |---|---|
 | soft3 `crate/src/chain` | `params.rs` (§0); `tx.rs` kinds 6, 7 and kind 2 with stake; `apply.rs` coinbase split, settlement step, conservation; `state.rs` card, stake-key and pool operations journaled for reorgs; new `economy/` (`epoch.rs` boundaries and snapshots, `weights.rs` genesis weights and §4.2, `settle.rs` §5 over tru, `emission.rs` §6); `api.rs` §11; `wallet/tx.rs` builders for kinds 6, 7 |
 | bbg | `CardRecord` + `author`, `valence`, `since`; `DIMENSION_VERSION` 4; genesis roots re-blessed |
-| tru | an epoch entry point: canonical input (§4.3), fixed `PHI_STEPS`, cold start, 2⁻⁶⁰ resolution, J, and the adjoint gradient at `A_mid` (§5.1), thread-count independent; tru/specs owns the operator transposes and the scale |
+| tru | the epoch entry point `tru::focusing::epoch` (tru/specs/epoch.md): `phi` (canonical input §4.3, `PHI_STEPS`, cold start, 2⁻⁶⁰, J, the digest preimage), `path_gradient` (§5.1, `ATTR_NODES`, the ground of §4.4), `net_axons`, thread-count independent; tru/specs owns the operator transposes and the scale of the gradient (2^112 nats per weight unit) — tru#40 (1ea853e) and tru#41 (e660d1e, the ground and the path gradient) |
 | foculus | `phi.rs` and the VDF beacon retired from the root chain; specs/epoch.md superseded for the root chain by §2 here |
 | conformance | §10 into chain-conformance §14 |
 | cyber/launch | rows 1–4, 24–32, 41 and the decision of 2026-10-17 |
