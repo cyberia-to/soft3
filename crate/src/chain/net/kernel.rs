@@ -23,7 +23,7 @@ use tokio::sync::broadcast;
 
 use crate::chain::api::{Block, BlockVerdict as KBlock, ChainApi, ChainError, HeaderVerdict as KHeaderVerdict, Template};
 use crate::chain::apply::TxError;
-use crate::chain::engine::Chain;
+use crate::chain::engine::{Chain, OpenOptions};
 use crate::chain::header::{self as kheader, Header as KHeader, HeaderError as KHeaderError};
 use crate::chain::params::ORPHAN_POOL_HEADERS;
 use crate::chain::select::Checkpoint;
@@ -199,13 +199,24 @@ impl KernelChain {
     /// a restart replays the main chain on the genesis state (§3.6).
     pub fn open(genesis_bytes: &[u8], home: &Path) -> Result<KernelChain, String> {
         let chain = Chain::open(home, genesis_bytes, true).map_err(|e| e.to_string())?;
+        Ok(KernelChain::over(chain))
+    }
+
+    /// As [`KernelChain::open`] with explicit [`OpenOptions`] (epoch clock,
+    /// focus engine, inline settlement): the simulator's and the tests' entry.
+    pub fn open_with(genesis_bytes: &[u8], home: &Path, opts: OpenOptions) -> Result<KernelChain, String> {
+        let chain = Chain::open_with(home, genesis_bytes, opts).map_err(|e| e.to_string())?;
+        Ok(KernelChain::over(chain))
+    }
+
+    fn over(chain: Chain) -> KernelChain {
         let params = chain.genesis().params().clone();
         let key = params.checkpoint_key;
         let mut inner = Inner { best: None, held: Vec::new(), txindex: HashMap::new(), chain };
         for h in 1..=inner.chain.tip().height {
             inner.index(h);
         }
-        Ok(KernelChain {
+        KernelChain {
             chain_id: inner.chain.chain_id(),
             genesis_id: inner.chain.store().main_at(0).expect("block 0 is stored"),
             native: inner.chain.genesis().native_token(),
@@ -216,7 +227,7 @@ impl KernelChain {
             hrp: params.hrp,
             inner: Mutex::new(inner),
             events: broadcast::channel(1024).0,
-        })
+        }
     }
 
     fn lock(&self) -> MutexGuard<'_, Inner> {

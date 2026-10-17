@@ -33,6 +33,9 @@ metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
 webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]
 # chain-conformance.md sections 1-9: vectors as tests (`cargo test --features chain-conformance`)
 chain-conformance = []
+# out-of-tree simulators (cyberia-to/simulation): `params::sim_pow`, a
+# process-wide relaxed POW_LIMIT for private test genesis files. Never in a node.
+sim = []
 
 [dependencies]
 # real node engine
