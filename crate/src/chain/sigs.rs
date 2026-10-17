@@ -48,11 +48,14 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
     let Some(subject) = subject(tx) else {
         return tx.is_coinbase() && tx.sig.is_empty();
     };
-    let st = statement(chain, &tx.encode_unsigned());
-    let key = verified::key(&subject, &st, &tx.sig);
+    // the key commits to the chain and every byte of the transaction
+    // (body and signature), from which subject and statement follow; a
+    // hit skips the hemera statement as well as the secp256k1 check
+    let key = verified::key(chain, &tx.encode());
     if verified::contains(&key) {
         return true;
     }
+    let st = statement(chain, &tx.encode_unsigned());
     #[cfg(test)]
     VERIFICATIONS.with(|c| c.set(c.get() + 1));
     let ok = mudra::neuron::verify_statement(subject, st, &tx.sig);
@@ -66,9 +69,9 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
 /// often it is executed: mempool admission replays an account's pending
 /// lower nonces, re-validation after every tip re-admits the whole pool,
 /// the template executes it again and so does the block. `verify` is a
-/// pure function of (subject, statement, signature) and the key commits to
-/// all three, so a hit returns exactly what a recomputation would; only
-/// successes are kept, in a bounded first-in-first-out set.
+/// pure function of (chain, transaction bytes) and the key is
+/// `sha256(chain ‖ bytes)`, so a hit returns exactly what a recomputation
+/// would; only successes are kept, in a bounded first-in-first-out set.
 mod verified {
     use std::collections::{HashSet, VecDeque};
     use std::sync::{Mutex, OnceLock};
@@ -89,11 +92,10 @@ mod verified {
         SET.get_or_init(Default::default)
     }
 
-    pub fn key(subject: &[u8; 32], statement: &[u8; 32], sig: &[u8]) -> [u8; 32] {
+    pub fn key(chain: &[u8; 32], tx: &[u8]) -> [u8; 32] {
         let mut h = Sha256::new();
-        h.update(subject);
-        h.update(statement);
-        h.update(sig);
+        h.update(chain);
+        h.update(tx);
         h.finalize().into()
     }
 
