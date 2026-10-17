@@ -405,6 +405,29 @@ impl Chain {
         }
     }
 
+    /// The heaviest non-invalid header whose chain the node may still move
+    /// to — the target of header-first body download (chain-wire §3.2) —
+    /// or the tip when there is none. A heavier chain that the reorg limit
+    /// or a checkpoint forbids is skipped: its bodies can never be applied,
+    /// and following it would starve the bodies of the best chain the node
+    /// can take (a released private fork deeper than `MAX_REORG` otherwise
+    /// strands every honest node that sits on a stale branch).
+    pub fn best_reachable(&self) -> (u64, BlockId, U256) {
+        let tip = self.tip_id();
+        let (tip_height, tip_work) = self.entry(&tip).map(|e| (e.header.height, e.chainwork)).unwrap_or((0, U256::ZERO));
+        if !select::heavier(self.heaviest, tip_work) {
+            return (tip_height, tip, tip_work);
+        }
+        for id in self.candidates() {
+            if !self.own_chain_blocked(&id) {
+                if let Some(e) = self.entry(&id) {
+                    return (e.header.height, id, e.chainwork);
+                }
+            }
+        }
+        (tip_height, tip, tip_work)
+    }
+
     /// Does the reorg limit or a checkpoint floor forbid switching to `id`?
     pub(super) fn own_chain_blocked(&self, id: &BlockId) -> bool {
         let Ok((fork_height, _)) = self.path_from_main(id) else { return false };

@@ -28,7 +28,6 @@ use crate::chain::header::{self as kheader, Header as KHeader, HeaderError as KH
 use crate::chain::params::ORPHAN_POOL_HEADERS;
 use crate::chain::select::Checkpoint;
 use crate::chain::state::StateBackend;
-use crate::chain::store::Status;
 use crate::chain::tx as ktx;
 use crate::chain::u256::U256 as KU256;
 
@@ -88,7 +87,8 @@ fn tx_refusal(e: TxError) -> TxRefusal {
 
 struct Inner {
     chain: Chain,
-    /// the most-work non-invalid header, bodies or not; `None` = rescan
+    /// the most-work non-invalid header the kernel may still move to
+    /// (`Chain::best_reachable`), bodies or not; `None` = recompute
     best: Option<(u64, Id, KU256)>,
     /// headers ahead of the clock, re-evaluated by [`ChainView::retry_held`]
     held: Vec<KHeader>,
@@ -101,24 +101,19 @@ impl Inner {
         if let Some(b) = self.best {
             return b;
         }
-        let tip = self.chain.tip();
-        let mut best = (tip.height, tip.id, tip.chainwork);
-        for (id, e) in self.chain.store().iter() {
-            if e.status != Status::Invalid && e.chainwork > best.2 {
-                best = (e.header.height, *id, e.chainwork);
-            }
-        }
+        // a heavier chain the reorg limit or a checkpoint forbids is not a
+        // sync target: its bodies would be fetched forever and never applied
+        let best = self.chain.best_reachable();
         self.best = Some(best);
         best
     }
 
+    /// A new header may be the new best — or a heavier chain that is
+    /// blocked; which one depends on the tip, so recompute lazily.
     fn consider(&mut self, id: &Id) {
         let Some(e) = self.chain.store().get(id) else { return };
-        let candidate = (e.header.height, *id, e.chainwork);
-        if let Some(best) = self.best {
-            if candidate.2 > best.2 {
-                self.best = Some(candidate);
-            }
+        if self.best.is_none_or(|b| e.chainwork > b.2) {
+            self.best = None;
         }
     }
 
@@ -156,6 +151,8 @@ impl Inner {
         if after.id == before.id {
             return None;
         }
+        // which heavier chains are still reachable depends on the tip height
+        self.best = None;
         let store = self.chain.store();
         let mut fork = before.height.min(after.height);
         while fork > 0 && store.ancestor_at(&before.id, fork) != store.main_at(fork) {
