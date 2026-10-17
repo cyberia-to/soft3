@@ -135,3 +135,41 @@ fn future_headers_are_held_then_retried_and_bad_blocks_are_invalid() {
         assert_eq!(b.chain.accept_header(&bad_pow, now + 430), Err(HeaderError::BadPow));
     }
 }
+
+/// A heavier chain the reorg limit refuses must not capture body sync
+/// (chain-wire §3.2 downloads along the best header chain). Found by the
+/// chain simulator (simulation audit/network-2026-10.md, `reorg-140`): once
+/// a private fork more than 119 deep is released, every honest node's
+/// most-work header is the refused chain; a node whose tip sits on a stale
+/// honest branch then asks only for the refused chain's bodies, never for
+/// the honest best chain's, and stalls until a block happens to extend its
+/// own tip.
+#[test]
+fn a_refused_deep_fork_does_not_capture_body_sync() {
+    use crate::chain::params::MAX_REORG;
+    let net = Net::new(2);
+    let (a, c, b) = (scratch(&net, "deep-a"), scratch(&net, "deep-c"), scratch(&net, "deep-b"));
+    let honest: Vec<_> = (0..MAX_REORG + 6).map(|_| mine(&a.chain, &net.neurons[0], &[])).collect();
+    // the attacker forks at genesis and mines a longer (heavier) private chain
+    let attack: Vec<_> = (0..MAX_REORG + 12).map(|_| mine(&c.chain, &net.neurons[1], &[])).collect();
+    for (h, body) in &attack {
+        let _ = a.chain.accept_block(h, body, NOW);
+    }
+    assert_eq!(a.chain.tip().id, honest.last().unwrap().0.id(), "the deep rewrite is refused");
+    // an honest competitor replaces a's last block and extends: b's branch is the best chain a can take
+    for (h, body) in &honest[..honest.len() - 1] {
+        assert!(matches!(b.chain.accept_block(h, body, NOW), Ok(BlockVerdict::NewTip)));
+    }
+    let branch: Vec<_> = (0..2).map(|_| mine(&b.chain, &net.neurons[1], &[])).collect();
+    for (h, _) in &branch {
+        assert_eq!(a.chain.accept_header(h, NOW), Ok(HeaderVerdict::Accepted));
+    }
+    // a's sync must fetch the honest branch's bodies, not the refused chain's
+    let missing: Vec<Id> = a.chain.missing_bodies(512).into_iter().map(|m| m.1).collect();
+    assert_eq!(missing, branch.iter().map(|(h, _)| h.id()).collect::<Vec<_>>(), "body sync follows the best chain a can move to");
+    assert_eq!(a.chain.best_header().id, branch[1].0.id());
+    for (h, body) in &branch {
+        let _ = a.chain.accept_block(h, body, NOW).unwrap();
+    }
+    assert_eq!(a.chain.tip().id, branch[1].0.id(), "a reorganizes onto the honest branch");
+}
