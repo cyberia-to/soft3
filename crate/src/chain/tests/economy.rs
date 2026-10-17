@@ -440,3 +440,35 @@ fn random_economy_keeps_conservation_for_2000_blocks() {
     }
     assert!(paid_total > 0, "2,000 blocks of random stake paid something");
 }
+
+#[test]
+fn the_node_surface_reads_epochs_focus_and_cards() {
+    let net = econ_net(3);
+    let mut c = net.open("surface");
+    let miner = net.neurons[2];
+    mine(&mut c, miner, 0, &[net.link(0, 0, p(1), p(2), RICH / 20, 1, FEE)]);
+    mine_to(&mut c, miner, 25);
+    let e1 = c.epoch_json(1).unwrap();
+    assert_eq!(e1["epoch"], 1);
+    assert_eq!(e1["settled_at"], 15);
+    assert_eq!(e1["digest"].as_str().unwrap().len(), 64);
+    assert_eq!(e1["record"].as_str().unwrap().len(), 2 * crate::chain::economy::settle::RECORD_BYTES);
+    assert!(c.epoch_json(3).is_none(), "not settled yet");
+    assert_eq!(c.epochs_json(0, 10)["epochs"].as_array().unwrap().len(), 2);
+    let top = c.focus_top_json(3).unwrap();
+    assert_eq!(top["epoch"], 2);
+    assert_eq!(top["top"].as_array().unwrap().len(), 2, "the graph is p(1) → p(2)");
+    let f = c.focus_json(&p(2)).unwrap();
+    assert!(f["rank"].as_u64().unwrap() >= 1);
+    let card = card_id(&net.neurons[0], &p(1), &p(2));
+    let cj = c.card_json(&card).unwrap();
+    assert_eq!(cj["stake"], RICH / 20);
+    assert_eq!(cj["unlock_at"], 1 + CLOCK.min_lock);
+    assert_eq!(c.cards_json(&net.neurons[0])["cards"].as_array().unwrap().len(), 1);
+    let st = c.economy_status();
+    assert_eq!(st["last_settled"], 2);
+    assert_eq!(st["next_boundary"], 30);
+    assert_eq!(st["stake_keys_match"], true);
+    assert_eq!(st["settlement_ok"], true);
+    assert_eq!(st["total_stake"], RICH / 20);
+}

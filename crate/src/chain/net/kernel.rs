@@ -190,6 +190,11 @@ pub struct KernelChain {
 }
 
 impl KernelChain {
+    /// The economy's read surface (chain-economy §11), as JSON.
+    pub fn economy(&self, f: impl FnOnce(&Chain) -> Option<serde_json::Value>) -> Option<serde_json::Value> {
+        f(&self.lock().chain)
+    }
+
     /// Open (or create) the chain under `home` (`home/blocks` is the store);
     /// a restart replays the main chain on the genesis state (§3.6).
     pub fn open(genesis_bytes: &[u8], home: &Path) -> Result<KernelChain, String> {

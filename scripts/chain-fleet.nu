@@ -10,6 +10,7 @@
 #   nu scripts/chain-fleet.nu --bin target/release/soft3 --n 3 --secs 20 --threads 1 --keep
 #   nu scripts/chain-fleet.nu --chain pussy --genesis ./genesis.tade   # a real genesis file (no dev switches)
 #   nu scripts/chain-fleet.nu --http-base 17880 --radio-base 17890     # another port range when the default one is taken
+#   nu scripts/chain-fleet.nu --epoch 6:3:9 --secs 60                  # a short epoch clock: the economy scenario settles twice
 #
 # Scenarios asserted (specs/chain-wire.md): peers connect · headers/blocks gossip and the
 # heights converge · a late-joining node IBDs to the tip · a tx submitted to node 1 is mined
@@ -36,7 +37,12 @@ def main [
   --keep                       # keep the work dir on success
   --http-base: int = 17780     # first HTTP port (node i binds http-base + i − 1)
   --radio-base: int = 17790    # first radio UDP port
+  --epoch: string              # dev epoch clock L:D:MIN_LOCK (SOFT3_DEV_EPOCH); adds the economy scenario
 ] {
+  if ($epoch | is-not-empty) {
+    if $chain != "dev" { fail 2 "--epoch is a dev-net clock; launch chains run chain-economy §0" }
+    $env.SOFT3_DEV_EPOCH = $epoch
+  }
   let bin = (resolve-bin $bin)
   print $"chain-fleet: ($n) nodes · chain ($chain) · binary ($bin)"
 
@@ -202,6 +208,37 @@ def main [
       return false
     }
     print $"  ok    fork of depth ($main_h - $base) from ($base): main ($main_h) reorged to the heavier chain ($fork_h), tip ($fork_tip | str substring 0..8)… on every node"
+
+    # ── 8b. the focus economy: stake settles identically everywhere ────────
+    if ($epoch | is-not-empty) {
+      let clock = ($epoch | split row ":" | each {|x| $x | into int })
+      let mstake = (miner-start $bin $chain $first $threads)
+      let base = (height-of (status-of $first.http))
+      let nonce = (^curl -s -m 3 $"http://127.0.0.1:($first.http)/nonce/($wallet)" | from json | get nonce)
+      let p = "1111111111111111111111111111111111111111111111111111111111111111"
+      let q = "2222222222222222222222222222222222222222222222222222222222222222"
+      let lock = (^$bin chain tx --seed $WALLET_SEED --genesis $genesis_file --nonce $nonce --kind link --p $p --q $q --valence 1 --amount 1000000000 | str trim)
+      let lock_id = (^curl -s -m 3 -X POST -H "Content-Type: application/octet-stream" --data-binary $"($lock)" $"http://127.0.0.1:($first.http)/tx" | from json | get txid)
+      if not (wait-for 120 {|| (tx-height $first.http $lock_id) != null }) { print $"  FAIL  staked link ($lock_id) not mined"; return false }
+      let locked_at = (tx-height $first.http $lock_id)
+      # two settlements after the lock: settle(E) = E·L + D for the lock's epoch and the next
+      let e1 = ($locked_at + $clock.0 - 1) // $clock.0
+      let target = (($e1 + 1) * $clock.0 + $clock.1)
+      if not (wait-for 600 {|| ($everyone | all {|node| (height-of (status-of $node.http)) >= $target }) }) {
+        print $"  FAIL  fleet did not reach height ($target): ($everyone | each {|node| $'node-($node.i)=(height-of (status-of $node.http))' } | str join ' ')"
+        return false
+      }
+      miner-stop $mstake
+      for e in [$e1 ($e1 + 1)] {
+        let digests = ($everyone | each {|node| ^curl -s -m 5 $"http://127.0.0.1:($node.http)/epoch/($e)" | from json | get digest } | uniq)
+        if ($digests | length) != 1 { print $"  FAIL  epoch ($e) records differ: ($digests | str join ' ')"; return false }
+        let rec = (^curl -s -m 5 $"http://127.0.0.1:($first.http)/epoch/($e)" | from json)
+        print $"  ok    epoch ($e) record ($rec.digest | str substring 0..12)… on every node: budget ($rec.budget), paid ($rec.paid), rewarded ($rec.rewarded), pool after ($rec.pool_after)"
+      }
+      let card = (^curl -s -m 3 $"http://127.0.0.1:($first.http)/cards/($wallet)" | from json | get cards | first)
+      print $"  ok    position ($card.card | str substring 0..12)… stake ($card.stake), valence ($card.valence), unlock at ($card.unlock_at)"
+      if not ((status-of $first.http) | str contains "stake-keys-match: true") { print "  FAIL  stake keys do not match the running total"; return false }
+    }
 
     # ── 9. a killed node restarts and recovers ─────────────────────────────
     let victim = $third

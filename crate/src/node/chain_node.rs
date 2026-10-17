@@ -158,7 +158,15 @@ impl ChainNode {
         let checkpoint = self.net.checkpoints().last().map(|c| c.height.to_string()).unwrap_or_else(|| "none".into());
         let bits = self.chain.header_at(tip.height).map(|h| h.bits).unwrap_or(0);
         let next_bits = self.kernel.next_bits();
-        format!(
+        // chain-economy §11: the economy's /status fields
+        let econ = self.kernel.economy(|c| Some(c.economy_status())).unwrap_or_default();
+        let field = |k: &str| econ.get(k).map(|v| v.to_string()).unwrap_or_else(|| "none".into());
+        let economy = format!(
+            "epoch: {}\nnext-boundary: {}\nlast-settled: {}\nfocus-bps: {}\npool: {}\nactive-stake: {}\ntotal-stake: {}\nstake-keys-match: {}\nsettlement-ok: {}\nfocus-engine: {}\n",
+            field("epoch"), field("next_boundary"), field("last_settled"), field("focus_bps"), field("pool"), field("active_stake"),
+            field("total_stake"), field("stake_keys_match"), field("settlement_ok"), field("engine").trim_matches('"'),
+        );
+        let status = format!(
             "---\nparticle: status\nchain: {}\nprotocol: soft3/chain/1\nrule-set: {}\nactivations: 1@0\nengine: chain+cybergraph+bbg\nversion: {}\nmoniker: {}\nheight: {}\ntip: {}\nchainwork: {}\nbits: {:#010x}\nnext-bits: {:#010x}\ngenesis: {}\ngenesis-block: {}\ngenesis-time: {}\nbbg-root: {}\nsupply: {}\nconserved: {}\nsubsidy: {}\nneurons: {}\nparticles: {}\naxons: {}\nmempool: {}\npeers: {}\noutbound: {}\nbest-header: {}\ncheckpoint: {}\nfinalized: {}\ncatching-up: {}\nmining: {}\nstorage: bbg-fjall\nendpoint: {}\n---\nthe state of [[{}]] at height {}\n",
             self.chain_name, self.chain.rule_set(), env!("CARGO_PKG_VERSION"), self.moniker.replace(['\n', '\r'], " "),
             tip.height, hex(&tip.id), tip.chainwork.to_decimal(), bits, next_bits, hex(&self.chain.chain_id()), hex(&self.chain.genesis_id()), self.chain.genesis_time(),
@@ -166,6 +174,11 @@ impl ChainNode {
             pool.len(), peers.len(), peers.iter().filter(|p| p.direction == crate::chain::net::peers::Direction::Outbound).count(),
             best.height, checkpoint, self.kernel.finalized_height(), self.net.catching_up(), self.mining(), hex(self.net.id().as_bytes()),
             self.chain_name, tip.height,
-        )
+        );
+        // the economy's fields go before the closing front-matter fence
+        match status.split_once("storage: bbg-fjall\n") {
+            Some((head, tail)) => format!("{head}{economy}storage: bbg-fjall\n{tail}"),
+            None => status,
+        }
     }
 }
