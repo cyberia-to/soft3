@@ -839,6 +839,12 @@ attached to a checkpoint (bbg's `Checkpoint { root, acc, height }` already
 has the slot). Nothing in phase 1 depends on it; a node without the proof
 verifier runs identically.
 
+The plan that fills this slot — the block relation, the chain proof every
+`CHECKPOINT_INTERVAL`, bootstrap from a proof, and checkpoint proofs that
+replace `checkpoint_key` before `CHECKPOINT_SUNSET` — is
+[the proven present](../proposals/proven-present.md). Its one rule binds every
+later rule set: nothing activates that the history relation cannot express.
+
 ## 8. security model
 
 What is and is not protected at launch, stated plainly.
