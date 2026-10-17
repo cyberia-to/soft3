@@ -8,6 +8,8 @@
 
 pub type Id = [u8; 32];
 
+pub use super::economy::{Card, Mark, Scalars};
+
 /// Before-image of one touched entry. Reverting a journal restores these in
 /// reverse order, so recording every touch (not only the first) is correct.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -31,6 +33,14 @@ pub enum UndoEntry {
     TokenSum { token: Id, before: Option<u64> },
     /// the state height was `before`.
     Height { before: u64 },
+    /// the card (position) `id` was `before` (chain-economy §3.2).
+    Card { id: Id, before: Option<Card> },
+    /// the high-water marks of `axon` were `before` (chain-economy §5.3).
+    Mark { axon: Id, before: Option<Mark> },
+    /// the economy scalars were `before`.
+    Scalars { before: Scalars },
+    /// `time[height]` was `before` (chain-economy §5.6).
+    Time { height: u64, before: Option<Id> },
 }
 
 /// The journal of one block, oldest entry first.
@@ -90,6 +100,27 @@ pub trait StateBackend {
     /// bbg `insert` of one link `(p, q, token, amount, valence)` by `from`
     /// at `height`; `amount` is 0 under rule set 1 (§2.4, §10 item 2)
     fn link(&mut self, from: &Id, p: &Id, q: &Id, token: &Id, amount: u64, valence: i8, height: u64) -> Result<(), StateError>;
+
+    // ── the focus economy (chain-economy §3, §5) ────────────────────
+    /// `balances[key]` for a raw key: a stake key or the focus pool (§3.1)
+    fn raw_balance(&self, key: &Id) -> u64;
+    /// credit a raw key; `token` keeps the conservation sum
+    fn credit_raw(&mut self, key: &Id, token: &Id, amount: u64) -> Result<(), StateError>;
+    fn debit_raw(&mut self, key: &Id, token: &Id, amount: u64) -> Result<(), StateError>;
+    fn card(&self, id: &Id) -> Option<Card>;
+    /// write or (with `None`) delete a card
+    fn set_card(&mut self, id: &Id, card: Option<Card>);
+    /// every card, ascending by id
+    fn cards(&self) -> Vec<(Id, Card)>;
+    /// `(p, q)` of an axon from `axon_edges`
+    fn axon_edge(&self, axon: &Id) -> Option<(Id, Id)>;
+    /// every high-water mark, ascending by axon
+    fn marks(&self) -> Vec<(Id, Mark)>;
+    fn set_mark(&mut self, axon: &Id, mark: Option<Mark>);
+    fn scalars(&self) -> Scalars;
+    fn set_scalars(&mut self, s: Scalars);
+    fn time(&self, height: u64) -> Option<Id>;
+    fn set_time(&mut self, height: u64, value: Id);
 
     // ── journal ─────────────────────────────────────────────────────
     fn begin(&mut self);
@@ -161,6 +192,43 @@ impl Undo {
                     out.push(8);
                     out.extend_from_slice(&before.to_le_bytes());
                 }
+                UndoEntry::Card { id, before } => {
+                    out.push(9);
+                    out.extend_from_slice(id);
+                    match before {
+                        None => out.push(0),
+                        Some(c) => {
+                            out.push(1);
+                            out.extend_from_slice(&c.owner);
+                            out.extend_from_slice(&c.particle);
+                            out.extend_from_slice(&c.author);
+                            out.push(c.valence_byte());
+                            out.extend_from_slice(&c.since.to_le_bytes());
+                        }
+                    }
+                }
+                UndoEntry::Mark { axon, before } => {
+                    out.push(10);
+                    out.extend_from_slice(axon);
+                    put_opt_u64s(&mut out, before.map(|m| [m.pos, m.neg]).as_ref().map(|v| &v[..]));
+                }
+                UndoEntry::Scalars { before } => {
+                    out.push(11);
+                    for v in before.encode() {
+                        out.extend_from_slice(&v.to_le_bytes());
+                    }
+                }
+                UndoEntry::Time { height, before } => {
+                    out.push(12);
+                    out.extend_from_slice(&height.to_le_bytes());
+                    match before {
+                        None => out.push(0),
+                        Some(v) => {
+                            out.push(1);
+                            out.extend_from_slice(v);
+                        }
+                    }
+                }
             }
         }
         out
@@ -182,15 +250,53 @@ impl Undo {
                 out.push(UndoEntry::Height { before });
                 continue;
             }
+            if tag == 11 {
+                let mut v = [0u64; 4];
+                for x in v.iter_mut() {
+                    *x = u64::from_le_bytes(take(&mut at, 8)?.try_into().ok()?);
+                }
+                out.push(UndoEntry::Scalars { before: Scalars::decode(v) });
+                continue;
+            }
+            if tag == 12 {
+                let height = u64::from_le_bytes(take(&mut at, 8)?.try_into().ok()?);
+                let before = match take(&mut at, 1)?[0] {
+                    0 => None,
+                    1 => Some(take(&mut at, 32)?.try_into().ok()?),
+                    _ => return None,
+                };
+                out.push(UndoEntry::Time { height, before });
+                continue;
+            }
             let id: Id = take(&mut at, 32)?.try_into().ok()?;
             if tag == 6 {
                 let existed = take(&mut at, 1)?[0] != 0;
                 out.push(UndoEntry::AxonEdge { axon: id, existed });
                 continue;
             }
+            if tag == 9 {
+                let before = match take(&mut at, 1)?[0] {
+                    0 => None,
+                    1 => {
+                        let owner = take(&mut at, 32)?.try_into().ok()?;
+                        let particle = take(&mut at, 32)?.try_into().ok()?;
+                        let author = take(&mut at, 32)?.try_into().ok()?;
+                        let vb = take(&mut at, 1)?[0];
+                        if vb > 2 {
+                            return None;
+                        }
+                        let since = u64::from_le_bytes(take(&mut at, 8)?.try_into().ok()?);
+                        Some(Card { owner, particle, author, valence: vb as i8 - 1, since })
+                    }
+                    _ => return None,
+                };
+                out.push(UndoEntry::Card { id, before });
+                continue;
+            }
             let n = match tag {
                 1 => 4,
                 3 => 6,
+                10 => 2,
                 _ => 1,
             };
             let present = take(&mut at, 1)?[0] != 0;
@@ -209,6 +315,7 @@ impl Undo {
                 4 => UndoEntry::AxonsOut { p: id, before: one },
                 5 => UndoEntry::AxonsIn { q: id, before: one },
                 7 => UndoEntry::TokenSum { token: id, before: one },
+                10 => UndoEntry::Mark { axon: id, before: present.then_some(Mark { pos: vals[0], neg: vals[1] }) },
                 _ => return None,
             });
         }
@@ -237,6 +344,13 @@ mod tests {
             UndoEntry::AxonEdge { axon: [9; 32], existed: true },
             UndoEntry::TokenSum { token: [10; 32], before: Some(3) },
             UndoEntry::Height { before: 41 },
+            UndoEntry::Card { id: [11; 32], before: None },
+            UndoEntry::Card { id: [12; 32], before: Some(Card { owner: [1; 32], particle: [2; 32], author: [3; 32], valence: -1, since: 99 }) },
+            UndoEntry::Mark { axon: [13; 32], before: Some(Mark { pos: 5, neg: 6 }) },
+            UndoEntry::Mark { axon: [14; 32], before: None },
+            UndoEntry::Scalars { before: Scalars { focus_bps: 999, total_stake: 7, active_stake: 3, last_settled: 2 } },
+            UndoEntry::Time { height: 360, before: None },
+            UndoEntry::Time { height: 600, before: Some([15; 32]) },
         ]);
         let bytes = u.encode();
         assert_eq!(Undo::decode(&bytes), Some(u));

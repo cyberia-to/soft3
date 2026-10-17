@@ -32,13 +32,13 @@ pub fn sig_pubkey(sig: &[u8]) -> Option<[u8; 33]> {
     sig[5..38].try_into().ok()
 }
 
-/// The subject a transaction's signature must prove: `from` for kinds 1
-/// and 2, `neuron_of(sig.pubkey)` for a claim, none for a coinbase.
+/// The subject a transaction's signature must prove: `from` for kinds 1,
+/// 2, 6 and 7, `neuron_of(sig.pubkey)` for a claim, none for a coinbase.
 pub fn subject(tx: &Tx) -> Option<NeuronId> {
     match &tx.body {
         Body::Coinbase { .. } => None,
-        Body::Transfer { from, .. } | Body::Cyberlink { from, .. } => Some(*from),
         Body::Claim { .. } => sig_pubkey(&tx.sig).map(|pk| neuron_of(&pk)),
+        other => other.from(),
     }
 }
 
@@ -52,14 +52,14 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
     mudra::neuron::verify_statement(subject, st, &tx.sig)
 }
 
-/// Sign a kind-1/2/3 transaction with `key`; the subject is derived from the
+/// Sign a kind-1/2/3/6/7 transaction with `key`; the subject is derived from the
 /// key for a claim and must equal `from` otherwise.
 pub fn sign(chain: &[u8; 32], tx: &mut Tx, key: &mudra::SigningKey) -> Result<(), mudra::Error> {
     let pubkey = mudra::cosmos::compressed(key.verifying_key());
     let subject = match &tx.body {
         Body::Coinbase { .. } => return Ok(()),
-        Body::Transfer { from, .. } | Body::Cyberlink { from, .. } => *from,
         Body::Claim { .. } => neuron_of(&pubkey),
+        other => other.from().expect("signed kinds carry from"),
     };
     let st = statement(chain, &tx.encode_unsigned());
     tx.sig = mudra::neuron::sign(key, subject, st)?;

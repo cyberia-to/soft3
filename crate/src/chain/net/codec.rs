@@ -401,6 +401,10 @@ pub enum Tx {
     Transfer { from: Id, nonce: u64, token: Id, amount: u64, to: Id, fee: u64, sig: Vec<u8> },
     Cyberlink { from: Id, nonce: u64, token: Id, amount: u64, p: Id, q: Id, valence: i8, fee: u64, sig: Vec<u8> },
     Claim { account_id: [u8; 20], nonce: u64, fee: u64, sig: Vec<u8> },
+    /// kind 6 (chain-economy §3.4)
+    Unlock { from: Id, nonce: u64, p: Id, q: Id, amount: u64, fee: u64, sig: Vec<u8> },
+    /// kind 7 (chain-economy §3.5)
+    Payout { from: Id, nonce: u64, p: Id, q: Id, payout: Id, fee: u64, sig: Vec<u8> },
 }
 
 pub fn tx_len(kind: u8) -> Option<usize> {
@@ -409,6 +413,8 @@ pub fn tx_len(kind: u8) -> Option<usize> {
         1 => Some(224),
         2 => Some(257),
         3 => Some(140),
+        6 => Some(224),
+        7 => Some(248),
         _ => None,
     }
 }
@@ -451,6 +457,14 @@ impl Tx {
                     p: id_at(b, 80), q: id_at(b, 112), valence, fee: u64_at(b, 145), sig: b[153..].to_vec(),
                 }
             }
+            6 => Tx::Unlock {
+                from: id_at(b, 0), nonce: u64_at(b, 32), p: id_at(b, 40), q: id_at(b, 72),
+                amount: u64_at(b, 104), fee: u64_at(b, 112), sig: b[120..].to_vec(),
+            },
+            7 => Tx::Payout {
+                from: id_at(b, 0), nonce: u64_at(b, 32), p: id_at(b, 40), q: id_at(b, 72),
+                payout: id_at(b, 104), fee: u64_at(b, 136), sig: b[144..].to_vec(),
+            },
             _ => Tx::Claim {
                 account_id: b[0..20].try_into().expect("20"), nonce: u64_at(b, 20), fee: u64_at(b, 28), sig: b[36..].to_vec(),
             },
@@ -461,7 +475,11 @@ impl Tx {
         let mut out = self.encode_unsigned();
         match self {
             Tx::Coinbase { .. } => {}
-            Tx::Transfer { sig, .. } | Tx::Cyberlink { sig, .. } | Tx::Claim { sig, .. } => out.extend_from_slice(sig),
+            Tx::Transfer { sig, .. }
+            | Tx::Cyberlink { sig, .. }
+            | Tx::Claim { sig, .. }
+            | Tx::Unlock { sig, .. }
+            | Tx::Payout { sig, .. } => out.extend_from_slice(sig),
         }
         out
     }
@@ -499,6 +517,22 @@ impl Tx {
                 out.extend_from_slice(&nonce.to_le_bytes());
                 out.extend_from_slice(&fee.to_le_bytes());
             }
+            Tx::Unlock { from, nonce, p, q, amount, fee, .. } => {
+                out.extend_from_slice(from);
+                out.extend_from_slice(&nonce.to_le_bytes());
+                out.extend_from_slice(p);
+                out.extend_from_slice(q);
+                out.extend_from_slice(&amount.to_le_bytes());
+                out.extend_from_slice(&fee.to_le_bytes());
+            }
+            Tx::Payout { from, nonce, p, q, payout, fee, .. } => {
+                out.extend_from_slice(from);
+                out.extend_from_slice(&nonce.to_le_bytes());
+                out.extend_from_slice(p);
+                out.extend_from_slice(q);
+                out.extend_from_slice(payout);
+                out.extend_from_slice(&fee.to_le_bytes());
+            }
         }
         out
     }
@@ -509,35 +543,49 @@ impl Tx {
             Tx::Transfer { .. } => 1,
             Tx::Cyberlink { .. } => 2,
             Tx::Claim { .. } => 3,
+            Tx::Unlock { .. } => 6,
+            Tx::Payout { .. } => 7,
         }
     }
 
     pub fn nonce(&self) -> Option<u64> {
         match self {
             Tx::Coinbase { .. } => None,
-            Tx::Transfer { nonce, .. } | Tx::Cyberlink { nonce, .. } | Tx::Claim { nonce, .. } => Some(*nonce),
+            Tx::Transfer { nonce, .. }
+            | Tx::Cyberlink { nonce, .. }
+            | Tx::Claim { nonce, .. }
+            | Tx::Unlock { nonce, .. }
+            | Tx::Payout { nonce, .. } => Some(*nonce),
         }
     }
 
     pub fn fee(&self) -> u64 {
         match self {
             Tx::Coinbase { .. } => 0,
-            Tx::Transfer { fee, .. } | Tx::Cyberlink { fee, .. } | Tx::Claim { fee, .. } => *fee,
+            Tx::Transfer { fee, .. }
+            | Tx::Cyberlink { fee, .. }
+            | Tx::Claim { fee, .. }
+            | Tx::Unlock { fee, .. }
+            | Tx::Payout { fee, .. } => *fee,
         }
     }
 
     pub fn sig(&self) -> &[u8] {
         match self {
             Tx::Coinbase { .. } => &[],
-            Tx::Transfer { sig, .. } | Tx::Cyberlink { sig, .. } | Tx::Claim { sig, .. } => sig,
+            Tx::Transfer { sig, .. }
+            | Tx::Cyberlink { sig, .. }
+            | Tx::Claim { sig, .. }
+            | Tx::Unlock { sig, .. }
+            | Tx::Payout { sig, .. } => sig,
         }
     }
 
-    /// The signing subject: `from` for kinds 1–2, `neuron_of(pubkey)` for a claim.
+    /// The signing subject: `from` for kinds 1, 2, 6, 7, `neuron_of(pubkey)` for a claim.
     pub fn subject(&self) -> Option<Id> {
         match self {
             Tx::Coinbase { .. } => None,
-            Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } => Some(*from),
+            Tx::Transfer { from, .. } | Tx::Cyberlink { from, .. } | Tx::Unlock { from, .. } | Tx::Payout { from, .. } => Some(*from),
             Tx::Claim { sig, .. } => {
                 if sig.len() != SIG_BYTES || &sig[..5] != b"NSIG1" {
                     return None;
@@ -574,7 +622,11 @@ pub fn sign_tx(chain: &Id, tx: &Tx, key: &mudra::SigningKey) -> Result<Tx, Strin
     let mut signed = tx.clone();
     match &mut signed {
         Tx::Coinbase { .. } => return Err("coinbase is not signed".into()),
-        Tx::Transfer { sig: s, .. } | Tx::Cyberlink { sig: s, .. } | Tx::Claim { sig: s, .. } => *s = sig,
+        Tx::Transfer { sig: s, .. }
+        | Tx::Cyberlink { sig: s, .. }
+        | Tx::Claim { sig: s, .. }
+        | Tx::Unlock { sig: s, .. }
+        | Tx::Payout { sig: s, .. } => *s = sig,
     }
     Ok(signed)
 }

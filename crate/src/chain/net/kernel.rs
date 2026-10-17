@@ -76,7 +76,13 @@ fn tx_refusal(e: TxError) -> TxRefusal {
         TxError::Nonce { expected, actual } => TxRefusal::Nonce { current: expected, got: actual },
         TxError::Fee { min, actual } => TxRefusal::Fee { floor: min, got: actual },
         e @ (TxError::Insufficient { .. } | TxError::Immature { .. }) => TxRefusal::Balance(e.to_string()),
-        e @ (TxError::SelfLink | TxError::Box(_) | TxError::Overflow) => TxRefusal::Rule(e.to_string()),
+        e @ (TxError::SelfLink
+        | TxError::StakeToken
+        | TxError::Valence { .. }
+        | TxError::NoCard
+        | TxError::Locked { .. }
+        | TxError::UnlockAmount { .. }
+        | TxError::Overflow) => TxRefusal::Rule(e.to_string()),
     }
 }
 

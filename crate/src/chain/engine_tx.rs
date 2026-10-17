@@ -66,7 +66,7 @@ fn fee_rate_desc(a: &(Vec<u8>, Tx), b: &(Vec<u8>, Tx)) -> std::cmp::Ordering {
 
 /// Build a template on the tip: transactions by fee per byte descending
 /// with per-account nonce order kept and the §1.6 budgets, then the
-/// coinbase from `SUBSIDY + Σ fees`, the tx root and the state root.
+/// coinbase from `SUBSIDY − cut + Σ fees`, the tx root and the state root.
 pub fn header_template(chain: &mut Chain, to: Id, time: u64, mempool: &[Vec<u8>]) -> Result<Template, ChainError> {
     let rules = chain.rules().clone();
     let parent = chain.tip_header();
@@ -135,8 +135,10 @@ pub fn header_template(chain: &mut Chain, to: Id, time: u64, mempool: &[Vec<u8>]
     let undo = state.commit();
     state.revert(&undo);
 
+    // the miner's share of the subsidy: SUBSIDY − cut (chain-economy §6.2)
+    let (miner, _cut) = apply::subsidy_split(&rules, chain.state_mut());
     let coinbase = Tx {
-        body: Body::Coinbase { height, to, amount: rules.subsidy.saturating_add(fees), extra: [0; 32] },
+        body: Body::Coinbase { height, to, amount: miner.saturating_add(fees), extra: [0; 32] },
         sig: Vec::new(),
     };
     let mut raws: Vec<Vec<u8>> = vec![coinbase.encode()];
@@ -145,8 +147,10 @@ pub fn header_template(chain: &mut Chain, to: Id, time: u64, mempool: &[Vec<u8>]
         .iter()
         .map(|raw| Decoded { raw: raw.clone(), tx: Tx::decode(raw).expect("re-encoded"), txid: txid(&rules.chain, raw) })
         .collect();
-    let (state_root, undo) = apply::transition(&rules, height, &txs, chain.state_mut(), &locked).map_err(ChainError::Block)?;
-    chain.state_mut().revert(&undo);
+    let settle = chain.settlement_for(height);
+    let applied = apply::transition(&rules, height, &txs, chain.state_mut(), &locked, settle.as_deref()).map_err(ChainError::Block)?;
+    let state_root = applied.root;
+    chain.state_mut().revert(&applied.undo);
 
     let bits = super::daa::next_bits(chain.genesis_anchor(), &parent);
     let header = Header {

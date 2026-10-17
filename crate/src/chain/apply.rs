@@ -6,8 +6,10 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use super::economy::settle::{self as econ_settle, Outcome, SettleResult};
+use super::economy::{self, Card, card_id, focus_key, stake_key};
 use super::header::Header;
-use super::params::{COINBASE_MATURITY, HEADER_BYTES, MAX_BLOCK_BYTES, MAX_BLOCK_TXS, MAX_TX_BYTES, MIN_FEE_PER_BYTE};
+use super::params::{COINBASE_MATURITY, EpochClock, HEADER_BYTES, MAX_BLOCK_BYTES, MAX_BLOCK_TXS, MAX_TX_BYTES, MIN_FEE_PER_BYTE};
 use super::sigs::{self, legacy_owner, neuron_of, sig_pubkey, txid};
 use super::state::{Id, StateBackend, StateError, Undo};
 use super::tree::tx_root;
@@ -21,6 +23,15 @@ pub struct Rules {
     pub hrp: String,
     pub subsidy: u64,
     pub s0: u64,
+    /// the epoch clock: `EpochClock::SPEC` on the launch chains
+    pub clock: EpochClock,
+}
+
+impl Rules {
+    /// `S0 + h · SUBSIDY`: the native supply after block `h` (§3.5).
+    pub fn supply_at(&self, h: u64) -> u64 {
+        self.s0 + h * self.subsidy
+    }
 }
 
 /// Native units per owner still inside `COINBASE_MATURITY` at the height
@@ -58,7 +69,16 @@ pub enum TxError {
     Insufficient { have: u64, need: u64 },
     Immature { spendable: u64, need: u64 },
     SelfLink,
-    Box(u64),
+    /// a staked cyberlink names a token other than the native coin (chain-economy §3.3)
+    StakeToken,
+    /// the card exists with the other valence: unlock to zero first (§3.3)
+    Valence { card: i8, tx: i8 },
+    /// kinds 6 and 7 need `card(from, p, q)` to exist (§3.4–§3.5)
+    NoCard,
+    /// an unlock before `since + MIN_LOCK` (§3.4)
+    Locked { until: u64 },
+    /// an unlock of 0 or of more than the position's stake (§3.4)
+    UnlockAmount { stake: u64, amount: u64 },
     ClaimKey,
     Overflow,
 }
@@ -75,7 +95,11 @@ impl std::fmt::Display for TxError {
             TxError::Insufficient { have, need } => write!(f, "insufficient balance: have {have}, need {need}"),
             TxError::Immature { spendable, need } => write!(f, "coinbase immature: spendable {spendable}, need {need}"),
             TxError::SelfLink => write!(f, "cyberlink p == q"),
-            TxError::Box(a) => write!(f, "cyberlink amount {a} > 0 is not in rule set 1"),
+            TxError::StakeToken => write!(f, "stake must be the native coin"),
+            TxError::Valence { card, tx } => write!(f, "the position holds valence {card}; unlock it to zero before locking {tx}"),
+            TxError::NoCard => write!(f, "no position card(from, p, q)"),
+            TxError::Locked { until } => write!(f, "stake locked until height {until}"),
+            TxError::UnlockAmount { stake, amount } => write!(f, "unlock {amount} of a position holding {stake}"),
             TxError::ClaimKey => write!(f, "claim key does not derive the account id"),
             TxError::Overflow => write!(f, "arithmetic overflow"),
         }
@@ -105,6 +129,11 @@ pub enum BlockError {
     Tx { index: usize, error: TxError },
     StateRoot { expected: Id, actual: Id },
     Conservation { token: Id, sum: u64, supply: u64 },
+    /// the settlement of `epoch` is due at this height and the node has no
+    /// result for it (chain-economy §2.5: it waits, never guesses)
+    Settlement { epoch: u64 },
+    /// Σ stake keys differs from the running stake total (§6.3)
+    StakeTotal { cards: u128, total: u64 },
     Overflow,
 }
 
@@ -123,6 +152,8 @@ impl std::fmt::Display for BlockError {
             BlockError::Tx { index, error } => write!(f, "tx {index}: {error}"),
             BlockError::StateRoot { .. } => write!(f, "state_root mismatch"),
             BlockError::Conservation { sum, supply, .. } => write!(f, "conservation: balances sum {sum}, supply {supply}"),
+            BlockError::Settlement { epoch } => write!(f, "settlement of epoch {epoch} is not computed"),
+            BlockError::StakeTotal { cards, total } => write!(f, "stake keys sum {cards}, running total {total}"),
             BlockError::Overflow => write!(f, "arithmetic overflow"),
         }
     }
@@ -229,8 +260,8 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
             if p == q {
                 return Err(TxError::SelfLink);
             }
-            if *amount != 0 {
-                return Err(TxError::Box(*amount));
+            if *amount > 0 && *token != rules.native {
+                return Err(TxError::StakeToken);
             }
             if !sigs::verify(&rules.chain, tx) {
                 return Err(TxError::Signature);
@@ -239,9 +270,89 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
             if *nonce != expected {
                 return Err(TxError::Nonce { expected, actual: *nonce });
             }
+            let card = (*amount > 0).then(|| card_id(from, p, q));
+            let existing = card.and_then(|c| state.card(&c));
+            if let Some(c) = &existing {
+                if c.valence != *valence {
+                    return Err(TxError::Valence { card: c.valence, tx: *valence });
+                }
+            }
+            let need = amount.checked_add(fee).ok_or(TxError::Overflow)?;
+            spendable(state, locked, from, &rules.native, need)?;
+            state.debit(from, &rules.native, need)?;
+            if let Some(c) = card {
+                // chain-economy §3.3: the stake moves to the unreachable key
+                // of the position; any increase restarts the lock
+                state.credit_raw(&stake_key(&c), &rules.native, *amount)?;
+                let next = match existing {
+                    Some(old) => Card { since: height, ..old },
+                    None => Card { owner: *from, particle: economy::axon_of(p, q), author: *from, valence: *valence, since: height },
+                };
+                state.set_card(&c, Some(next));
+                let mut sc = state.scalars();
+                sc.total_stake = sc.total_stake.checked_add(*amount).ok_or(TxError::Overflow)?;
+                if *valence != 0 {
+                    sc.active_stake = sc.active_stake.checked_add(*amount).ok_or(TxError::Overflow)?;
+                }
+                state.set_scalars(sc);
+            }
+            state.link(from, p, q, token, 0, *valence, height)?;
+            state.bump_nonce(from)?;
+            Ok(fee)
+        }
+        Body::Unlock { from, nonce, p, q, amount, .. } => {
+            if !sigs::verify(&rules.chain, tx) {
+                return Err(TxError::Signature);
+            }
+            let expected = state.nonce(from);
+            if *nonce != expected {
+                return Err(TxError::Nonce { expected, actual: *nonce });
+            }
+            let c = card_id(from, p, q);
+            let card = state.card(&c).ok_or(TxError::NoCard)?;
+            let key = stake_key(&c);
+            let stake = state.raw_balance(&key);
+            if *amount == 0 || *amount > stake {
+                return Err(TxError::UnlockAmount { stake, amount: *amount });
+            }
+            let until = card.since.saturating_add(rules.clock.min_lock);
+            if height < until {
+                return Err(TxError::Locked { until });
+            }
+            // the fee may come out of what the unlock returns (§3.4)
+            let have = state.balance(from, &rules.native).checked_add(*amount).ok_or(TxError::Overflow)?;
+            let spendable_after = have - locked.of(from).min(have);
+            if spendable_after < fee {
+                return Err(TxError::Immature { spendable: spendable_after, need: fee });
+            }
+            state.debit_raw(&key, &rules.native, *amount)?;
+            state.credit(from, &rules.native, *amount)?;
+            state.debit(from, &rules.native, fee)?;
+            if stake == *amount {
+                state.set_card(&c, None);
+            }
+            let mut sc = state.scalars();
+            sc.total_stake -= *amount;
+            if card.valence != 0 {
+                sc.active_stake -= *amount;
+            }
+            state.set_scalars(sc);
+            state.bump_nonce(from)?;
+            Ok(fee)
+        }
+        Body::Payout { from, nonce, p, q, payout, .. } => {
+            if !sigs::verify(&rules.chain, tx) {
+                return Err(TxError::Signature);
+            }
+            let expected = state.nonce(from);
+            if *nonce != expected {
+                return Err(TxError::Nonce { expected, actual: *nonce });
+            }
+            let c = card_id(from, p, q);
+            let card = state.card(&c).ok_or(TxError::NoCard)?;
             spendable(state, locked, from, &rules.native, fee)?;
             state.debit(from, &rules.native, fee)?;
-            state.link(from, p, q, token, 0, *valence, height)?;
+            state.set_card(&c, Some(Card { owner: *payout, ..card }));
             state.bump_nonce(from)?;
             Ok(fee)
         }
@@ -277,52 +388,119 @@ pub fn execute_tx<S: StateBackend>(rules: &Rules, tx: &Tx, raw_len: usize, state
     }
 }
 
-/// Steps 7–8 on the parent state: coinbase exactness, every transaction in
-/// order, height, `state_root`, conservation. On success the state is the
-/// block's and the journal is returned; on failure the state is the
-/// parent's again.
-pub fn apply_block<S: StateBackend>(rules: &Rules, header: &Header, txs: &[Decoded], state: &mut S, locked: &Locked) -> Result<Undo, BlockError> {
-    let (root, undo) = transition(rules, header.height, txs, state, locked)?;
-    if root != header.state_root {
-        state.revert(&undo);
-        return Err(BlockError::StateRoot { expected: header.state_root, actual: root });
+/// What a successful transition produced.
+#[derive(Clone, Debug)]
+pub struct Applied {
+    pub root: Id,
+    pub undo: Undo,
+    /// the settlement this block carried (chain-economy §5.6), if any
+    pub settled: Option<Outcome>,
+}
+
+/// Steps 7–8 on the parent state: coinbase exactness, the settlement step
+/// when due, every transaction in order, height, `state_root`,
+/// conservation. On success the state is the block's and the journal is
+/// returned; on failure the state is the parent's again.
+pub fn apply_block<S: StateBackend>(
+    rules: &Rules,
+    header: &Header,
+    txs: &[Decoded],
+    state: &mut S,
+    locked: &Locked,
+    settle: Option<&SettleResult>,
+) -> Result<Applied, BlockError> {
+    let applied = transition(rules, header.height, txs, state, locked, settle)?;
+    if applied.root != header.state_root {
+        state.revert(&applied.undo);
+        return Err(BlockError::StateRoot { expected: header.state_root, actual: applied.root });
     }
-    Ok(undo)
+    Ok(applied)
+}
+
+/// `(miner share, pool cut)` of one block's subsidy under the split in
+/// force on `state` (chain-economy §6.1–§6.2).
+pub fn subsidy_split(rules: &Rules, state: &impl StateBackend) -> (u64, u64) {
+    let cut = economy::cut(rules.subsidy, state.scalars().focus_bps);
+    (rules.subsidy - cut, cut)
 }
 
 /// The transition without the root comparison: what a template builder
 /// runs to learn the root its header must carry. Same journal discipline.
-pub fn transition<S: StateBackend>(rules: &Rules, height: u64, txs: &[Decoded], state: &mut S, locked: &Locked) -> Result<(Id, Undo), BlockError> {
+/// `settle` is the precomputed settlement of the epoch due at `height`
+/// (chain-economy §2.5); a settlement height without it is an error.
+pub fn transition<S: StateBackend>(
+    rules: &Rules,
+    height: u64,
+    txs: &[Decoded],
+    state: &mut S,
+    locked: &Locked,
+    settle: Option<&SettleResult>,
+) -> Result<Applied, BlockError> {
     let Body::Coinbase { to: cb_to, amount: cb_amount, .. } = &txs.first().ok_or(BlockError::Empty)?.tx.body else {
         return Err(BlockError::CoinbasePosition);
     };
+    let due = rules.clock.settles_at(height);
+    if let Some(epoch) = due {
+        if settle.map(|r| r.epoch) != Some(epoch) {
+            return Err(BlockError::Settlement { epoch });
+        }
+    }
     let mut fees = 0u64;
     for d in &txs[1..] {
         fees = fees.checked_add(d.tx.fee()).ok_or(BlockError::Overflow)?;
     }
-    let expected = rules.subsidy.checked_add(fees).ok_or(BlockError::Overflow)?;
+    let (miner, cut) = subsidy_split(rules, state);
+    let expected = miner.checked_add(fees).ok_or(BlockError::Overflow)?;
     if *cb_amount != expected {
         return Err(BlockError::CoinbaseAmount { expected, actual: *cb_amount });
     }
     state.begin();
+    let mut settled = None;
     let result = (|| {
+        // 1. coinbase: the miner's share and the pool's cut (§5.7, §6.2)
         state.credit(cb_to, &rules.native, *cb_amount).map_err(|_| BlockError::Overflow)?;
+        state.credit_raw(&focus_key(&rules.native), &rules.native, cut).map_err(|_| BlockError::Overflow)?;
         state.mint(&rules.native, rules.subsidy).map_err(|_| BlockError::Overflow)?;
+        // 2. the settlement of the epoch due at this height
+        if let (Some(_), Some(r)) = (due, settle) {
+            settled = Some(econ_settle::apply(state, &rules.native, height, r).map_err(|_| BlockError::Overflow)?);
+        }
+        // 3. the transactions in body order
         for (i, d) in txs.iter().enumerate().skip(1) {
             execute_tx(rules, &d.tx, d.raw.len(), state, locked, height).map_err(|error| BlockError::Tx { index: i, error })?;
         }
         state.set_height(height);
+        // a boundary fixes the split for the next epoch's blocks (§6.1)
+        if rules.clock.is_boundary(height) {
+            let mut sc = state.scalars();
+            sc.focus_bps = economy::focus_bps(sc.active_stake, rules.supply_at(height));
+            state.set_scalars(sc);
+        }
+        // 4. conservation and the root
         check_conservation(rules, state, height)?;
+        if due.is_some() {
+            check_stake_total(state)?;
+        }
         Ok(state.root())
     })();
     let undo = state.commit();
     match result {
-        Ok(root) => Ok((root, undo)),
+        Ok(root) => Ok(Applied { root, undo, settled }),
         Err(e) => {
             state.revert(&undo);
             Err(e)
         }
     }
+}
+
+/// §6.3: Σ stake keys over the cards equals the running stake total.
+pub fn check_stake_total(state: &impl StateBackend) -> Result<(), BlockError> {
+    let cards = econ_settle::stake_total(state);
+    let total = state.scalars().total_stake;
+    if cards != total as u128 {
+        return Err(BlockError::StakeTotal { cards, total });
+    }
+    Ok(())
 }
 
 /// §3.4 invariant: every token's balances sum to its supply, and the native

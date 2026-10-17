@@ -88,7 +88,8 @@ fn cyberlink_rules_and_effects() {
     let miner = net.neurons[1];
     let (p, q) = (token("boot"), token("pussy"));
     assert_eq!(c.validate_tx(&net.link(0, 0, p, p, 0, 1, 257), &[]), Err(TxError::SelfLink));
-    assert_eq!(c.validate_tx(&net.link(0, 0, p, q, 7, 1, 257), &[]), Err(TxError::Box(7)));
+    // chain-economy §3.3: a native stake locks (the old TxError::Box vector is retired)
+    assert!(c.validate_tx(&net.link(0, 0, p, q, 7, 1, 257), &[]).is_ok());
     assert_eq!(c.validate_tx(&net.link(0, 0, p, q, 0, 1, 256), &[]), Err(TxError::Fee { min: 257, actual: 256 }));
     let l = net.link(0, 0, p, q, 0, 1, 257);
     assert_eq!(l.len(), 257);

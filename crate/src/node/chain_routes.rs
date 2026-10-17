@@ -69,6 +69,8 @@ fn kind_name(tx: &Tx) -> &'static str {
         Tx::Transfer { .. } => "transfer",
         Tx::Cyberlink { .. } => "cyberlink",
         Tx::Claim { .. } => "claim",
+        Tx::Unlock { .. } => "unlock",
+        Tx::Payout { .. } => "payout",
     }
 }
 
@@ -79,6 +81,8 @@ fn tx_fields(tx: &Tx) -> serde_json::Value {
         Tx::Transfer { from, nonce, token, amount, to, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "to": hex(to), "fee": fee}),
         Tx::Cyberlink { from, nonce, token, amount, p, q, valence, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "token": hex(token), "amount": amount, "p": hex(p), "q": hex(q), "valence": valence, "fee": fee}),
         Tx::Claim { account_id, nonce, fee, .. } => serde_json::json!({"account_id": hex(account_id), "nonce": nonce, "fee": fee}),
+        Tx::Unlock { from, nonce, p, q, amount, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "p": hex(p), "q": hex(q), "amount": amount, "fee": fee}),
+        Tx::Payout { from, nonce, p, q, payout, fee, .. } => serde_json::json!({"from": hex(from), "nonce": nonce, "p": hex(p), "q": hex(q), "payout": hex(payout), "fee": fee}),
     };
     if !tx.sig().is_empty() {
         v["sig"] = hex(tx.sig()).into();
