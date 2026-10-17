@@ -148,13 +148,14 @@ Per-peer limits (token buckets, burst = 4× rate):
 Scoring: a peer starts at 0; +100 and disconnect for an invalid PoW header,
 a wrong-chain status, a body whose header we did not request, or a frame
 over size; +10 for an invalid signature, a non-canonical encoding, a header
-failing the time rule by more than 1 h; +1 for a duplicate and for a
-relayed nonce beyond the window (a relay races the blocks that make it valid:
-nothing when the peer announced a tip above ours; a nonce below the current
-one is a mined transaction and is never charged); score decays by 1 per
-minute; ≥ 100 bans the endpoint id
+failing the time rule by more than 1 h; +1 for a duplicate; score decays by
+1 per minute; ≥ 100 bans the endpoint id
 for 1 h. Nothing is ever charged for a header that fails only the
-future-drift rule within the hold window.
+future-drift rule within the hold window, nor for a relayed transaction
+whose nonce is outside the window (below it: already mined; above it: the
+relay holds blocks we lack — a busy account fills its window every block)
+or whose sender cannot fund it: each costs one signature check, bounded by
+the transaction rate limit.
 
 Eclipse basics:
 
