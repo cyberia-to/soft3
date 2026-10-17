@@ -99,7 +99,7 @@ acceptance for this section is a shop-window change, not new crates: these ten a
 | 1 | economics of writing | who may write, at what cost; an open graph with free writes drowns on day one | [[tok]] live economy; the [[bostrom]] → genesis bridge; lytics' 0.042 s PoW is one app's local answer, not the network's | A |
 | 2 | key lifecycle | recover, rotate, revoke; two devices are one neuron; a lost seed is not a lost citizen | [[vault]] recovery; [[mudra]] rotation/revocation; neuron as a person across devices | A |
 | 3 | protocol upgrade | the procedure for changing foculus parameters on a running network; a hard fork of a φ*-converged graph is defined behaviour | [[foculus]] upgrade spec; a fork as a user right (replay of a home book, exit of a domain) | B |
-| 4 | deletion and liability | illegal bytes will arrive; right-to-be-forgotten against content addressing | a named policy seat (not "unasked"); [[sigma]] or a new `censor`/`tombstone` verb — decide in B, do not ship silence | B |
+| 4 | information is legal | there are no illegal bytes; the record keeps everything, a node chooses what it holds and serves, liability sits with the actor | a settled stance written as a page with an owner; no `censor`, no `tombstone` verb — ever; replication follows focus (#5) is the only seat | settled · page in B |
 | 5 | storage economics | a reason to hold the bytes; the filecoin-shaped hole | [[bbg]] × [[tok]] duration × popularity; replication-follows-focus as a paying market | A |
 | 6 | adversarial audit | someone paid to break it, before real value moves | budget and a named campaign against mudra, the truth-serum, the consensus theorem | B, starts when A money moves |
 | 7 | operations | health, metrics, alerting as protocol citizens | [[lytics]] extended from visitors to nodes; a `health` signal on the wire | A |
@@ -179,7 +179,7 @@ the network may not take real value until a person can lose a phone and remain a
 
 1. upgrade procedure for foculus parameters; a fork of a φ*-converged network is defined (status #3)
 2. fork as a user right: replay a home book, leave a domain
-3. deletion/liability policy named and seated (status #4) — tombstone, or an explicit refusal with a legal owner
+3. the stance "information is legal" written as a page with an owner (status #4): no censor or tombstone verb, a node's choice of what it holds is local, liability belongs to the actor
 4. anti-capture of φ* as a specified property; collusion in truth staking has a next proof or a named bound
 5. adversarial audit budget and campaign (status #6)
 6. guardianship (with [[term]]): quorum, spend limits, animals and organisations as neurons under a guardian
@@ -193,7 +193,7 @@ the network may not take real value until a person can lose a phone and remain a
 
 - a parameter change has a document, a height, and a replay
 - a neuron leaves a domain with its book intact
-- illegal-bytes policy is a page with an owner, not a silence
+- the information-is-legal page exists with an owner; no deletion verb ships, ever
 - an audit report exists from someone paid to break mudra / BTS / the consensus theorem
 - a guardian neuron can spend, and can be removed, under a term
 - a pocket dark for 24 h converges without manual surgery
