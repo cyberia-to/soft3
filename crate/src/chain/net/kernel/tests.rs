@@ -173,3 +173,28 @@ fn a_refused_deep_fork_does_not_capture_body_sync() {
     }
     assert_eq!(a.chain.tip().id, branch[1].0.id(), "a reorganizes onto the honest branch");
 }
+
+/// chain.md §5.3: a checkpoint forbids reorganizing *below* it. A node whose
+/// tip is still under the checkpoint is not reorganizing when it moves up
+/// through it; it must download that chain. Found by the chain simulator
+/// (`late-join`): a late joiner that fetched the foundation checkpoint
+/// before its headers never asked for a body.
+#[test]
+fn a_fresh_node_holding_a_checkpoint_downloads_through_it() {
+    let net = Net::new(2);
+    let (a, b) = (scratch(&net, "cp-a"), scratch(&net, "cp-b"));
+    let blocks: Vec<_> = (0..130).map(|_| mine(&a.chain, &net.neurons[0], &[])).collect();
+    let id = blocks[119].0.id();
+    let cp = crate::chain::select::Checkpoint::sign(&a.chain.chain_id(), 120, id, &net.checkpoint_key).unwrap();
+    assert_eq!(b.chain.accept_checkpoint(120, &id, &cp.sig), Ok(true));
+    for (h, _) in &blocks {
+        assert_eq!(b.chain.accept_header(h, NOW), Ok(HeaderVerdict::Accepted));
+    }
+    assert_eq!(b.chain.missing_bodies(512).len(), 130, "the checkpointed chain is the one to download");
+    let top = blocks.last().unwrap();
+    assert!(matches!(b.chain.accept_block(&top.0, &top.1, NOW), Ok(BlockVerdict::NeedBodies(_))), "the top body first names its ancestors");
+    for (h, body) in &blocks {
+        let _ = b.chain.accept_block(h, body, NOW).unwrap();
+    }
+    assert_eq!(b.chain.tip().id, top.0.id());
+}
