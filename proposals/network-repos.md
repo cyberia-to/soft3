@@ -2,19 +2,21 @@
 tags: cyber, soft3, proposal, cybernode, genesis, network, bostrom, pussy, cyber, plumb, tok, release
 crystal-type: process
 crystal-domain: cyber
-alias: network repos, network repositories, a network is a repository, network config, launch configurator, network manifest
+alias: network repos, network repositories, a network is a repository, network config, launch configurator, network manifest, home network, home networks, personal network, cy home
 status: proposed
 date: 2026-10-17
 ---
-# a network is a repository — cybernode takes it as input
+# a network is a repository, or a home — cybernode takes it as input
 
 the owner, 2026-10-17: every network has a configuration — a set of contracts (plumb), the genesis distribution, the starting parameters, the starting graph: a configurator of the launch. there must be three such repositories — **cyber** (true-cyber), **bostrom** and **space-pussy** — and **cybernode**, the software that takes that repository as its input. today it is not so, and it is not thought through to the end.
 
-this page fixes what a network repository is, what moves into the three, what cybernode does with one, and the order. it continues [[cybernode]] (which left true-cyber open, §7.2 — this page closes it) and uses the [[soft3/specs/execution-model|execution model]], where a network instance is already "genesis/domain identity, rule versions, trust configuration and endpoint locations" supplied as data.
+and the same day, a fourth type: the local network of a neuron, raised under every unique name, with its own configuration. for cy that local network is everything, so its place is cy — a subcomponent, a folder of cy, not a repository. and cy does not have to raise a new network: it can join an existing one.
+
+this page fixes what a network repository is, what moves into the three, what the fourth type is and where it lives, what cybernode does with each, and the order. it continues [[cybernode]] (which left true-cyber open, §7.2 — this page closes it) and uses the [[soft3/specs/execution-model|execution model]], where a network instance is already "genesis/domain identity, rule versions, trust configuration and endpoint locations" supplied as data.
 
 ## 0. the decision in one paragraph
 
-**a network is defined by one repository, and nothing about a particular network lives anywhere else.** the repository holds four things — the contracts the network carries (plumb programs), the genesis distribution (its sources and its derivation policy), the starting parameters (identity, rule sets, consensus values, authorization policy) and the starting graph — plus a lock: the particle of the genesis file it builds, which is the chain id. there are three: `true-cyber` defines **cyber** (CYB), `bostrom` defines **bostrom** (BOOT), `space-pussy` defines **pussy** (PUSSY). cybernode is generic: it reads a network repository at a pinned revision, builds the genesis deterministically, checks it against the lock, and runs the network. the binary knows no network by name.
+**a network is defined by one configuration, and nothing about a particular network lives anywhere else.** a configuration holds four things — the contracts the network carries (plumb programs), the genesis distribution (its sources and its derivation policy), the starting parameters (identity, rule sets, consensus values, authorization policy) and the starting graph — plus a lock: the particle of the genesis file it builds, which is the chain id. there are four types. three are shared networks, each defined by a repository: `true-cyber` defines **cyber** (CYB), `bostrom` defines **bostrom** (BOOT), `space-pussy` defines **pussy** (PUSSY). the fourth is the **home**: the local network of a neuron, one per unique name, whose template is a folder of cy (`cy/home/`) and whose instances are held by the agents that raise them. cybernode is generic: it reads a configuration — a repository at a pinned revision or a home directory — builds the genesis deterministically, checks it against the lock, and runs the network. the binary knows no network by name.
 
 ## 1. what is wrong today
 
@@ -74,26 +76,51 @@ the three, filled in:
 | rule set 1 | transfer · cyberlink · claim (chain §2) | the same | claims only, no transfers |
 | genesis | 2026-11-05 13:37:00 UTC | 2026-11-05 13:22:42 UTC | when the proving and the encryption reach a stable construction |
 
+## 2.1 the fourth type: the home
+
+a home is the local network of one name. every unique name in a network can raise one; it is that name's own book, run by its own nodes, with its own configuration — the household of [[soft3/docs/oikos|oikos]], where one name roots one home book. for cy the home is everything: the agent reads, decides, links and keeps its state there first, and reaches the shared networks from it.
+
+it differs from the three shared networks in where it is defined and in how many there are:
+
+| | shared network (cyber, bostrom, pussy) | home |
+|---|---|---|
+| definition | one repository per network | one template, a folder of cy: `cy/home/` |
+| instances | one network per repository | one network per unique name — as many as there are names that raise one |
+| configuration | committed in the network's repository, locked by the release train | made by cy from the template and the name, held by the agent; its lock is published as a link from the name in a shared network |
+| genesis | built from pinned sources | the name's owner neuron, its starting balances and graph as the template says |
+| consensus | proof of work, rule sets by height | the name's own authority: the owner neuron and its devices; no work to search |
+| proof | every block proven ([[proven-present]]) | the same: every home block proven, so a shared network and any other home verify a home by its tip proof, never by trust |
+| registration | — | the name's home tip root linked into a shared network (oikos foundation 4, authenticated registration) |
+
+`cy/home/` holds the template in the same layout as a network repository (§2) — `network.toml`, `genesis/`, `contracts/`, `endpoints.toml` — with the values a home fills from its name: identity from the name, authorization hash-only (a home is a fresh network and carries no legacy key), rule set 1 as the template declares, the starting graph empty or seeded from the name's existing links. cy raises a home with it, or does not raise one at all: **cy can join an existing network instead** — any of the three shared networks, or another name's home (a family's, a company's) when that name admits it. raising and joining are two commands of one organ, and a neuron can have a home and belong to other networks at once.
+
+the subcomponent is cy's: a new unseen organ, `home`, beside `state`. `state` is the agent's verified sight into other networks; `home` is the network the agent keeps. the name is proposed; the count of cy's unseen organs grows from eight to nine (§6.7).
+
 ## 3. decisions
 
-1. **one network, one repository.** everything particular to a network — sources, policy, parameters, contracts, starting graph, endpoints, lock — lives in its repository and nowhere else. the three are `true-cyber`, `bostrom`, `space-pussy`.
+1. **one network, one configuration.** everything particular to a network — sources, policy, parameters, contracts, starting graph, endpoints, lock — lives in its configuration and nowhere else. the three shared networks are repositories: `true-cyber`, `bostrom`, `space-pussy`. the fourth type, the home, is a template in `cy/home/` and one configuration per name that raises it (§2.1).
 2. **true-cyber becomes the cyber network.** the repository keeps its name, because `cyberia-to/cyber` is the wiki behind cyber.page; the network's name is cyber and its coin CYB. its client code (the `cyber` binary: neuron, sync, link, relay, receipt) leaves it and becomes cybernode's client commands. the crate `true-cyber` stays resolvable on crates.io and is never yanked; its last version points at cybernode.
 3. **cybernode owns the format and the vocabulary; the network owns the values.** the network manifest format and the rule vocabulary are a spec of cybernode (`specs/network.md`, written in soft3 until [[cybernode]] C3 moves the node's specs). a network can only use rules the vocabulary has; a new kind of rule is a cybernode change, reviewed like code.
 4. **the genesis is a function of the repository.** `genesis = build(network repo @ rev, pinned sources)`, deterministic, byte-identical across independent builds; the result is pinned in `genesis.lock`, and the chain id is the particle of the file (chain §4.1). a node refuses a genesis whose particle differs from the lock of the revision it was given.
 5. **per-network policy leaves the stack spec.** chain.md keeps the generic: the genesis file format (§4.1), the generic derivation operations, block 0 (§4.3). the bostrom and pussy decisions of §4.2 and the genesis times of §4.3 move into their repositories' `distribution.toml`, `graph.toml` and `network.toml`, with their rationale in each repository's docs; genesis.md keeps the pipeline and its command.
 6. **consensus values become network data within rule-set bounds.** what is a constant in `params.rs` today becomes a value the network declares; the rule set defines the admissible range (a network cannot declare a block time the proof cannot keep, or a finality depth of zero). the two phase-1 networks declare today's values unchanged.
 7. **contracts are declared, not implied.** a network lists the plumb programs it carries at genesis and from which rule set others activate; their digests enter the genesis. pussy and bostrom carry none in rule set 1. cyber carries the CYB coin and the claim program from its genesis.
-8. **the binary knows no network by name.** cybernode runs `--network <repo path | revision | chain id>`; ports and endpoints come from `endpoints.toml` and the instance manifest ([[cybernode]] §2), not from a `match` on a name.
+8. **the binary knows no network by name.** cybernode runs `--network <repo path | revision | chain id | home directory>`; ports and endpoints come from `endpoints.toml` and the instance manifest ([[cybernode]] §2), not from a `match` on a name. cy runs a home through the same binary, in the roles a home needs.
 9. **network repositories ride the release train.** they are pinned in `release/phase1.toml` like siblings; a cybernode release embeds the `genesis.lock` of every network it ships for, so a node started on a known chain checks its genesis offline.
 10. **what else a repository holds stays beside, clearly apart.** the bostrom wiki and the pussy landing stay; the snapshot tooling becomes the sources tooling of `genesis/`; the go-cyber codebase of space-pussy is the old chain, not the network's definition — it moves to `legacy/` or to an archived repository (§6.3).
+11. **the home is cy's, and it is a folder, not a repository.** the template and the organ live in `cy/home/`; a home's configuration is made per name by cy and held by the agent; only its lock leaves the agent, as a link from the name. cy raises a home or joins an existing network — the home is the default place of the agent, never a precondition of joining.
 
-## 4. what cybernode does with a network repository
+## 4. what cybernode and cy do with a configuration
 
 ```text
 cybernode genesis build --network <repo>[@rev]     → genesis file + report, checked against genesis.lock
 cybernode genesis verify --network <repo>[@rev]    → rebuild, compare particle, block-0 id, root
 cybernode run --network <repo | chain id>          → a node of that network (roles from the instance manifest)
 cybernode network check <repo>                     → the manifest parses, every rule is in the vocabulary, every source pin resolves
+
+cy home init <name>                               → a home configuration from cy/home/ and the name, its genesis built and locked
+cy home run                                       → the home's node through cybernode
+cy join <network | name>                          → join a shared network or another name's home instead of raising one
 ```
 
 today's `soft3 genesis build --chain pussy|bostrom --snapshot DIR` becomes the first of these with the chain's policy read from its repository instead of from code and specs.
@@ -111,6 +138,7 @@ each phase closes on its last merge with a receipt in `audit/`.
 | **N4 — cyber** | true-cyber becomes the cyber network repository: client code moves to cybernode's client commands; `network.toml` with rule set 1 = claims only, hash-only authorization, the CYB coin and the claim program declared | `cybernode network check true-cyber` green; the claim program's relation specified against pussy's and bostrom's proven state ([[proven-present]] §2.9) |
 | **N5 — contracts** | plumb programs as declared contracts: trident sources and digests in `contracts/`, compiled and proven like any nox program; the activation of contracts on pussy and bostrom as a rule set | a test network whose genesis carries a declared contract and a transaction that runs it |
 | **N6 — cyber genesis** | when the proving and the encryption are stable: the cyber genesis built from its repository, locked, shipped | the lock published; two independent builds identical |
+| **N7 — the home** | `cy/home/`: the template in the network layout, the `home` organ's page in cy's anatomy, `cy home init`, `cy home run`, `cy join`; the home's lock linked from the name in a shared network | a home raised from a name on a test network, its blocks proven, its tip verified from the shared network by proof; a second agent joins it |
 
 timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identity with today's genesis, so they change no outcome; the target is the candidate of 2026-10-30. if they are not green by then, the genesis ships from today's pipeline and N1–N3 record the same particle in the repositories right after; the owner chooses.
 
@@ -122,9 +150,12 @@ timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identi
 4. **the network key.** who signs `endpoints.toml` and the lock: the foundation key of chain §5.3 for pussy and bostrom, and for cyber a key that is not ECDSA. owner.
 5. **bounds of the rule set.** which consensus values a network may change within a rule set, and which only by a new rule set. cybernode spec.
 6. **conflict with the repositories draft (soft3 PR #220, open, 2026-10-17).** that draft folds `true-cyber` into the `cyber` repository and archives `bostrom` and `space-pussy` as monuments of the bootloader. this page, on the owner's instruction of the same day, keeps all three as the repositories that define their networks; only the go-cyber code inside `space-pussy` is a monument (decision 10). the two must be reconciled before either merges its moves. owner.
+7. **the home organ.** its name (`home` proposed), its place among cy's unseen organs (eight become nine), and the home's consensus among one owner's devices. owner, with cy.
+8. **a name joining another name's home.** who admits whom, and what a member of a home holds. owner.
 
 ## 7. sources
 
 - soft3: `specs/chain.md` §0, §4, §7.1; `specs/genesis.md`; `crate/src/chain/params.rs`; `crate/src/bin/soft3.rs`; `specs/execution-model.md` §1–2; [[cybernode]]; [[proven-present]] §2.9.
 - `bostrom/snapshot/manifest.json`, `space-pussy/snapshot/manifest.json`; the repositories' trees, read 2026-10-17.
 - true-cyber `README.md` (the `cyber` client, 0.8); plumb `README.md` (tok: Coin, Card, PLUMB).
+- cy `README.md` (sixteen organs), `specs/state.md`, `chroma/name.md`; soft3 `docs/oikos.md` (one name roots one home book).
