@@ -56,6 +56,64 @@ pub fn validate_tx(chain: &mut Chain, tx_bytes: &[u8], pending: &[Tx]) -> Result
     Ok(TxInfo { txid: txid(&rules.chain, tx_bytes), tx, size: tx_bytes.len(), fee, account, nonce })
 }
 
+/// One account's transactions in nonce order, each with the same checks as
+/// [`validate_tx`] and its predecessors in the list applied first — in one
+/// scratch pass, so a run of k transactions executes k times, not
+/// k(k+1)/2 (chain-wire §4: re-validation after every tip re-admits the
+/// whole pool; with full 16-nonce windows the per-transaction replay made
+/// it seconds a block, simulation audit/network-2026-10.md `flood`). After
+/// the first failure every later entry repeats that error: its
+/// predecessor is missing.
+pub fn validate_run(chain: &mut Chain, txs: &[Vec<u8>]) -> Vec<Result<TxInfo, TxError>> {
+    let height = chain.tip().height + 1;
+    let locked = chain.locked_at(height);
+    let rules = chain.rules().clone();
+    // the checks that do not need the scratch state, against the tip
+    let checked: Vec<Result<(Tx, Id, u64), TxError>> = txs
+        .iter()
+        .map(|raw| {
+            if raw.len() > MAX_TX_BYTES {
+                return Err(TxError::TooLarge(raw.len()));
+            }
+            let tx = Tx::decode(raw).map_err(TxError::Decode)?;
+            if tx.is_coinbase() {
+                return Err(TxError::CoinbaseInBody);
+            }
+            let account = subject(&tx).ok_or(TxError::Signature)?;
+            if !super::sigs::verify(&rules.chain, &tx) {
+                return Err(TxError::Signature);
+            }
+            let nonce = tx.nonce().ok_or(TxError::CoinbaseInBody)?;
+            let current = chain.nonce(&account);
+            if nonce < current || nonce >= current.saturating_add(NONCE_WINDOW) {
+                return Err(TxError::Nonce { expected: current, actual: nonce });
+            }
+            Ok((tx, account, nonce))
+        })
+        .collect();
+    let state = chain.state_mut();
+    state.begin();
+    let mut out: Vec<Result<TxInfo, TxError>> = Vec::with_capacity(txs.len());
+    let mut failure: Option<TxError> = None;
+    for (raw, c) in txs.iter().zip(checked) {
+        if let Some(e) = &failure {
+            out.push(Err(e.clone()));
+            continue;
+        }
+        let r = c.and_then(|(tx, account, nonce)| {
+            let fee = apply::execute_tx(&rules, &tx, raw.len(), state, &locked, height)?;
+            Ok(TxInfo { txid: txid(&rules.chain, raw), tx, size: raw.len(), fee, account, nonce })
+        });
+        if let Err(e) = &r {
+            failure = Some(e.clone());
+        }
+        out.push(r);
+    }
+    let undo = state.commit();
+    state.revert(&undo);
+    out
+}
+
 /// Fee per byte ordering: `a` before `b` when `fee_a / len_a > fee_b / len_b`,
 /// compared as cross products (no division, no floats).
 fn fee_rate_desc(a: &(Vec<u8>, Tx), b: &(Vec<u8>, Tx)) -> std::cmp::Ordering {

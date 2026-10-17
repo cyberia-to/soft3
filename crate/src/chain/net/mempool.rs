@@ -255,23 +255,50 @@ impl Mempool {
     }
 
     /// After a new tip: drop txs now invalid (nonces and balances moved) and
-    /// re-admit the transactions of reorged-out blocks.
+    /// re-admit the transactions of reorged-out blocks. Reorged-out
+    /// transactions come first and win a nonce they share with a pending
+    /// one; each account's run is validated in one pass
+    /// (`ChainView::validate_run`), and a failure drops that account's
+    /// later nonces, which cannot apply without it.
     pub fn revalidate(&mut self, chain: &dyn ChainView, reorged_out: &[Vec<u8>], now: u64) {
-        let mut all: Vec<Entry> = self.entries.values().cloned().collect();
-        all.sort_by_key(|e| (e.from, e.nonce));
-        self.entries.clear();
-        self.by_neuron.clear();
-        self.bytes = 0;
+        let mut candidates: Vec<(Vec<u8>, u64)> = Vec::new();
         for body in reorged_out {
             for bytes in chain.txs_of(body) {
                 if bytes.get(1) != Some(&0) {
-                    let _ = self.admit(&bytes, chain, now);
+                    candidates.push((bytes, now));
                 }
             }
         }
-        for entry in all {
-            let _ = self.admit(&entry.bytes, chain, entry.added);
+        let mut all: Vec<Entry> = self.entries.values().cloned().collect();
+        all.sort_by_key(|e| (e.from, e.nonce));
+        candidates.extend(all.into_iter().map(|e| (e.bytes, e.added)));
+        self.entries.clear();
+        self.by_neuron.clear();
+        self.bytes = 0;
+        let mut runs: BTreeMap<Id, BTreeMap<u64, (Vec<u8>, u64)>> = BTreeMap::new();
+        for (bytes, added) in candidates {
+            if bytes.len() > MAX_TX_BYTES {
+                continue;
+            }
+            let Ok(tx) = Tx::decode(&bytes) else { continue };
+            if matches!(tx, Tx::Coinbase { .. }) {
+                continue;
+            }
+            let (Some(from), Some(nonce)) = (tx.subject(), tx.nonce()) else { continue };
+            runs.entry(from).or_default().entry(nonce).or_insert((bytes, added));
         }
+        for (from, mut run) in runs {
+            // nonces the tip already used are mined (or replaced): not a gap
+            let current = chain.nonce(&from);
+            run.retain(|nonce, _| *nonce >= current);
+            let (txs, added): (Vec<Vec<u8>>, Vec<u64>) = run.into_values().unzip();
+            for ((bytes, added), verdict) in txs.iter().zip(added).zip(chain.validate_run(&txs)) {
+                let Ok(a) = verdict else { break };
+                let tx = Tx::decode(bytes).expect("decoded above");
+                self.insert(a.txid, Entry { bytes: bytes.clone(), tx, from: a.account, nonce: a.nonce, added });
+            }
+        }
+        self.evict(now);
     }
 
     /// Transactions for a block: fee per byte descending, each neuron's
@@ -434,6 +461,40 @@ mod tests {
         assert_eq!(relay_charge(&beyond, 100, 100), 1, "a relay race costs what a duplicate costs");
         assert_eq!(relay_charge(&AdmitError::Signature, 101, 100), 10);
         assert_eq!(relay_charge(&AdmitError::Stale { current: 5, got: 3 }, 0, 100), 0);
+    }
+
+    /// The one-pass re-validation keeps exactly what admitting the pool
+    /// again transaction by transaction would keep.
+    #[test]
+    fn revalidation_in_one_pass_per_account_equals_readmission() {
+        let net = Net::with_funds(3, 10_000);
+        let s = scratch(&net, "pool-runs");
+        let chain = &s.chain;
+        let mut pool = Mempool::new();
+        let mut all = Vec::new();
+        for n in 0..9 {
+            all.push(net.transfer(0, n, [7; 32], 10, 300));
+        }
+        // account 1 cannot fund its third transfer: 2 and 3 cannot apply
+        for (n, amount) in [(0, 1_000), (1, 1_000), (2, 9_000), (3, 10)] {
+            all.push(net.transfer(1, n, [7; 32], amount, 300));
+        }
+        for tx in &all {
+            let _ = pool.admit(tx, chain, 0);
+        }
+        // a block takes account 0's first three
+        let (_, body) = mine(chain, &net.neurons[2], &all[..3]);
+        pool.remove_mined(chain, &body);
+        pool.revalidate(chain, &[], 0);
+        let mut reference = Mempool::new();
+        for tx in &all {
+            let _ = reference.admit(tx, chain, 0);
+        }
+        let (mut got, mut want) = (pool.ids(), reference.ids());
+        got.sort();
+        want.sort();
+        assert_eq!(got, want);
+        assert_eq!(got.len(), 6 + 2);
     }
 
     #[test]

@@ -447,6 +447,12 @@ impl ChainView for KernelChain {
         let info = self.lock().chain.validate_tx(tx, &pending).map_err(tx_refusal)?;
         Ok(Admitted { txid: info.txid, account: info.account, nonce: info.nonce, fee: info.fee })
     }
+    fn validate_run(&self, txs: &[Vec<u8>]) -> Vec<Result<Admitted, TxRefusal>> {
+        crate::chain::engine_tx::validate_run(&mut self.lock().chain, txs)
+            .into_iter()
+            .map(|r| r.map(|info| Admitted { txid: info.txid, account: info.account, nonce: info.nonce, fee: info.fee }).map_err(tx_refusal))
+            .collect()
+    }
     fn balance(&self, owner: &Id, token: &Id) -> u64 {
         self.lock().chain.balance(owner, token)
     }
