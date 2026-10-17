@@ -73,6 +73,8 @@ pub struct Peer {
     pub streams: Bucket,
     pub open_streams: usize,
     pub connected_at: Instant,
+    /// `k` (get-checkpoints) sent on this connection (chain-wire §3.1 step 1)
+    pub checkpoints_asked: bool,
 }
 
 impl Peer {
@@ -81,7 +83,7 @@ impl Peer {
         Peer {
             id, direction, addrs, bootstrap, score: 0, scored_at: now, best_height: 0, best_tip: [0; 32], chainwork: [0; 32],
             served_blocks: 0, headers: Bucket::new(64), txs: Bucket::new(256), bytes: Bucket::new(4 * 1024 * 1024),
-            streams: Bucket::new(16), open_streams: 0, connected_at: now,
+            streams: Bucket::new(16), open_streams: 0, connected_at: now, checkpoints_asked: false,
         }
     }
 
