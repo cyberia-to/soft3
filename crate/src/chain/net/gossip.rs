@@ -241,6 +241,36 @@ pub(crate) fn checkpoint_valid(inner: &Inner, c: &Checkpoint) -> bool {
     mudra::neuron::verify_statement(mudra::claim::neuron_of(&key), statement, &c.sig)
 }
 
+/// A checkpoint from `from` (gossiped, or answered to `k`): signature
+/// checked (+10 if bad), held by the wire and by the kernel. `true` when it
+/// is new — the gossip path relays it then.
+pub(crate) fn hold_checkpoint(inner: &Inner, from: &EndpointId, c: &Checkpoint) -> bool {
+    if inner.chain.checkpoint_key().is_none() {
+        return false;
+    }
+    if !checkpoint_valid(inner, c) {
+        inner.charge(from, 10, "checkpoint signature");
+        return false;
+    }
+    let fresh = {
+        let mut held = inner.checkpoints.lock().expect("checkpoints");
+        if held.iter().any(|h| h.height == c.height) {
+            false
+        } else {
+            held.push(c.clone());
+            held.sort_by_key(|c| c.height);
+            true
+        }
+    };
+    if fresh {
+        // the kernel holds it too: fork choice never crosses a held checkpoint (§5.3)
+        if let Err(e) = inner.chain.accept_checkpoint(c.height, &c.block_id, &c.sig) {
+            inner.say(&format!("checkpoint at {}: {e}", c.height));
+        }
+    }
+    fresh
+}
+
 pub(crate) async fn run_checkpoints(inner: Arc<Inner>, mut rx: GossipReceiver) {
     // a lagged receiver (a burst beyond the channel) skips, it does not end the topic
     while let Some(event) = rx.next().await {
@@ -256,28 +286,7 @@ pub(crate) async fn run_checkpoints(inner: Arc<Inner>, mut rx: GossipReceiver) {
         }
         match decode(&inner, &from, &msg.content) {
             Some(Frame::Checkpoint(c)) => {
-                if inner.chain.checkpoint_key().is_none() {
-                    continue;
-                }
-                if !checkpoint_valid(&inner, &c) {
-                    inner.charge(&from, 10, "checkpoint signature");
-                    continue;
-                }
-                let fresh = {
-                    let mut held = inner.checkpoints.lock().expect("checkpoints");
-                    if held.iter().any(|h| h.height == c.height) {
-                        false
-                    } else {
-                        held.push(c.clone());
-                        held.sort_by_key(|c| c.height);
-                        true
-                    }
-                };
-                if fresh {
-                    // the kernel holds it too: fork choice never crosses a held checkpoint (§5.3)
-                    if let Err(e) = inner.chain.accept_checkpoint(c.height, &c.block_id, &c.sig) {
-                        inner.say(&format!("checkpoint at {}: {e}", c.height));
-                    }
+                if hold_checkpoint(&inner, &from, &c) {
                     let _ = inner.checkpoints_tx.broadcast_neighbors(bytes::Bytes::from(Frame::Checkpoint(c).encode())).await;
                 }
             }

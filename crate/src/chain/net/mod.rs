@@ -249,6 +249,18 @@ impl Net {
         let _ = self.inner.headers_tx.broadcast_neighbors(bytes::Bytes::from(Frame::HeaderGossip(*header).encode())).await;
     }
 
+    /// Hold a signed checkpoint and announce it on the `checkpoints` topic
+    /// (chain.md §5.3: the signer publishes one per `CHECKPOINT_INTERVAL`).
+    /// `false` when it is not new or its signature does not verify.
+    pub async fn publish_checkpoint(&self, cp: Checkpoint) -> bool {
+        let own = self.inner.endpoint.id();
+        if !gossip::hold_checkpoint(&self.inner, &own, &cp) {
+            return false;
+        }
+        let _ = self.inner.checkpoints_tx.broadcast_neighbors(bytes::Bytes::from(Frame::Checkpoint(cp).encode())).await;
+        true
+    }
+
     /// Announce a transaction admitted here.
     pub async fn publish_tx(&self, bytes: &[u8]) {
         self.inner.note_relayed(codec::txid(&self.inner.chain.chain_id(), bytes));
