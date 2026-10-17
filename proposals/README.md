@@ -11,7 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
-| [the proven present](proven-present.md) | proposed | 2026-10-17 | every state carries one constant-size proof of its past; bootstrap without replay |
+| [the proven present](proven-present.md) | proposed | 2026-10-17 | every block proven, its proof verifying its parents': the present proves the past |
 | [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
 | [rooted civilization](rooted-civilization.md) | proposed | 2026-10-13 | the properties the stack still owes, in four phases |
 | [term](term.md) | proposed | 2026-10-13 | programmable rights and provable clearing |

@@ -17,6 +17,8 @@ date: 2026-10-12
 | **block** | a DAG unit: a step bundle ordered against k parents, plus the work ticket | nodes passing the sync-quorum gate | the step proofs inside it + the settlement ticket ([[fold-mining]] first lottery) | sub-second, racing | [[foculus]] |
 | **epoch** | the finality checkpoint: fold decider over the accumulated steps + parameter retarget + rank recompute | decider provers + stake quorum | decider proof (second lottery of [[fold-mining]]) co-signed by staked cyberlinks | minutes | foculus · tru · tok |
 
+revision 2026-10-17: the load-bearing decision below is reversed by [[proven-present]] — from-genesis validity lives in each block, as one merge of its parents' proofs.
+
 the load-bearing decision: **from-genesis validity lives in the accumulator, not in each block.** parano1d re-proves history in every block (hence its 30 s); soft3 proves only the per-step `apply` at 1 s and lets the ARC fold chain steps. a step is therefore tiny — thousands of nox reductions, not millions — and the block interval budgets only the per-step proof plus propagation. ranking ([[tru]] φ*, cyberank) is **never** inside a step; it recomputes once per epoch. reads ([[axon]], attention, query) are never in the trace at all.
 
 ## 2. module map — who owns what
