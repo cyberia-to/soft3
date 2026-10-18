@@ -198,3 +198,59 @@ fn a_fresh_node_holding_a_checkpoint_downloads_through_it() {
     }
     assert_eq!(b.chain.tip().id, top.0.id());
 }
+
+/// chain.md §5.3: "a node with checkpoints enabled treats a checkpointed
+/// block as final: it rejects any chain not containing it" — its own main
+/// chain included. A node that synced a heavier rewrite before the
+/// checkpoint reached it stayed on the rewrite (accept_checkpoint only
+/// logged the contradiction; fork choice only looks at heavier chains).
+/// Found by the chain simulator (`reorg-140-checkpoints`: the late joiner
+/// applied the attacker's blocks before its `k` answer arrived).
+#[test]
+fn a_checkpoint_that_contradicts_the_main_chain_moves_the_node_to_the_checkpointed_chain() {
+    let net = Net::new(2);
+    let (h, c, b) = (scratch(&net, "cpm-h"), scratch(&net, "cpm-c"), scratch(&net, "cpm-b"));
+    let honest: Vec<_> = (0..130).map(|_| mine(&h.chain, &net.neurons[0], &[])).collect();
+    for (hd, body) in &honest[..100] {
+        c.chain.accept_block(hd, body, NOW).unwrap();
+    }
+    let attack: Vec<_> = (0..40).map(|_| mine(&c.chain, &net.neurons[1], &[])).collect();
+    // b follows the heavier rewrite first and holds the honest blocks as a lighter branch
+    for (hd, body) in honest[..100].iter().chain(attack.iter()) {
+        b.chain.accept_block(hd, body, NOW).unwrap();
+    }
+    for (hd, body) in &honest[100..] {
+        let _ = b.chain.accept_block(hd, body, NOW);
+    }
+    assert_eq!(b.chain.tip().id, attack.last().unwrap().0.id());
+    let id = honest[119].0.id();
+    let cp = crate::chain::select::Checkpoint::sign(&b.chain.chain_id(), 120, id, &net.checkpoint_key).unwrap();
+    assert_eq!(b.chain.accept_checkpoint(120, &id, &cp.sig), Ok(true));
+    assert_eq!(b.chain.tip().id, honest.last().unwrap().0.id(), "the main chain that excludes the checkpoint is rejected too");
+    assert!(b.chain.conserved());
+}
+
+/// The same rule on the way in: a block at a checkpointed height that is
+/// not the checkpointed block is refused even when it extends the tip
+/// directly (`accept_block`'s fast path never consulted the checkpoints).
+#[test]
+fn a_block_that_contradicts_a_held_checkpoint_is_refused_even_on_the_tip() {
+    let net = Net::new(2);
+    let (h, c, b) = (scratch(&net, "cpt-h"), scratch(&net, "cpt-c"), scratch(&net, "cpt-b"));
+    let honest: Vec<_> = (0..130).map(|_| mine(&h.chain, &net.neurons[0], &[])).collect();
+    for (hd, body) in &honest[..100] {
+        c.chain.accept_block(hd, body, NOW).unwrap();
+    }
+    let attack: Vec<_> = (0..40).map(|_| mine(&c.chain, &net.neurons[1], &[])).collect();
+    let id = honest[119].0.id();
+    let cp = crate::chain::select::Checkpoint::sign(&b.chain.chain_id(), 120, id, &net.checkpoint_key).unwrap();
+    assert_eq!(b.chain.accept_checkpoint(120, &id, &cp.sig), Ok(true));
+    for (hd, body) in honest[..100].iter().chain(attack.iter()) {
+        let _ = b.chain.accept_block(hd, body, NOW);
+    }
+    assert!(b.chain.tip().height < 120, "the rewrite stops below the checkpoint: tip {}", b.chain.tip().height);
+    for (hd, body) in &honest[100..] {
+        let _ = b.chain.accept_block(hd, body, NOW);
+    }
+    assert_eq!(b.chain.tip().id, honest.last().unwrap().0.id());
+}

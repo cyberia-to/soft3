@@ -284,6 +284,13 @@ impl Chain {
         if !valid_pow(header) {
             return Err(ChainError::Pow);
         }
+        // §5.3: a chain not containing a held checkpoint is rejected — at the
+        // checkpointed height itself, whatever path the block arrives by
+        if let Some(expected) = self.checkpoints.get(header.height) {
+            if header.id() != expected {
+                return Err(ChainError::Checkpoint { height: header.height, expected });
+            }
+        }
         Ok(chainwork(parent.chainwork, header))
     }
 
@@ -429,6 +436,31 @@ impl Chain {
             }
         }
         (tip_height, tip, tip_work)
+    }
+
+    /// A held checkpoint contradicts our main chain at `height` (chain.md
+    /// §5.3: a chain not containing it is rejected — our own too): retract
+    /// below `height`, mark the retracted blocks invalid, and move to the
+    /// heaviest chain left (the checkpointed one when its blocks are known;
+    /// sync fetches them otherwise). Bounded by the reorg limit like any
+    /// reorganization: deeper than `MAX_REORG`, the node logs and keeps its
+    /// chain — the operator resyncs (§5.2).
+    pub(super) fn reject_main_from(&mut self, height: u64, ours: BlockId) -> Result<(), ChainError> {
+        let tip_height = self.store.tip_height();
+        let fork = height.saturating_sub(1);
+        if !select::reorg_allowed(tip_height, fork) {
+            eprintln!("chain: checkpoint at {height} contradicts the main chain {} blocks deep, beyond MAX_REORG: resync from a checkpoint", tip_height - fork);
+            return Ok(());
+        }
+        self.invalidate(ours);
+        while self.store.tip_height() > fork {
+            let id = self.retract()?;
+            self.invalidate(id);
+        }
+        self.heaviest = self.store.iter().filter(|(_, e)| e.status != store::Status::Invalid).map(|(_, e)| e.chainwork).max().unwrap_or(U256::ZERO);
+        self.after_tip_move()?;
+        let _ = self.try_advance();
+        Ok(())
     }
 
     /// Does the reorg limit or a checkpoint floor forbid switching to `id`?
