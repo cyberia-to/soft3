@@ -157,10 +157,10 @@ impl ChainApi for Chain {
 
     fn accept_checkpoint(&mut self, cp: &Checkpoint) -> Result<bool, ChainError> {
         let new = self.checkpoints.accept(&self.rules.chain, cp).map_err(ChainError::CheckpointRejected)?;
-        if new && self.store.main_at(cp.height).is_some_and(|id| id != cp.block_id) {
-            // our main chain contradicts the checkpoint: it is not our chain
-            // any more — the net layer resyncs from peers that carry it
-            eprintln!("chain: checkpoint at {} contradicts the main chain", cp.height);
+        if new {
+            if let Some(ours) = self.store.main_at(cp.height).filter(|id| *id != cp.block_id) {
+                self.reject_main_from(cp.height, ours)?;
+            }
         }
         Ok(new)
     }
