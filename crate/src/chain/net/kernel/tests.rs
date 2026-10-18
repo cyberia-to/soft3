@@ -228,6 +228,12 @@ fn a_checkpoint_that_contradicts_the_main_chain_moves_the_node_to_the_checkpoint
     assert_eq!(b.chain.accept_checkpoint(120, &id, &cp.sig), Ok(true));
     assert_eq!(b.chain.tip().id, honest.last().unwrap().0.id(), "the main chain that excludes the checkpoint is rejected too");
     assert!(b.chain.conserved());
+    // a peer still on the vetoed branch relays its next block: refused, never scored
+    let (next, _) = mine(&c.chain, &net.neurons[1], &[]);
+    let e = b.chain.accept_header(&next, NOW).unwrap_err();
+    assert!(matches!(e, HeaderError::Refused(_)) && e.score() == 0, "{e:?}");
+    let e = b.chain.accept_header(&attack[30].0, NOW).unwrap_err();
+    assert!(matches!(e, HeaderError::Refused(_)) && e.score() == 0, "a vetoed block announced again: {e:?}");
 }
 
 /// The same rule on the way in: a block at a checkpointed height that is
