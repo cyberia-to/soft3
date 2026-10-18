@@ -40,6 +40,10 @@ pub struct Chain {
     pub(super) coinbases: VecDeque<(u64, Id, u64)>,
     pub(super) rejected: HashSet<BlockId>,
     pub(super) rejected_order: VecDeque<BlockId>,
+    /// blocks invalid only for contradicting a held checkpoint (§5.3): a
+    /// peer relaying them or their children is on the other branch, not
+    /// misbehaving — refused as `Checkpoint`, never scored
+    pub(super) vetoed: HashSet<BlockId>,
     /// the most work any non-invalid header carries; when the tip has it,
     /// there is nothing to consider
     pub(super) heaviest: U256,
@@ -117,6 +121,7 @@ impl Chain {
             coinbases: VecDeque::new(),
             rejected: HashSet::new(),
             rejected_order: VecDeque::new(),
+            vetoed: HashSet::new(),
             heaviest: U256::ZERO,
             finalized: 0,
             events: Vec::new(),
@@ -224,6 +229,21 @@ impl Chain {
         self.remember_rejected(id);
     }
 
+    /// Invalid for contradicting a held checkpoint (see `vetoed`).
+    pub(super) fn veto(&mut self, id: BlockId) {
+        self.invalidate(id);
+        if self.vetoed.len() >= REJECTED_CAPACITY {
+            self.vetoed.clear();
+        }
+        self.vetoed.insert(id);
+    }
+
+    /// The error for a header that is, or descends from, a vetoed block.
+    pub(super) fn vetoed_error(&self, height: u64) -> ChainError {
+        let expected = self.checkpoints.held().filter(|(h, _)| **h <= height).last().map(|(_, id)| *id).unwrap_or([0; 32]);
+        ChainError::Checkpoint { height, expected }
+    }
+
     /// Non-invalid headers heavier than the tip, heaviest first, ties in
     /// first-seen order (§5.1).
     fn candidates(&self) -> Vec<BlockId> {
@@ -265,6 +285,9 @@ impl Chain {
         }
         let parent = self.entry(&header.prev).ok_or(ChainError::UnknownParent(header.prev))?;
         if parent.status == store::Status::Invalid {
+            if self.vetoed.contains(&header.prev) {
+                return Err(self.vetoed_error(header.height));
+            }
             return Err(ChainError::InvalidParent(header.prev));
         }
         if header.height != parent.header.height + 1 {
@@ -399,7 +422,7 @@ impl Chain {
             }
             if let Some((height, expected)) = self.checkpoints.violation(|h| self.store.ancestor_at(&best, h)) {
                 // the chain excludes a held checkpoint: not a candidate, nor its descendants
-                self.invalidate(best);
+                self.veto(best);
                 first_error.get_or_insert(ChainError::Checkpoint { height, expected });
                 continue;
             }
@@ -452,10 +475,10 @@ impl Chain {
             eprintln!("chain: checkpoint at {height} contradicts the main chain {} blocks deep, beyond MAX_REORG: resync from a checkpoint", tip_height - fork);
             return Ok(());
         }
-        self.invalidate(ours);
+        self.veto(ours);
         while self.store.tip_height() > fork {
             let id = self.retract()?;
-            self.invalidate(id);
+            self.veto(id);
         }
         self.heaviest = self.store.iter().filter(|(_, e)| e.status != store::Status::Invalid).map(|(_, e)| e.chainwork).max().unwrap_or(U256::ZERO);
         self.after_tip_move()?;

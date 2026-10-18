@@ -108,6 +108,9 @@ impl ChainApi for Chain {
 
     fn accept_header(&mut self, header: &Header, now: u64) -> Result<HeaderVerdict, ChainError> {
         let id = header.id();
+        if self.vetoed.contains(&id) {
+            return Err(self.vetoed_error(header.height));
+        }
         if self.rejected.contains(&id) {
             return Err(ChainError::Rejected(id));
         }
