@@ -9,7 +9,7 @@ alias: chain map, chain requirement map, chain requirements map
 
 # chain — the requirement map
 
-One row per requirement of [specs/chain.md](../../specs/chain.md): the code that implements it, the tests that check its cases, the receipt that observed it, and its state. The form is [cyberia/dev § requirements](../../../cyberia/dev.md): `open` — no code, no test or no case; `simulated` — tests green on synthetic input; `measured` — observed on the real path with a receipt at a commit; `proven` — a blessed conformance vector or a proof. `stale` is never written here: `scripts/requirements.py` computes it from git when the code changed after the receipt landed.
+One row per requirement of [specs/chain.md](../../specs/chain.md): the code that implements it, the tests that check its cases, the receipt that observed it, and its state. The form is [cyberia/dev § requirements](../../../cyberia/dev.md): `open` — no code, no test or no case; `simulated` — tests green on synthetic input; `measured` — observed on the real path with a receipt at a commit; `proven` — a blessed conformance vector or a proof. `stale` is never written here: `scripts/requirements.nu` computes it from git when the code changed after the receipt landed.
 
 The map owns the links to code, test and proof; the clause owns its cases. Paths are relative to the repository; tests name `file::function`; a receipt is a page in this directory.
 

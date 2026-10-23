@@ -57,7 +57,7 @@ Design rules this page obeys:
 Requirements: every normative section below carries a stable id in its
 heading (`CHAIN-…`) and ends with its cases — one row each, positive or
 negative, given/when/then. The map from each id to code, test, receipt and
-state is [audit/chain/map.md](../audit/chain/map.md); `scripts/requirements.py`
+state is [audit/chain/map.md](../audit/chain/map.md); `scripts/requirements.nu`
 reads both and sets the dots. Parents: `CHAIN-BLOCK` (§1), `CHAIN-TRANSACTIONS`
 (§2), `CHAIN-STATE` (§3), `CHAIN-GENESIS` (§4), `CHAIN-CONSENSUS` (§5),
 `CHAIN-UPGRADES` (§7), `CHAIN-POOL` (§11). Invariants: `CHAIN-INV-INTEGER` —
