@@ -1,0 +1,20 @@
+NOLOCK strata
+strata exit=101 secs=31 :: cargo test --release --locked --workspace
+NOLOCK hemera
+hemera exit=0 secs=36 :: cargo test --release --locked --workspace
+NOLOCK lens
+lens exit=0 secs=67 :: cargo test --release --locked --workspace
+nox exit=0 secs=5 :: cargo test --release --locked --workspace
+zheng exit=0 secs=340 :: cargo test --release --locked --workspace
+bbg exit=101 secs=0 :: cargo test --release --locked
+joy exit=0 secs=225 :: cargo test --release --locked --workspace
+tok exit=0 secs=7 :: cargo test --release --locked --workspace
+mudra exit=101 secs=0 :: cargo test --release --locked --features prove
+foculus exit=0 secs=33 :: cargo test --release --locked
+foculus-acc exit=0 secs=22 :: cargo test --release --locked --features accumulated-settlement
+cybergraph exit=101 secs=0 :: cargo test --release --locked --workspace
+NOLOCK inf
+inf exit=0 secs=11 :: cargo test --release --locked --workspace --features inf-lower/prove
+soft3 exit=101 secs=0 :: cargo test --release --locked
+cyb-core exit=101 secs=0 :: cargo test --release --locked -p cyb-core
+DONE

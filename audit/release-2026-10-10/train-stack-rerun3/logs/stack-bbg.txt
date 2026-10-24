@@ -1,0 +1,107 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/D/train/checkout/bbg/rs
+   Compiling strata-core v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/core)
+   Compiling cyber-hemera v0.3.1 (/Users/master/cyber/.stands/D/train/checkout/hemera/rs)
+   Compiling serde_core v1.0.228
+   Compiling zmij v1.0.21
+   Compiling serde_json v1.0.149
+   Compiling memchr v2.8.0
+   Compiling strata-ext v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/ext)
+   Compiling strata-proof v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/proof)
+   Compiling strata-compute v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/compute)
+   Compiling strata-trop v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/trop/rs)
+   Compiling strata-kuro v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/kuro/rs)
+   Compiling strata-nebu v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/nebu/rs)
+   Compiling strata-genies v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/genies/rs)
+   Compiling strata-jali v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/strata/jali/rs)
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/.stands/D/train/checkout/lens/core)
+   Compiling cyber-lens-brakedown v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/brakedown)
+   Compiling cyber-lens-porphyry v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/porphyry)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/binius)
+   Compiling cyber-lens-assayer v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/assayer)
+   Compiling cyber-lens-ikat v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/ikat)
+   Compiling cyber-nox v0.2.0 (/Users/master/cyber/.stands/D/train/checkout/nox/rs)
+   Compiling cyber-lens v0.1.3 (/Users/master/cyber/.stands/D/train/checkout/lens/src)
+   Compiling zheng v0.3.3 (/Users/master/cyber/.stands/D/train/checkout/zheng/rs)
+   Compiling bbg v0.2.1 (/Users/master/cyber/.stands/D/train/checkout/bbg/rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.45s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/bbg-3ff30f9e9205defb)
+
+running 54 tests
+test query::tests::dim_roundtrip ... ok
+test query::tests::look_provider_balances_returns_none ... ok
+test query::tests::look_provider_invalid_namespace_returns_none ... ok
+test query::tests::look_provider_missing_returns_none ... ok
+test query::tests::bbg_query_balances_returns_none ... ok
+test query::tests::collect_look_openings_empty_trace ... ok
+test prune::tests::fresh_edge_survives_normal_pruning ... ok
+test query::tests::bbg_query_time_uses_first_8_bytes_as_u64 ... ok
+test query::tests::look_provider_neuron_focus_cell_by_index ... ok
+test query::tests::look_provider_reads_cell_by_index ... ok
+test prune::tests::gravity_prunes_fresh_low_density_when_over_budget ... ok
+test query::tests::bbg_query_particles_returns_proof ... ok
+test prune::tests::stale_low_weight_edge_is_pruned ... ok
+test prune::tests::high_rank_edge_is_protected ... ok
+test prune::tests::refresh_resets_staleness ... ok
+test query::tests::collect_look_openings_non_look_row_ignored ... ok
+test query::tests::bbg_query_neurons_returns_proof ... ok
+test query::tests::proof_look_provider_missing_key_returns_none_no_opening ... ok
+test query::tests::proof_provider_value_matches_fast_provider_neuron ... ok
+test query::tests::take_look_openings_drains_the_buffer ... ok
+test query::tests::proof_look_provider_returns_value_and_accumulates_opening ... ok
+test stats::tests::commit_is_deterministic ... ok
+test stats::tests::different_diameter_changes_commitment ... ok
+test stats::tests::different_node_count_changes_commitment ... ok
+test stats::tests::relation_index_constants_cover_all_slots ... ok
+test stats::tests::serialize_length_is_fixed ... ok
+test storage::tiered::tests::ephemeral_not_in_dirty_after_commit ... ok
+test storage::tiered::tests::ephemeral_not_written_to_warm ... ok
+test storage::tiered::tests::fetch_content_accepts_matching_content ... ok
+test storage::tiered::tests::fetch_content_none_without_a_network_tier ... ok
+test storage::tiered::tests::fetch_content_rejects_content_that_does_not_hash_to_the_particle ... ok
+test storage::tiered::tests::hot_hit_shadows_warm ... ok
+test storage::tiered::tests::iter_returns_dimension_entries ... ok
+test storage::tiered::tests::get_mut_and_mark_dirty_roundtrip ... ok
+test storage::tiered::tests::promote_moves_warm_to_hot ... ok
+test storage::tiered::tests::read_cascades_hot_then_warm ... ok
+test storage::tiered::tests::remove_clears_from_all_tiers ... ok
+test storage::tiered::tests::write_through_to_warm ... ok
+test query::tests::proof_look_provider_accumulates_multiple_openings ... ok
+test query::tests::proof_provider_value_matches_fast_provider_time ... ok
+test query::tests::verify_query_valid_proof ... ok
+test tests::double_spend_is_rejected ... ok
+test tests::empty_graph_stats_are_zero ... ok
+test tests::cyberlink_changes_root ... ok
+test tests::diameter_bound_defaults_to_node_count_minus_one ... ok
+test tests::empty_root_is_deterministic ... ok
+test tests::finalize_block_increments_height ... ok
+test tests::installed_diameter_bound_is_used_and_changes_root ... ok
+test tests::prove_particle_returns_none_for_unknown_cid ... ok
+test tests::statistics_count_nodes_and_relations ... ok
+test tests::compute_root_is_deterministic ... ok
+test tests::prove_and_verify_particle_roundtrip ... ok
+test query::tests::collect_look_openings_from_real_trace ... ok
+test tests::lazy_root_after_bulk_inserts_matches_per_insert_root ... ok
+
+test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/look_e2e.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/look_e2e-f8d13d38f6244229)
+
+running 2 tests
+test look_against_stale_root_is_rejected ... ok
+test look_proof_verifies_against_state_root ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.99s
+
+     Running tests/serde_wire.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/serde_wire-30fec303f4123a10)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bbg
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

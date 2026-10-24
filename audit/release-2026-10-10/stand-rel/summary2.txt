@@ -1,0 +1,7 @@
+strata-nff exit=101 secs=8 :: cargo test --release --workspace --no-fail-fast
+bbg-unlocked exit=0 secs=16 :: cargo test --release
+mudra-unlocked exit=0 secs=9 :: cargo test --release --features prove
+cybergraph-unlocked exit=0 secs=23 :: cargo test --release --workspace
+soft3-unlocked exit=0 secs=36 :: cargo test --release
+cyb-core exit=101 secs=0 :: cargo test --release -p cyb-core
+DONE

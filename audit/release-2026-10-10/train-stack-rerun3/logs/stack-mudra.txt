@@ -1,0 +1,108 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/D/train/checkout/mudra
+   Compiling version_check v0.9.5
+   Compiling zeroize v1.9.0
+   Compiling libc v0.2.186
+   Compiling typenum v1.20.1
+   Compiling subtle v2.6.1
+   Compiling const-oid v0.9.6
+   Compiling der v0.7.10
+   Compiling zerocopy v0.8.52
+   Compiling base16ct v0.2.0
+   Compiling generic-array v0.14.9
+   Compiling serde_core v1.0.228
+   Compiling serde v1.0.228
+   Compiling spki v0.7.3
+   Compiling tinyvec_macros v0.1.1
+   Compiling arrayvec v0.7.7
+   Compiling getrandom v0.2.17
+   Compiling cpufeatures v0.2.17
+   Compiling rand_core v0.6.4
+   Compiling num-traits v0.2.19
+   Compiling hex-conservative v0.2.2
+   Compiling ff v0.13.1
+   Compiling group v0.13.0
+   Compiling tinyvec v1.11.0
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling sec1 v0.7.3
+   Compiling digest v0.10.7
+   Compiling crypto-bigint v0.5.5
+   Compiling hmac v0.12.1
+   Compiling rfc6979 v0.4.0
+   Compiling signature v2.2.0
+   Compiling sha2 v0.10.9
+   Compiling pbkdf2 v0.12.2
+   Compiling ripemd v0.1.3
+   Compiling bs58 v0.5.1
+   Compiling elliptic-curve v0.13.8
+   Compiling unicode-normalization v0.1.25
+   Compiling ecdsa v0.16.9
+   Compiling bitcoin_hashes v0.14.101
+   Compiling k256 v0.13.4
+   Compiling base64 v0.22.1
+   Compiling bip32 v0.5.3
+   Compiling bech32 v0.11.1
+   Compiling serde_json v1.0.151
+   Compiling num-integer v0.1.46
+   Compiling hex v0.4.3
+   Compiling num-bigint v0.4.6
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.3.1
+   Compiling rand v0.8.6
+   Compiling bip39 v2.2.2
+   Compiling cyber-mudra v0.1.0 (/Users/master/cyber/.stands/D/train/checkout/mudra)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.56s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/mudra-5cc46f36fcce69f1)
+
+running 20 tests
+test claim::tests::decode_rejects_malformed ... ok
+test cosmos::tests::address_matches_cosmos_sdk_known_vector ... ok
+test cosmos::tests::pussy_prefix_is_applied ... ok
+test cosmos::tests::same_key_different_chains_share_account_id ... ok
+test domain::tests::domain_scalar_keys_unchanged_by_constant_time_hash ... ok
+test domain::tests::domain_scalar_is_deterministic_and_domain_bound ... ok
+test claim::tests::claim_encodes_and_decodes_round_trip ... ok
+test domain::tests::native_id_matches_the_bridge_formula ... ok
+test domain::tests::different_domains_different_keys ... ok
+test domain::tests::bech32_uses_hrp ... ok
+test claim::tests::swapped_pubkey_is_rejected ... ok
+test claim::tests::neuron_of_is_deterministic ... ok
+test domain::tests::same_entropy_same_domain_same_key ... ok
+test claim::tests::wrong_hrp_is_rejected ... ok
+test spell::tests::bad_spell_is_rejected ... ok
+test claim::tests::tampered_neuron_is_rejected ... ok
+test claim::tests::round_trip_claim_verifies ... ok
+test neuron::tests::native_subject_message_domain_and_exact_envelope_are_bound ... ok
+test spell::tests::passphrase_changes_the_key ... ok
+test spell::tests::derivation_is_deterministic ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running unittests src/bin/mudra.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/mudra-2bd7555f17858530)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_compat.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/domain_compat-87b17fa1c59be5bf)
+
+running 1 test
+test domain_addresses_native_ids_adr036_docs_and_signatures_match_legacy_bytes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/vectors.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/vectors-c003effc4e470bbd)
+
+running 2 tests
+test abandon_spell_derives_the_verified_pussy_account ... ok
+test full_bridge_round_trips ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+   Doc-tests mudra
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
