@@ -2,7 +2,7 @@
 # the director's deterministic tick — sense, qualify, think, report. no tokens unless something changed.
 # runs as the body user on agent-a; needs: git, gh (as cyberia-apparatus), jq, goose; DIR=$HOME/director
 set -euo pipefail
-DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"
+DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"; cd "$DIR"
 ORG=cyberia-to; ALLOWANCE=${ALLOWANCE:-60}; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
 [ -f "$STATE/think.lock" ] && { log "a think is still running; skip"; exit 0; }
