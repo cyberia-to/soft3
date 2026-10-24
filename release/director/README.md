@@ -34,14 +34,14 @@ the budget is a mechanism: one `goose run` per tick at most, `--max-turns 40`, a
 
 ## what it merges, and what it does not
 
-by `cyberia/processes/deliver.md` § lanes: **contained** (one repository, one part, covered by tests, gates green) — the director merges when the PR carries `ready` and the gates of the PR are green; **wide** (a contract, a shared crate, anything a rung above depends on) and **irreversible** — the director labels `decision` and waits. until the machine user `cyberia-agent` has merge rights on the component repositories, the director merges nothing and every mergeable PR gets `ready` for the owner's click — the lane is computed from the files touched, never declared.
+by `cyberia/processes/deliver.md` § lanes: **contained** (one repository, one part, covered by tests, gates green) — the director merges when the PR carries `ready` and the gates of the PR are green; **wide** (a contract, a shared crate, anything a rung above depends on) and **irreversible** — the director labels `decision` and waits. until the machine user `cyberia-apparatus` has merge rights on the component repositories, the director merges nothing and every mergeable PR gets `ready` for the owner's click — the lane is computed from the files touched, never declared.
 
 ## what it needs to exist
 
 | need | state 2026-10-24 |
 |---|---|
 | a body signed in on agent-a (claude: `claude` → `/login`) | **the owner's hand** |
-| the GitHub machine user `cyberia-agent`: token with `repo` (PRs, labels, comments) and `actions` (dispatch, download artifacts) on soft3 and the component repositories; later merge rights for the contained lane | **the owner's hand** — a GitHub account, 2FA, org membership |
+| the GitHub machine user `cyberia-apparatus`: token with `repo` (PRs, labels, comments) and `actions` (dispatch, download artifacts) on soft3 and the component repositories; later merge rights for the contained lane | **the owner's hand** — a GitHub account, 2FA, org membership |
 | the files here on agent-a under `/srv/forge/claude/director/` and the loop under `tmux` | installed by `install.sh`, waits for the two above |
 | the daily cut at 12:00 UTC | soft3#246, cyber#153 |
 

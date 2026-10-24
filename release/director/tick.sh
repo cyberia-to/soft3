@@ -1,12 +1,12 @@
 #!/bin/bash
 # the director's deterministic tick — sense, qualify, think, report. no tokens unless something changed.
-# runs as the body user on agent-a; needs: git, gh (as cyberia-agent), jq, goose; DIR=$HOME/director
+# runs as the body user on agent-a; needs: git, gh (as cyberia-apparatus), jq, goose; DIR=$HOME/director
 set -euo pipefail
 DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"
 ORG=cyberia-to; ALLOWANCE=${ALLOWANCE:-60}; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
 [ -f "$STATE/think.lock" ] && { log "a think is still running; skip"; exit 0; }
-gh auth status >/dev/null 2>&1 || { log "gh is not signed in (the cyberia-agent token is missing) — sense only, no qualify, no think"; NOGH=1; }
+gh auth status >/dev/null 2>&1 || { log "gh is not signed in (the cyberia-apparatus token is missing) — sense only, no qualify, no think"; NOGH=1; }
 
 # 1 sense: component HEADs from the registry, open PRs, last train run
 MANIFEST=$DIR/mirrors/soft3/release/phase1.toml
