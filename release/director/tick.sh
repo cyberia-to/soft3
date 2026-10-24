@@ -6,6 +6,7 @@ DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"
 ORG=cyberia-to; ALLOWANCE=${ALLOWANCE:-60}; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
 [ -f "$STATE/think.lock" ] && { log "a think is still running; skip"; exit 0; }
+gh auth status >/dev/null 2>&1 || { log "gh is not signed in (the cyberia-agent token is missing) — sense only, no qualify, no think"; NOGH=1; }
 
 # 1 sense: component HEADs from the registry, open PRs, last train run
 MANIFEST=$DIR/mirrors/soft3/release/phase1.toml
@@ -20,15 +21,17 @@ import sys,tomllib
 for s in tomllib.load(open(sys.argv[1],'rb'))['sibling']: print(s['repo'], s['branch'], s['rev'])
 PY
 )
-prs=$(gh pr list -R $ORG/soft3 --state open --json number,title,labels,mergeable,headRefName,updatedAt -q '[.[] | {n:.number,t:.title,labels:[.labels[].name],mergeable:.mergeable,branch:.headRefName}]')
-run=$(gh run list -R $ORG/soft3 --workflow "Release train" -L 1 --json databaseId,status,conclusion,createdAt -q '.[0]')
+prs="[]"; run="null"
+[ -z "${NOGH:-}" ] && prs=$(gh pr list -R $ORG/soft3 --state open --json number,title,labels,mergeable,headRefName,updatedAt -q '[.[] | {n:.number,t:.title,labels:[.labels[].name],mergeable:.mergeable,branch:.headRefName}]')
+[ -z "${NOGH:-}" ] && run=$(gh run list -R $ORG/soft3 --workflow "Release train" -L 1 --json databaseId,status,conclusion,createdAt -q '.[0]')
 jq -n --argjson heads "$heads" --argjson prs "$prs" --argjson run "$run" --arg at "$NOW" '{at:$at, heads:$heads, prs:$prs, last_run:$run}' > "$STATE/tick-$NOW.json"
 prev=$(ls -1 "$STATE"/tick-*.json 2>/dev/null | tail -2 | head -1)
 changed=1; [ -n "$prev" ] && [ "$prev" != "$STATE/tick-$NOW.json" ] && diff -q <(jq -S 'del(.at)' "$prev") <(jq -S 'del(.at)' "$STATE/tick-$NOW.json") >/dev/null && changed=0
 drift=$(jq '[.heads[] | select(.drift)] | length' "$STATE/tick-$NOW.json")
-log "sense: drift on $drift siblings, $(jq '.prs|length' "$STATE/tick-$NOW.json") open PRs, last run $(jq -r '.last_run.conclusion // .last_run.status' "$STATE/tick-$NOW.json"), changed=$changed"
+log "sense: drift on $drift siblings, $(jq '.prs|length' "$STATE/tick-$NOW.json") open PRs, last run $(jq -r '.last_run.conclusion // .last_run.status // "unknown"' "$STATE/tick-$NOW.json"), changed=$changed"
 
 # 2 qualify: a HEAD moved since the last qualify → dispatch the gates without a cut, once
+[ -n "${NOGH:-}" ] && exit 0
 if [ "$changed" = 1 ] && [ "$(jq -r '.last_run.status' "$STATE/tick-$NOW.json")" = completed ]; then
   if [ ! -f "$STATE/qualified-heads" ] || ! diff -q <(jq -S .heads "$STATE/tick-$NOW.json") "$STATE/qualified-heads" >/dev/null; then
     gh workflow run release-train.yml -R $ORG/soft3 -f cut=false && jq -S .heads "$STATE/tick-$NOW.json" > "$STATE/qualified-heads" && log "qualify: dispatched the gates (cut=false)"
