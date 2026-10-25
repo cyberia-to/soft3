@@ -1,0 +1,10 @@
+#!/bin/bash
+# ask-fable "<question>" — the hard questions only; capped per UTC day (FABLE_DAILY, default 20)
+set -euo pipefail
+STATE=${DIR:-$HOME/director}/state; mkdir -p "$STATE"; f="$STATE/fable-$(date -u +%Y-%m-%d)"
+n=$(cat "$f" 2>/dev/null || echo 0); cap=${FABLE_DAILY:-20}
+if [ "$n" -ge "$cap" ]; then echo "REFUSED: fable cap $cap reached today — decide with opus and note it"; exit 0; fi
+echo $((n+1)) > "$f"
+[ -f "$HOME/.config/cyber/claude.env" ] && . "$HOME/.config/cyber/claude.env"
+echo "$(date -u +%H:%M:%S) fable #$((n+1)): ${1:0:160}" >> "$STATE/fable.log"
+exec claude -p --model fable "$1"
