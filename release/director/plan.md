@@ -1,0 +1,126 @@
+---
+title: the director's plan — phase 1
+tags: soft3, release, director, plan, phase 1
+crystal-type: process
+crystal-domain: cyber
+status: open
+date: 2026-10-25
+serves: release/director/README.md § the goal
+---
+# the director's plan — phase 1
+
+the goal: a green candidate of soft3 from origin default branches, every gate of `specs/releases.md` green, `release/phase1.toml` pinned to what was built, the owner's promotion the only step left. this page is the director's plan; the owner corrects it by editing it. one session takes one unit: the first open row below, or the reddest gate when the stack is red.
+
+## what phase 1 is
+
+phase 1 is defined in `cyber/launch.md` § phase 1, not here: **the bootloader reborn** — pussy and bostrom as two soft3 proof-of-work chains, genesis 2026-11-05 (bostrom 13:22:42 UTC, pussy 13:37:00 UTC), the cores in consensus at genesis per `specs/chain-economy.md` (decision 2026-10-17), the material hemera 0.4 / profile #15 (decision 2026-10-16), the pool's formats frozen and the pool off (`specs/chain.md` §11). the code spec is `specs/chain.md`, `specs/chain-wire.md`, `specs/chain-conformance.md`, `specs/genesis.md`, `specs/chain-economy.md`.
+
+the calendar that binds this plan (`cyber/launch.md`, decision 2026-10-17):
+
+| date (UTC) | what |
+|---|---|
+| until 2026-11-02 00:00 | anything may change: specs, formats, parameters, genesis files |
+| 2026-11-02 → 11-05 | code and feature freeze: only security and bug fixes with a failing test merge |
+| 2026-11-05 | genesis of both chains |
+
+so every row of "the order" below that is not a fix must merge before 2026-11-02 00:00 UTC. what does not fit is cut from phase 1, never squeezed (`cyber/launch.md` § the phases).
+
+## where the stack stands — receipts
+
+the last train run: `Release train` run 40098866000 (2026-10-24 13:36 UTC, `cut=false`), all five legs red. receipts: the run's `candidate-*` artifacts (on agent-a in `~/director/state/run-40098866000/`). stack leg:
+
+| gate | result | first error (from `logs/<gate>.txt`) |
+|---|---|---|
+| origin-checkouts, source-inputs-unchanged | green | |
+| phase1-pins | red | drift on 25: bbg cybergraph evy file foculus glia hemera honeycrisp inf lens mir mudra neuron nox nu optica radio rune soma spark strata tade tok tru zheng |
+| release-notes-source | red | `cyb: captured product HEAD has no merged pull request` |
+| package-resolution, soft3-tests, soft3-release | red | `failed to load manifest for dependency cyber-lens-gpu … lens/gpu/Cargo.toml: No such file` |
+| node-status | blocked | release executable was not built |
+| stack-hemera, lens, nox, zheng, tru, tok, mudra, file | green | |
+| stack-bbg | red | `failed to select a version for the requirement cyber-lens = "^0.2.0"` |
+| stack-cybergraph, stack-foculus | red | `failed to select a version for the requirement bbg = "^0.2"` |
+| stack-vault, stack-neuron | red | `failed to select a version for cybergraph` |
+| stack-radio | red | `address_lookup::mdns` 2 tests FAILED (93 passed) — multicast on the runner |
+| conformance-snapshot | red | `failed to select a version for the requirement cyber-hemera = "^0.4"` |
+| stack-chain-genesis | blocked | `no pussy genesis file at ~/.cache/cyber/genesis/pussy.tade (set SOFT3_GENESIS_DIR)` |
+| simulation-gate | blocked | `no simulation checkout: pin cyberia-to/simulation in release/phase1.toml` |
+
+the root cause of most of the red: **the 0.4 line lives off the default branches.** soft3 `main` already requires cyber-hemera ^0.4, cyber-lens ^0.2 with `lens/gpu`, nox ^0.3, zheng ^0.4, bbg ^0.3; the train reads default-branch HEADs only (`release/train_sources.py`), and those carry the older line. measured 2026-10-25 through the GitHub API (crate `version` of each manifest, `compare` of line against default):
+
+| repo | default | crate on default | line | crate on line | line ahead / behind |
+|---|---|---|---|---|---|
+| hemera | main | 0.3.1 | release/0.4 | 0.4.0 | +25 / −2, 72 files |
+| lens | master | 0.1.3 (`src/`), no `gpu/` | release/0.2 | 0.2.0, `gpu/` 0.1.1 | +77 / −6, 97 files |
+| nox | master | 0.2.0 | release/0.4 | 0.3.0 | +28 / −30, 255 files |
+| zheng | master | 0.3.3 | release/0.4 | 0.4.0 | +244 / −12, 300 files |
+| joy | main | — | release/0.4 | — | +124 / −3 |
+| bbg | master | 0.3.0, wants lens ^0.2 | — | | |
+| cybergraph, foculus | master | want bbg ^0.2, hemera ^0.3, lens ^0.1 | — | | |
+
+the branch name of a line is not its crate version: nox `release/0.4` carries crate 0.3.0, which is what soft3 asks for.
+
+PR gates today: soft3 runs `release-engine.yml` and `components.yml` on `pull_request`; hemera, lens, tru and radio have a `ci.yml`; nox, zheng, joy, bbg, cybergraph, foculus, plumb, mudra, vault, neuron, file, tade, strata have none. nothing checks a sibling PR against the candidate graph.
+
+## decisions
+
+| # | decision | reason |
+|---|---|---|
+| D1 | land each release line on its default branch by an ordinary merge PR (release line → default), in dependency order; never switch a repository's default branch, never teach the train to read a non-default branch | the doctrine defines a candidate's inputs as default-branch HEADs (`~/cyber/AGENTS.md` § release train); a merge is reversible by revert and is inside the director's power; switching defaults retargets every open PR and strands the commits only on the default. asked fable 2026-10-25 (`ask-fable`, #1 of the day): same verdict |
+| D2 | before each landing PR, merge the default into the line on a task branch and resolve the conflicts there, so the landing PR itself is conflict-free | conflicts are paid once, on the line, where the line's owner work lives |
+| D3 | "gates green" for a landing or bump PR means: the repository's own build and tests on the PR head, and a train rehearsal (`cut=false`) in which that sibling is taken at the PR head and every gate it touches is green on all five legs | a per-repository green proves nothing about the candidate graph; the rehearsal is a qualification, never a candidate, and refuses `cut=true` |
+| D4 | the old owner version PRs zheng#33, lens#14, nox#17 are superseded by the landings and are closed with a comment naming what replaced them, after checking their fixes are present on the line | they are conflicting alternative lines of the same versions |
+| D5 | the proposals that are not in phase 1 are not worked on before 2026-11-02 (table below) | `cyber/launch.md`: what does not fit the date is cut, never squeezed |
+| D6 | lane of every PR by the files it touches (`cyberia/processes/deliver.md` § lanes): contained → green checks; wide (a contract, a shared crate, a spec of rungs 1–7, a release line landing) → green checks and a clean trajectory; irreversible → the owner. labels `contained`, `wide`, `irreversible` beside the queue labels | the lane is computed, never declared |
+
+## the proposals against phase 1
+
+| proposal | phase 1 needs | built | remains for phase 1 |
+|---|---|---|---|
+| [proof-system-repair](../../proposals/proof-system-repair.md) | the material only: hemera 0.4 (row 2h decided) and the zheng/lens 0.4 lines on defaults so the stack resolves; full nodes validate natively (launch decision 2026-10-15), so repair phases 1–5 and soft3 0.11 leave the critical path | lines on `release/*` | L1–L4 |
+| [privacy-frozen](../../proposals/privacy-frozen.md) | the pool's formats frozen in the genesis params, the pool off (rule set 2) | `specs/chain.md` §11, `audit/chain/pool-formats-2026-10-16.md` | covered by conformance (G6) |
+| [proven-present](../../proposals/proven-present.md) | S0 only: the node writes the conformance corpus from height 0, with a generator of invalid blocks | not verified this session | C2 |
+| [cybernode](../../proposals/cybernode.md) | nothing: §6 lets genesis ship from the soft3 crate unchanged if C2 is not green by the 10-30 candidate; with the stack red today, that fallback is taken | — | after genesis; the owner decides §7.3 |
+| [network-repos](../../proposals/network-repos.md) | nothing: §5 timing lets genesis ship from today's pipeline, N1–N3 record the same particle afterwards | — | after genesis |
+| [metabolic-oracle](../../proposals/metabolic-oracle.md) | nothing: rule set 1 of `chain-economy.md` carries no `metabolic` record; the proposal is 2026-10-23 and adds consensus content | — | after genesis, unless the owner moves it into rule set 1 before 11-02 |
+| [steps-blocks-epochs](../../proposals/steps-blocks-epochs.md), [goldilocks-parano1d](../../proposals/goldilocks-parano1d.md) | nothing new: their phase-1 descendant is `specs/chain.md` (launch decision 2026-10-15) | chain on soft3 main | — |
+| [rooted-civilization](../../proposals/rooted-civilization.md) | nothing for the candidate: phase 0 is the site, A–C follow the chain | — | after genesis |
+| [term](../../proposals/term.md), [network-planes](../../proposals/network-planes.md), [tade-one-exchange](../../proposals/tade-one-exchange.md), [component-page-canon](../../proposals/component-page-canon.md) | nothing | — | after genesis |
+| [vault-secret-custody](../../proposals/vault-secret-custody.md) (superseded), [cybergraph-sync-tade-architecture](../../proposals/cybergraph-sync-tade-architecture.md) (implemented) | — | — | — |
+
+## the order
+
+status: `open → doing → done`, or `closed`. each row is one unit; its acceptance is a receipt.
+
+| # | unit | repo · lane | acceptance | status |
+|---|---|---|---|---|
+| G0 | this plan | soft3 · contained | merged on `main` | doing |
+| G1 | lane labels `contained`, `wide`, `irreversible` in every repository of `release/components.toml` that has open PRs; every open soft3 PR carries its lane | all · contained | `gh api repos/<o>/<r>/labels` lists them; no open soft3 PR without a lane label | open |
+| G2 | the sibling rehearsal (D3): `release-train.yml` dispatch input `override` (`<sibling>=<ref>`, repeatable), honoured only with `cut=false`, recorded in `sources.json` as `override`; unit test that `cut=true` with an override fails | soft3 · wide | `python3 -m unittest discover -s release -p 'test_*.py' -v` green on the PR (`release-engine.yml`); a dispatched rehearsal with `lens=release/0.2` whose `sources.json` names the override | open |
+| G3 | the daily train: review and merge #246 (cron `0 12 * * *`, owner 2026-10-24) | soft3 · wide | merged; the next 12:00 UTC run appears in `gh run list --workflow "Release train"` | open |
+| L1 | hemera: default into `release/0.4`, then `release/0.4` → `main` | hemera · wide | hemera `ci.yml` green on the PR; rehearsal with `hemera=<PR head>`: stack-hemera green, no new red; merged | open |
+| L2 | lens: default into `release/0.2` (the lens#36 branch), lens#31 first if the rehearsal needs it, then lens#36 → master | lens · wide | lens `ci.yml` green; rehearsal with `hemera`, `lens` at heads: package-resolution no longer fails on `lens/gpu`, stack-bbg resolves; merged | open |
+| L3 | nox, zheng, joy: default into each `release/0.4` (nox#31, zheng#69 first if required), then line → default; a minimal `pull_request` CI (`cargo test --locked`) shipped inside each landing PR | nox, zheng, joy · wide | each CI green on its PR; rehearsal with the three at heads: stack-nox, stack-zheng green, conformance-snapshot resolves | open |
+| L4 | consumers onto the landed lines: cybergraph, foculus (bbg ^0.3, hemera ^0.4, lens ^0.2), then mudra, vault, neuron re-resolve; lockfiles committed | cybergraph, foculus, mudra, vault, neuron · wide | stack-cybergraph, foculus, mudra, vault, neuron green in a rehearsal | open |
+| L5 | close zheng#33, lens#14, nox#17 as superseded (D4) | zheng, lens, nox · contained | each closed with a comment naming its replacement and the commits checked | open |
+| G4 | stack-radio: the two `address_lookup::mdns` tests need multicast the runners lack; gate them on an environment the train sets, or mark them ignored in CI with the reason, in radio | radio · contained | stack-radio green on all legs that run it | open |
+| G5 | stack-chain-genesis: the train builds or fetches the pussy and bostrom genesis files into `SOFT3_GENESIS_DIR` from the pinned burial sources, checked against the particles of `conformance/chain-genesis.toml` | soft3 · wide | stack-chain-genesis green, not blocked | open |
+| G6 | conformance-snapshot green on the landed lines; drift blessed in the PR that causes it (`conformance/specs/README.md`) | soft3 · wide | conformance-snapshot green | open |
+| G7 | simulation-gate: review and merge #242 (pin cyberia-to/simulation) | soft3 · wide | simulation-gate runs; its expected reds are named, not failures (`specs/releases.md`) | open |
+| G8 | release-notes-source: find why cyb's HEAD has no merged PR (a direct push) and fix the gate or the input | soft3 or cyb · contained | release-notes-source green | open |
+| G9 | phase1-pins: one bump PR moving every pin to the qualified HEADs once L1–L4 are in; supersedes #195 | soft3 · wide | phase1-pins green; #195 closed | open |
+| C1 | the soft3 PR queue: #234 (economy findings red until the owner's spec decisions), #167, #169, #170, #212, #243, #245 triaged against this plan — merged when green and in phase 1, labelled and left otherwise | soft3 · per PR | every open soft3 PR has a lane and a line here or in the log | open |
+| C2 | proven-present S0: verify the node writes the conformance corpus from height 0 and generates invalid blocks; if not, build it | soft3 · wide | a test that writes the corpus for a mined chain and replays every generated invalid block to its native verdict | open |
+| C3 | the economy at genesis: the conformance vectors of registry rows 26 (passive stake earns 0), 27 (θ split), 41 (epoch record agreed) run in soft3-tests | soft3 · wide | the named vectors pass in soft3-tests on all legs | open |
+| R1 | the candidate: a dispatched `cut=false` run green on all five legs from origin defaults, then the 12:00 cut of the same inputs | soft3 | `release-validation.json` green on every leg; the draft `candidate-YYYYMMDD.N` exists; the owner's promotion the only step left | open |
+
+reading the order: G2 makes "green" checkable for every sibling PR; L1 → L2 → L3 → L4 is the dependency order of the 0.4 line (leaves first); G4–G8 are independent and may interleave whenever a gate is the reddest; G9 comes after the landings; R1 closes the plan.
+
+## what only the owner does
+
+promote a candidate, push a tag, publish to crates.io, run `make ship`; the irreversible lane (production chain, keys, data, money); a change to the charter. open owner questions this plan meets but does not answer: cybernode §7.3 (before or after genesis — the plan takes "after"), whether the metabolic oracle enters rule set 1, the `chain-economy.md` §12 questions behind #234.
+
+## log
+
+| date | session | moved |
+|---|---|---|
+| 2026-10-25 | first director session | plan written from the doctrine, the proposals, `cyber/launch.md` and run 40098866000; D1 asked of fable (#1) |
