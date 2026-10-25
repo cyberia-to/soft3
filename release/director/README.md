@@ -51,7 +51,7 @@ when the subscription answers with a usage limit, the loop backs off until the w
 
 ## the first session
 
-there is no `plan.md` yet. the first session writes it: phase 1 as the doctrine and the proposals define it; per proposal, whether phase 1 needs it, what is already built (`status.md`, the code), what remains, as tasks with acceptance; the order; the gate work needed so that PRs are checked before merge (soft3 has no PR gate workflow today — the candidate workflow runs on default branches only). it opens that as the first PR and merges it when its own review passes.
+the plan and the day's reports live on soft3 **`release/phase1`** — the director's own branch, so updating them never waits on the owner; the owner reads them there. there is no `plan.md` yet. the first session writes it: phase 1 as the doctrine and the proposals define it; per proposal, whether phase 1 needs it, what is already built (`status.md`, the code), what remains, as tasks with acceptance; the order; the gate work needed so that PRs are checked before merge (soft3 has no PR gate workflow today — the candidate workflow runs on default branches only). it opens that as the first PR and merges it when its own review passes.
 
 ## the measurement
 
@@ -64,6 +64,6 @@ on the day's report, `audit/release-<date>/director.md`: the candidate green or 
 | the claude body signed in on agent-a | done — `claude setup-token` (1 year), goose provider `claude-code` |
 | the machine user `cyberia-apparatus` with write on the stack | done — team `apparatus`, 31 repositories; no branch protection on soft3 `main` or lens `master` |
 | the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md`, `~/cyber/CLAUDE.md` § release train (2026-10-25): release branches free, default branches by the owner's approval |
-| branch protection on the default branches | done 2026-10-25 — 30 public stack repositories |
+| branch protection on the default branches | done 2026-10-25 — 30 public stack repositories; a `release/* → default` PR waiting for the owner's approval is the rule working, not a blocker to escalate |
 | gates over the release branches | the first session's work — the candidate workflow snapshots default branches only |
 | a PR gate in each repository | the first session's work |
