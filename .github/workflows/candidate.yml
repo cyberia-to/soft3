@@ -15,6 +15,9 @@ on:
       cut:
         default: false
         type: boolean
+      override:
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -43,9 +46,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           COMPONENT: ${{ inputs.component }}
           CANDIDATE: ${{ inputs.candidate }}
+          OVERRIDE: ${{ inputs.override }}
+          CUT: ${{ inputs.cut }}
         run: |
           let name = if ($env.CANDIDATE | is-empty) { $"candidate-(date now | format date '%Y%m%d').1" } else { $env.CANDIDATE }
-          python3 release/train.py snapshot --manager . --component $env.COMPONENT --candidate $name --output snapshot
+          let extra = ($env.OVERRIDE | split row -r '\s+' | where {|x| $x != ''} | each {|x| ['--override' $x]} | flatten)
+          let extra = if $env.CUT == 'true' { $extra | append '--cut' } else { $extra }
+          python3 release/train.py snapshot --manager . --component $env.COMPONENT --candidate $name --output snapshot ...$extra
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "source snapshot failed"} }
           let rows = [
             {runner: ubuntu-24.04, target: stack}
