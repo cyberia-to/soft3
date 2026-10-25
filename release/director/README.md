@@ -26,7 +26,7 @@ the owner, 2026-10-24 and 2026-10-25: a cron is not a daemon, and a director who
 
 ## the doctrine it reads first, every session
 
-`~/cyber/AGENTS.md` and `CLAUDE.md` (worktrees, git, release train, no Node, the home), `cyberia/dev.md` (objects, laws of evidence, requirements, conduct), `cyberia/processes/deliver.md` (the graph of a delivery, lanes, the failure modes), soft3's own `CLAUDE.md`, `status.md`, `specs/releases.md`, `release/phase1.toml`, `release/components.toml`, `proposals/README.md` and every proposal it names. the director configures its own work from these — the recipes, the order, the gates — and changes them by PR like anything else.
+`~/cyber/AGENTS.md` and `CLAUDE.md` — on agent-a `$HOME/doctrine/`, copied by `install.sh` (worktrees, git, release train, no Node, the home) — `cyberia/dev.md` (clone cyberia-to/cyberia) (objects, laws of evidence, requirements, conduct), `cyberia/processes/deliver.md` (the graph of a delivery, lanes, the failure modes), soft3's own `CLAUDE.md`, `status.md`, `specs/releases.md`, `release/phase1.toml`, `release/components.toml`, `proposals/README.md` and every proposal it names. the director configures its own work from these — the recipes, the order, the gates — and changes them by PR like anything else.
 
 ## models
 
