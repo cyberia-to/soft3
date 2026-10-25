@@ -5,50 +5,62 @@ crystal-type: process
 crystal-domain: cyber
 alias: soft3 director, product director soft3, the director
 status: proposed
-date: 2026-10-24
+date: 2026-10-25
 ---
 # the director of soft3
 
-the owner, 2026-10-24: a cron is not a daemon. someone must think every few minutes whether the *whole* soft3 still builds after a day of work, see that every conflict is resolved and every branch merged by the rules, and hand the owner a green candidate at noon. that someone is a standing role of the soft3 domain — the keeper, runner and counter of `cyberia/dev.md` § the roles folded into one body that never sleeps — and it runs on the agent machine ([[the cloud]] §2.1) as the first consumer of it.
+the owner, 2026-10-24 and 2026-10-25: a cron is not a daemon, and a director who asks the owner to click every merge is not a director. soft3 needs one standing body that **drives the product to its phase** — reads the doctrine and the proposals, decides what the phase needs, does the work, merges what passes, and hands the owner a green candidate to promote. the owner sets the purpose and promotes; the director does everything between.
 
-## the mandate
+## the goal
+
+**phase 1 released**: a green candidate of soft3 (and of the products riding it) from origin default branches, every gate of `specs/releases.md` green, `release/phase1.toml` pinned to what was built, the owner's promotion the only step left. what phase 1 contains is not invented here: the director derives it from the doctrine and the proposals (§ the first session) and writes it down as `release/director/plan.md`, which the owner may correct at any time.
+
+## the powers
 
 | the director | |
 |---|---|
-| owns | the default branches of soft3 and its phase-1 siblings as *one buildable stack*; the pins `release/phase1.toml`; the daily candidate at 12:00 UTC; the day's report |
-| answers | "does the stack build right now, from origin default branches, with the pins?" — every tick, with a receipt, never from memory |
-| acts | opens the PRs that make it build: pin bumps, lockfile refreshes, a sibling path that moved, a conflict resolved on a rebased branch; merges what the rules let it merge; labels what the owner must decide |
-| reports | `audit/release-<date>/director.md`: green or red, why, what it did, what it asks; the dots on `status.md` |
-| never | force-pushes, tags, publishes, promotes, edits `release/phase1.toml` by hand (a bump is a PR with the receipt), merges a `decision` PR, touches a specification of rungs 1–7, compiles on its own host |
+| merges | **any PR whose gates are green**, in every repository of the stack (`release/components.toml`), its own and others', pin bumps included — the owner's word of 2026-10-25, recorded in `~/cyber/AGENTS.md` § release train. it reviews before it merges: a second model reads the diff against the plan and the doctrine |
+| works | implements the proposals the phase needs, in task worktrees, as PRs with What / Verified / Remains / Risk; resolves conflicts by rebasing; repairs the gates themselves when a gate is wrong |
+| decides | everything the doctrine leaves to the work: order, decomposition, which of two proposals wins where they collide (with a recorded reason). a question it cannot settle goes to **fable** first (§ models); only a change to the charter (purpose, principles, the product ladder) goes to the owner |
+| never | promotes, tags, publishes to crates.io, runs `make ship`, force-pushes a default branch, deletes data or keys, moves money, touches the production chain; compiles the product on its own host — the build service compiles (today GitHub Actions; the build machine of [[the cloud]] when it exists) |
 
-## the loop — one tick every 15 minutes
+## the doctrine it reads first, every session
 
-`tick.sh` is the deterministic half and spends no tokens:
+`~/cyber/AGENTS.md` and `CLAUDE.md` (worktrees, git, release train, no Node, the home), `cyberia/dev.md` (objects, laws of evidence, requirements, conduct), `cyberia/processes/deliver.md` (the graph of a delivery, lanes, the failure modes), soft3's own `CLAUDE.md`, `status.md`, `specs/releases.md`, `release/phase1.toml`, `release/components.toml`, `proposals/README.md` and every proposal it names. the director configures its own work from these — the recipes, the order, the gates — and changes them by PR like anything else.
 
-1. **sense** — fetch every component's default branch (`release/components.toml` × `phase1.toml`), the open PRs of soft3 and its siblings, the last candidate's receipts. the state is one JSON, `state/tick-<time>.json`, with a `changed` flag: a HEAD moved, a PR opened or closed, a run finished.
-2. **qualify** — when something changed since the last green: dispatch the build service (`gh workflow run release-train.yml -f cut=false` — the same gates as the candidate, no draft) and, when it finishes, pull `release-validation.json` from every leg. compilation happens there, never here.
-3. **think** — only if the tick found a red gate, a conflict, a stale pin or an unlabelled PR does it call the body: `goose run --recipe director.yaml` with the tick's JSON as the task. the body diagnoses from the receipts and acts within the mandate.
-4. **report** — at 12:00 UTC the scheduled cut runs (the daily train); the first tick after it writes the day's report and updates `status.md`'s release row.
+## models
 
-the budget is a mechanism: one `goose run` per tick at most, `--max-turns 40`, and the tick refuses to think if the previous think is still running or if the day's call count passed its allowance (`ALLOWANCE`, default 60). every action the body takes is a PR, a label or a comment — things the repository records.
+the body is Claude Code on the owner's subscription, run by goose.
 
-## what it merges, and what it does not
+| model | role | budget |
+|---|---|---|
+| **opus** | the director's own sessions: plan, decide, review before merge | the subscription's windows; no count of ours |
+| **sonnet** | implementation sub-tasks the director delegates (Claude Code subagents), mechanical bumps, rebases | the subscription's windows |
+| **fable** | the hard questions only — a design collision, a proof obligation, a contract that can be read two ways — through `ask-fable` | **capped**: `FABLE_DAILY` per UTC day (default 20), counted in `state/fable-<date>`; a refused question is answered by opus with the refusal noted |
 
-by `cyberia/processes/deliver.md` § lanes: **contained** (one repository, one part, covered by tests, gates green) — the director merges when the PR carries `ready` and the gates of the PR are green; **wide** (a contract, a shared crate, anything a rung above depends on) and **irreversible** — the director labels `decision` and waits. until the machine user `cyberia-apparatus` has merge rights on the component repositories, the director merges nothing and every mergeable PR gets `ready` for the owner's click — the lane is computed from the files touched, never declared.
+when the subscription answers with a usage limit, the loop backs off until the window resets; it does not fall over to a metered key.
 
-## what it needs to exist
+## the loop
 
-| need | state 2026-10-24 |
-|---|---|
-| a body signed in on agent-a (claude: `claude` → `/login`) | **the owner's hand** |
-| the GitHub machine user `cyberia-apparatus`: token with `repo` (PRs, labels, comments) and `actions` (dispatch, download artifacts) on soft3 and the component repositories; later merge rights for the contained lane | **the owner's hand** — a GitHub account, 2FA, org membership |
-| the files here on agent-a under `/srv/forge/claude/director/` and the loop under `tmux` | installed by `install.sh`, waits for the two above |
-| the daily cut at 12:00 UTC | soft3#246, cyber#153 |
+`loop.sh` runs forever under tmux on agent-a as the `claude` body:
+
+1. **tick** (`tick.sh`, no tokens): sense every component's default branch, the open PRs, the last train run; dispatch the gates when a HEAD moved; pull the receipts. state in `state/`.
+2. **session** (`director.yaml`, opus): read the doctrine, `plan.md`, the tick and the receipts; take the next unit of the plan or the reddest gate; do it — delegate to sonnet subagents, ask fable when stuck, open or update PRs, review and merge the green ones; update `plan.md` and the day's report in the same PR stream. one session ends after one unit, so the state on disk is re-read between units.
+3. if the session reports more work, the next starts at once; if it reports nothing to do, the loop sleeps 15 minutes; if the subscription is out of window, it sleeps until the reset.
+
+## the first session
+
+there is no `plan.md` yet. the first session writes it: phase 1 as the doctrine and the proposals define it; per proposal, whether phase 1 needs it, what is already built (`status.md`, the code), what remains, as tasks with acceptance; the order; the gate work needed so that PRs are checked before merge (soft3 has no PR gate workflow today — the candidate workflow runs on default branches only). it opens that as the first PR and merges it when its own review passes.
 
 ## the measurement
 
-on the director's own report, monthly: days the noon candidate was green / days; hours from a red tick to the next green; PRs merged by rule and PRs escalated; tokens per green day. the day the stack has been red for seven days with no PR of the director's that would make it green, the role has failed and this page says so.
+on the day's report, `audit/release-<date>/director.md`: the candidate green or red and why; units done; PRs merged; plan items left; fable questions asked; subscription windows hit. the role has failed when the plan has not moved for seven days.
 
-## today's red, for the first tick to chew on
+## what it needs
 
-the last candidates (2026-10-23) are red on every leg: soft3's crate depends on `../../lens/gpu`, which lens master lacks (lens#28 merged into `release/0.2`, not master); `phase1-pins` drifts on ~25 siblings; `release-notes-source` is red (cyb's HEAD has no merged PR); cyber's tests and release fall with soft3; optica builds but the protocol graph does not. the first director's PRs are these.
+| need | state 2026-10-25 |
+|---|---|
+| the claude body signed in on agent-a | done — `claude setup-token` (1 year), goose provider `claude-code` |
+| the machine user `cyberia-apparatus` with write on the stack | done — team `apparatus`, 31 repositories; no branch protection on soft3 `main` or lens `master` |
+| the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md`, `~/cyber/CLAUDE.md` § release train (2026-10-25) |
+| a PR gate in each repository | the first session's work |

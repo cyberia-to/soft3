@@ -3,9 +3,8 @@
 # runs as the body user on agent-a; needs: git, gh (as cyberia-apparatus), jq, goose; DIR=$HOME/director
 set -euo pipefail
 DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"; cd "$DIR"
-ORG=cyberia-to; ALLOWANCE=${ALLOWANCE:-60}; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
+ORG=cyberia-to; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
-[ -f "$STATE/think.lock" ] && { log "a think is still running; skip"; exit 0; }
 gh auth status >/dev/null 2>&1 || { log "gh is not signed in (the cyberia-apparatus token is missing) — sense only, no qualify, no think"; NOGH=1; }
 
 # 1 sense: component HEADs from the registry, open PRs, last train run
@@ -44,19 +43,6 @@ rid=$(jq -r '.last_run.databaseId' "$STATE/tick-$NOW.json"); if [ -n "$rid" ] &&
   log "receipts: run $rid → $(jq -r '[.[].result] | unique | join(",")' "$STATE/red-$rid.json" 2>/dev/null)"
 fi
 
-# 3 think: only when there is something red, drifting, conflicting or unlabelled — one goose run, within the day's allowance
-red=$(jq '[.[] | select(.result!="green")] | length' "$STATE/red-$rid.json" 2>/dev/null || echo 0)
-unlabelled=$(jq '[.prs[] | select((.labels|length)==0)] | length' "$STATE/tick-$NOW.json")
-conflicts=$(jq '[.prs[] | select(.mergeable=="CONFLICTING")] | length' "$STATE/tick-$NOW.json")
-calls=$(cat "$STATE/calls-$TODAY" 2>/dev/null || echo 0)
-# a red stack is re-thought every RETHINK seconds even when nothing moved; otherwise a quiet weekend means a silent director
-last=$(stat -c %Y "$STATE/last-think" 2>/dev/null || echo 0); stale=$(( $(date +%s) - last > ${RETHINK:-7200} ))
-if { [ "$changed" = 1 ] || [ "$stale" = 1 ]; } && [ $((red + drift + unlabelled + conflicts)) -gt 0 ]; then
-  if [ "$calls" -ge "$ALLOWANCE" ]; then log "think: allowance $ALLOWANCE reached today; skip"; exit 0; fi
-  touch "$STATE/think.lock" "$STATE/last-think"; echo $((calls+1)) > "$STATE/calls-$TODAY"
-  log "think: red=$red drift=$drift conflicts=$conflicts unlabelled=$unlabelled → goose run"
-  ( cd "$DIR" && goose run --recipe director.yaml --no-session --max-turns 40 --params tick="$STATE/tick-$NOW.json" --params red="$STATE/red-$rid.json" >> "$STATE/think-$NOW.log" 2>&1 ) || log "think: goose exited $?"
-  rm -f "$STATE/think.lock"
-fi
+# 3 think: the sessions are loop.sh's — the tick only senses, qualifies and pulls receipts
 # 4 report: the first tick after the noon cut writes the day's report (the body does it, in the think above, when red-*.json for today's cut exists)
 find "$STATE" -name 'tick-*.json' -mtime +7 -delete
