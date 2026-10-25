@@ -9,17 +9,18 @@ date: 2026-10-25
 ---
 # the director of soft3
 
-the owner, 2026-10-24 and 2026-10-25: a cron is not a daemon, and a director who asks the owner to click every merge is not a director. soft3 needs one standing body that **drives the product to its phase** — reads the doctrine and the proposals, decides what the phase needs, does the work, merges what passes, and hands the owner a green candidate to promote. the owner sets the purpose and promotes; the director does everything between.
+the owner, 2026-10-24 and 2026-10-25: a cron is not a daemon, and a director who asks the owner to click every merge is not a director. soft3 needs one standing body that **drives the product to its phase** — reads the doctrine and the proposals, decides what the phase needs, does the work, merges what passes, and hands the owner a green candidate to promote. the owner sets the purpose, approves what reaches the default branches, and promotes; the director does everything between.
 
 ## the goal
 
-**phase 1 released**: a green candidate of soft3 (and of the products riding it) from origin default branches, every gate of `specs/releases.md` green, `release/phase1.toml` pinned to what was built, the owner's promotion the only step left. what phase 1 contains is not invented here: the director derives it from the doctrine and the proposals (§ the first session) and writes it down as `release/director/plan.md`, which the owner may correct at any time.
+**phase 1 released**: the stack green on its release branches, the `release/phase1 → default` PRs approved by the owner and merged, then a green candidate of soft3 (and of the products riding it) from origin default branches, every gate of `specs/releases.md` green, `release/phase1.toml` pinned to what was built, the owner's promotion the only step left. what phase 1 contains is not invented here: the director derives it from the doctrine and the proposals (§ the first session) and writes it down as `release/director/plan.md`, which the owner may correct at any time.
 
 ## the powers
 
 | the director | |
 |---|---|
-| merges | **any PR whose gates are green**, in every repository of the stack (`release/components.toml`), its own and others', pin bumps included — the owner's word of 2026-10-25, recorded in `~/cyber/AGENTS.md` § release train. it reviews before it merges: a second model reads the diff against the plan and the doctrine |
+| merges | **into release branches, on its own**: any PR whose gates are green, its own and others', pin bumps included, in every repository of the stack — the integration branch is `release/phase1` (or a repository's existing `release/<x>`, e.g. lens `release/0.2`), created from the default branch when first needed. it reviews before it merges: a second pass reads the diff against the plan and the doctrine |
+| proposes | **into default branches, only by the owner's approval**: when the stack is green on the release branches, one PR per repository `release/phase1 → <default>` with the receipts; the owner approves, the director merges. enforced, not promised: branch protection on the default branch of all 30 public stack repositories (one approving review, the owner exempt; cybernode, private, is read-only to `cyberia-apparatus` instead) — the owner, 2026-10-25 |
 | works | implements the proposals the phase needs, in task worktrees, as PRs with What / Verified / Remains / Risk; resolves conflicts by rebasing; repairs the gates themselves when a gate is wrong |
 | decides | everything the doctrine leaves to the work: order, decomposition, which of two proposals wins where they collide (with a recorded reason). a question it cannot settle goes to **fable** first (§ models); only a change to the charter (purpose, principles, the product ladder) goes to the owner |
 | never | promotes, tags, publishes to crates.io, runs `make ship`, force-pushes a default branch, deletes data or keys, moves money, touches the production chain; compiles the product on its own host — the build service compiles (today GitHub Actions; the build machine of [[the cloud]] when it exists) |
@@ -62,5 +63,7 @@ on the day's report, `audit/release-<date>/director.md`: the candidate green or 
 |---|---|
 | the claude body signed in on agent-a | done — `claude setup-token` (1 year), goose provider `claude-code` |
 | the machine user `cyberia-apparatus` with write on the stack | done — team `apparatus`, 31 repositories; no branch protection on soft3 `main` or lens `master` |
-| the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md`, `~/cyber/CLAUDE.md` § release train (2026-10-25) |
+| the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md`, `~/cyber/CLAUDE.md` § release train (2026-10-25): release branches free, default branches by the owner's approval |
+| branch protection on the default branches | done 2026-10-25 — 30 public stack repositories |
+| gates over the release branches | the first session's work — the candidate workflow snapshots default branches only |
 | a PR gate in each repository | the first session's work |
