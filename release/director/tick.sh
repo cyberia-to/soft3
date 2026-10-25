@@ -49,9 +49,11 @@ red=$(jq '[.[] | select(.result!="green")] | length' "$STATE/red-$rid.json" 2>/d
 unlabelled=$(jq '[.prs[] | select((.labels|length)==0)] | length' "$STATE/tick-$NOW.json")
 conflicts=$(jq '[.prs[] | select(.mergeable=="CONFLICTING")] | length' "$STATE/tick-$NOW.json")
 calls=$(cat "$STATE/calls-$TODAY" 2>/dev/null || echo 0)
-if [ "$changed" = 1 ] && [ $((red + drift + unlabelled + conflicts)) -gt 0 ]; then
+# a red stack is re-thought every RETHINK seconds even when nothing moved; otherwise a quiet weekend means a silent director
+last=$(stat -c %Y "$STATE/last-think" 2>/dev/null || echo 0); stale=$(( $(date +%s) - last > ${RETHINK:-7200} ))
+if { [ "$changed" = 1 ] || [ "$stale" = 1 ]; } && [ $((red + drift + unlabelled + conflicts)) -gt 0 ]; then
   if [ "$calls" -ge "$ALLOWANCE" ]; then log "think: allowance $ALLOWANCE reached today; skip"; exit 0; fi
-  touch "$STATE/think.lock"; echo $((calls+1)) > "$STATE/calls-$TODAY"
+  touch "$STATE/think.lock" "$STATE/last-think"; echo $((calls+1)) > "$STATE/calls-$TODAY"
   log "think: red=$red drift=$drift conflicts=$conflicts unlabelled=$unlabelled → goose run"
   ( cd "$DIR" && goose run --recipe director.yaml --no-session --max-turns 40 --params tick="$STATE/tick-$NOW.json" --params red="$STATE/red-$rid.json" >> "$STATE/think-$NOW.log" 2>&1 ) || log "think: goose exited $?"
   rm -f "$STATE/think.lock"
