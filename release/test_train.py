@@ -3,6 +3,7 @@ import argparse
 import io
 import json
 from pathlib import Path
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -182,6 +183,126 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn("--draft", argv)
         self.assertNotIn("--draft=false", argv)
         self.assertNotIn("push", argv)
+
+
+class RehearsalTests(unittest.TestCase):
+    DEFAULT, PR, BRANCH = "d" * 40, "e" * 40, "f" * 40
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.manager = self.root / "manager"
+        (self.manager / "release").mkdir(parents=True)
+        (self.manager / "release/phase1.toml").write_text(
+            '[[sibling]]\nname = "lens"\nrepo = "cyberia-to/lens"\nrev = "' + self.DEFAULT + '"\n')
+        git = lambda *a: subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a],
+                                        cwd=self.manager, check=True, capture_output=True)
+        git("init", "-q")
+        git("add", ".")
+        git("commit", "-qm", "fixture")
+        self.calls = []
+
+    def fake(self, args, cwd=None, timeout=120):
+        self.calls.append(args)
+        if args[:2] == ["git", "ls-remote"]:
+            if "--symref" in args:
+                return f"ref: refs/heads/main\tHEAD\n{self.DEFAULT}\tHEAD"
+            if args[-1] == "refs/pull/7/head":
+                return f"{self.PR}\trefs/pull/7/head"
+            if args[-1] == "refs/heads/feat/x":
+                return f"{self.BRANCH}\trefs/heads/feat/x"
+            return ""
+        if args[:2] == ["git", "status"]:
+            return ""
+        if args[:2] == ["git", "rev-parse"]:
+            return "a" * 40
+        return "[]"
+
+    def snap(self, overrides=(), cut=False):
+        with patch("train_sources.command", side_effect=self.fake):
+            return train.snapshot(self.manager, self.root / "out", "soft3", "candidate-20260924.1", overrides, cut)
+
+    def lens(self, result):
+        return next(r for r in result["repositories"] if r["name"] == "lens")
+
+    def lookups(self):
+        return [c for c in self.calls if c[:2] == ["git", "ls-remote"]]
+
+    def test_cut_with_override_is_refused_before_network(self):
+        with self.assertRaisesRegex(ValueError, "rehearsal"):
+            self.snap(["lens=feat/x"], cut=True)
+        self.assertEqual(self.calls, [])
+
+    def test_malformed_overrides_are_refused(self):
+        for bad in [["nope=main"], ["lens=a", "lens=b"], ["lens=../x"], ["lens=-x"], ["lens"], ["lens=/x"],
+                    ["lens=a=b"], ["lens=a b"], ["lens="]]:
+            with self.assertRaises(ValueError, msg=bad):
+                self.snap(bad)
+            self.assertEqual(self.lookups(), [])
+
+    def test_branch_override(self):
+        result = self.snap(["lens=feat/x"])
+        row = self.lens(result)
+        self.assertEqual(row["revision"], self.BRANCH)
+        self.assertEqual(row["branch"], "main")
+        self.assertEqual(row["override"], {"ref": "feat/x", "revision": self.BRANCH,
+                                           "default_branch": "main", "default_revision": self.DEFAULT})
+        self.assertFalse(row["pin_matches"])
+        saved = json.loads((self.root / "out/sources.json").read_text())
+        self.assertEqual(saved["overrides"], {"lens": "feat/x"})
+        self.assertTrue(saved["rehearsal"])
+
+    def test_commit_override_skips_ls_remote(self):
+        sha = "1" * 40
+        row = self.lens(self.snap([f"lens={sha}"]))
+        self.assertEqual(row["revision"], sha)
+        self.assertEqual(row["override"]["default_revision"], self.DEFAULT)
+        self.assertEqual(len(self.lookups()), 1 + 3)  # lens default plus three products, none for the ref
+        self.assertTrue(all("--symref" in c for c in self.lookups()))
+
+    def test_pull_request_override(self):
+        row = self.lens(self.snap(["lens=pull/7/head"]))
+        self.assertEqual(row["revision"], self.PR)
+        self.assertIn("refs/pull/7/head", [c[-1] for c in self.lookups()])
+
+    def test_missing_ref_is_unavailable(self):
+        row = self.lens(self.snap(["lens=gone"]))
+        self.assertFalse(row["available"])
+        self.assertIn("gone", row["error"])
+        self.assertFalse(row["pin_matches"])
+
+    def test_no_override_is_unchanged(self):
+        result = self.snap()
+        saved = json.loads((self.root / "out/sources.json").read_text())
+        self.assertEqual(saved["overrides"], {})
+        self.assertFalse(saved["rehearsal"])
+        row = self.lens(result)
+        self.assertNotIn("override", row)
+        self.assertEqual(row["revision"], self.DEFAULT)
+        self.assertTrue(row["pin_matches"])
+
+    def test_draft_refuses_rehearsal(self):
+        write_json(self.root / "candidate.json", {"name": "candidate-20260924.1", "component": "cyber",
+                   "result": "green", "source_revisions": {"cyber": "b" * 40}, "overrides": {"lens": "feat/x"}})
+        with patch("train.command") as call:
+            with self.assertRaisesRegex(ValueError, "cannot be drafted"):
+                train.draft(argparse.Namespace(output=self.root))
+        call.assert_not_called()
+
+    def test_collect_carries_overrides_into_notes(self):
+        sources = {"component": "cyber", "candidate": "candidate-20260924.1", "manager_revision": "a" * 40,
+                   "repositories": [{"name": "lens", "revision": self.BRANCH}], "overrides": {"lens": "feat/x"}}
+        snapshot = self.root / "snapshot.json"
+        write_json(snapshot, sources)
+        artifacts = self.root / "artifacts"
+        artifacts.mkdir()
+        output = self.root / "assembled"
+        train.collect(argparse.Namespace(snapshot=snapshot, artifacts=artifacts, output=output))
+        self.assertEqual(json.loads((output / "candidate.json").read_text())["overrides"], {"lens": "feat/x"})
+        notes = (output / "release-notes.md").read_text()
+        self.assertIn("REHEARSAL RED (not a candidate)", notes.splitlines()[0])
+        self.assertIn(f"lens=feat/x → {self.BRANCH}", notes)
 
 
 if __name__ == "__main__":
