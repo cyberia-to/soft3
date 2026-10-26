@@ -27,7 +27,7 @@ path = "src/bin/soft3.rs"
 default = ["metal", "webgpu"]
 # full stack re-exports (heavy)
 stack = ["dep:cyb"]
-# `soft3 mine --backend metal`: hemera_mine on the Apple GPU (macOS; a no-op elsewhere)
+# `soft3 mine --backend metal`: hemera_mine on the Apple GPU (Apple Silicon macOS; a no-op elsewhere, Intel macs included)
 metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
 # `soft3 mine --backend webgpu`: hemera_mine through wgpu (Vulkan, DX12, Metal, GL)
 webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]

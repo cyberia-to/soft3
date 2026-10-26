@@ -20,12 +20,12 @@ fn lens_job(job: &Job) -> cyber_lens_gpu::mine::Job {
 /// Nonces a GPU dispatch (2^22 ≈ 0.3 s on an M4 Max at 13 MH/s).
 const DISPATCH: u32 = 1 << 22;
 
-#[cfg(all(feature = "metal", target_os = "macos"))]
+#[cfg(all(feature = "metal", target_os = "macos", target_arch = "aarch64"))]
 pub struct Metal {
     inner: cyber_lens_gpu::metal::Metal,
 }
 
-#[cfg(all(feature = "metal", target_os = "macos"))]
+#[cfg(all(feature = "metal", target_os = "macos", target_arch = "aarch64"))]
 impl Metal {
     /// The default Metal device, or why not.
     pub fn new() -> Result<Self, String> {
@@ -33,7 +33,7 @@ impl Metal {
     }
 }
 
-#[cfg(all(feature = "metal", target_os = "macos"))]
+#[cfg(all(feature = "metal", target_os = "macos", target_arch = "aarch64"))]
 impl super::Backend for Metal {
     fn name(&self) -> String {
         format!("metal ({})", self.inner.device())

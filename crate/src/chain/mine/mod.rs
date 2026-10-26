@@ -61,13 +61,13 @@ impl core::str::FromStr for Choice {
 
 /// The Metal backend, or why not.
 pub fn metal() -> Result<Box<dyn Backend>, String> {
-    #[cfg(all(feature = "metal", target_os = "macos"))]
+    #[cfg(all(feature = "metal", target_os = "macos", target_arch = "aarch64"))]
     {
         gpu::Metal::new().map(|m| Box::new(m) as Box<dyn Backend>)
     }
-    #[cfg(not(all(feature = "metal", target_os = "macos")))]
+    #[cfg(not(all(feature = "metal", target_os = "macos", target_arch = "aarch64")))]
     {
-        Err("metal: not built (feature `metal`, macOS)".into())
+        Err("metal: not built (feature `metal`, Apple Silicon macOS)".into())
     }
 }
 
