@@ -126,8 +126,77 @@ class ReleaseTests(unittest.TestCase):
 
     def test_chain_genesis_without_the_file_is_blocked_not_green(self):
         gates = Gates(self.root / "out", self.sources, "aarch64-apple-darwin")
-        self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis"))
+        with patch.dict("os.environ", {}, clear=False) as env:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis",
+                                                pussy=self.root / "pussy"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
+
+    def pussy_fixture(self, matching=True):
+        manifest = self.root / "pussy/snapshot/manifest.json"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text('{"fixture": true}\n')
+        expected = digest(manifest) if matching else "0" * 64
+        spec = self.root / "soft3/conformance/chain-genesis.toml"
+        spec.parent.mkdir(parents=True)
+        spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n')
+
+    def test_chain_genesis_env_file_is_checked_without_a_build(self):
+        genesis = self.root / "genesis/pussy.tade"
+        genesis.parent.mkdir()
+        genesis.write_bytes(b"x")
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.object(Gates, "run", return_value=True) as run, \
+                patch.object(Gates, "run_sequence") as sequence:
+            self.assertTrue(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=genesis.parent,
+                                               pussy=self.root / "pussy"))
+        sequence.assert_not_called()
+        name, argv, cwd = run.call_args.args[:3]
+        self.assertEqual(name, "stack-chain-genesis")
+        self.assertEqual(argv[-5:], ["conformance", "check", "chain", "--genesis", str(genesis)])
+
+    def test_chain_genesis_builds_from_the_pinned_checkout_then_checks(self):
+        self.pussy_fixture()
+        gates = Gates(self.root / "out", self.sources, "stack")
+        soft3 = self.root / "soft3"
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence", return_value=True) as sequence:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertTrue(chain_genesis_gate(gates, soft3, pussy=self.root / "pussy"))
+        name, steps, cwd = sequence.call_args.args[:3]
+        self.assertEqual(name, "stack-chain-genesis")
+        self.assertEqual(cwd, soft3)
+        cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
+        genesis = str(self.root / "out/genesis/pussy.tade")
+        self.assertEqual(steps, [
+            (cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(self.root / "pussy/snapshot"),
+                      "--cache", str(Path.home() / ".cache/cyber/snapshots/pussy"), "--out", genesis], 900),
+            (cargo + ["conformance", "check", "chain", "--genesis", genesis], 900)])
+
+    def test_chain_genesis_manifest_mismatch_is_red_and_builds_nothing(self):
+        self.pussy_fixture(matching=False)
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence") as sequence, patch.object(Gates, "run") as run:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", pussy=self.root / "pussy"))
+        sequence.assert_not_called()
+        run.assert_not_called()
+        row = gates.rows[-1]
+        self.assertEqual(row["result"], "red")
+        self.assertIn("0" * 64, row["error"])
+        self.assertIn(digest(self.root / "pussy/snapshot/manifest.json"), row["error"])
+
+    def test_chain_genesis_sequence_stops_at_the_first_failure(self):
+        gates = Gates(self.root / "out", self.sources, "stack")
+        ok = ["python3", "-c", "print('built')"]
+        bad = ["python3", "-c", "import sys; sys.exit(3)"]
+        never = ["python3", "-c", "print('must not run')"]
+        self.assertFalse(gates.run_sequence("seq", [(ok, 60), (bad, 60), (never, 60)], self.root))
+        self.assertEqual(gates.rows[-1]["exit_code"], 3)
+        log = (self.root / "out/logs/seq.txt").read_text()
+        self.assertIn("built", log)
+        self.assertNotIn("must not run", log)
 
     def test_simulation_without_the_pinned_checkout_is_blocked_not_green(self):
         gates = Gates(self.root / "out", self.sources, "stack")

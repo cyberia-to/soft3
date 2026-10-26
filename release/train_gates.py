@@ -31,28 +31,43 @@ class Gates:
         return result == "green"
 
     def run(self, name, argv, cwd, env=None, timeout=1800):
+        return self.run_sequence(name, [(argv, timeout)], cwd, env)
+
+    def run_sequence(self, name, steps, cwd, env=None):
+        """One gate, several commands: `steps` is [(argv, timeout)]. The first failing
+        step (non-zero exit, timeout, or a warning in its output) makes the gate red and
+        later steps do not run; all output lands in the gate's one log."""
         log = self.output / "logs" / (name + ".txt")
         start = time.monotonic()
-        code = -1
+        code, argv, warnings = -1, steps[0][0], False
         with log.open("w") as stream:
-            stream.write("command: " + json.dumps(argv) + "\ncwd: " + str(cwd) + "\n")
-            stream.flush()
-            try:
-                process = subprocess.Popen(argv, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
-                                           env={**os.environ, **(env or {})}, start_new_session=True)
+            for index, (argv, timeout) in enumerate(steps):
+                stream.write(("\n" if index else "") + "command: " + json.dumps(argv) + "\ncwd: " + str(cwd) + "\n")
+                stream.flush()
+                code = -1
+                begin = stream.tell()
                 try:
-                    code = process.wait(timeout=timeout)
-                except subprocess.TimeoutExpired:
-                    os.killpg(process.pid, signal.SIGKILL)
-                    process.wait()
-                    stream.write(f"\ntimeout after {timeout} seconds\n")
-            except OSError as error:
-                stream.write(str(error) + "\n")
-        warnings = bool(re.search(r"(?m)^warning(?:\[|:)", log.read_text(errors="replace")))
+                    process = subprocess.Popen(argv, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
+                                               env={**os.environ, **(env or {})}, start_new_session=True)
+                    try:
+                        code = process.wait(timeout=timeout)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(process.pid, signal.SIGKILL)
+                        process.wait()
+                        stream.write(f"\ntimeout after {timeout} seconds\n")
+                except OSError as error:
+                    stream.write(str(error) + "\n")
+                stream.flush()
+                with log.open("rb") as reader:
+                    reader.seek(begin)
+                    warnings = bool(re.search(r"(?m)^warning(?:\[|:)", reader.read().decode(errors="replace")))
+                if code != 0 or warnings:
+                    break
         return self.record(name, "green" if code == 0 and not warnings else "red",
                            command=argv, cwd=str(cwd), exit_code=code, warnings=warnings,
                            elapsed_seconds=round(time.monotonic() - start, 3),
-                           log=str(log.relative_to(self.output)), log_sha256=digest(log))
+                           log=str(log.relative_to(self.output)), log_sha256=digest(log),
+                           **({"steps": [step[0] for step in steps]} if len(steps) > 1 else {}))
 
     def blocked(self, name, reason):
         return self.record(name, "blocked", reason=reason)
@@ -109,19 +124,46 @@ def conformance_gate(gates, soft3):
 GENESIS_ENV = "SOFT3_GENESIS_DIR"
 
 
-def chain_genesis_gate(gates, soft3, genesis_dir=None):
+def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
     """chain-conformance.md §10 in the release train: the pussy genesis file
     (pinned snapshot inputs, `soft3 genesis build`) must reproduce the blessed
-    particle, state root and block-0 id in soft3/conformance/chain.snap. The
-    file lives outside git (SOFT3_GENESIS_DIR, default ~/.cache/cyber/genesis);
-    a train without it is blocked, never green."""
-    directory = Path(genesis_dir or os.environ.get(GENESIS_ENV) or Path.home() / ".cache/cyber/genesis")
-    genesis = directory / "pussy.tade"
-    if not genesis.is_file():
-        return gates.blocked("stack-chain-genesis", f"no pussy genesis file at {genesis} (set {GENESIS_ENV})")
-    return gates.run("stack-chain-genesis",
-                     ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--",
-                      "conformance", "check", "chain", "--genesis", str(genesis)], soft3, timeout=900)
+    particle, state root and block-0 id in soft3/conformance/chain.snap.
+    Where the file comes from, in order:
+      a. `pussy.tade` in an explicit genesis_dir or SOFT3_GENESIS_DIR (local runs):
+         checked as it is;
+      b. else the pinned cyberia-to/space-pussy checkout (`pussy`, the `pussy`
+         sibling of release/phase1.toml) holding snapshot/manifest.json: its
+         sha256 must equal [pussy].source_manifest_sha256 in
+         conformance/chain-genesis.toml (a mismatch is red, nothing is built),
+         then the train builds the file into <output>/genesis/pussy.tade with
+         `soft3 genesis build` (IPFS fetches cached in ~/.cache/cyber/snapshots/pussy,
+         never in the checkout) and checks it, all under this one gate;
+      c. else blocked, never green."""
+    gate = "stack-chain-genesis"
+    cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
+    explicit = genesis_dir or os.environ.get(GENESIS_ENV)
+    if explicit and (Path(explicit) / "pussy.tade").is_file():
+        genesis = Path(explicit) / "pussy.tade"
+        return gates.run(gate, cargo + ["conformance", "check", "chain", "--genesis", str(genesis)], soft3, timeout=900)
+    manifest = pussy / "snapshot/manifest.json" if pussy else None
+    if manifest is None or not manifest.is_file():
+        return gates.blocked(gate, "no pussy genesis file: pin cyberia-to/space-pussy in release/phase1.toml "
+                                   f"(the train builds the file from its snapshot) or set {GENESIS_ENV} to a directory holding pussy.tade")
+    try:
+        expected = tomllib.loads((soft3 / "conformance/chain-genesis.toml").read_text())["pussy"]["source_manifest_sha256"]
+    except (OSError, KeyError, tomllib.TOMLDecodeError) as error:
+        return gates.record(gate, "red", error=f"cannot read [pussy].source_manifest_sha256 from conformance/chain-genesis.toml: {error}")
+    actual = digest(manifest)
+    if actual != expected:
+        return gates.record(gate, "red", error=f"pinned space-pussy snapshot/manifest.json sha256 {actual} != "
+                                               f"conformance/chain-genesis.toml [pussy].source_manifest_sha256 {expected}")
+    genesis = gates.output / "genesis/pussy.tade"
+    genesis.parent.mkdir(parents=True, exist_ok=True)
+    cache = Path.home() / ".cache/cyber/snapshots/pussy"
+    build = cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(pussy / "snapshot"),
+                     "--cache", str(cache), "--out", str(genesis)]
+    check = cargo + ["conformance", "check", "chain", "--genesis", str(genesis)]
+    return gates.run_sequence(gate, [(build, 900), (check, 900)], soft3)
 
 
 SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
@@ -202,7 +244,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
         conformance_gate(gates, directory / "soft3")
-        chain_genesis_gate(gates, directory / "soft3")
+        chain_genesis_gate(gates, directory / "soft3", pussy=directory / "pussy")
         simulation_gate(gates, directory)
     if component == "soft3":
         crate = root / "crate"

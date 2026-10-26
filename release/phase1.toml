@@ -177,3 +177,9 @@ name = "simulation"
 repo = "cyberia-to/simulation"
 branch = "main"
 rev = "f5a14a116a0025ddb74e3295e68f655650e34bc1"
+
+[[sibling]]
+name = "pussy"
+repo = "cyberia-to/space-pussy"
+branch = "main"
+rev = "bdcfdaf6909a15766a01bd3fec376c6da9b053ce"
