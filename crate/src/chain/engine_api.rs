@@ -132,7 +132,11 @@ impl ChainApi for Chain {
         let mut stored_new = false;
         if !self.store.has_body(&id) {
             stored_new = true;
-            let txs = match apply::decode_body(&self.rules, &block.header, &block.body) {
+            // 6a: a body that is not the one the header commits to is dropped;
+            // the header stays as it was and the honest body may still come
+            let raws = apply::body_matches(&block.header, &block.body).map_err(ChainError::Block)?;
+            // 6b: the header commits to this body, so a failure condemns the header
+            let txs = match apply::decode_matched(&self.rules, &block.header, raws) {
                 Ok(txs) => txs,
                 Err(e) => {
                     self.invalidate(id);

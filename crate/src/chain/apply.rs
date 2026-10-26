@@ -167,9 +167,13 @@ pub struct Decoded {
     pub txid: Id,
 }
 
-/// Step 6: budgets, `tx_root`, coinbase position and height, unique txids.
-/// Stateless; a block passing this may still fail steps 7–8.
-pub fn decode_body(rules: &Rules, header: &Header, body: &[u8]) -> Result<Vec<Decoded>, BlockError> {
+/// Step 6a: is `body` the body `header` commits to? It fits the frame the
+/// transport can deliver (chain-wire §2: `HEADER_BYTES + body <= MAX_BLOCK_BYTES`,
+/// checked before any hashing so a larger one costs nothing), splits, is
+/// non-empty and its `tx_root` equals the header's. A failure here says the
+/// body is not this header's, which proves nothing about the header: the
+/// caller drops the body and leaves the header as it was.
+pub fn body_matches(header: &Header, body: &[u8]) -> Result<Vec<Vec<u8>>, BlockError> {
     if HEADER_BYTES + body.len() > MAX_BLOCK_BYTES {
         return Err(BlockError::TooLarge(HEADER_BYTES + body.len()));
     }
@@ -177,11 +181,24 @@ pub fn decode_body(rules: &Rules, header: &Header, body: &[u8]) -> Result<Vec<De
     if raws.is_empty() {
         return Err(BlockError::Empty);
     }
-    if raws.len() > MAX_BLOCK_TXS {
-        return Err(BlockError::TooManyTxs(raws.len()));
-    }
     if tx_root(&raws) != header.tx_root {
         return Err(BlockError::TxRoot);
+    }
+    Ok(raws)
+}
+
+/// Steps 6a and 6b: [`body_matches`], then count, per-transaction budgets,
+/// coinbase position and height, unique txids. Stateless; a block passing
+/// this may still fail steps 7–8.
+pub fn decode_body(rules: &Rules, header: &Header, body: &[u8]) -> Result<Vec<Decoded>, BlockError> {
+    decode_matched(rules, header, body_matches(header, body)?)
+}
+
+/// Step 6b over a body that already matched its header: a failure proves the
+/// header commits to an invalid block.
+pub fn decode_matched(rules: &Rules, header: &Header, raws: Vec<Vec<u8>>) -> Result<Vec<Decoded>, BlockError> {
+    if raws.len() > MAX_BLOCK_TXS {
+        return Err(BlockError::TooManyTxs(raws.len()));
     }
     let mut seen = BTreeSet::new();
     let mut out = Vec::with_capacity(raws.len());
