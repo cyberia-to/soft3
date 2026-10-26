@@ -20,11 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - arm: pre-port   # foculus release/phase1 on the 0.3 tier: hemera main 0.3.1, zheng master 0.3.3, bbg c7e1850 = 0.2.1
-            overrides: --override foculus=release/phase1 --override bbg=c7e1850b9885de5d53983d41c8a939cf56cfad6f
-          - arm: port       # foculus#86 head on the 0.4 tier, the stand of diagnostic 40357229822
+          - arm: pre-port   # the fix (foculus 3171a4b on release/phase1) on the 0.3 tier: hemera main 0.3.1, zheng master 0.3.3, bbg c7e1850 = 0.2.1
+            overrides: --override foculus=fix/l4b-withholding-realized-share --override bbg=c7e1850b9885de5d53983d41c8a939cf56cfad6f
+          - arm: port       # foculus#86 head + the fix (0334520) on the 0.4 tier, the stand of diagnostic 40357229822
             overrides: >-
-              --override foculus=98df7a634cd859bfd65f6cc369e73dcfb1346ff3 --override bbg=pull/53/head
+              --override foculus=03345204ec790a82bc3563b15ec9c70a14c498d0 --override bbg=pull/53/head
               --override cybergraph=port/l4-cybergraph3-phase1 --override file=release/phase1 --override hemera=release/0.4
               --override lens=release/0.2 --override nox=release/0.4 --override radio=release/phase1 --override rune=release/phase1
               --override tok=release/phase1 --override tru=release/phase1 --override zheng=fix/g10b-test-profile --override mudra=pull/30/head
@@ -66,14 +66,15 @@ jobs:
           cargo metadata --locked --format-version 1 >/dev/null 2>&1 && echo "lock matches the stand" || { echo "lock stale against the stand; resolving"; cargo metadata --format-version 1 >/dev/null; }
           cargo tree -i cyber-hemera --depth 0 | tee "$RUNNER_TEMP/out/hemera-version.txt"
           cp Cargo.lock "$RUNNER_TEMP/out/foculus.Cargo.lock"
-      - name: The gate's test, as is
+      - name: The fixed test, then the full suite (the gate's command)
         id: test
         continue-on-error: true
         working-directory: ${{ runner.temp }}/sources/foculus
         run: |
           set -o pipefail
-          cargo test --locked --test withholding_bias -- --nocapture 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.arm }}.log"
+          { cargo test --locked --test withholding_bias -- --nocapture && cargo test --locked --no-fail-fast; } 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.arm }}.log"
       - name: The 32-beacon sweep
+        if: false  # measured in 2f1138e (run 40358498794)
         id: sweep
         continue-on-error: true
         working-directory: ${{ runner.temp }}/sources/foculus
@@ -87,6 +88,9 @@ jobs:
           echo "test: ${{ steps.test.outcome }} sweep: ${{ steps.sweep.outcome }}"
           grep -h "withholding-bias\|^test result\|panicked\|^error" "$RUNNER_TEMP"/out/test-*.log | head -40 || true
           grep -h "sweep-summary\|nominal_ok=false\|realized_ok=false\|^error" "$RUNNER_TEMP"/out/sweep-*.log | head -80 || true
+      - name: Fail when red
+        if: steps.test.outcome == 'failure'
+        run: exit 1
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
