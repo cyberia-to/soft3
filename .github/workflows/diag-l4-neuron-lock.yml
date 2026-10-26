@@ -1,0 +1,94 @@
+name: Diagnostic l4 neuron lock
+
+# Measurement only, never merged, never a release gate (plan row L4, session 94).
+# Rehearsal 40386072407 stack leg (artifact candidate-stack, receipt/logs/stack-neuron.txt):
+# stack-neuron no longer fails on rune's symbols (rune#9 3b031ff supplies them);
+# it stops only on `cannot update the lock file ... because --locked was passed`.
+# neuron `main` 9df467d was not overridden, so its Cargo.lock predates the 0.4 tier.
+# This job lays the train's stand with exactly 40386072407's overrides, resolves
+# the neuron lock on the build service (the director's host has no cargo), and
+# runs the stack gate's command, `cargo test --locked`, with the resolved lock.
+on:
+  push:
+    branches: ['diag/l4-neuron-lock*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=pull/53/head --override cybergraph=port/l4-cybergraph3-phase1 --override file=release/phase1 \
+            --override foculus=port/l4-foculus5-phase1 --override hemera=release/0.4 --override lens=release/0.2 \
+            --override mudra=pull/30/head --override nox=release/0.4 --override radio=release/phase1 \
+            --override rune=port/l4-rune6-phase1 --override tok=release/phase1 --override tru=release/phase1 \
+            --override vault=port/l4-vault-spell-cli-phase1 --override zheng=fix/g10b-test-profile
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "neuron"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the neuron lock (resolution only)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          git -C neuron rev-parse HEAD
+          sha256sum neuron/Cargo.lock | tee "$RUNNER_TEMP/out/neuron-lock-before.sha256"
+          cargo metadata --locked --format-version 1 --manifest-path neuron/Cargo.toml >/dev/null 2>"$RUNNER_TEMP/out/neuron-locked-before.txt" && echo "neuron: lock already matches" || { echo "neuron: lock stale, resolving"; tail -5 "$RUNNER_TEMP/out/neuron-locked-before.txt"; }
+          cargo metadata --format-version 1 --manifest-path neuron/Cargo.toml >/dev/null 2>"$RUNNER_TEMP/out/neuron-resolve.txt" || { echo "neuron: does not resolve"; cat "$RUNNER_TEMP/out/neuron-resolve.txt"; exit 1; }
+          cargo metadata --locked --format-version 1 --manifest-path neuron/Cargo.toml >/dev/null && echo "neuron: resolved"
+          cp neuron/Cargo.lock "$RUNNER_TEMP/out/neuron.Cargo.lock"
+          sha256sum neuron/Cargo.lock | tee "$RUNNER_TEMP/out/neuron-lock-after.sha256"
+          git -C neuron diff -- Cargo.lock > "$RUNNER_TEMP/out/neuron-Cargo.lock.diff"
+          git -C neuron diff --stat -- Cargo.lock | tail -1
+          grep -E '^[-+]name = ' "$RUNNER_TEMP/out/neuron-Cargo.lock.diff" | sort | uniq -c || true
+      - name: Test (cargo test --locked)
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/neuron
+        run: |
+          set -o pipefail
+          timeout 9000 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/test-neuron.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP"/out/test-*.log | head -100 || true
+          echo "warnings:"
+          grep -h "^warning" "$RUNNER_TEMP"/out/test-*.log | sort | uniq -c || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: l4-neuron-lock
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure'
+        run: exit 1
