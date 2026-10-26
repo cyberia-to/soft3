@@ -92,6 +92,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L4 rune#6 accept branch (session 86, doing) | draft rune#9 `3b031ff` (rune#6 + rune `release/phase1`, 2 conflicts, lock unchanged). Receipts running: rune CI 40386033946 and rehearsal 40386072407 (`release/phase1` `5970c3a`, `rune=port/l4-rune6-phase1`) |
 | G15 the stand tests soft3 `main` (session 88, doing) | 40386072407's soft3-tests reds (G12 warning ×3, G14 window on x86_64 linux) come from soft3 `main` `2e5ba00` (`sources.json`), not `release/phase1`; rehearsal 40389629921 dispatched with `soft3=release/phase1` |
 | G13 train receipt (session 89) | rehearsal 40386072407 `x86_64-apple-darwin`: 0 honeycrisp crates compiled (lens#41 `fee68d8` holds); soft3-release red only on soft3 `main` `2e5ba00` `gpu.rs:25,32` (`cyber_lens_gpu::metal` configured out), gated on `release/phase1` by #328. Owner's landing order: soft3 before or with lens#36 |
+| L3b round 4 candidates (session 90) | zheng 40334403053: `10f:32:5` and `9f:36:5` cancelled at 355 min, final level ≥ 19,412 s, round 1 unfinished; 0.63 M/s pooled; (i) costs roughly 10–25× the control's final-level time, or more; zheng#73 comment 6426170532 |
 
 ## PRs merged
 
