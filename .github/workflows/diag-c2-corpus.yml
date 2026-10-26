@@ -31,7 +31,7 @@ jobs:
         run: |
           python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
             --override cybergraph=pull/3/head --override bbg=pull/9/head --override foculus=pull/5/head \
-            --override soft3=feat/c2-corpus
+            --override lens=release/0.2 --override soft3=feat/c2-corpus
           python3 - <<'PY'
           import json, os, sys
           from pathlib import Path
