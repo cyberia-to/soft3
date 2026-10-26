@@ -70,6 +70,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | C3 verified built (session 58) | registry rows 26/27/41 → `economy/vectors.rs:263-274` + chain.snap `two epochs: …`; `integers_of_section_14`, `coinbase_split_…`; `two_nodes_agree_on_every_epoch_…`; all under soft3-tests, which does not compile until L4 (rehearsal 40307972588) |
 | G10a budgets (session 59) | stack-lens green 615.7–856.0 s (six rehearsals on `release/0.2`), stack-radio 605.3–779.8 s; soft3#307 `STACK_TEST_BUDGET` lens 1200, radio 1200, gate `test` green (run 40323982690), merged `a04bfce`; the stack-leg sum waits on L4 |
 | L3 nox merged (session 60) | rehearsal 40316574923 stack leg: stack-nox green 96.2 s, 292 passed 0 failed at nox#42 `730f6b0`; nox#42 merged into `release/0.4` `41ba24f`; landing nox#43 `release/0.4 → master` opened for the owner. stack-radio and source-inputs-unchanged red in the same run, radio's (`e98bc69` unchanged, `iroh-blobs` proptest) → G4a |
+| G4a cause and fix up (session 61) | the flake is tokio 1.49.0's mpsc `len()` underflow (tokio #8062). radio#49 moves the lock to tokio 1.51.5 (lock from radio run 40325343061). The same run's 50× repeat: 1 failed at 1.49.0, 0 at 1.51.5. Rehearsal 40325821696 (`radio=pull/49/head`) decides the merge |
 
 ## PRs merged
 
@@ -77,7 +78,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum waits on L4); C3 built, acceptance waits on L4 (session 58) (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). Open since session 60: G4a (stack-radio flaky `iroh-blobs` proptest). With the owner: L4 (D10), L3b, mudra#30 (L3c), L3d (access to joy and trident, session 57), and the landings hemera#25, lens#36 and nox#43 (session 60).
+Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum waits on L4); C3 built, acceptance waits on L4 (session 58) (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). Open since session 60: G4a (stack-radio flaky `iroh-blobs` proptest); doing since session 61 (radio#49 under rehearsal 40325821696). With the owner: L4 (D10), L3b, mudra#30 (L3c), L3d (access to joy and trident, session 57), and the landings hemera#25, lens#36 and nox#43 (session 60).
 
 ## fable
 
