@@ -51,6 +51,17 @@ fn get(http: u16, path: &str) -> String {
         .map(|r| r.into_string().unwrap_or_default()).unwrap_or_default()
 }
 
+/// How long a healthy node may go without a new block before the test calls
+/// it stalled. A block at the dev chain's floor target (bits `0x1e100000`)
+/// takes 2^20 expected hashes, and the wait is exponential, so a window of
+/// `T` seconds at `r` hashes/s misses a block with probability
+/// `exp(-T·r / 2^20)`. The slowest rate measured for the two-thread debug
+/// miner on the build service is 23.9 kH/s (diagnostic 40371902376, both
+/// adversary tests running): 600 s gives `exp(-13.7)`, about 1e-6. The old
+/// 15 s window was red in 13 of 30 runs of that diagnostic. A
+/// passing run returns as soon as the tip moves; only a real stall waits.
+const MINING_LIVENESS_SECS: u64 = 600;
+
 fn wait_until(secs: u64, mut f: impl FnMut() -> bool) -> bool {
     let deadline = Instant::now() + Duration::from_secs(secs);
     while Instant::now() < deadline {
@@ -254,7 +265,7 @@ fn streams_frames_and_status_are_policed() {
     // the node is still healthy and mining
     let h1 = get(node.http, "/tip");
     assert!(get(node.http, "/health") == "ok\n");
-    assert!(wait_until(15, || get(node.http, "/tip") != h1), "the node stopped mining");
+    assert!(wait_until(MINING_LIVENESS_SECS, || get(node.http, "/tip") != h1), "the node stopped mining");
 }
 
 #[test]
