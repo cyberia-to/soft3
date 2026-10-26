@@ -61,6 +61,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G10b on the stand (session 49) | 40299054024 at `166a14e`: 323 ok, 1 failed (L3b), timeout 900.002 s |
 | L5a (session 48, no final line) | zheng 40304510063 at `24b4439`: test, lockfile, fmt, clippy success; #76 merge next |
 | L5a (session 50, done) | zheng#76 reviewed and merged into `ci/hemera-0.4-sweep` as `7d3fc4e` on receipt 40304510063 (cli 2/2, clippy); debug `test` 40304422158 cancelled |
+| G10b budget (session 51) | the soundness review `a_state_unbound_from_the_last_public_input_is_refused` takes about 985 s alone (zheng CI 40293728603 job log); soft3#298 gives stack-zheng 1800 s (others 900 s); rehearsal 40307972588 on the branch |
 
 ## PRs merged
 
@@ -68,7 +69,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
