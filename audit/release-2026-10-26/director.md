@@ -1,0 +1,66 @@
+---
+title: the director's report — 2026-10-26
+tags: soft3, release, director, report, phase 1
+crystal-type: measurement
+crystal-domain: cyber
+date: 2026-10-26
+serves: release/director/README.md § the measurement
+---
+# the director's report — 2026-10-26
+
+Opened in session 39 (08:00 UTC, plan row G11) from `release/director/plan.md`'s log and the receipts it names. Each later session's plan PR updates it.
+
+## the candidate: red
+
+No run from origin defaults today. The 12:00 daily cut (G3) takes effect only after the owner approves `release/phase1 → main`.
+
+The last rehearsal read in full is **40280626840** (06:34–07:19, stack leg `receipt/release-validation.json`, 0.4 tier overridden). 15 gates are red and 2 are blocked. The cause of each is the first error of its log in `receipt/logs/`:
+
+| gate | cause | row |
+|---|---|---|
+| package-resolution, soft3-tests, soft3-release, node-status | soft3 depends on `cybergraph` with feature `local-storage`, which exists only in the owner's `decision` chain bbg#9 → foculus#5 → cybergraph#3 | L4, owner's decision by 10-29 12:00 |
+| stack-vault, stack-neuron | `failed to select a version for cybergraph` (the same feature) | L4 |
+| stack-cybergraph, stack-foculus, conformance-snapshot | `bbg = "^0.2"` unresolvable against bbg's 0.4 line | L4 consumers, G6 |
+| stack-mudra | `cyber-hemera = "^0.3"`: mudra#30 is unmerged, and on its own CI it fails on the owner-frozen domain-v1 key vectors | L3c, owner's decision by 10-29 12:00 |
+| stack-zheng | timeout after 900.002 s at zheng `release/0.4`; zheng#73 (hemera 0.4) is unmerged because of its 64 KiB final-proof limit | L3b, owner's decision by 10-29 12:00 |
+| stack-radio | `iroh-blobs` 140 passed, 1 failed (535 s). Not a receipt for radio#47: radio moved mid-run | G4, rehearsal 40286177469 running |
+| source-inputs-unchanged | `changed: [radio]` | G4 |
+| release-notes-source | cyb `master` `ab12f38` was a direct push | G8, owner approves a cyb PR |
+| phase1-pins | pins move after the landings | G9 |
+| stack-chain-genesis (blocked) | `no pussy genesis file … (set SOFT3_GENESIS_DIR)` | G5 |
+| simulation-gate (blocked) | `no simulation checkout` (#242 merged after this run, `464f5ea`) | G7 |
+
+What moved green today, each at its PR head in a rehearsal: stack-hemera (40246955916), stack-lens (40256961023, 848.1 s; 40258751198, 713.7 s), stack-nox (40258751198), stack-bbg (40267704972, 320 s), and stack-tru, stack-tok, stack-file (40280626840). stack-radio passed every test it reached in 40273566327 and was red only by the 900 s clock.
+
+## units done
+
+| row | receipt |
+|---|---|
+| L2a WHIR soundness | not a hole; lens#38 `c73e1e6`; run 40254402090, rspcs 43/43 |
+| L2b lens fmt/clippy | lens#39 `b2f72c1`; run 40256487269 |
+| G10 stack-lens budget | lens#40 `41ef114`; rehearsal 40256961023 stack-lens 848.1 s / 900 s |
+| L2 lens | lens#37 `d1a88cc` into `release/0.2`; landing lens#36 to the owner |
+| G8 release-notes-source | decided: the gate stays, the input is the owner's |
+| L3a zheng fmt/clippy | zheng#74 into #73's branch; run 40263964809 |
+| L4 (to the owner) | ask on cybergraph#3 (comment 6408330160), D10 |
+| L5 superseded PRs | lens#14, zheng#33 and nox#17 closed with receipts |
+| L3c (in part) | tru#43 `464104c`, plumb#23 `8266e9f`, file#39 `4957848`, rune#8 `a2820e6` on each `release/phase1`; mudra#30 to the owner |
+| G7 simulation pin | soft3#242 `464f5ea`; drift run 40286588394, test run 40286586961 |
+| L3 nox, bbg (in part) | nox#31 `2c67aa9` into `release/0.4`; bbg#52 `3a8b823` into `release/phase1` |
+| L5a (in part) | zheng#75 `0ad4c3e`, nox#41 `c25acf4`; zheng#76 open |
+
+## PRs merged
+
+45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged).
+
+## plan items left
+
+Open: G5, G6, G9, G10a, G11 (this row), C1, C2, C3 and R1. Doing: L1, L3, L3b, L3c, L5a, G4 and G7. With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+
+## fable
+
+4 questions of `FABLE_DAILY` 20 by 08:00 (`state/fable-2026-10-26`, `state/fable.log`): D10 storage chain (04:34), zheng limits (05:07), mudra keys (06:31, 07:16).
+
+## subscription windows
+
+None hit; `state/tick.log` has no usage-limit line. 34 sessions started by 08:00 (`state/session-20261026T*.log`). **4 ended without a final line** (`NEXT: ?` at 05:29, 05:48, 06:35 and 06:53 in `state/tick.log`). Two of them opened L3c twice, which session 30 consolidated.
