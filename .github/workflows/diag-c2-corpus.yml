@@ -1,0 +1,81 @@
+name: Diagnostic c2 corpus
+
+# Measurement only: compiles and tests soft3 chain:: on feat/c2-corpus against
+# the owner's unmerged storage stand (cybergraph#3, bbg#9, foculus#5), laid out
+# as the release train lays out its sibling checkouts. Never a release gate.
+on:
+  push:
+    branches: ['diag/c2-*']
+
+permissions:
+  contents: read
+
+jobs:
+  chain-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override cybergraph=pull/3/head --override bbg=pull/9/head --override foculus=pull/5/head \
+            --override soft3=feat/c2-corpus
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          red = [r for r in result if r["result"] != "green"]
+          print("materialized", len(result), "red:", red)
+          # a sibling that failed to fetch is not fatal until cargo asks for it
+          PY
+      - name: cargo test chain:: --locked
+        id: locked
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          timeout 5400 cargo test --locked --no-default-features --lib chain:: 2>&1 | tee "$RUNNER_TEMP/test-locked.log"
+      - name: cargo test chain:: without --locked (only if the lock cannot match the stand)
+        if: steps.locked.outcome == 'failure'
+        id: unlocked
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          if ! grep -qi "lock" "$RUNNER_TEMP/test-locked.log"; then echo "locked run failed for another reason; not retrying"; exit 1; fi
+          timeout 5400 cargo test --no-default-features --lib chain:: 2>&1 | tee "$RUNNER_TEMP/test-unlocked.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "locked: ${{ steps.locked.outcome }}  unlocked: ${{ steps.unlocked.outcome }}"
+          grep -h "^test result\|corpus" "$RUNNER_TEMP"/test-*.log || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: c2-corpus-test-output
+          path: |
+            ${{ runner.temp }}/test-*.log
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.locked.outcome == 'failure' && steps.unlocked.outcome != 'success'
+        run: exit 1
