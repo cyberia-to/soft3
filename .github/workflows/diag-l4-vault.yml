@@ -1,0 +1,101 @@
+name: Diagnostic l4 vault
+
+# Measurement only, never merged, never a release gate (plan row L4, session 84).
+# Rehearsal 40357603776 stack leg: stack-vault refuses its stale Cargo.lock
+# under --locked, and stack-neuron fails resolution because neuron `main`
+# (node/Cargo.toml) asks cyber-vault for feature `local-host`, which exists
+# only on vault `feat/spell-cli` (f3fe2e4, the owner's, touches vault specs/).
+# This job lays the train's stand with the L4-ported heads, resolves the vault
+# and neuron locks on the build service (the director's host has no cargo), and
+# runs each stack gate's command: `cargo test --locked`.
+on:
+  push:
+    branches: ['diag/l4-vault*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: vault, vault_ref: release/phase1, label: vault-main }
+          - { target: vault, vault_ref: port/l4-vault-spell-cli-phase1, label: vault-port }
+          - { target: neuron, vault_ref: port/l4-vault-spell-cli-phase1, label: neuron-on-port }
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=pull/53/head --override cybergraph=port/l4-cybergraph3-phase1 --override foculus=port/l4-foculus5-phase1 \
+            --override file=release/phase1 --override hemera=release/0.4 --override lens=release/0.2 --override nox=release/0.4 \
+            --override radio=release/phase1 --override rune=release/phase1 --override tok=release/phase1 --override tru=release/phase1 \
+            --override zheng=fix/g10b-test-profile --override mudra=pull/30/head --override vault=${{ matrix.vault_ref }}
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "neuron", "vault"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the vault and neuron locks (resolution only)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          for r in vault neuron; do
+            cargo metadata --locked --format-version 1 --manifest-path $r/Cargo.toml >/dev/null 2>"$RUNNER_TEMP/out/$r-locked-before.txt" && echo "$r: lock already matches" || { echo "$r: lock stale, resolving"; tail -5 "$RUNNER_TEMP/out/$r-locked-before.txt"; }
+            if cargo metadata --format-version 1 --manifest-path $r/Cargo.toml >/dev/null 2>"$RUNNER_TEMP/out/$r-resolve.txt"; then
+              cargo metadata --locked --format-version 1 --manifest-path $r/Cargo.toml >/dev/null && echo "$r: resolved"
+              cp $r/Cargo.lock "$RUNNER_TEMP/out/$r.Cargo.lock"
+              git -C $r diff --stat -- Cargo.lock | tail -1
+            else
+              echo "$r: does not resolve"; cat "$RUNNER_TEMP/out/$r-resolve.txt"
+            fi
+          done
+      - name: Test (${{ matrix.label }})
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          set -o pipefail
+          cd ${{ matrix.target }}
+          timeout 9000 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.label }}.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP"/out/test-*.log | head -100 || true
+          echo "warnings:"
+          grep -h "^warning" "$RUNNER_TEMP"/out/test-*.log | sort | uniq -c || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: l4-vault-${{ matrix.label }}
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure'
+        run: exit 1
