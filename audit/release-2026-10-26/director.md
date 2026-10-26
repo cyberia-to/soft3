@@ -66,6 +66,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L3 nox sync (session 53, doing) | nox#42 `730f6b0` → `release/0.4`: master `ec052bb` merged in (19 conflicts, launch fixes kept, hash cost 61 kept), first CI; run 40313369006 in progress |
 | G10b budget merged (session 54) | rehearsal 40307972588: stack-zheng 987.2 s of 1800 s, 324 passed, 1 failed (L3b 64 KiB), soundness review ok; soft3#298 merged `b764f7a`; profile `166a14e` onto #73's branch remains |
 | G10b profile PR (session 55) | zheng#77 `7471376` → `ci/hemera-0.4-sweep` (draft): the profile rebased onto `7d3fc4e`; diagnostic zheng 40316171643 (`--no-fail-fast`, every `rs/` binary) in progress; nox CI 40313369006 (nox#42) green |
+| L3d split out (session 57) | joy and trident are on hemera 0.3 (joy `e89e4e3`, trident `master`). trident#129 `b29aabc` is the owner's 0.4 draft, and its blockers lens#37 and nox#31 are cleared. `cyberia-apparatus` has `push=false` on both, which are not in team `apparatus`. The access ask is on trident#129 (comment 6415437829), deadline 10-29 12:00; it does not gate R1 |
 
 ## PRs merged
 
@@ -73,7 +74,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). With the owner: L4 (D10), L3b, mudra#30 (L3c), L3d (access to joy and trident, session 57), and the landings hemera#25 and lens#36.
 
 ## fable
 
