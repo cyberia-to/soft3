@@ -71,10 +71,11 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G10a budgets (session 59) | stack-lens green 615.7–856.0 s (six rehearsals on `release/0.2`), stack-radio 605.3–779.8 s; soft3#307 `STACK_TEST_BUDGET` lens 1200, radio 1200, gate `test` green (run 40323982690), merged `a04bfce`; the stack-leg sum waits on L4 |
 | L3 nox merged (session 60) | rehearsal 40316574923 stack leg: stack-nox green 96.2 s, 292 passed 0 failed at nox#42 `730f6b0`; nox#42 merged into `release/0.4` `41ba24f`; landing nox#43 `release/0.4 → master` opened for the owner. stack-radio and source-inputs-unchanged red in the same run, radio's (`e98bc69` unchanged, `iroh-blobs` proptest) → G4a |
 | G4a cause and fix up (session 61) | the flake is tokio 1.49.0's mpsc `len()` underflow (tokio #8062). radio#49 moves the lock to tokio 1.51.5 (lock from radio run 40325343061). The same run's 50× repeat: 1 failed at 1.49.0, 0 at 1.51.5. Rehearsal 40325821696 (`radio=pull/49/head`) decides the merge |
+| G4a train side merged (session 62) | soft3#311 `9f78716`: a stack test that changes its own tree is red on that gate (`dirtied`, `logs/stack-<owner>.dirtied.txt`), and the checkout is restored to its recorded revision; gate `test` run 40327523244, 35 tests OK |
 
 ## PRs merged
 
-45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34). Later: soft3#298 (`b764f7a`, session 54); soft3#288 (`893d9e0`, session 49) and zheng#76 (`7d3fc4e`, session 50), plumb#24 (`2b3bdce`, session 52), soft3#307 (`a04bfce`, session 59), nox#42 (`41ba24f`, session 60).
+45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34). Later: soft3#298 (`b764f7a`, session 54); soft3#288 (`893d9e0`, session 49) and zheng#76 (`7d3fc4e`, session 50), plumb#24 (`2b3bdce`, session 52), soft3#307 (`a04bfce`, session 59), nox#42 (`41ba24f`, session 60). Session 62: soft3#311 (`9f78716`).
 
 ## plan items left
 
