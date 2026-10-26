@@ -9,6 +9,13 @@ name: Diagnostic g16 auto probe
 # Same stand as 40389629921 / 40407469682, pinned by SHA; soft3 crate = this head.
 # bounded.py now kills the whole process group (40407469682's killed cargo only,
 # and the orphaned test binary held tee open until cancel).
+# Session 104: diagnostic 40416397867 on macos-15-intel: Auto refused the adapter
+# and mine_e2e passed (54.5 s), but the later `cargo test --locked` failed
+# lib `every_backend_agrees_and_verifies` (webgpu base 0xe4070: Some(0) vs Some(636)),
+# a test #353 does not touch, which passed on this leg in 40389629921 where lib ran
+# first. Hypothesis: the probe's abandoned 2^22 dispatch from the earlier mine_e2e
+# process leaves the paravirtual GPU answering wrong. Two Intel jobs on head 2ad86ab:
+# `gate` (no stall before the gate command, the train's order) and `stall-first`.
 on:
   push:
     branches: ['diag/g16-auto-*']
@@ -21,7 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-15-intel, macos-14]
+        runner: [macos-15-intel]
+        order: [gate, stall-first]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 120
     defaults:
@@ -84,10 +92,19 @@ jobs:
           set -o pipefail
           cargo build --locked 2>&1 | tail -3
           cargo test --locked --test mine_e2e --no-run 2>&1 | tail -3
-      - name: tests/mine_e2e.rs alone, --nocapture (which backend Auto picks, and why)
+      - name: tests/mine_e2e.rs alone, --nocapture (stall-first only)
+        if: matrix.order == 'stall-first'
         working-directory: ${{ runner.temp }}/sources/soft3/crate
         run: |
           python3 "$RUNNER_TEMP/bounded.py" 600 cargo test --locked --test mine_e2e -- --nocapture 2>&1 | tee "$RUNNER_TEMP/mine_e2e.log"
+      - name: every_backend_agrees_and_verifies alone, five times
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "== round $i" | tee -a "$RUNNER_TEMP/agree.log"
+            python3 "$RUNNER_TEMP/bounded.py" 900 cargo test --locked --lib chain::mine::tests::every_backend_agrees_and_verifies 2>&1 | tee -a "$RUNNER_TEMP/agree.log" || true
+          done
+          grep -E '^== |^test result|left:|right:' "$RUNNER_TEMP/agree.log" || true
       - name: the soft3-tests command, cargo test --locked (gate limit 1800 s)
         working-directory: ${{ runner.temp }}/sources/soft3/crate
         run: |
@@ -97,9 +114,10 @@ jobs:
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: g16-auto-${{ matrix.runner }}
+          name: g16-auto-${{ matrix.runner }}-${{ matrix.order }}
           path: |
             ${{ runner.temp }}/soft3-tests.log
             ${{ runner.temp }}/mine_e2e.log
+            ${{ runner.temp }}/agree.log
             ${{ runner.temp }}/snapshot/sources.json
           if-no-files-found: warn
