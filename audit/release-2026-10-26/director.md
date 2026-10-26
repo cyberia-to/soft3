@@ -14,21 +14,19 @@ Opened in session 39 (08:00 UTC, plan row G11) from `release/director/plan.md`'s
 
 No run from origin defaults today. The 12:00 daily cut (G3) takes effect only after the owner approves `release/phase1 → main`.
 
-The last rehearsal read in full is **40280626840** (06:34–07:19, stack leg `receipt/release-validation.json`, 0.4 tier overridden). 15 gates are red and 2 are blocked. The cause of each is the first error of its log in `receipt/logs/`:
+The last rehearsal read in full is **40386072407** (19:22–20:52, manager `release/phase1` `5970c3a`, 14 overrides, soft3 from `main` `2e5ba00`). Its stack leg (`candidate-stack`, `receipt/release-validation.json`) has 7 gates red and none blocked:
 
 | gate | cause | row |
 |---|---|---|
-| package-resolution, soft3-tests, soft3-release, node-status | soft3 depends on `cybergraph` with feature `local-storage`, which exists only in the owner's `decision` chain bbg#9 → foculus#5 → cybergraph#3 | L4, owner's decision by 10-29 12:00 |
-| stack-vault, stack-neuron | `failed to select a version for cybergraph` (the same feature) | L4 |
-| stack-cybergraph, stack-foculus, conformance-snapshot | `bbg = "^0.2"` unresolvable against bbg's 0.4 line | L4 consumers, G6 |
-| stack-mudra | `cyber-hemera = "^0.3"`: mudra#30 is unmerged, and on its own CI it fails on the owner-frozen domain-v1 key vectors | L3c, owner's decision by 10-29 12:00 |
-| stack-zheng | timeout after 900.002 s at zheng `release/0.4`; zheng#73 (hemera 0.4) is unmerged because of its 64 KiB final-proof limit | L3b, owner's decision by 10-29 12:00 |
-| stack-radio | `iroh-blobs` 140 passed, 1 failed (535 s). Not a receipt for radio#47: radio moved mid-run. **Green in rehearsal 40286177469** at #47's head (695.3 s), merged | G4 done |
-| source-inputs-unchanged | `changed: [radio]`; green in 40286177469 | G4 done |
+| stack-zheng | `the_shipped_final_proof_is_at_most_64_kib_over_every_transcript` (324 passed, 1 failed, 922 s) | L3b, owner's choice zheng#78 / #79 by 10-29 12:00 |
+| stack-mudra | `domain_compat`: the owner-frozen domain-v1 vectors | L3c, owner's decision by 10-29 12:00 |
+| stack-neuron | stale `Cargo.lock` under `--locked` (neuron `main` not overridden); diagnostic 40400829617 resolves it | L4 |
+| conformance-snapshot | `zheng::HashAux`, `LensBackend`, `row_hash` removed in zheng 0.4 | G6 |
+| soft3-tests | `warnings: true`: the deprecated `as_slice` that soft3 `main` still has (fixed on `release/phase1` by #326) | G15 |
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, owner approves a cyb PR |
 | phase1-pins | pins move after the landings | G9 |
-| stack-chain-genesis (blocked) | `no pussy genesis file … (set SOFT3_GENESIS_DIR)` | G5 |
-| simulation-gate (blocked) | `no simulation checkout` (#242 merged after this run, `464f5ea`) | G7 |
+
+Green in this leg: stack-hemera, bbg, lens, nox, cybergraph, foculus, tru, tok, vault, file, radio, stack-chain-genesis, simulation-gate, soft3-release, node-status, origin-checkouts, source-inputs-unchanged.
 
 What moved green today, each at its PR head in a rehearsal: stack-hemera (40246955916), stack-lens (40256961023, 848.1 s; 40258751198, 713.7 s), stack-nox (40258751198), stack-bbg (40267704972, 320 s), and stack-tru, stack-tok, stack-file (40280626840). stack-radio passed every test it reached in 40273566327 and was red only by the 900 s clock.
 
@@ -94,6 +92,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G13 train receipt (session 89) | rehearsal 40386072407 `x86_64-apple-darwin`: 0 honeycrisp crates compiled (lens#41 `fee68d8` holds); soft3-release red only on soft3 `main` `2e5ba00` `gpu.rs:25,32` (`cyber_lens_gpu::metal` configured out), gated on `release/phase1` by #328. Owner's landing order: soft3 before or with lens#36 |
 | L3b round 4 candidates (session 90) | zheng 40334403053: `10f:32:5` and `9f:36:5` cancelled at 355 min, final level ≥ 19,412 s, round 1 unfinished; 0.63 M/s pooled; (i) costs roughly 10–25× the control's final-level time, or more; zheng#73 comment 6426170532 |
 | L3b the owner's two PRs (session 93) | zheng#78 (i) `10f:32:5` bound 64,129 B, 64 KiB kept; zheng#79 (ii) `9f:26:5` bound 72,965 B under 73,728 B; both IVC 1/16, derived 65,536 gate ceiling, body version 7; receipt zheng 40399987810 running; zheng#73 comment 6427130880 |
+| L4 the stack leg of 40386072407 read; neuron lock (session 94) | cybergraph, foculus, vault, radio, chain-genesis, simulation green; stack-neuron down to a stale lock; neuron `release/phase1` created at `9df467d`; diagnostic soft3 40400829617 running |
 
 ## PRs merged
 
