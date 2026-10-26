@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [cybergraph]  # NeuronRecord.nonce re-measure at cybergraph 2c1e110; foculus-legacy-proofs read in 40354982000
+        target: [cybergraph]  # re-measure at cybergraph aa9753a: V1 states for opened tests (8106245), hemera 0.4 hash goldens (aa9753a); 40355780638 had 10 reds
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     defaults:
