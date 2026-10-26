@@ -53,13 +53,15 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G5 stack-chain-genesis (session 42, doing) | soft3#288: space-pussy pinned at `bdcfdaf` (manifest sha256 `b46cb327…` = blessed), the gate builds then checks; unit tests 31 OK; rehearsal waits on 40293725274 starting |
 | C1 soft3 PR queue (session 43, done) | 18 open soft3 PRs triaged against the plan; none merges into phase 1 (#234 waits on the owner's economy spec, #243 is a spec, #212 needs owner host steps, #167 #169 #170 #245 are outside phase 1); reasons in plan row C1 |
 
+| C2 proven-present S0 (session 44, doing) | soft3#291 (draft): corpus writer, verdict codes, invalid-block generator, replay, test, `node --corpus`; not compiled: no stand compiles soft3 (diagnostic 40297730975: bbg#9 fails on zheng 0.4, `unresolved import zheng::LookOpening`) |
+| G10b measured (session 44) | zheng CI 40293728603 at opt-level 3: 324 passed, 1 failed (L3b 64 KiB), 1077.95 s, over 900 s |
 ## PRs merged
 
 45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34).
 
 ## plan items left
 
-Open: G6, G9, G10a, C2, C3 and R1. G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c, L5a, G7, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c, L5a, G7, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
