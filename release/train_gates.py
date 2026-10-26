@@ -233,7 +233,12 @@ def boot_status(binary, gates):
 # 40293728603: suite 1077.95 s) and the build takes 262 s on the train stand (rehearsal
 # 40299054024), so the gate needs ~1340 s.
 # No test leaves the gate; the budget follows the measurement (plan G10b).
-STACK_TEST_BUDGET = {"zheng": 1800}
+# lens: cyber-lens-rspcs's exhaustive bit-flip soundness scans (already spread over every core)
+# are most of the gate; green at 615.7-856.0 s on release/0.2 across six rehearsals
+# (40267704972 .. 40307972588), so 900 s leaves 44 s at the worst sample (plan G10a).
+# radio: green at 605.3-779.8 s after radio#47's dev profile (40286177469 .. 40307972588); compile
+# alone varies ~120 s between runners and an earlier head passed at 881.2 s (40267704972) (plan G10a).
+STACK_TEST_BUDGET = {"zheng": 1800, "lens": 1200, "radio": 1200}
 STACK_TEST_DEFAULT = 900
 
 
