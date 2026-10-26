@@ -74,6 +74,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G4a train side merged (session 62) | soft3#311 `9f78716`: a stack test that changes its own tree is red on that gate (`dirtied`, `logs/stack-<owner>.dirtied.txt`), and the checkout is restored to its recorded revision; gate `test` run 40327523244, 35 tests OK |
 | G6 measured (session 63) | waits on L4: rehearsal 40316574923 `logs/conformance-snapshot.txt` exits 101 at resolution, cybergraph 0.1.1 (the harness's path dependency, `conformance/rs/Cargo.toml:33`) requires `bbg ^0.2`; the cybergraph surface stays in the snapshot |
 | L3b round 3 read (session 65) | zheng 40287758728: control `9f:26:5` 56:50, FINAL 71,653 B (> 64 KiB), final level 1,740.7 s; `10f:32:5` and `9f:36:5` cancelled at 355 min, so (i)'s final level takes > ~19,600 s (> 11×); posted on zheng#73 (comment 6417716289); round 4 with timing: zheng 40334403053 |
+| G4a done (session 66) | rehearsal 40325821696: stack-radio green 787.0 s at radio#49 `2a0ee79` (tokio 1.51.5), 657 passed 0 failed, proptests `_fs`/`_mem` ok, `source-inputs-unchanged` green; own CI reds = #47's (deny, clippy, wasm, codespell, fmt, same findings); radio#49 merged into `release/phase1` as `7452833` |
 
 ## PRs merged
 
@@ -81,7 +82,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum waits on L4); C3 built, acceptance waits on L4 (session 58) (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). Open since session 60: G4a (stack-radio flaky `iroh-blobs` proptest); doing since session 61 (radio#49 under rehearsal 40325821696). Session 64: L4's accept branch prepared as draft bbg#53 (not merged; CI 40333694101). With the owner: L4 (D10), L3b, mudra#30 (L3c), L3d (access to joy and trident, session 57), and the landings hemera#25, lens#36 and nox#43 (session 60).
+Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum waits on L4); C3 built, acceptance waits on L4 (session 58) (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41; soft3#298 under rehearsal 40307972588, session 51). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). G4a done in session 66 (radio#49 merged into radio `release/phase1` as `7452833` on rehearsal 40325821696). Session 64: L4's accept branch prepared as draft bbg#53 (not merged; CI 40333694101). With the owner: L4 (D10), L3b, mudra#30 (L3c), L3d (access to joy and trident, session 57), and the landings hemera#25, lens#36 and nox#43 (session 60).
 
 ## fable
 
