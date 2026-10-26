@@ -91,6 +91,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L4 vault (sessions 84–85) | diagnostic 40382344434: vault green on `main` (fresh lock) and on vault#1's accept branch, draft vault#12 (`503d8c8`). neuron resolves, then fails in neuron-rune on rune#6 API. Session 84 ended without its plan PR |
 | L4 rune#6 accept branch (session 86, doing) | draft rune#9 `3b031ff` (rune#6 + rune `release/phase1`, 2 conflicts, lock unchanged). Receipts running: rune CI 40386033946 and rehearsal 40386072407 (`release/phase1` `5970c3a`, `rune=port/l4-rune6-phase1`) |
 | G15 the stand tests soft3 `main` (session 88, doing) | 40386072407's soft3-tests reds (G12 warning ×3, G14 window on x86_64 linux) come from soft3 `main` `2e5ba00` (`sources.json`), not `release/phase1`; rehearsal 40389629921 dispatched with `soft3=release/phase1` |
+| G13 train receipt (session 89) | rehearsal 40386072407 `x86_64-apple-darwin`: 0 honeycrisp crates compiled (lens#41 `fee68d8` holds); soft3-release red only on soft3 `main` `2e5ba00` `gpu.rs:25,32` (`cyber_lens_gpu::metal` configured out), gated on `release/phase1` by #328. Owner's landing order: soft3 before or with lens#36 |
 
 ## PRs merged
 
