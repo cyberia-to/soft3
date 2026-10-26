@@ -42,7 +42,11 @@ impl Drop for NodeProc {
     }
 }
 
-fn free_port() -> u16 {
+fn free_tcp_port() -> u16 {
+    std::net::TcpListener::bind("127.0.0.1:0").unwrap().local_addr().unwrap().port()
+}
+
+fn free_udp_port() -> u16 {
     std::net::UdpSocket::bind("127.0.0.1:0").unwrap().local_addr().unwrap().port()
 }
 
@@ -50,6 +54,17 @@ fn get(http: u16, path: &str) -> String {
     ureq::get(&format!("http://127.0.0.1:{http}{path}")).timeout(Duration::from_secs(5)).call()
         .map(|r| r.into_string().unwrap_or_default()).unwrap_or_default()
 }
+
+/// How long a healthy node may go without a new block before the test calls
+/// it stalled. A block at the dev chain's floor target (bits `0x1e100000`)
+/// takes 2^20 expected hashes, and the wait is exponential, so a window of
+/// `T` seconds at `r` hashes/s misses a block with probability
+/// `exp(-T·r / 2^20)`. The slowest rate measured for the two-thread debug
+/// miner on the build service is 23.9 kH/s (diagnostic 40371902376, both
+/// adversary tests running): 600 s gives `exp(-13.7)`, about 1e-6. The old
+/// 15 s window was red in 13 of 30 runs of that diagnostic. A
+/// passing run returns as soon as the tip moves; only a real stall waits.
+const MINING_LIVENESS_SECS: u64 = 600;
 
 fn wait_until(secs: u64, mut f: impl FnMut() -> bool) -> bool {
     let deadline = Instant::now() + Duration::from_secs(secs);
@@ -77,20 +92,43 @@ fn spawn_node(label: &str) -> (NodeProc, Vec<u8>) {
     assert!(made.status.success(), "{}", String::from_utf8_lossy(&made.stderr));
     let genesis = std::fs::read(&genesis_path).unwrap();
     let id = String::from_utf8(Command::new(bin).args(["node", "id", "--home"]).arg(&home).output().unwrap().stdout).unwrap().trim().to_owned();
-    let (http, radio) = (free_port(), free_port());
-    let log = std::fs::File::create(std::env::temp_dir().join(format!("chain-adversary-{label}.log"))).unwrap();
-    let child = Command::new(bin)
-        .args(["node", "--chain", "dev", "--home"]).arg(&home)
-        .args(["--bind", &format!("127.0.0.1:{http}"), "--radio", &format!("127.0.0.1:{radio}"), "--genesis"]).arg(&genesis_path)
-        .args(["--moniker", label, "--log-net"])
-        .stdout(Stdio::null()).stderr(log).spawn().unwrap();
-    let mine_log = std::fs::File::create(std::env::temp_dir().join(format!("chain-adversary-{label}-mine.log"))).unwrap();
-    let miner = Command::new(bin)
-        .args(["mine", "--chain", "dev", "--node", &format!("http://127.0.0.1:{http}"), "--address", MINER, "--backend", "cpu", "--threads", "2"])
-        .stdout(mine_log).stderr(Stdio::null()).spawn().unwrap();
-    let node = NodeProc { child, miner, http, radio, home, id };
-    assert!(wait_until(30, || get(node.http, "/health") == "ok\n"), "node did not come up");
-    (node, genesis)
+    // A port probed free can be taken before the node binds it (diagnostic
+    // 40374758349, whole-14: `Address already in use`); only that failure is retried.
+    let (log_path, mine_path) = (std::env::temp_dir().join(format!("chain-adversary-{label}.log")), std::env::temp_dir().join(format!("chain-adversary-{label}-mine.log")));
+    for attempt in 1..=5 {
+        let (http, radio) = (free_tcp_port(), free_udp_port());
+        let log = std::fs::File::create(&log_path).unwrap();
+        let mut child = Command::new(bin)
+            .args(["node", "--chain", "dev", "--home"]).arg(&home)
+            .args(["--bind", &format!("127.0.0.1:{http}"), "--radio", &format!("127.0.0.1:{radio}"), "--genesis"]).arg(&genesis_path)
+            .args(["--moniker", label, "--log-net"])
+            .stdout(Stdio::null()).stderr(log).spawn().unwrap();
+        let mine_log = std::fs::File::create(&mine_path).unwrap();
+        let mut miner = Command::new(bin)
+            .args(["mine", "--chain", "dev", "--node", &format!("http://127.0.0.1:{http}"), "--address", MINER, "--backend", "cpu", "--threads", "2"])
+            .stdout(mine_log).stderr(Stdio::null()).spawn().unwrap();
+        let mut healthy = false;
+        wait_until(30, || {
+            healthy = get(http, "/health") == "ok\n";
+            healthy || matches!(child.try_wait(), Ok(Some(_)))
+        });
+        if healthy {
+            return (NodeProc { child, miner, http, radio, home, id }, genesis);
+        }
+        let exited = matches!(child.try_wait(), Ok(Some(_)));
+        let text = std::fs::read_to_string(&log_path).unwrap_or_default();
+        let _ = miner.kill();
+        let _ = miner.wait();
+        let _ = child.kill();
+        let _ = child.wait();
+        if exited && text.contains("Address already in use") && attempt < 5 {
+            eprintln!("spawn_node {label}: attempt {attempt} lost a port (http {http}, radio {radio}); retrying");
+            continue;
+        }
+        let _ = std::fs::remove_dir_all(&home);
+        panic!("node did not come up\n{text}");
+    }
+    unreachable!()
 }
 
 /// Block 0's id, as the node publishes it.
@@ -254,7 +292,7 @@ fn streams_frames_and_status_are_policed() {
     // the node is still healthy and mining
     let h1 = get(node.http, "/tip");
     assert!(get(node.http, "/health") == "ok\n");
-    assert!(wait_until(15, || get(node.http, "/tip") != h1), "the node stopped mining");
+    assert!(wait_until(MINING_LIVENESS_SECS, || get(node.http, "/tip") != h1), "the node stopped mining");
 }
 
 #[test]
