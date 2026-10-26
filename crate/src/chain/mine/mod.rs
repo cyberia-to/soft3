@@ -265,7 +265,9 @@ mod tests {
     fn prefer_gpu_decides_all_outcomes() {
         let cpu = (Some(7), PROBE, ms(100));
         let none = (None, PROBE, ms(100));
-        let g = |a: Result<Option<u32>, String>, n: u32, t: u64| prefer_gpu(n, Some((a, ms(t))), cpu);
+        let g = |a: Result<Option<u32>, String>, n: u32, t: u64| {
+            prefer_gpu(n, Some((a, ms(t))), cpu)
+        };
         assert!(prefer_gpu(PROBE, None, cpu).unwrap_err().contains("-nonce probe within"));
         assert!(g(Err("x".into()), PROBE, 1).unwrap_err().contains("failed"));
         assert!(g(Ok(Some(8)), PROBE, 1).unwrap_err().contains("disagreed"));
