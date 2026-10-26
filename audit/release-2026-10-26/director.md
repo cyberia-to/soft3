@@ -77,6 +77,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G4a done (session 66) | rehearsal 40325821696: stack-radio green 787.0 s at radio#49 `2a0ee79` (tokio 1.51.5), 657 passed 0 failed, proptests `_fs`/`_mem` ok, `source-inputs-unchanged` green; own CI reds = #47's (deny, clippy, wasm, codespell, fmt, same findings); radio#49 merged into `release/phase1` as `7452833` |
 | L4 accept branch drafted (session 68) | foculus#86 `9e34693`, cybergraph#23 `91e1fd5` (zheng `legacy` dev-dependency for #3's refusal tests; 8 `verify_state_execution` calls disabled with reason), over bbg#53 (CI 40333694101 green); rehearsal 40341228019 dispatched with the chain overridden; nothing merged (D10, the owner's) |
 | G10b decided (session 70) | zheng 40316171643 (`--no-fail-fast`, cancelled at 180 min): lib 1,075.7 s, `succinct_bitflip` 5,097.7 s, `wrap` 1,463.3 s, `recursion` 1,112.1 s, `wrap_review` > 1,460 s unfinished; ≥ ~10,860 s vs 1,800 s. fable #5: zheng `#[ignore]` + `heavy` CI + the train requires that check; the soundness half asked of the owner on zheng#77 (comment 6419556782) |
+| L4 foculus legacy gate (session 71) | rehearsal 40341228019's stack leg: stack-bbg green at bbg#53. foculus#86 needed zheng 0.4's unsound `legacy` API, so it is gated behind the non-default `legacy-proofs` feature (`dc01787`, fable #6). Locks were resolved on the build service, diagnostic 40353326459 (`3909592`, `51c0ca0`), and soft3's node graph has zheng `legacy` off. New red: `tip.rs` versus bbg 0.3's `CheckpointProof` (40353624161) |
 
 ## PRs merged
 
@@ -88,7 +89,7 @@ Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum w
 
 ## fable
 
-4 questions of `FABLE_DAILY` 20 by 08:00 (`state/fable-2026-10-26`, `state/fable.log`): D10 storage chain (04:34), zheng limits (05:07), mudra keys (06:31, 07:16). Session 70: #5, zheng's stack-gate budget (G10b), answered "A: `#[ignore]` + `heavy` job + a train check; the soundness half is the owner's".
+4 questions of `FABLE_DAILY` 20 by 08:00 (`state/fable-2026-10-26`, `state/fable.log`): D10 storage chain (04:34), zheng limits (05:07), mudra keys (06:31, 07:16). Session 70: #5, zheng's stack-gate budget (G10b), answered "A: `#[ignore]` + `heavy` job + a train check; the soundness half is the owner's". Session 71: #6, foculus#86 versus zheng 0.4's unsound `legacy` API (L4), answered "A: a non-default `legacy-proofs` feature; the contract change goes to the owner with D10".
 
 ## subscription windows
 
