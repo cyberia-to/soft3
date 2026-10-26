@@ -60,14 +60,15 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G5 stack-chain-genesis (session 49, done) | rehearsal 40299054024: the gate runs (red on L4 `cybergraph` `local-storage`, 0.265 s); soft3#288 merged `893d9e0` into `release/phase1` |
 | G10b on the stand (session 49) | 40299054024 at `166a14e`: 323 ok, 1 failed (L3b), timeout 900.002 s |
 | L5a (session 48, no final line) | zheng 40304510063 at `24b4439`: test, lockfile, fmt, clippy success; #76 merge next |
+| L5a (session 50, done) | zheng#76 reviewed and merged into `ci/hemera-0.4-sweep` as `7d3fc4e` on receipt 40304510063 (cli 2/2, clippy); debug `test` 40304422158 cancelled |
 
 ## PRs merged
 
-45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34).
+45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34). Later: soft3#288 (`893d9e0`, session 49) and zheng#76 (`7d3fc4e`, session 50).
 
 ## plan items left
 
-Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c, L5a, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c and G10b (session 41). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). G5 (session 49), L5a (session 50). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
