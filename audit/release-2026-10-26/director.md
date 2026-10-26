@@ -62,7 +62,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c, L5a, G7, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits on L4 (conformance-snapshot resolves `cybergraph` → `bbg ^0.2`). Doing: L1, L3, L3b, L3c, L5a, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40), C1 (session 43), G7 (session 46: simulation-gate runs; red owned by L3c). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
