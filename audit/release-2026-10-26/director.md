@@ -94,6 +94,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L3b the owner's two PRs (session 93) | zheng#78 (i) `10f:32:5` bound 64,129 B, 64 KiB kept; zheng#79 (ii) `9f:26:5` bound 72,965 B under 73,728 B; both IVC 1/16, derived 65,536 gate ceiling, body version 7; receipt zheng 40399987810 running; zheng#73 comment 6427130880 |
 | L4 the stack leg of 40386072407 read; neuron lock (session 94) | cybergraph, foculus, vault, radio, chain-genesis, simulation green; stack-neuron down to a stale lock; neuron `release/phase1` created at `9df467d`; diagnostic soft3 40400829617 running |
 | L3b the options' interactive figures (session 95) | 40399987810 hid a failed `wrap::review` test behind `tee`; measured interactive bound (i) 96.07, (ii) 101.43; stated on zheng#78 `ac61057`, #79 `f8c14d4`; receipt zheng 40401679146 green, `wrap::review` 4/4; trade-off on zheng#73 (6427425346) |
+| L4 neuron on the 0.4 tier (session 97) | 40400829617: lock resolves (hemera 0.4.0), compiles. 12 tests red, all `legacy-v1.capture` replays failing `Content::validate` (hemera 0.3 ids). That is L3c's keep-or-rotate, second instance, added to mudra#30 (6427533574) |
 
 ## PRs merged
 
