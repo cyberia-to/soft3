@@ -1,0 +1,95 @@
+name: Diagnostic g14 liveness
+
+# Measurement only, never merged, never a release gate (plan row G14, session 79).
+# chain_adversary streams_frames_and_status_are_policed: "the node stopped mining"
+# red 2/2 in diagnostic 40364373296, green 3/3 in rehearsal 40357603776. This runs
+# the UNCHANGED test binary repeatedly on the same stand and keeps, per iteration,
+# the node log and the miner's stdout (template retries/backoff, hashrate, blocks).
+on:
+  push:
+    branches: ['diag/g14-*']
+
+permissions:
+  contents: read
+
+jobs:
+  soft3-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=aa9753a3c03f9cae0538a0a7522da42fb1e5b215 --override foculus=98df7a634cd859bfd65f6cc369e73dcfb1346ff3 \
+            --override file=release/phase1 --override hemera=release/0.4 --override lens=release/0.2 --override nox=release/0.4 \
+            --override radio=release/phase1 --override rune=release/phase1 --override tok=release/phase1 --override tru=release/phase1 \
+            --override zheng=166a14e62166218161afa555efa166afacc7a120 --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          # test THIS head's crate, not the snapshot's soft3 default
+          rm -rf "$RUNNER_TEMP/sources/soft3/crate"
+          cp -a crate "$RUNNER_TEMP/sources/soft3/crate"
+          echo "soft3 crate from $GITHUB_SHA"
+      - name: Build the test binary (the soft3-tests command, no run)
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: cargo test --locked --test chain_adversary --no-run 2>&1 | tail -5
+      - name: Loop the unchanged test, keeping the logs
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          nproc; out="$RUNNER_TEMP/g14"; mkdir -p "$out"
+          run() { # $1 tag, rest: cargo test args
+            tag=$1; shift; d="$out/$tag"; mkdir -p "$d"
+            rm -f /tmp/chain-adversary-*.log
+            t0=$(date +%s.%N)
+            if cargo test --locked --test chain_adversary "$@" > "$d/test.txt" 2>&1; then r=pass; else r=FAIL; fi
+            t1=$(date +%s.%N)
+            cp /tmp/chain-adversary-*.log "$d/" 2>/dev/null || true
+            retries=$(grep -c "retry in" "$d/chain-adversary-streams-mine.log" 2>/dev/null; true)
+            blocks=$(grep -c "accepted" "$d/chain-adversary-streams-mine.log" 2>/dev/null; true)
+            printf '%s %s %.1fs template-retries=%s blocks=%s\n' "$tag" "$r" "$(awk "BEGIN{print $t1 - $t0}")" "${retries:-0}" "${blocks:-0}" | tee -a "$out/summary.txt"
+          }
+          for i in $(seq -w 1 20); do run "whole-$i"; done
+          for i in $(seq -w 1 10); do run "streams-only-$i" streams_frames_and_status_are_policed; done
+      - name: Summary
+        if: always()
+        run: |
+          s="$RUNNER_TEMP/g14/summary.txt"; cat "$s"
+          echo "whole: $(grep -c '^whole.* pass' "$s") pass / $(grep -c '^whole' "$s")"
+          echo "streams-only: $(grep -c '^streams.* pass' "$s") pass / $(grep -c '^streams' "$s")"
+          for d in "$RUNNER_TEMP"/g14/*/; do
+            if grep -q FAILED "$d/test.txt"; then
+              echo "=== $d"; grep -h "panicked\|stopped mining\|finished in" "$d/test.txt"
+              echo "--- miner"; cat "$d/chain-adversary-streams-mine.log" 2>/dev/null | head -40
+            fi
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: g14-liveness-output
+          path: |
+            ${{ runner.temp }}/g14
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
