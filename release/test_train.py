@@ -217,7 +217,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(cwd, self.root / "simulation")
         self.assertIn(str(self.root / "out" / "simulation-gate.md"), argv)
 
-    def test_stack_zheng_has_its_own_test_budget(self):
+    def test_stack_gates_have_their_measured_budgets(self):
         (self.root / "soft3").mkdir()
         with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
                 patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
@@ -225,9 +225,11 @@ class ReleaseTests(unittest.TestCase):
             run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=True)
         budgets = {c.args[0]: c.kwargs["timeout"] for c in run.call_args_list if c.args[0].startswith("stack-")}
         self.assertEqual(budgets["stack-zheng"], 1800)
-        others = {name: t for name, t in budgets.items() if name != "stack-zheng"}
-        self.assertIn("stack-lens", others)
+        self.assertEqual(budgets["stack-lens"], 1200)
+        self.assertEqual(budgets["stack-radio"], 1200)
+        others = {name: t for name, t in budgets.items() if name not in ("stack-zheng", "stack-lens", "stack-radio")}
         self.assertIn("stack-hemera", others)
+        self.assertIn("stack-bbg", others)
         self.assertEqual(set(others.values()), {900})
         for call in run.call_args_list:
             if call.args[0].startswith("stack-"):
