@@ -1,0 +1,105 @@
+name: Diagnostic g13 intel mac
+
+# Measurement only, never merged, never a release gate (plan row G13, session 77).
+# Rehearsal 40357603776: x86_64-apple-darwin soft3-release red in honeycrisp acpu
+# (aarch64-only code reached through lens gpu -> aruminium). Fix: Metal gated on
+# Apple Silicon in lens (fix/g13-metal-aarch64 247323b) and soft3 (this head's crate).
+# Same stand as 40357603776 pinned by SHA, lens = the fix; builds on Intel and
+# Apple Silicon macs, then the node-status probe of release/train_gates.py.
+on:
+  push:
+    branches: ['diag/g13-*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15-intel, macos-14]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+          rustc -vV
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=aa9753a3c03f9cae0538a0a7522da42fb1e5b215 --override foculus=98df7a634cd859bfd65f6cc369e73dcfb1346ff3 \
+            --override file=release/phase1 --override hemera=release/0.4 --override lens=247323ba4bd9b76be4f12ce2863857e5acc062f8 --override nox=release/0.4 \
+            --override radio=release/phase1 --override rune=release/phase1 --override tok=release/phase1 --override tru=release/phase1 \
+            --override zheng=166a14e62166218161afa555efa166afacc7a120 --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "honeycrisp"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          rm -rf "$RUNNER_TEMP/sources/soft3/crate"
+          cp -a crate "$RUNNER_TEMP/sources/soft3/crate"
+          echo "soft3 crate from $GITHUB_SHA"
+      - name: "cargo build --release --locked (the soft3-release command)"
+        id: build
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          timeout 5400 cargo build --release --locked 2>&1 | tee "$RUNNER_TEMP/release.log"
+      - name: Which honeycrisp crates were compiled
+        if: always()
+        run: grep -n "Compiling \(acpu\|aruminium\|unimem\|rane\|honeycrisp\|cyber-lens-gpu\|wgpu \)" "$RUNNER_TEMP/release.log" || echo "none of them"
+      - name: node-status (the probe of release/train_gates.py)
+        id: status
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          home=$(mktemp -d); port=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1])')
+          ./target/release/soft3 node --home "$home" --bind 127.0.0.1:$port > "$RUNNER_TEMP/node.log" 2>&1 &
+          pid=$!; ok=1
+          for i in $(seq 1 200); do
+            if body=$(curl -fsS --max-time 1 http://127.0.0.1:$port/status 2>/dev/null) && echo "$body" | grep -q height && echo "$body" | grep -q chain; then echo "$body"; ok=0; break; fi
+            sleep 0.1
+          done
+          kill $pid || true; cat "$RUNNER_TEMP/node.log" | tail -20
+          ./target/release/soft3 mine --help 2>&1 | head -20 || true
+          exit $ok
+      - name: Warnings (the train counts any as red)
+        if: always()
+        run: |
+          n=$(grep -c "^warning" "$RUNNER_TEMP/release.log" || true)
+          echo "warnings: $n"; grep -n "^warning" -A4 "$RUNNER_TEMP/release.log" | head -60 || true
+          grep -n "^error" -A4 "$RUNNER_TEMP/release.log" | head -60 || true
+          test "$n" = 0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: g13-${{ matrix.runner }}
+          path: |
+            ${{ runner.temp }}/release.log
+            ${{ runner.temp }}/node.log
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.build.outcome != 'success' || steps.status.outcome != 'success'
+        run: exit 1
