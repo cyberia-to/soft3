@@ -75,6 +75,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G6 measured (session 63) | waits on L4: rehearsal 40316574923 `logs/conformance-snapshot.txt` exits 101 at resolution, cybergraph 0.1.1 (the harness's path dependency, `conformance/rs/Cargo.toml:33`) requires `bbg ^0.2`; the cybergraph surface stays in the snapshot |
 | L3b round 3 read (session 65) | zheng 40287758728: control `9f:26:5` 56:50, FINAL 71,653 B (> 64 KiB), final level 1,740.7 s; `10f:32:5` and `9f:36:5` cancelled at 355 min, so (i)'s final level takes > ~19,600 s (> 11×); posted on zheng#73 (comment 6417716289); round 4 with timing: zheng 40334403053 |
 | G4a done (session 66) | rehearsal 40325821696: stack-radio green 787.0 s at radio#49 `2a0ee79` (tokio 1.51.5), 657 passed 0 failed, proptests `_fs`/`_mem` ok, `source-inputs-unchanged` green; own CI reds = #47's (deny, clippy, wasm, codespell, fmt, same findings); radio#49 merged into `release/phase1` as `7452833` |
+| L4 accept branch drafted (session 68) | foculus#86 `9e34693`, cybergraph#23 `91e1fd5` (zheng `legacy` dev-dependency for #3's refusal tests; 8 `verify_state_execution` calls disabled with reason), over bbg#53 (CI 40333694101 green); rehearsal 40341228019 dispatched with the chain overridden; nothing merged (D10, the owner's) |
 
 ## PRs merged
 
