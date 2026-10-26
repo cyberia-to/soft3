@@ -1,6 +1,7 @@
 //! Engine tests on a private test genesis with a simulated miner
 //! (chain-conformance §8–§9). The harness here; scenarios in the siblings.
 
+mod corpus;
 mod economy;
 mod forks;
 mod rules;
