@@ -23,8 +23,8 @@ The last rehearsal read in full is **40280626840** (06:34–07:19, stack leg `re
 | stack-cybergraph, stack-foculus, conformance-snapshot | `bbg = "^0.2"` unresolvable against bbg's 0.4 line | L4 consumers, G6 |
 | stack-mudra | `cyber-hemera = "^0.3"`: mudra#30 is unmerged, and on its own CI it fails on the owner-frozen domain-v1 key vectors | L3c, owner's decision by 10-29 12:00 |
 | stack-zheng | timeout after 900.002 s at zheng `release/0.4`; zheng#73 (hemera 0.4) is unmerged because of its 64 KiB final-proof limit | L3b, owner's decision by 10-29 12:00 |
-| stack-radio | `iroh-blobs` 140 passed, 1 failed (535 s). Not a receipt for radio#47: radio moved mid-run | G4, rehearsal 40286177469 running |
-| source-inputs-unchanged | `changed: [radio]` | G4 |
+| stack-radio | `iroh-blobs` 140 passed, 1 failed (535 s). Not a receipt for radio#47: radio moved mid-run. **Green in rehearsal 40286177469** at #47's head (695.3 s), merged | G4 done |
+| source-inputs-unchanged | `changed: [radio]`; green in 40286177469 | G4 done |
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, owner approves a cyb PR |
 | phase1-pins | pins move after the landings | G9 |
 | stack-chain-genesis (blocked) | `no pussy genesis file … (set SOFT3_GENESIS_DIR)` | G5 |
@@ -48,14 +48,15 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G7 simulation pin | soft3#242 `464f5ea`; drift run 40286588394, test run 40286586961 |
 | L3 nox, bbg (in part) | nox#31 `2c67aa9` into `release/0.4`; bbg#52 `3a8b823` into `release/phase1` |
 | L5a (in part) | zheng#75 `0ad4c3e`, nox#41 `c25acf4`; zheng#76 open |
+| G4 stack-radio (session 40) | radio#47 `e98bc69` into `release/phase1`; rehearsal 40286177469 stack-radio green 695.3 s, 657 passed, 0 failed |
 
 ## PRs merged
 
-45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged).
+45 PRs by 08:00 (`gh search prs --owner cyberia-to --merged-at 2026-10-26`). 14 are outside soft3: lens#31, #37, #38, #39 and #40; nox#31 and #41; zheng#74 and #75; bbg#52; tru#43; plumb#23; rune#8; file#39. 31 are in soft3: #242 on `release/phase1` and the plan's 30 PRs from #254 to #284 (#283 was not merged). Session 40 added radio#47 (`e98bc69`, 08:34).
 
 ## plan items left
 
-Open: G5, G6, G9, G10a, G11 (this row), C1, C2, C3 and R1. Doing: L1, L3, L3b, L3c, L5a, G4 and G7. With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G5, G6, G9, G10a, G10b (new in session 40: stack-zheng's 900 s budget), C1, C2, C3 and R1. Doing: L1, L3, L3b, L3c, L5a and G7. Done since 08:00: G11 (session 39), G4 (session 40). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
