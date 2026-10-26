@@ -78,7 +78,7 @@ jobs:
           t cybergraph-normal --manifest-path cybergraph/Cargo.toml --edges normal
           t cybergraph-dev --manifest-path cybergraph/Cargo.toml --edges normal,dev
           t soft3-node --manifest-path soft3/crate/Cargo.toml --edges normal
-          tail -3 "$RUNNER_TEMP"/out/tree-*.txt
+          tail -n 3 "$RUNNER_TEMP"/out/tree-*.txt || true
       - name: Test (${{ matrix.target }})
         id: test
         continue-on-error: true
