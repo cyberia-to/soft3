@@ -168,7 +168,7 @@ pub struct Decoded {
 }
 
 /// Step 6a: is `body` the body `header` commits to? It fits the frame the
-/// transport can deliver (chain-wire §2: `HEADER_BYTES + body <= MAX_BLOCK_BYTES`,
+/// transport can deliver (chain-wire §3: `HEADER_BYTES + body <= MAX_BLOCK_BYTES`,
 /// checked before any hashing so a larger one costs nothing), splits, is
 /// non-empty and its `tx_root` equals the header's. A failure here says the
 /// body is not this header's, which proves nothing about the header: the

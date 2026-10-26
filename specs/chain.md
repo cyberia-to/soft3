@@ -769,7 +769,7 @@ Cheap before expensive, and nothing stateful before PoW:
    relayed;
 6. body, in two stages:
    a. commitment: the body fits `MAX_BLOCK_BYTES` (a larger one cannot be
-      delivered, chain-wire §2, and is dropped before any hashing), splits
+      delivered, chain-wire §3, and is dropped before any hashing), splits
       into transactions, is non-empty, and its `tx_root` recomputed is equal
       to the header's;
    b. count and per-transaction size budgets, coinbase position and height,
