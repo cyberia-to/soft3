@@ -1,0 +1,105 @@
+name: Diagnostic g16 intel mine
+
+# Measurement only, never merged, never a release gate (plan row G16, session 99).
+# Rehearsal 40389629921 (soft3 release/phase1 6298f6c), x86_64-apple-darwin leg:
+# soft3-tests red, exit -1, `timeout after 1800 seconds` in tests/mine_e2e.rs
+# `mines_two_blocks_against_a_mock_node_with_retry_and_stale_submit` (every other
+# test of the run passed). The same test passes in 15.66 s on aarch64-apple-darwin
+# and 34.08 s on x86_64 linux. Hypothesis: `select(Choice::Auto)` skips Metal
+# (Apple Silicon only since G13), opens WebGPU on the Intel VM's paravirtual
+# adapter, and a 2^22-nonce dispatch there hangs or crawls. This run says which
+# backend each mac picks and how fast it hashes, then runs the test alone.
+# Same stand as 40389629921, pinned by SHA; soft3 crate = this head.
+on:
+  push:
+    branches: ['diag/g16-*']
+
+permissions:
+  contents: read
+
+jobs:
+  mine:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15-intel, macos-14]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+          rustc -vV
+      - name: Snapshot the stand of 40389629921 and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
+            --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=0551e3b9c19a1c6a69c8d552ffbbfd3fa1c71c5d \
+            --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=fee68d8dec06a67b70f23c0328e4b7fbc1bb0303 \
+            --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec \
+            --override radio=7452833d1877151c7bc8343e921621e2af90eb8c --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 \
+            --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 \
+            --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "honeycrisp"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          rm -rf "$RUNNER_TEMP/sources/soft3/crate"
+          cp -a crate "$RUNNER_TEMP/sources/soft3/crate"
+          echo "soft3 crate from $GITHUB_SHA"
+          # macOS runners have no timeout(1)
+          cat > "$RUNNER_TEMP/bounded.py" <<'PY'
+          import subprocess, sys, time
+          limit = float(sys.argv[1]); cmd = sys.argv[2:]
+          t = time.monotonic()
+          try:
+              code = subprocess.run(cmd, timeout=limit).returncode
+          except subprocess.TimeoutExpired:
+              code = "timeout"
+          print(f"== {' '.join(cmd)}: exit {code} after {time.monotonic() - t:.1f} s (limit {limit:.0f} s)", flush=True)
+          PY
+      - name: "cargo build --locked and cargo test --no-run (the soft3-tests profile)"
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          cargo build --locked 2>&1 | tail -3
+          cargo test --locked --test mine_e2e --no-run 2>&1 | tail -3
+      - name: Which backend opens, and how fast (debug build, as in soft3-tests)
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          b="python3 $RUNNER_TEMP/bounded.py"
+          system_profiler SPDisplaysDataType 2>/dev/null | head -20 || true
+          $b 300 ./target/debug/soft3 mine bench --backend cpu --seconds 10 2>&1 | tee "$RUNNER_TEMP/bench.log"
+          $b 600 ./target/debug/soft3 mine bench --backend webgpu --seconds 10 2>&1 | tee -a "$RUNNER_TEMP/bench.log"
+          $b 600 ./target/debug/soft3 mine bench --backend auto --seconds 10 2>&1 | tee -a "$RUNNER_TEMP/bench.log"
+      - name: tests/mine_e2e.rs alone, --nocapture
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          python3 "$RUNNER_TEMP/bounded.py" 1200 cargo test --locked --test mine_e2e -- --nocapture 2>&1 | tee "$RUNNER_TEMP/mine_e2e.log"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: g16-${{ matrix.runner }}
+          path: |
+            ${{ runner.temp }}/bench.log
+            ${{ runner.temp }}/mine_e2e.log
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
