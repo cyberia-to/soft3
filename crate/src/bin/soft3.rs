@@ -147,6 +147,7 @@ struct NodeArgs {
     neuron: Option<String>,
     relay: bool,
     log_net: bool,
+    corpus: Option<PathBuf>,
 }
 
 /// Why [`parse_node_args`] could not resolve a flag set.
@@ -171,7 +172,7 @@ fn parse_node_args(
 ) -> Result<NodeArgs, NodeArgError> {
     let mut out = NodeArgs {
         home: default_home, bind: default_bind, moniker: default_moniker, help: false, chain: None, home_set: false, bind_set: false,
-        radio: None, peers: None, genesis: None, neuron: None, relay: false, log_net: false,
+        radio: None, peers: None, genesis: None, neuron: None, relay: false, log_net: false, corpus: None,
     };
     let mut i = 0;
     while i < args.len() {
@@ -196,6 +197,7 @@ fn parse_node_args(
             "--neuron" => out.neuron = Some(value(&mut i, "--neuron needs a 64-hex neuron")?),
             "--relay" => out.relay = true,
             "--log-net" => out.log_net = true,
+            "--corpus" => out.corpus = Some(PathBuf::from(value(&mut i, "--corpus needs a directory")?)),
             "-h" | "--help" => {
                 out.help = true;
                 return Ok(out);
@@ -262,6 +264,7 @@ fn cmd_node(args: &[String]) {
         println!("  soft3 node [--home DIR] [--bind HOST:PORT] [--moniker NAME]");
         println!("  soft3 node --chain <pussy|bostrom|dev…> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME");
         println!("             [--genesis FILE] [--neuron NEURON] [--relay] [--log-net]");
+        println!("             [--corpus DIR]   # record every block given, with its verdict and state root (blocks.jsonl)");
         println!("             (mining is `soft3 mine --node http://BIND --address NEURON`: /template + /submit)");
         println!("  soft3 node id --home DIR      # radio endpoint id (64 hex) for peers.toml");
     println!("  soft3 genesis build --chain pussy|bostrom --snapshot DIR --out FILE");
@@ -299,7 +302,7 @@ fn cmd_node(args: &[String]) {
             home: if node_args.home_set { node_args.home } else { node::chain_node::default_home(&chain) },
             chain, genesis: node_args.genesis, radio: Some(radio), peers: node_args.peers, moniker: node_args.moniker,
             neuron,
-            relay: node_args.relay, log_net: node_args.log_net,
+            relay: node_args.relay, log_net: node_args.log_net, corpus: node_args.corpus,
         };
         if let Err(e) = node::run_chain(opts, &bind) {
             eprintln!("soft3 node failed: {e}");

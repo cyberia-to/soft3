@@ -39,6 +39,8 @@ pub struct ChainOpts {
     pub neuron: Option<Id>,
     pub relay: bool,
     pub log_net: bool,
+    /// `--corpus DIR`: record every block given to the kernel (chain/corpus.rs)
+    pub corpus: Option<PathBuf>,
 }
 
 pub struct ChainNode {
@@ -87,6 +89,9 @@ impl ChainNode {
             std::fs::write(opts.home.join("genesis.tade"), &genesis_bytes)?;
         }
         let kernel = Arc::new(KernelChain::open(&genesis_bytes, &opts.home).map_err(io::Error::other)?);
+        if let Some(dir) = &opts.corpus {
+            kernel.record_corpus(dir)?;
+        }
         let name = kernel.chain_name();
         if name != opts.chain {
             return Err(io::Error::other(format!("--chain {} but the genesis file names {name:?}", opts.chain)));
