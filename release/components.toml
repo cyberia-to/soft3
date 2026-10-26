@@ -574,6 +574,17 @@ phase = "1"
 state = "live"
 
 [[component]]
+name = "simulation"
+kind = "ops"
+repo = "simulation"
+verb = "simulate"
+facet = "work"
+infrastructure = "soft3"
+phase = "1"
+state = "live"
+note = "the network and economy simulator of the phase-1 chain; no layer: a gate of the release train (simulation-gate, release/train_gates.py), not a rung of the ladder"
+
+[[component]]
 name = "cyberia"
 kind = "product"
 repo = "cyberia"

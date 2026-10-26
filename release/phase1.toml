@@ -171,3 +171,9 @@ name = "optica"
 repo = "cyberia-to/optica"
 branch = "master"
 rev = "9f0c352cfea30e1ac8ce0feb0d735ffb9fa47ace"
+
+[[sibling]]
+name = "simulation"
+repo = "cyberia-to/simulation"
+branch = "main"
+rev = "f5a14a116a0025ddb74e3295e68f655650e34bc1"
