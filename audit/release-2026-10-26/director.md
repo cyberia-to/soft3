@@ -54,6 +54,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | C1 soft3 PR queue (session 43, done) | 18 open soft3 PRs triaged against the plan; none merges into phase 1 (#234 waits on the owner's economy spec, #243 is a spec, #212 needs owner host steps, #167 #169 #170 #245 are outside phase 1); reasons in plan row C1 |
 | C2 proven-present S0 (session 44, doing) | soft3#291 (draft): corpus writer, verdict codes, invalid-block generator, replay, test, `node --corpus`; not compiled: no stand compiles soft3 (diagnostic 40297730975: bbg#9 fails on zheng 0.4, `unresolved import zheng::LookOpening`) |
 | G10b measured (session 44) | zheng CI 40293728603 at opt-level 3: 324 passed, 1 failed (L3b 64 KiB), 1077.95 s, over 900 s |
+| G5 rehearsal (session 45) | Release train 40299054024 on #288's branch `50ef027`, same overrides as 40293725274, which it replaced (`cancelled`); pending |
 
 ## PRs merged
 
