@@ -235,6 +235,66 @@ class ReleaseTests(unittest.TestCase):
             if call.args[0].startswith("stack-"):
                 self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
 
+    def stack_repo(self, owner="radio"):
+        repo = self.root / owner
+        repo.mkdir()
+        git = lambda *a: subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a], cwd=repo,
+                                        check=True, capture_output=True, text=True).stdout.strip()
+        git("init", "-q")
+        (repo / "seeds.txt").write_text("one\n")
+        (repo / ".gitignore").write_text("target/\n")
+        git("add", ".")
+        git("commit", "-q", "-m", "init")
+        return repo, git, git("rev-parse", "HEAD")
+
+    def run_dirtying_stack(self, result, dirty=True):
+        repo, git, revision = self.stack_repo()
+        self.sources = {**self.sources, "repositories": [{"name": "radio", "revision": revision}]}
+        (repo / "target").mkdir()
+        (repo / "target/x").write_text("build output\n")
+
+        def fake(gates, name, argv, cwd, env=None, timeout=1800):
+            if name == "stack-radio" and dirty:
+                (repo / "seeds.txt").write_text("one\ntwo\n")
+                (repo / "new.txt").write_text("fresh\n")
+            return gates.record(name, result, log=f"logs/{name}.txt")
+
+        out = self.root / "out"
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch.object(Gates, "run", autospec=True, side_effect=fake):
+            run_gates(self.root, out, self.sources, {}, "soft3", "stack", stack=True)
+        rows = {r["name"]: r for r in json.loads((out / "release-validation.json").read_text())["gates"]}
+        self.assertEqual(git("rev-parse", "HEAD"), revision)
+        self.assertEqual(git("status", "--porcelain"), "")
+        self.assertTrue((repo / "target/x").exists())
+        return rows["stack-radio"], out
+
+    def test_green_stack_gate_that_dirties_its_tree_is_red_and_restored(self):
+        (self.root / "soft3").mkdir()
+        row, out = self.run_dirtying_stack("green")
+        self.assertEqual(row["result"], "red")
+        self.assertEqual(row["reason"], "the test changed its own source tree")
+        self.assertEqual(sorted(row["dirtied"]), ["new.txt", "seeds.txt"])
+        self.assertEqual(row["dirtied_log"], "logs/stack-radio.dirtied.txt")
+        log = (out / row["dirtied_log"]).read_text()
+        self.assertIn("+two", log)
+        self.assertIn("seeds.txt", log)
+
+    def test_red_stack_gate_that_dirties_its_tree_stays_red_and_restored(self):
+        (self.root / "soft3").mkdir()
+        row, _ = self.run_dirtying_stack("red")
+        self.assertEqual(row["result"], "red")
+        self.assertNotIn("reason", row)
+        self.assertEqual(sorted(row["dirtied"]), ["new.txt", "seeds.txt"])
+
+    def test_clean_stack_gate_is_untouched(self):
+        (self.root / "soft3").mkdir()
+        row, out = self.run_dirtying_stack("green", dirty=False)
+        self.assertEqual(row["result"], "green")
+        self.assertNotIn("dirtied", row)
+        self.assertFalse((out / "logs/stack-radio.dirtied.txt").exists())
+
     def test_conformance_scaffold_is_blocked_not_green(self):
         manifest = self.root / "soft3/conformance/rs/Cargo.toml"
         manifest.parent.mkdir(parents=True)
