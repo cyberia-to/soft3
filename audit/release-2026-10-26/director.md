@@ -63,6 +63,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L5a (session 50, done) | zheng#76 reviewed and merged into `ci/hemera-0.4-sweep` as `7d3fc4e` on receipt 40304510063 (cli 2/2, clippy); debug `test` 40304422158 cancelled |
 | G10b budget (session 51) | the soundness review `a_state_unbound_from_the_last_public_input_is_refused` takes about 985 s alone (zheng CI 40293728603 job log); soft3#298 gives stack-zheng 1800 s (others 900 s); rehearsal 40307972588 on the branch |
 | L3c plumb CI (session 52) | plumb#24 `2b3bdce` into `release/phase1`: `TRU_REF` = `release/phase1`; CI 40310274101 84 passed, tru at `464104c` |
+| L3 nox sync (session 53, doing) | nox#42 `730f6b0` → `release/0.4`: master `ec052bb` merged in (19 conflicts, launch fixes kept, hash cost 61 kept), first CI; run 40313369006 in progress |
 
 ## PRs merged
 
