@@ -1,4 +1,4 @@
-name: Diagnostic l4 legacy gate
+name: Diagnostic l4 state evidence
 
 # Measurement only, never merged, never a release gate (plan row L4, session 71).
 # Rehearsal 40341228019: stack-foculus and stack-cybergraph refuse their stale
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [cybergraph]  # re-measure at cybergraph aa9753a: V1 states for opened tests (8106245), hemera 0.4 hash goldens (aa9753a); 40355780638 had 10 reds
+        target: [cybergraph]  # session 83: restore the 8 state-execution checks on certified StateEvidence (cybergraph fix/l4-state-evidence, based on aa9753a)
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     defaults:
@@ -39,7 +39,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
-            --override bbg=pull/53/head --override cybergraph=port/l4-cybergraph3-phase1 --override foculus=port/l4-foculus5-phase1 \
+            --override bbg=pull/53/head --override cybergraph=fix/l4-state-evidence --override foculus=port/l4-foculus5-phase1 \
             --override file=release/phase1 --override hemera=release/0.4 --override lens=release/0.2 --override nox=release/0.4 \
             --override radio=release/phase1 --override rune=release/phase1 --override tok=release/phase1 --override tru=release/phase1 \
             --override zheng=fix/g10b-test-profile --override mudra=pull/30/head
@@ -97,6 +97,9 @@ jobs:
         run: |
           echo "test: ${{ steps.test.outcome }}"
           grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP"/out/test-*.log | head -100 || true
+          echo "warnings:"
+          grep -h "^warning" "$RUNNER_TEMP"/out/test-*.log | sort | uniq -c || true
+          grep -rn 'cfg(any())' "$RUNNER_TEMP/sources/cybergraph/tests" || echo "cfg(any()) left: 0"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
