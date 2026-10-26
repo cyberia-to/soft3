@@ -24,6 +24,8 @@ pub mod target;
 
 pub use job::Job;
 
+use std::time::{Duration, Instant};
+
 /// A device that searches nonce ranges.
 pub trait Backend: Send + Sync {
     /// The backend and its device.
@@ -39,7 +41,8 @@ pub trait Backend: Send + Sync {
 /// `--backend`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Choice {
-    /// Metal where available, else WebGPU if an adapter exists, else CPU.
+    /// Metal where built, else WebGPU if its adapter answers a bounded
+    /// calibration probe correctly and faster than the CPU, else CPU.
     Auto,
     Cpu,
     Metal,
@@ -89,9 +92,77 @@ pub fn select(choice: Choice, threads: usize) -> Result<Box<dyn Backend>, String
         Choice::Cpu => Ok(Box::new(cpu::Cpu::new(threads))),
         Choice::Metal => metal(),
         Choice::WebGpu => webgpu(),
-        Choice::Auto => Ok(metal()
-            .or_else(|_| webgpu())
-            .unwrap_or_else(|_| Box::new(cpu::Cpu::new(threads)))),
+        Choice::Auto => {
+            if let Ok(m) = metal() {
+                return Ok(m);
+            }
+            let cpu = cpu::Cpu::new(threads);
+            if let Ok(gpu) = webgpu() {
+                let name = gpu.name();
+                match probe(gpu, &cpu, PROBE_DEADLINE) {
+                    Ok(gpu) => return Ok(gpu),
+                    Err(why) => eprintln!("auto: webgpu ({name}) {why}; mining on cpu"),
+                }
+            }
+            Ok(Box::new(cpu))
+        }
+    }
+}
+
+/// Nonces in the calibration probe: small enough that every adapter seen so
+/// far answers it, large enough to time.
+const PROBE: u32 = 1 << 14;
+/// How long `Auto` waits for the probe before giving up on the adapter.
+const PROBE_DEADLINE: Duration = Duration::from_secs(5);
+
+/// The rule: the candidate is kept only if it answered in time, answered
+/// without error, found the CPU's index, and did so strictly faster.
+/// `Err` is the reason, phrased to follow the device name.
+fn prefer_gpu(
+    gpu: Option<(Result<Option<u32>, String>, Duration)>,
+    cpu: (Option<u32>, Duration),
+) -> Result<(), String> {
+    let Some((answer, took)) = gpu else {
+        return Err(format!(
+            "did not answer a {PROBE}-nonce probe within {} s",
+            PROBE_DEADLINE.as_secs()
+        ));
+    };
+    let found = answer.map_err(|e| format!("failed the probe ({e})"))?;
+    if found != cpu.0 {
+        return Err("disagreed with cpu".into());
+    }
+    if took >= cpu.1 {
+        return Err(format!("slower than cpu ({took:?} vs {:?})", cpu.1));
+    }
+    Ok(())
+}
+
+/// Time `gpu` and `cpu` on one fixed job and keep `gpu` only if
+/// [`prefer_gpu`] accepts it. The candidate runs on its own thread so a
+/// driver that never returns (Intel-Mac paravirtual Metal does not return
+/// from a `2^22`-nonce dispatch) costs `deadline`, not the process; on
+/// timeout that thread is left detached, possibly stuck in the driver for
+/// good, and owns the backend until it ends.
+fn probe(
+    gpu: Box<dyn Backend>,
+    cpu: &dyn Backend,
+    deadline: Duration,
+) -> Result<Box<dyn Backend>, String> {
+    let job = Job::new(&[0x5au8; 168], target::pow2(246));
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let t = Instant::now();
+        let r = gpu.search(&job, 0, PROBE);
+        // the receiver is gone after a timeout; nothing to tell
+        let _ = tx.send((gpu, r, t.elapsed()));
+    });
+    let t = Instant::now();
+    let want = cpu.search(&job, 0, PROBE)?;
+    let cpu_took = t.elapsed();
+    match rx.recv_timeout(deadline).ok() {
+        Some((gpu, r, took)) => prefer_gpu(Some((r, took)), (want, cpu_took)).map(|()| gpu),
+        None => Err(prefer_gpu(None, (want, cpu_took)).unwrap_err()),
     }
 }
 
@@ -111,6 +182,81 @@ pub fn all(threads: usize) -> Vec<Box<dyn Backend>> {
 mod tests {
     use super::*;
     use target::{pow2, verifies};
+
+    /// A candidate that answers `answer` after sleeping `nap`.
+    struct Fake {
+        nap: Duration,
+        answer: Result<Option<u32>, String>,
+    }
+
+    impl Backend for Fake {
+        fn name(&self) -> String {
+            "fake".into()
+        }
+        fn search(&self, _: &Job, _: u128, _: u32) -> Result<Option<u32>, String> {
+            std::thread::sleep(self.nap);
+            self.answer.clone()
+        }
+        fn dispatch(&self) -> u32 {
+            PROBE
+        }
+    }
+
+    fn ms(n: u64) -> Duration {
+        Duration::from_millis(n)
+    }
+
+    /// The probe job's true answer, from the CPU.
+    fn truth(cpu: &cpu::Cpu) -> Option<u32> {
+        let job = Job::new(&[0x5au8; 168], pow2(246));
+        cpu.search(&job, 0, PROBE).expect("cpu")
+    }
+
+    #[test]
+    fn probe_gives_up_on_a_device_that_never_answers() {
+        let cpu = cpu::Cpu::new(2);
+        let slow = Fake {
+            nap: Duration::from_secs(2),
+            answer: Ok(truth(&cpu)),
+        };
+        let t = Instant::now();
+        assert!(probe(Box::new(slow), &cpu, ms(200)).is_err());
+        assert!(t.elapsed() < Duration::from_secs(2), "returned at the deadline");
+    }
+
+    #[test]
+    fn probe_rejects_a_wrong_index() {
+        let cpu = cpu::Cpu::new(2);
+        let wrong = Fake {
+            nap: Duration::ZERO,
+            answer: Ok(truth(&cpu).map_or(Some(0), |i| Some(i + 1))),
+        };
+        assert!(probe(Box::new(wrong), &cpu, Duration::from_secs(5)).is_err());
+    }
+
+    #[test]
+    fn probe_rejects_an_error() {
+        let cpu = cpu::Cpu::new(2);
+        let bad = Fake {
+            nap: Duration::ZERO,
+            answer: Err("device lost".into()),
+        };
+        assert!(probe(Box::new(bad), &cpu, Duration::from_secs(5)).is_err());
+    }
+
+    #[test]
+    fn prefer_gpu_decides_all_outcomes() {
+        let cpu = (Some(7), ms(100));
+        assert!(prefer_gpu(None, cpu).unwrap_err().contains("within"));
+        assert!(prefer_gpu(Some((Err("x".into()), ms(1))), cpu).is_err());
+        let e = prefer_gpu(Some((Ok(Some(8)), ms(1))), cpu).unwrap_err();
+        assert!(e.contains("disagreed"));
+        let e = prefer_gpu(Some((Ok(None), ms(1))), cpu).unwrap_err();
+        assert!(e.contains("disagreed"));
+        let e = prefer_gpu(Some((Ok(Some(7)), ms(100))), cpu).unwrap_err();
+        assert!(e.contains("slower"));
+        assert_eq!(prefer_gpu(Some((Ok(Some(7)), ms(99))), cpu), Ok(()));
+    }
 
     /// Every built backend returns the same index for the same dispatch,
     /// and its nonce verifies with `hemera::hash` — chain-conformance §5's
