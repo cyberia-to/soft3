@@ -93,6 +93,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G15 the stand tests soft3 `main` (session 88, doing) | 40386072407's soft3-tests reds (G12 warning ×3, G14 window on x86_64 linux) come from soft3 `main` `2e5ba00` (`sources.json`), not `release/phase1`; rehearsal 40389629921 dispatched with `soft3=release/phase1` |
 | G13 train receipt (session 89) | rehearsal 40386072407 `x86_64-apple-darwin`: 0 honeycrisp crates compiled (lens#41 `fee68d8` holds); soft3-release red only on soft3 `main` `2e5ba00` `gpu.rs:25,32` (`cyber_lens_gpu::metal` configured out), gated on `release/phase1` by #328. Owner's landing order: soft3 before or with lens#36 |
 | L3b round 4 candidates (session 90) | zheng 40334403053: `10f:32:5` and `9f:36:5` cancelled at 355 min, final level ≥ 19,412 s, round 1 unfinished; 0.63 M/s pooled; (i) costs roughly 10–25× the control's final-level time, or more; zheng#73 comment 6426170532 |
+| L3b the owner's two PRs (session 93) | zheng#78 (i) `10f:32:5` bound 64,129 B, 64 KiB kept; zheng#79 (ii) `9f:26:5` bound 72,965 B under 73,728 B; both IVC 1/16, derived 65,536 gate ceiling, body version 7; receipt zheng 40399987810 running; zheng#73 comment 6427130880 |
 
 ## PRs merged
 
