@@ -47,14 +47,14 @@ jobs:
           print("materialized", len(result), "red:", red)
           # a sibling that failed to fetch is not fatal until cargo asks for it
           PY
-      - name: cargo test chain:: --locked
+      - name: "cargo test chain:: --locked"
         id: locked
         continue-on-error: true
         working-directory: ${{ runner.temp }}/sources/soft3/crate
         run: |
           set -o pipefail
           timeout 5400 cargo test --locked --no-default-features --lib chain:: 2>&1 | tee "$RUNNER_TEMP/test-locked.log"
-      - name: cargo test chain:: without --locked (only if the lock cannot match the stand)
+      - name: "cargo test chain:: without --locked, only if the lock cannot match the stand"
         if: steps.locked.outcome == 'failure'
         id: unlocked
         continue-on-error: true
