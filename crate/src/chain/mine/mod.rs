@@ -109,60 +109,77 @@ pub fn select(choice: Choice, threads: usize) -> Result<Box<dyn Backend>, String
     }
 }
 
-/// Nonces in the calibration probe: small enough that every adapter seen so
-/// far answers it, large enough to time.
+/// Nonces the CPU searches in the calibration probe. The candidate is not
+/// probed at this size but at its own `dispatch()`: that is the size the
+/// miner will then use, and a stall that depends on dispatch size (the Intel
+/// paravirtual adapter answers 2^14 nonces and hangs on 2^22) would pass a
+/// small probe.
 const PROBE: u32 = 1 << 14;
 /// How long `Auto` waits for the probe before giving up on the adapter.
 const PROBE_DEADLINE: Duration = Duration::from_secs(5);
 
-/// The rule: the candidate is kept only if it answered in time, answered
-/// without error, found the CPU's index, and did so strictly faster.
+/// Hashes per second, a zero duration counting as 1 ns.
+fn rate(count: u32, took: Duration) -> f64 {
+    count as f64 / took.as_secs_f64().max(1e-9)
+}
+
+/// The rule: the candidate (searching `gpu_count >= cpu.1` nonces from the
+/// same base) is kept only if it answered in time, answered without error,
+/// agreed with the CPU, and hashed strictly faster per second. Both return
+/// the least passing index, so a CPU `Some(i)` needs the same `Some(i)`, and
+/// a CPU `None` needs `None` or an index beyond the CPU's range.
 /// `Err` is the reason, phrased to follow the device name.
 fn prefer_gpu(
+    gpu_count: u32,
     gpu: Option<(Result<Option<u32>, String>, Duration)>,
-    cpu: (Option<u32>, Duration),
+    cpu: (Option<u32>, u32, Duration),
 ) -> Result<(), String> {
     let Some((answer, took)) = gpu else {
         return Err(format!(
-            "did not answer a {PROBE}-nonce probe within {} s",
+            "did not answer a {gpu_count}-nonce probe within {} s",
             PROBE_DEADLINE.as_secs()
         ));
     };
     let found = answer.map_err(|e| format!("failed the probe ({e})"))?;
-    if found != cpu.0 {
+    let agrees = match cpu.0 {
+        Some(i) => found == Some(i),
+        None => found.is_none_or(|j| j >= cpu.1),
+    };
+    if !agrees {
         return Err("disagreed with cpu".into());
     }
-    if took >= cpu.1 {
-        return Err(format!("slower than cpu ({took:?} vs {:?})", cpu.1));
+    let (g, c) = (rate(gpu_count, took), rate(cpu.1, cpu.2));
+    if g <= c {
+        return Err(format!("slower than cpu ({g:.0} vs {c:.0} H/s)"));
     }
     Ok(())
 }
 
-/// Time `gpu` and `cpu` on one fixed job and keep `gpu` only if
-/// [`prefer_gpu`] accepts it. The candidate runs on its own thread so a
-/// driver that never returns (Intel-Mac paravirtual Metal does not return
-/// from a `2^22`-nonce dispatch) costs `deadline`, not the process; on
-/// timeout that thread is left detached, possibly stuck in the driver for
-/// good, and owns the backend until it ends.
+/// Time `gpu` at its own dispatch size and `cpu` on [`PROBE`] nonces of one
+/// fixed job and keep `gpu` only if [`prefer_gpu`] accepts it. The candidate
+/// runs on its own thread so a driver that never returns costs `deadline`,
+/// not the process; on timeout that thread is left detached, possibly stuck
+/// in the driver for good, and owns the backend until it ends.
 fn probe(
     gpu: Box<dyn Backend>,
     cpu: &dyn Backend,
     deadline: Duration,
 ) -> Result<Box<dyn Backend>, String> {
     let job = Job::new(&[0x5au8; 168], target::pow2(246));
+    let count = gpu.dispatch();
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || {
         let t = Instant::now();
-        let r = gpu.search(&job, 0, PROBE);
+        let r = gpu.search(&job, 0, count);
         // the receiver is gone after a timeout; nothing to tell
         let _ = tx.send((gpu, r, t.elapsed()));
     });
     let t = Instant::now();
     let want = cpu.search(&job, 0, PROBE)?;
-    let cpu_took = t.elapsed();
+    let cpu_row = (want, PROBE, t.elapsed());
     match rx.recv_timeout(deadline).ok() {
-        Some((gpu, r, took)) => prefer_gpu(Some((r, took)), (want, cpu_took)).map(|()| gpu),
-        None => Err(prefer_gpu(None, (want, cpu_took)).unwrap_err()),
+        Some((gpu, r, took)) => prefer_gpu(count, Some((r, took)), cpu_row).map(|()| gpu),
+        None => Err(prefer_gpu(count, None, cpu_row).unwrap_err()),
     }
 }
 
@@ -246,16 +263,25 @@ mod tests {
 
     #[test]
     fn prefer_gpu_decides_all_outcomes() {
-        let cpu = (Some(7), ms(100));
-        assert!(prefer_gpu(None, cpu).unwrap_err().contains("within"));
-        assert!(prefer_gpu(Some((Err("x".into()), ms(1))), cpu).is_err());
-        let e = prefer_gpu(Some((Ok(Some(8)), ms(1))), cpu).unwrap_err();
-        assert!(e.contains("disagreed"));
-        let e = prefer_gpu(Some((Ok(None), ms(1))), cpu).unwrap_err();
-        assert!(e.contains("disagreed"));
-        let e = prefer_gpu(Some((Ok(Some(7)), ms(100))), cpu).unwrap_err();
-        assert!(e.contains("slower"));
-        assert_eq!(prefer_gpu(Some((Ok(Some(7)), ms(99))), cpu), Ok(()));
+        let cpu = (Some(7), PROBE, ms(100));
+        let none = (None, PROBE, ms(100));
+        let g = |a: Result<Option<u32>, String>, n: u32, t: u64| prefer_gpu(n, Some((a, ms(t))), cpu);
+        assert!(prefer_gpu(PROBE, None, cpu).unwrap_err().contains("-nonce probe within"));
+        assert!(g(Err("x".into()), PROBE, 1).unwrap_err().contains("failed"));
+        assert!(g(Ok(Some(8)), PROBE, 1).unwrap_err().contains("disagreed"));
+        assert!(g(Ok(None), 4 * PROBE, 1).unwrap_err().contains("disagreed"));
+        // equal rate is not faster
+        assert!(g(Ok(Some(7)), PROBE, 100).unwrap_err().contains("slower"));
+        assert_eq!(g(Ok(Some(7)), PROBE, 99), Ok(()));
+        // a larger dispatch in a longer time can still be faster by rate
+        assert_eq!(g(Ok(Some(7)), 4 * PROBE, 200), Ok(()));
+        // and a smaller rate loses even with a larger count
+        assert!(g(Ok(Some(7)), 2 * PROBE, 400).unwrap_err().contains("H/s"));
+        // CPU found nothing in its range: GPU may find nothing or go beyond it
+        let g = |a: Result<Option<u32>, String>| prefer_gpu(4 * PROBE, Some((a, ms(10))), none);
+        assert_eq!(g(Ok(None)), Ok(()));
+        assert_eq!(g(Ok(Some(PROBE))), Ok(()));
+        assert!(g(Ok(Some(PROBE - 1))).unwrap_err().contains("disagreed"));
     }
 
     /// Every built backend returns the same index for the same dispatch,
