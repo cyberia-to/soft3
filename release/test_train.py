@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
+from train_gates import Gates, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -216,6 +216,22 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn("gate", argv)
         self.assertEqual(cwd, self.root / "simulation")
         self.assertIn(str(self.root / "out" / "simulation-gate.md"), argv)
+
+    def test_stack_zheng_has_its_own_test_budget(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch.object(Gates, "run", return_value=True) as run:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=True)
+        budgets = {c.args[0]: c.kwargs["timeout"] for c in run.call_args_list if c.args[0].startswith("stack-")}
+        self.assertEqual(budgets["stack-zheng"], 1800)
+        others = {name: t for name, t in budgets.items() if name != "stack-zheng"}
+        self.assertIn("stack-lens", others)
+        self.assertIn("stack-hemera", others)
+        self.assertEqual(set(others.values()), {900})
+        for call in run.call_args_list:
+            if call.args[0].startswith("stack-"):
+                self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
 
     def test_conformance_scaffold_is_blocked_not_green(self):
         manifest = self.root / "soft3/conformance/rs/Cargo.toml"

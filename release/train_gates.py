@@ -227,6 +227,16 @@ def boot_status(binary, gates):
         return gates.record("node-status", status, command=argv, log="logs/node-status.txt", log_sha256=digest(log))
 
 
+# Per-gate wall-clock budget of the stack's `cargo test --locked`, in seconds. Default 900.
+# zheng: its soundness review recursion::review::a_state_unbound_from_the_last_public_input_is_refused
+# (a two-segment IVC at 2^15 under hemera 0.4) runs ~985 s alone at opt-level 3 (zheng CI run
+# 40293728603: suite 1077.95 s) and the build takes 262 s on the train stand (rehearsal
+# 40299054024), so the gate needs ~1340 s.
+# No test leaves the gate; the budget follows the measurement (plan G10b).
+STACK_TEST_BUDGET = {"zheng": 1800}
+STACK_TEST_DEFAULT = 900
+
+
 def run_gates(directory, output, sources, checkouts, component, target, stack=False):
     gates = Gates(output, sources, target)
     source_gates(gates, directory, sources, checkouts, component)
@@ -242,7 +252,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
                   "neuron": ".", "file": ".", "radio": "."}
         for owner, path in owners.items():
             location = directory / owner / path
-            gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=900)
+            gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=STACK_TEST_BUDGET.get(owner, STACK_TEST_DEFAULT))
         conformance_gate(gates, directory / "soft3")
         chain_genesis_gate(gates, directory / "soft3", pussy=directory / "pussy")
         simulation_gate(gates, directory)
