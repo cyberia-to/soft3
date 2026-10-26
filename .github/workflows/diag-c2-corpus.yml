@@ -50,10 +50,12 @@ jobs:
       - name: Stand shim (measurement only, in this runner's checkout, never pushed)
         working-directory: ${{ runner.temp }}/sources
         run: |
-          # bbg#9, cybergraph#3 and foculus#5 are based on hemera 0.3; soft3 needs hemera 0.4
-          # (hemera release/0.4). Only the version requirement of the path dependency is raised.
-          for f in bbg/rs/Cargo.toml cybergraph/Cargo.toml foculus/Cargo.toml; do
-            sed -i -E 's/(package = "cyber-hemera", version = )"0\.3"/\1"0.4"/' "$f"
+          # bbg#9, cybergraph#3 and foculus#5 sit on an older sibling set (hemera 0.3, nox 0.3);
+          # the phase-1 siblings are hemera 0.4, nox 0.2. Only the version requirement of path
+          # dependencies is dropped (a path dependency needs no version to resolve).
+          for f in $(git -C bbg ls-files '*Cargo.toml' | sed 's|^|bbg/|') $(git -C cybergraph ls-files '*Cargo.toml' | sed 's|^|cybergraph/|') $(git -C foculus ls-files '*Cargo.toml' | sed 's|^|foculus/|'); do
+            case "$f" in */vendor/*) continue;; esac
+            sed -i -E '/path = "/ s/version = "[^"]*", ?//' "$f"
           done
           git -C bbg diff --stat; git -C cybergraph diff --stat; git -C foculus diff --stat
       - name: "cargo test chain:: --locked"
