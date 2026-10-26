@@ -1,0 +1,97 @@
+name: Diagnostic l4b withholding
+
+# Measurement only, never merged, never a release gate (plan row L4b, session 75).
+# foculus tests/withholding_bias.rs is red at foculus#86 (98df7a6): "bias 0.000125
+# exceeds the analytic bound 0.000102 at q=0.05" (40353624161). The test, src/tickets.rs
+# and src/settlement.rs are byte-identical before and after the port; only hemera
+# (ticket ordering and win score) differs, so the pool differs. Each arm runs the
+# gate's own command for that test, then a 32-beacon sweep (release/diag/withholding_sweep.rs)
+# that prints the realized adversary share A/N against the nominal q.
+on:
+  push:
+    branches: ['diag/l4b-*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: pre-port   # foculus release/phase1 on the 0.3 tier: hemera main 0.3.1, zheng master 0.3.3, bbg c7e1850 = 0.2.1
+            overrides: --override foculus=release/phase1 --override bbg=c7e1850b9885de5d53983d41c8a939cf56cfad6f
+          - arm: port       # foculus#86 head on the 0.4 tier, the stand of diagnostic 40357229822
+            overrides: >-
+              --override foculus=98df7a634cd859bfd65f6cc369e73dcfb1346ff3 --override bbg=pull/53/head
+              --override cybergraph=port/l4-cybergraph3-phase1 --override file=release/phase1 --override hemera=release/0.4
+              --override lens=release/0.2 --override nox=release/0.4 --override radio=release/phase1 --override rune=release/phase1
+              --override tok=release/phase1 --override tru=release/phase1 --override zheng=fix/g10b-test-profile --override mudra=pull/30/head
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" ${{ matrix.overrides }}
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row["name"] in ("foculus", "hemera", "bbg", "zheng", "lens", "tru", "tok", "strata", "tade"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the foculus lock (measurement only)
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          cargo metadata --locked --format-version 1 >/dev/null 2>&1 && echo "lock matches the stand" || { echo "lock stale against the stand; resolving"; cargo metadata --format-version 1 >/dev/null; }
+          cargo tree -i cyber-hemera --depth 0 | tee "$RUNNER_TEMP/out/hemera-version.txt"
+          cp Cargo.lock "$RUNNER_TEMP/out/foculus.Cargo.lock"
+      - name: The gate's test, as is
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          set -o pipefail
+          cargo test --locked --test withholding_bias -- --nocapture 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.arm }}.log"
+      - name: The 32-beacon sweep
+        id: sweep
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          set -o pipefail
+          cp "$GITHUB_WORKSPACE/release/diag/withholding_sweep.rs" tests/withholding_sweep.rs
+          cargo test --locked --release --test withholding_sweep -- --nocapture 2>&1 | tee "$RUNNER_TEMP/out/sweep-${{ matrix.arm }}.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }} sweep: ${{ steps.sweep.outcome }}"
+          grep -h "withholding-bias\|^test result\|panicked\|^error" "$RUNNER_TEMP"/out/test-*.log | head -40 || true
+          grep -h "sweep-summary\|nominal_ok=false\|realized_ok=false\|^error" "$RUNNER_TEMP"/out/sweep-*.log | head -80 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: l4b-withholding-${{ matrix.arm }}
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
