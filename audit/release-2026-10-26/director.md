@@ -55,6 +55,8 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | C2 proven-present S0 (session 44, doing) | soft3#291 (draft): corpus writer, verdict codes, invalid-block generator, replay, test, `node --corpus`; not compiled: no stand compiles soft3 (diagnostic 40297730975: bbg#9 fails on zheng 0.4, `unresolved import zheng::LookOpening`) |
 | G10b measured (session 44) | zheng CI 40293728603 at opt-level 3: 324 passed, 1 failed (L3b 64 KiB), 1077.95 s, over 900 s |
 | G5 rehearsal (session 45) | Release train 40299054024 on #288's branch `50ef027`, same overrides as 40293725274, which it replaced (`cancelled`); pending |
+| G7 simulation-gate (session 46, done) | rehearsal 40293230892: simulation-gate runs, red at resolution (`mudra` → `cyber-hemera ^0.3`, L3c) |
+| L5a zheng#76 (session 47) | 40288589957 `test` hit its 90-min timeout before the cli tests; diagnostic `diag/l5a-76-cli` `fbf3bb8` (+ `166a14e`), zheng CI 40301875126 pending |
 
 ## PRs merged
 
@@ -70,4 +72,4 @@ Open: G6, G9, G10a, C3 and R1 (C2 doing since session 44, soft3#291). G6 waits o
 
 ## subscription windows
 
-None hit; `state/tick.log` has no usage-limit line. 34 sessions started by 08:00 (`state/session-20261026T*.log`). **4 ended without a final line** (`NEXT: ?` at 05:29, 05:48, 06:35 and 06:53 in `state/tick.log`). Two of them opened L3c twice, which session 30 consolidated.
+One hit: `state/tick.log` line 282, `08:02:16 subscription window hit; sleeping 30 min` (corrected in session 47; the earlier text said none). 34 sessions started by 08:00 (`state/session-20261026T*.log`). **4 ended without a final line** (`NEXT: ?` at 05:29, 05:48, 06:35 and 06:53 in `state/tick.log`). Two of them opened L3c twice, which session 30 consolidated.
