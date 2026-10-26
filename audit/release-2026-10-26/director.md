@@ -95,6 +95,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L4 the stack leg of 40386072407 read; neuron lock (session 94) | cybergraph, foculus, vault, radio, chain-genesis, simulation green; stack-neuron down to a stale lock; neuron `release/phase1` created at `9df467d`; diagnostic soft3 40400829617 running |
 | L3b the options' interactive figures (session 95) | 40399987810 hid a failed `wrap::review` test behind `tee`; measured interactive bound (i) 96.07, (ii) 101.43; stated on zheng#78 `ac61057`, #79 `f8c14d4`; receipt zheng 40401679146 green, `wrap::review` 4/4; trade-off on zheng#73 (6427425346) |
 | L4 neuron on the 0.4 tier (session 97) | 40400829617: lock resolves (hemera 0.4.0), compiles. 12 tests red, all `legacy-v1.capture` replays failing `Content::validate` (hemera 0.3 ids). That is L3c's keep-or-rotate, second instance, added to mudra#30 (6427533574) |
+| G16 Intel mine stall (session 102, doing) | diagnostic 40407469682 `macos-15-intel`: WebGPU on "Apple Paravirtual device (Metal)" timed out at 600 s (`webgpu` and `auto`); `mine_e2e` stalled; CPU 72.4 kH/s. Control `macos-14`: Metal 1.59 MH/s, e2e 14.02 s. Fix: soft3#353 (Auto probes WebGPU at its dispatch size, 5 s deadline, rate vs CPU); receipt 40416397867 running. 40389629921's stack leg was cancelled at the 90-min cap (G10a) |
 
 ## PRs merged
 
