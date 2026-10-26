@@ -43,6 +43,7 @@ fn corpus_records_every_mutation_and_replays_on_a_fresh_chain() {
         let bad = invalid_blocks(&c, &valid);
         assert!(bad.len() >= 12, "height {}: only {} mutations", valid.header.height, bad.len());
         for inv in &bad {
+            assert_ne!(inv.block.id(), valid.id(), "{} reuses the valid block's id", inv.name);
             let got = record_accept(&mut c, &mut w, &inv.block, NOW, Some(inv.name)).unwrap();
             assert_eq!(verdict_code(&got), inv.expected, "height {} mutation {}: {got:?}", valid.header.height, inv.name);
             assert_eq!(c.tip(), tip, "{} moved the tip", inv.name);
@@ -94,6 +95,9 @@ fn verdict_codes_are_distinct_per_mutation_and_stable() {
     let tpl = template(&mut c, miner, 0, &[net.transfer(0, 1, net.neurons[1], 5, 224)]);
     let valid = block_of(&tpl);
     let bad = invalid_blocks(&c, &valid);
+    let ids: HashSet<_> = bad.iter().map(|b| b.block.id()).collect();
+    assert_eq!(ids.len(), bad.len(), "two mutations share a block id");
+    assert!(!ids.contains(&valid.id()), "a mutation has the valid block's id");
     let expected: HashSet<_> = bad.iter().map(|b| b.expected.clone()).collect();
     assert_eq!(expected.len(), bad.len(), "two mutations share a code: {:?}", bad.iter().map(|b| (b.name, &b.expected)).collect::<Vec<_>>());
     let names: HashSet<_> = bad.iter().map(|b| b.name).collect();

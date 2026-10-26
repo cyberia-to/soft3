@@ -15,6 +15,7 @@
 //!
 //! Record 0 is block 0 with verdict `"genesis"` and `R(G)`.
 
+use std::collections::HashSet;
 use std::fs::{File, OpenOptions};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -23,7 +24,7 @@ use serde::{Deserialize, Serialize};
 
 use super::api::{Block, BlockVerdict, ChainApi, ChainError};
 use super::apply::{BlockError, TxError};
-use super::header::{self, Header, HeaderError};
+use super::header::{self, BlockId, Header, HeaderError};
 use super::pow::valid_pow;
 use super::state::Id;
 use super::tree;
@@ -315,15 +316,40 @@ pub struct Invalid {
 }
 
 /// First nonce (from 0) whose header does (`want = true`) or does not meet
-/// its target; bounded, so a hard target yields `None` for `want = true`.
-fn grind(mut h: Header, want: bool) -> Option<Header> {
+/// its target and whose id is not in `skip`; bounded, so a hard target yields
+/// `None` for `want = true`. `skip` holds the valid block's id and the ids of
+/// the mutations already generated: each mutation must get an id of its own,
+/// because a body mutation that reused the valid header would put the valid
+/// id in the rejected set (§5.4) and every later one would draw `rejected`
+/// instead of its own code.
+fn grind(mut h: Header, want: bool, skip: &HashSet<BlockId>) -> Option<Header> {
     for n in 0..GRIND_LIMIT {
         h.nonce = n.to_le_bytes();
-        if valid_pow(&h) == want {
+        if valid_pow(&h) == want && !skip.contains(&h.id()) {
             return Some(h);
         }
     }
     None
+}
+
+/// The mutations so far and every block id taken (the valid block's included).
+struct Mutations {
+    out: Vec<Invalid>,
+    used: HashSet<BlockId>,
+}
+
+impl Mutations {
+    fn add(&mut self, name: &'static str, header: Header, body: &[u8], expected: &str) {
+        self.used.insert(header.id());
+        self.out.push(Invalid { name, block: Block { header, body: body.to_vec() }, expected: expected.into() });
+    }
+
+    /// Re-grind the nonce so proof of work passes and the id is unused.
+    fn sealed(&mut self, name: &'static str, header: Header, body: Vec<u8>, expected: &str) {
+        if let Some(g) = grind(header, true, &self.used) {
+            self.add(name, g, &body, expected);
+        }
+    }
 }
 
 fn coinbase_bytes(height: u64, to: Id, amount: u64, extra: [u8; 32]) -> Vec<u8> {
@@ -334,48 +360,43 @@ fn coinbase_bytes(height: u64, to: Id, amount: u64, extra: [u8; 32]) -> Vec<u8> 
 /// validation step (chain.md §5.5) that can be reached without a key. Each
 /// fails at exactly its step: those targeting steps 6–8 get their nonce
 /// re-ground so proof of work passes, and recompute the tx root unless that
-/// is what they break. Deterministic. A mutation whose nonce search runs out
-/// (hard target) is left out. Mutations needing a transaction (`bad_signature`,
+/// is what they break. Every mutation's block id is distinct from `valid`'s
+/// and from every other mutation's (a body mutation reusing the valid header
+/// would put the valid id in the rejected set, §5.4, and every later one would
+/// draw `rejected`); the nonce search skips ids already used. Deterministic.
+/// A mutation whose nonce search runs out (hard target) is left out. Mutations needing a transaction (`bad_signature`,
 /// `duplicate_tx`, `coinbase_position`) appear when `valid` carries one;
 /// `replayed_tx` when the last 64 blocks of the main chain carry one.
 pub fn invalid_blocks<C: ChainApi + ?Sized>(chain: &C, valid: &Block) -> Vec<Invalid> {
     let h = valid.header;
-    let mut out: Vec<Invalid> = Vec::new();
-    let mut add = |name: &'static str, header: Header, body: &[u8], expected: &str| {
-        out.push(Invalid { name, block: Block { header, body: body.to_vec() }, expected: expected.into() });
-    };
+    let mut m = Mutations { out: Vec::new(), used: HashSet::from([valid.id()]) };
 
     // steps 1–5: header only (everything before PoW fails before PoW is read)
-    add("wrong_chain", Header { chain: [0xEE; 32], ..h }, &valid.body, "reject:header:wrong_chain");
-    add("rule_set", Header { version: (h.version & !0xffff) | 2, ..h }, &valid.body, "reject:header:rule_set");
-    add("bits_zero", Header { bits: 0, ..h }, &valid.body, "reject:header:bits");
-    add("second_genesis", Header { height: 0, ..h }, &valid.body, "reject:genesis");
-    add("unknown_parent", Header { prev: [0xAB; 32], ..h }, &valid.body, "reject:unknown_parent");
-    add("wrong_height", Header { height: h.height + 1, ..h }, &valid.body, "reject:height");
-    add("time_not_after_mtp", Header { time: 0, ..h }, &valid.body, "reject:time");
+    m.add("wrong_chain", Header { chain: [0xEE; 32], ..h }, &valid.body, "reject:header:wrong_chain");
+    m.add("rule_set", Header { version: (h.version & !0xffff) | 2, ..h }, &valid.body, "reject:header:rule_set");
+    m.add("bits_zero", Header { bits: 0, ..h }, &valid.body, "reject:header:bits");
+    m.add("second_genesis", Header { height: 0, ..h }, &valid.body, "reject:genesis");
+    m.add("unknown_parent", Header { prev: [0xAB; 32], ..h }, &valid.body, "reject:unknown_parent");
+    m.add("wrong_height", Header { height: h.height + 1, ..h }, &valid.body, "reject:height");
+    m.add("time_not_after_mtp", Header { time: 0, ..h }, &valid.body, "reject:time");
     if let Ok(target) = header::decode_bits(h.bits) {
         let harder = target >> 1;
         if !harder.is_zero() {
-            add("wrong_bits", Header { bits: header::encode_bits(harder), ..h }, &valid.body, "reject:bits");
+            m.add("wrong_bits", Header { bits: header::encode_bits(harder), ..h }, &valid.body, "reject:bits");
         }
     }
-    if let Some(bad) = grind(h, false) {
-        add("bad_pow", bad, &valid.body, "reject:pow");
+    if let Some(bad) = grind(h, false, &m.used) {
+        m.add("bad_pow", bad, &valid.body, "reject:pow");
     }
 
     // steps 6–8: body and state rules, the nonce re-ground
-    let mut sealed = |name: &'static str, header: Header, body: Vec<u8>, expected: &str| {
-        if let Some(g) = grind(header, true) {
-            add(name, g, &body, expected);
-        }
-    };
     let rooted = |raws: &[Vec<u8>]| Header { tx_root: tree::tx_root(raws), ..h };
 
-    sealed("tx_root", Header { tx_root: flip(h.tx_root), ..h }, valid.body.clone(), "reject:block:tx_root");
-    sealed("state_root", Header { state_root: flip(h.state_root), ..h }, valid.body.clone(), "reject:block:state_root");
-    sealed("empty_body", h, tx::join_body(&[]), "reject:block:empty");
+    m.sealed("tx_root", Header { tx_root: flip(h.tx_root), ..h }, valid.body.clone(), "reject:block:tx_root");
+    m.sealed("state_root", Header { state_root: flip(h.state_root), ..h }, valid.body.clone(), "reject:block:state_root");
+    m.sealed("empty_body", h, tx::join_body(&[]), "reject:block:empty");
     if let Some(cut) = valid.body.len().checked_sub(1) {
-        sealed("truncated_body", h, valid.body[..cut].to_vec(), "reject:block:body");
+        m.sealed("truncated_body", h, valid.body[..cut].to_vec(), "reject:block:body");
     }
 
     let raws = tx::split_body(&valid.body).unwrap_or_default();
@@ -391,22 +412,22 @@ pub fn invalid_blocks<C: ChainApi + ?Sized>(chain: &C, valid: &Block) -> Vec<Inv
             v
         };
         let r = with(coinbase_bytes(height + 1, to, amount, extra));
-        sealed("coinbase_height", rooted(&r), tx::join_body(&r), "reject:block:coinbase_height");
+        m.sealed("coinbase_height", rooted(&r), tx::join_body(&r), "reject:block:coinbase_height");
         let r = with(coinbase_bytes(height, to, amount + 1, extra));
-        sealed("coinbase_amount", rooted(&r), tx::join_body(&r), "reject:block:coinbase_amount");
+        m.sealed("coinbase_amount", rooted(&r), tx::join_body(&r), "reject:block:coinbase_amount");
         let r = vec![cb_raw.clone(), cb_raw.clone()];
-        sealed("coinbase_in_body", rooted(&r), tx::join_body(&r), "reject:block:tx:coinbase_in_body");
+        m.sealed("coinbase_in_body", rooted(&r), tx::join_body(&r), "reject:block:tx:coinbase_in_body");
 
         if let Some(t) = raws.get(1) {
             let r = vec![cb_raw.clone(), t.clone(), t.clone()];
-            sealed("duplicate_tx", rooted(&r), tx::join_body(&r), "reject:block:duplicate_tx");
+            m.sealed("duplicate_tx", rooted(&r), tx::join_body(&r), "reject:block:duplicate_tx");
             let mut bad = t.clone();
             let last = bad.len() - 1;
             bad[last] ^= 1;
             let r = with_tx(&raws, 1, bad);
-            sealed("bad_signature", rooted(&r), tx::join_body(&r), "reject:block:tx:signature");
+            m.sealed("bad_signature", rooted(&r), tx::join_body(&r), "reject:block:tx:signature");
             let r = vec![t.clone(), cb_raw.clone()];
-            sealed("coinbase_position", rooted(&r), tx::join_body(&r), "reject:block:coinbase_position");
+            m.sealed("coinbase_position", rooted(&r), tx::join_body(&r), "reject:block:coinbase_position");
         }
 
         // a transaction an earlier block spent: its nonce is behind the account's
@@ -420,11 +441,11 @@ pub fn invalid_blocks<C: ChainApi + ?Sized>(chain: &C, valid: &Block) -> Vec<Inv
             let old_fee = Tx::decode(&old).map(|t| t.fee()).unwrap_or(0);
             if let Some(amount) = amount.checked_sub(fees).and_then(|share| share.checked_add(old_fee)) {
                 let r = vec![coinbase_bytes(height, to, amount, extra), old];
-                sealed("replayed_tx", rooted(&r), tx::join_body(&r), "reject:block:tx:nonce");
+                m.sealed("replayed_tx", rooted(&r), tx::join_body(&r), "reject:block:tx:nonce");
             }
         }
     }
-    out
+    m.out
 }
 
 fn with_tx(raws: &[Vec<u8>], at: usize, replacement: Vec<u8>) -> Vec<Vec<u8>> {
