@@ -50,6 +50,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L5a (in part) | zheng#75 `0ad4c3e`, nox#41 `c25acf4`; zheng#76 open |
 | G4 stack-radio (session 40) | radio#47 `e98bc69` into `release/phase1`; rehearsal 40286177469 stack-radio green 695.3 s, 657 passed, 0 failed |
 | G10b stack-zheng budget (session 41, doing) | cause: unoptimized test profile (rehearsal 40286177469 `logs/stack-zheng.txt`); `fix/g10b-test-profile` `166a14e` under measurement: rehearsal 40293725274, zheng CI 40293728603 |
+| G5 stack-chain-genesis (session 42, doing) | soft3#288: space-pussy pinned at `bdcfdaf` (manifest sha256 `b46cb327…` = blessed), the gate builds then checks; unit tests 31 OK; rehearsal waits on 40293725274 starting |
 
 ## PRs merged
 
@@ -57,7 +58,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 
 ## plan items left
 
-Open: G5, G6, G9, G10a, C1, C2, C3 and R1. Doing: L1, L3, L3b, L3c, L5a, G7 and G10b (session 41). Done since 08:00: G11 (session 39), G4 (session 40). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
+Open: G6, G9, G10a, C1, C2, C3 and R1. Doing: L1, L3, L3b, L3c, L5a, G7, G10b (session 41) and G5 (session 42, soft3#288). Done since 08:00: G11 (session 39), G4 (session 40). With the owner: L4 (D10), L3b, mudra#30 (L3c), and the landings hemera#25 and lens#36.
 
 ## fable
 
