@@ -50,14 +50,18 @@ jobs:
       - name: Stand shim (measurement only, in this runner's checkout, never pushed)
         working-directory: ${{ runner.temp }}/sources
         run: |
-          # bbg#9, cybergraph#3 and foculus#5 sit on an older sibling set (hemera 0.3, nox 0.3);
-          # the phase-1 siblings are hemera 0.4, nox 0.2. Only the version requirement of path
-          # dependencies is dropped (a path dependency needs no version to resolve).
-          for f in $(git -C bbg ls-files '*Cargo.toml' | sed 's|^|bbg/|') $(git -C cybergraph ls-files '*Cargo.toml' | sed 's|^|cybergraph/|') $(git -C foculus ls-files '*Cargo.toml' | sed 's|^|foculus/|'); do
-            case "$f" in */vendor/*) continue;; esac
-            sed -i -E '/path = "/ s/version = "[^"]*", ?//' "$f"
+          # the siblings do not agree on one hemera/nox version (mudra wants hemera 0.3, bbg#9 nox 0.3,
+          # soft3 hemera 0.4). Only the version requirement of path dependencies is dropped, in every
+          # sibling checkout but soft3 (a path dependency needs no version to resolve).
+          for d in */; do
+            d=${d%/}
+            [ "$d" = soft3 ] && continue
+            for f in $(git -C "$d" ls-files '*Cargo.toml'); do
+              case "$f" in */vendor/*|vendor/*) continue;; esac
+              sed -i -E '/path = "/ s/version = "[^"]*", ?//' "$d/$f"
+            done
           done
-          git -C bbg diff --stat; git -C cybergraph diff --stat; git -C foculus diff --stat
+          git status --short >/dev/null; for d in */; do echo "$d: $(git -C "$d" diff --stat | tail -1)"; done
       - name: "cargo test chain:: --locked"
         id: locked
         continue-on-error: true
