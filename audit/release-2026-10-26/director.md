@@ -84,6 +84,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L4b done (session 75) | `withholding_bias` asserted the nominal q; the bound is exact at the realized share. 40358498794: nominal red 4/128 (hemera 0.3.1), 8/128 (0.4.0), realized 0/256. foculus#87 `c39b7fa` on `release/phase1`, verified 40360099242 (full suite 0 failed on both stands); in #86 as `0551e3b` |
 | G12 soft3-tests warning (session 76, done) | rehearsal 40357603776 (every L4-ported head): soft3-release and node-status green on linux x86_64, linux aarch64, macOS aarch64; soft3-tests exit 0, red only for one deprecation warning. soft3#326 `458bcc1`; diagnostic 40364373296 `warnings: 0`. New: G13 (macOS x86_64, honeycrisp `acpu`), G14 (`chain_adversary` liveness, red 2/2 in 40364373296) |
 | G13 macOS x86_64 (sessions 77–78, done) | diagnostic 40367247685 (lens#41 + soft3#328 on 40357603776's stand): `macos-15-intel` release build 0 errors, `warnings: 0`, node-status up, no honeycrisp compiled; `macos-14` Metal still built. lens#41 → lens `release/0.2` `fee68d8`; soft3#328 → `release/phase1` `ad6d878`. Session 77 ended without its plan PR; session 78 recorded it |
+| G14 liveness cause (session 80, doing) | diagnostic 40371902376 (30× the unchanged test): 13 red, all PoW variance (miner hashing, no block in 15 s at the 2^20 floor, 23.9–79.3 kH/s), not the node. soft3#331: window 600 s (≈ 1e-6 miss). Receipt 40374758349 running |
 
 ## PRs merged
 
