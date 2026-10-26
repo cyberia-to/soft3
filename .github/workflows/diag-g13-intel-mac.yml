@@ -64,7 +64,7 @@ jobs:
         working-directory: ${{ runner.temp }}/sources/soft3/crate
         run: |
           set -o pipefail
-          timeout 5400 cargo build --release --locked 2>&1 | tee "$RUNNER_TEMP/release.log"
+          cargo build --release --locked 2>&1 | tee "$RUNNER_TEMP/release.log"
       - name: Which honeycrisp crates were compiled
         if: always()
         run: grep -n "Compiling \(acpu\|aruminium\|unimem\|rane\|honeycrisp\|cyber-lens-gpu\|wgpu \)" "$RUNNER_TEMP/release.log" || echo "none of them"
