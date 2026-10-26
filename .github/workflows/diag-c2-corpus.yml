@@ -61,7 +61,7 @@ jobs:
               sed -i -E '/path = "/ s/version = "[^"]*", ?//' "$d/$f"
             done
           done
-          git status --short >/dev/null; for d in */; do echo "$d: $(git -C "$d" diff --stat | tail -1)"; done
+          for d in */; do echo "$d: $(git -C "$d" diff --stat | tail -1)"; done
       - name: "cargo test chain:: --locked"
         id: locked
         continue-on-error: true
