@@ -76,6 +76,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | L3b round 3 read (session 65) | zheng 40287758728: control `9f:26:5` 56:50, FINAL 71,653 B (> 64 KiB), final level 1,740.7 s; `10f:32:5` and `9f:36:5` cancelled at 355 min, so (i)'s final level takes > ~19,600 s (> 11×); posted on zheng#73 (comment 6417716289); round 4 with timing: zheng 40334403053 |
 | G4a done (session 66) | rehearsal 40325821696: stack-radio green 787.0 s at radio#49 `2a0ee79` (tokio 1.51.5), 657 passed 0 failed, proptests `_fs`/`_mem` ok, `source-inputs-unchanged` green; own CI reds = #47's (deny, clippy, wasm, codespell, fmt, same findings); radio#49 merged into `release/phase1` as `7452833` |
 | L4 accept branch drafted (session 68) | foculus#86 `9e34693`, cybergraph#23 `91e1fd5` (zheng `legacy` dev-dependency for #3's refusal tests; 8 `verify_state_execution` calls disabled with reason), over bbg#53 (CI 40333694101 green); rehearsal 40341228019 dispatched with the chain overridden; nothing merged (D10, the owner's) |
+| G10b decided (session 70) | zheng 40316171643 (`--no-fail-fast`, cancelled at 180 min): lib 1,075.7 s, `succinct_bitflip` 5,097.7 s, `wrap` 1,463.3 s, `recursion` 1,112.1 s, `wrap_review` > 1,460 s unfinished; ≥ ~10,860 s vs 1,800 s. fable #5: zheng `#[ignore]` + `heavy` CI + the train requires that check; the soundness half asked of the owner on zheng#77 (comment 6419556782) |
 
 ## PRs merged
 
@@ -87,7 +88,7 @@ Open: G6, G9 and R1; G10a doing (session 59: budgets merged, the stack-leg sum w
 
 ## fable
 
-4 questions of `FABLE_DAILY` 20 by 08:00 (`state/fable-2026-10-26`, `state/fable.log`): D10 storage chain (04:34), zheng limits (05:07), mudra keys (06:31, 07:16).
+4 questions of `FABLE_DAILY` 20 by 08:00 (`state/fable-2026-10-26`, `state/fable.log`): D10 storage chain (04:34), zheng limits (05:07), mudra keys (06:31, 07:16). Session 70: #5, zheng's stack-gate budget (G10b), answered "A: `#[ignore]` + `heavy` job + a train check; the soundness half is the owner's".
 
 ## subscription windows
 
