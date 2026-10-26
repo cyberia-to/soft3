@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [foculus-default, foculus-legacy-proofs, cybergraph, soft3]
+        target: [foculus-legacy-proofs, cybergraph]  # tip.rs re-measure at foculus 98df7a6; default and soft3 read in 40353624161
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     defaults:
