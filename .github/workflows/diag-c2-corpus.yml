@@ -47,6 +47,15 @@ jobs:
           print("materialized", len(result), "red:", red)
           # a sibling that failed to fetch is not fatal until cargo asks for it
           PY
+      - name: Stand shim (measurement only, in this runner's checkout, never pushed)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          # bbg#9, cybergraph#3 and foculus#5 are based on hemera 0.3; soft3 needs hemera 0.4
+          # (hemera release/0.4). Only the version requirement of the path dependency is raised.
+          for f in bbg/rs/Cargo.toml cybergraph/Cargo.toml foculus/Cargo.toml; do
+            sed -i -E 's/(package = "cyber-hemera", version = )"0\.3"/\1"0.4"/' "$f"
+          done
+          git -C bbg diff --stat; git -C cybergraph diff --stat; git -C foculus diff --stat
       - name: "cargo test chain:: --locked"
         id: locked
         continue-on-error: true
