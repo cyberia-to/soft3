@@ -767,14 +767,21 @@ Cheap before expensive, and nothing stateful before PoW:
 4. target: `bits == expected bits from ASERT(prev)`;
 5. proof of work: `block_id < target`; the header is now accepted and
    relayed;
-6. body: size and count budgets, `tx_root` recomputed and equal, coinbase
-   position and height;
+6. body, in two stages:
+   a. commitment: the body fits `MAX_BLOCK_BYTES` (a larger one cannot be
+      delivered, chain-wire §2, and is dropped before any hashing), splits
+      into transactions, is non-empty, and its `tx_root` recomputed is equal
+      to the header's;
+   b. count and per-transaction size budgets, coinbase position and height,
+      unique txids;
 7. transactions in order: decode, signature (`verify_statement`), nonce,
    balances, kind rules; coinbase amount equals subsidy plus fees;
 8. state: apply on a copy of the parent state, `state_root` equal; commit.
 
-A block failing 6–8 marks the header invalid (and every descendant);
-failures at 1–5 never reach disk.
+A body failing 6a is not the header's body: it is dropped and the header
+stays as it was (the peer that sent it is penalised, chain-wire §5); a block
+failing 6b–8 marks the header invalid (and every descendant); failures at 1–5
+never reach disk.
 
 ## 6. network
 
