@@ -11,7 +11,7 @@ import time
 import tomllib
 import urllib.request
 
-from train_sources import PRODUCTS, digest, write_json
+from train_sources import PRODUCTS, command, digest, write_json
 
 
 class Gates:
@@ -22,13 +22,16 @@ class Gates:
 
     def record(self, name, result, **detail):
         self.rows.append({"name": name, "result": result, **detail})
+        self.write()
+        print(f"{result.upper()} {name}", flush=True)
+        return result == "green"
+
+    def write(self):
         write_json(self.output / "release-validation.json", {
             "target": self.target, "result": "green" if all(r["result"] == "green" for r in self.rows) else "red",
             "manager_revision": self.sources["manager_revision"],
             "source_revisions": {r["name"]: r.get("revision") for r in self.sources["repositories"]},
             "gates": self.rows})
-        print(f"{result.upper()} {name}", flush=True)
-        return result == "green"
 
     def run(self, name, argv, cwd, env=None, timeout=1800):
         return self.run_sequence(name, [(argv, timeout)], cwd, env)
@@ -242,6 +245,39 @@ STACK_TEST_BUDGET = {"zheng": 1800, "lens": 1200, "radio": 1200}
 STACK_TEST_DEFAULT = 900
 
 
+# Plan G4a, rehearsal 40316574923: a failing proptest in radio appended its seed to the tracked
+# iroh-blobs/proptest-regressions/*.txt, so the radio checkout went dirty and source-inputs-unchanged
+# was red (`changed: [radio]`) while that mutation leaked into the inputs the soft3 product build
+# consumes. Disabling proptest persistence is no answer: it would also stop replaying the committed
+# seeds (proptest 1.10 config.rs:146). Instead the stack gate carries the evidence (it goes red with
+# `dirtied` and a diff log) and the checkout is restored to its recorded revision, so
+# source-inputs-unchanged then measures what the product build consumed.
+def restore_stack_checkout(gates, name, repository, revision):
+    if not revision or not (repository / ".git").exists():
+        return
+    porcelain = command(["git", "status", "--porcelain"], cwd=repository)
+    if not porcelain:
+        return
+    # Listed by git, not parsed from porcelain: tracked changes against HEAD, then untracked files.
+    tracked = command(["git", "diff", "--name-only", "HEAD"], cwd=repository)
+    untracked = command(["git", "ls-files", "--others", "--exclude-standard"], cwd=repository)
+    paths = [p for p in (tracked + "\n" + untracked).splitlines() if p]
+    try:
+        diff = command(["git", "diff", "--binary", "HEAD"], cwd=repository)
+    except (RuntimeError, UnicodeDecodeError) as error:
+        diff = f"(diff unavailable: {error})"
+    log = f"logs/{name}.dirtied.txt"
+    (gates.output / log).write_text(f"{porcelain}\n\n{diff}\n")
+    row = gates.rows[-1]
+    assert row["name"] == name, (row["name"], name)
+    row["dirtied"], row["dirtied_log"] = paths, log
+    if row["result"] == "green":
+        row["result"], row["reason"] = "red", "the test changed its own source tree"
+    gates.write()
+    command(["git", "checkout", "--force", "--detach", revision], cwd=repository)
+    command(["git", "clean", "-fd"], cwd=repository)
+
+
 def run_gates(directory, output, sources, checkouts, component, target, stack=False):
     gates = Gates(output, sources, target)
     source_gates(gates, directory, sources, checkouts, component)
@@ -258,6 +294,8 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         for owner, path in owners.items():
             location = directory / owner / path
             gates.run(f"stack-{owner}", ["cargo", "test", "--locked"], location, timeout=STACK_TEST_BUDGET.get(owner, STACK_TEST_DEFAULT))
+            revision = next((r.get("revision") for r in sources["repositories"] if r["name"] == owner), None)
+            restore_stack_checkout(gates, f"stack-{owner}", directory / owner, revision)
         conformance_gate(gates, directory / "soft3")
         chain_genesis_gate(gates, directory / "soft3", pussy=directory / "pussy")
         simulation_gate(gates, directory)
