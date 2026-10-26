@@ -73,6 +73,7 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G4a cause and fix up (session 61) | the flake is tokio 1.49.0's mpsc `len()` underflow (tokio #8062). radio#49 moves the lock to tokio 1.51.5 (lock from radio run 40325343061). The same run's 50× repeat: 1 failed at 1.49.0, 0 at 1.51.5. Rehearsal 40325821696 (`radio=pull/49/head`) decides the merge |
 | G4a train side merged (session 62) | soft3#311 `9f78716`: a stack test that changes its own tree is red on that gate (`dirtied`, `logs/stack-<owner>.dirtied.txt`), and the checkout is restored to its recorded revision; gate `test` run 40327523244, 35 tests OK |
 | G6 measured (session 63) | waits on L4: rehearsal 40316574923 `logs/conformance-snapshot.txt` exits 101 at resolution, cybergraph 0.1.1 (the harness's path dependency, `conformance/rs/Cargo.toml:33`) requires `bbg ^0.2`; the cybergraph surface stays in the snapshot |
+| L3b round 3 read (session 65) | zheng 40287758728: control `9f:26:5` 56:50, FINAL 71,653 B (> 64 KiB), final level 1,740.7 s; `10f:32:5` and `9f:36:5` cancelled at 355 min, so (i)'s final level takes > ~19,600 s (> 11×); posted on zheng#73 (comment 6417716289); round 4 with timing: zheng 40334403053 |
 
 ## PRs merged
 
