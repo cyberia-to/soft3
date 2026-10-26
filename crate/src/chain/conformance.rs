@@ -269,7 +269,7 @@ mod tests {
         let pk = mudra::cosmos::compressed(key.verifying_key());
         assert_eq!(hex(&pk), "024f4e2ad99c34d60b9ba6283c9431a8418af8673212961f97a77b6377fcd05b62");
         let derived = mudra::spell::cosmos_key(super::super::sigs::tests::ABANDON, "").unwrap();
-        assert_eq!(derived.to_bytes().as_slice(), &KNOWN_ANSWER_SECRET, "the pinned secret is the phrase's key");
+        assert_eq!(&derived.to_bytes()[..], &KNOWN_ANSWER_SECRET, "the pinned secret is the phrase's key");
         assert!(utc_date().len() == 10);
     }
 
