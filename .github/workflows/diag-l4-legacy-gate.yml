@@ -1,0 +1,110 @@
+name: Diagnostic l4 legacy gate
+
+# Measurement only, never merged, never a release gate (plan row L4, session 71).
+# Rehearsal 40341228019: stack-foculus and stack-cybergraph refuse their stale
+# Cargo.lock under --locked, and foculus#86's library needs zheng 0.4's UNSOUND
+# `legacy` API. foculus dc01787 gates those modules behind the non-default
+# `legacy-proofs` feature, and cybergraph 21d9aa1 turns it on for its tests only
+# (decision A, fable #6). This job resolves both locks on the build service,
+# because the director's host has no cargo. It shows by `cargo tree` that no
+# production graph enables zheng/legacy, and runs each test command.
+on:
+  push:
+    branches: ['diag/l4-legacy-*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [foculus-default, foculus-legacy-proofs, cybergraph, soft3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=pull/53/head --override cybergraph=port/l4-cybergraph3-phase1 --override foculus=port/l4-foculus5-phase1 \
+            --override file=release/phase1 --override hemera=release/0.4 --override lens=release/0.2 --override nox=release/0.4 \
+            --override radio=release/phase1 --override rune=release/phase1 --override tok=release/phase1 --override tru=release/phase1 \
+            --override zheng=fix/g10b-test-profile --override mudra=pull/30/head
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the foculus and cybergraph locks (resolution only)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          for r in foculus cybergraph; do
+            cargo metadata --locked --format-version 1 --manifest-path $r/Cargo.toml >/dev/null 2>"$RUNNER_TEMP/out/$r-locked-before.txt" && echo "$r: lock already matches" || echo "$r: lock stale, resolving"
+            cargo metadata --format-version 1 --manifest-path $r/Cargo.toml >/dev/null
+            cargo metadata --locked --format-version 1 --manifest-path $r/Cargo.toml >/dev/null
+            cp $r/Cargo.lock "$RUNNER_TEMP/out/$r.Cargo.lock"
+            git -C $r diff --stat -- Cargo.lock | tail -1
+          done
+      - name: Feature trees — zheng "legacy" must not be in any production graph
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          set +e
+          t() { name=$1; shift; cargo tree -e features -i zheng "$@" > "$RUNNER_TEMP/out/tree-$name.txt" 2>&1; rc=$?
+                if grep -q 'zheng feature "legacy"' "$RUNNER_TEMP/out/tree-$name.txt"; then echo "$name: legacy ON (rc $rc)"; else echo "$name: legacy off (rc $rc)"; fi; }
+          t foculus-default --manifest-path foculus/Cargo.toml --edges normal
+          t foculus-legacy-proofs --manifest-path foculus/Cargo.toml --edges normal --features legacy-proofs
+          t cybergraph-normal --manifest-path cybergraph/Cargo.toml --edges normal
+          t cybergraph-dev --manifest-path cybergraph/Cargo.toml --edges normal,dev
+          t soft3-node --manifest-path soft3/crate/Cargo.toml --edges normal
+          tail -3 "$RUNNER_TEMP"/out/tree-*.txt
+      - name: Test (${{ matrix.target }})
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          set -o pipefail
+          case "${{ matrix.target }}" in
+            foculus-default)       cd foculus;    timeout 9000 cargo test --locked --no-fail-fast ;;
+            foculus-legacy-proofs) cd foculus;    timeout 9000 cargo test --locked --no-fail-fast --features legacy-proofs ;;
+            cybergraph)            cd cybergraph; timeout 9000 cargo test --locked --no-fail-fast ;;
+            soft3)                 cd soft3/crate; cargo metadata --locked --format-version 1 >/dev/null 2>&1 || { echo "soft3 lock stale against the stand; resolving (measurement only)"; cargo metadata --format-version 1 >/dev/null; cp Cargo.lock "$RUNNER_TEMP/out/soft3.Cargo.lock"; }
+                                   timeout 9000 cargo test --locked --no-fail-fast ;;
+          esac 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.target }}.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP"/out/test-*.log | head -100 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: l4-legacy-gate-${{ matrix.target }}
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure'
+        run: exit 1
