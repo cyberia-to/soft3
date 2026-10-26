@@ -57,6 +57,9 @@ What moved green today, each at its PR head in a rehearsal: stack-hemera (402469
 | G5 rehearsal (session 45) | Release train 40299054024 on #288's branch `50ef027`, same overrides as 40293725274, which it replaced (`cancelled`); pending |
 | G7 simulation-gate (session 46, done) | rehearsal 40293230892: simulation-gate runs, red at resolution (`mudra` → `cyber-hemera ^0.3`, L3c) |
 | L5a zheng#76 (session 47) | 40288589957 `test` hit its 90-min timeout before the cli tests; diagnostic `diag/l5a-76-cli` `fbf3bb8` (+ `166a14e`), zheng CI 40301875126 pending |
+| G5 stack-chain-genesis (session 49, done) | rehearsal 40299054024: the gate runs (red on L4 `cybergraph` `local-storage`, 0.265 s); soft3#288 merged `893d9e0` into `release/phase1` |
+| G10b on the stand (session 49) | 40299054024 at `166a14e`: 323 ok, 1 failed (L3b), timeout 900.002 s |
+| L5a (session 48, no final line) | zheng 40304510063 at `24b4439`: test, lockfile, fmt, clippy success; #76 merge next |
 
 ## PRs merged
 
