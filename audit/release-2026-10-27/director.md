@@ -31,6 +31,7 @@ The stack leg (job 121920831788, read in session 112) is green except phase1-pin
 | G16a(1) forced WebGPU after an abandoned dispatch, named (session 115) | 40430771555 pass 2 and `stall-first` step 8: `every_backend_agrees_and_verifies` hangs to the 1800 s timeout after `mine_e2e`'s abandoned probe, 7/7; the gate's order green; Auto already refuses the VM adapter, so no code change |
 | G6 built: `conformance/rs` on zheng 0.4's `ZHENGPF1`, blessed on hemera 0.4 (sessions 113–114) | soft3#362 merged as `53e341d`; diagnostic 40437312746: bless 0 changes, root `h6032aa33…`, `--check` ×2 green, 21/21 tests, 0 warnings; acceptance under rehearsal 40437685274 |
 | 40437685274 Intel leg read (session 117) | `candidate-x86_64-apple-darwin`: soft3-tests exit 0, `warnings: false`, 1216.5 s of 1800 (lib 293/0, `mine_e2e` 1/0 in 36.75 s); soft3-release green; node-status green; red only phase1-pins, release-notes-source |
+| 40437685274 stack leg read (session 118) | conformance-snapshot **green** (exit 0, 43.3 s, root `h6032aa33…`): G6 done. Red: stack-zheng (L3b), stack-mudra and stack-neuron (L3c), phase1-pins (G9), release-notes-source (G8). The leg was cancelled at its 90-min cap inside simulation-gate; the gates sum to 4752.7 s, a full leg ≈ 105 min (G10a, next) |
 
 ## PRs merged
 
@@ -38,7 +39,7 @@ soft3#358 into `release/phase1` (`063b6d9`, session 112), soft3#362 (`53e341d`, 
 
 ## plan items left
 
-Open: G9, R1. Doing: G6 built (#362); its acceptance, conformance-snapshot, is read from rehearsal 40437685274's stack leg (still running at 03:12). Interim (sessions 116–117, from `state/run-40437685274/candidate-*/receipt/release-validation.json`): on all four platform legs (aarch64 linux, x86_64 linux, aarch64 mac, x86_64 mac) only phase1-pins (G9) and release-notes-source (G8) are red. G9 waits on the landings L1–L4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: C3. See `release/director/plan.md` § the order.
+Open: G9, R1. Done: G6 (session 118, conformance-snapshot green in 40437685274). Doing: G10a, the stack leg's 90-min cap, cancelled in 40437685274 with a full leg ≈ 105 min. Interim (sessions 116–117, from `state/run-40437685274/candidate-*/receipt/release-validation.json`): on all four platform legs (aarch64 linux, x86_64 linux, aarch64 mac, x86_64 mac) only phase1-pins (G9) and release-notes-source (G8) are red. G9 waits on the landings L1–L4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: C3. See `release/director/plan.md` § the order.
 
 ## fable questions
 
