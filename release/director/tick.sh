@@ -27,7 +27,7 @@ prs="[]"; run="null"; owner=""
 [ -z "${NOGH:-}" ] && owner=$(gh api "users/$OWNER/events?per_page=100" --jq '[.[] | select(.repo.name | startswith("cyberia-to/")) | .created_at] | max // ""' 2>/dev/null || echo "")
 jq -n --argjson heads "$heads" --argjson prs "$prs" --argjson run "$run" --arg at "$NOW" --arg owner "$owner" '{at:$at, heads:$heads, prs:$prs, last_run:$run, owner_activity:$owner}' > "$STATE/tick-$NOW.json"
 prev=$(ls -1 "$STATE"/tick-*.json 2>/dev/null | tail -2 | head -1)
-# mergeable flaps UNKNOWN on every push to a PR's branches; a real conflict shows as a head/base change or the heartbeat
+# mergeable flaps UNKNOWN on every push to a PR's branches; a real conflict is seen at the latest by the heartbeat
 TICK_CMP='del(.at) | .prs |= map(del(.mergeable))'
 changed=1; [ -n "$prev" ] && [ "$prev" != "$STATE/tick-$NOW.json" ] && diff -q <(jq -S "$TICK_CMP" "$prev") <(jq -S "$TICK_CMP" "$STATE/tick-$NOW.json") >/dev/null && changed=0
 drift=$(jq '[.heads[] | select(.drift)] | length' "$STATE/tick-$NOW.json")
