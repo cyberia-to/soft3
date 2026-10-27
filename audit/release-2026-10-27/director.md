@@ -12,14 +12,14 @@ Opened in session 107 (00:30 UTC) from `release/director/plan.md`'s log and the 
 
 ## the candidate: red
 
-The latest rehearsal is 40422683385 (`release/phase1` `21d963d`, `soft3=release/phase1`, 40389629921's overrides). On all four building legs (x86_64/aarch64 linux, aarch64/x86_64 mac), soft3-tests, soft3-release and node-status are **green** and soft3-tests shows `warnings: false`. Each leg has two reds:
+The latest rehearsal is 40446879208 (`release/phase1` `5ca1d64`, `soft3=release/phase1`, 40437685274's overrides), all five legs read (sessions 120, 122, 124). On all four building legs (x86_64/aarch64 linux, aarch64/x86_64 mac), soft3-tests, soft3-release and node-status are **green** and soft3-tests shows `warnings: false`. Each leg has two reds:
 
 | gate | cause | row |
 |---|---|---|
 | phase1-pins | the leaves are pinned (soft3#373, session 123); the 0.4 tier, its ports and neuron move after the landings | G9 |
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, the owner's input |
 
-The stack leg (job 121920831788, read in session 112) is green except phase1-pins (G9), release-notes-source (G8), stack-zheng (the 64 KiB final-proof gate, 74525 B, L3b), stack-mudra (`domain_compat` legacy address bytes, L4), stack-neuron (lock not updated under `--locked`, L4) and conformance-snapshot (`cyber-conformance` does not compile against the zheng 0.4 API, G6).
+The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1d64`, read in session 124) is the first to finish with a verdict: 108.4 min of its 210-min cap, 24 gates summing to 6478.0 s. It is green except phase1-pins (G9), release-notes-source (G8), stack-zheng (the 64 KiB final-proof gate, L3b), stack-mudra (`domain_compat` legacy address bytes, L3c) and stack-neuron (lock not updated under `--locked`, L3c). simulation-gate is **green** (961.7 s, 16 scenarios, 0 failures; economy's two reds are the named expected ones), and so are conformance-snapshot, chain-genesis, soft3-tests, soft3-release and node-status.
 
 ## units done
 
@@ -36,6 +36,7 @@ The stack leg (job 121920831788, read in session 112) is green except phase1-pin
 | 40446879208 platform legs read (session 120) | soft3 built at `release/phase1` `5ca1d64` (`sources.json` override). x86_64 linux, aarch64 linux, aarch64 mac: soft3-tests green (exit 0, `warnings: false`), soft3-release and node-status green; red only phase1-pins (G9), release-notes-source (G8). The stack and Intel legs were still running at 04:20 |
 | 40446879208 Intel leg read (session 122) | `candidate-x86_64-apple-darwin` (soft3 `release/phase1` `5ca1d64`, `sources.json` override): soft3-tests green, exit 0, `warnings: false`, 1057.8 s of 1800 (lib 293/0, `every_backend_agrees_and_verifies` ok, `mine_e2e` 1/0 in 36.07 s; log sha256 `d39343b6…`); soft3-release green 959.2 s; node-status green; red only phase1-pins (G9), release-notes-source (G8). All four building legs at `5ca1d64` now agree; the stack leg was still running at 04:46 |
 | G9a, the leaves (session 123) | soft3#373 → `a3ca9b7`: strata, glia, honeycrisp, inf, mir, soma, spark, tade, evy, optica pinned to the default HEADs 40446879208 captured without an override, and nu pinned for the first time (`7c498b3`). All fast-forward, no version change. PR gates `drift` 40453611829 and `test` 40453611855 green |
+| G10a accepted, 40446879208 stack leg read (session 124) | job 122000222218: `Qualify stack and product` 03:56:13–05:44:34, 6501 s of the 210-min cap; `Report the verdict` ran, `assembled-candidate` produced; receipt sha256 `8c6d71d5…`, 24 gates, sum 6478.0 s; simulation-gate green 961.7 s; reds only G8, G9, L3b (stack-zheng 324/1), L3c (stack-mudra, stack-neuron) |
 
 ## PRs merged
 
@@ -43,7 +44,7 @@ soft3#358 into `release/phase1` (`063b6d9`, session 112), soft3#362 (`53e341d`, 
 
 ## plan items left
 
-Open: R1. Doing: G9 (G9a, the leaves, done in session 123 by soft3#373; the rest waits on the landings). Done: G6 (session 118, conformance-snapshot green in 40437685274). Doing: G10a, the stack leg's cap, raised to 210 min by soft3#368 (session 119); its acceptance is 40446879208's stack leg. Interim (sessions 116–117, from `state/run-40437685274/candidate-*/receipt/release-validation.json`): on all four platform legs (aarch64 linux, x86_64 linux, aarch64 mac, x86_64 mac) only phase1-pins (G9) and release-notes-source (G8) are red. G9 waits on the landings L1–L4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: C3. See `release/director/plan.md` § the order.
+Open: R1. Doing: G9 (G9a, the leaves, done in session 123 by soft3#373; the rest waits on the landings). Done: G6 (session 118, conformance-snapshot green in 40437685274). Done: G10a (session 124), the stack leg finished in 108.4 min of its 210-min cap with a full verdict (40446879208). Interim (sessions 116–117, from `state/run-40437685274/candidate-*/receipt/release-validation.json`): on all four platform legs (aarch64 linux, x86_64 linux, aarch64 mac, x86_64 mac) only phase1-pins (G9) and release-notes-source (G8) are red. G9 waits on the landings L1–L4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: C3. See `release/director/plan.md` § the order.
 
 ## fable questions
 
