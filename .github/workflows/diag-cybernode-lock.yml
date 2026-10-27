@@ -7,6 +7,7 @@ name: Diagnostic cybernode lock
 # this branch's release/phase1.toml as manager (so cybernode 52538a6 is a sibling), resolves
 # a lock for cybernode/rs on the train's stand (seeded from soft3's resolved crate/Cargo.lock
 # so shared versions are identical), and runs the node's tests with it.
+# -bin: the same, with the one-line test fix for the renamed binary (run 40529591978).
 on:
   push:
     branches: ['diag/cybernode-lock*']
@@ -70,6 +71,13 @@ jobs:
           diff -u soft3/crate/Cargo.lock cybernode/rs/Cargo.lock > "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true
           echo "packages added:   $(grep -c '^+name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
           echo "packages removed: $(grep -c '^-name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
+      - name: Patch the test binary name (cybernode 52538a6 renamed the bin soft3 -> cybernode)
+        working-directory: ${{ runner.temp }}/sources/cybernode/rs
+        run: |
+          # run 40529591978: tests/chain_adversary.rs:89 `CARGO_BIN_EXE_soft3` not defined, so no test compiled
+          sed -i 's/CARGO_BIN_EXE_soft3/CARGO_BIN_EXE_cybernode/' tests/chain_adversary.rs
+          git diff | tee "$RUNNER_TEMP/out/bin-name.patch"
+          ! grep -rn 'CARGO_BIN_EXE_soft3' tests src
       - name: cybernode-tests (cargo test --locked)
         id: test
         continue-on-error: true
