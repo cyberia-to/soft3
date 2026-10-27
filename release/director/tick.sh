@@ -2,6 +2,7 @@
 # the director's deterministic tick — sense, qualify, think, report. no tokens unless something changed.
 # runs as the body user on agent-a; needs: git, gh (as cyberia-apparatus), jq, goose; DIR=$HOME/director
 set -euo pipefail
+OWNER=${OWNER:-mastercyb}
 DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"; cd "$DIR"
 ORG=cyberia-to; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
@@ -20,12 +21,15 @@ import sys,tomllib
 for s in tomllib.load(open(sys.argv[1],'rb'))['sibling']: print(s['repo'], s['branch'], s['rev'])
 PY
 )
-prs="[]"; run="null"
+prs="[]"; run="null"; owner=""
 [ -z "${NOGH:-}" ] && prs=$(gh pr list -R $ORG/soft3 --state open --json number,title,labels,mergeable,headRefName,updatedAt -q '[.[] | {n:.number,t:.title,labels:[.labels[].name],mergeable:.mergeable,branch:.headRefName}]')
 [ -z "${NOGH:-}" ] && run=$(gh run list -R $ORG/soft3 --workflow "Release train" -L 1 --json databaseId,status,conclusion,createdAt -q '.[0]')
-jq -n --argjson heads "$heads" --argjson prs "$prs" --argjson run "$run" --arg at "$NOW" '{at:$at, heads:$heads, prs:$prs, last_run:$run}' > "$STATE/tick-$NOW.json"
+[ -z "${NOGH:-}" ] && owner=$(gh api "users/$OWNER/events?per_page=100" --jq '[.[] | select(.repo.name | startswith("cyberia-to/")) | .created_at] | max // ""' 2>/dev/null || echo "")
+jq -n --argjson heads "$heads" --argjson prs "$prs" --argjson run "$run" --arg at "$NOW" --arg owner "$owner" '{at:$at, heads:$heads, prs:$prs, last_run:$run, owner_activity:$owner}' > "$STATE/tick-$NOW.json"
 prev=$(ls -1 "$STATE"/tick-*.json 2>/dev/null | tail -2 | head -1)
-changed=1; [ -n "$prev" ] && [ "$prev" != "$STATE/tick-$NOW.json" ] && diff -q <(jq -S 'del(.at)' "$prev") <(jq -S 'del(.at)' "$STATE/tick-$NOW.json") >/dev/null && changed=0
+# mergeable flaps UNKNOWN on every push to a PR's branches; a real conflict is seen at the latest by the heartbeat
+TICK_CMP='del(.at) | .prs |= map(del(.mergeable))'
+changed=1; [ -n "$prev" ] && [ "$prev" != "$STATE/tick-$NOW.json" ] && diff -q <(jq -S "$TICK_CMP" "$prev") <(jq -S "$TICK_CMP" "$STATE/tick-$NOW.json") >/dev/null && changed=0
 drift=$(jq '[.heads[] | select(.drift)] | length' "$STATE/tick-$NOW.json")
 log "sense: drift on $drift siblings, $(jq '.prs|length' "$STATE/tick-$NOW.json") open PRs, last run $(jq -r '.last_run.conclusion // .last_run.status // "unknown"' "$STATE/tick-$NOW.json"), changed=$changed"
 
