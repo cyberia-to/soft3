@@ -236,6 +236,29 @@ class ReleaseTests(unittest.TestCase):
             if call.args[0].startswith("stack-"):
                 self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
 
+    def run_soft3_product(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.boot_status"), \
+                patch.object(Gates, "run", return_value=True) as run, \
+                patch.object(Gates, "blocked") as blocked:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "x86_64")
+        return run, blocked
+
+    def test_cybernode_tests_run_between_soft3_tests_and_release(self):
+        (self.root / "cybernode" / "rs").mkdir(parents=True)
+        run, _ = self.run_soft3_product()
+        names = [c.args[0] for c in run.call_args_list]
+        self.assertEqual(names, ["soft3-tests", "cybernode-tests", "soft3-release"])
+        call = run.call_args_list[1]
+        self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
+        self.assertEqual(call.args[2], self.root / "cybernode" / "rs")
+        self.assertEqual(call.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3" / "conformance")})
+
+    def test_cybernode_tests_without_the_checkout_are_blocked(self):
+        run, blocked = self.run_soft3_product()
+        self.assertEqual([c.args[0] for c in run.call_args_list], ["soft3-tests", "soft3-release"])
+        blocked.assert_called_once_with("cybernode-tests", "cybernode checkout unavailable")
+
     def stack_repo(self, owner="radio"):
         repo = self.root / owner
         repo.mkdir()
