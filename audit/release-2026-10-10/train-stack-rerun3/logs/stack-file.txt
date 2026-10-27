@@ -1,0 +1,20 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/D/train/checkout/file
+   Compiling cyber-file v0.1.0 (/Users/master/cyber/.stands/D/train/checkout/file)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/file-c901eda58c90954b)
+
+running 4 tests
+test tests::file_kind_png ... ok
+test tests::hex_roundtrip ... ok
+test tests::same_bytes_same_particle ... ok
+test tests::file_kind_text ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests file
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

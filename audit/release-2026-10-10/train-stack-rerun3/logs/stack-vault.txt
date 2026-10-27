@@ -1,0 +1,10 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/D/train/checkout/vault
+error: failed to select a version for `cybergraph`.
+    ... required by package `cyber-vault v0.1.0 (/Users/master/cyber/.stands/D/train/checkout/vault)`
+versions that meet the requirements `*` (locked to 0.1.1) are: 0.1.1
+
+package `cyber-vault` depends on `cybergraph` with feature `local-storage` but `cybergraph` does not have that feature.
+
+
+failed to select a version for `cybergraph` which could resolve this conflict

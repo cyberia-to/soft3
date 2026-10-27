@@ -1,0 +1,25 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/G2/_train/checkout/tok/rs
+   Compiling cyber-tru v0.1.1 (/Users/master/cyber/.stands/G2/_train/checkout/tru/rs)
+   Compiling cyber-tok v0.1.1 (/Users/master/cyber/.stands/G2/_train/checkout/tok/rs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.21s
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/G2/_train/target/debug/deps/tok-94d741e66b093d0b)
+
+running 8 tests
+test conservation::tests::budget_caps_emission ... ok
+test conservation::tests::clip_when_vstar_exceeds_delta ... ok
+test conservation::tests::conservation_of_token_sum ... ok
+test conservation::tests::zero_rho_style_share_gets_nothing ... ok
+test ledger::tests::burn_preserves_conservation ... ok
+test conservation::tests::no_clip_when_under_delta ... ok
+test ledger::tests::mint_preserves_conservation ... ok
+test mint::tests::execute_mints_under_clip ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests tok
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

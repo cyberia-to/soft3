@@ -1,0 +1,206 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/D/train/checkout/lens
+   Compiling cyber-lens-core v0.1.2 (/Users/master/cyber/.stands/D/train/checkout/lens/core)
+   Compiling cyber-lens-brakedown v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/brakedown)
+   Compiling cyber-lens-binius v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/binius)
+   Compiling cyber-lens-porphyry v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/porphyry)
+   Compiling cyber-lens-assayer v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/assayer)
+   Compiling cyber-lens-ikat v0.1.1 (/Users/master/cyber/.stands/D/train/checkout/lens/ikat)
+   Compiling cyber-lens v0.1.3 (/Users/master/cyber/.stands/D/train/checkout/lens/src)
+   Compiling lens-cli v0.1.2 (/Users/master/cyber/.stands/D/train/checkout/lens/cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.91s
+     Running unittests lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/lens-ff6549692ff15e53)
+
+running 27 tests
+test integration_tests::assayer_tests::broken_path_rejected ... ok
+test integration_tests::assayer_tests::dual_feasibility_violation ... ok
+test integration_tests::assayer_tests::out_of_bounds_rejected ... ok
+test integration_tests::assayer_tests::wrong_cost_rejected ... ok
+test integration_tests::binius_tests::char2_laws ... ok
+test integration_tests::binius_tests::roundtrip_1 ... ok
+test integration_tests::brakedown_tests::boolean_evals_match_table ... ok
+test integration_tests::binius_tests::roundtrip_2 ... ok
+test integration_tests::brakedown_tests::roundtrip_1 ... ok
+test integration_tests::binius_tests::sound_value ... ok
+test integration_tests::brakedown_tests::roundtrip_2 ... ok
+test integration_tests::assayer_tests::shortest_path ... ok
+test integration_tests::ikat_tests::equivalence_with_brakedown ... ok
+test integration_tests::porphyry_tests::roundtrip_1 ... ok
+test integration_tests::brakedown_tests::sound_commit ... ok
+test integration_tests::cross_tests::commitment_format_uniform ... ok
+test integration_tests::binius_tests::roundtrip_4 ... ok
+test integration_tests::porphyry_tests::roundtrip_2 ... ok
+test integration_tests::brakedown_tests::roundtrip_4 ... ok
+test integration_tests::brakedown_tests::sound_value ... ok
+test integration_tests::porphyry_tests::sound_value ... ok
+test integration_tests::brakedown_tests::zero_poly ... ok
+test integration_tests::ikat_tests::roundtrip_4 ... ok
+test integration_tests::brakedown_tests::roundtrip_8 ... ok
+test integration_tests::brakedown_tests::roundtrip_10 ... ok
+test integration_tests::brakedown_tests::roundtrip_12 ... ok
+test integration_tests::brakedown_tests::roundtrip_14 ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.20s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_assayer-52507c5292eb7875)
+
+running 9 tests
+test tests::dual_feasibility_violation_rejected ... ok
+test tests::wrong_cost_rejected ... ok
+test tests::broken_path_rejected ... ok
+test tests::wrong_source_label_rejected ... ok
+test tests::wrong_source_rejected ... ok
+test tests::valid_shortest_path ... ok
+test tests::wrong_target_label_rejected ... ok
+test tests::out_of_bounds_rejected ... ok
+test tests::commit_and_verify_roundtrip ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_binius-de1081b141644295)
+
+running 6 tests
+test tests::commit_deterministic ... ok
+test tests::merkle_paths_present ... ok
+test tests::wrong_commitment_rejected ... ok
+test tests::roundtrip_small ... ok
+test tests::wrong_value_rejected ... ok
+test tests::roundtrip_tiny ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_brakedown-85e0f841b5962063)
+
+running 23 tests
+test expander::tests::correct_degree ... ok
+test expander::tests::encode_different_inputs_differ ... ok
+test expander::tests::encode_output_size ... ok
+test expander::tests::encode_zero_polynomial ... ok
+test expander::tests::expander_deterministic ... ok
+test tests::multilinear_eq_orthogonal ... ok
+test expander::tests::expansion_property ... ok
+test expander::tests::neighbors_in_range ... ok
+test expander::tests::smallest_prime ... ok
+test tensor::tests::evaluate_small_matches_multilinear ... ok
+test tensor::tests::evaluate_small_single ... ok
+test tensor::tests::tensor_reduce_at_one ... ok
+test tensor::tests::tensor_reduce_halves ... ok
+test tests::commit_deterministic ... ok
+test tests::multilinear_eq_boolean_identity ... ok
+test tests::commit_different_polys_differ ... ok
+test tests::batch_roundtrip ... ok
+test tests::roundtrip_tiny ... ok
+test tests::proof_contains_proximity_queries ... ok
+test tests::wrong_commitment_rejected ... ok
+test tests::roundtrip_small ... ok
+test tests::wrong_value_rejected ... ok
+test tests::roundtrip_medium ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_core-49918c7b317765af)
+
+running 13 tests
+test fri::tests::single_element_returns_itself ... ok
+test fri::tests::caller_slice_unchanged ... ok
+test fri::tests::four_elements_two_levels_at_r_half ... ok
+test fri::tests::four_elements_r_zero_returns_first ... ok
+test fri::tests::four_elements_r_one_returns_last ... ok
+test fri::tests::two_elements_linear_interpolation ... ok
+test fri::tests::two_elements_r_zero_returns_left ... ok
+test fri::tests::two_elements_r_one_returns_right ... ok
+test fri::tests::non_power_of_two_panics - should panic ... ok
+test fri::tests::empty_panics - should panic ... ok
+test transcript::tests::squeeze_field_does_not_panic_for_a_wide_field ... ok
+test transcript::tests::squeeze_field_matches_manual_single_squeeze_for_a_narrow_field ... ok
+test transcript::tests::squeeze_field_is_deterministic_for_a_wide_field ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/serde_roundtrip.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/serde_roundtrip-e04250d2da59c989)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_ikat-c9fb5805002c2b79)
+
+running 5 tests
+test tests::ikat_brakedown_equivalence_on_raw_poly ... ok
+test tests::ntt_slots_roundtrip ... ok
+test tests::batch_rings_power_of_two ... ok
+test tests::roundtrip_4var ... ok
+test tests::commit_rings_works ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running unittests src/lib.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/cyber_lens_porphyry-c109263e73972b25)
+
+running 6 tests
+test tests::roundtrip_tiny ... ok
+test tests::commit_deterministic ... ok
+test tests::wrong_commitment_rejected ... ok
+test tests::wrong_value_rejected ... ok
+test tests::batch_roundtrip ... ok
+test tests::roundtrip_small ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (/Users/master/cyber/.stands/D/train/target/debug/deps/lens-e4a50a71a49b398e)
+
+running 8 tests
+test tests::empty_file_roundtrips ... ok
+test tests::field_parsing ... ok
+test tests::tampered_artifact_magic_rejected ... ok
+test tests::wrong_value_rejected ... ok
+test tests::porphyry_roundtrip ... ok
+test tests::binius_roundtrip ... ok
+test tests::ikat_roundtrip ... ok
+test tests::brakedown_roundtrip ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests lens
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_lens_assayer
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_lens_binius
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_lens_brakedown
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_lens_core
+
+running 1 test
+test core/src/fri.rs - fri::fri_fold (line 39) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+all doctests ran in 0.66s; merged doctests compilation took 0.32s
+   Doc-tests cyber_lens_ikat
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cyber_lens_porphyry
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

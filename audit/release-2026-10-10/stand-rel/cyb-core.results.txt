@@ -1,0 +1,1 @@
+error: failed to load manifest for workspace member `/Users/master/cyber/.stands/REL/cyb/shell`
