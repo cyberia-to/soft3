@@ -1,0 +1,148 @@
+name: Diagnostic g6 bless
+
+# Measurement only, never merged, never a release gate (plan row G6).
+# Blesses conformance/ of this head (zheng 0.4 ZHENGPF1 surface) on rehearsal
+# 40422683385's stand, then checks the bless twice (determinism) and runs the
+# crate tests. The artifact g6-bless carries the blessed snapshots and fixtures.
+on:
+  push:
+    branches: ['diag/g6-bless*']
+
+permissions:
+  contents: read
+
+jobs:
+  bless:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot rehearsal 40422683385's stand and lay out the checkouts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261026.1 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=0551e3b9c19a1c6a69c8d552ffbbfd3fa1c71c5d --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=fee68d8dec06a67b70f23c0328e4b7fbc1bb0303 --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec --override radio=7452833d1877151c7bc8343e921621e2af90eb8c --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          # bless THIS head's conformance, not the snapshot's soft3 default
+          rm -rf "$RUNNER_TEMP/sources/soft3/conformance"
+          cp -a conformance "$RUNNER_TEMP/sources/soft3/conformance"
+          # pristine copy of this head's conformance to diff the bless against
+          rm -rf "$RUNNER_TEMP/conformance-head"
+          cp -a conformance "$RUNNER_TEMP/conformance-head"
+          echo "soft3 conformance from $GITHUB_SHA"
+      - name: "a. cargo conformance --bless"
+        id: bless
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3
+        run: |
+          set -o pipefail
+          echo locked > "$RUNNER_TEMP/lock-mode"
+          date -u +%FT%TZ | sed 's/^/bless start /' | tee "$RUNNER_TEMP/bless-time.log"
+          if cargo run --locked --quiet --manifest-path conformance/rs/Cargo.toml --bin cargo-conformance -- conformance --bless 2>&1 | tee "$RUNNER_TEMP/bless-locked.log"; then
+            date -u +%FT%TZ | sed 's/^/bless end /' | tee -a "$RUNNER_TEMP/bless-time.log"
+            exit 0
+          fi
+          if ! grep -qi "lock" "$RUNNER_TEMP/bless-locked.log"; then echo "locked bless failed for another reason; not retrying"; exit 1; fi
+          echo "the lock does not match the stand: rerunning without --locked"
+          echo unlocked > "$RUNNER_TEMP/lock-mode"
+          cargo run --quiet --manifest-path conformance/rs/Cargo.toml --bin cargo-conformance -- conformance --bless 2>&1 | tee "$RUNNER_TEMP/bless-unlocked.log"
+          date -u +%FT%TZ | sed 's/^/bless end /' | tee -a "$RUNNER_TEMP/bless-time.log"
+      - name: "b1. cargo conformance --check (first)"
+        id: check1
+        if: steps.bless.outcome == 'success'
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3
+        run: |
+          set -o pipefail
+          flag=--locked; if [ "$(cat "$RUNNER_TEMP/lock-mode")" = unlocked ]; then flag=; echo "NOTE: lock regenerated, running unlocked"; fi
+          date -u +%FT%TZ | sed 's/^/check1 start /' | tee "$RUNNER_TEMP/check1-time.log"
+          cargo run $flag --quiet --manifest-path conformance/rs/Cargo.toml --bin cargo-conformance -- conformance --check 2>&1 | tee "$RUNNER_TEMP/check1.log"
+          date -u +%FT%TZ | sed 's/^/check1 end /' | tee -a "$RUNNER_TEMP/check1-time.log"
+      - name: "b2. cargo conformance --check (second, determinism)"
+        id: check2
+        if: steps.bless.outcome == 'success'
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3
+        run: |
+          set -o pipefail
+          flag=--locked; if [ "$(cat "$RUNNER_TEMP/lock-mode")" = unlocked ]; then flag=; echo "NOTE: lock regenerated, running unlocked"; fi
+          date -u +%FT%TZ | sed 's/^/check2 start /' | tee "$RUNNER_TEMP/check2-time.log"
+          cargo run $flag --quiet --manifest-path conformance/rs/Cargo.toml --bin cargo-conformance -- conformance --check 2>&1 | tee "$RUNNER_TEMP/check2.log"
+          date -u +%FT%TZ | sed 's/^/check2 end /' | tee -a "$RUNNER_TEMP/check2-time.log"
+      - name: "c. cargo test (conformance crate)"
+        id: tests
+        if: steps.bless.outcome == 'success'
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3
+        run: |
+          set -o pipefail
+          flag=--locked; if [ "$(cat "$RUNNER_TEMP/lock-mode")" = unlocked ]; then flag=; echo "NOTE: lock regenerated, running unlocked"; fi
+          timeout 5400 cargo test $flag --manifest-path conformance/rs/Cargo.toml 2>&1 | tee "$RUNNER_TEMP/test.log"
+      - name: "d. warnings"
+        if: always()
+        run: |
+          total=0
+          for f in "$RUNNER_TEMP"/*.log; do
+            [ -e "$f" ] || continue
+            n=$(grep -c "^warning" "$f" || true)
+            n=${n:-0}
+            echo "$(basename "$f"): $n"
+            total=$((total + n))
+          done
+          echo "warnings total: $total"
+          grep -n "^warning" -A4 "$RUNNER_TEMP"/*.log || true
+      - name: "e. what the bless changed"
+        if: always()
+        working-directory: ${{ runner.temp }}/sources/soft3
+        run: |
+          echo "lock mode: $(cat "$RUNNER_TEMP/lock-mode" 2>/dev/null || echo none)"
+          git -C "$RUNNER_TEMP/sources/soft3" status --short conformance || true
+          echo "--- diff --stat of the blessed conformance/ against this head"
+          git diff --no-index --stat -- "$RUNNER_TEMP/conformance-head" "$RUNNER_TEMP/sources/soft3/conformance" || true
+          grep -h "blessed\|bless \|REFUSE\|FAIL\|conformance:" "$RUNNER_TEMP"/bless-*.log "$RUNNER_TEMP"/check*.log || true
+          ls -l conformance/fixtures/zheng || true
+          # the artifact tree
+          mkdir -p "$RUNNER_TEMP/g6-bless"
+          cp -a conformance/snapshots "$RUNNER_TEMP/g6-bless/snapshots" || true
+          cp -a conformance/fixtures "$RUNNER_TEMP/g6-bless/fixtures" || true
+          cp -a conformance/chain.snap "$RUNNER_TEMP/g6-bless/chain.snap" || true
+          cp -a conformance/rs/Cargo.lock "$RUNNER_TEMP/g6-bless/Cargo.lock" || true
+          cp -a "$RUNNER_TEMP"/*.log "$RUNNER_TEMP/g6-bless/" || true
+          cp -a "$RUNNER_TEMP/snapshot/sources.json" "$RUNNER_TEMP/g6-bless/sources.json" || true
+          cp -a "$RUNNER_TEMP/lock-mode" "$RUNNER_TEMP/g6-bless/lock-mode" || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: g6-bless
+          path: ${{ runner.temp }}/g6-bless
+          if-no-files-found: warn
+      - name: "f. Fail when red"
+        if: always()
+        run: |
+          echo "bless: ${{ steps.bless.outcome }}  check1: ${{ steps.check1.outcome }}  check2: ${{ steps.check2.outcome }}  tests: ${{ steps.tests.outcome }}"
+          test "${{ steps.bless.outcome }}" = success
+          test "${{ steps.check1.outcome }}" = success
+          test "${{ steps.check2.outcome }}" = success
+          test "${{ steps.tests.outcome }}" = success
