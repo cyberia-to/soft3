@@ -54,7 +54,18 @@ Design rules this page obeys:
 - no rung of the [ladder](../roadmap/stack-completeness.md) depends on a rung
   above it (§9).
 
-## 0. parameters
+Requirements: every normative section below carries a stable id in its
+heading (`CHAIN-…`) and ends with its cases — one row each, positive or
+negative, given/when/then. The map from each id to code, test, receipt and
+state is [audit/chain/map.md](../audit/chain/map.md); `scripts/requirements.nu`
+reads both and sets the dots. Parents: `CHAIN-BLOCK` (§1), `CHAIN-TRANSACTIONS`
+(§2), `CHAIN-STATE` (§3), `CHAIN-GENESIS` (§4), `CHAIN-CONSENSUS` (§5),
+`CHAIN-UPGRADES` (§7), `CHAIN-POOL` (§11). Invariants: `CHAIN-INV-INTEGER` —
+nothing consensus-relevant floats; `CHAIN-INV-CONSERVATION` — supply is a
+function of height alone, Σ balances per token holds at every height,
+including the pool's turnstile. §6, §8, §9 and §10 are informative.
+
+## 0. parameters · CHAIN-PARAMS
 
 Every constant in one table. `S0` is the genesis supply of the chain's native
 coin, read from the genesis file (§4).
@@ -97,9 +108,16 @@ block) and BCH's two days (a 10× hash-rate loss would stall the chain for a
 day); at 600 s a 120 s drift moves the target 1.15× and a 100× hash-rate
 collapse recovers in about 66 minutes (§1.5).
 
+cases of `CHAIN-PARAMS`:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-PARAMS.a | positive | `params.rs` and the table of §0 | every constant is compared by name | values equal, `SUBSIDY = floor(S0 / 105,120,000)`, `MAX_REORG = 119` |
+| CHAIN-PARAMS.b | negative | a build whose `ACTIVATIONS` does not start with rule set 1 at height 0 | the params test runs | it fails |
+
 ## 1. block
 
-### 1.1 header
+### 1.1 header · CHAIN-HEADER
 
 A header is exactly 168 bytes, little-endian throughout, no varints, no
 optional fields. 168 = 3 × 56: three full hemera rate blocks plus the
@@ -131,7 +149,14 @@ Siblings share the parent's target (§1.5 reads only the parent), so changing
 a candidate's `time` never changes its work; miners cannot shop for an easier
 target by timestamp.
 
-### 1.2 proof of work
+cases of `CHAIN-HEADER` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-HEADER.a | positive | the test header of chain-conformance §5 | encoded then decoded | 168 bytes in the listed order; `block_id` = `bdd7f2ef…0c31` |
+| CHAIN-HEADER.b | negative | 167 or 169 bytes, or `version & 0xffff != 1`, or a foreign `chain` | decoded | refused; the chain mismatch is reported as wrong chain, not malformed |
+
+### 1.2 proof of work · CHAIN-POW
 
 ```
 valid_pow(header) :=  u256_le(block_id) < target(bits)
@@ -156,7 +181,15 @@ rate, and the DAA takes over from there. A
 honeycrisp or GPU hemera kernel will be one to three orders faster; the
 chain does not care, ASERT does (§1.5), and §8 says what it means.
 
-### 1.3 compact target
+cases of `CHAIN-POW` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POW.a | positive | the mined header of chain-conformance §5 (nonce 934,636) at `GENESIS_BITS` | `valid_pow` | true |
+| CHAIN-POW.b | negative | the same header at bits `0x1d100000`, and nonce 934,635 at `GENESIS_BITS` | `valid_pow` | false both times; equality with the target fails |
+| CHAIN-POW.c | positive | height 0 | validated | no PoW check; the id is the pinned genesis id |
+
+### 1.3 compact target · CHAIN-BITS
 
 `bits` is Bitcoin's compact form, with one tightening: the encoding must be
 canonical.
@@ -185,7 +218,14 @@ A header is invalid unless `bits == encode(decode(bits))` and
 measured 90 kH/s one laptop core mines a floor block in about 12 s, so the
 chain never stalls below one laptop core. Vectors in chain-conformance §2.
 
-### 1.4 timestamps
+cases of `CHAIN-BITS` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-BITS.a | positive | the canonical rows of chain-conformance §2 | decode then encode | round-trips; `0x1e010000` ↔ 2^232, `0x1e100000` ↔ 2^236 |
+| CHAIN-BITS.b | negative | `0x1e001000`, `0x04001234`, `0x1d800000`, `0x00000000`, `0x1f010000` | validated | refused: non-canonical, non-canonical, sign bit, target 0, above `POW_LIMIT` |
+
+### 1.4 timestamps · CHAIN-TIME
 
 - `time > MTP(prev)` where `MTP` is the median of the `time` of the previous
   `MTP_WINDOW` = 11 headers (fewer near genesis: all available, genesis
@@ -195,7 +235,15 @@ chain never stalls below one laptop core. Vectors in chain-conformance §2.
   up to 600 s;
 - genesis `time` is the genesis file's value.
 
-### 1.5 difficulty adjustment — ASERT, integer only
+cases of `CHAIN-TIME` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-TIME.a | positive | 11 parents, an even count near genesis | MTP computed | the median, lower middle for an even count |
+| CHAIN-TIME.b | negative | a header with `time <= MTP(prev)` | validated | refused |
+| CHAIN-TIME.c | negative | a header with `time > now + 120 s` | validated | held, re-evaluated for up to 600 s, never stored as invalid |
+
+### 1.5 difficulty adjustment — ASERT, integer only · CHAIN-ASERT
 
 The target of a block at height `h ≥ 1` with parent `P` (height `h − 1`) is a
 pure function of the genesis anchor and the parent:
@@ -247,7 +295,16 @@ Behavior:
 Reference points: parano1d (T 30 s, H 180 s, MTP 11, drift 120 s); Bitcoin
 Cash (T 600 s, H 172,800 s).
 
-### 1.6 body and budgets
+cases of `CHAIN-ASERT` — parent: CHAIN-BLOCK · invariant: CHAIN-INV-INTEGER:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-ASERT.a | positive | the six rows of chain-conformance §4 | `e, shifts, frac, factor, target, bits` computed | equal to the row, including `e = −62260` (floor toward −∞) and `factor = 67852` |
+| CHAIN-ASERT.b | positive | parent 5 at time 1,000,000, anchor 2^228 | target computed | clamped at `POW_LIMIT` = 2^236 under a shift far beyond 256 |
+| CHAIN-ASERT.c | positive | a simulated chain at exact T spacing; then blocks at T/2 for 20 blocks; then a 100× slowdown | bits followed | constant; a target below 2^228 by a factor in [1.9, 2.1] after 600 s; recovery of the T interval within 70 simulated minutes |
+| CHAIN-ASERT.d | negative | any floating-point `pow` on the target path | code review | a consensus bug; the invariant forbids it |
+
+### 1.6 body and budgets · CHAIN-BODY
 
 ```
 body = count: u32 LE ‖ tx[0] ‖ tx[1] ‖ … ‖ tx[count−1]
@@ -266,7 +323,14 @@ magnitude above bostrom's historical rate (2.9 M links in five years ≈
 second over QUIC. parano1d's terminal cap is 1.1 MB because it carries proofs;
 ours carries none.
 
-### 1.7 transaction root
+cases of `CHAIN-BODY` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-BODY.a | positive | a body of `count` fixed-size transactions, coinbase first | encoded and decoded | round-trips; `168 + len(body) <= 262,144`; `count <= 1,024` |
+| CHAIN-BODY.b | negative | a second coinbase, a repeated txid, a count over the cap, a body over the byte cap | validated | refused |
+
+### 1.7 transaction root · CHAIN-TXROOT
 
 A hemera Merkle tree over the transactions in body order, domain-separated,
 no duplication of odd nodes:
@@ -286,9 +350,16 @@ Promoting the odd node instead of duplicating it removes the duplicate-tx
 malleability of Bitcoin's construction. A coinbase-only block has
 `tx_root = leaf_0`.
 
+cases of `CHAIN-TXROOT` — parent: CHAIN-BLOCK:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-TXROOT.a | positive | the leaf and node vectors of chain-conformance §6 | `tx_root` | equal; a coinbase-only block has `tx_root = leaf_0` |
+| CHAIN-TXROOT.b | negative | an odd level | the tree built | the last node is promoted unchanged, never duplicated |
+
 ## 2. transactions
 
-### 2.1 envelope
+### 2.1 envelope · CHAIN-TX
 
 ```
 tx = version: u8 (= 1) ‖ kind: u8 ‖ body ‖ sig
@@ -319,7 +390,15 @@ statement  = hemera("soft3/chain/sign/v1\0" ‖ chain ‖ tx_bytes_without_sig)
 cross-chain replay protection for free: a pussy transfer is not a valid
 bostrom transfer even for the same key and nonce.
 
-### 2.2 coinbase (kind 0)
+cases of `CHAIN-TX` — parent: CHAIN-TRANSACTIONS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-TX.a | positive | each kind 0, 1, 2, 3, 6, 7 at its fixed size | decoded | the length is known from the second byte; `txid` and `statement` match chain-conformance §6 |
+| CHAIN-TX.b | negative | an unknown version or kind, kinds 4 and 5 under rule set 1, trailing or missing bytes | decoded | refused |
+| CHAIN-TX.c | negative | a valid pussy transfer | validated on bostrom | refused: the chain id is in `txid` and `statement` |
+
+### 2.2 coinbase (kind 0) · CHAIN-COINBASE
 
 ```
 height: u64 ‖ to: neuron[32] ‖ amount: u64 ‖ extra: [u8; 32]
@@ -337,7 +416,15 @@ height: u64 ‖ to: neuron[32] ‖ amount: u64 ‖ extra: [u8; 32]
   only from height `height + COINBASE_MATURITY`, so a reorg never invalidates
   spends of a subsidy that was itself reorged out.
 
-### 2.3 transfer (kind 1)
+cases of `CHAIN-COINBASE` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-COINBASE.a | positive | the coinbase vector of chain-conformance §6 | encoded | 82 bytes as listed |
+| CHAIN-COINBASE.b | negative | a coinbase whose `amount` differs from `SUBSIDY − cut(h) + Σ fees` by one unit either way, or whose `height` is not the block's | validated | refused |
+| CHAIN-COINBASE.c | negative | a subsidy output spent at height `height + 99` | validated | refused at 99, accepted at 100 |
+
+### 2.3 transfer (kind 1) · CHAIN-TRANSFER
 
 ```
 from: neuron[32] ‖ nonce: u64 ‖ token: [u8;32] ‖ amount: u64 ‖ to: [u8;32] ‖ fee: u64
@@ -349,7 +436,15 @@ id, or a particle — value can be parked on a particle). `amount` may be 0
 (a fee-only tx is valid, useful for claiming a nonce slot). `token` is a
 token id (§3.1).
 
-### 2.4 cyberlink (kind 2)
+cases of `CHAIN-TRANSFER` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-TRANSFER.a | positive | a signed transfer of `amount` of `token` with `fee` | applied | `amount` moves, `fee` reaches the coinbase, the nonce advances |
+| CHAIN-TRANSFER.b | positive | `amount = 0` | applied | valid; the nonce slot is consumed |
+| CHAIN-TRANSFER.c | negative | a debit that would take any balance below zero | validated | refused |
+
+### 2.4 cyberlink (kind 2) · CHAIN-CYBERLINK
 
 ```
 from: neuron[32] ‖ nonce: u64 ‖ token: [u8;32] ‖ amount: u64 ‖ p: particle[32] ‖ q: particle[32] ‖ valence: i8 ‖ fee: u64
@@ -372,7 +467,15 @@ two axon lists, an axon-particle and a balance) and different audiences
 (wallets vs cyb). One tx per action keeps each a fixed-size record that is
 trivial to index and impossible to mis-parse.
 
-### 2.5 nonces and replay
+cases of `CHAIN-CYBERLINK` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-CYBERLINK.a | positive | a link with `amount = 0` | applied | bbg `insert` with amount 0; axons written; no stake |
+| CHAIN-CYBERLINK.b | positive | a link with `amount > 0` in the native coin | applied | `amount` locked at `stake_key(card)`; unlocked by kind 6 after `MIN_LOCK` |
+| CHAIN-CYBERLINK.c | negative | `p == q`, or `valence` outside {−1, 0, +1}, or stake in a non-native token | validated | refused |
+
+### 2.5 nonces and replay · CHAIN-NONCE
 
 Every neuron record carries `nonce: u64` (§3.2). A tx of kinds 1–3 is valid
 only if `tx.nonce == neurons[from].nonce`; applying it increments the nonce.
@@ -381,7 +484,14 @@ across chains. Mempool admission accepts nonces in
 `[current, current + NONCE_WINDOW)` and orders them; block validation
 accepts only the exact current nonce, in body order.
 
-### 2.6 fees
+cases of `CHAIN-NONCE` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-NONCE.a | positive | a neuron with nonce n | transactions n, n+1, … n+15 submitted in any order | admitted and ordered; blocks accept only the exact current nonce in body order |
+| CHAIN-NONCE.b | negative | nonce n again after it was applied | validated | refused as replay; a relayed nonce beyond the window is a race, not an offence |
+
+### 2.6 fees · CHAIN-FEE
 
 `fee ≥ len(tx_bytes) · MIN_FEE_PER_BYTE` in the native coin, paid to the
 block's miner through the coinbase amount. Nothing is burned. At 1 unit per
@@ -389,7 +499,14 @@ byte a transfer costs 224 BOOT (bostrom; BOOT has no decimals, supply ≈
 1.15 × 10^15) or 224 PUSSY (pussy, supply ≈ 1.15 × 10^18): a spam floor, not
 a market. Fee markets, growth fees and burns are cores-era rules (§7).
 
-### 2.7 signatures — mudra NSIG1
+cases of `CHAIN-FEE` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-FEE.a | positive | a transfer with `fee = 224` | validated | accepted; nothing is burned |
+| CHAIN-FEE.b | negative | `fee < len(tx) · MIN_FEE_PER_BYTE` | validated | refused; fee per byte is compared exactly, never by integer division |
+
+### 2.7 signatures — mudra NSIG1 · CHAIN-SIG
 
 `sig` is the 102-byte NSIG1 envelope of
 [mudra/specs/neuron-auth.md](../../mudra/specs/neuron-auth.md):
@@ -401,7 +518,14 @@ a market. Fee markets, growth fees and burns are cores-era rules (§7).
 no key registry exists. The curve is secp256k1; phase-1 signatures are
 classical, stated plainly (§8).
 
-### 2.8 the legacy bridge — implicit, with one explicit case
+cases of `CHAIN-SIG` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-SIG.a | positive | the signed vectors of chain-conformance §6–7 | verified | true, deterministic across builds |
+| CHAIN-SIG.b | negative | every single-byte mutation of a valid signed transfer | verified | false; `neuron_of(pubkey) == subject` is required |
+
+### 2.8 the legacy bridge — implicit, with one explicit case · CHAIN-CLAIM
 
 `claim::neuron_of(pubkey) = hemera(compressed pubkey)` is both mudra's native
 id for a legacy key and the id genesis uses for every snapshot account whose
@@ -433,9 +557,17 @@ native coin, and `nonce == neurons[neuron_of(pubkey)].nonce`. Effect: every
 balance of `legacy_owner(hrp, account_id)` (all tokens) moves to
 `neuron_of(pubkey)`; fee to the miner. The hrp is the chain's (§4.1).
 
+cases of `CHAIN-CLAIM` — parent: CHAIN-TX:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-CLAIM.a | positive | a bostrom key whose pubkey is in `pubkeys.csv` | it signs a transfer | valid with no claim; `neuron_of(pubkey)` owns the genesis balance |
+| CHAIN-CLAIM.b | positive | an address-only account parked under `legacy_owner` | a kind-3 claim whose `ripemd160(sha256(pubkey))` is the account id | every balance of the dormant owner moves to `neuron_of(pubkey)`; fee to the miner |
+| CHAIN-CLAIM.c | negative | a claim whose key does not hash to the account id, or whose dormant owner holds less than `fee` | validated | refused |
+
 ## 3. state
 
-### 3.1 identities
+### 3.1 identities · CHAIN-IDS
 
 - particle: 32 bytes, `hemera(bytes)` of a file per the `file` crate (row 19
   of cyber/launch: every crate computes this today); the chain never
@@ -448,7 +580,13 @@ balance of `legacy_owner(hrp, account_id)` (all tokens) moves to
 - axon-particle: `hemera(p ‖ q)`;
 - balance key: `hemera(owner ‖ token)` (bbg `balance_key`).
 
-### 3.2 bbg dimensions used
+cases of `CHAIN-IDS` — parent: CHAIN-STATE:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-IDS.a | positive | `hemera("boot")`, `hemera("pussy")`, the empty input, 168 zero bytes | hashed | the anchors of chain-conformance §1; a moved anchor fails the harness |
+
+### 3.2 bbg dimensions used · CHAIN-STATE-DIMS
 
 The state is one `bbg::BbgState`; the chain writes seven of its dimensions
 and leaves the rest empty but committed:
@@ -480,7 +618,14 @@ No nullifiers, no private commitments: phase 1 is an account model with
 nonces; `A(x)` and `N(x)` stay empty until the pool activates (§11), and the
 pool's turnstile keys `T(τ)` in the balances dimension (§11.5) stay absent.
 
-### 3.3 state root per block
+cases of `CHAIN-STATE-DIMS` — parent: CHAIN-STATE:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-STATE-DIMS.a | positive | one block of every kind | applied then undone | every written dimension reverts exactly; the untouched dimensions stay at their empty commitments |
+| CHAIN-STATE-DIMS.b | negative | a nonce stored anywhere but `NeuronRecord.nonce` | code review | refused: nonces are under the root |
+
+### 3.3 state root per block · CHAIN-STATE-ROOT
 
 `state_root = bbg root` (`BbgState::compute_root`, the 14-leaf hemera
 compression over the 11 dimension commitments, A, N and stats) after the
@@ -495,7 +640,14 @@ and there is no dimension size cap, so bostrom's genesis commits (bbg
 `audit/genesis-dimension-v3-2026-10-16.md`). Look proofs over trie leaves
 need zheng to open trie paths; nothing in phase 1 needs them.
 
-### 3.4 transition and conservation
+cases of `CHAIN-STATE-ROOT` — parent: CHAIN-STATE:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-STATE-ROOT.a | positive | a block applied on a copy of the parent state | `state_root` compared | equal to `BbgState::compute_root` after the block, refreshed once per block |
+| CHAIN-STATE-ROOT.b | negative | a header whose `state_root` differs from the recomputed root | validated | the block and every descendant are marked invalid |
+
+### 3.4 transition and conservation · CHAIN-CONSERVATION
 
 For a block B at height h on state S:
 
@@ -520,7 +672,14 @@ Fees move, subsidy mints, nothing burns; supply is a function of height
 alone. Conservation is checked by the `tok` crate's conservation helpers
 (plumb), which own the arithmetic; the chain supplies the deltas.
 
-### 3.5 subsidy — the stakeless onramp, bootstrap phase
+cases of `CHAIN-CONSERVATION` — parent: CHAIN-STATE · invariant: CHAIN-INV-CONSERVATION:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-CONSERVATION.a | positive | 200 blocks of random transactions, a reorg among them | Σ balances per token read after every block | native = `S0 + h · SUBSIDY`, every other token = its genesis supply; `/status` reports the check |
+| CHAIN-CONSERVATION.b | negative | a block whose coinbase mints one unit more | validated | refused by the coinbase rule before conservation is reached |
+
+### 3.5 subsidy — the stakeless onramp, bootstrap phase · CHAIN-SUBSIDY
 
 The subsidy is the envelope of rewards.md §8 ("the subsidy envelope precedes
 the lottery it will carry"): a per-block amount paid for a proof meeting a
@@ -547,7 +706,14 @@ data (rewards.md §10 derives the floor from attack economics; nothing is
 known at genesis). The number is an owner decision and is listed open in §10
 with this default.
 
-### 3.6 retention
+cases of `CHAIN-SUBSIDY` — parent: CHAIN-STATE:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-SUBSIDY.a | positive | S0 of pussy | `SUBSIDY` computed | 10,458,426,657 per block, constant, no halving |
+| CHAIN-SUBSIDY.b | positive | an epoch boundary with active stake | the coinbase split read | miner and focus pool shares follow chain-economy §6; the total minted per block is unchanged |
+
+### 3.6 retention · CHAIN-RETENTION
 
 - headers: permanent on every node (168 B × 1,051,200 per year = 177 MB/yr);
 - bodies: phase-1 nodes are archival — every body is kept, because genesis
@@ -560,9 +726,15 @@ with this default.
   replays committed operations and verifies stored roots before readiness,
   as native-node.md already requires.
 
+cases of `CHAIN-RETENTION` — parent: CHAIN-STATE:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-RETENTION.a | positive | a node with headers, bodies and a main chain | closed and reopened | headers, bodies, undo records and the main chain survive; stored roots are verified before readiness |
+
 ## 4. genesis
 
-### 4.1 file
+### 4.1 file · CHAIN-GENESIS-FILE
 
 A genesis is one file: a tade stream, dialect `urn:cyberia:chain-genesis:1`,
 first frame `(*, k)` with that URN, then exactly one `p` frame, then `b`
@@ -599,7 +771,14 @@ link is 0); every distinct owner and link author gets a neuron record with
 also carries a genesis weight for φ*, computed by every node from the file
 alone and stored nowhere (chain-economy §4.1, §8).
 
-### 4.2 derivation from the burial
+cases of `CHAIN-GENESIS-FILE` — parent: CHAIN-GENESIS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-GENESIS-FILE.a | positive | the pussy genesis file of the pipeline | read | one `p` frame then `b` then `l`, canonical order, `subsidy` and `bits` as computed; the 74-byte pool record of §11.10 |
+| CHAIN-GENESIS-FILE.b | negative | a second `p`, an unsorted or duplicate `b`, `amount = 0`, trailing bytes, a pool record differing in one byte | read | refused: not a genesis |
+
+### 4.2 derivation from the burial · CHAIN-GENESIS-DERIVE
 
 Inputs, pinned by CID and sha256 in `bostrom/snapshot/manifest.json` and
 `space-pussy/snapshot/manifest.json`:
@@ -674,7 +853,14 @@ its output through `soft3::genesis::state::load`) — whose output file
 particle is published on the launch page and in the binary; two independent
 runs must produce byte-identical files (chain-conformance §10).
 
-### 4.3 block 0
+cases of `CHAIN-GENESIS-DERIVE` — parent: CHAIN-GENESIS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-GENESIS-DERIVE.a | positive | the pinned burial inputs | two independent runs of `soft3 genesis build` | byte-identical files; Σ `b` per token equals `supply.json` after decomposition |
+| CHAIN-GENESIS-DERIVE.b | negative | a `pubkeys.csv` row whose key does not reproduce its address | the pipeline runs | refused |
+
+### 4.3 block 0 · CHAIN-GENESIS-BLOCK
 
 ```
 version = 1, height = 0, time = genesis.time, bits = GENESIS_BITS, nonce = 0,
@@ -688,7 +874,14 @@ Genesis times (cyber/launch decisions 2026-09-18): pussy
 2026-11-05T13:37:00Z = 1793885820; bostrom 2026-11-05T13:22:42Z =
 1793884962, or the matching second of the day row 43 closes.
 
-### 4.4 two chains, one binary
+cases of `CHAIN-GENESIS-BLOCK` — parent: CHAIN-GENESIS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-GENESIS-BLOCK.a | positive | the genesis file | block 0 built | `version 1, height 0, nonce 0, prev 0, tx_root = chain, state_root = root(apply(genesis))`; its id equals the embedded id |
+| CHAIN-GENESIS-BLOCK.b | negative | a node whose computed genesis root differs from the embedded one | started | refuses to start |
+
+### 4.4 two chains, one binary · CHAIN-TWO-CHAINS
 
 `soft3 node --chain pussy | bostrom [--genesis path]`. The binary embeds the
 two chain ids and genesis block ids; `--genesis` is for rehearsal nets
@@ -697,9 +890,15 @@ protocol constants (§0) are identical on both chains; only the genesis file
 differs. The chaosnet `spacepussy-test` keeps its current engine and port
 and is not a chain of this spec.
 
+cases of `CHAIN-TWO-CHAINS` — parent: CHAIN-GENESIS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-TWO-CHAINS.a | positive | `soft3 node --chain pussy` and `--chain bostrom` | started | two chain ids, two genesis ids, one set of constants; `--genesis` must match the embedded id of the named chain |
+
 ## 5. consensus
 
-### 5.1 fork choice — heaviest chain
+### 5.1 fork choice — heaviest chain · CHAIN-FORK-CHOICE
 
 ```
 work(header)   = floor(2^256 / (target(bits) + 1))         // u256
@@ -710,7 +909,14 @@ The canonical tip is the valid block with the greatest `chainwork`. Ties
 keep the first-seen tip (Bitcoin's rule); a deterministic hash tie-break
 would hand a predictable advantage to whoever can grind for it.
 
-### 5.2 reorg limit
+cases of `CHAIN-FORK-CHOICE` — parent: CHAIN-CONSENSUS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-FORK-CHOICE.a | positive | a heavier fork within the reorg limit | received | the node reorganizes and its state equals a fresh replay of the new chain |
+| CHAIN-FORK-CHOICE.b | positive | two tips of equal work | received | the first seen stays the tip |
+
+### 5.2 reorg limit · CHAIN-REORG-LIMIT
 
 A node never reorganizes more than `MAX_REORG` = 119 blocks: a competing
 chain whose fork point is at or below `tip − FINALITY_DEPTH` is rejected
@@ -721,7 +927,14 @@ the operator of the minority side resyncs from a checkpoint. For a chain run
 on three known machines plus volunteers this trade is right; it bounds the
 damage of a rented-hash-rate rewrite to one hour of history (§8).
 
-### 5.3 foundation checkpoints, with a sunset
+cases of `CHAIN-REORG-LIMIT` — parent: CHAIN-CONSENSUS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-REORG-LIMIT.a | positive | a fork from `tip − 119` | received with more work | taken |
+| CHAIN-REORG-LIMIT.b | negative | a fork from `tip − 120` or deeper | received with more work | refused outright and logged; body sync never follows it |
+
+### 5.3 foundation checkpoints, with a sunset · CHAIN-CHECKPOINTS
 
 For the first months the chain's hash rate will be small enough that a
 single GPU farm can out-mine it. The explicit, temporary mitigation is a
@@ -747,7 +960,15 @@ checkpoint signer:
 This is centralization, named as such, bounded in power (cannot forge, cannot
 censor, cannot rewrite — only veto deep reorgs) and bounded in time.
 
-### 5.4 orphans and ordering
+cases of `CHAIN-CHECKPOINTS` — parent: CHAIN-CONSENSUS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-CHECKPOINTS.a | positive | a checkpoint signed by `genesis.checkpoint_key` at a multiple of 120 | held | a heavier chain not containing it is vetoed; a chain contradicting it is left for the checkpointed chain; a fresh node downloads through it |
+| CHAIN-CHECKPOINTS.b | negative | a checkpoint from another key, or with `height > CHECKPOINT_SUNSET` | received | refused or ignored; a vetoed block and its children are refused as `Checkpoint`, never scored |
+| CHAIN-CHECKPOINTS.c | negative | a checkpoint above the local tip | held | it never moves the tip forward and never validates an invalid block |
+
+### 5.4 orphans and ordering · CHAIN-ORPHANS
 
 Headers whose `prev` is unknown go to a bounded pool (`ORPHAN_POOL`: 1,024
 headers, evicted after 600 s or by PoW-weight when full) and trigger a
@@ -756,7 +977,14 @@ headers that are on a chain with more work than the local tip or within
 `FINALITY_DEPTH` of it. Every rejected block id is remembered (bounded set)
 so it is never re-validated.
 
-### 5.5 validation order
+cases of `CHAIN-ORPHANS` — parent: CHAIN-CONSENSUS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-ORPHANS.a | positive | a header whose `prev` is unknown | received | pooled, `get-headers` sent to the sender; evicted after 600 s or by PoW weight when the pool holds 1,024 |
+| CHAIN-ORPHANS.b | negative | a block id already rejected | received again | never re-validated |
+
+### 5.5 validation order · CHAIN-VALIDATION-ORDER
 
 Cheap before expensive, and nothing stateful before PoW:
 
@@ -776,6 +1004,13 @@ Cheap before expensive, and nothing stateful before PoW:
 A block failing 6–8 marks the header invalid (and every descendant);
 failures at 1–5 never reach disk.
 
+cases of `CHAIN-VALIDATION-ORDER` — parent: CHAIN-CONSENSUS:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-VALIDATION-ORDER.a | positive | a block failing only at step 7 or 8 | validated | the header was accepted and relayed at step 5; the block and its descendants are marked invalid |
+| CHAIN-VALIDATION-ORDER.b | negative | a block failing at steps 1–5 | validated | nothing reaches disk |
+
 ## 6. network
 
 Node-to-node transport, gossip topics, header-first sync, discovery through
@@ -785,7 +1020,7 @@ anything there.
 
 ## 7. upgrades and shadow mode
 
-### 7.1 rule sets by height
+### 7.1 rule sets by height · CHAIN-RULESETS
 
 `version & 0xffff` names the rule set a block claims to follow. A node holds
 an activation table
@@ -807,6 +1042,13 @@ first months is run by someone reading the launch page.
 
 `version >> 16` are miner signal bits: a miner may set them to advertise
 readiness for a rule set; they are informational, never consensus.
+
+cases of `CHAIN-RULESETS` — parent: CHAIN-UPGRADES:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-RULESETS.a | positive | `ACTIVATIONS = [(1, 0)]` | a block with `version & 0xffff == 1` | valid; miner bits above 16 are ignored |
+| CHAIN-RULESETS.b | negative | a block at a height whose rule set the table does not know, or a version naming another rule set | validated | refused; `/status` says so |
 
 ### 7.2 what later rule sets bring
 
@@ -830,7 +1072,7 @@ by scheduled fork. The list below is what the chain leaves room for:
 - bbg dimensions today left empty (signals, A, N) start to be written;
   the root construction is unchanged, so rule-set-1 roots remain verifiable.
 
-### 7.3 shadow indexers
+### 7.3 shadow indexers · CHAIN-SHADOW
 
 Since 2026-10-17 foculus's epoch clock and settlement are consensus
 (chain-economy.md) and are no longer indexers; what remains in shadow mode
@@ -859,6 +1101,13 @@ consensus, rate-limited like transactions. The point of shadow mode is that
 by the activation height each core has months of outputs that the owner, the
 red team and the community have compared across nodes; an indexer whose
 outputs disagree between nodes is not ready to be consensus.
+
+cases of `CHAIN-SHADOW` — parent: CHAIN-UPGRADES:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-SHADOW.a | positive | a block `FINALITY_DEPTH` deep | the event bus | one `chain::Event::Block` with header, body and state root; `/v2/history` carries block id, height and root per operation |
+| CHAIN-SHADOW.b | negative | a reorg above finality | the event bus | no shadow indexer sees it |
 
 ### 7.4 optional checkpoint proofs
 
@@ -1037,7 +1286,7 @@ every value quoted is computed against it (re-blessed 2026-10-16 from the
 Reference implementation: `crate/src/chain/pool/`; vectors:
 chain-conformance §12.
 
-### 11.1 wide digests and canonical limbs
+### 11.1 wide digests and canonical limbs · CHAIN-POOL-WIDE
 
 Every consensus-critical digest of the pool — owner, rho, commitment,
 nullifier, predicate binding, tree node, spend id, statement id, verifying
@@ -1069,7 +1318,14 @@ decoder refuses a limb `≥ p`: a field element `x` and `x + p` would name
 one value twice. Integers (`value`, `weight`, `amount`, `fee`, counts,
 lengths) are not limbs and take any value of their type.
 
-### 11.2 record
+cases of `CHAIN-POOL-WIDE` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-WIDE.a | positive | any input | `W(x)` | the first 64 bytes of `Hasher::finalize_xof`; the first 32 equal `hemera(x)` |
+| CHAIN-POOL-WIDE.b | negative | a 64-byte field with a limb `>= p` | decoded | refused |
+
+### 11.2 record · CHAIN-POOL-RECORD
 
 ```
 record = token: [u8;32] ‖ value: u64 ‖ owner: [u8;64] ‖ rho: [u8;64] ‖ r: [u8;32] ‖ data: [u8;32] ‖ predicate: [u8;64]
@@ -1087,7 +1343,13 @@ record = token: [u8;32] ‖ value: u64 ‖ owner: [u8;64] ‖ rho: [u8;64] ‖ r
 
 296 bytes, fixed, every limb canonical.
 
-### 11.3 owner, rho, commitment, nullifier
+cases of `CHAIN-POOL-RECORD` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-RECORD.a | positive | the record vector of chain-conformance §12 | encoded | 296 bytes at the listed offsets, every limb canonical |
+
+### 11.3 owner, rho, commitment, nullifier · CHAIN-POOL-DERIVE
 
 ```
 owner      = W(D_OWNER ‖ sk)                       // 20 + 32 bytes in
@@ -1107,7 +1369,13 @@ two records one nullifier to make one of them unspendable. Inputs carrying
 `sk` are hashed in constant time (`hemera::Hasher::new_secret`, the same
 digest).
 
-### 11.4 commitment tree and anchors
+cases of `CHAIN-POOL-DERIVE` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-DERIVE.a | positive | the `sk`, record and nullifier vectors of chain-conformance §12 | derived | equal; a pussy nullifier differs from the bostrom one for the same `sk` and rho |
+
+### 11.4 commitment tree and anchors · CHAIN-POOL-TREE
 
 - one tree of depth 40: positions `0 … 2^40 − 1`, filled in append order —
   blocks in height order, transactions in body order, a transaction's
@@ -1143,7 +1411,14 @@ digest).
   that a record existed, never that it is unspent; unspentness is the
   nullifier check of §11.5.
 
-### 11.5 the nullifier set and the turnstile
+cases of `CHAIN-POOL-TREE` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-TREE.a | positive | the empty tree and a tree of a few commitments | roots and paths | `E_40` and the path vectors of chain-conformance §12; `node(L, R) = W(D_NODE ‖ L ‖ R)` |
+| CHAIN-POOL-TREE.b | negative | an anchor older than 1,000 blocks or equal to the spend's own block root | validated | refused |
+
+### 11.5 the nullifier set and the turnstile · CHAIN-POOL-TURNSTILE
 
 The nullifier set is lifetime: every nullifier ever revealed stays in it,
 and it is never reset, pruned by epoch or rebuilt from a live window (an
@@ -1184,7 +1459,14 @@ system or of hemera counterfeits at most `T(τ)` and never raises the supply.
 Conservation (§3.4) is unchanged — deposits and withdrawals move value
 between keys of one dimension, and the per-token sums include `T(τ)`.
 
-### 11.6 the SPEND public inputs
+cases of `CHAIN-POOL-TURNSTILE` — parent: CHAIN-POOL · invariant: CHAIN-INV-CONSERVATION:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-TURNSTILE.a | positive | deposits, withdrawals and spend fees of `τ` | `T(τ)` read at every height | `Σ deposits − Σ withdrawals − Σ fees`, never negative, under `state_root` from block 0 |
+| CHAIN-POOL-TURNSTILE.b | negative | a nullifier seen before, or twice in one block, or a debit below zero | validated | refused whatever the proof says |
+
+### 11.6 the SPEND public inputs · CHAIN-POOL-SPEND
 
 One relation, `SPEND`. Its public inputs, encoded:
 
@@ -1252,7 +1534,14 @@ repeated in the block (§11.5); the turnstile stays non-negative; `fee_token`
 is the native token and `fee ≥ len(tx) · MIN_FEE_PER_BYTE`; the block proof
 verifies (§11.8).
 
-### 11.7 transaction kinds 4 and 5
+cases of `CHAIN-POOL-SPEND` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-SPEND.a | positive | the `spend_public` vector of chain-conformance §12 | decoded | canonical; the longest form is 9,981 bytes; `spend_id = W(D_SPEND ‖ spend_public)` |
+| CHAIN-POOL-SPEND.b | negative | a count over its cap, a repeated nullifier, `p == q`, a withdrawal with `amount = 0`, a note over 2,048 bytes, trailing bytes | decoded | refused before anything it counts is read |
+
+### 11.7 transaction kinds 4 and 5 · CHAIN-POOL-TX
 
 | kind | name | body bytes | sig | total bytes |
 |---|---|---|---|---|
@@ -1289,7 +1578,14 @@ by `MAX_TX_BYTES`; a deposit fits `MAX_TX_BYTES`.
 Under rule set 1 the decoder knows neither kind (§2.1): a block carrying
 one is invalid.
 
-### 11.8 the block-proof statement
+cases of `CHAIN-POOL-TX` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-TX.a | negative | a kind-4 or kind-5 transaction | a rule-set-1 block | the block is invalid |
+| CHAIN-POOL-TX.b | positive | a deposit of `value` under rule set 2 | applied | `balances[from, token] −= value`, `T(token) += value`, the commitment appended, the nonce advanced |
+
+### 11.8 the block-proof statement · CHAIN-POOL-BLOCK-PROOF
 
 A block of rule set 2 with at least one spend carries one folded proof (the
 constant-size profile of `zheng/specs/recursion.md`) whose public input is
@@ -1308,7 +1604,13 @@ checks raw transaction proofs one by one reaches the same verdict on every
 block. Nodes verify the block proof and never a transaction's proof. A
 block without spends carries no proof.
 
-### 11.9 domain tags
+cases of `CHAIN-POOL-BLOCK-PROOF` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-BLOCK-PROOF.a | positive | a rule-set-2 block with spends | the statement built | `chain ‖ height ‖ vk_set ‖ count ‖ spend_id × count` in body order; one folded proof verified, never a transaction's |
+
+### 11.9 domain tags · CHAIN-POOL-TAGS
 
 Chosen once, ASCII with a terminating NUL byte, never reused for any other
 input; disjoint from the chain's `soft3/chain/…` tags (§1.7, §2.1).
@@ -1334,7 +1636,13 @@ tags = W(D_TAGS ‖ D_OWNER ‖ D_CM ‖ D_NULL ‖ D_RHO ‖ D_PRED ‖ D_EMPTY
 
 Its value against hemera 0.4 is in chain-conformance §12.
 
-### 11.10 what genesis commits to
+cases of `CHAIN-POOL-TAGS` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-TAGS.a | positive | the twelve tags | `tags` computed against hemera 0.4 | the value of chain-conformance §12 |
+
+### 11.10 what genesis commits to · CHAIN-POOL-GENESIS
 
 The params frame of the genesis file (§4.1) ends with the pool record:
 
@@ -1351,7 +1659,14 @@ nullifier set, the turnstile and the statement shape. Through the record
 the chain id commits to them, and through the chain id every transaction
 and header.
 
-### 11.11 rule sets
+cases of `CHAIN-POOL-GENESIS` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-GENESIS.a | positive | the pussy genesis `p` frame | its last 74 bytes read | `01000000 28 e8030000 40 ‖ tags` |
+| CHAIN-POOL-GENESIS.b | negative | a genesis whose pool record differs in any byte | read | refused |
+
+### 11.11 rule sets · CHAIN-POOL-RULESETS
 
 - Rule set 1 (launch): kinds 4 and 5 are unknown and invalid; `T(τ)` is
   zero for every token; the tree is empty and every `root_after(b)` is
@@ -1369,7 +1684,13 @@ and header.
   is its choice; the tree root of §11.4 is a function of the append order
   alone and is what anchors and proofs use.
 
-## 12. acceptance
+cases of `CHAIN-POOL-RULESETS` — parent: CHAIN-POOL:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-POOL-RULESETS.a | positive | rule set 1 | any block | no pool state read or written; every `root_after(b) = E_40` |
+
+## 12. acceptance · CHAIN-ACCEPTANCE
 
 The chain is done when chain-conformance.md is green on the reference
 implementation, two nodes on two machines mine and sync pussy-rc from the
@@ -1384,3 +1705,13 @@ chain-wire §6. Receipts go to `soft3/audit/chain/`.
 See [chain-wire](chain-wire.md) for the network, [chain-conformance](chain-conformance.md)
 for the vectors, [native-node](native-node.md) for the HTTP acceptance contract
 this chain inherits, and [cyber/launch](../../cyber/launch.md) for the phase it serves.
+
+cases of `CHAIN-ACCEPTANCE`:
+
+| case | kind | given | when | then |
+|---|---|---|---|---|
+| CHAIN-ACCEPTANCE.a | positive | the reference implementation | chain-conformance run | green |
+| CHAIN-ACCEPTANCE.b | positive | two nodes on two machines from the real pussy genesis | 24 h of mining and sync | zero conservation failures; every epoch record agreed |
+| CHAIN-ACCEPTANCE.c | positive | a third node with the bootstrap list emptied | started | reaches the tip through the graph alone |
+| CHAIN-ACCEPTANCE.d | positive | one rented GPU box | a reorg attempted | bounded by the reorg limit and the checkpoints as specified |
+| CHAIN-ACCEPTANCE.e | positive | cyb | reads the chain through chain-wire §6 | the pages render from the HTTP surface |
