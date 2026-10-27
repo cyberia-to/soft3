@@ -48,6 +48,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | no unit (session 139, 10:10) | state checked only: tick `20261027T100939Z` equals `20261027T095234Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews |
 | no unit (session 140, 10:26) | state checked only: tick `20261027T102619Z` equals `20261027T100939Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `blocked`, 0 reviews |
 | no unit (session 141, 10:53) | state checked only: tick `20261027T105326Z` equals `20261027T102619Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `blocked`, 0 reviews |
+| no unit (session 142, 11:10) | state checked only: tick `20261027T111042Z` equals `20261027T105326Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `blocked`, 0 reviews; soft3#384 open |
 
 ## PRs merged
 
