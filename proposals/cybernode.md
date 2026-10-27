@@ -3,10 +3,13 @@ tags: cyber, soft3, proposal, cybernode, node, network, chain, operations, relea
 crystal-type: process
 crystal-domain: cyber
 alias: cybernode, the seventh rung, the node, rung 7 rename, soft3 node rename, cybernode instance, cybernode.ai
-status: proposed
+status: executed
 date: 2026-10-17
+closed: 2026-10-27
 ---
 # cybernode — the seventh rung is the node, and cyberia runs on it
+
+> **executed 2026-10-27** (the owner: "close the proposal fully now; the longer it waits the more confusion"). C0–C3 done, C4 wired, C5–C6 are the node's roadmap. the receipts: `cybernode/audit/move-2026-10-27.md` (the move, byte-identical modules), this page's § 9. § 7.1 decided: the operations repository is **apparatus**, not cybernode-ops.
 
 the owner, 2026-10-17: the seventh of soft3's seven stack rungs is called *soft3*, and that is an architectural hole — a mixture with no name of its own. rename it **cybernode**, give it the domain cybernode.ai, and make it one thing with two faces: the product that runs the infrastructure, and the instance of that product that cyberia operates — explorer and the rest. cybernode is an integral part of soft3: the node and everything networked. and it must grow until cyberia can run all of its execution infrastructure on it. without this, soft3 cannot start to release systematically and structurally.
 
@@ -119,7 +122,7 @@ timing against genesis (2026-11-05): C0–C3 are a rename and a move with zero b
 
 ## 7. open, and who decides
 
-1. **the private repository's new name** — `cybernode-ops` proposed. renaming on GitHub keeps a redirect until a repository of the old name is created, which C1 does deliberately; every script that clones the old name is updated in the same phase. owner.
+1. **the private repository's new name** — decided by the owner 2026-10-27: **`apparatus`** — the operations of cyberia (servers, the estate, runbooks, the cloud). renamed on GitHub and locally the same day; the redirect died when the public `cybernode` was created minutes later, by design; the census, the estate agent and every script name `apparatus`.
 2. **true-cyber and its `cyber` binary — settled by [[network-repos]].** true-cyber becomes the repository that defines the cyber network (CYB); its client commands move into cybernode; the crate stays resolvable.
 3. **before or after genesis** for C2 (§6). owner.
 4. **the explorer's face.** the index is a node role; whether its pages are served by the node, rendered in cyb, or both. cybernode with cyb.
@@ -130,3 +133,17 @@ timing against genesis (2026-11-05): C0–C3 are a rename and a move with zero b
 - soft3: `CLAUDE.md` (charter), `crate/Cargo.toml` (0.10.0), `crate/src/` tree, `deploy/`, `specs/README.md`, `specs/execution-model.md` §1, `specs/routing.md`, `specs/chain.md` §3.6, §4.4, §7.1, `release/phase1.toml`, the soft3.org ladder (`site/layers/index.html`), [[network-planes]], [[proven-present]].
 - cybernode (private): `README.md`, `audit/infra-footprint-2026-10-16.md`, `servers/`.
 - cybernode.ai and domains.cybernode.ai, read 2026-10-17; crates.io `cybernode`: "crate does not exist", 2026-10-17.
+
+## 9. what was done — 2026-10-27
+
+| phase | done | receipt |
+|---|---|---|
+| C0 the name | rung 7 says cybernode on the soft3.org ladder, in cyberia's products table and charter, in the launch tracker, in `status.md` | cyberia d0f8055, cyber c928f928, this branch |
+| C1 the repositories | `cyberia-to/cybernode` (private ops) → **`cyberia-to/apparatus`**; its tracked secrets (`local/.env`, `local/keys/*` incl. an SSH private key, `local/keyring-test/*`, `namecheap.env`) left git for `~/.config/cyber/apparatus/local/` and are ignored; the public `cyberia-to/cybernode` created with the charter of § 5 | apparatus 809cc5c; github.com/cyberia-to/cybernode |
+| C2 the code | `crate/src/{chain,genesis,node,wallet,network,bin}` + `crate/tests` → `cybernode/rs` with 144 commits of history, carved from `release/phase1`; crate and binary `cybernode` 0.1.0; the CLI is the library module `cybernode::cli`; `soft3` 0.11 is the facade: re-exports and a forwarding binary for one release | `cybernode/audit/move-2026-10-27.md`: chain, genesis, node, wallet, node.rs, network.rs byte-identical |
+| C3 specs and deploy | the seven node specs, `deploy/`, `audit/chain/` moved; links repointed in soft3, cyber, cyberia, hemera, radio, simulation, bostrom, apparatus; `specs/README` keeps one pointer row; the AGENTS rule names a returning `crate/src/chain` a regression | this branch; the repositories' commits of 2026-10-27 |
+| C4 the train | `cybernode` is a sibling in `release/phase1.toml` at the move's revision; `node-status` boots the node through the facade's forwarding; units are `cybernode@<network>` in `cybernode/deploy/chain/` | this branch; the host switch at a quiet height is apparatus's runbook |
+| C5 the instance front, C6 the capabilities | not done; the capability table of § 4 is the node's roadmap, one row per spec + code + receipt | `cybernode/README.md` § what the node must still grow |
+
+**not closed by this work:** the compile proof of C2 — on 2026-10-27 no sibling set on origin resolves the node's dependencies, for the moved crate or for the `soft3` crate it came from (the hemera 0.4 / bbg 0.3 tier is half-ported: cybergraph#23, the `port/l4-*-phase1` branches, tok not yet) — the receipt lists every conflict; the fleet and the conformance vectors run when the director lands the tier. the private repository's git history still carries the secrets it once tracked: rotate the SSH key `mastercyb` and the namecheap token (owner).
+

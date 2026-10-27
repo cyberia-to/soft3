@@ -12,6 +12,12 @@ phase = 1
 updated = "2026-10-27"
 
 [[sibling]]
+name = "cybernode"
+repo = "cyberia-to/cybernode"
+branch = "main"
+rev = "52538a64ef92e92b421d3b30f62b0148b74019ca"
+
+[[sibling]]
 name = "strata"
 repo = "cyberia-to/strata"
 branch = "main"
