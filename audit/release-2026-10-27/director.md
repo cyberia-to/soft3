@@ -44,6 +44,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | no 12:00 cut today (session 135) | `main` `release-train.yml` `cron: '0 12 * * 5'` (fridays); daily cron only on `release/phase1`, which reaches `main` with soft3#376; scheduled runs 39982620294 (10-23), 38925326497 (10-16) are fridays. Sessions 126–134's "next: the 12:00 cut" corrected: next scheduled cut Friday 2026-10-30 12:00 UTC. State unchanged (tick `20261027T090006Z` = last except `at`; no owner event since `2026-10-26T07:35:34Z`) |
 | no unit (session 136, 09:20) | state checked only: tick `20261027T091740Z` equals `20261027T090006Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews |
 | no unit (session 137, 09:35) | state checked only: tick `20261027T093452Z` equals `20261027T091740Z` except `at`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews |
+| no unit (session 138, 09:52) | state checked only: tick `20261027T095234Z` equals `20261027T093452Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews |
 
 ## PRs merged
 
