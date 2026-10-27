@@ -3,6 +3,7 @@ import argparse
 import io
 import json
 from pathlib import Path
+import re
 import subprocess
 import tarfile
 import tempfile
@@ -450,6 +451,23 @@ class RehearsalTests(unittest.TestCase):
         notes = (output / "release-notes.md").read_text()
         self.assertIn("REHEARSAL RED (not a candidate)", notes.splitlines()[0])
         self.assertIn(f"lens=feat/x → {self.BRANCH}", notes)
+
+
+class QualifyCapTests(unittest.TestCase):
+    def test_stack_leg_cap_covers_its_gates(self):
+        root = Path(__file__).resolve().parent.parent
+        text = (root / ".github/workflows/candidate.yml").read_text()
+        qualify = text[text.index("\n  qualify:"):]
+        found = re.search(r"^    timeout-minutes: (.+)$", qualify, re.M)
+        self.assertIsNotNone(found)
+        match = re.fullmatch(r"\$\{\{ matrix\.target == 'stack' && (\d+) \|\| (\d+) \}\}", found.group(1).strip())
+        self.assertIsNotNone(match, found.group(1))
+        stack, other = int(match.group(1)), int(match.group(2))
+        self.assertEqual((stack, other), (210, 90))
+        measured, setup, sim_timeout = 4752.7, 650, 3600
+        self.assertIn(f"timeout={sim_timeout}", (root / "release/train_gates.py").read_text())
+        self.assertGreaterEqual(stack * 60, measured + setup + sim_timeout)
+        self.assertLessEqual(stack, 360)
 
 
 if __name__ == "__main__":

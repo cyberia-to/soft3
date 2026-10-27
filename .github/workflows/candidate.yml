@@ -76,7 +76,11 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.snapshot.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 90
+    # The stack leg runs every stack gate serially: rehearsal 40437685274 measured
+    # 4752.7 s over 19 gates plus ~650 s sources/setup, and was cancelled at 90 min
+    # inside simulation-gate (gate timeout 3600 s). 210 min covers that worst case
+    # (~155 min) with headroom, under GitHub's 360-min hosted limit; platform legs keep 90.
+    timeout-minutes: ${{ matrix.target == 'stack' && 210 || 90 }}
     defaults:
       run:
         shell: nu {0}
