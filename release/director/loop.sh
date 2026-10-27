@@ -1,9 +1,11 @@
 #!/bin/bash
 # the director's pulse: tick, then sessions back to back while there is work; sleep when idle or out of window; sessions run only when the tick changed or the heartbeat is due
 HEARTBEAT=${HEARTBEAT:-10800}
+# mergeable flaps UNKNOWN on every push to a PR's branches; a real conflict shows as a head/base change or the heartbeat
+TICK_CMP='del(.at) | .prs |= map(del(.mergeable))'
 # skip the session when the newest tick equals the previous one, the last session said NEXT: idle, and it started less than HEARTBEAT ago (uses t, next, last_start)
 should_skip() { local prev; prev=$(ls -1 state/tick-*.json 2>/dev/null | tail -2 | head -1)
-  [ -n "$prev" ] && [ "$prev" != "$t" ] && [ "$next" = "NEXT: idle" ] && [ $(( $(date +%s) - ${last_start:-0} )) -lt "$HEARTBEAT" ] && diff -q <(jq -S 'del(.at)' "$prev") <(jq -S 'del(.at)' "$t") >/dev/null; }
+  [ -n "$prev" ] && [ "$prev" != "$t" ] && [ "$next" = "NEXT: idle" ] && [ $(( $(date +%s) - ${last_start:-0} )) -lt "$HEARTBEAT" ] && diff -q <(jq -S "$TICK_CMP" "$prev") <(jq -S "$TICK_CMP" "$t") >/dev/null; }
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 export PATH="$HOME/director:$HOME/.local/bin:$PATH" DIR="$HOME/director"
 # the body's subscription token (claude setup-token, 1 year); never in the repository
