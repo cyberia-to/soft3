@@ -50,6 +50,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | no unit (session 141, 10:53) | state checked only: tick `20261027T105326Z` equals `20261027T102619Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `blocked`, 0 reviews |
 | no unit (session 142, 11:10) | state checked only: tick `20261027T111042Z` equals `20261027T105326Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `blocked`, 0 reviews; soft3#384 open |
 | no unit (session 143, 11:27) | state checked only: tick `20261027T112719Z` equals `20261027T111042Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews; soft3#384 open |
+| #384 fix (session 144, 11:44) | the tick changed only by #376's `mergeable` flap (`UNKNOWN` → `MERGEABLE`; 13 of 283 tick pairs flap only there); `fix/director-idle-skip` `4a2081d` + `39d6175`: `tick.sh` and `loop.sh` compare without `.prs[].mergeable`; harness 7/7; receipts on soft3#384 comment 6441105433; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208 |
 
 ## PRs merged
 
