@@ -19,7 +19,7 @@ The latest rehearsal is 40422683385 (`release/phase1` `21d963d`, `soft3=release/
 | phase1-pins | pins move after the landings | G9 |
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, the owner's input |
 
-The stack leg (job 121920831788) was still running at 00:50 UTC.
+The stack leg (job 121920831788, read in session 112) is green except phase1-pins (G9), release-notes-source (G8), stack-zheng (the 64 KiB final-proof gate, 74525 B, L3b), stack-mudra (`domain_compat` legacy address bytes, L4), stack-neuron (lock not updated under `--locked`, L4) and conformance-snapshot (`cyber-conformance` does not compile against the zheng 0.4 API, G6).
 
 ## units done
 
@@ -27,15 +27,15 @@ The stack leg (job 121920831788) was still running at 00:50 UTC.
 |---|---|
 | G16 Intel mac `mine_e2e` (session 107) | 40422683385 `candidate-x86_64-apple-darwin`: soft3-tests exit 0, 887.8 s of 1800, `warnings: false`; `mine_e2e` 1/0 in 25.75 s |
 | G15 rehearsals measure `release/phase1` (session 107) | 40422683385 `sources.json` soft3 override `21d963d`; soft3-tests green on all four building legs |
-| G16a(2) the CPU probe rate (session 108), built, not yet done | soft3#358 draft; receipt 40427084706 running |
+| G16a(2) the CPU probe rate (sessions 108–112) | soft3#358 merged as `063b6d9`; 40427084706 ubuntu green, 40430771555 pass 1 Intel green (exit 0, `warnings: 0`) |
 
 ## PRs merged
 
-Only this plan PR.
+soft3#358 into `release/phase1` (`063b6d9`, session 112), and the plan PRs.
 
 ## plan items left
 
-Open: G9, R1. Doing: G16a ((2) #358 under receipt 40427084706; (1) waits on `stall-first`). Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: G6, C3. See `release/director/plan.md` § the order.
+Open: G9, R1. Doing: G16a ((1) waits on 40430771555 pass 2); G6 is next, the `conformance/rs` port to zheng 0.4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: G6, C3. See `release/director/plan.md` § the order.
 
 ## fable questions
 
