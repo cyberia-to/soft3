@@ -137,7 +137,9 @@ mod tests {
         let job = Job::new(&[0x5au8; 168], pow2(246));
         let (one, hashed) = Cpu::new(1).search_counted(&job, 0, 1 << 14);
         let i = one.expect("a nonce in the range");
-        assert!(hashed >= i as u64 + 1, "{hashed} hashes for a hit at {i}");
+        // one thread scans whole batches up to the one holding the hit
+        let batches = i as u64 / BATCH as u64 + 1;
+        assert_eq!(hashed, batches * BATCH as u64, "a hit at {i}");
         assert!(hashed < 1 << 14, "stopped at the hit, not the range end");
         let (four, hashed) = Cpu::new(4).search_counted(&job, 0, 1 << 14);
         assert_eq!(four, one);
