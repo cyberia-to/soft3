@@ -8,6 +8,8 @@ name: Diagnostic cybernode lock
 # a lock for cybernode/rs on the train's stand (seeded from soft3's resolved crate/Cargo.lock
 # so shared versions are identical), and runs the node's tests with it.
 # -bin: the same, with the one-line test fix for the renamed binary (run 40529591978).
+# -snap: cybernode taken at cybernode#1's head 31fca56 (committed lock, bin name, chain.snap
+# read from soft3's conformance/ as a sibling), no patch on the stand (run 40532608817).
 on:
   push:
     branches: ['diag/cybernode-lock*']
@@ -57,27 +59,19 @@ jobs:
           print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
           PY
           mkdir -p "$RUNNER_TEMP/out"
-      - name: Resolve the cybernode lock (seeded from soft3's)
+      - name: Take cybernode at cybernode#1's head (lock, bin name, chain.snap path)
         working-directory: ${{ runner.temp }}/sources
         run: |
-          git -C cybernode rev-parse HEAD
-          if test ! -e cybernode/rs/Cargo.lock; then echo "cybernode/rs/Cargo.lock: absent"; else echo "cybernode/rs/Cargo.lock: exists"; fi
-          cp soft3/crate/Cargo.lock cybernode/rs/Cargo.lock
-          M=cybernode/rs/Cargo.toml
-          cargo metadata --format-version 1 --manifest-path $M >/dev/null 2>"$RUNNER_TEMP/out/resolve.txt" || { echo "cybernode: does not resolve"; cat "$RUNNER_TEMP/out/resolve.txt"; exit 1; }
-          cargo metadata --locked --format-version 1 --manifest-path $M >/dev/null && echo "cybernode: resolved and locked"
-          cp cybernode/rs/Cargo.lock "$RUNNER_TEMP/out/cybernode.Cargo.lock"
+          # -snap: run 40532608817 ran 313 passed, 1 failed: committed_chain_snap_matches_this_build
+          # read ../conformance/chain.snap, which stayed in soft3; 31fca56 reads soft3's.
+          C=31fca56c0818d65b924a7d561d3bfcaa13f1a221
+          git -C cybernode fetch -q https://github.com/cyberia-apparatus/cybernode.git "$C"
+          git -C cybernode checkout -q --detach "$C"
+          test "$(git -C cybernode rev-parse HEAD)" = "$C"
           sha256sum cybernode/rs/Cargo.lock | tee "$RUNNER_TEMP/out/cybernode-lock.sha256"
-          diff -u soft3/crate/Cargo.lock cybernode/rs/Cargo.lock > "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true
-          echo "packages added:   $(grep -c '^+name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
-          echo "packages removed: $(grep -c '^-name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
-      - name: Patch the test binary name (cybernode 52538a6 renamed the bin soft3 -> cybernode)
-        working-directory: ${{ runner.temp }}/sources/cybernode/rs
-        run: |
-          # run 40529591978: tests/chain_adversary.rs:89 `CARGO_BIN_EXE_soft3` not defined, so no test compiled
-          sed -i 's/CARGO_BIN_EXE_soft3/CARGO_BIN_EXE_cybernode/' tests/chain_adversary.rs
-          git diff | tee "$RUNNER_TEMP/out/bin-name.patch"
-          ! grep -rn 'CARGO_BIN_EXE_soft3' tests src
+          cargo metadata --locked --format-version 1 --manifest-path cybernode/rs/Cargo.toml >/dev/null && echo "cybernode: committed lock resolves --locked"
+          ! grep -rn 'CARGO_BIN_EXE_soft3' cybernode/rs/tests cybernode/rs/src
+          test -f soft3/conformance/chain.snap && echo "soft3/conformance/chain.snap: present (sibling path)"
       - name: cybernode-tests (cargo test --locked)
         id: test
         continue-on-error: true
