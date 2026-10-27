@@ -32,7 +32,8 @@ The stack leg (job 121920831788, read in session 112) is green except phase1-pin
 | G6 built: `conformance/rs` on zheng 0.4's `ZHENGPF1`, blessed on hemera 0.4 (sessions 113–114) | soft3#362 merged as `53e341d`; diagnostic 40437312746: bless 0 changes, root `h6032aa33…`, `--check` ×2 green, 21/21 tests, 0 warnings; acceptance under rehearsal 40437685274 |
 | 40437685274 Intel leg read (session 117) | `candidate-x86_64-apple-darwin`: soft3-tests exit 0, `warnings: false`, 1216.5 s of 1800 (lib 293/0, `mine_e2e` 1/0 in 36.75 s); soft3-release green; node-status green; red only phase1-pins, release-notes-source |
 | 40437685274 stack leg read (session 118) | conformance-snapshot **green** (exit 0, 43.3 s, root `h6032aa33…`): G6 done. Red: stack-zheng (L3b), stack-mudra and stack-neuron (L3c), phase1-pins (G9), release-notes-source (G8). The leg was cancelled at its 90-min cap inside simulation-gate; the gates sum to 4752.7 s, a full leg ≈ 105 min (G10a, next) |
-|
+| G10a the stack leg's cap (session 119) | soft3#368 merged as `5ca1d64`: the stack row gets 210 min, platform legs keep 90; gate 40446801267 36 tests OK; acceptance rehearsal 40446879208 |
+| 40446879208 platform legs read (session 120) | soft3 built at `release/phase1` `5ca1d64` (`sources.json` override). x86_64 linux, aarch64 linux, aarch64 mac: soft3-tests green (exit 0, `warnings: false`), soft3-release and node-status green; red only phase1-pins (G9), release-notes-source (G8). The stack and Intel legs were still running at 04:20 |
 
 ## PRs merged
 
