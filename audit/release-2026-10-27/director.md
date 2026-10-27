@@ -37,6 +37,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | 40446879208 Intel leg read (session 122) | `candidate-x86_64-apple-darwin` (soft3 `release/phase1` `5ca1d64`, `sources.json` override): soft3-tests green, exit 0, `warnings: false`, 1057.8 s of 1800 (lib 293/0, `every_backend_agrees_and_verifies` ok, `mine_e2e` 1/0 in 36.07 s; log sha256 `d39343b6…`); soft3-release green 959.2 s; node-status green; red only phase1-pins (G9), release-notes-source (G8). All four building legs at `5ca1d64` now agree; the stack leg was still running at 04:46 |
 | G9a, the leaves (session 123) | soft3#373 → `a3ca9b7`: strata, glia, honeycrisp, inf, mir, soma, spark, tade, evy, optica pinned to the default HEADs 40446879208 captured without an override, and nu pinned for the first time (`7c498b3`). All fast-forward, no version change. PR gates `drift` 40453611829 and `test` 40453611855 green |
 | G10a accepted, 40446879208 stack leg read (session 124) | job 122000222218: `Qualify stack and product` 03:56:13–05:44:34, 6501 s of the 210-min cap; `Report the verdict` ran, `assembled-candidate` produced; receipt sha256 `8c6d71d5…`, 24 gates, sum 6478.0 s; simulation-gate green 961.7 s; reds only G8, G9, L3b (stack-zheng 324/1), L3c (stack-mudra, stack-neuron) |
+| R0 soft3's landing opened (session 125) | **soft3#376** `release/phase1 → main` (`cd15055`, 274 ahead, 0 behind, no `specs/`), `decision`/`wide`. It waits on the owner's approval and must land before or with lens#36 (G13); decision D11 |
 
 ## PRs merged
 
