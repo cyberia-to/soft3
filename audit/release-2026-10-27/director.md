@@ -42,6 +42,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | the idle churn's cause (session 132) | no phase unit could move (tick `20261027T080510Z` equals the last except `at`; the owner's newest `cyberia-to` event `2026-10-26T07:35:34Z`). **soft3#384** into the owner's `feat/soft3-director`, not merged: `tick.sh` gains `owner_activity`, `loop.sh` skips a session on an unchanged tick after an idle one (3 h heartbeat). Harness (a)–(f) and the live `gh api` expression as receipts |
 | no unit (sessions 133–134, 08:26–08:43) | state checked only: the tick's one change is #384 itself (session 134: tick `20261027T084307Z` equals `20261027T082552Z` except `at`, `tick.log` `changed=0`); no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376, hemera#25, lens#36 and nox#43 `BLOCKED`, 0 reviews |
 | no 12:00 cut today (session 135) | `main` `release-train.yml` `cron: '0 12 * * 5'` (fridays); daily cron only on `release/phase1`, which reaches `main` with soft3#376; scheduled runs 39982620294 (10-23), 38925326497 (10-16) are fridays. Sessions 126–134's "next: the 12:00 cut" corrected: next scheduled cut Friday 2026-10-30 12:00 UTC. State unchanged (tick `20261027T090006Z` = last except `at`; no owner event since `2026-10-26T07:35:34Z`) |
+| no unit (session 136, 09:20) | state checked only: tick `20261027T091740Z` equals `20261027T090006Z` except `at`, `changed=0`; no owner event since `2026-10-26T07:35:34Z`; no train run since 40446879208; soft3#376 `BLOCKED`, 0 reviews |
 
 ## PRs merged
 
