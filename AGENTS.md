@@ -1,4 +1,6 @@
-# soft3 — stack contracts and developer interfaces
+# AGENTS.md — soft3
+
+> the doctrine of the home is `~/cyber/AGENTS.md`; it applies here first. Claude Code receives both files at session start through `~/.config/cyber/agents-md.nu`; other agents read them in order.
 
 ## what this repo is
 
@@ -18,6 +20,7 @@ navigation linked to this foundation when changing architecture.
 |-----|------|--------|
 | `js/` | JavaScript/TypeScript SDK (Bostrom chain, CosmJS-based) | active |
 | `schema/` | canonical wire format definitions | draft |
+| `crate/` | the `soft3` crate: the stack facade over `cybernode` (rung 7, github.com/cyberia-to/cybernode) | active |
 | `cli/` | `soft3` command-line tool (Rust) | scaffold |
 | `mcp/` | MCP server for AI assistant access | scaffold |
 | `py/` | Python SDK | scaffold |
@@ -26,7 +29,7 @@ navigation linked to this foundation when changing architecture.
 
 soft3 SDK depends on: hemera (particle), bbg (state + proofs), lens (verification), cybergraph (signal submission), radio (transport)
 
-do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation.
+do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation. the node — chain kernel, genesis, node, wallet, network, its specs and deploy units — is `cybernode` since 2026-10-27 (proposals/cybernode.md); a `crate/src/chain` reappearing here is a regression.
 
 ## do not touch zones
 
@@ -72,4 +75,4 @@ Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `
 `simulation-gate` (the chain simulator's gate suite, cyberia-to/simulation), `soft3-tests`,
 `soft3-release`, and `node-status`. Products add `soft3-dependency` and their
 application gates. Missing implementations and failed gates remain red evidence.
-Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`.
+Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`. the `node-status` gate boots the node through the facade; `cybernode` is a sibling in `release/phase1.toml`.
