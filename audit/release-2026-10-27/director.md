@@ -58,6 +58,7 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | C4 (session 155, 15:13) | rehearsal 40525967811 linux legs: soft3-tests, soft3-release and node-status green, but soft3-tests ran 2 tests against 314 in 40446879208, because the node's tests moved to `cybernode/rs`, which no gate runs; #407 held; diagnostic 40529591978 dispatched |
 | C4 (session 156, 15:34) | 40529591978: the cybernode lock resolves and the release builds, but the tests do not compile (`CARGO_BIN_EXE_soft3`); cybernode#1 opened (lock + bin name); diagnostic 40532608817 dispatched |
 | C4 (session 157, 15:53) | 40532608817: 313 passed and 1 failed (`chain.snap` path, the snapshot stayed in soft3); cybernode#1 → `31fca56` (`SOFT3_CONFORMANCE_DIR`, or else the sibling soft3); diagnostic 40536044737 dispatched (target 314/0) |
+| C4 (session 158, 16:20) | 40536044737: cybernode at `31fca56`, no patch, 314 passed and 0 failed, release built, no warnings; cybernode#1 marked ready for the owner (comment 6447200525) |
 
 ## PRs merged
 
