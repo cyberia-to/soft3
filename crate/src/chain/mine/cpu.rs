@@ -11,7 +11,7 @@
 use super::job::{absorb, passes, seed, Job};
 use hemera::field::Goldilocks;
 use hemera::permutation::permute_batch;
-use std::sync::atomic::{AtomicU32, Ordering::Relaxed};
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering::Relaxed};
 
 /// States a batch (a multiple of hemera's 16-lane kernel width).
 pub const BATCH: usize = 256;
@@ -31,6 +31,45 @@ impl Cpu {
             threads
         };
         Cpu { threads: t }
+    }
+
+    /// [`Backend::search`](super::Backend::search) plus the nonces actually
+    /// hashed: every batch a thread scanned, the one with the hit included.
+    /// The search stops at its first hit, so this can be far below `count`.
+    pub(super) fn search_counted(&self, job: &Job, base: u128, count: u32) -> (Option<u32>, u64) {
+        let count = count as usize;
+        if count == 0 {
+            return (None, 0);
+        }
+        let best = AtomicU32::new(u32::MAX);
+        let hashed = AtomicU64::new(0);
+        let per = count.div_ceil(self.threads).max(BATCH);
+        std::thread::scope(|s| {
+            for t in 0..self.threads {
+                let from = t * per;
+                if from >= count {
+                    break;
+                }
+                let to = (from + per).min(count);
+                let best = &best;
+                let hashed = &hashed;
+                s.spawn(move || {
+                    let mut at = from;
+                    while at < to && (at as u32) < best.load(Relaxed) {
+                        let n = BATCH.min(to - at);
+                        let hit = scan(job, base + at as u128, n);
+                        hashed.fetch_add(n as u64, Relaxed);
+                        if let Some(i) = hit {
+                            best.fetch_min((at + i) as u32, Relaxed);
+                            return;
+                        }
+                        at += n;
+                    }
+                });
+            }
+        });
+        let b = best.load(Relaxed);
+        ((b != u32::MAX).then_some(b), hashed.load(Relaxed))
     }
 }
 
@@ -54,35 +93,7 @@ impl super::Backend for Cpu {
     }
 
     fn search(&self, job: &Job, base: u128, count: u32) -> Result<Option<u32>, String> {
-        let count = count as usize;
-        if count == 0 {
-            return Ok(None);
-        }
-        let best = AtomicU32::new(u32::MAX);
-        let per = count.div_ceil(self.threads).max(BATCH);
-        std::thread::scope(|s| {
-            for t in 0..self.threads {
-                let from = t * per;
-                if from >= count {
-                    break;
-                }
-                let to = (from + per).min(count);
-                let best = &best;
-                s.spawn(move || {
-                    let mut at = from;
-                    while at < to && (at as u32) < best.load(Relaxed) {
-                        let n = BATCH.min(to - at);
-                        if let Some(i) = scan(job, base + at as u128, n) {
-                            best.fetch_min((at + i) as u32, Relaxed);
-                            return;
-                        }
-                        at += n;
-                    }
-                });
-            }
-        });
-        let b = best.load(Relaxed);
-        Ok((b != u32::MAX).then_some(b))
+        Ok(self.search_counted(job, base, count).0)
     }
 
     /// Nonces a dispatch: a few batches a thread (~50 ms at 3 MH/s on 16
@@ -118,6 +129,22 @@ mod tests {
                 "{k}"
             );
         }
+    }
+
+    #[test]
+    fn cpu_counts_the_hashes_it_did() {
+        // the probe job: about one hit in 2^10, so the search stops early
+        let job = Job::new(&[0x5au8; 168], pow2(246));
+        let (one, hashed) = Cpu::new(1).search_counted(&job, 0, 1 << 14);
+        let i = one.expect("a nonce in the range");
+        assert!(hashed >= i as u64 + 1, "{hashed} hashes for a hit at {i}");
+        assert!(hashed < 1 << 14, "stopped at the hit, not the range end");
+        let (four, hashed) = Cpu::new(4).search_counted(&job, 0, 1 << 14);
+        assert_eq!(four, one);
+        assert!(hashed <= 1 << 14);
+        // no hit: every nonce hashed, each counted once
+        let none = Job::new(&[0x11u8; 168], [1, 0, 0, 0]);
+        assert_eq!(Cpu::new(2).search_counted(&none, 0, 4096), (None, 4096));
     }
 
     #[test]

@@ -119,20 +119,23 @@ const PROBE: u32 = 1 << 14;
 const PROBE_DEADLINE: Duration = Duration::from_secs(5);
 
 /// Hashes per second, a zero duration counting as 1 ns.
-fn rate(count: u32, took: Duration) -> f64 {
-    count as f64 / took.as_secs_f64().max(1e-9)
+fn rate(hashes: u64, took: Duration) -> f64 {
+    hashes as f64 / took.as_secs_f64().max(1e-9)
 }
 
 /// The rule: the candidate (searching `gpu_count >= cpu.1` nonces from the
 /// same base) is kept only if it answered in time, answered without error,
-/// agreed with the CPU, and hashed strictly faster per second. Both return
+/// agreed with the CPU, and hashed strictly faster per second. The rates are
+/// compared on the work each side actually did: the GPU hashes its whole
+/// dispatch (`gpu_count`), the CPU stops at its first hit (`cpu.2` hashes of
+/// the `cpu.1` it searched, in `cpu.3`). Both return
 /// the least passing index, so a CPU `Some(i)` needs the same `Some(i)`, and
 /// a CPU `None` needs `None` or an index beyond the CPU's range.
 /// `Err` is the reason, phrased to follow the device name.
 fn prefer_gpu(
     gpu_count: u32,
     gpu: Option<(Result<Option<u32>, String>, Duration)>,
-    cpu: (Option<u32>, u32, Duration),
+    cpu: (Option<u32>, u32, u64, Duration),
 ) -> Result<(), String> {
     let Some((answer, took)) = gpu else {
         return Err(format!(
@@ -148,7 +151,7 @@ fn prefer_gpu(
     if !agrees {
         return Err("disagreed with cpu".into());
     }
-    let (g, c) = (rate(gpu_count, took), rate(cpu.1, cpu.2));
+    let (g, c) = (rate(gpu_count as u64, took), rate(cpu.2, cpu.3));
     if g <= c {
         return Err(format!("slower than cpu ({g:.0} vs {c:.0} H/s)"));
     }
@@ -162,7 +165,7 @@ fn prefer_gpu(
 /// in the driver for good, and owns the backend until it ends.
 fn probe(
     gpu: Box<dyn Backend>,
-    cpu: &dyn Backend,
+    cpu: &cpu::Cpu,
     deadline: Duration,
 ) -> Result<Box<dyn Backend>, String> {
     let job = Job::new(&[0x5au8; 168], target::pow2(246));
@@ -175,8 +178,8 @@ fn probe(
         let _ = tx.send((gpu, r, t.elapsed()));
     });
     let t = Instant::now();
-    let want = cpu.search(&job, 0, PROBE)?;
-    let cpu_row = (want, PROBE, t.elapsed());
+    let (want, hashed) = cpu.search_counted(&job, 0, PROBE);
+    let cpu_row = (want, PROBE, hashed, t.elapsed());
     match rx.recv_timeout(deadline).ok() {
         Some((gpu, r, took)) => prefer_gpu(count, Some((r, took)), cpu_row).map(|()| gpu),
         None => Err(prefer_gpu(count, None, cpu_row).unwrap_err()),
@@ -263,8 +266,8 @@ mod tests {
 
     #[test]
     fn prefer_gpu_decides_all_outcomes() {
-        let cpu = (Some(7), PROBE, ms(100));
-        let none = (None, PROBE, ms(100));
+        let cpu = (Some(7), PROBE, PROBE as u64, ms(100));
+        let none = (None, PROBE, PROBE as u64, ms(100));
         let g = |a: Result<Option<u32>, String>, n: u32, t: u64| {
             prefer_gpu(n, Some((a, ms(t))), cpu)
         };
@@ -284,6 +287,18 @@ mod tests {
         assert_eq!(g(Ok(None)), Ok(()));
         assert_eq!(g(Ok(Some(PROBE))), Ok(()));
         assert!(g(Ok(Some(PROBE - 1))).unwrap_err().contains("disagreed"));
+    }
+
+    #[test]
+    fn prefer_gpu_rates_the_cpu_on_the_hashes_it_did() {
+        // the cpu searched PROBE nonces but stopped at its hit after PROBE/16
+        // in 100 ms: 10240 H/s. Credited with PROBE it would be 163840 H/s
+        // and reject a gpu that hashes PROBE nonces in 1000 ms (16384 H/s),
+        // which is in fact faster by work done. 2000 ms (8192 H/s) is slower.
+        let cpu = (Some(7), PROBE, (PROBE / 16) as u64, ms(100));
+        let g = |t: u64| prefer_gpu(PROBE, Some((Ok(Some(7)), ms(t))), cpu);
+        assert_eq!(g(1000), Ok(()));
+        assert!(g(2000).unwrap_err().contains("slower"));
     }
 
     /// Every built backend returns the same index for the same dispatch,
