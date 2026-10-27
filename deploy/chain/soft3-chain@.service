@@ -18,7 +18,7 @@ User=cyber
 Group=cyber
 EnvironmentFile=/etc/soft3/%i.env
 Environment=HOME=/home/cyber
-Environment=PATH=/home/cyber/.cargo/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/home/cyber/soft3-chain/bin:/usr/local/bin:/usr/bin:/bin
 Environment=RUST_LOG=info
 # State lives in /var/lib/soft3/<chain>; on deimos symlink /var/lib/soft3 to the raid before the first start.
 StateDirectory=soft3/%i
@@ -26,7 +26,10 @@ StateDirectoryMode=0750
 WorkingDirectory=/var/lib/soft3/%i
 ExecStartPre=/usr/local/bin/soft3-chain-check --pre %i
 # The executable path is fixed (systemd does not expand variables in the first token).
-ExecStart=/home/cyber/.cargo/bin/soft3 node \
+# It is NOT ~/.cargo/bin/soft3: on cyberproxy that file is the 0.10.0 binary spacepussy-test.service
+# runs, and overwriting it changes the chaosnet node on its next restart (rehearsal 2026-10-16).
+# Install: ~/soft3-chain/bin/soft3-<commit> + symlink soft3 (README step A1).
+ExecStart=/home/cyber/soft3-chain/bin/soft3 node \
     --chain ${SOFT3_CHAIN} \
     --home /var/lib/soft3/%i \
     --bind ${SOFT3_BIND} \
