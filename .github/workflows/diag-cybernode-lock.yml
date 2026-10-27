@@ -1,0 +1,106 @@
+name: Diagnostic cybernode lock
+
+# Measurement only, never merged, never a release gate (soft3#407 + fix/cybernode-drift).
+# soft3#407 moves the node's 312 tests out of soft3-tests into cyberia-to/cybernode `rs/`,
+# which has no Cargo.lock, so the train cannot run them with `--locked`. This job lays the
+# train's stand with rehearsal 40446879208's overrides (by SHA) plus soft3 = f16cc0f, with
+# this branch's release/phase1.toml as manager (so cybernode 52538a6 is a sibling), resolves
+# a lock for cybernode/rs on the train's stand (seeded from soft3's resolved crate/Cargo.lock
+# so shared versions are identical), and runs the node's tests with it.
+on:
+  push:
+    branches: ['diag/cybernode-lock*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261027.1 --output "$RUNNER_TEMP/snapshot" \
+            --override soft3=f16cc0fbdf870d8dd4899eab110bd9c6d5710d00 \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
+            --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=0551e3b9c19a1c6a69c8d552ffbbfd3fa1c71c5d \
+            --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=fee68d8dec06a67b70f23c0328e4b7fbc1bb0303 \
+            --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec \
+            --override radio=7452833d1877151c7bc8343e921621e2af90eb8c --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 \
+            --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 \
+            --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "cybernode"):
+                  print(row["name"], row.get("revision"), row.get("override"), row.get("available"), row.get("error"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the cybernode lock (seeded from soft3's)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          git -C cybernode rev-parse HEAD
+          if test ! -e cybernode/rs/Cargo.lock; then echo "cybernode/rs/Cargo.lock: absent"; else echo "cybernode/rs/Cargo.lock: exists"; fi
+          cp soft3/crate/Cargo.lock cybernode/rs/Cargo.lock
+          M=cybernode/rs/Cargo.toml
+          cargo metadata --format-version 1 --manifest-path $M >/dev/null 2>"$RUNNER_TEMP/out/resolve.txt" || { echo "cybernode: does not resolve"; cat "$RUNNER_TEMP/out/resolve.txt"; exit 1; }
+          cargo metadata --locked --format-version 1 --manifest-path $M >/dev/null && echo "cybernode: resolved and locked"
+          cp cybernode/rs/Cargo.lock "$RUNNER_TEMP/out/cybernode.Cargo.lock"
+          sha256sum cybernode/rs/Cargo.lock | tee "$RUNNER_TEMP/out/cybernode-lock.sha256"
+          diff -u soft3/crate/Cargo.lock cybernode/rs/Cargo.lock > "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true
+          echo "packages added:   $(grep -c '^+name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
+          echo "packages removed: $(grep -c '^-name = ' "$RUNNER_TEMP/out/seed-vs-cybernode.diff" || true)"
+      - name: cybernode-tests (cargo test --locked)
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/cybernode/rs
+        run: |
+          set -o pipefail
+          timeout 3600 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/test-cybernode.log"
+      - name: cybernode-release (cargo build --release --locked)
+        id: release
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/cybernode/rs
+        run: |
+          set -o pipefail
+          timeout 3600 cargo build --release --locked 2>&1 | tee "$RUNNER_TEMP/out/release-cybernode.log"
+          ./target/release/cybernode --version 2>&1 | tee -a "$RUNNER_TEMP/out/release-cybernode.log" || true
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }}  release: ${{ steps.release.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP"/out/*-cybernode.log | head -100 || true
+          grep -h "^test result" "$RUNNER_TEMP"/out/*-cybernode.log | awk '{p+=$4; f+=$6} END {print "total passed:", p+0, "failed:", f+0}' || true
+          echo "warnings:"
+          grep -h "^warning" "$RUNNER_TEMP"/out/*-cybernode.log | sort | uniq -c || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: cybernode-lock
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure' || steps.release.outcome == 'failure'
+        run: exit 1
