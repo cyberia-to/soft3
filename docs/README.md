@@ -197,7 +197,7 @@ the bedrock diagram shows soft3 as a substrate — three principles stacked unde
    +--------------------+               +------------------------------------+ patch+--------------+
    | . contract         |  cyberlinks   | :  link                            |<-----| :  mount     |
    | . service          |-------------->| the  spine                         |      +--------------+
-   | mimi  midao  my    |  focus . karma|                                    |
+   |       midao  my    |  focus . karma|                                    |
    +--------------------+               |                                    |
     mudra -----keys ------------------->|                                    |
     tok -------value ------------------>|                                    |
