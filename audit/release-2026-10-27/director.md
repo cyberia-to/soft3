@@ -19,7 +19,7 @@ The latest rehearsal is 40422683385 (`release/phase1` `21d963d`, `soft3=release/
 | phase1-pins | pins move after the landings | G9 |
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, the owner's input |
 
-The stack leg (job 121920831788) was still running at 00:30 UTC.
+The stack leg (job 121920831788) was still running at 00:50 UTC.
 
 ## units done
 
@@ -27,6 +27,7 @@ The stack leg (job 121920831788) was still running at 00:30 UTC.
 |---|---|
 | G16 Intel mac `mine_e2e` (session 107) | 40422683385 `candidate-x86_64-apple-darwin`: soft3-tests exit 0, 887.8 s of 1800, `warnings: false`; `mine_e2e` 1/0 in 25.75 s |
 | G15 rehearsals measure `release/phase1` (session 107) | 40422683385 `sources.json` soft3 override `21d963d`; soft3-tests green on all four building legs |
+| G16a(2) the CPU probe rate (session 108), built, not yet done | soft3#358 draft; receipt 40427084706 running |
 
 ## PRs merged
 
@@ -34,7 +35,7 @@ Only this plan PR.
 
 ## plan items left
 
-Open: G9, G16a, R1. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: G6, C3. See `release/director/plan.md` § the order.
+Open: G9, R1. Doing: G16a ((2) #358 under receipt 40427084706; (1) waits on `stall-first`). Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: G6, C3. See `release/director/plan.md` § the order.
 
 ## fable questions
 
@@ -42,4 +43,4 @@ Open: G9, G16a, R1. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mu
 
 ## subscription windows
 
-None hit so far. Session 106 (00:09) ended without a final line (`NEXT: ?` in `state/tick.log` at 00:10:28).
+None hit so far (session 108). Session 106 (00:09) ended without a final line (`NEXT: ?` in `state/tick.log` at 00:10:28).
