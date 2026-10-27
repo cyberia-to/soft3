@@ -11,7 +11,7 @@ date: 2026-10-23
 
 **status:** proposed · **date:** 2026-10-23 · **owner's call:** "this mechanism — without the agents — belongs in the core of cyber, not in cyberia's architecture."
 
-cyberia's [[cyberia/foundation/architecture|architecture]] carried a mechanism that answers one question for a whole network: *is it alive?* It was written for cyberia's 147 agents. The mechanism does not depend on agents; it depends on three numbers the chain already has or can have. This proposal moves it into the core: the measure becomes a consensus object of the root chain, its weights the one vote the protocol cannot avoid, and its derivative the governor of every parameter the protocol is allowed to retune. The agents, where they exist, become its users.
+cyberia's [[cyberia/architecture|architecture]] carried a mechanism that answers one question for a whole network: *is it alive?* It was written for cyberia's 147 agents. The mechanism does not depend on agents; it depends on three numbers the chain already has or can have. This proposal moves it into the core: the measure becomes a consensus object of the root chain, its weights the one vote the protocol cannot avoid, and its derivative the governor of every parameter the protocol is allowed to retune. The agents, where they exist, become its users.
 
 ## 1. the picture
 
@@ -93,7 +93,7 @@ What $\dot M$ does **not** do: it never scales an individual's reward, never min
 3. chain-economy: the record and the vote; genesis $w = (0,1,0)$ — nothing else at launch;
 4. privacy rule set: the two report cards and the aggregation proof — $H$ and the price enter when the pool does;
 5. parametrization and the floor's loop — rule set 3, after the first experiments can be predicted at all;
-6. cyberia/foundation/architecture: the section keeps its table and points at the core; the 147 agents read $M$, they no longer own it.
+6. cyberia/architecture: the section keeps its table and points at the core; the 147 agents read $M$, they no longer own it.
 
 ## 6. what is cut from the cyberia version
 
@@ -101,4 +101,4 @@ What $\dot M$ does **not** do: it never scales an individual's reward, never min
 - "the agents set the weights through explicit consensus": the weights are a stake vote of the chain's own participants, the agents vote like any neuron with active stake;
 - "cannot be gamed internally": replaced by what is true inside consensus (§3.2).
 
-related: [[tru/specs/rewards|rewards]] · [[soft3/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/proposals/privacy-frozen|privacy, frozen]] · [[cyberia/foundation/architecture|cyberia's architecture]] (the origin)
+related: [[tru/specs/rewards|rewards]] · [[soft3/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/proposals/privacy-frozen|privacy, frozen]] · [[cyberia/architecture|cyberia's architecture]] (the origin)
