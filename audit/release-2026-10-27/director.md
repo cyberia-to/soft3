@@ -1,13 +1,14 @@
 ---
 title: the director's report — 2026-10-27
-tags: soft3, release, director, report
-crystal-type: process
+tags: soft3, release, director, report, phase 1
+crystal-type: measurement
 crystal-domain: cyber
-status: open
 date: 2026-10-27
 serves: release/director/README.md § the measurement
 ---
 # the director's report — 2026-10-27
+
+Opened in session 107 (00:30 UTC) from `release/director/plan.md`'s log and the receipts it names. Each later session's plan PR updates it.
 
 ## the candidate: red
 
