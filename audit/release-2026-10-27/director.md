@@ -28,14 +28,15 @@ The stack leg (job 121920831788, read in session 112) is green except phase1-pin
 | G16 Intel mac `mine_e2e` (session 107) | 40422683385 `candidate-x86_64-apple-darwin`: soft3-tests exit 0, 887.8 s of 1800, `warnings: false`; `mine_e2e` 1/0 in 25.75 s |
 | G15 rehearsals measure `release/phase1` (session 107) | 40422683385 `sources.json` soft3 override `21d963d`; soft3-tests green on all four building legs |
 | G16a(2) the CPU probe rate (sessions 108–112) | soft3#358 merged as `063b6d9`; 40427084706 ubuntu green, 40430771555 pass 1 Intel green (exit 0, `warnings: 0`) |
+| G6 built: `conformance/rs` on zheng 0.4's `ZHENGPF1`, blessed on hemera 0.4 (sessions 113–114) | soft3#362 merged as `53e341d`; diagnostic 40437312746: bless 0 changes, root `h6032aa33…`, `--check` ×2 green, 21/21 tests, 0 warnings; acceptance under rehearsal 40437685274 |
 
 ## PRs merged
 
-soft3#358 into `release/phase1` (`063b6d9`, session 112), and the plan PRs.
+soft3#358 into `release/phase1` (`063b6d9`, session 112), soft3#362 (`53e341d`, session 114), and the plan PRs.
 
 ## plan items left
 
-Open: G9, R1. Doing: G16a ((1) waits on 40430771555 pass 2); G6 is next, the `conformance/rs` port to zheng 0.4. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: G6, C3. See `release/director/plan.md` § the order.
+Open: G9, R1. Doing: G16a ((1) waits on 40430771555 pass 2); G6 built (#362), conformance-snapshot read from rehearsal 40437685274. Waiting on the owner (by 2026-10-29 12:00 UTC): L3b, L3c (mudra), L3d, L4 (D10), C2a (#350). Waiting on L4: C3. See `release/director/plan.md` § the order.
 
 ## fable questions
 
@@ -43,4 +44,4 @@ Open: G9, R1. Doing: G16a ((1) waits on 40430771555 pass 2); G6 is next, the `co
 
 ## subscription windows
 
-None hit so far (session 108). Session 106 (00:09) ended without a final line (`NEXT: ?` in `state/tick.log` at 00:10:28).
+None hit so far (session 108). Session 106 (00:09) ended without a final line (`NEXT: ?` in `state/tick.log` at 00:10:28). Session 113 (≈01:54) ended without a record, after pushing G6's port and its bless diagnostic; session 114 finished the row.
