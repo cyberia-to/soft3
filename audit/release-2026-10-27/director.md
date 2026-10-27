@@ -39,10 +39,11 @@ The stack leg of rehearsal 40446879208 (job 122000222218, `release/phase1` `5ca1
 | G10a accepted, 40446879208 stack leg read (session 124) | job 122000222218: `Qualify stack and product` 03:56:13–05:44:34, 6501 s of the 210-min cap; `Report the verdict` ran, `assembled-candidate` produced; receipt sha256 `8c6d71d5…`, 24 gates, sum 6478.0 s; simulation-gate green 961.7 s; reds only G8, G9, L3b (stack-zheng 324/1), L3c (stack-mudra, stack-neuron) |
 | R0 soft3's landing opened (session 125) | **soft3#376** `release/phase1 → main` (`cd15055`, 274 ahead, 0 behind, no `specs/`), `decision`/`wide`. It waits on the owner's approval and must land before or with lens#36 (G13); decision D11 |
 | no unit (sessions 126–131, 06:25–07:50) | state checked only, six sessions: each tick from `20261027T062108Z` to `20261027T074807Z` equals the last except for `at` (`jq -S 'del(.at)'`); no PR or issue activity in `cyberia-to` except the director's own #376, lens#36 and plan PRs; soft3#376, hemera#25 and lens#36 `BLOCKED`/`REVIEW_REQUIRED`, 0 reviews; every red of 40446879208 has an owner row (G8, G9, L3b, L3c); every row not done waits on the owner or the landings. Session 130 added D12 (no merge into a landing's head once it is approved). Session 131 found that sessions 127–130 had not updated this row and folded them in |
+| the idle churn's cause (session 132) | no phase unit could move (tick `20261027T080510Z` equals the last except `at`; the owner's newest `cyberia-to` event `2026-10-26T07:35:34Z`). **soft3#384** into the owner's `feat/soft3-director`, not merged: `tick.sh` gains `owner_activity`, `loop.sh` skips a session on an unchanged tick after an idle one (3 h heartbeat). Harness (a)–(f) and the live `gh api` expression as receipts |
 
 ## PRs merged
 
-soft3#358 into `release/phase1` (`063b6d9`, session 112), soft3#362 (`53e341d`, session 114), soft3#368 (`5ca1d64`, session 119), soft3#373 (`a3ca9b7`, session 123: G9a, the 11 leaves pinned to the qualified default HEADs of 40446879208), and the plan PRs.
+soft3#358 into `release/phase1` (`063b6d9`, session 112), soft3#362 (`53e341d`, session 114), soft3#368 (`5ca1d64`, session 119), soft3#373 (`a3ca9b7`, session 123: G9a, the 11 leaves pinned to the qualified default HEADs of 40446879208), and the plan PRs. Opened, the owner's to merge: soft3#376 (R0), soft3#384 (session 132).
 
 ## plan items left
 
