@@ -9,13 +9,13 @@
 # tree. Does not pin cyb, cyber or soft3 themselves — see the spec.
 
 phase = 1
-updated = "2026-10-27"
+updated = "2026-10-28"
 
 [[sibling]]
 name = "strata"
 repo = "cyberia-to/strata"
 branch = "main"
-rev = "12a7a6df7f69329d6b075b08abf0af7b8d4282a0"
+rev = "5ef0c84d155ef07f9a6f33ec0ee4db6b20896bc3"
 
 [[sibling]]
 name = "hemera"
@@ -141,7 +141,7 @@ rev = "5a132c4e9fb12ddce0f604460175cdc5414ecc35"
 name = "soma"
 repo = "cyberia-to/soma"
 branch = "main"
-rev = "71e736b5ac63fbc3cca475f6bed6ec1adfae11db"
+rev = "1d3fe69846ffa973bbba98b58813330787b3d37b"
 
 [[sibling]]
 name = "glia"
@@ -153,7 +153,7 @@ rev = "6c3b4848c62f9c4b7c19c7c56ca4b0ae57a33795"
 name = "honeycrisp"
 repo = "cyberia-to/honeycrisp"
 branch = "main"
-rev = "40861c764a6f6ca6b6b27693d893b3ec099a91db"
+rev = "595ce26265e52365b23a502c19215f6de8a11758"
 
 [[sibling]]
 name = "nu"
@@ -165,7 +165,7 @@ rev = "7c498b3303de004aa0fb70f7878d88690279b7a2"
 name = "evy"
 repo = "cyberia-to/evy"
 branch = "main"
-rev = "a194311ae557bd6dac3ef0c2f12141cb9fc1e01f"
+rev = "14c8d3e830e184c7e7f56ba74f0e80d76c415d76"
 
 [[sibling]]
 name = "optica"
