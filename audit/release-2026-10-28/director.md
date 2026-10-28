@@ -28,10 +28,11 @@ On `release/phase1`, the latest full read is still rehearsal 40446879208 (see th
 | row | receipt |
 |---|---|
 | G9b, the leaves after the owner's `AGENTS.md` sweep (session 183) | soft3#440 → `2521fc6`: strata `5ef0c84`, soma `1d3fe69`, honeycrisp `595ce26`, evy `14c8d3e`. Each is a fast-forward of renames only (REST `compare`). PR gates `drift` 40608864456 ("no drift") and `test` 40608864377 are green |
+| G9c, simulation and space-pussy after the owner's docs commit of 2026-10-27 13:46 UTC (session 185) | soft3#443 → `2ad04a9`: simulation `5483a3f`, pussy `fa98500`. Each is a one-file docs fast-forward (REST `compare`). PR gates `drift` 40612714766 ("29 siblings — no drift") and `test` 40612714806 (36 OK) are green |
 
 ## PRs merged
 
-soft3#440 (pins) and this plan PR, both into `release/phase1`.
+soft3#440 and soft3#443 (pins), and the plan PRs, all into `release/phase1`.
 
 ## plan items left
 
