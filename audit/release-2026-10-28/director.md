@@ -21,7 +21,7 @@ No train run is newer than 40570117323 (2026-10-27 19:33 UTC, `failure`; `gh run
 | release-notes-source | cyb `master` `ab12f38` was a direct push | G8, the owner's input |
 | stack-zheng, stack-mudra, stack-neuron, stack consumers | the 64 KiB gate (L3b) and the keep-or-rotate decision (L3c), both due from the owner by 2026-10-29 12:00 UTC | L3b, L3c, L4 |
 
-On `release/phase1`, the latest full read is still rehearsal 40446879208 (see the 2026-10-27 report).
+On `release/phase1`, the latest full read is rehearsal 40688607756 (S1(b), read in sessions 227–233). Its reds are phase1-pins and release-notes-source (G8) on every leg, plus stack-zheng, stack-mudra and stack-neuron as above.
 
 ## units done
 
@@ -29,14 +29,16 @@ On `release/phase1`, the latest full read is still rehearsal 40446879208 (see th
 |---|---|
 | G9b, the leaves after the owner's `AGENTS.md` sweep (session 183) | soft3#440 → `2521fc6`: strata `5ef0c84`, soma `1d3fe69`, honeycrisp `595ce26`, evy `14c8d3e`. Each is a fast-forward of renames only (REST `compare`). PR gates `drift` 40608864456 ("no drift") and `test` 40608864377 are green |
 | G9c, simulation and space-pussy after the owner's docs commit of 2026-10-27 13:46 UTC (session 185) | soft3#443 → `2ad04a9`: simulation `5483a3f`, pussy `fa98500`. Each is a one-file docs fast-forward (REST `compare`). PR gates `drift` 40612714766 ("29 siblings — no drift") and `test` 40612714806 (36 OK) are green |
+| S1(a), rustls 0.23.45 (session 217) | soft3#453 → `7cdff68`. Rehearsal 40656164861 is no worse than 40446879208 |
+| S1(b), hickory 0.26.3 (session 233) | radio#50 → radio `release/phase1` `f3e894d`; soft3#456 → `911e7fa`. Rehearsal 40688607756: stack-radio red → green, simulation-gate green, the rest equal to the baseline |
 
 ## PRs merged
 
-soft3#440 and soft3#443 (pins), and the plan PRs, all into `release/phase1`.
+soft3#440 and soft3#443 (pins), soft3#453 and soft3#456 (S1), and the plan PRs, all into soft3 `release/phase1`; radio#50 into radio `release/phase1`.
 
 ## plan items left
 
-L1, L2, L3 and R0 wait on the owner's approval of the landing PRs (hemera#25, lens#36, nox#43, soft3#376). L3b, L3c and L3d wait on the owner's decisions due 2026-10-29 12:00 UTC. C2a (soft3#350) is due the same day. C4 waits on cybernode#1. G9 finishes after those, and R1 comes last.
+L1, L2, L3 and R0 wait on the owner's approval of the landing PRs (hemera#25, lens#36, nox#43, soft3#376). L3b, L3c and L3d wait on the owner's decisions due 2026-10-29 12:00 UTC. C2a (soft3#350) is due the same day. C4 waits on cybernode#1. S1 needs radio's landing PR (next unit), then soft3#376 and simulation#3 (the owner). G9 finishes after those, and R1 comes last.
 
 ## fable and windows
 
