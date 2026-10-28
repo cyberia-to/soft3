@@ -31,14 +31,15 @@ On `release/phase1`, the latest full read is rehearsal 40688607756 (S1(b), read 
 | G9c, simulation and space-pussy after the owner's docs commit of 2026-10-27 13:46 UTC (session 185) | soft3#443 → `2ad04a9`: simulation `5483a3f`, pussy `fa98500`. Each is a one-file docs fast-forward (REST `compare`). PR gates `drift` 40612714766 ("29 siblings — no drift") and `test` 40612714806 (36 OK) are green |
 | S1(a), rustls 0.23.45 (session 217) | soft3#453 → `7cdff68`. Rehearsal 40656164861 is no worse than 40446879208 |
 | S1(b), hickory 0.26.3 (session 233) | radio#50 → radio `release/phase1` `f3e894d`; soft3#456 → `911e7fa`. Rehearsal 40688607756: stack-radio red → green, simulation-gate green, the rest equal to the baseline |
+| S1(b), radio's landing (session 234) | radio#51 → radio `release/phase1` `b74133c` (`main` `5e0dc1f` merged in, docs only; CI 40708169513 the same as #50's baseline); **radio#52** `release/phase1 → main` open with receipts (ahead 12, behind 0), `BLOCKED`/`REVIEW_REQUIRED`, waiting on the owner |
 
 ## PRs merged
 
-soft3#440 and soft3#443 (pins), soft3#453 and soft3#456 (S1), and the plan PRs, all into soft3 `release/phase1`; radio#50 into radio `release/phase1`.
+soft3#440 and soft3#443 (pins), soft3#453 and soft3#456 (S1), and the plan PRs, all into soft3 `release/phase1`; radio#50 and radio#51 into radio `release/phase1`.
 
 ## plan items left
 
-L1, L2, L3 and R0 wait on the owner's approval of the landing PRs (hemera#25, lens#36, nox#43, soft3#376). L3b, L3c and L3d wait on the owner's decisions due 2026-10-29 12:00 UTC. C2a (soft3#350) is due the same day. C4 waits on cybernode#1. S1 needs radio's landing PR (next unit), then soft3#376 and simulation#3 (the owner). G9 finishes after those, and R1 comes last.
+L1, L2, L3, R0 and S1(b) wait on the owner's approval of the landing PRs (hemera#25, lens#36, nox#43, soft3#376, radio#52). L3b, L3c and L3d wait on the owner's decisions due 2026-10-29 12:00 UTC. C2a (soft3#350) is due the same day. C4 waits on cybernode#1. S1 waits on the owner: radio#52 (opened in session 234), then soft3#376 and simulation#3. G9 finishes after those, and R1 comes last.
 
 ## fable and windows
 
