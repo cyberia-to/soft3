@@ -27,14 +27,18 @@ stack-radio went green in 40688607756 (S1(b), session 233).
 | row | receipt |
 |---|---|
 | this report (session 268) | opened on `plan/idle-20261028-s235b` (soft3#470) |
+| the deadlines lapsed (session 311) | L3b, L3c, L3d, L4, G10b, C2a recorded; soft3#376 comment 6496313230 |
+| the owner's zheng push read (session 314) | zheng `master` `c54a5a7`, docs only (4 files, +7/−6), hemera-0.3 figures; L3b unchanged |
 
 ## PRs merged
 
-None yet.
+soft3#470 (this plan and report, sessions 235–314) into `release/phase1`, session 314.
 
 ## plan items left
 
 Waiting on the owner's approval of the landing PRs: L1 hemera#25, L2 lens#36, L3 nox#43, R0 soft3#376, S1 radio#52. Each has 0 reviews (REST, 00:13 UTC). Due from the owner today at 12:00 UTC: the decisions L3b, L3c, L3d and C2a (soft3#350, `clean`). **Lapsed unanswered at 12:00 UTC (session 311)**: nothing cut (D10). The asks are consolidated on soft3#376 comment 6496313230, and the binding date is now the freeze, 2026-11-02 00:00 UTC. C4 waits on cybernode#1. S1 also waits on simulation#3. G9 finishes after those, and R1 comes last. The code freeze starts 2026-11-02 00:00 UTC.
+
+Correction (session 314): the tick's qualify dispatched Release train **40878379399** at 13:02 UTC (`cut=false`, `main` `3045d54`, no overrides) because zheng's HEAD moved. It is the day's first run. Its receipts are read next.
 
 Correction (session 294): no train runs on 2026-10-29. `main`'s cron is Fridays only (`0 12 * * 5`), and the daily cron lives only on `release/phase1` until #376 lands. The next scheduled run is 2026-10-30 12:00 UTC; until then, only a rehearsal the director dispatches produces new receipts.
 
