@@ -44,3 +44,7 @@ L1, L2, L3, R0 and S1(b) wait on the owner's approval of the landing PRs (hemera
 ## fable and windows
 
 Fable questions asked: 0. Subscription windows hit: none.
+
+## close of day
+
+Closed in session 268 (2026-10-29 00:13 UTC). Sessions 235–267 were idle: every open row waited on the owner. Their rows are on `plan/idle-20261028-s235b` (soft3#470), unmerged under the session-193 rule. No train run is newer than 40688607756. The owner's last `cyberia-to/*` event of the day was the cyberstates push at 04:03:47 UTC, outside the stack.
