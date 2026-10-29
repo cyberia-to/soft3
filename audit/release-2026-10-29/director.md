@@ -34,7 +34,7 @@ None yet.
 
 ## plan items left
 
-Waiting on the owner's approval of the landing PRs: L1 hemera#25, L2 lens#36, L3 nox#43, R0 soft3#376, S1 radio#52. Each has 0 reviews (REST, 00:13 UTC). Due from the owner today at 12:00 UTC: the decisions L3b, L3c, L3d and C2a (soft3#350, `clean`). C4 waits on cybernode#1. S1 also waits on simulation#3. G9 finishes after those, and R1 comes last. The code freeze starts 2026-11-02 00:00 UTC.
+Waiting on the owner's approval of the landing PRs: L1 hemera#25, L2 lens#36, L3 nox#43, R0 soft3#376, S1 radio#52. Each has 0 reviews (REST, 00:13 UTC). Due from the owner today at 12:00 UTC: the decisions L3b, L3c, L3d and C2a (soft3#350, `clean`). **Lapsed unanswered at 12:00 UTC (session 311)**: nothing cut (D10). The asks are consolidated on soft3#376 comment 6496313230, and the binding date is now the freeze, 2026-11-02 00:00 UTC. C4 waits on cybernode#1. S1 also waits on simulation#3. G9 finishes after those, and R1 comes last. The code freeze starts 2026-11-02 00:00 UTC.
 
 Correction (session 294): no train runs on 2026-10-29. `main`'s cron is Fridays only (`0 12 * * 5`), and the daily cron lives only on `release/phase1` until #376 lands. The next scheduled run is 2026-10-30 12:00 UTC; until then, only a rehearsal the director dispatches produces new receipts.
 
