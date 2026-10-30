@@ -472,3 +472,65 @@ fn the_node_surface_reads_epochs_focus_and_cards() {
     assert_eq!(st["settlement_ok"], true);
     assert_eq!(st["total_stake"], RICH / 20);
 }
+
+/// An engine whose every solve panics, to show the halt is named.
+struct Panics;
+
+impl FocusEngine for Panics {
+    fn id(&self) -> &'static str {
+        "panics-test"
+    }
+    fn focus(&self, _g: &FocusGraph) -> Focus {
+        panic!("injected settlement panic")
+    }
+    fn gradient(&self, _g: &FocusGraph) -> Vec<i128> {
+        panic!("injected settlement panic")
+    }
+}
+
+fn panic_text(payload: Box<dyn std::any::Any + Send>) -> String {
+    match payload.downcast::<String>() {
+        Ok(s) => *s,
+        Err(p) => p.downcast_ref::<&str>().map(|s| s.to_string()).unwrap_or_default(),
+    }
+}
+
+/// A panic in a settlement is a halt (chain-economy §2.5): named by epoch
+/// and height, leaving the state untouched, the same on a replay.
+#[test]
+fn a_settlement_panic_is_a_named_halt() {
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+    let mut net = econ_net(3);
+    net.engine = Some(Arc::new(Panics));
+    let miner = net.neurons[2];
+    let mut c = net.open("halt-a");
+    let mut blocks = vec![mine(&mut c, miner, 0, &[net.link(0, 0, p(90), p(91), RICH / 20, 1, FEE)])];
+    blocks.extend(mine_to(&mut c, miner, CLOCK.settle(1) - 1));
+    assert_eq!(c.tip().height, 14);
+    let (pool0, settled0, root0, tip0) = (pool(&c, &net), c.state().scalars().last_settled, c.status().state_root, c.tip().id);
+
+    let msg = panic_text(catch_unwind(AssertUnwindSafe(|| mine(&mut c, miner, 0, &[]))).err().expect("the settlement block halts"));
+    assert!(msg.contains("settlement of epoch 1"), "{msg}");
+    assert!(msg.contains("at height 15"), "{msg}");
+    assert!(msg.contains("injected settlement panic"), "{msg}");
+
+    assert_eq!(c.tip().height, 14);
+    assert_eq!(c.tip().id, tip0);
+    assert_eq!(pool(&c, &net), pool0);
+    assert_eq!(c.state().scalars().last_settled, settled0);
+    assert_eq!(c.status().state_root, root0);
+
+    // a retry halts at the same height with the same message
+    let again = panic_text(catch_unwind(AssertUnwindSafe(|| mine(&mut c, miner, 0, &[]))).err().expect("still halted"));
+    assert_eq!(again, msg);
+
+    // replay: a second node fed the same 14 blocks halts at the same block
+    let mut d = net.open("halt-b");
+    feed(&mut d, &blocks);
+    assert_eq!(d.tip().height, 14);
+    assert_eq!(d.status().state_root, root0);
+    let replayed = panic_text(catch_unwind(AssertUnwindSafe(|| mine(&mut d, miner, 0, &[]))).err().expect("the replay halts"));
+    assert_eq!(replayed, msg);
+    assert_eq!(d.tip().height, 14);
+    assert_eq!(d.status().state_root, root0);
+}
