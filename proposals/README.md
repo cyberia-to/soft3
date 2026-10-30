@@ -11,6 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
+| [access declarations](access-declarations.md) | proposed | 2026-10-30 | who may do what, as declarations signed by the owner's neuron and verified by the chain's own code; hosts, repositories, bots and secrets are renders of the declarations in force; the first three grants: Joy, the person the owner names, Alex the mayor |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
