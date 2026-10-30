@@ -1,0 +1,96 @@
+name: Diagnostic p2 settlement halt
+
+# Measurement only, never merged, never a release gate (plan row P2, session 393).
+# Runs the settlement-halt test alone, then the whole crate suite, on pussy's stand (release/pussy-stand.toml).
+on:
+  push:
+    branches: ['diag/p2-*']
+
+permissions:
+  contents: read
+
+jobs:
+  soft3-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          args=(); for o in $(python3 release/pussy_stand.py); do args+=(--override "$o"); done
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261030.1 --output "$RUNNER_TEMP/snapshot" "${args[@]}"
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          # test THIS head's crate, not the snapshot's soft3 default
+          rm -rf "$RUNNER_TEMP/sources/soft3/crate"
+          cp -a crate "$RUNNER_TEMP/sources/soft3/crate"
+          echo "soft3 crate from $GITHUB_SHA"
+      - name: "settlement halt test alone"
+        id: p2
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          timeout 3000 cargo test --locked a_settlement_panic_is_a_named_halt -- --nocapture 2>&1 | tee "$RUNNER_TEMP/test-p2.log"
+      - name: "cargo test --locked (the soft3-tests command)"
+        id: locked
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          timeout 5400 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/test-locked.log"
+      - name: "cargo test without --locked, only if the lock cannot match the stand"
+        if: steps.locked.outcome == 'failure'
+        id: unlocked
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          if ! grep -qi "lock" "$RUNNER_TEMP/test-locked.log"; then echo "locked run failed for another reason; not retrying"; exit 1; fi
+          timeout 5400 cargo test --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/test-unlocked.log"
+          cp Cargo.lock "$RUNNER_TEMP/Cargo.lock.resolved" || true
+      - name: Summary
+        if: always()
+        run: |
+          echo "p2: ${{ steps.p2.outcome }}  locked: ${{ steps.locked.outcome }}  unlocked: ${{ steps.unlocked.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked" "$RUNNER_TEMP"/test-*.log | head -80 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p2-${{ github.ref_name }}
+          path: |
+            ${{ runner.temp }}/test-*.log
+            ${{ runner.temp }}/Cargo.lock.resolved
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Warnings (the train counts any as red)
+        if: always()
+        run: |
+          n=$(grep -c "^warning" "$RUNNER_TEMP/test-locked.log" || true)
+          echo "warnings: $n"; grep -n "^warning" -A4 "$RUNNER_TEMP/test-locked.log" || true
+          test "$n" = 0
+      - name: Fail when red
+        if: steps.locked.outcome == 'failure' && steps.unlocked.outcome != 'success'
+        run: exit 1
