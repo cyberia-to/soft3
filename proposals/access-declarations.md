@@ -49,6 +49,8 @@ envelope  = mudra::neuron::sign(issuer_key, issuer, statement)        102 bytes
 estate_id = hemera("cyberia/estate/v1\0" ‖ "cyberia")                  a test estate uses its own name
 ```
 
+hemera here is the frozen material, hemera 0.4 (profile #15, `hemera/release/0.4`), the tier cybernode pins; mudra's default branch still pins 0.3, and a codec on the 0.3 tier computes different neuron ids, particles and heads. The golden vectors name the tier in their header, and `cy access` builds only on the 0.4 tier.
+
 Canonical means one byte form per value, as on the chain (chain.md §2: fixed order, little-endian, no optional fields). A decoder rejects and never repairs:
 
 - a version other than 1, an unknown kind or verb code, a verb its kind does not admit (host: ssh, sudo · repo: read, write · bot: read, admin · secret: use · root: act-as);
@@ -81,18 +83,18 @@ Rules, each a removal:
 
 The verifier is `mudra::neuron::verify_statement(subject, statement, evidence)` (mudra `src/neuron.rs`), the function `cybernode::wallet::verify` calls for every transaction and chain.md §2.7 names. A declaration verifies iff its bytes are canonical and `verify_statement(issuer, statement, envelope)` holds; nothing else is consulted.
 
-The signer is a new method of `cybernode::wallet::Signer`, over `mudra::neuron::sign(key, subject, statement)`:
+The signer is a proposed method of `cybernode::wallet::Signer` — not in code today; `Signer::sign` signs a `Tx` only and its key is private — over `mudra::neuron::sign(key, subject, statement)`. It is named `sign_digest` to keep clear of the existing alias `mudra::neuron::sign_statement`:
 
 ```rust
 impl Signer {
     /// NSIG1 over the 32-byte statement of another codec (an access declaration, a head).
-    pub fn sign_statement(&self, statement: [u8; 32]) -> Result<[u8; 102], Error>;
+    pub fn sign_digest(&self, statement: [u8; 32]) -> Result<[u8; 102], Error>;
 }
 ```
 
 `Signer::sign` signs transactions only and the key is private to the struct, hence the method. It adds no signing identity: the envelope is the one neuron-auth defines.
 
-Phase-0 gate: `cy access` links `cybernode::wallet`, and cybernode has no compile proof yet. C2 of [[soft3/proposals/cybernode|cybernode]] is open — its receipt, `cybernode/audit/move-2026-10-27.md`, says "the compile proof is not in this receipt": no sibling set on origin resolves the node's dependencies. Phase 0 starts when `cargo test` is green in cybernode on a pinned sibling set.
+Phase-0 gate: `cy access` needs `mudra::neuron::{sign, verify_statement}` and hemera at the pinned 0.4 tier — not the whole node; the wallet is needed only for the phase-1 transaction. Today neither resolves from a default branch: mudra's `Cargo.toml` pins hemera 0.3 and an optional `zheng ^0.3` against 0.4.0, and cybernode's receipt, `cybernode/audit/move-2026-10-27.md`, says "the compile proof is not in this receipt" (C2 of [[soft3/proposals/cybernode|cybernode]]). Phase 0 starts when mudra and hemera build and pass their tests on the pinned 0.4 sibling set; the phase-1 move waits for cybernode's C2.
 
 The owner's root, without exposing the spell. NSIG1 is an ADR-036 signature: the signer string is the Cosmos address of the key under the `neuron` HRP, the data `cyber:neuron:authority:v1:` ‖ statement (neuron-auth). Two paths produce it without the spell entering a process an agent can read:
 
@@ -140,7 +142,7 @@ Roles grant only by signed declarations. `estate.toml` roles and the plan's lane
 
 Nonces and replay. identity.md: "replay and double-spend prevention use authenticated nonce/nullifier state". A declaration is a standing grant, not a one-time action, so replaying its bytes is harmless — the same particle, the same grant. The replay that matters is resurrection: a revoked declaration re-entering a set it was dropped from, or a declaration signed long ago and held back. The authenticated state against both is the signed head of §7: the set only grows, a revoked particle stays revoked, and a new particle from an issuer must carry a nonce above that issuer's highest in the last signed head. On the chain the issuer's account nonce orders its links (chain.md §2.5), and the declaration's nonce remains only what makes particles distinct.
 
-Time. `now` is the renderer host's clock, and the renderer changes nothing unless that clock is synchronized (systemd's `NTPSynchronized=yes`; on galapot, the system's time sync). identity.md is plain that "wall-clock assertions from an untrusted host do not satisfy a chain timelock": from phase 1 the time is the chain's median time past (chain.md §1.4). A decision (§13).
+Time. `now` is the renderer host's clock, and the renderer changes nothing unless that clock is synchronized (systemd's `NTPSynchronized=yes` on the Hetzner hosts; on galapot, the system's time sync; on agent-a, a container without systemd, the provider's clock checked against an NTP query at each tick, with the lease running on a monotonic timer). identity.md is plain that "wall-clock assertions from an untrusted host do not satisfy a chain timelock": from phase 1 the time is the chain's median time past (chain.md §1.4). A decision (§13).
 
 Subjects, keys and rotation. identity.md separates a stable subject from a rotatable authority key; NSIG1 does not — the neuron is `hemera(pubkey)` and "no key registry exists" (chain.md §2.7). In this profile a new key is a new neuron, so:
 
@@ -192,7 +194,7 @@ No merge, no bypass. Merging follows the release train (the home `AGENTS.md` § 
 
 ## 7. the renderer
 
-`cy access render --host <h>` runs on each host from the apparatus tick (a systemd timer); `cy access render --github` and `--bot` run where the cockpit runs (launchd, beside it). One tick is 15 minutes, the cockpit's period (`to.cyberia.cockpit`, `StartInterval` 900).
+`cy access render --host <h>` runs on each host from the apparatus tick (a systemd timer on the Hetzner hosts; on agent-a, which is a container without systemd — `apparatus/servers/agent-a/README.md` — the same cron-style loop that runs the director and Julia Caesar); `cy access render --github` and `--bot` run where the cockpit runs (launchd, beside it). One tick is 15 minutes, the cockpit's period (`to.cyberia.cockpit`, `StartInterval` 900).
 
 A render is the difference between `in_force(set, now)` and what the managed files and team lists hold: it writes only that difference and reports every line it removes. It fails closed:
 
@@ -213,7 +215,7 @@ Break-glass. The owner's key sits outside every render: sshd's `AuthorizedKeysFi
 
 What a removed line does not reach. Removing a key ends no open session, and revocation "cannot retract a signature, password or code already delivered" (vault authorization, lines 79–88). So when a grant leaves the set the render also:
 
-- ends the account's sessions (`loginctl terminate-user <account>`) when no grant to that account is left;
+- ends the account's sessions (`loginctl terminate-user <account>` where systemd runs; `pkill -KILL -u <account>` on agent-a) when no grant to that account is left;
 - removes the login from the teams; open pull requests stay, as the record;
 - lists in the cockpit every secret the account could read on that host — its env files, tokens in its home, the bot's token — for rotation by the secret's owner. A revocation is complete when those are rotated, and the cockpit shows it open until then.
 
@@ -276,7 +278,7 @@ Joy's spend is none: budgets are not in phase 0 (§6).
 | 0 | soft3 | this page | the review's findings disposed; the owner's verdict on §13 |
 | 0 | owner | the offline path: the Ledger signs an ADR-036 document for a `neuron1…` signer | the assembled envelope verifies with `verify_statement` |
 | 0 | cybernode | the C2 compile proof | `cargo test` green on a pinned sibling set ([[soft3/proposals/cybernode|cybernode]] C2) |
-| 0 | cybernode | `Signer::sign_statement`; the codec and `in_force` as a module beside the wallet, public so every subject can check its own grants; the vectors | round trip with `verify_statement`; §11's golden and negative vectors |
+| 0 | cybernode | `Signer::sign_digest`; the codec and `in_force` as a module beside the wallet, public so every subject can check its own grants; the vectors | round trip with `verify_statement`; §11's golden and negative vectors |
 | 0 | cyb | `access` in `cli/tools.toml` | `cy install access`; `cy access verify` on the vectors |
 | 0 | apparatus | [a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md): the `joy` accounts, Joy's `[[agent]]` row and the neuron fields, the owner files for break-glass, the host timers, the GitHub App with Members only, the bot's allow-list file | the render on agent-a; the drill |
 | 0 | apparatus | the owner's ceremony: the first grants and the head | §11, the non-exposure check included |
