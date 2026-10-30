@@ -110,7 +110,47 @@ Tx::Cyberlink { from: issuer, nonce: the issuer's chain nonce, token: the native
 
 257 is the floor — `Kind::Cyberlink.min_fee()`, 257 bytes at one unit per byte (chain.md §2.6) — so the issuer needs a funded balance on pussy; its chain nonce (chain.md §2.5) is separate from the declaration's. The transaction's statement is the chain's, `hemera("soft3/chain/sign/v1\0" ‖ chain ‖ tx)`, signed by the same path as above. A reader accepts the link iff `wallet::verify(chain, tx)` passes, `from == issuer`, `q == subject` and `hemera(decl_bytes) == p`. A link with amount 0 is topology only: bbg's `insert` writes no particle record (chain.md §3.2, the particles row), so the chain holds the signed transaction and `axon(p, q)`, never the declaration's bytes. The bytes stay in the apparatus mirror (§8) under their particle and may also be pinned on the particle gateway; a reader fetches them from either and trusts neither, because `hemera(bytes) == p` is the check.
 
-## 4. subjects
+## 4. the trust anchor and the evaluator
+
+The root is pinned where the declarations cannot reach it: `ROOT` (the owner's neuron), `ESTATE_ID` and the protected set (below) are constants compiled into the renderer and, on a host that runs vault, values of its Ward policy. They are never read from the apparatus repository, which is the input being judged: whoever can write the repository can add files, not move the root.
+
+What is in force is a pure function, recomputed on every tick from the `.decl` files alone:
+
+```
+in_force(set, now) -> sorted [(subject, kind, name, credential, verbs, until, particle)]
+```
+
+`grants/index.toml` is a view for people; the evaluator never reads it. Inside `in_force`:
+
+1. decode every file; drop, and report, a file whose name is not its particle, whose bytes are not canonical, or whose envelope does not verify for its issuer under `ESTATE_ID`.
+2. equivocation: two different particles with one (issuer, nonce) are both dropped.
+3. rooted: a grant is rooted iff its issuer is `ROOT` and `parent` is zero, or `parent` is a rooted grant in the set whose subject is the issuer, whose depth is ≥ 1 and which contains it in the order below.
+4. revocation: a revocation or replacement of X takes effect iff its issuer is X's issuer or an issuer on X's chain of parents — the root always is. It is permanent: a revocation has no interval that ends, a revocation cannot itself be revoked, and a revoked particle stays revoked; a re-grant is a new declaration with a new nonce. It cascades: every grant rooted through X falls with X.
+5. time: a grant is in force iff `from ≤ now < until`.
+
+The order that "contains" uses — the scope lattice:
+
+- object: the same kind, and the same name, or the parent's name ends in the segment `*` and the child's name begins with the parent's segments before it. `*` never matches the protected set, pinned beside the root: the apparatus repository and the charter's repositories, `cyberia-to/cyberia` and `cyberia-to/.github`. A grant on one of them names it exactly and is issued by the root.
+- verbs: set inclusion. No verb implies another: `sudo` does not imply `ssh`, `admin` does not imply `read`; a grant names each.
+- interval: the child's `[from, until)` inside the parent's.
+- depth: the child's ≤ the parent's − 1.
+- spend is not in v1 (§6). When it returns it carries a unit and a limit, and a child is contained iff the unit is the same and the limit ≤ the parent's; the children's limits are counted against the parent's by the one Ward counter, not added up by the evaluator.
+
+Roles grant only by signed declarations. `estate.toml` roles and the plan's lanes describe; they grant nothing. v1 carries no role kind: each first grant is direct, and a role bundle comes with a later version when one is needed, with the credential question (a bundle spans kinds, a credential is per kind) answered there.
+
+Nonces and replay. identity.md: "replay and double-spend prevention use authenticated nonce/nullifier state". A declaration is a standing grant, not a one-time action, so replaying its bytes is harmless — the same particle, the same grant. The replay that matters is resurrection: a revoked declaration re-entering a set it was dropped from, or a declaration signed long ago and held back. The authenticated state against both is the signed head of §7: the set only grows, a revoked particle stays revoked, and a new particle from an issuer must carry a nonce above that issuer's highest in the last signed head. On the chain the issuer's account nonce orders its links (chain.md §2.5), and the declaration's nonce remains only what makes particles distinct.
+
+Time. `now` is the renderer host's clock, and the renderer changes nothing unless that clock is synchronized (systemd's `NTPSynchronized=yes`; on galapot, the system's time sync). identity.md is plain that "wall-clock assertions from an untrusted host do not satisfy a chain timelock": from phase 1 the time is the chain's median time past (chain.md §1.4). A decision (§13).
+
+Subjects, keys and rotation. identity.md separates a stable subject from a rotatable authority key; NSIG1 does not — the neuron is `hemera(pubkey)` and "no key registry exists" (chain.md §2.7). In this profile a new key is a new neuron, so:
+
+- a subject's key rotates by replacing each of its grants with one to the new neuron, in one ceremony;
+- a credential (ssh key, login, Telegram id) rotates by a replacement that changes only the credential;
+- the root rotates by a root transition: kind `root`, name `cyberia`, subject the new root, verb `act-as`, depth 0, parent zero, signed by the current root. From its `from` the renderer treats the new root as root; the old root's grants stay in force until they expire or the new root revokes them (it is an ancestor of all of them); the pinned constant moves in the renderer's next release, and the transition stays in the set for good.
+
+A transition is signed by the current root, so a lost or stolen root cannot be recovered by one. That needs a recovery quorum — [[mudra/specs/identity|identity]] § programmable policies: "authorized recovery quorum and policy transition"; [[mudra/specs/quorum|quorum]] — which this proposal does not specify. Until it is specified, a compromised root is answered out of band only: the owner's break-glass key (§7) on every host, and a renderer release with a new `ROOT`. A decision (§13).
+
+## 5. subjects
 
 | subject | neuron from | today |
 |---|---|---|
@@ -122,7 +162,7 @@ Tx::Cyberlink { from: issuer, nonce: the issuer's chain nonce, token: the native
 
 A person and an agent are the same kind of subject; the difference is only who holds the mnemonic.
 
-## 5. objects and their renders
+## 6. objects and their renders
 
 | object | the render the apparatus writes | from the declaration |
 |---|---|---|
@@ -133,7 +173,7 @@ A person and an agent are the same kind of subject; the difference is only who h
 | `budget:<ledger>` with `spend:<limit>` | the cockpit's money tab, the Akash deposit, the Hetzner card | the counter checks every outflow against the limit |
 | `role:<name>` with `act-as` | `estate.toml` `[[agent]]` roles; the plan's lanes | a role is a bundle of object grants, declared once |
 
-## 6. where the declarations live
+## 7. where the declarations live
 
 Phase 0 (now): `apparatus/grants/<particle>.decl` — the canonical bytes and the 102-byte envelope, one file per declaration, committed by the issuer's agent; `apparatus/grants/index.toml` generated. The apparatus repository is private, which is enough for the subjects' public neurons and the objects' names; nothing secret is in a declaration.
 
@@ -141,7 +181,7 @@ Phase 1 (with pussy): the same bytes as cyberlinks on the chain, amount 0: the d
 
 Phase 2 (fathership phase 2): declarations are the only record; GitHub teams, keys and bot lists are renders, re-generated from the graph on every tick, and a hand-made grant is removed by the next tick.
 
-## 7. the tool
+## 8. the tool
 
 `cy access` in the `cy` toolset ([[cyb]] `cli/tools.toml`), over `cybernode::wallet` and the vault:
 
@@ -156,7 +196,7 @@ cy access verify  <file.decl>         # the chain's verifier, nothing else
 
 `grant` signs with the caller's neuron from its vault; the owner's mnemonic never leaves the vault, and signing is a Ward-authorized operation with a receipt. `render` runs from the apparatus tick on every host and from the cockpit for GitHub and the bot.
 
-## 8. the first three grants
+## 9. the first three grants
 
 | subject | objects | scope | until |
 |---|---|---|---|
@@ -166,7 +206,7 @@ cy access verify  <file.decl>         # the chain's verifier, nothing else
 
 The owner issues these three by hand once with `cy access grant`; everything after is the mechanism.
 
-## 9. acceptance
+## 10. acceptance
 
 - a declaration signed on the development machine verifies on agent-a with `cy access verify` using only `cybernode::wallet` code; the same bytes verify as a cyberlink statement on the pussy chain's verifier.
 - `cy access render` on agent-a produces `authorized_keys` for the five agent users from declarations alone; a key added by hand disappears on the next tick, with a cockpit alert naming it.
@@ -174,7 +214,7 @@ The owner issues these three by hand once with `cy access grant`; everything aft
 - a revocation takes effect within one tick on every host and on GitHub.
 - the cockpit shows the declarations in force per subject and per object; an agent without a grant for an object raises a decision with the link to the declaration it needs.
 
-## 10. decisions for the owner
+## 11. decisions for the owner
 
 1. the subject neurons: Joy's spell lives in the development machine's vault; the agent-a bodies each in their own. default: yes.
 2. the person: who, and which objects. no link yet; the owner names them.
