@@ -217,36 +217,68 @@ Seeding the registry also turned up three contradictions between documents. Each
 
 ### 4.1 the stance
 
-eidos is the stack's proof assistant. A statement about the stack is "proved" when `eidos check` accepts it and its certificate is a particle; until then it is an assumption or a claim. Lean proofs are accepted as evidence in `measured-by` (an attacker's certificate, an external team's bound) and ported; the ported eidos proof is the record. The stack adds no Lean dependency, no Lean CI step, no Lean file.
+eidos is the stack's proof assistant. A statement about the stack has one of three statuses:
+
+- checked: `eidos check` accepts it with no `sorry`, and `eidos axioms` lists only axioms from `Axioms.ei` and the bootstrap set A-10. The registry records this as `checked (rust kernel, eidos <rev>)`. It is the only status that can be reached before E3, and only once E0 is done.
+- certified: from E3 on, the type check runs on nox, zheng certifies that run, and the certificate is a particle.
+- anything else is an assumption (a registry entry) or a claim.
+
+Today `eidos check` cannot be the record. When a proof ends in `sorry`, `check_theorem` prints a warning to stderr and registers the statement as if it were proved. The CLI then prints "proved" and exits 0 (`rs/src/surface/check.rs:206–213`, `cli/src/main.rs`). E0 makes `sorry` an error in the gate and lists it in `eidos axioms`.
+
+Lean proofs enter as evidence in `measured-by`, for example an attacker's certificate or an external team's bound. They are then ported, and the ported eidos proof becomes the record. All of the stack's own proofs, proof files and CI proof steps are in eidos.
+
+A theorem proves a statement about an eidos model of the code, not about the Rust itself. Conformance links the two:
+
+- the model is run with `eidos eval` over vectors the Rust already passes. For A-03 that is the 2,000-block corpus in cybernode `rs/src/chain/economy/vectors.rs:318–364`;
+- every A entry whose consumer is code states this gap;
+- running the model at the kernel's scale needs E1's binary integers, because a unary `Nat` cannot hold S0 ≈ 1.1 × 10^18.
 
 ### 4.2 what lean has that the registry needs, and the eidos answer
 
-| need | lean today | eidos today | build |
+| need | lean today | eidos today (`c1e8993`) | build |
 |---|---|---|---|
-| a checked axiom list | `axiom` + `#print axioms` | `axiom` keyword exists; no corpus-level listing | E0: `Axioms.ei` as the registry; `eidos axioms <file>` prints every axiom a theorem depends on |
-| integer and fixed-point arithmetic | Mathlib `Int`, `Nat`, `omega` | `Nat`, `Bool`, `List`, `le`, an omega-style tactic | E1: `Int` with bounded `u64`/`u128` semantics as used by the kernel; lemmas for floor division, isqrt, saturation |
-| polynomials over a finite field | Mathlib `Polynomial`, `ZMod`, `Finset.sum` | none | E2: `Goldilocks.ei` (field axioms with p concrete), `Poly.ei` (degree, evaluation, roots ≤ degree), `Multilinear.ei`; Schwartz–Zippel as a counting statement without probability |
-| probability for soundness error | Mathlib `MeasureTheory` | none, and not wanted | E2: soundness as a counting bound over the challenge space ("at most d·|S|^{k−1} bad points of |S|^k"); the probabilistic reading is the registry's class-C note, not a theorem |
-| random-oracle arguments | game-based pen-and-paper, rarely in Lean | none | E4: the oracle as an axiomatized interface with an explicit query budget; composition theorems take the budget as a parameter |
-| a trusted, re-executable kernel | the Lean kernel, trusted by convention | a CIC kernel as nox patterns, re-executable by design; zheng certification designed, not built | E3: the zheng bridge; certificate = `H(check_kernel, H(π, P))` as a cyberlink, replacing the FNV stub |
-| a library and a community | Mathlib, Zulip | 27 theorems | not replicated; the registry corpus is small and stack-specific by construction |
-| importing outside proofs | — | `port-from-lean` guide planned | E5: a statement-level Lean reader that renders a Lean theorem's statement in eidos surface syntax for porting; proofs are rewritten by hand or by an agent |
-| machine-found proofs | agents write Lean | agents can write eidos (nox/prysm corpus was) | the capability that fells conjectures writes eidos too; the corpus is the training signal |
+| a checked axiom list | `axiom` + `#print axioms` | `axiom` exists, but there is no `eidos axioms`. `sorry` is accepted as a silent axiom (§4.1). Six stdlib constants are trusted without a kernel check (A-10). The nox corpus has its own axioms (`nox/proofs/T3.ei` `sort_permutation_invariant`, `Model.ei`) | E0 |
+| checking a development | `lake build` | `eidos check` takes one file (`cli/src/main.rs:146`). An `import` needs a base directory, so it fails from the CLI, which calls `check_file` without one (`rs/src/surface/check.rs:160–163`) | E0: `eidos check <dir>` through `check_path` |
+| integer arithmetic | Mathlib `Nat`, `Int`, `omega` | what exists: a unary `Nat` (`nat_lit` builds n successors, `rs/src/stdlib/nat.rs:12`), `Bool`, `List`, `Le`. `Nat.div` is an opaque constant. Missing: `Int`, `Lt`, isqrt, u64/u128 wrap, the `add_comm`/`add_assoc`/`mul` lemmas, `List` sum and fold lemmas, finite maps. `omega` closes only goals that normalize to `Eq` by reflexivity, or `Le` between literals; otherwise `try_arith_laws` returns `None` (`rs/src/tactic_ext/arith.rs`, `rs/src/surface/omega.rs`) | E1 |
+| polynomials over a finite field | Mathlib `Polynomial`, `ZMod`, `Finset.sum` | none | E2: `Goldilocks.ei` (field axioms with p concrete), `Fp3.ei`, `Poly.ei` (degree, evaluation, roots ≤ degree), `Multilinear.ei`; Schwartz–Zippel as a counting statement |
+| probability for soundness error | Mathlib `MeasureTheory` | none, and not wanted | E2: soundness as a counting bound over the challenge space ("at most d·\|S\|^{k−1} bad points of \|S\|^k"); the probabilistic reading is the class-C note |
+| random-oracle arguments | game-based on paper, rarely in Lean | none | E4 |
+| a re-executable kernel | the Lean kernel, trusted by convention | a Rust CIC kernel (`rs/src/kernel.rs`, 620 lines). The nox kernel is a draft spec (`specs/kernel.md`). zheng certification is specified (`specs/certificate.md`), but the certificate code is an FNV-1a placeholder (`rs/src/certificate.rs:142`), and `eidos verify` exits 1 | E3, per `specs/certificate.md`: `axon = hemera(KERNEL_ID ‖ claim ‖ proof)` under domain `0xA1`; the artifact carries the zheng proof in its `stark` field; the cyberlink is `axon → OK` |
+| a library and a community | Mathlib, Zulip | 27 theorems over nox and prysm, resting on 107 declared axioms | not replicated; the registry corpus is small and stack-specific by construction |
+| importing outside proofs | — | a `port-from-lean` guide is planned (eidos `roadmap/README.md`) | E5 |
+| machine-found proofs | agents write Lean | agents can write eidos (the nox and prysm corpus was written that way) | the capability that fells conjectures writes eidos too; the corpus is the training signal |
 
 ### 4.3 the ladder
 
 | milestone | delivers | acceptance | when |
 |---|---|---|---|
-| E0 · the axiom file | `soft3/proofs/Axioms.ei`, one axiom per registry entry of class B, C, E, F, G, H, statements mirrored verbatim from `specs/assumptions.md`; `eidos axioms` lists dependencies | every registry id has one axiom and vice versa; `assumptions-gate` green | before 2026-11-02 |
-| E1 · integer theorems of the economy | `Conservation.ei` (A-03), `Attribution.ei` (A-08 bounds), `Asert.ei` (A-05), `Settlement.ei` (A-04 as a function of its inputs) | the theorems check; their statements quote the kernel's constants; the kernel tests cite the theorem ids | before 2026-11-02 for A-03 and A-05; A-08 with the economy fix |
-| E2 · the field and the sum-check | `Goldilocks.ei`, `Poly.ei`, `Multilinear.ei`, `Sumcheck.ei` (A-01, A-02) | the zheng soundness ledger's rows become theorem ids; one row = one proved bound | first fork window |
-| E3 · the zheng bridge | the type check of a proof runs on nox and is certified by zheng; certificate as cyberlink in bbg | a registry theorem's certificate is a particle; `eidos verify` exists | with the proven present |
-| E4 · oracle interfaces | random-oracle and QROM as axiomatized interfaces with query budgets; Fiat–Shamir composition (C-01, C-02) | the transcript spec's security row cites a theorem with its budget | after E2 |
-| E5 · the port | statement-level Lean reader; the bounty's rules name eidos as the canonical form and Lean as accepted evidence | the first ported attacker certificate | when the first one arrives |
+| E0 · the axiom file and the CLI | in eidos: `eidos check <dir>` with imports; `eidos axioms <file> [theorem]`, listing every axiom a theorem depends on, including `sorry` and the A-10 set; `sorry` as an error under `--deny-sorry`, which the gate uses. In soft3: `release/assumptions.py`, which generates `Axioms.ei` (classes B and C) and the mirror; the gate of §2.4; eidos pinned in `release/phase1.toml` (a bump PR) | every class-B and class-C id has exactly one generated axiom, every generated axiom has exactly one id, and their statement particles are equal; the gate is green | after genesis. It needs eidos CLI work and a new pin, and no genesis byte depends on it |
+| E1 · conservation, symbolically; then the integer library | first, `Conservation.ei` (A-03). Over abstract `S0`, `SUBSIDY` and h, with a block modelled as a finite list of moves (debit, credit, mint), it proves Σ after = Σ before + `SUBSIDY` per block, and so Σ_h = S0 + h·SUBSIDY by induction. Its prerequisites are: `add_comm`, `add_assoc` and the `mul` lemmas proved instead of trusted; `List` sum and fold with their lemmas; a finite-map or association-list model of balances; an `omega` that decides linear `Nat` goals; the A-10 lemmas proved. Second, the integer library: binary `Nat` and `Int` with u64/u128 wrap semantics, `Lt`, and floor division and isqrt as definitions with lemmas. Then `Asert.ei` (A-05), `Attribution.ei` (A-08, after the economy fix) and `Settlement.ei` (A-04 as a function of its inputs) | the theorems check with no `sorry` and no axiom beyond A-10, and none at all once A-10 is proved; each A′ entry covered moves to A and names its conformance link (§4.1) | the symbolic lemma after genesis; the integer theorems at the first fork window |
+| E2 · the field and the sum-check | `Goldilocks.ei`, `Fp3.ei`, `Poly.ei`, `Multilinear.ei`, `Sumcheck.ei` (A-01, A-02) | the ledger rows "succinct — Spartan IOP over Fp3" and "zk — masked Spartan IOP" each cite a theorem id for their bound | first fork window |
+| E3 · the zheng bridge | the nox kernel of `specs/kernel.md`; the type check runs on nox and zheng certifies it; the certificate of `specs/certificate.md` replaces the FNV-1a placeholder; `eidos verify` works | a registry theorem's certificate is a particle | with the proven present |
+| E4 · oracle interfaces | random-oracle and QROM interfaces as axioms with explicit query budgets; Fiat–Shamir composition (C-01, C-02) | the transcript spec's security row cites a theorem with its budget | after E2 |
+| E5 · the port | a statement-level Lean reader that renders a Lean theorem's statement in eidos surface syntax; proofs are rewritten by hand or by an agent; the hemera bounty's terms name eidos as canonical and Lean as accepted evidence (an owner decision, §7) | the first ported attacker certificate | when the first one arrives |
+
+Three things stay off the ladder:
+
+- A-07's contraction bound, a spectral statement over the reals;
+- C-04's compiler correctness, a candidate after E2, to be sized then;
+- C-06, which has no known proof.
 
 ### 4.4 what this costs
 
-E0 is a day. E1 is the first real corpus and sizes eidos's integer library: two to four sessions. E2 is the one that makes eidos a proof assistant for the stack rather than for toy programs: a finite-field and polynomial library is weeks of work, and the sum-check proof is the first theorem that would have been written in Lean elsewhere. E3 is already on eidos's roadmap and blocked on the same zheng work the proven present needs. The order is chosen so that each milestone proves something the launch uses.
+- E0: CLI work in eidos (directory check, `eidos axioms`, `sorry` as an error), plus a generator and a gate. One to two sessions, and a bump PR for the pin.
+- E1, first half: the symbolic lemma is small once its prerequisites exist. The prerequisites themselves (proved `Nat` lemmas, `List` sums, a model of balances, a real decision procedure for linear arithmetic) take two to four sessions.
+- E1, second half: the integer library behind the kernel-faithful theorems is larger. It is sized once the first half lands.
+- E2: this is the milestone that makes eidos a proof assistant for the stack rather than for toy programs. A finite-field and polynomial library is weeks of work, and the sum-check proof is the first theorem that would otherwise have been written in Lean.
+- E3: already on eidos's roadmap, and blocked on the same zheng work the proven present needs.
+
+Each milestone proves something the chain already uses.
+
+### 4.5 follow-ups in eidos
+
+- the README's `axon = H(check_kernel, H(π, P))` has drifted from `specs/certificate.md`, which uses `hemera(KERNEL_ID ‖ claim ‖ proof)` under domain `0xA1`. The README should follow the spec;
+- `roadmap/replace-lean.md` mirrors the first version of this ladder. It needs the revised E0, E1 and E3 above.
 
 ## 5. watch and measurement
 
