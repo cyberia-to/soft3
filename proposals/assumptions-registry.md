@@ -132,7 +132,7 @@ The fields work together:
 - observations: status, best attack and measurement dates live in `soft3/audit/assumptions/<date>.md`, one receipt per review, under the placement rule (`specs/README.md` § report placement). The first receipt is [[soft3/audit/assumptions/2026-10-30|the receipt of 2026-10-30]].
 - measurements stay where they are made: `hemera/audit/campaign.md`, `simulation/audit/`, `zheng/specs/soundness.md`, `tru/audit/`, `cyber/audit/cryptography-*.md`. The registry and the receipt link to them and never copy them.
 - proofs: `soft3/proofs/` is an eidos development. It holds `Axioms.ei` and one theory file per class-A theorem.
-- which entries get an eidos axiom:
+- which entries get an eidos axiom. §0's "an assumption is an axiom" applies to every assumption a proof can rest on. Entries that no proof rests on are measured, not axiomatized:
   - B and C: one axiom each, because these are what proofs consume (E2, E4).
   - A and A′: none. These are theorems or candidate theorems. Turning a tested invariant into an axiom would let a proof rest on an unproved claim about our own code.
   - D: never.
@@ -282,20 +282,32 @@ Each milestone proves something the chain already uses.
 
 ## 5. watch and measurement
 
-- capability watch: every release of `openai/math`, of Anthropic's and DeepMind's research artifacts, and a weekly cut of ePrint and arXiv cs.CC and cs.CR are scanned against the `watch` fields; the result is one row per entry in `cyber/audit/cryptography-<date>.md` within a day of the release. A status change on any entry is a row in `launch.md` and an owner decision.
-- measurement: every class-B, F and G entry names a script and a date; hemera's campaign is the model (`p2rounds.py`), the simulator's verdict tables are the model for F and G, conformance for A. An entry whose measurement is older than 90 days is red in the gate.
-- the response plan: `if-false` is written before the entry is accepted. An entry without a response is not an entry.
+- capability watch: the sensor of the crypto domain runs it (`cyberia/dev.md` § the roles: the sensor perceives and fires, and holds the critic and tester skills). It scans each of these sources against the `watch` fields:
+  - every release of `openai/math`;
+  - Anthropic's and DeepMind's research artifacts;
+  - a weekly cut of ePrint and of arXiv cs.CC and cs.CR.
+
+  Within a day of a release, it writes one row per affected entry into `soft3/audit/assumptions/<date>.md`. The literature narrative stays in `cyber/audit/cryptography-<date>.md`. A status change on any entry becomes a row in `cyber/launch.md` and an owner decision.
+- measurement: every class-B, F and G entry names a script or a suite. The models are hemera's campaign (`p2rounds.py`, `cico1.py`) for B, the simulator's verdict tables for F and G, and the conformance vectors for A′. A measurement older than 90 days becomes an info row in the candidate's receipt and a task for the sensor (§2.4); it never turns the gate red.
+- the response plan: an entry carries its `if-false` from the day it is accepted.
 
 ## 6. launch
 
-Nothing in the genesis files changes. Before 2026-11-02: `specs/assumptions.md` with the seed entries of §3, `soft3/proofs/Axioms.ei` (E0), E1 for A-03 and A-05, the gate wired, the public mirror. H-01 remains the owner's decision and is the only red entry that changes a genesis file.
+The freeze is 2026-11-02 00:00 UTC (`cyber/launch.md`, decision of 2026-10-17). From then until genesis, only security fixes and bug fixes with a failing test merge. H-01 is the only item in this proposal that changes a genesis file, and that change is the owner's call.
+
+- before the freeze:
+  - H-01, if the owner sets a key. Both genesis particles then change and must be re-blessed (soft3#398, the director's comment; soft3#399).
+  - `specs/assumptions.md` and the public mirror, if the proposal is accepted in time. Both are text only: no code, no genesis byte.
+- after genesis: E0 (the eidos CLI work, the generator, the gate, and the eidos pin as a bump PR) and E1's symbolic lemma. The receipts continue in `audit/assumptions/`.
+- if H-01 misses the freeze: the chains launch with checkpoints off. After that, a key can arrive only through a scheduled fork, because chain.md §5.3 says "the key cannot be rotated without a release". Until then, late joiners stay exposed to deep rewrites (F-01).
 
 ## 7. decisions for the owner
 
-1. **Class G and H entries in the same registry.** Economic parameters and trust in keys are choices, not science; the proposal lists them anyway because `if-false` is exactly the plan the stack needs for them. Default: one list, eight classes.
-2. **Lean evidence.** Accepted in `measured-by`, never as the record. Default: yes.
-3. **E2 scope before or after the first fork.** The sum-check proof in eidos is the first theorem that replaces Lean in substance; it is not needed for genesis. Default: after launch, first fork window.
-4. **H-01.** A checkpoint key and its sunset, or an explicit decision to launch without checkpoints and accept F-01's measured consequence. Default: a key, signed by the foundation, sunset at 180 days.
+1. H-01, the checkpoint key. Deadline: before 2026-11-02 00:00 UTC, because a key changes both genesis files. The choice is a key with its sunset, or an explicit decision to launch without checkpoints and accept F-01's measured consequence. Default: a foundation key in both genesis files, with the sunset chain.md §5.3 already fixes (525,600 blocks, about six months). Links: [the simulator receipt, for the owner, item 1](https://github.com/cyberia-to/simulation/blob/main/audit/network-2026-10.md#for-the-owner--properties-measured-not-bugs); [soft3#398, the director's comment](https://github.com/cyberia-to/soft3/pull/398#issuecomment-6441630702); [soft3#399](https://github.com/cyberia-to/soft3/pull/399).
+2. E-01, the sunset of classical authorization. The class-E rule requires a sunset height. chain.md writes one for the checkpoint key and none for transaction signatures, and privacy-frozen leaves that height to the owner, to be set before rule set 2 (§1.9, §6 item 8). Default: from the activation of rule set 2, classical signatures authorize only entry into the pool (the narrowing of privacy-frozen §1.9). Link: no link yet; the open item is privacy-frozen §6 item 8.
+3. Class G and H entries in the same registry. Economic parameters and trust in keys are choices, not science. The proposal lists them anyway, because `if-false` is exactly the plan the stack needs for them. Default: one list, eight classes. Link: no link yet (this proposal, soft3#398).
+4. E2 before or after the first fork. The sum-check proof in eidos is the first theorem that replaces Lean in substance, and genesis does not need it. Default: after launch, in the first fork window. Link: no link yet.
+5. E5, the bounty's canonical form. The hemera bounty's terms would name eidos as the canonical form of a submitted proof and Lean as accepted evidence. Opening the bounty is the owner's call (launch.md, decision 2026-10-16). Default: yes, in the terms the bounty opens with. Link: no link yet; the terms are `hemera/audit/campaign.md` §4.2.
 
 ## sources
 
@@ -305,3 +317,5 @@ Nothing in the genesis files changes. Before 2026-11-02: `specs/assumptions.md` 
 - [[zheng]] `specs/soundness.md` on `origin/master` (`ecf2491`); [[tru]] `audit/epoch-settlement-2026-10.md` on `origin/master`; [[cybernode/specs/chain|chain]] and [[cybernode/specs/chain-economy|chain-economy]] (moved from soft3 on 2026-10-27, section numbers unchanged).
 - [[cyber/audit/cryptography-2026-10-08|the cryptography audit]] §2 (what the stack relies on at genesis), §6 (the 10-06 release read against the primitives)
 - [[hemera/audit/campaign|hemera campaign]]; [[simulation/audit/network-2026-10|the simulator receipt]]; [[soft3/proposals/privacy-frozen|privacy, frozen]] G1–G7; [[eidos/specs/certificate|eidos certificate]]
+- [[eidos]] at `c1e8993`: `rs/src/kernel.rs`, `rs/src/certificate.rs`, `rs/src/stdlib/{nat,le,mod}.rs`, `rs/src/surface/{check,omega}.rs`, `rs/src/tactic_ext/arith.rs`, `cli/src/main.rs`, `specs/kernel.md`, `specs/certificate.md`; `soft3/status.md` (eidos: blocked)
+- [[soft3/audit/assumptions/2026-10-30|the receipt of 2026-10-30]]: the observed status of every seed entry, with revisions
