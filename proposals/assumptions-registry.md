@@ -9,19 +9,47 @@ date: 2026-10-27
 ---
 # the assumptions registry
 
-**status:** proposed · **date:** 2026-10-27 · **owner's call:** "a clear registry of scientific assumptions; Lean is foreign, eidos is native — whatever eidos lacks to replace Lean must be built."
+**status:** proposed · **date:** 2026-10-27, revised 2026-10-30 (review round 1) · **owner's call:** "a clear registry of scientific assumptions; Lean is foreign, eidos is native — whatever eidos lacks to replace Lean must be built."
 
 ## 0. the decision
 
-The stack keeps one list of everything it assumes and cannot prove. That list is the axiom file of the stack's own proof corpus in [[eidos]]: an assumption is an axiom, a consequence is a theorem, and nothing load-bearing exists outside the two. Every assumption is classed, every class has a rule about what it may carry, every entry says what breaks if it is false, how it is measured, and what to watch. Proofs about the stack are written in eidos; [[lean]] is accepted only as evidence from outside, never as the stack's own record. Where eidos cannot yet carry a proof the stack needs, the missing piece is built in eidos; the stack does not borrow a foreign kernel.
+The stack keeps one list of everything it assumes and cannot prove. That list is the axiom file of the stack's own proof corpus in [[eidos]]: an assumption is an axiom, a consequence is a theorem, and nothing load-bearing exists outside the two. Every assumption is classed, every class has a rule about what it may carry, every entry says what breaks if it is false, how it is measured, and what to watch. Proofs about the stack are written in eidos; Lean is accepted only as evidence from outside, never as the stack's own record. Where eidos cannot yet carry a proof the stack needs, the missing piece is built in eidos; the stack does not borrow a foreign kernel.
 
 ## 1. why now
 
-In the week of 2026-10-17 to 10-26 the Exponential Time Hypothesis, its strong, gap, nondeterministic and counting forms fell to one preprint (OpenAI, `openai/math`, Lean-checked at a weaker bound, under review by Impagliazzo, Paturi and Williams); the 3SUM and APSP hypotheses fell three weeks earlier (Alman and Vassilevska Williams, arXiv:2610.06783, algorithm found by Claude); the Unique Games Conjecture was proved in the release of 10-06 ([[cyber/audit/cryptography-2026-10-08|the cryptography audit]] §6). The machines that do this are the same machines that will be pointed at [[hemera]], at the economy and at the network.
+Between 2026-10-05 and 2026-10-26, machine-found results knocked down three groups of hypotheses that complexity theory and cryptography had relied on:
 
-The stack was not touched, and the reason is instructive: no consensus rule rests on an asymptotic conjecture. hemera's security is a measured attack on a fixed permutation ([[hemera/audit/campaign|the campaign]]); [[zheng]]'s soundness is Schwartz–Zippel, code proximity and a random oracle; the economy is integer arithmetic on bbg; the network is Nakamoto with measured bounds ([[simulation/audit/network-2026-10|the simulator receipt]]). That was true by habit. This proposal makes it true by rule, writes the list down in one place, and gives the list a proof checker of its own.
+- 2026-10-05: the 3SUM, APSP and Exact Triangle hypotheses. Alman and Vassilevska Williams give a truly subquadratic 3SUM and a truly subcubic APSP algorithm (arXiv:2610.06783, v1 of 5 October). The paper states that "Claude, an AI model developed by Anthropic, discovered the algorithm" (p. 1 and § Acknowledgments and Methodology), and that its main results are certified in Lean.
+- 2026-10-06: the Unique Games Conjecture, proved in OpenAI's `openai/math` release ([[cyber/audit/cryptography-2026-10-08|the cryptography audit]] §6).
+- two weeks after the 3SUM paper: OpenAI's preprint "The Exponential Time Hypothesis is False". It is dated 17 October 2026 and revised 25 October 2026, and has been in `openai/math` since 2026-10-26. It gives a deterministic algorithm that counts the satisfying assignments of a k-CNF in subexponential time and polynomial space, and states that this refutes ETH, SETH, Gap-ETH, NSETH and #ETH (its §1). Its Lean formalization proves a weaker time bound: the exponent has (log log n)² where the manuscript has log log n (`lean/docs/378.md` in `openai/math`). News coverage reports that the verification is led by Russell Impagliazzo, Ramamohan Paturi and Ryan Williams, who state that their involvement does not certify the claim. We report this; we have not verified it.
 
-Lean is the wrong checker for this list. Its kernel, its library and its community are outside the stack; a Lean certificate proves a statement to a Lean user, and the stack cannot re-execute it, cannot store it as a particle, cannot certify it with a zheng proof, and cannot verify it inside a block. eidos is a CIC kernel whose type checker is a [[nox]] program, whose execution zheng certifies, and whose certificates are cyberlinks ([[eidos/specs/certificate|certificate]]). A theorem about the stack belongs in the graph the stack maintains, checked by the stack's own machine. Today eidos is small (a kernel, an elaborator, a tactic engine, 139 tests, 27 theorems over nox and prysm, no polynomial library, no zheng bridge, a stub certificate). §4 is the list of what it must grow to replace Lean for the registry's purposes, in order, with acceptance criteria.
+The machines that do this are the same machines that will be pointed at [[hemera]], at the economy and at the network.
+
+No consensus rule of the stack rests on an asymptotic conjecture, so none of these results touches it:
+
+- hemera's security is a concrete claim about one fixed permutation. A public campaign will measure it ([[hemera/audit/campaign|the campaign]], a draft whose day 0 comes when 0.4's constants, vectors and instance table are published together).
+- [[zheng]]'s soundness rests on Schwartz–Zippel, code proximity, a random oracle, and the three rows its own ledger marks conjectured (C-04 to C-06 below).
+- the economy is integer arithmetic on bbg.
+- the network is Nakamoto consensus, with bounds measured by the simulator ([[simulation/audit/network-2026-10|the simulator receipt]]).
+
+So far this has held by habit. This proposal makes it a rule, writes the list down in one place, and gives the list a proof checker of the stack's own.
+
+Lean is the wrong checker for this list. Its kernel, its library and its community are outside the stack. A Lean certificate proves a statement to a Lean user. The stack can never re-execute it, store it as a particle, certify it with a zheng proof, or verify it inside a block.
+
+eidos is designed to do all four. In that design the type checker is a [[nox]] program, zheng certifies its execution, and the certificates are cyberlinks (`eidos/specs/kernel.md` and [[eidos/specs/certificate|certificate]], both draft). That design is not built yet. Today eidos has:
+
+- a Rust CIC kernel (`rs/src/kernel.rs`, 620 lines), an elaborator and a tactic engine;
+- 139 tests;
+- 27 theorems over nox and prysm, which rest on 107 declared axioms.
+
+Several pieces are still missing:
+
+- the nox kernel exists only as a draft specification;
+- the certificate is an FNV-1a placeholder (`rs/src/certificate.rs:142`);
+- `eidos verify` and `eidos search` print "not yet implemented" and exit 1;
+- soft3's status page lists eidos as blocked.
+
+A theorem about the stack belongs in the graph the stack maintains, checked by the stack's own machine. §4.2 lists every eidos gap that matters to the registry, and §4.3 puts the work in order.
 
 ## 2. the registry
 
@@ -166,7 +194,9 @@ Nothing in the genesis files changes. Before 2026-11-02: `specs/assumptions.md` 
 
 ## sources
 
-- OpenAI, "The Exponential Time Hypothesis is False", `openai/math` preprint, 2026-10-17 rev. 10-25; Lean scope `lean/docs/378.md`
-- Alman, Vassilevska Williams, arXiv:2610.06783, 2026-10-05
+- OpenAI, "The Exponential Time Hypothesis is False", `openai/math`, `preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf`. The paper is dated "17 October 2026, revised 25 October 2026"; it first appeared in the repository in commit `42907c9`, 2026-10-26. Its §1 lists the hypotheses it refutes. The Lean scope is `lean/docs/378.md` in the same repository. All read 2026-10-30.
+- Alman, Vassilevska Williams, "Truly Subquadratic 3SUM and Truly Subcubic APSP via Triangles in Sparse Lopsided Graphs", arXiv:2610.06783, v1 2026-10-05. In the PDF read 2026-10-30, p. 1 and § Acknowledgments and Methodology attribute the algorithm to Claude.
+- the ETH verification team, from news coverage (reported, not verified by us): xenospectrum.com/en/openai-exponential-time-hypothesis-false-claim; aiweekly.co/alerts/openai-hands-eth-kakeya-yang-mills-proofs-to-reviewers (2026-10-26).
+- [[zheng]] `specs/soundness.md` on `origin/master` (`ecf2491`); [[tru]] `audit/epoch-settlement-2026-10.md` on `origin/master`; [[cybernode/specs/chain|chain]] and [[cybernode/specs/chain-economy|chain-economy]] (moved from soft3 on 2026-10-27, section numbers unchanged).
 - [[cyber/audit/cryptography-2026-10-08|the cryptography audit]] §2 (what the stack relies on at genesis), §6 (the 10-06 release read against the primitives)
 - [[hemera/audit/campaign|hemera campaign]]; [[simulation/audit/network-2026-10|the simulator receipt]]; [[soft3/proposals/privacy-frozen|privacy, frozen]] G1–G7; [[eidos/specs/certificate|eidos certificate]]
