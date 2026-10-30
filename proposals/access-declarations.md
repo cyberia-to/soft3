@@ -221,48 +221,80 @@ Delay. The maximum revocation delay, which vault authorization asks every profil
 
 ## 8. where the declarations live
 
-Phase 0 (now): `apparatus/grants/<particle>.decl` — the canonical bytes and the 102-byte envelope, one file per declaration, committed by the issuer's agent; `apparatus/grants/index.toml` generated. The apparatus repository is private, which is enough for the subjects' public neurons and the objects' names; nothing secret is in a declaration.
+Phase 0 (now): `apparatus/grants/<particle hex>.decl` — `decl_bytes ‖ envelope`, one file per declaration — and `apparatus/grants/head`, committed by whoever ran the ceremony; `grants/index.toml` is generated for people and ignored by the evaluator (§4). The apparatus repository is private; nothing secret is in a declaration — public neurons, account names, public keys, logins, ids. The repository is a channel, not a trust: whoever can write it can only add files the evaluator drops.
 
-Phase 1 (with pussy): the same bytes as cyberlinks on the chain, amount 0: the declaration particle → the subject's neuron, signed by the issuer. The apparatus reads the chain. Revocation is a later link. The private repository keeps a mirror for the hosts that must not depend on a node to boot.
+Phase 1 (with pussy): each declaration also a kind-2 link, amount 0, `p` its particle, `q` its subject (§3). The renderer reads the links from the chain and the bytes from the mirror, by particle. A revocation is a later link. The private repository keeps the bytes and serves the hosts that must not depend on a node to boot.
 
-Phase 2 (fathership phase 2): declarations are the only record; GitHub teams, keys and bot lists are renders, re-generated from the graph on every tick, and a hand-made grant is removed by the next tick.
+Phase 2 (fathership phase 2): the declarations are the only record the renders are written from; GitHub teams, keys and bot lists are re-generated from the graph on every tick, and a hand-made grant is removed by the next one.
 
 ## 9. the tool
 
-`cy access` in the `cy` toolset ([[cyb]] `cli/tools.toml`), over `cybernode::wallet` and the vault:
+`cy access`, a tool of the `cy` toolset (cyb `cli/tools.toml`), over `cybernode::wallet` (§3):
 
 ```
-cy access grant   --to <neuron> --object host:agent-a --scope ssh,sudo --until 2027-01-01 --depth 0
-cy access revoke  <particle>
-cy access list    [--subject <neuron>] [--object <kind:name>]
-cy access who-am-i
-cy access render  --host agent-a      # writes authorized_keys / sudoers from the declarations in force
-cy access verify  <file.decl>         # the chain's verifier, nothing else
+cy access grant    --to <neuron> --object host:agent-a/user:joy --credential "ssh-ed25519 AAAA…" \
+                   --verbs ssh --until +90d --depth 0 --sign adr036
+cy access revoke   <particle> --sign adr036
+cy access head     --sign adr036                 # the signed head over the set, at the end of a ceremony
+cy access list     [--subject <neuron>] [--object <kind:name>]
+cy access who-am-i [--neuron <neuron>]
+cy access render   --host <name> | --github | --bot
+cy access verify   <file.decl>                   # canonical bytes and verify_statement, nothing else
 ```
 
-`grant` signs with the caller's neuron from its vault; the owner's mnemonic never leaves the vault, and signing is a Ward-authorized operation with a receipt. `render` runs from the apparatus tick on every host and from the cockpit for GitHub and the bot.
+`--until` takes a period and writes the absolute time into the bytes. `--sign` is `adr036`, the offline path, or `vault` once `authorize_action` exists; there is no `--spell` and no code path that reads one. `who-am-i` lists the grants in force whose subject is the caller's neuron or whose object names the caller's account on this host. An agent that lacks a grant asks for it as a decision, with the declaration it needs written out by `cy access grant --dry-run`.
 
-## 10. the first three grants
+## 10. the first grants
 
-| subject | objects | scope | until |
+All at depth 0, issued by the root alone, valid 90 days and renewed by a new declaration. The owner signs them once by the offline path and signs the head; everything after is the mechanism.
+
+| subject | object | verbs | waits for |
 |---|---|---|---|
-| Joy | `host:agent-a`, `host:cyberproxy`, `host:deimos`, `host:jupiter`; `repo:cyberia-to/*`; `bot:@cyber_ia_bot`; `budget:akash` | ssh, sudo; write, merge on non-default branches; read; spend ≤ the lease | 90 days, depth 1 (may grant a sub-agent for one task) |
-| the person the owner names | `repo:cyberia-to/apparatus`; the cockpit; `host:<as the owner says>` | read; or as the owner says | as the owner says |
-| Alex, the mayor | `bot:@cyber_ia_bot` (the Cyber Valley topic); `repo:cyberia-to/cve` | read, write on `cve/`; the mayor's line to the governor | the term of the president director |
+| Joy | `host:agent-a/user:joy`, `host:cyberproxy/user:joy`, `host:deimos/user:joy`, `host:jupiter/user:joy` | ssh | the `joy` accounts (apparatus a1); sudo on any of them is a separate grant and the owner's verdict (§6) |
+| Joy | `repo:cyberia-to/*` — never matching apparatus, cyberia, .github (§4) | read, write | Joy's own GitHub identity (§6) |
+| Joy | `bot:cyber_ia_bot/*` | read | the bot's token |
+| the person the owner names | as the owner says, within the kinds of §6 | as the owner says | who, and which objects |
+| Alex, the mayor | `bot:cyber_ia_bot/cyber-valley`; `repo:cyberia-to/cve`, the whole repository — a team cannot be scoped to a directory | read, write | Alex's Telegram id and GitHub login, pinned as credentials |
 
-The owner issues these three by hand once with `cy access grant`; everything after is the mechanism.
+Joy's spend is none: budgets are not in phase 0 (§6).
 
 ## 11. acceptance
 
-- a declaration signed on the development machine verifies on agent-a with `cy access verify` using only `cybernode::wallet` code; the same bytes verify as a cyberlink statement on the pussy chain's verifier.
-- `cy access render` on agent-a produces `authorized_keys` for the five agent users from declarations alone; a key added by hand disappears on the next tick, with a cockpit alert naming it.
-- Joy opens an ssh session to agent-a and a pull request to apparatus with no owner action after the owner's one grant.
-- a revocation takes effect within one tick on every host and on GitHub.
-- the cockpit shows the declarations in force per subject and per object; an agent without a grant for an object raises a decision with the link to the declaration it needs.
+- golden vectors: the codec reproduces the bytes, statement, particle and envelope of every vector of §2 from the fixed test key, in cybernode's tests and through `cy access verify`.
+- negative vectors, each rejected by `cy access verify` or dropped by `in_force`, with its reason: a flipped byte in the bytes and in the envelope; a wrong issuer (an envelope by another key); expired (`now ≥ until`); not yet valid (`now < from`); revoked, and a grant rooted through a revoked one; a child wider than its parent in object, verbs, interval and depth, each; an unknown root; a wildcard reaching the protected set; a grant for another host or account than the one rendered (`host:deimos/user:joy` is not rendered on agent-a); non-canonical bytes (unsorted verbs, a duplicate verb, a verb the kind does not admit, a trailing byte, `from ≥ until`, an ssh credential with options); an edited `index.toml` (no effect); an empty input (no change); a set missing a particle of the signed head (no change); a new declaration whose nonce is at or below its issuer's in the signed head.
+- a declaration signed on galapot by the offline path verifies on agent-a with `cy access verify`; in phase 1 its link verifies with `wallet::verify` under the pussy chain id and the reader recovers the same grant.
+- `cy access render --host agent-a` writes the managed `authorized_keys` of every account a grant in force names, and of no other, from declarations alone; a key added by hand to a managed file is gone on the next tick (15 minutes), with a cockpit alert naming it; the break-glass file is untouched.
+- the revocation drill: the root revokes Joy's `host:agent-a/user:joy`; within one tick after the revocation reaches origin Joy's ssh is refused, its open session on agent-a is ended, and the cockpit lists the secrets of that account for rotation; a re-grant with a new nonce restores access, and the revoked particle stays revoked.
+- with its own GitHub identity, Joy pushes a branch and opens a pull request to a stack repository, and cannot merge it.
+- non-exposure: after every ceremony a grep for the spell's words and the secret key's hex finds nothing in the shell histories, in the argv and environments of the processes captured during the ceremony, in `cy access`'s logs, in the apparatus repository and in the agents' transcripts on the machine; `from_spell` does not occur in `cy access`'s source.
+- the cockpit shows the declarations in force per subject and per object, the alerts of §7, and for every host the time since its last verified input.
 
-## 12. decisions for the owner
+## 12. order
 
-1. the subject neurons: Joy's spell lives in the development machine's vault; the agent-a bodies each in their own. default: yes.
-2. the person: who, and which objects. no link yet; the owner names them.
-3. phase 1 on the chain: declarations as amount-0 cyberlinks on pussy from genesis, or private files until the chain has run a month. default: files now, the chain after the first month.
-4. GitHub: the renders act as `cyberia-apparatus`, which must then hold org admin. default: yes, with the owner's own account untouched.
+| phase | repo | move | gate |
+|---|---|---|---|
+| 0 | soft3 | this page | the review's findings disposed; the owner's verdict on §13 |
+| 0 | owner | the offline path: the Ledger signs an ADR-036 document for a `neuron1…` signer | the assembled envelope verifies with `verify_statement` |
+| 0 | cybernode | the C2 compile proof | `cargo test` green on a pinned sibling set ([[soft3/proposals/cybernode|cybernode]] C2) |
+| 0 | cybernode | `Signer::sign_statement`; the codec and `in_force` as a module beside the wallet, public so every subject can check its own grants; the vectors | round trip with `verify_statement`; §11's golden and negative vectors |
+| 0 | cyb | `access` in `cli/tools.toml` | `cy install access`; `cy access verify` on the vectors |
+| 0 | apparatus | [a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md): the `joy` accounts, Joy's `[[agent]]` row and the neuron fields, the owner files for break-glass, the host timers, the GitHub App with Members only, the bot's allow-list file | the render on agent-a; the drill |
+| 0 | apparatus | the owner's ceremony: the first grants and the head | §11, the non-exposure check included |
+| 1 | cybernode, apparatus | the chain reader: links from pussy, bytes from the mirror | `in_force` from the chain equals `in_force` from the files |
+| 2 | apparatus | hand-made grants removed wherever a render reaches | a full tick removes nothing |
+
+## 13. decisions for the owner
+
+Each names its section here and the apparatus side, [a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md).
+
+1. the root and its rotation ([§2 rule 1](#2-the-declaration), [§4](#4-the-trust-anchor-and-the-evaluator)): the root is the owner's legacy neuron — the key that also holds the owner's balances — pinned in the renderer; it rotates by a transition the old root signs; recovery after a lost or stolen root waits for a recovery quorum, with break-glass and a renderer release meanwhile. default: yes, and the quorum as its own proposal.
+2. the root's signing path in phase 0 ([§3](#3-signing-and-verifying)): the offline ADR-036 path on the owner's hardware wallet, or wait for vault's `authorize_action`. default: offline.
+3. sudo and depth ([§6](#6-objects-and-their-renders), [§10](#10-the-first-grants)): Joy's host grants carry ssh only, each sudo a separate verdict; every first grant has depth 0. default: yes.
+4. Joy's spend ([§6](#6-objects-and-their-renders)): none in phase 0; Akash top-ups stay the owner's. default: none.
+5. GitHub identity ([§6](#6-objects-and-their-renders)): a GitHub identity per subject that needs repository grants — Joy's first — or no per-subject repository grants in phase 0; the renderer as a GitHub App with Members only. default: a machine user for Joy; the agent-a bodies keep `cyberia-apparatus` outside the declarations until each has its own.
+6. the time source ([§4](#4-the-trust-anchor-and-the-evaluator)): the host's synchronized clock in phase 0, the chain's median time past from phase 1. default: yes.
+7. phase 1 on the chain ([§8](#8-where-the-declarations-live)): amount-0 links on pussy from genesis, or files until the chain has run a month. default: files now, the chain after the first month.
+8. the person ([§10](#10-the-first-grants)): who, and which objects. no link yet; the owner names them.
+9. subject custody ([§5](#5-subjects)): Joy's key derived in custody on galapot, each agent-a body's in its own. default: yes.
+
+related: [[mudra/specs/neuron-auth|neuron-auth]] · [[mudra/specs/identity|identity]] · [[vault/specs/authorization|vault authorization]] · [[vault/specs/secrets|typed secrets]] · [[cybernode/specs/chain|chain]] · [[soft3/proposals/cybernode|cybernode]] · [apparatus a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md) (the apparatus's side)
