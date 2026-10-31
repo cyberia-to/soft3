@@ -131,7 +131,7 @@ pub fn check_against(ctx: &Context, out: &Out) -> Report {
 
 fn stale_fixtures(ctx: &Context, wanted: &[&str]) -> Vec<String> {
     let dir = ctx.conformance.join("fixtures/zheng");
-    surfaces::list(&dir, ".proof")
+    surfaces::list(&dir, ".zheng")
         .unwrap_or_default()
         .into_iter()
         .map(|n| format!("zheng/{n}"))

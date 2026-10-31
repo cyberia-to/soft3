@@ -3,6 +3,8 @@ import argparse
 import io
 import json
 from pathlib import Path
+import re
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -10,7 +12,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
+from train_gates import Gates, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -125,8 +127,77 @@ class ReleaseTests(unittest.TestCase):
 
     def test_chain_genesis_without_the_file_is_blocked_not_green(self):
         gates = Gates(self.root / "out", self.sources, "aarch64-apple-darwin")
-        self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis"))
+        with patch.dict("os.environ", {}, clear=False) as env:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=self.root / "no-genesis",
+                                                pussy=self.root / "pussy"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
+
+    def pussy_fixture(self, matching=True):
+        manifest = self.root / "pussy/snapshot/manifest.json"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text('{"fixture": true}\n')
+        expected = digest(manifest) if matching else "0" * 64
+        spec = self.root / "soft3/conformance/chain-genesis.toml"
+        spec.parent.mkdir(parents=True)
+        spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n')
+
+    def test_chain_genesis_env_file_is_checked_without_a_build(self):
+        genesis = self.root / "genesis/pussy.tade"
+        genesis.parent.mkdir()
+        genesis.write_bytes(b"x")
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.object(Gates, "run", return_value=True) as run, \
+                patch.object(Gates, "run_sequence") as sequence:
+            self.assertTrue(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=genesis.parent,
+                                               pussy=self.root / "pussy"))
+        sequence.assert_not_called()
+        name, argv, cwd = run.call_args.args[:3]
+        self.assertEqual(name, "stack-chain-genesis")
+        self.assertEqual(argv[-5:], ["conformance", "check", "chain", "--genesis", str(genesis)])
+
+    def test_chain_genesis_builds_from_the_pinned_checkout_then_checks(self):
+        self.pussy_fixture()
+        gates = Gates(self.root / "out", self.sources, "stack")
+        soft3 = self.root / "soft3"
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence", return_value=True) as sequence:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertTrue(chain_genesis_gate(gates, soft3, pussy=self.root / "pussy"))
+        name, steps, cwd = sequence.call_args.args[:3]
+        self.assertEqual(name, "stack-chain-genesis")
+        self.assertEqual(cwd, soft3)
+        cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
+        genesis = str(self.root / "out/genesis/pussy.tade")
+        self.assertEqual(steps, [
+            (cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(self.root / "pussy/snapshot"),
+                      "--cache", str(Path.home() / ".cache/cyber/snapshots/pussy"), "--out", genesis], 900),
+            (cargo + ["conformance", "check", "chain", "--genesis", genesis], 900)])
+
+    def test_chain_genesis_manifest_mismatch_is_red_and_builds_nothing(self):
+        self.pussy_fixture(matching=False)
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence") as sequence, patch.object(Gates, "run") as run:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", pussy=self.root / "pussy"))
+        sequence.assert_not_called()
+        run.assert_not_called()
+        row = gates.rows[-1]
+        self.assertEqual(row["result"], "red")
+        self.assertIn("0" * 64, row["error"])
+        self.assertIn(digest(self.root / "pussy/snapshot/manifest.json"), row["error"])
+
+    def test_chain_genesis_sequence_stops_at_the_first_failure(self):
+        gates = Gates(self.root / "out", self.sources, "stack")
+        ok = ["python3", "-c", "print('built')"]
+        bad = ["python3", "-c", "import sys; sys.exit(3)"]
+        never = ["python3", "-c", "print('must not run')"]
+        self.assertFalse(gates.run_sequence("seq", [(ok, 60), (bad, 60), (never, 60)], self.root))
+        self.assertEqual(gates.rows[-1]["exit_code"], 3)
+        log = (self.root / "out/logs/seq.txt").read_text()
+        self.assertIn("built", log)
+        self.assertNotIn("must not run", log)
 
     def test_simulation_without_the_pinned_checkout_is_blocked_not_green(self):
         gates = Gates(self.root / "out", self.sources, "stack")
@@ -146,6 +217,84 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn("gate", argv)
         self.assertEqual(cwd, self.root / "simulation")
         self.assertIn(str(self.root / "out" / "simulation-gate.md"), argv)
+
+    def test_stack_gates_have_their_measured_budgets(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch.object(Gates, "run", return_value=True) as run:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=True)
+        budgets = {c.args[0]: c.kwargs["timeout"] for c in run.call_args_list if c.args[0].startswith("stack-")}
+        self.assertEqual(budgets["stack-zheng"], 1800)
+        self.assertEqual(budgets["stack-lens"], 1200)
+        self.assertEqual(budgets["stack-radio"], 1200)
+        others = {name: t for name, t in budgets.items() if name not in ("stack-zheng", "stack-lens", "stack-radio")}
+        self.assertIn("stack-hemera", others)
+        self.assertIn("stack-bbg", others)
+        self.assertEqual(set(others.values()), {900})
+        for call in run.call_args_list:
+            if call.args[0].startswith("stack-"):
+                self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
+
+    def stack_repo(self, owner="radio"):
+        repo = self.root / owner
+        repo.mkdir()
+        git = lambda *a: subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a], cwd=repo,
+                                        check=True, capture_output=True, text=True).stdout.strip()
+        git("init", "-q")
+        (repo / "seeds.txt").write_text("one\n")
+        (repo / ".gitignore").write_text("target/\n")
+        git("add", ".")
+        git("commit", "-q", "-m", "init")
+        return repo, git, git("rev-parse", "HEAD")
+
+    def run_dirtying_stack(self, result, dirty=True):
+        repo, git, revision = self.stack_repo()
+        self.sources = {**self.sources, "repositories": [{"name": "radio", "revision": revision}]}
+        (repo / "target").mkdir()
+        (repo / "target/x").write_text("build output\n")
+
+        def fake(gates, name, argv, cwd, env=None, timeout=1800):
+            if name == "stack-radio" and dirty:
+                (repo / "seeds.txt").write_text("one\ntwo\n")
+                (repo / "new.txt").write_text("fresh\n")
+            return gates.record(name, result, log=f"logs/{name}.txt")
+
+        out = self.root / "out"
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch.object(Gates, "run", autospec=True, side_effect=fake):
+            run_gates(self.root, out, self.sources, {}, "soft3", "stack", stack=True)
+        rows = {r["name"]: r for r in json.loads((out / "release-validation.json").read_text())["gates"]}
+        self.assertEqual(git("rev-parse", "HEAD"), revision)
+        self.assertEqual(git("status", "--porcelain"), "")
+        self.assertTrue((repo / "target/x").exists())
+        return rows["stack-radio"], out
+
+    def test_green_stack_gate_that_dirties_its_tree_is_red_and_restored(self):
+        (self.root / "soft3").mkdir()
+        row, out = self.run_dirtying_stack("green")
+        self.assertEqual(row["result"], "red")
+        self.assertEqual(row["reason"], "the test changed its own source tree")
+        self.assertEqual(sorted(row["dirtied"]), ["new.txt", "seeds.txt"])
+        self.assertEqual(row["dirtied_log"], "logs/stack-radio.dirtied.txt")
+        log = (out / row["dirtied_log"]).read_text()
+        self.assertIn("+two", log)
+        self.assertIn("seeds.txt", log)
+
+    def test_red_stack_gate_that_dirties_its_tree_stays_red_and_restored(self):
+        (self.root / "soft3").mkdir()
+        row, _ = self.run_dirtying_stack("red")
+        self.assertEqual(row["result"], "red")
+        self.assertNotIn("reason", row)
+        self.assertEqual(sorted(row["dirtied"]), ["new.txt", "seeds.txt"])
+
+    def test_clean_stack_gate_is_untouched(self):
+        (self.root / "soft3").mkdir()
+        row, out = self.run_dirtying_stack("green", dirty=False)
+        self.assertEqual(row["result"], "green")
+        self.assertNotIn("dirtied", row)
+        self.assertFalse((out / "logs/stack-radio.dirtied.txt").exists())
 
     def test_conformance_scaffold_is_blocked_not_green(self):
         manifest = self.root / "soft3/conformance/rs/Cargo.toml"
@@ -182,6 +331,143 @@ class ReleaseTests(unittest.TestCase):
         self.assertIn("--draft", argv)
         self.assertNotIn("--draft=false", argv)
         self.assertNotIn("push", argv)
+
+
+class RehearsalTests(unittest.TestCase):
+    DEFAULT, PR, BRANCH = "d" * 40, "e" * 40, "f" * 40
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.manager = self.root / "manager"
+        (self.manager / "release").mkdir(parents=True)
+        (self.manager / "release/phase1.toml").write_text(
+            '[[sibling]]\nname = "lens"\nrepo = "cyberia-to/lens"\nrev = "' + self.DEFAULT + '"\n')
+        git = lambda *a: subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *a],
+                                        cwd=self.manager, check=True, capture_output=True)
+        git("init", "-q")
+        git("add", ".")
+        git("commit", "-qm", "fixture")
+        self.calls = []
+
+    def fake(self, args, cwd=None, timeout=120):
+        self.calls.append(args)
+        if args[:2] == ["git", "ls-remote"]:
+            if "--symref" in args:
+                return f"ref: refs/heads/main\tHEAD\n{self.DEFAULT}\tHEAD"
+            if args[-1] == "refs/pull/7/head":
+                return f"{self.PR}\trefs/pull/7/head"
+            if args[-1] == "refs/heads/feat/x":
+                return f"{self.BRANCH}\trefs/heads/feat/x"
+            return ""
+        if args[:2] == ["git", "status"]:
+            return ""
+        if args[:2] == ["git", "rev-parse"]:
+            return "a" * 40
+        return "[]"
+
+    def snap(self, overrides=(), cut=False):
+        with patch("train_sources.command", side_effect=self.fake):
+            return train.snapshot(self.manager, self.root / "out", "soft3", "candidate-20260924.1", overrides, cut)
+
+    def lens(self, result):
+        return next(r for r in result["repositories"] if r["name"] == "lens")
+
+    def lookups(self):
+        return [c for c in self.calls if c[:2] == ["git", "ls-remote"]]
+
+    def test_cut_with_override_is_refused_before_network(self):
+        with self.assertRaisesRegex(ValueError, "rehearsal"):
+            self.snap(["lens=feat/x"], cut=True)
+        self.assertEqual(self.calls, [])
+
+    def test_malformed_overrides_are_refused(self):
+        for bad in [["nope=main"], ["lens=a", "lens=b"], ["lens=../x"], ["lens=-x"], ["lens"], ["lens=/x"],
+                    ["lens=a=b"], ["lens=a b"], ["lens="]]:
+            with self.assertRaises(ValueError, msg=bad):
+                self.snap(bad)
+            self.assertEqual(self.lookups(), [])
+
+    def test_branch_override(self):
+        result = self.snap(["lens=feat/x"])
+        row = self.lens(result)
+        self.assertEqual(row["revision"], self.BRANCH)
+        self.assertEqual(row["branch"], "main")
+        self.assertEqual(row["override"], {"ref": "feat/x", "revision": self.BRANCH,
+                                           "default_branch": "main", "default_revision": self.DEFAULT})
+        self.assertFalse(row["pin_matches"])
+        saved = json.loads((self.root / "out/sources.json").read_text())
+        self.assertEqual(saved["overrides"], {"lens": "feat/x"})
+        self.assertTrue(saved["rehearsal"])
+
+    def test_commit_override_skips_ls_remote(self):
+        sha = "1" * 40
+        row = self.lens(self.snap([f"lens={sha}"]))
+        self.assertEqual(row["revision"], sha)
+        self.assertEqual(row["override"]["default_revision"], self.DEFAULT)
+        self.assertEqual(len(self.lookups()), 1 + 3)  # lens default plus three products, none for the ref
+        self.assertTrue(all("--symref" in c for c in self.lookups()))
+
+    def test_pull_request_override(self):
+        row = self.lens(self.snap(["lens=pull/7/head"]))
+        self.assertEqual(row["revision"], self.PR)
+        self.assertIn("refs/pull/7/head", [c[-1] for c in self.lookups()])
+
+    def test_missing_ref_is_unavailable(self):
+        row = self.lens(self.snap(["lens=gone"]))
+        self.assertFalse(row["available"])
+        self.assertIn("gone", row["error"])
+        self.assertFalse(row["pin_matches"])
+
+    def test_no_override_is_unchanged(self):
+        result = self.snap()
+        saved = json.loads((self.root / "out/sources.json").read_text())
+        self.assertEqual(saved["overrides"], {})
+        self.assertFalse(saved["rehearsal"])
+        row = self.lens(result)
+        self.assertNotIn("override", row)
+        self.assertEqual(row["revision"], self.DEFAULT)
+        self.assertTrue(row["pin_matches"])
+
+    def test_draft_refuses_rehearsal(self):
+        write_json(self.root / "candidate.json", {"name": "candidate-20260924.1", "component": "cyber",
+                   "result": "green", "source_revisions": {"cyber": "b" * 40}, "overrides": {"lens": "feat/x"}})
+        with patch("train.command") as call:
+            with self.assertRaisesRegex(ValueError, "cannot be drafted"):
+                train.draft(argparse.Namespace(output=self.root))
+        call.assert_not_called()
+
+    def test_collect_carries_overrides_into_notes(self):
+        sources = {"component": "cyber", "candidate": "candidate-20260924.1", "manager_revision": "a" * 40,
+                   "repositories": [{"name": "lens", "revision": self.BRANCH}], "overrides": {"lens": "feat/x"}}
+        snapshot = self.root / "snapshot.json"
+        write_json(snapshot, sources)
+        artifacts = self.root / "artifacts"
+        artifacts.mkdir()
+        output = self.root / "assembled"
+        train.collect(argparse.Namespace(snapshot=snapshot, artifacts=artifacts, output=output))
+        self.assertEqual(json.loads((output / "candidate.json").read_text())["overrides"], {"lens": "feat/x"})
+        notes = (output / "release-notes.md").read_text()
+        self.assertIn("REHEARSAL RED (not a candidate)", notes.splitlines()[0])
+        self.assertIn(f"lens=feat/x → {self.BRANCH}", notes)
+
+
+class QualifyCapTests(unittest.TestCase):
+    def test_stack_leg_cap_covers_its_gates(self):
+        root = Path(__file__).resolve().parent.parent
+        text = (root / ".github/workflows/candidate.yml").read_text()
+        qualify = text[text.index("\n  qualify:"):]
+        found = re.search(r"^    timeout-minutes: (.+)$", qualify, re.M)
+        self.assertIsNotNone(found)
+        match = re.fullmatch(r"\$\{\{ matrix\.target == 'stack' && (\d+) \|\| (\d+) \}\}", found.group(1).strip())
+        self.assertIsNotNone(match, found.group(1))
+        stack, other = int(match.group(1)), int(match.group(2))
+        self.assertEqual((stack, other), (210, 90))
+        measured, setup, sim_timeout = 4752.7, 650, 3600
+        self.assertIn(f"timeout={sim_timeout}", (root / "release/train_gates.py").read_text())
+        self.assertGreaterEqual(stack * 60, measured + setup + sim_timeout)
+        self.assertLessEqual(stack, 360)
 
 
 if __name__ == "__main__":

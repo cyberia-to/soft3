@@ -23,6 +23,7 @@ use tokio::sync::broadcast;
 
 use crate::chain::api::{Block, BlockVerdict as KBlock, ChainApi, ChainError, HeaderVerdict as KHeaderVerdict, Template};
 use crate::chain::apply::TxError;
+use crate::chain::corpus::CorpusWriter;
 use crate::chain::engine::{Chain, OpenOptions};
 use crate::chain::header::{self as kheader, Header as KHeader, HeaderError as KHeaderError};
 use crate::chain::params::ORPHAN_POOL_HEADERS;
@@ -94,6 +95,8 @@ struct Inner {
     held: Vec<KHeader>,
     /// txid → (height, block, index) on the main chain
     txindex: HashMap<Id, (u64, Id, u32)>,
+    /// the conformance corpus (`--corpus DIR`): every block given, with verdict and R
+    corpus: Option<CorpusWriter>,
 }
 
 impl Inner {
@@ -192,6 +195,16 @@ impl KernelChain {
         f(&self.lock().chain)
     }
 
+    /// Record every block given to [`ChainView::accept_block`] from now on
+    /// into `dir/blocks.jsonl` (chain/corpus.rs), block 0 first.
+    pub fn record_corpus(&self, dir: &Path) -> std::io::Result<()> {
+        let mut writer = CorpusWriter::open(dir)?;
+        let mut inner = self.lock();
+        writer.record_genesis(&inner.chain)?;
+        inner.corpus = Some(writer);
+        Ok(())
+    }
+
     /// Open (or create) the chain under `home` (`home/blocks` is the store);
     /// a restart replays the main chain on the genesis state (§3.6).
     pub fn open(genesis_bytes: &[u8], home: &Path) -> Result<KernelChain, String> {
@@ -209,7 +222,7 @@ impl KernelChain {
     fn over(chain: Chain) -> KernelChain {
         let params = chain.genesis().params().clone();
         let key = params.checkpoint_key;
-        let mut inner = Inner { best: None, held: Vec::new(), txindex: HashMap::new(), chain };
+        let mut inner = Inner { best: None, held: Vec::new(), txindex: HashMap::new(), chain, corpus: None };
         for h in 1..=inner.chain.tip().height {
             inner.index(h);
         }
@@ -357,6 +370,15 @@ impl ChainView for KernelChain {
         let mut inner = self.lock();
         let before = inner.chain.tip();
         let result = inner.chain.accept_block(&block, now);
+        // a block ahead of the clock is held, not judged: it has no verdict to record
+        if inner.corpus.is_some() && !matches!(result, Err(ChainError::FutureTime { .. })) {
+            let root = inner.chain.tip().header.state_root;
+            if let Some(w) = inner.corpus.as_mut() {
+                if let Err(e) = w.record(&block, &result, &root, None) {
+                    eprintln!("corpus: {e}");
+                }
+            }
+        }
         let event = inner.moved(&before);
         let verdict = match result {
             Ok(v) => {
