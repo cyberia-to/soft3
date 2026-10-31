@@ -18,6 +18,7 @@
 #   /status answers 200 within 10 s          the state lock is not convoyed (cyb bodies poll it every 15 s with a 10 s timeout)
 #   height advanced within SOFT3_STALE_SECS  the chain is producing or receiving blocks
 #   radio UDP port is bound                  the node is reachable for peers
+#   peers file parses like the node does    empty-id peers are skipped (DEGRADED); bad id / addressless peer is refused (DOWN)
 #   clock NTP-synchronized                   PoW timestamp rules need it
 #   free disk >= SOFT3_MIN_DISK_GIB          the log/bbg can grow
 #   threads < 512                            the 2026-10-15 convoy signature (1,800 threads) is caught early
@@ -101,7 +102,43 @@ else
 fi
 peers="$etc_dir/$chain.peers.toml"
 if [[ -r "$peers" ]] && grep -qE "^chain *= *\"$chain\"" "$peers"; then
-  say OK peers "$(grep -c '^\[\[peer\]\]' "$peers") bootstrap peers in $peers"
+  # Mirrors parse_peers (crate/src/chain/net/discovery.rs): the node skips a peer with id = "",
+  # refuses the whole file for a non-empty id that is not 64 hex chars (optional 0x prefix) or
+  # for a peer with an id but no address. awk prints: N, U, then per-peer verdict lines.
+  peer_report=$(awk '
+    function quoted(s,   a) { return match(s, /"[^"]*"/) ? substr(s, RSTART + 1, RLENGTH - 2) : "" }
+    function flush(   id) {
+      if (!inpeer) return
+      n++
+      id = pid
+      if (id == "") { skipped = skipped (skipped == "" ? "" : ", ") pname; return }
+      if (id !~ /^(0x)?[0-9a-fA-F]+$/ || length(id) - (id ~ /^0x/ ? 2 : 0) != 64) {
+        if (bad == "") bad = "peer \047" pname "\047: id is not 64 hex chars"; return }
+      if (pn == 0) { if (noaddr == "") noaddr = "peer \047" pname "\047: no address"; return }
+      u++
+    }
+    /^[ \t]*\[\[peer\]\]/ { flush(); inpeer = 1; pname = ""; pid = ""; pn = 0; next }
+    /^[ \t]*\[/ { flush(); inpeer = 0; next }
+    inpeer && /^[ \t]*name[ \t]*=/ { pname = quoted($0); next }
+    inpeer && /^[ \t]*id[ \t]*=/ { pid = quoted($0); next }
+    inpeer && /^[ \t]*addrs[ \t]*=/ {
+      s = $0; sub(/^[^=]*=/, "", s); pn = 0
+      while (match(s, /"[^"]*"/)) { if (RLENGTH > 2) pn++; s = substr(s, RSTART + RLENGTH) }
+      next }
+    END { flush(); print n + 0; print u + 0; print bad; print noaddr; print skipped }
+  ' "$peers")
+  { read -r p_n; read -r p_u; read -r p_bad; read -r p_noaddr; read -r p_skipped; } <<< "$peer_report"
+  if [[ -n "$p_bad" ]]; then
+    say DOWN peers "$p_bad — the node refuses $peers"
+  elif [[ -n "$p_noaddr" ]]; then
+    say DOWN peers "$p_noaddr — the node refuses $peers"
+  elif (( p_n == 0 )); then
+    say DEGRADED peers "no bootstrap peer in $peers"
+  elif [[ -n "$p_skipped" || p_u -eq 0 ]]; then
+    say DEGRADED peers "$p_u usable of $p_n bootstrap peers in $peers; skipped (empty id): $p_skipped"
+  else
+    say OK peers "$p_u bootstrap peers in $peers"
+  fi
 else
   say DEGRADED peers "$peers missing or not for chain '$chain'"
 fi
