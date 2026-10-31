@@ -18,7 +18,7 @@
 #   /status answers 200 within 10 s          the state lock is not convoyed (cyb bodies poll it every 15 s with a 10 s timeout)
 #   height advanced within SOFT3_STALE_SECS  the chain is producing or receiving blocks
 #   radio UDP port is bound                  the node is reachable for peers
-#   peers file parses like the node does    empty-id peers are skipped (DEGRADED); bad id / addressless peer is refused (DOWN)
+#   peers file parses like the node does    DOWN: version != 1, peer without id, bad id, no parsable address; DEGRADED: empty-id skipped, unparsable addr dropped
 #   clock NTP-synchronized                   PoW timestamp rules need it
 #   free disk >= SOFT3_MIN_DISK_GIB          the log/bbg can grow
 #   threads < 512                            the 2026-10-15 convoy signature (1,800 threads) is caught early
@@ -102,40 +102,78 @@ else
 fi
 peers="$etc_dir/$chain.peers.toml"
 if [[ -r "$peers" ]] && grep -qE "^chain *= *\"$chain\"" "$peers"; then
-  # Mirrors parse_peers (crate/src/chain/net/discovery.rs): the node skips a peer with id = "",
-  # refuses the whole file for a non-empty id that is not 64 hex chars (optional 0x prefix) or
-  # for a peer with an id but no address. awk prints: N, U, then per-peer verdict lines.
+  # Mirrors parse_peers (crate/src/chain/net/discovery.rs); the node refuses the whole file (DOWN) for:
+  # a top-level version other than 1 (or none), a [[peer]] without an id key (serde), a non-empty id
+  # that is not 64 hex chars (optional 0x prefix), or a peer none of whose addrs parse as a SocketAddr.
+  # It skips a peer with id = "" (DEGRADED) and silently drops unparsable addrs of a usable peer
+  # (DEGRADED here, so operators see it). SocketAddr is approximated: IPv4 a.b.c.d:port exactly
+  # (octets 0-255, no leading zeros); IPv6 [..]:port or [..%digits]:port when the brackets hold only
+  # hex digits, ':' and '.' with at least one ':'; port 0-65535. Hostnames never parse.
+  # awk prints: N, U, then version, missing-id, bad-id, no-addr, skipped and dropped lines.
   peer_report=$(awk '
-    function quoted(s,   a) { return match(s, /"[^"]*"/) ? substr(s, RSTART + 1, RLENGTH - 2) : "" }
+    function quoted(s) { return match(s, /"[^"]*"/) ? substr(s, RSTART + 1, RLENGTH - 2) : "" }
+    function okport(p) { sub(/^0+/, "", p); return p ~ /^[0-9]*$/ && length(p) <= 5 && p + 0 <= 65535 }
+    function okv4(h,   o, i) {
+      if (split(h, o, ".") != 4) return 0
+      for (i = 1; i <= 4; i++) {
+        if (o[i] !~ /^[0-9]+$/ || length(o[i]) > 3 || (length(o[i]) > 1 && o[i] ~ /^0/) || o[i] + 0 > 255) return 0 }
+      return 1 }
+    function okaddr(a,   i, h, p) {
+      if (a ~ /^\[/) {
+        i = index(a, "]:"); if (!i) return 0
+        h = substr(a, 2, i - 2); p = substr(a, i + 2)
+        sub(/%[0-9]+$/, "", h)
+        return h ~ /^[0-9a-fA-F:.]+$/ && index(h, ":") && okport(p) && p != "" }
+      i = length(a); while (i > 0 && substr(a, i, 1) != ":") i--
+      if (i == 0) return 0
+      p = substr(a, i + 1)
+      return p != "" && okport(p) && okv4(substr(a, 1, i - 1)) }
     function flush(   id) {
       if (!inpeer) return
       n++
       id = pid
+      if (!hasid) { if (missid == "") missid = "peer \047" pname "\047: missing field id"; return }
       if (id == "") { skipped = skipped (skipped == "" ? "" : ", ") pname; return }
       if (id !~ /^(0x)?[0-9a-fA-F]+$/ || length(id) - (id ~ /^0x/ ? 2 : 0) != 64) {
         if (bad == "") bad = "peer \047" pname "\047: id is not 64 hex chars"; return }
-      if (pn == 0) { if (noaddr == "") noaddr = "peer \047" pname "\047: no address"; return }
+      if (pn == 0) { if (noaddr == "") noaddr = "peer \047" pname "\047: no parsable address"; return }
       u++
+      if (pdrop != "") dropped = dropped (dropped == "" ? "" : ", ") pdrop
     }
-    /^[ \t]*\[\[peer\]\]/ { flush(); inpeer = 1; pname = ""; pid = ""; pn = 0; next }
-    /^[ \t]*\[/ { flush(); inpeer = 0; next }
+    !seenhdr && /^[ \t]*version[ \t]*=/ {
+      s = $0; sub(/^[^=]*=[ \t]*/, "", s); sub(/[ \t]*(#.*)?$/, "", s); ver = s; hasver = 1; next }
+    /^[ \t]*\[\[peer\]\]/ { flush(); seenhdr = 1; inpeer = 1; pname = ""; pid = ""; hasid = 0; pn = 0; pdrop = ""; next }
+    /^[ \t]*\[/ { flush(); seenhdr = 1; inpeer = 0; next }
     inpeer && /^[ \t]*name[ \t]*=/ { pname = quoted($0); next }
-    inpeer && /^[ \t]*id[ \t]*=/ { pid = quoted($0); next }
+    inpeer && /^[ \t]*id[ \t]*=/ { pid = quoted($0); hasid = 1; next }
     inpeer && /^[ \t]*addrs[ \t]*=/ {
-      s = $0; sub(/^[^=]*=/, "", s); pn = 0
-      while (match(s, /"[^"]*"/)) { if (RLENGTH > 2) pn++; s = substr(s, RSTART + RLENGTH) }
+      s = $0; sub(/^[^=]*=/, "", s)
+      while (match(s, /"[^"]*"/)) {
+        a = substr(s, RSTART + 1, RLENGTH - 2)
+        if (okaddr(a)) pn++; else pdrop = pdrop (pdrop == "" ? "" : ", ") pname " \"" a "\""
+        s = substr(s, RSTART + RLENGTH) }
       next }
-    END { flush(); print n + 0; print u + 0; print bad; print noaddr; print skipped }
+    END {
+      flush()
+      vmsg = !hasver ? "version missing" : (ver != "1" ? "version is " ver ", not 1" : "")
+      print n + 0; print u + 0; print vmsg; print missid; print bad; print noaddr; print skipped; print dropped }
   ' "$peers")
-  { read -r p_n; read -r p_u; read -r p_bad; read -r p_noaddr; read -r p_skipped; } <<< "$peer_report"
-  if [[ -n "$p_bad" ]]; then
+  { read -r p_n; read -r p_u; read -r p_ver; read -r p_missid; read -r p_bad; read -r p_noaddr; read -r p_skipped; read -r p_dropped; } <<< "$peer_report"
+  if [[ -n "$p_ver" ]]; then
+    say DOWN peers "$p_ver — the node refuses $peers"
+  elif [[ -n "$p_missid" ]]; then
+    say DOWN peers "$p_missid — the node refuses $peers"
+  elif [[ -n "$p_bad" ]]; then
     say DOWN peers "$p_bad — the node refuses $peers"
   elif [[ -n "$p_noaddr" ]]; then
     say DOWN peers "$p_noaddr — the node refuses $peers"
   elif (( p_n == 0 )); then
     say DEGRADED peers "no bootstrap peer in $peers"
-  elif [[ -n "$p_skipped" || p_u -eq 0 ]]; then
-    say DEGRADED peers "$p_u usable of $p_n bootstrap peers in $peers; skipped (empty id): $p_skipped"
+  elif [[ -n "$p_skipped" || -n "$p_dropped" || p_u -eq 0 ]]; then
+    p_why=""
+    [[ -n "$p_skipped" || -z "$p_dropped" ]] && p_why="; skipped (empty id): $p_skipped"
+    [[ -n "$p_dropped" ]] && p_why+="; dropped (unparsable address): $p_dropped"
+    say DEGRADED peers "$p_u usable of $p_n bootstrap peers in $peers$p_why"
   else
     say OK peers "$p_u bootstrap peers in $peers"
   fi
