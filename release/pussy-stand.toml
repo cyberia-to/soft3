@@ -16,7 +16,8 @@
 # (2026-10-31, all five legs, stack leg job 124512521956) with soft3 at
 # bce863b (P2, soft3#479): no red beyond phase1-pins, release-notes-source,
 # stack-zheng, stack-mudra, stack-neuron, the same set as 40688607756.
-# `from` names the ref each rev was taken from. Where a landing PR is open (hemera#25, lens#36, nox#43,
+# `from` names the ref each rev was taken from. Where a landing PR is open
+# (hemera#25, lens#36, nox#43,
 # radio#52, soft3#376) the rev is that PR's head, i.e. what reaches the
 # default branch if the owner approves. The landing heads of lens and radio
 # are ahead of the qualified commit by documentation only; soft3's rev is
