@@ -63,7 +63,7 @@ Since session 400 the stand is pinned at soft3 `b6f22dc` (P2 and P2a, [#489](htt
 
 - session 412: this report brought current through session 411. The tick `20261031T162256Z` is unchanged since 16:03 UTC. REST at about 16:25 UTC shows 0 reviews and no new comment since 15:40 UTC on soft3#376, #350, #398, #384, lens#36, hemera#25, radio#52, cybernode#1, simulation#2 or simulation#3.
 
-- sessions 413–415: idle, on an unchanged tick (`20261031T164125Z`, `165956Z`, `171801Z`; `diff` without `at`: empty). No owner review or comment on the four landings or the held PRs. In 414 the director found 18 commits on `release/phase1` dated 2026-10-31 that carry a `Co-Authored-By` trailer, which `AGENTS.md` § git forbids; the director's commits omit it from that session on.
+- sessions 413–416: idle, on an unchanged tick (`20261031T164125Z`, `165956Z`, `171801Z`, `173536Z`; `diff` without `at`: empty). No owner review or comment on the four landings or the held PRs. In 414 the director found 18 commits on `release/phase1` dated 2026-10-31 that carry a `Co-Authored-By` trailer, which `AGENTS.md` § git forbids; the director's commits omit it from that session on.
 
 ## PRs merged
 
