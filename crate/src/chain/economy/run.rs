@@ -127,16 +127,35 @@ impl Economy {
         let (weights, engine, syntropy, timings) = (self.weights.clone(), self.engine.clone(), self.syntropy.clone(), self.timings.clone());
         let path = self.cache_path(&key);
         let epoch = b.epoch;
+        let settle_height = self.clock.settle(epoch);
         let quadrature = self.quadrature;
         let job = move || {
             let t0 = Instant::now();
-            let prev_j = syntropy.lock().expect("syntropy map").get(&a.block_id).copied();
-            let prev_j = prev_j.unwrap_or_else(|| {
-                let j = engine.focus(&FocusGraph::build(&a.adjacency(&weights))).syntropy;
-                syntropy.lock().expect("syntropy map").insert(a.block_id, j);
-                j
-            });
-            let r = compute_with(&a, &b, &weights, engine.as_ref(), Some(prev_j), quadrature);
+            // The compute runs outside every lock guard, so a panic in the
+            // engine poisons nothing; it is re-raised naming the epoch and
+            // the height at which the settlement is due.
+            let computed = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                let prev_j = syntropy.lock().expect("syntropy map").get(&a.block_id).copied();
+                let prev_j = prev_j.unwrap_or_else(|| {
+                    let j = engine.focus(&FocusGraph::build(&a.adjacency(&weights))).syntropy;
+                    syntropy.lock().expect("syntropy map").insert(a.block_id, j);
+                    j
+                });
+                compute_with(&a, &b, &weights, engine.as_ref(), Some(prev_j), quadrature)
+            }));
+            let r = match computed {
+                Ok(r) => r,
+                Err(payload) => {
+                    let original = payload
+                        .downcast_ref::<&str>()
+                        .map(|s| s.to_string())
+                        .or_else(|| payload.downcast_ref::<String>().cloned())
+                        .unwrap_or_else(|| "<non-string panic payload>".to_string());
+                    let line = format!("settlement of epoch {epoch} at height {settle_height} panicked: {original}");
+                    eprintln!("{line}");
+                    panic!("{line}");
+                }
+            };
             let millis = t0.elapsed().as_millis() as u64;
             syntropy.lock().expect("syntropy map").insert(b.block_id, r.syntropy);
             timings.lock().expect("timings").push(Timing { epoch: r.epoch, millis, particles: r.particles, axons: r.axons });
@@ -166,13 +185,20 @@ impl Economy {
     /// The settlement reading boundaries `prev` and `cur`: finished, joined
     /// (waiting for the worker), or computed now. `None` only when a
     /// snapshot is missing — the boundary was never applied on this node.
+    ///
+    /// A panic in the settlement is a halt by design (chain-economy §2.5
+    /// liveness; plan P2, decision D14): it is re-raised with the epoch and
+    /// height named, nothing is recorded, a replay halts at the same block.
     pub fn result(&mut self, prev: &Id, cur: &Id) -> Option<Arc<SettleResult>> {
         let key = (*prev, *cur);
         if let Some(r) = self.done.get(&key) {
             return Some(r.clone());
         }
         if let Some(job) = self.jobs.remove(&key) {
-            let (r, _) = job.join().expect("the settlement worker does not panic");
+            let (r, _) = match job.join() {
+                Ok(done) => done,
+                Err(payload) => std::panic::resume_unwind(payload),
+            };
             let r = Arc::new(r);
             self.done.insert(key, r.clone());
             return Some(r);
