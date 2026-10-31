@@ -1,0 +1,114 @@
+name: Diagnostic p2a release overflow-checks
+
+# Measurement only, never merged, never a release gate (plan row P2a, session 396).
+# Runs `cargo test --release --locked` on pussy's stand (release/pussy-stand.toml)
+# with and without `overflow-checks` for the soft3 and cyber-tru packages.
+on:
+  push:
+    branches: ['diag/p2a-*']
+
+permissions:
+  contents: read
+
+jobs:
+  release-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [baseline, overflow]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          args=(); for o in $(python3 release/pussy_stand.py); do args+=(--override "$o"); done
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261030.1 --output "$RUNNER_TEMP/snapshot" "${args[@]}"
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          # test THIS head's crate, not the snapshot's soft3 default
+          rm -rf "$RUNNER_TEMP/sources/soft3/crate"
+          cp -a crate "$RUNNER_TEMP/sources/soft3/crate"
+          echo "soft3 crate from $GITHUB_SHA"
+      - name: Build the extra cargo args for this mode
+        run: |
+          extra=""
+          if [ "${{ matrix.mode }}" = overflow ]; then
+            for p in release bench; do
+              for c in soft3 cyber-tru; do
+                extra="$extra --config profile.$p.package.$c.overflow-checks=true"
+              done
+            done
+          fi
+          echo "EXTRA_ARGS=$extra" >> "$GITHUB_ENV"
+          echo "extra args: [$extra]"
+      - name: "cargo test --release --locked"
+        id: tests
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          # EXTRA_ARGS is deliberately unquoted: it holds space-separated --config pairs without spaces inside values
+          # shellcheck disable=SC2086
+          timeout 9000 cargo test --release --locked --no-fail-fast -v $EXTRA_ARGS 2>&1 | tee "$RUNNER_TEMP/test-${{ matrix.mode }}.log"
+      - name: Proof the flag reached rustc
+        if: always()
+        run: |
+          log="$RUNNER_TEMP/test-${{ matrix.mode }}.log"
+          count() { # $1 = crate-name regex
+            grep -E "Running \`.*rustc --crate-name ($1) " "$log" | grep -c -e '-C overflow-checks=on' || true
+          }
+          total() { grep -cE "Running \`.*rustc --crate-name ($1) " "$log" || true; }
+          s_on=$(count soft3); s_all=$(total soft3)
+          t_on=$(count 'tru|cyber_tru'); t_all=$(total 'tru|cyber_tru')
+          echo "soft3 rustc invocations: $s_all, with -C overflow-checks=on: $s_on"
+          echo "tru/cyber_tru rustc invocations: $t_all, with -C overflow-checks=on: $t_on"
+          if [ "${{ matrix.mode }}" = overflow ]; then
+            test "$s_on" -gt 0 || { echo "overflow mode: flag never reached soft3"; exit 1; }
+          else
+            test "$s_on" = 0 || { echo "baseline mode: soft3 unexpectedly has overflow-checks=on"; exit 1; }
+          fi
+      - name: Summary
+        if: always()
+        run: |
+          echo "mode: ${{ matrix.mode }}  tests: ${{ steps.tests.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|with overflow" "$RUNNER_TEMP/test-${{ matrix.mode }}.log" | head -150 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p2a-${{ matrix.mode }}
+          path: |
+            ${{ runner.temp }}/test-${{ matrix.mode }}.log
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Warnings (the train counts any as red)
+        if: always()
+        run: |
+          n=$(grep -c "^warning" "$RUNNER_TEMP/test-${{ matrix.mode }}.log" || true)
+          echo "warnings: $n"; grep -n "^warning" -A4 "$RUNNER_TEMP/test-${{ matrix.mode }}.log" || true
+          test "$n" = 0
+      - name: Fail when red
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
