@@ -16,6 +16,7 @@ each component has a readiness state. **live** — carries real traffic today. *
 | repo | verb | state | release | crates | what it does |
 |---|---|---|---|---|---|
 | [[soft3]] | compose | live | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
+| [[cybernode]] | run | live | — | — | rung 7, the node: chain, genesis, wallet, network — carved from soft3 2026-10-27 |
 | [[cybics/form|form]] |  |  |  |  |  |
 | [[honeycrisp]] | accelerate | live | [0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
 | [[strata]] | math | live | [0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-strata) | nebu 𝔽_p · genies 𝔽_q · jali R_q |
@@ -97,7 +98,7 @@ seven questions no component roadmap owned. [[soft3/proposals/rooted-civilizatio
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` stack CLI + node [0.10.0](https://crates.io/crates/soft3) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
+| [cli/](cli/) | `soft3` stack facade [0.11.0](https://crates.io/crates/soft3) over the node `cybernode` 0.1.0 (github.com/cyberia-to/cybernode) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 
