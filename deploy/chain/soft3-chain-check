@@ -5,6 +5,11 @@
 #   soft3-chain-check --pre pussy      # ExecStartPre gate: clock synchronized, disk, env sanity (no HTTP)
 #   soft3-chain-check --json pussy     # same checks, one JSON object on stdout
 #
+# Environment (read from the process environment, before the env file is sourced):
+#   SOFT3_ETC    dir of <chain>.env and <chain>.peers.toml   (default /etc/soft3)
+#   SOFT3_STATE  state root, <chain> lives under it           (default /var/lib/soft3)
+#   SOFT3_PIDFILE (set in the env file, agent-a) pidfile of a supervised node; without it the systemd unit is checked
+#
 # Install: sudo install -m 0755 soft3-chain-check /usr/local/bin/
 # Cron:    */5 * * * * cyber /usr/local/bin/soft3-chain-check pussy >> /var/log/soft3-chain/check-pussy.log 2>&1
 #
@@ -26,7 +31,9 @@ esac
 chain="${1:-}"
 [[ -n "$chain" ]] || { echo "usage: soft3-chain-check [--pre|--json] <chain>" >&2; exit 2; }
 
-env_file="/etc/soft3/$chain.env"
+etc_dir="${SOFT3_ETC:-/etc/soft3}"
+state_root="${SOFT3_STATE:-/var/lib/soft3}"
+env_file="$etc_dir/$chain.env"
 [[ -r "$env_file" ]] || { echo "DOWN env: missing $env_file"; exit 2; }
 # shellcheck disable=SC1090
 source "$env_file"
@@ -35,7 +42,7 @@ source "$env_file"
 : "${SOFT3_RADIO:?SOFT3_RADIO unset}"
 stale_secs="${SOFT3_STALE_SECS:-600}"
 min_disk_gib="${SOFT3_MIN_DISK_GIB:-5}"
-home="/var/lib/soft3/$chain"
+home="$state_root/$chain"
 unit="soft3-chain@$chain"
 radio_port="${SOFT3_RADIO##*:}"
 worst=0
@@ -50,8 +57,33 @@ say() { # level name detail
 # --- machine-level checks (also the ExecStartPre gate) ---------------------------------------
 if [[ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" == "yes" ]]; then
   say OK clock "NTP synchronized ($(timedatectl timesync-status 2>/dev/null | awk -F': *' '/Offset/{print $2}' | head -1))"
-else
+elif timedatectl show -p NTPSynchronized --value >/dev/null 2>&1; then
   say DOWN clock "system clock NOT NTP-synchronized — PoW timestamps would be rejected"
+else
+  # no systemd (container): ask the kernel. adjtimex returns 5 (TIME_ERROR) when the clock is unsynchronized.
+  adj=$(python3 -I -c '
+import ctypes, ctypes.util, sys
+libc = ctypes.CDLL(ctypes.util.find_library("c") or "libc.so.6", use_errno=True)
+class Timex(ctypes.Structure):
+    _fields_ = [("modes", ctypes.c_uint), ("offset", ctypes.c_long), ("freq", ctypes.c_long),
+                ("maxerror", ctypes.c_long), ("esterror", ctypes.c_long), ("status", ctypes.c_int),
+                ("pad", ctypes.c_char * 256)]
+t = Timex()
+r = libc.adjtimex(ctypes.byref(t))
+if r < 0:
+    sys.exit(1)
+print(r, t.offset, t.maxerror)
+' 2>/dev/null) || adj=""
+  if [[ -n "$adj" ]]; then
+    read -r adj_state adj_off adj_max <<< "$adj"
+    if [[ "$adj_state" == 5 ]]; then
+      say DOWN clock "kernel clock unsynchronized (adjtimex TIME_ERROR) — PoW timestamps would be rejected"
+    else
+      say OK clock "kernel clock synchronized (adjtimex state=$adj_state offset=${adj_off} us maxerror=${adj_max} us)"
+    fi
+  else
+    say DEGRADED clock "clock sync state unknown (no timedatectl, adjtimex unavailable)"
+  fi
 fi
 
 if [[ -d "$home" ]]; then
@@ -67,7 +99,7 @@ if [[ "$SOFT3_CHAIN" != "$chain" ]]; then
 else
   say OK env "chain=$chain bind=$SOFT3_BIND radio=$SOFT3_RADIO"
 fi
-peers="/etc/soft3/$chain.peers.toml"
+peers="$etc_dir/$chain.peers.toml"
 if [[ -r "$peers" ]] && grep -qE "^chain *= *\"$chain\"" "$peers"; then
   say OK peers "$(grep -c '^\[\[peer\]\]' "$peers") bootstrap peers in $peers"
 else
@@ -80,7 +112,16 @@ if [[ "$mode" == pre ]]; then
 fi
 
 # --- process-level checks ------------------------------------------------------------------------
-if systemctl is-active --quiet "$unit"; then
+if [[ -n "${SOFT3_PIDFILE:-}" ]]; then
+  pid=$(cat "$SOFT3_PIDFILE" 2>/dev/null || true)
+  if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
+    threads=$(ls "/proc/$pid/task" 2>/dev/null | wc -l | tr -d ' ')
+    if (( threads < 512 )); then say OK unit "pid $pid alive threads=$threads ($SOFT3_PIDFILE)"
+    else say DEGRADED unit "pid $pid has $threads threads — request convoy?"; fi
+  else
+    say DOWN unit "no live process for pidfile $SOFT3_PIDFILE"
+  fi
+elif systemctl is-active --quiet "$unit"; then
   pid=$(systemctl show -p MainPID --value "$unit")
   threads=$(ls "/proc/$pid/task" 2>/dev/null | wc -l | tr -d ' ')
   if (( threads < 512 )); then say OK unit "$unit active pid=$pid threads=$threads"
@@ -89,7 +130,16 @@ else
   say DOWN unit "$unit is not active"
 fi
 
-if ss -uln 2>/dev/null | awk '{print $5}' | grep -qE "[:.]$radio_port$"; then
+udp_bound() { # port -> 0 when a UDP socket listens on it
+  if command -v ss >/dev/null 2>&1; then
+    ss -uln 2>/dev/null | awk '{print $5}' | grep -qE "[:.]$1$"
+  else
+    local hex
+    hex=$(printf '%04X' "$1")
+    cat /proc/net/udp /proc/net/udp6 2>/dev/null | awk '{print $2}' | grep -qE ":$hex$"
+  fi
+}
+if udp_bound "$radio_port"; then
   say OK radio "udp/$radio_port bound"
 else
   say DOWN radio "nothing bound on udp/$radio_port"
