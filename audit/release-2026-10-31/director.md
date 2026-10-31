@@ -23,7 +23,7 @@ On pussy's pinned stand (`release/pussy-stand.toml`), rehearsal [41041110233](ht
 
 On the stack leg, stack-chain-genesis, conformance-snapshot and simulation-gate are also green.
 
-Since session 408 the stand is pinned at soft3 `b6f22dc` (P2 and P2a, [#489](https://github.com/cyberia-to/soft3/pull/489)). Rehearsal [41201610001](https://github.com/cyberia-to/soft3/actions/runs/41201610001) on that stand holds on all five legs. Its overrides equal the stand 16 of 16, and soft3-tests, soft3-release and node-status are green on every leg. The platform legs are red only at phase1-pins (G9) and release-notes-source (G8). The stack leg is red at those two and at stack-zheng (L3b; at this revision it also times out at 1800 s), stack-mudra and stack-neuron (L3c), the same set as P2's baseline 41192673416 (sessions 402, 405, 408).
+Since session 400 the stand is pinned at soft3 `b6f22dc` (P2 and P2a, [#489](https://github.com/cyberia-to/soft3/pull/489)). Rehearsal [41201610001](https://github.com/cyberia-to/soft3/actions/runs/41201610001) on that stand holds on all five legs. Its overrides equal the stand 16 of 16, and soft3-tests, soft3-release and node-status are green on every leg. The platform legs are red only at phase1-pins (G9) and release-notes-source (G8). The stack leg is red at those two and at stack-zheng (L3b; at this revision it also times out at 1800 s), stack-mudra and stack-neuron (L3c), the same set as P2's baseline 41192673416 (sessions 402, 405, 408).
 
 ## units done
 
