@@ -18,7 +18,7 @@
 #   /status answers 200 within 10 s          the state lock is not convoyed (cyb bodies poll it every 15 s with a 10 s timeout)
 #   height advanced within SOFT3_STALE_SECS  the chain is producing or receiving blocks
 #   radio UDP port is bound                  the node is reachable for peers
-#   peers file parses like the node does    DOWN: missing file, version != 1, other chain, peer without id, bad id, id not an ed25519 point, no parsable address; DEGRADED: empty-id skipped, unparsable addr dropped
+#   peers file parses like the node does    read with python3 tomllib (as the node's toml parser does; awk fallback = DEGRADED at best). DOWN: not valid TOML, wrong types, missing file, version != 1, other chain, peer without id, bad id, id not an ed25519 point, no parsable address; DEGRADED: empty-id skipped, unparsable addr dropped
 #   clock NTP-synchronized                   PoW timestamp rules need it
 #   free disk >= SOFT3_MIN_DISK_GIB          the log/bbg can grow
 #   threads < 512                            the 2026-10-15 convoy signature (1,800 threads) is caught early
@@ -104,6 +104,13 @@ peers="$etc_dir/$chain.peers.toml"
 if [[ -r "$peers" ]]; then
   # Both launchers always pass --peers, and the node reads it at startup (crate/src/node/chain_node.rs),
   # so a missing file stops the node (DOWN below). Mirrors parse_peers (crate/src/chain/net/discovery.rs);
+  # Primary path: ONE python3 program (tomllib, Python >= 3.11) does the whole job like the node: the file must be
+  # valid TOML 1.0 (the toml crate; multi-line arrays, inline tables, literal strings, dotted keys all work), then the
+  # serde types of PeersFile/PeerEntry (version u32, chain str, peer array of tables, id required, name/id/relay str,
+  # addrs array of str; unknown keys ignored), then parse_peers' own checks in its order: version, chain, then the
+  # FIRST refusing peer in file order. Any failure before that is DOWN. Without python3 + tomllib the awk below reads
+  # the file line by line and cannot see multi-line arrays or inline tables, so its OK is reported as DEGRADED.
+  # Rules the python program and the awk share (comment continues):
   # the node refuses the whole file (DOWN) for: a top-level version other than 1 (or none), a top-level
   # chain other than this instance's (the env probe holds instance = SOFT3_CHAIN = the genesis name), a [[peer]] without an id key (serde), a non-empty id
   # that is not 64 hex chars (optional 0x prefix), a 64-hex id that is not an ed25519 point
@@ -114,6 +121,133 @@ if [[ -r "$peers" ]]; then
   # (DEGRADED here, so operators see it). SocketAddr is approximated: IPv4 a.b.c.d:port exactly
   # (octets 0-255, no leading zeros); IPv6 [..]:port or [..%digits]:port when the brackets hold only
   # hex digits, ':' and '.' with at least one ':'; port 0-65535. Hostnames never parse.
+  peers_py=
+  IFS= read -r -d '' peers_py <<'PYEOF' || true
+import re, sys, tomllib
+path, want = sys.argv[1], sys.argv[2]
+
+def out(level, msg):
+    print(level + "\t" + re.sub(r"[\t\r\n]", " ", msg))
+    sys.exit(0)
+
+def down(msg):
+    out("DOWN", msg + " — the node refuses " + path)
+
+# --- the TOML document (toml 0.8 = TOML 1.0) and the serde types of PeersFile / PeerEntry ---
+try:
+    with open(path, "rb") as f:
+        doc = tomllib.load(f)
+except (tomllib.TOMLDecodeError, UnicodeDecodeError) as e:
+    down("not valid TOML: %s" % e)
+
+def isint(v):
+    return isinstance(v, int) and not isinstance(v, bool)
+
+if "version" not in doc:
+    down("version missing")
+if not isint(doc["version"]) or not 0 <= doc["version"] <= 2**32 - 1:
+    down("version is not a u32 integer")
+if "chain" not in doc:
+    down("chain missing")
+if not isinstance(doc["chain"], str):
+    down("chain is not a string")
+peers = doc.get("peer", [])
+if not isinstance(peers, list) or not all(isinstance(p, dict) for p in peers):
+    down("peer is not an array of tables")
+for p in peers:
+    nm = p.get("name", "")
+    if not isinstance(nm, str):
+        down("peer name is not a string")
+    if "id" not in p:
+        down("peer '%s': missing field id" % nm)
+    if not isinstance(p["id"], str):
+        down("peer '%s': id is not a string" % nm)
+    if "relay" in p and not isinstance(p["relay"], str):
+        down("peer '%s': relay is not a string" % nm)
+    if "addrs" in p and not (isinstance(p["addrs"], list) and all(isinstance(a, str) for a in p["addrs"])):
+        down("peer '%s': addrs is not an array of strings" % nm)
+
+# --- then parse_peers' own checks, in its order ---
+if doc["version"] != 1:
+    down("version is %d, not 1" % doc["version"])
+if doc["chain"] != want:
+    down("chain is '%s', this instance runs '%s'" % (doc["chain"], want))
+
+# SocketAddr approximation: exactly what the awk fallback accepts (verified against the binary).
+def okport(p):
+    return re.fullmatch("[0-9]+", p) is not None and int(p) <= 65535
+
+def okv4(h):
+    o = h.split(".")
+    if len(o) != 4:
+        return False
+    return all(re.fullmatch("[0-9]{1,3}", x) and (len(x) == 1 or x[0] != "0") and int(x) <= 255 for x in o)
+
+def okaddr(a):
+    if a.startswith("["):
+        i = a.find("]:")
+        if i < 0:
+            return False
+        h, p = a[1:i], a[i + 2:]
+        h = re.sub(r"%[0-9]+$", "", h)
+        return re.fullmatch(r"[0-9a-fA-F:.]+", h) is not None and ":" in h and okport(p)
+    i = a.rfind(":")
+    if i < 0:
+        return False
+    return okport(a[i + 1:]) and okv4(a[:i])
+
+# ed25519 point check (EndpointId::from_bytes: ZIP-215 decompress, see the shell comment)
+P = 2**255 - 19
+D = -121665 * pow(121666, P - 2, P) % P
+
+def ispoint(h):
+    y = (int.from_bytes(bytes.fromhex(h), "little") & (2**255 - 1)) % P
+    u = (y * y - 1) % P
+    v = (D * y * y + 1) % P
+    return not (u and (not v or pow(u * pow(v, P - 2, P) % P, (P - 1) // 2, P) != 1))
+
+skipped, dropped, usable = [], [], 0
+for p in peers:
+    nm, pid = p.get("name", ""), p["id"]
+    if pid == "":
+        skipped.append(nm)
+        continue
+    if not re.fullmatch(r"(0x)?[0-9a-fA-F]{64}", pid):
+        down("peer '%s': id is not 64 hex chars" % nm)
+    if not ispoint(pid[2:] if pid[:2] == "0x" else pid):
+        down("peer '%s': id is not an ed25519 point" % nm)
+    addrs = p.get("addrs", [])
+    bad = [a for a in addrs if not okaddr(a)]
+    if len(bad) == len(addrs):
+        down("peer '%s': no parsable address" % nm)
+    usable += 1
+    if bad:
+        dropped.append(nm + " " + " ".join('"%s"' % a for a in bad))
+
+if not peers:
+    out("DEGRADED", "no bootstrap peer in " + path)
+if skipped or dropped or usable == 0:
+    why = ""
+    if skipped or not dropped:
+        why = "; skipped (empty id): " + ", ".join(skipped)
+    if dropped:
+        why += "; dropped (unparsable address): " + ", ".join(dropped)
+    out("DEGRADED", "%d usable of %d bootstrap peers in %s%s" % (usable, len(peers), path, why))
+out("OK", "%d bootstrap peers in %s" % (usable, path))
+PYEOF
+  peers_done=0
+  if python3 -I -c 'import tomllib' >/dev/null 2>&1; then
+    peers_out=$(python3 -I -c "$peers_py" "$peers" "$chain" 2>/dev/null)
+    if [[ -n "$peers_out" ]]; then
+      IFS=$'\t' read -r peers_level peers_msg <<< "$peers_out"
+      say "$peers_level" peers "$peers_msg"
+    else
+      say DEGRADED peers "the tomllib probe failed to run on $peers"
+    fi
+    peers_done=1
+  fi
+  # Fallback: awk, line by line (no python3 with tomllib).
+  if (( ! peers_done )); then
   # awk prints: N, U, then version, chain, missing-id, bad-id, no-addr, skipped and dropped lines.
   peer_report=$(awk '
     function quoted(s) { return match(s, /"[^"]*"/) ? substr(s, RSTART + 1, RLENGTH - 2) : "" }
@@ -214,9 +348,10 @@ for line in sys.stdin:
     [[ -n "$p_dropped" ]] && p_why+="; dropped (unparsable address): $p_dropped"
     say DEGRADED peers "$p_u usable of $p_n bootstrap peers in $peers$p_why"
   elif (( p_nopy )); then
-    say DEGRADED peers "cannot check id is a curve point (no python3)"
+    say DEGRADED peers "cannot check id is a curve point (no python3; TOML read line by line: no python3 with tomllib)"
   else
-    say OK peers "$p_u bootstrap peers in $peers"
+    say DEGRADED peers "$p_u bootstrap peers in $peers (TOML read line by line: no python3 with tomllib)"
+  fi
   fi
 else
   say DOWN peers "$peers missing or unreadable — the node is started with --peers and refuses to start"
