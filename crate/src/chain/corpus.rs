@@ -361,9 +361,10 @@ fn coinbase_bytes(height: u64, to: Id, amount: u64, extra: [u8; 32]) -> Vec<u8> 
 /// fails at exactly its step: those targeting steps 6–8 get their nonce
 /// re-ground so proof of work passes, and recompute the tx root unless that
 /// is what they break. Every mutation's block id is distinct from `valid`'s
-/// and from every other mutation's (a body mutation reusing the valid header
+/// and from every other mutation's (a 6b mutation reusing the valid header
 /// would put the valid id in the rejected set, §5.4, and every later one would
-/// draw `rejected`); the nonce search skips ids already used. Deterministic.
+/// draw `rejected`; a 6a mutation leaves its header as it was); the nonce
+/// search skips ids already used. Deterministic.
 /// A mutation whose nonce search runs out (hard target) is left out. Mutations needing a transaction (`bad_signature`,
 /// `duplicate_tx`, `coinbase_position`) appear when `valid` carries one;
 /// `replayed_tx` when the last 64 blocks of the main chain carry one.
