@@ -18,7 +18,7 @@
 #   /status answers 200 within 10 s          the state lock is not convoyed (cyb bodies poll it every 15 s with a 10 s timeout)
 #   height advanced within SOFT3_STALE_SECS  the chain is producing or receiving blocks
 #   radio UDP port is bound                  the node is reachable for peers
-#   peers file parses like the node does    DOWN: missing file, version != 1, other chain, peer without id, bad id, no parsable address; DEGRADED: empty-id skipped, unparsable addr dropped
+#   peers file parses like the node does    DOWN: missing file, version != 1, other chain, peer without id, bad id, id not an ed25519 point, no parsable address; DEGRADED: empty-id skipped, unparsable addr dropped
 #   clock NTP-synchronized                   PoW timestamp rules need it
 #   free disk >= SOFT3_MIN_DISK_GIB          the log/bbg can grow
 #   threads < 512                            the 2026-10-15 convoy signature (1,800 threads) is caught early
@@ -106,7 +106,10 @@ if [[ -r "$peers" ]]; then
   # so a missing file stops the node (DOWN below). Mirrors parse_peers (crate/src/chain/net/discovery.rs);
   # the node refuses the whole file (DOWN) for: a top-level version other than 1 (or none), a top-level
   # chain other than this instance's (the env probe holds instance = SOFT3_CHAIN = the genesis name), a [[peer]] without an id key (serde), a non-empty id
-  # that is not 64 hex chars (optional 0x prefix), or a peer none of whose addrs parse as a SocketAddr.
+  # that is not 64 hex chars (optional 0x prefix), a 64-hex id that is not an ed25519 point
+  # (EndpointId::from_bytes -> curve25519-dalek 5.0.0-pre.1 decompress, ZIP-215: bit 255 ignored, y taken mod p,
+  # x = 0 with the sign bit set accepted, no small-order check; accepted iff (y^2-1)/(d*y^2+1) is a square mod p;
+  # checked by the python3 below, DEGRADED when python3 is missing), or a peer none of whose addrs parse as a SocketAddr.
   # It skips a peer with id = "" (DEGRADED) and silently drops unparsable addrs of a usable peer
   # (DEGRADED here, so operators see it). SocketAddr is approximated: IPv4 a.b.c.d:port exactly
   # (octets 0-255, no leading zeros); IPv6 [..]:port or [..%digits]:port when the brackets hold only
@@ -138,6 +141,7 @@ if [[ -r "$peers" ]]; then
       if (id == "") { skipped = skipped (skipped == "" ? "" : ", ") pname; return }
       if (id !~ /^(0x)?[0-9a-fA-F]+$/ || length(id) - (id ~ /^0x/ ? 2 : 0) != 64) {
         if (bad == "") bad = "peer \047" pname "\047: id is not 64 hex chars"; return }
+      ids = ids id "\t" pname "\n"
       if (pn == 0) { if (noaddr == "") noaddr = "peer \047" pname "\047: no parsable address"; return }
       u++
       if (pdrop != "") dropped = dropped (dropped == "" ? "" : ", ") pname " " pdrop
@@ -160,9 +164,36 @@ if [[ -r "$peers" ]]; then
       flush()
       vmsg = !hasver ? "version missing" : (ver != "1" ? "version is " ver ", not 1" : "")
       cmsg = !haschain ? "chain missing" : (fchain != want ? "chain is \047" fchain "\047, this instance runs \047" want "\047" : "")
-      print n + 0; print u + 0; print vmsg; print cmsg; print missid; print bad; print noaddr; print skipped; print dropped }
+      print n + 0; print u + 0; print vmsg; print cmsg; print missid; print bad; print noaddr; print skipped; print dropped; printf "%s", ids }
   ' want="$chain" "$peers")
-  { read -r p_n; read -r p_u; read -r p_ver; read -r p_chain; read -r p_missid; read -r p_bad; read -r p_noaddr; read -r p_skipped; read -r p_dropped; } <<< "$peer_report"
+  { read -r p_n; read -r p_u; read -r p_ver; read -r p_chain; read -r p_missid; read -r p_bad; read -r p_noaddr; read -r p_skipped; read -r p_dropped; read -r -d '' p_ids; } <<< "$peer_report"
+  # Is every well-formed id an ed25519 point? prints the name of the first peer whose id is not (rc 1).
+  p_nopoint=""; p_nopy=0
+  if [[ -n "$p_ids" && -z "$p_ver$p_chain$p_missid$p_bad" ]]; then
+    if command -v python3 >/dev/null 2>&1; then
+      p_nopoint=$(printf '%s\n' "$p_ids" | python3 -I -c '
+import sys
+P = 2**255 - 19
+D = -121665 * pow(121666, P - 2, P) % P
+for line in sys.stdin:
+    line = line.rstrip("\n")
+    if not line:
+        continue
+    pid, name = (line.split("\t", 1) + [""])[:2]
+    h = pid[2:] if pid[:2] == "0x" else pid
+    y = (int.from_bytes(bytes.fromhex(h), "little") & (2**255 - 1)) % P
+    u = (y * y - 1) % P
+    v = (D * y * y + 1) % P
+    if u and (not v or pow(u * pow(v, P - 2, P) % P, (P - 1) // 2, P) != 1):
+        print(name)
+        sys.exit(1)
+' 2>/dev/null); rc=$?
+      (( rc == 0 || rc == 1 )) || { p_nopy=1; p_nopoint=""; }
+      (( rc == 1 )) && p_nopoint="${p_nopoint:-?}"
+    else
+      p_nopy=1
+    fi
+  fi
   if [[ -n "$p_ver" ]]; then
     say DOWN peers "$p_ver — the node refuses $peers"
   elif [[ -n "$p_chain" ]]; then
@@ -171,6 +202,8 @@ if [[ -r "$peers" ]]; then
     say DOWN peers "$p_missid — the node refuses $peers"
   elif [[ -n "$p_bad" ]]; then
     say DOWN peers "$p_bad — the node refuses $peers"
+  elif [[ -n "$p_nopoint" ]]; then
+    say DOWN peers "peer '$p_nopoint': id is not an ed25519 point — the node refuses $peers"
   elif [[ -n "$p_noaddr" ]]; then
     say DOWN peers "$p_noaddr — the node refuses $peers"
   elif (( p_n == 0 )); then
@@ -180,6 +213,8 @@ if [[ -r "$peers" ]]; then
     [[ -n "$p_skipped" || -z "$p_dropped" ]] && p_why="; skipped (empty id): $p_skipped"
     [[ -n "$p_dropped" ]] && p_why+="; dropped (unparsable address): $p_dropped"
     say DEGRADED peers "$p_u usable of $p_n bootstrap peers in $peers$p_why"
+  elif (( p_nopy )); then
+    say DEGRADED peers "cannot check id is a curve point (no python3)"
   else
     say OK peers "$p_u bootstrap peers in $peers"
   fi
