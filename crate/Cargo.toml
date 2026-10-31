@@ -83,3 +83,14 @@ mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", feat
 # makes minutes slower. Release builds are unaffected.
 [profile.dev.package.cyber-hemera]
 opt-level = 3
+
+# release builds panic on integer overflow, as debug builds do, so a debug
+# node and a release node cannot disagree on an overflowing value
+# (plan P2a, decision D14). Scope: the node and the epoch engine it runs at
+# settlement; measured green with the flag proven on rustc, diagnostic
+# 41192950342. `bench` inherits from `release`.
+[profile.release.package.soft3]
+overflow-checks = true
+
+[profile.release.package.cyber-tru]
+overflow-checks = true
