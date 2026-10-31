@@ -27,13 +27,15 @@ On the stack leg, stack-chain-genesis, conformance-snapshot and simulation-gate 
 
 - session 394: **P1** done. The rehearsal's overrides equal the stand file, 16 of 16, and its acceptance gates are green on all five legs. The remaining reds have rows (G8, G9, L3b, L3c).
 
+- session 395: **P2**: soft3#479 merged into `release/phase1` as `bce863b`. Red diagnostic 41042358656 fails on the hole, and green 41042360873 has lib 294/0 with `warnings: 0`. The all-legs rehearsal [41192673416](https://github.com/cyberia-to/soft3/actions/runs/41192673416) is dispatched.
+
 ## PRs merged
 
-Into soft3 `release/phase1`: this session's plan PR.
+Into soft3 `release/phase1`: session 394's plan PR #481; [#479](https://github.com/cyberia-to/soft3/pull/479) (P2, `bce863b`); session 395's plan PR.
 
 ## plan items left
 
-P2: both diagnostics of #479 ended `failure`, including the green one, [41042360873](https://github.com/cyberia-to/soft3/actions/runs/41042360873). Also left: P2a, the owner's landings and asks (`plan.md` § what only the owner does), and R1.
+P2: the all-legs rehearsal 41192673416, then the stand's soft3 bump. Also left: P2a, the owner's landings and asks (`plan.md` § what only the owner does), and R1.
 
 ## fable and windows
 
