@@ -63,6 +63,8 @@ Since session 400 the stand is pinned at soft3 `b6f22dc` (P2 and P2a, [#489](htt
 
 - session 412: this report brought current through session 411. The tick `20261031T162256Z` is unchanged since 16:03 UTC. REST at about 16:25 UTC shows 0 reviews and no new comment since 15:40 UTC on soft3#376, #350, #398, #384, lens#36, hemera#25, radio#52, cybernode#1, simulation#2 or simulation#3.
 
+- sessions 413–415: idle, on an unchanged tick (`20261031T164125Z`, `165956Z`, `171801Z`; `diff` without `at`: empty). No owner review or comment on the four landings or the held PRs. In 414 the director found 18 commits on `release/phase1` dated 2026-10-31 that carry a `Co-Authored-By` trailer, which `AGENTS.md` § git forbids; the director's commits omit it from that session on.
+
 ## PRs merged
 
 Into soft3 `release/phase1`: session 394's plan PR #481; [#479](https://github.com/cyberia-to/soft3/pull/479) (P2, `bce863b`); session 395's plan PR #482; [#484](https://github.com/cyberia-to/soft3/pull/484) (P2a, `b6f22dc`); the plan PRs #483, #485, #486 (sessions 396–398), session 399's #487; [#489](https://github.com/cyberia-to/soft3/pull/489) (P2, the stand, `89d9c24`); session 400's plan PR #490; session 401's #491; the owner's [#488](https://github.com/cyberia-to/soft3/pull/488) (P3) through session 402's #492; [#493](https://github.com/cyberia-to/soft3/pull/493) (P3, `feb3d18`); the plan PRs #494 and #495 (sessions 403 and 404) and #496 (405); [#497](https://github.com/cyberia-to/soft3/pull/497) (P3d, `c16fa90`); #498 (406); #499 (408); [#500](https://github.com/cyberia-to/soft3/pull/500) (P3e, `5580cb7`); #501 (409); #502 (410); #503 (411). No PR was merged into any default branch. Every landing waits on the owner.
