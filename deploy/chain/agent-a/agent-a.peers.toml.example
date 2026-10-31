@@ -1,0 +1,13 @@
+# $CHAIN_ROOT/etc/pussy-rc.peers.toml on agent-a — cyberproxy is the only dialable node.
+# agent-a itself is not listed anywhere (behind NAT, no inbound address).
+# For chain "pussy" use port 7791 and chain = "pussy".
+version = 1
+chain = "pussy-rc"
+
+[[peer]]
+name = "cyberproxy"
+# fill from `soft3 node id --home /var/lib/soft3/pussy-rc` on cyberproxy (64 lowercase hex).
+# An empty id is skipped by the node — agent-a would have no peer at all.
+id = ""
+addrs = ["167.235.28.94:7793", "[2a01:4f8:c0c:7c49::1]:7793"]
+relay = ""
