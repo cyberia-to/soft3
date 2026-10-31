@@ -37,13 +37,15 @@ On the stack leg, stack-chain-genesis, conformance-snapshot and simulation-gate 
 
 - session 399: **P2**: the four platform legs of rehearsal [41192673416](https://github.com/cyberia-to/soft3/actions/runs/41192673416) read. `a_settlement_panic_is_a_named_halt` passes and soft3-tests, soft3-release and node-status are green on all four. The only reds are phase1-pins and release-notes-source. The stack leg is still qualifying.
 
+- session 400: **P2** done. The stack leg of [41192673416](https://github.com/cyberia-to/soft3/actions/runs/41192673416) is green on soft3-tests, soft3-release, node-status and simulation-gate, `a_settlement_panic_is_a_named_halt` passes, and the reds are the stand's known set. [#489](https://github.com/cyberia-to/soft3/pull/489) bumped the stand's soft3 to `b6f22dc` (merged as `89d9c24`).
+
 ## PRs merged
 
-Into soft3 `release/phase1`: session 394's plan PR #481; [#479](https://github.com/cyberia-to/soft3/pull/479) (P2, `bce863b`); session 395's plan PR #482; [#484](https://github.com/cyberia-to/soft3/pull/484) (P2a, `b6f22dc`); the plan PRs #483, #485, #486 (sessions 396–398) and session 399's.
+Into soft3 `release/phase1`: session 394's plan PR #481; [#479](https://github.com/cyberia-to/soft3/pull/479) (P2, `bce863b`); session 395's plan PR #482; [#484](https://github.com/cyberia-to/soft3/pull/484) (P2a, `b6f22dc`); the plan PRs #483, #485, #486 (sessions 396–398), session 399's #487; [#489](https://github.com/cyberia-to/soft3/pull/489) (P2, the stand, `89d9c24`); session 400's plan PR.
 
 ## plan items left
 
-P2: the stack leg of rehearsal 41192673416, then the stand's `soft3` bump to `b6f22dc`. P2a is done. Also left: the owner's landings and asks (`plan.md` § what only the owner does), and R1.
+P2 and P2a are done. Left: an all-legs rehearsal of the stand at `b6f22dc` (P2a's profile), the owner's landings and asks (`plan.md` § what only the owner does), and R1.
 
 ## fable and windows
 
