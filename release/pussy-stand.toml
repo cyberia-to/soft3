@@ -12,19 +12,27 @@
 # overrides, so this file can never become a release by itself.
 #
 # Qualified by rehearsal 40688607756 (2026-10-28, stack leg job 122817510646,
-# overrides in its receipt/sources.json). `from` names the ref each rev was
-# taken from. Where a landing PR is open (hemera#25, lens#36, nox#43,
+# overrides in its receipt/sources.json), and again by rehearsal 41192673416
+# (2026-10-31, all five legs, stack leg job 124512521956) with soft3 at
+# bce863b (P2, soft3#479): no red beyond phase1-pins, release-notes-source,
+# stack-zheng, stack-mudra, stack-neuron, the same set as 40688607756.
+# `from` names the ref each rev was taken from. Where a landing PR is open
+# (hemera#25, lens#36, nox#43,
 # radio#52, soft3#376) the rev is that PR's head, i.e. what reaches the
-# default branch if the owner approves. The landing heads of lens, radio and
-# soft3 are ahead of the qualified commit by documentation only:
+# default branch if the owner approves. The landing heads of lens and radio
+# are ahead of the qualified commit by documentation only; soft3's rev is
+# ahead by one build profile:
 #   lens  fee68d8..d6dcc3f  AGENTS.md
 #   radio 9c498b2..b74133c  docs/explanation/cybernet.md, roadmap/soft3-radio.md
-#   soft3 2e61557..61d4616  release/director/plan.md, audit/release-2026-10-2{8,9}/director.md
+#   soft3 bce863b..b6f22dc  crate/Cargo.toml (soft3#484, P2a: release
+#         overflow-checks for soft3 and cyber-tru), plan.md, the day's report.
+#         The profile is gated by 41194300832 and diagnostic 41192950342
+#         (release tests with the flag, Linux x86_64), not yet by all legs.
 # Every other rev is the exact qualified commit.
 
 stand = "pussy"
-qualified_by = 40688607756
-updated = "2026-10-30"
+qualified_by = 41192673416
+updated = "2026-10-31"
 
 [[sibling]]
 name = "hemera"
@@ -120,4 +128,4 @@ rev = "218f063d2b29eb33693f56fd47a67a358e51eb28"
 name = "soft3"
 repo = "cyberia-to/soft3"
 from = "release/phase1 (soft3#376)"
-rev = "61d46166b358b82c34fc5000155b7029dc48a9fe"
+rev = "b6f22dcdec8204055f1a951e10fad111b2e4d8ad"
