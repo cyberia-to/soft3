@@ -29,13 +29,15 @@ On the stack leg, stack-chain-genesis, conformance-snapshot and simulation-gate 
 
 - session 395: **P2**: soft3#479 merged into `release/phase1` as `bce863b`. Red diagnostic 41042358656 fails on the hole, and green 41042360873 has lib 294/0 with `warnings: 0`. The all-legs rehearsal [41192673416](https://github.com/cyberia-to/soft3/actions/runs/41192673416) is dispatched.
 
+- session 396: **P2a**: release `overflow-checks` diagnostic [41192950342](https://github.com/cyberia-to/soft3/actions/runs/41192950342) dispatched (baseline and overflow legs on pussy's stand). P2's rehearsal is still running.
+
 ## PRs merged
 
 Into soft3 `release/phase1`: session 394's plan PR #481; [#479](https://github.com/cyberia-to/soft3/pull/479) (P2, `bce863b`); session 395's plan PR.
 
 ## plan items left
 
-P2: the all-legs rehearsal 41192673416, then the stand's soft3 bump. Also left: P2a, the owner's landings and asks (`plan.md` § what only the owner does), and R1.
+P2: the all-legs rehearsal 41192673416, then the stand's soft3 bump. P2a: read diagnostic 41192950342. Also left: the owner's landings and asks (`plan.md` § what only the owner does), and R1.
 
 ## fable and windows
 
