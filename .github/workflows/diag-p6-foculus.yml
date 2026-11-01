@@ -1,0 +1,118 @@
+name: Diagnostic p6 foculus off the legacy fold
+
+# Measurement only, never merged, never a release gate (plan row P6, session 472).
+# P6: foculus without zheng's legacy fold. foculus has no CI of its own; this runs
+# the train's stack gate for foculus (`cargo test --locked`, train_gates.py) on
+# pussy's stand (release/pussy-stand.toml) with only foculus replaced, plus P6's
+# guard: zheng's `legacy` feature absent from foculus's default graph.
+#   stand: foculus at the stand's own rev (foculus#86 head 0551e3b) — the baseline
+#   p6:    foculus port/p6-sound-settlement (foculus#61 merged onto #86's head)
+# The stand file and every other sibling are untouched (D16 (3)).
+on:
+  push:
+    branches: ['diag/p6-*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: stand
+            foculus: 0551e3b9c19a1c6a69c8d552ffbbfd3fa1c71c5d
+          - arm: p6
+            foculus: port/p6-sound-settlement
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand with foculus replaced, laid out like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          args=()
+          for o in $(python3 release/pussy_stand.py); do
+            case "$o" in foculus=*) continue ;; esac
+            args+=(--override "$o")
+          done
+          args+=(--override "foculus=${{ matrix.foculus }}")
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.1 --output "$RUNNER_TEMP/snapshot" "${args[@]}"
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row["name"] in ("foculus", "hemera", "bbg", "zheng", "lens", "nox", "tru"):
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+          git -C "$RUNNER_TEMP/sources/foculus" rev-parse HEAD | tee "$RUNNER_TEMP/out/foculus-rev.txt"
+      - name: The lock against the stand
+        id: lock
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          if cargo metadata --locked --format-version 1 >/dev/null 2>"$RUNNER_TEMP/out/lock-check.txt"; then
+            echo "stale=false" >> "$GITHUB_OUTPUT"; echo "lock matches the stand"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"; echo "LOCK STALE against the stand (the gate would refuse it); resolving for measurement:"
+            head -5 "$RUNNER_TEMP/out/lock-check.txt"
+            cargo metadata --format-version 1 >/dev/null
+          fi
+          cp Cargo.lock "$RUNNER_TEMP/out/foculus.Cargo.lock"
+          cargo tree -i cyber-hemera --depth 0 | tee "$RUNNER_TEMP/out/hemera-version.txt"
+      - name: "P6 guard: zheng `legacy` absent from foculus's default graph"
+        id: guard
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          set -o pipefail
+          cargo tree --locked -e features -i zheng 2>&1 | tee "$RUNNER_TEMP/out/zheng-features.txt"
+          if grep -E 'zheng feature "legacy"' "$RUNNER_TEMP/out/zheng-features.txt"; then
+            echo "GUARD RED: zheng legacy is enabled in foculus's default graph"; exit 1
+          fi
+          echo "GUARD GREEN: no zheng legacy in the default graph"
+      - name: The gate's command (cargo test --locked, 900 s budget as in train_gates.py)
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/foculus
+        run: |
+          set -o pipefail
+          start=$(date +%s)
+          rc=0
+          timeout 900 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/test-${{ matrix.arm }}.log" || rc=$?
+          echo "exit=$rc seconds=$(( $(date +%s) - start ))" | tee "$RUNNER_TEMP/out/test-exit.txt"
+          exit $rc
+      - name: Summary
+        if: always()
+        run: |
+          echo "arm=${{ matrix.arm }} foculus=$(cat "$RUNNER_TEMP/out/foculus-rev.txt") lock_stale=${{ steps.lock.outputs.stale }} guard=${{ steps.guard.outcome }} test=${{ steps.test.outcome }}"
+          cat "$RUNNER_TEMP/out/test-exit.txt" 2>/dev/null || true
+          grep -h '^test result\|panicked\|^error\|^warning: unused\|FAILED\|failures:' "$RUNNER_TEMP"/out/test-*.log | head -80 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p6-foculus-${{ matrix.arm }}
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure' || steps.guard.outcome == 'failure' || steps.lock.outputs.stale == 'true'
+        run: exit 1
