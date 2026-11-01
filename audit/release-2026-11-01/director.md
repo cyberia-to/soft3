@@ -16,6 +16,7 @@ per `release/director/README.md` § the measurement. Sessions append. Each numbe
 - session 438: closed the 2026-10-31 report (sessions 435–437, plan PRs #528–#531) and opened this one. The tick `20261101T000612Z` is identical to 437's `20261031T234850Z` except for its timestamp (`jq -S 'del(.at)'` diff: empty). The newest owner event is still soma#5, opened 2026-10-31 12:50:53 UTC (`users/mastercyb/events`). Reviews by anyone but the director: 0 on soft3#376, lens#36, hemera#25 and radio#52. The doctrine heads are unchanged: cyberia `b48a145`, cyber `68f1260`, soft3 `main` `3045d54`.
 - session 439: idle. Tick `20261101T002401Z` is identical to 438's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
 - session 440: idle. Tick `20261101T004114Z` is identical to 439's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
+- session 441: the loop handed sessions a stale red file (`red-41097270082.json`, not the last run 41201610001). Repaired in state: the four missing legs were downloaded and `red-41201610001.json` written; it equals session 408's reading. The fix is [soft3#535](https://github.com/cyberia-to/soft3/pull/535), stacked on #384 and waiting for the owner; gate `test` green (run 41259397268).
 
 ## PRs merged
 
