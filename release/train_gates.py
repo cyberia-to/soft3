@@ -415,6 +415,16 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
     if component == "soft3":
         crate = root / "crate"
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)
+        # Plan C4: soft3#406 moved the node's tests to cybernode/rs (rehearsal 40525967811: soft3-tests
+        # ran 2 tests against 314 in 40446879208). SOFT3_CONFORMANCE_DIR is explicit because chain.snap
+        # stays in soft3 (proposals/cybernode.md) and cybernode#1 reads it from there. 1800 s is the
+        # budget soft3-tests had for these tests.
+        cybernode = directory / "cybernode" / "rs"
+        if cybernode.is_dir():
+            gates.run("cybernode-tests", ["cargo", "test", "--locked"], cybernode,
+                      env={"SOFT3_CONFORMANCE_DIR": str(root / "conformance")}, timeout=1800)
+        else:
+            gates.blocked("cybernode-tests", "cybernode checkout unavailable")
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = crate / "target/release/soft3"
         boot_status(binary, gates)

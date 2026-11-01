@@ -1,13 +1,13 @@
 [package]
 name = "soft3"
-version = "0.10.0"
+version = "0.11.0"
 edition = "2021"
-description = "soft3 — type 2 civilization software stack: network + real cybergraph node + CLI"
+description = "soft3 — the type 2 civilization software stack: the ladder's contracts under one name; the node is the crate cybernode (rung 7), re-exported here"
 license-file = "LICENSE"
 repository = "https://github.com/cyberia-to/soft3"
 homepage = "https://soft3.org"
 readme = "README.md"
-keywords = ["soft3", "cyber", "cybergraph", "spacepussy-test"]
+keywords = ["soft3", "cyber", "cybergraph", "cybernode"]
 categories = ["command-line-utilities", "science"]
 rust-version = "1.85"
 
@@ -22,51 +22,18 @@ path = "src/bin/soft3.rs"
 [workspace]
 
 [features]
-# the reference miner ships with its GPU backends (specs/chain.md §8: the
-# first competent GPU kernel is the majority miner, so it must not be a secret)
+# the facade carries the node's features through, so `cargo install soft3` still mines on the GPU
 default = ["metal", "webgpu"]
+metal = ["cybernode/metal"]
+webgpu = ["cybernode/webgpu"]
+chain-conformance = ["cybernode/chain-conformance"]
+sim = ["cybernode/sim"]
 # full stack re-exports (heavy)
 stack = ["dep:cyb"]
-# `soft3 mine --backend metal`: hemera_mine on the Apple GPU (Apple Silicon macOS; a no-op elsewhere, Intel macs included)
-metal = ["dep:cyber-lens-gpu", "cyber-lens-gpu/metal"]
-# `soft3 mine --backend webgpu`: hemera_mine through wgpu (Vulkan, DX12, Metal, GL)
-webgpu = ["dep:cyber-lens-gpu", "cyber-lens-gpu/webgpu"]
-# chain-conformance.md sections 1-9: vectors as tests (`cargo test --features chain-conformance`)
-chain-conformance = []
-# out-of-tree simulators (cyberia-to/simulation): `params::sim_pow`, a
-# process-wide relaxed POW_LIMIT for private test genesis files. Never in a node.
-sim = []
 
 [dependencies]
-# real node engine
-cybergraph = { version = "0.1.1", path = "../../cybergraph", features = ["local-storage"] }
-foculus = { version = "0.1.1", path = "../../foculus", default-features = false }
-hemera = { package = "cyber-hemera", version = "0.4", path = "../../hemera/rs" }
-# header mining kernels (Metal, WebGPU) — lens release/0.2 `gpu/`
-cyber-lens-gpu = { version = "0.1.1", path = "../../lens/gpu", optional = true }
-# φ*, J and the syntropy gradient of the focus economy (chain-economy §4–§5;
-# tru specs/epoch.md): the epoch engine every full node runs at settlement
-tru = { package = "cyber-tru", version = "0.1", path = "../../tru/rs" }
-# genesis pipeline: snapshot → manifest → bbg state root (specs/genesis.md)
-bbg = { version = "0.3", path = "../../bbg/rs" }
-# mudra: genesis reads legacy keys; wallet signs NSIG1 and derives keys from a spell (`bridge`); the chain verifies NSIG1
-mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", default-features = false, features = ["bridge"] }
-sha2 = "0.10"
-bech32 = "0.11"
-base64 = "0.22"
-flate2 = "1"
-# tade framing: the genesis file and the chain wire dialect
-tade = { version = "0.1", path = "../../tade/impl/rust" }
-# chain store (specs/chain.md §3.6): headers, bodies, undo journals
-fjall = { version = "2", path = "../../bbg/rs/vendor/fjall" }
-# phase-1 root chain wire (specs/chain-wire.md): radio transport, gossip
-radio = { package = "cyber-radio", version = "0.1", path = "../../radio/iroh" }
-iroh-gossip = { version = "0.96", path = "../../radio/iroh-gossip" }
-tokio = { version = "1.44", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
-n0-future = "0.3"
-rand = "0.9"
-toml = "0.8"
-bytes = "1"
+# rung 7, the node: the chain kernel, genesis, node, wallet, network — soft3/proposals/cybernode.md
+cybernode = { version = "0.1", path = "../../cybernode/rs", default-features = false }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
 # probe + http client for sync
@@ -88,8 +55,13 @@ opt-level = 3
 # node and a release node cannot disagree on an overflowing value
 # (plan P2a, decision D14). Scope: the node and the epoch engine it runs at
 # settlement; measured green with the flag proven on rustc, diagnostic
-# 41192950342. `bench` inherits from `release`.
+# 41192950342. `bench` inherits from `release`. Since 0.11 the node's code is
+# the crate cybernode, and cargo reads profiles from this root manifest only,
+# so the flag names cybernode here too.
 [profile.release.package.soft3]
+overflow-checks = true
+
+[profile.release.package.cybernode]
 overflow-checks = true
 
 [profile.release.package.cyber-tru]

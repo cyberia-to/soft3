@@ -9,7 +9,13 @@
 # tree. Does not pin cyb, cyber or soft3 themselves — see the spec.
 
 phase = 1
-updated = "2026-10-28"
+updated = "2026-11-01"
+
+[[sibling]]
+name = "cybernode"
+repo = "cyberia-to/cybernode"
+branch = "release/phase1"
+rev = "5a2f4a26b468d351e173f35bb309824e113e7446"
 
 [[sibling]]
 name = "strata"

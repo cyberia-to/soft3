@@ -1,5 +1,5 @@
 # soft3 component registry — the one list every surface is checked against.
-# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung of the ladder on soft3.org — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 soft3 (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
+# name = the word used everywhere; kind = crate | product | network | ops | part (a named part of a product that is not yet its own crate); layer = the rung of the ladder on soft3.org — ten products, one per rung: 1 nox (machine) · 2 trident (weapon) · 3 joy (warrior) · 4 cybergraph (brain) · 5 neural (language) · 6 cy (agent) · 7 cybernode (network) · 8 cyb (robot) · 9 cyber (superintelligence) · 10 cyberia (state); role = the product's name in the cyberverse; part_of = the one product a component composes; machinery = a backend or host; infrastructure = ops that serve a product; both drawn like any part; the law: no component depends on a rung above its own; phase says what ships when;
 # facet = the cybics triad the home architecture groups by; phase = 1 | after | grown (grown on soft3, not of it); state = as in status.md.
 # checked by site/check-components.py; edit here first, then the surfaces. products built on soft3 (cyb, cyber, cyberia — layers 8–10) keep their parts here for the registry, but the site does not decompose them: what they are made of is their own business.
 
@@ -187,7 +187,7 @@ repo = "foculus"
 verb = "agree"
 facet = "life"
 layer = 7
-part_of = "soft3"
+part_of = "cybernode"
 phase = "1"
 state = "unwired"
 
@@ -254,7 +254,7 @@ repo = "radio"
 verb = "transmit"
 facet = "space"
 layer = 7
-part_of = "soft3"
+part_of = "cybernode"
 phase = "1"
 state = "live"
 
@@ -275,10 +275,20 @@ kind = "product"
 repo = "soft3"
 verb = "compose"
 facet = "play"
+phase = "1"
+state = "live"
+
+[[component]]
+name = "cybernode"
+kind = "product"
+repo = "cybernode"
+verb = "run"
+facet = "play"
 layer = 7
 role = "network"
 phase = "1"
 state = "live"
+note = "the node: chain kernel, genesis, wallet, network; carved out of soft3 2026-10-27 (soft3/proposals/cybernode.md)"
 
 [[component]]
 name = "signal"
@@ -562,9 +572,9 @@ phase = "after"
 state = "live"
 
 [[component]]
-name = "cybernode"
+name = "apparatus"
 kind = "ops"
-repo = "cybernode"
+repo = "apparatus"
 verb = "host"
 facet = "space"
 layer = 10
@@ -878,7 +888,7 @@ repo = "foculus"
 verb = "reconcile"
 facet = "mass"
 layer = 7
-part_of = "soft3"
+part_of = "cybernode"
 phase = "1"
 state = "proposed"
 note = "the data plane of foculus — ordering, availability, local merge, history trust; soft3/proposals/network-planes"
@@ -890,7 +900,7 @@ repo = "foculus"
 verb = "reward"
 facet = "work"
 layer = 7
-part_of = "soft3"
+part_of = "cybernode"
 phase = "1"
 state = "proposed"
 note = "the incentive plane of foculus — tickets, fold-mining, Shapley settlement; named after Shapley's So Long Sucker; soft3/proposals/network-planes"
