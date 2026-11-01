@@ -146,7 +146,9 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
          (`--chain pussy-rc`, same snapshot and cache, `--time` = [pussy-rc].time
          of conformance/chain-genesis.toml) and runs `genesis verify` on it. If
          [pussy-rc].time is missing or unreadable the rc steps are skipped and
-         pussy's gate is unaffected;
+         pussy's gate is unaffected. If [pussy-rc].file_sha256 is pinned and the
+         rc steps ran green, the built pussy-rc.tade's sha256 must equal it, else
+         the gate is red (two hosts must load the same bytes);
       c. else blocked, never green."""
     gate = "stack-chain-genesis"
     cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
@@ -173,8 +175,11 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
                      "--cache", str(cache), "--out", str(genesis)]
     check = cargo + ["conformance", "check", "chain", "--genesis", str(genesis)]
     steps = [(build, 900), (check, 900)]
+    rc_pin = None
     try:
-        rc_time = int(tomllib.loads((soft3 / "conformance/chain-genesis.toml").read_text())["pussy-rc"]["time"])
+        rc_spec = tomllib.loads((soft3 / "conformance/chain-genesis.toml").read_text())["pussy-rc"]
+        rc_time = int(rc_spec["time"])
+        rc_pin = rc_spec.get("file_sha256")
     except (OSError, KeyError, ValueError, TypeError, tomllib.TOMLDecodeError):
         rc_time = None
     if rc_time is not None:
@@ -182,7 +187,22 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
         steps.append((cargo + ["genesis", "build", "--chain", "pussy-rc", "--snapshot", str(pussy / "snapshot"),
                                "--cache", str(cache), "--time", str(rc_time), "--out", str(rc)], 900))
         steps.append((cargo + ["genesis", "verify", str(rc)], 900))
-    return gates.run_sequence(gate, steps, soft3)
+    green = gates.run_sequence(gate, steps, soft3)
+    if not (green and rc_time is not None and rc_pin):
+        return green
+    try:
+        built = digest(rc)
+    except OSError:
+        built = None
+    if built == rc_pin:
+        return True
+    detail = {}
+    if gates.rows and gates.rows[-1]["name"] == gate:
+        detail = gates.rows.pop()
+        detail.pop("name"), detail.pop("result")
+    what = f"built {rc.name} sha256 {built}" if built else f"{rc} was not built"
+    return gates.record(gate, "red", **detail, error=f"{what} != pinned "
+                        f"conformance/chain-genesis.toml [pussy-rc].file_sha256 {rc_pin}")
 
 
 SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
