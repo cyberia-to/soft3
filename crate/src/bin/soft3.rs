@@ -908,9 +908,26 @@ fn cmd_conformance(args: &[String]) {
     });
     let committed = std::fs::read_to_string(&snap).map(|s| conformance::parse(&s)).unwrap_or_default();
     let mut current = conformance::entries();
+    let mut pins_ok = true;
     match std::fs::read(&genesis) {
         Ok(bytes) => match conformance::genesis_entries("pussy", &bytes) {
-            Ok(e) => current.extend(e),
+            Ok(e) => {
+                // the binary's pins must equal the file the gate built from the burial
+                if let Some(pin) = soft3::chain::params::embedded("pussy").filter(|c| c.pinned()) {
+                    for (scenario, pinned) in [("pussy particle", pin.chain_id), ("pussy block0_id", pin.genesis_block)] {
+                        let file = e.iter().find(|x| x.scenario == scenario).map(|x| x.value);
+                        if file != Some(pinned) {
+                            let file = file.map(|v| soft3::wallet::hex(&v)).unwrap_or_else(|| "(absent)".into());
+                            eprintln!("pins: {scenario} is {} in this build but {file} in {}", soft3::wallet::hex(&pinned), genesis.display());
+                            pins_ok = false;
+                        }
+                    }
+                    if pins_ok {
+                        println!("pins: pussy particle and block0_id match this build");
+                    }
+                }
+                current.extend(e);
+            }
             Err(e) => {
                 eprintln!("conformance: {} is not a genesis: {e}", genesis.display());
                 std::process::exit(1);
@@ -925,6 +942,10 @@ fn cmd_conformance(args: &[String]) {
     }
     match sub {
         "check" => {
+            if !pins_ok {
+                eprintln!("chain.snap: the pins in crate/src/chain/params.rs do not match the genesis file");
+                std::process::exit(1);
+            }
             if drift.is_empty() {
                 println!("chain.snap: {} entries, no drift", current.len());
             } else {
