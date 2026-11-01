@@ -10,6 +10,7 @@ use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
+use crate::chain::header::hash32;
 use crate::chain::net::chain_view::{BlockVerdict, ChainView};
 use crate::chain::net::codec::{hex, Header, Id};
 use crate::chain::net::kernel::KernelChain;
@@ -74,21 +75,47 @@ pub fn endpoint_id(home: &Path) -> io::Result<String> {
 
 impl ChainNode {
     pub fn open(opts: ChainOpts) -> io::Result<Arc<ChainNode>> {
-        std::fs::create_dir_all(&opts.home)?;
+        let pin = crate::chain::params::embedded(&opts.chain).filter(|c| c.pinned());
         let genesis_path = opts.genesis.clone().unwrap_or_else(|| opts.home.join("genesis.tade"));
         let genesis_bytes = match std::fs::read(&genesis_path) {
             Ok(bytes) => bytes,
             Err(_) if LAUNCH_CHAINS.contains(&opts.chain.as_str()) => {
-                return Err(io::Error::other(format!(
-                    "the {} genesis is not embedded in this build yet; pass --genesis <file> (chain.md §4.2 pipeline)", opts.chain
-                )));
+                return Err(io::Error::other(match pin {
+                    Some(pin) => format!(
+                        "the {} genesis file is still passed by hand (--genesis <file>, or {}); it must have particle {}",
+                        opts.chain, opts.home.join("genesis.tade").display(), hex(&pin.chain_id)
+                    ),
+                    None => format!(
+                        "the {} genesis is not embedded in this build yet; pass --genesis <file> (chain.md §4.2 pipeline)", opts.chain
+                    ),
+                }));
             }
             Err(e) => return Err(io::Error::other(format!("genesis {}: {e}", genesis_path.display()))),
         };
+        // a pinned chain boots only the blessed file: checked before anything is written
+        if let Some(pin) = pin {
+            let particle = hash32(&genesis_bytes);
+            if particle != pin.chain_id {
+                return Err(io::Error::other(format!(
+                    "--chain {}: genesis file {} has particle {} but this build pins {} (conformance/chain-genesis.toml)",
+                    opts.chain, genesis_path.display(), hex(&particle), hex(&pin.chain_id)
+                )));
+            }
+        }
+        std::fs::create_dir_all(&opts.home)?;
         if opts.genesis.is_some() && !opts.home.join("genesis.tade").exists() {
             std::fs::write(opts.home.join("genesis.tade"), &genesis_bytes)?;
         }
         let kernel = Arc::new(KernelChain::open(&genesis_bytes, &opts.home).map_err(io::Error::other)?);
+        if let Some(pin) = pin {
+            let block0 = kernel.genesis_id();
+            if block0 != pin.genesis_block {
+                return Err(io::Error::other(format!(
+                    "--chain {}: this build computes block 0 {} from the pinned genesis but pins {} (conformance/chain-genesis.toml); the state rules drifted from the blessed root",
+                    opts.chain, hex(&block0), hex(&pin.genesis_block)
+                )));
+            }
+        }
         if let Some(dir) = &opts.corpus {
             kernel.record_corpus(dir)?;
         }
