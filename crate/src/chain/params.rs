@@ -288,7 +288,7 @@ const fn h32(s: &str) -> [u8; 32] {
     let mut out = [0u8; 32];
     let mut i = 0;
     while i < 32 {
-        out[i] = nibble(b[2 * i]) << 4 | nibble(b[2 * i + 1]);
+        out[i] = (nibble(b[2 * i]) << 4) | nibble(b[2 * i + 1]);
         i += 1;
     }
     out
