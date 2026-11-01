@@ -1,0 +1,174 @@
+name: Diagnostic p6 phi vectors
+
+# Measurement only, never merged, never a release gate (plan row P6, session 495).
+# Rehearsal 41315563611: stack-foculus is red on
+# `phi::tests::phi_star_matches_the_zheng_vectors`. Those vectors were frozen at
+# foculus 87603ec from zheng's `legacy` phi while zheng sat on cyber-hemera 0.3.1;
+# the stand is hemera 0.4. This job recomputes the reference values from zheng's
+# own legacy code at the stand's revisions and prints them next to foculus's.
+on:
+  push:
+    branches: ['diag/p6-phi-*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.95 --output "$RUNNER_TEMP/snapshot" \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 \
+            --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
+            --override file=4957848ac4124107b8349811a71b53d4c52479fa \
+            --override foculus=84dfe1a6afbd6ab64af97ea6cc276270b75dd1e8 \
+            --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab \
+            --override lens=d6dcc3f2ad2186466d639518f71cecf6fb928d96 \
+            --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 \
+            --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec \
+            --override radio=b74133ce67a67e4495c824d829b571b564ab0c11 \
+            --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 \
+            --override simulation=218f063d2b29eb33693f56fd47a67a358e51eb28 \
+            --override soft3=b6f22dcdec8204055f1a951e10fad111b2e4d8ad \
+            --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 \
+            --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 \
+            --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 \
+            --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row["revision"], row.get("override"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Write the scratch crate
+        run: |
+          S="$RUNNER_TEMP/sources"
+          ls "$S"
+          echo "=== zheng rs/src/phi/mod.rs"; cat "$S/zheng/rs/src/phi/mod.rs"
+          echo "=== zheng trikernel.rs signatures"
+          grep -n -B2 -A12 'pub fn prove_phi_star\|pub struct TriKernelParams\|pub fn standard' "$S/zheng/rs/src/phi/trikernel.rs"
+          echo "=== foculus src/phi.rs 1-200"; sed -n 1,200p "$S/foculus/src/phi.rs"
+          mkdir -p "$S/phivec/src"
+          cat > "$S/phivec/Cargo.toml" <<'TOML'
+          [package]
+          name = "phivec"
+          version = "0.0.0"
+          edition = "2024"
+          publish = false
+
+          [dependencies]
+          zheng = { path = "../zheng/rs", features = ["legacy"] }
+          foculus = { path = "../foculus" }
+          nebu = { package = "strata-nebu", path = "../strata/nebu/rs" }
+
+          [workspace]
+          TOML
+          cat > "$S/phivec/src/main.rs" <<'RS'
+          use nebu::Goldilocks as F;
+
+          fn g(v: u64) -> F {
+              F::new(v)
+          }
+
+          fn u64s(v: &[F]) -> Vec<u64> {
+              v.iter().map(|x| x.as_u64()).collect()
+          }
+
+          fn main() {
+              let n = 4usize;
+              let inv4 = g(4).inv();
+              let degree = vec![g(2); n];
+              let teleport = vec![inv4; n];
+              let phi0 = vec![g(1), g(0), g(0), g(0)];
+
+              // zheng legacy
+              let mut zt = zheng::phi::SparseGraph::empty(n);
+              let mut zs = zheng::phi::SparseGraph::empty(n);
+              for i in 0..n {
+                  zt.add((i + 1) % n, i, g(1));
+                  zs.add(i, (i + 1) % n, g(1));
+                  zs.add((i + 1) % n, i, g(1));
+              }
+              zt.add(2, 0, g(3));
+              let zp = zheng::phi::TriKernelParams::standard();
+              println!("zheng.params={:?}", zp);
+              let proof = zheng::phi::prove_phi_star(&zt, &zs, &degree, &teleport, &phi0, 6, &zp)
+                  .expect("zheng prove_phi_star");
+              let z_phi = u64s(&proof.phi_star);
+              let z_t = zt.commitment();
+              let z_s = zs.commitment();
+              println!("zheng.phi_star={:?}", z_phi);
+              println!("zheng.t_commitment={:?}", z_t);
+              println!("zheng.s_commitment={:?}", z_s);
+              println!("zheng.statement_graph_commit={:?}", proof.statement.graph_commit);
+
+              // foculus
+              let mut ft = foculus::phi::SparseGraph::empty(n);
+              let mut fs = foculus::phi::SparseGraph::empty(n);
+              for i in 0..n {
+                  ft.add((i + 1) % n, i, g(1));
+                  fs.add(i, (i + 1) % n, g(1));
+                  fs.add((i + 1) % n, i, g(1));
+              }
+              ft.add(2, 0, g(3));
+              let fp = foculus::phi::TriKernelParams::standard();
+              println!("foculus.params={:?}", fp);
+              let graph = foculus::phi::PhiGraph {
+                  transition: &ft,
+                  sym: &fs,
+                  degree: &degree,
+                  teleport: &teleport,
+                  params: &fp,
+              };
+              let claim = foculus::phi::compute_phi_star(&graph, &phi0, 6).expect("foculus compute_phi_star");
+              let f_phi = u64s(&claim.phi_star);
+              let f_t = ft.commitment();
+              let f_s = fs.commitment();
+              println!("foculus.phi_star={:?}", f_phi);
+              println!("foculus.t_commitment={:?}", f_t);
+              println!("foculus.s_commitment={:?}", f_s);
+              println!("foculus.graph_commitment={:?}", graph.commitment());
+              println!("equal t: {}", z_t == f_t);
+              println!("equal s: {}", z_s == f_s);
+              println!("equal phi_star: {}", z_phi == f_phi);
+          }
+          RS
+      - name: Run the scratch crate and the foculus phi tests
+        run: |
+          set +e
+          cd "$RUNNER_TEMP/sources/phivec"
+          cargo run --release 2>&1 | tee "$RUNNER_TEMP/out/phivec.txt"
+          cd "$RUNNER_TEMP/sources/foculus"
+          cargo test --locked --lib phi::tests:: -- --nocapture 2>&1 | tee "$RUNNER_TEMP/out/foculus-phi-tests.txt"
+          exit 0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p6-phi-vectors
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
