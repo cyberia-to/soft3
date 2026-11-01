@@ -78,14 +78,19 @@ fn the_blessed_file_boots_when_cached() {
         .map(|d| Path::new(&d).join("pussy.tade"))
         .find(|p| p.exists());
     let Some(path) = cached else {
+        if std::env::var("SOFT3_GENESIS_REQUIRED").is_ok_and(|v| !v.is_empty()) {
+            panic!("SOFT3_GENESIS_REQUIRED is set but no pussy.tade in $SOFT3_GENESIS_DIR or ~/.cache/cyber/genesis");
+        }
         eprintln!("skipped: no pussy.tade in $SOFT3_GENESIS_DIR or ~/.cache/cyber/genesis");
         return;
     };
+    eprintln!("booting the cached pussy genesis: {}", path.display());
     let dir = fresh_dir("blessed");
     let node = ChainNode::open(opts(&dir.join("home"), Some(path))).expect("the blessed genesis boots");
     let pin = embedded("pussy").unwrap();
     assert_eq!(node.chain.chain_id(), pin.chain_id);
     assert_eq!(node.chain.genesis_id(), pin.genesis_block);
+    eprintln!("booted: chain_id {} block0 {}", hex(&pin.chain_id), hex(&pin.genesis_block));
     drop(node);
     let _ = std::fs::remove_dir_all(&dir);
 }
