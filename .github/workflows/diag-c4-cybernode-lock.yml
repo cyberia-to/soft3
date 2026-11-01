@@ -8,7 +8,7 @@ name: Diagnostic c4 cybernode lock
 # package, so every `--locked` gate fails before compiling. This job resolves both locks
 # on the build service (the director's host compiles nothing) against the pussy stand's
 # sibling revisions (rehearsal 41344227676's overrides by SHA) with soft3 = this branch
-# and cybernode = 5a2f4a2, then runs the train's gate commands with the resolved locks.
+# and cybernode = e213a31 (fix/c4-params-conformance-path), then runs the train's gate commands with the resolved locks.
 on:
   push:
     branches: ['diag/c4-cybernode-lock*']
@@ -43,8 +43,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.97 --output "$RUNNER_TEMP/snapshot" \
-            --override soft3=diag/c4-cybernode-lock \
-            --override cybernode=5a2f4a26b468d351e173f35bb309824e113e7446 \
+            --override soft3=diag/c4-cybernode-lock-2 \
+            --override cybernode=e213a31eb6e2ea9e5c2622eefc8e99ba92d4897b \
             --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
             --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=5579d3162505af5aabe479c991d36c8093322096 \
             --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=d6dcc3f2ad2186466d639518f71cecf6fb928d96 \
