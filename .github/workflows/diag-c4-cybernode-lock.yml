@@ -23,9 +23,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    env:
-      CARGO_TARGET_DIR: ${{ runner.temp }}/target
-      CARGO_INCREMENTAL: '0'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -34,6 +31,9 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           df -h /
+          # one target dir for soft3 and cybernode (the runner context is not available in job env)
+          echo "CARGO_TARGET_DIR=$RUNNER_TEMP/target" >> "$GITHUB_ENV"
+          echo "CARGO_INCREMENTAL=0" >> "$GITHUB_ENV"
       - name: Install Rust
         run: |
           rustup toolchain install 1.95.0 --profile minimal
