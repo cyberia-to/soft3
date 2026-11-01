@@ -134,14 +134,15 @@ class ReleaseTests(unittest.TestCase):
                                                 pussy=self.root / "pussy"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
 
-    def pussy_fixture(self, matching=True):
+    def pussy_fixture(self, matching=True, rc_time=1793523600):
         manifest = self.root / "pussy/snapshot/manifest.json"
         manifest.parent.mkdir(parents=True)
         manifest.write_text('{"fixture": true}\n')
         expected = digest(manifest) if matching else "0" * 64
         spec = self.root / "soft3/conformance/chain-genesis.toml"
         spec.parent.mkdir(parents=True)
-        spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n')
+        rc = f"[pussy-rc]\ntime = {rc_time}\n" if rc_time is not None else ""
+        spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n{rc}')
 
     def test_chain_genesis_env_file_is_checked_without_a_build(self):
         genesis = self.root / "genesis/pussy.tade"
@@ -173,7 +174,22 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(steps, [
             (cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(self.root / "pussy/snapshot"),
                       "--cache", str(Path.home() / ".cache/cyber/snapshots/pussy"), "--out", genesis], 900),
-            (cargo + ["conformance", "check", "chain", "--genesis", genesis], 900)])
+            (cargo + ["conformance", "check", "chain", "--genesis", genesis], 900),
+            (cargo + ["genesis", "build", "--chain", "pussy-rc", "--snapshot", str(self.root / "pussy/snapshot"),
+                      "--cache", str(Path.home() / ".cache/cyber/snapshots/pussy"), "--time", "1793523600",
+                      "--out", str(self.root / "out/genesis/pussy-rc.tade")], 900),
+            (cargo + ["genesis", "verify", str(self.root / "out/genesis/pussy-rc.tade")], 900)])
+
+    def test_chain_genesis_skips_the_rehearsal_steps_without_a_pussy_rc_time(self):
+        self.pussy_fixture(rc_time=None)
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence", return_value=True) as sequence:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertTrue(chain_genesis_gate(gates, self.root / "soft3", pussy=self.root / "pussy"))
+        steps = sequence.call_args.args[1]
+        self.assertEqual(len(steps), 2)
+        self.assertNotIn("pussy-rc", [a for argv, _ in steps for a in argv])
 
     def test_chain_genesis_manifest_mismatch_is_red_and_builds_nothing(self):
         self.pussy_fixture(matching=False)

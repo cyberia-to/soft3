@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use super::derive::{OwnerKind, legacy_owner, module_address, particle_of_cid};
 use super::file::{self, Balance, GenesisFile, Link, Params};
 use super::pool;
-use super::{Chain, Options, PUSSY, build, hash32, hex, state, token_of, unhex, verify};
+use super::{BOSTROM, Chain, Options, PUSSY, PUSSY_RC, build, hash32, hex, state, token_of, unhex, verify};
 
 fn home() -> PathBuf {
     PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| ".".into())).join("cyber")
@@ -247,6 +247,67 @@ fn pussy_genesis_is_deterministic_conserving_and_bijective() {
     assert_eq!(count("staking_pool_dust"), 367);
     assert!(ra.gaps.contains_key("cyberlinks_unrecoverable"));
     let _ = OwnerKind::Neuron;
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+// ── pussy-rc: pussy's burial state under a rehearsal name ────────────────
+
+#[test]
+fn pussy_rc_is_pussy_under_another_name() {
+    assert_eq!(Chain::parse("pussy-rc"), Some(PUSSY_RC));
+    assert_eq!(PUSSY_RC.hrp, PUSSY.hrp);
+    assert_eq!(PUSSY_RC.native, PUSSY.native);
+    assert_eq!(PUSSY_RC.bootloader, PUSSY.bootloader);
+    assert_ne!(PUSSY_RC.name, PUSSY.name);
+    assert_eq!(PUSSY_RC.snapshot_name(), "pussy");
+    assert_eq!(BOSTROM.snapshot_name(), "bostrom");
+    assert_eq!(Options::default_cache(&PUSSY_RC), Options::default_cache(&PUSSY));
+}
+
+#[test]
+fn pussy_rc_build_refuses_without_a_time() {
+    // the check precedes any fetch, so the snapshot path need not exist
+    let dir = tmp("pussy-rc-notime");
+    let options = Options { cache: dir.join("cache"), root: false, export: None, time: None };
+    let e = build(PUSSY_RC, &dir.join("snapshot"), &dir.join("rc.tade"), &options).unwrap_err();
+    assert!(e.to_string().contains("--time"), "{e}");
+    assert!(!dir.join("rc.tade").exists());
+}
+
+#[test]
+fn pussy_rc_genesis_is_pussy_state_under_its_own_name() {
+    let Some((snapshot, cache)) = pussy_snapshot() else {
+        eprintln!("skipped: space-pussy snapshot not cached");
+        return;
+    };
+    let dir = tmp("pussy-rc");
+    std::fs::create_dir_all(&dir).unwrap();
+    const T: u64 = 1_793_523_600;
+    let options = Options { cache, root: false, export: None, time: None };
+    let p = build(PUSSY, &snapshot, &dir.join("p.tade"), &options).unwrap();
+    let rc_options = Options { time: Some(T), ..options.clone() };
+    let a = build(PUSSY_RC, &snapshot, &dir.join("a.tade"), &rc_options).unwrap();
+    let b = build(PUSSY_RC, &snapshot, &dir.join("b.tade"), &rc_options).unwrap();
+
+    assert_eq!(std::fs::read(dir.join("a.tade")).unwrap(), std::fs::read(dir.join("b.tade")).unwrap());
+    assert_eq!(a.particle, b.particle);
+    assert_ne!(a.particle, p.particle, "the name is in the p frame: the chain ids differ");
+    assert_eq!(a.chain, "pussy-rc");
+
+    let g = GenesisFile::decode(&std::fs::read(dir.join("a.tade")).unwrap()).unwrap();
+    let gp = GenesisFile::decode(&std::fs::read(dir.join("p.tade")).unwrap()).unwrap();
+    assert_eq!(g.params.name, "pussy-rc");
+    assert_eq!(g.params.hrp, "pussy");
+    assert_eq!(g.params.denom, "pussy");
+    assert_eq!(g.params.time, T);
+    assert_eq!(g.balances.len(), gp.balances.len());
+    assert_eq!(g.links.len(), gp.links.len());
+    assert_eq!(g.balances, gp.balances, "same owners and amounts: the same keys work");
+    assert_eq!(g.native_supply(), gp.native_supply());
+    assert_eq!(a.s0, p.s0);
+    assert_eq!(a.counts, p.counts);
+    assert_eq!(a.tokens, p.tokens, "the native token is pussy's");
+    assert!(a.tokens.contains_key("pussy"));
     let _ = std::fs::remove_dir_all(&dir);
 }
 

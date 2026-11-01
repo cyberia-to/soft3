@@ -35,7 +35,7 @@ pub type Id = [u8; 32];
 /// A bootloader chain whose burial snapshot seeds a phase-1 root chain.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Chain {
-    /// Genesis chain name (`pussy` | `bostrom`), the `p` frame's `name`.
+    /// Genesis chain name (`pussy` | `bostrom` | `pussy-rc`), the `p` frame's `name`.
     pub name: &'static str,
     /// bech32 prefix of the legacy accounts.
     pub hrp: &'static str,
@@ -63,11 +63,31 @@ pub const BOSTROM: Chain = Chain {
     genesis_time: 1_793_884_962, // 2026-11-05T13:22:42Z
 };
 
+/// Rehearsal chain: pussy's burial state (same snapshot, same derivation, same
+/// `pussy` hrp and native denom, so the same keys work) under the genesis name
+/// `pussy-rc`. The name is in the `p` frame, so the chain id differs from
+/// pussy's and the two can never be confused. It has no blessed genesis time:
+/// `build` refuses without an operator-given `--time`.
+pub const PUSSY_RC: Chain = Chain {
+    name: "pussy-rc",
+    hrp: "pussy",
+    native: "pussy",
+    bootloader: "space-pussy",
+    genesis_time: 0,
+};
+
 impl Chain {
+    /// The snapshot (cache and fetch layout) this chain is built from:
+    /// `pussy` for `pussy-rc`, else the chain's own name.
+    pub fn snapshot_name(&self) -> &'static str {
+        if self.name == PUSSY_RC.name { PUSSY.name } else { self.name }
+    }
+
     pub fn parse(name: &str) -> Option<Chain> {
         match name {
             "pussy" | "space-pussy" => Some(PUSSY),
             "bostrom" => Some(BOSTROM),
+            "pussy-rc" => Some(PUSSY_RC),
             _ => None,
         }
     }
@@ -117,7 +137,7 @@ pub struct Options {
 impl Options {
     pub fn default_cache(chain: &Chain) -> PathBuf {
         let home = std::env::var("HOME").unwrap_or_else(|_| ".".into());
-        Path::new(&home).join(".cache").join("cyber").join("snapshots").join(chain.name)
+        Path::new(&home).join(".cache").join("cyber").join("snapshots").join(chain.snapshot_name())
     }
 }
 
@@ -179,6 +199,9 @@ impl PoolReport {
 /// Build the genesis file for `chain` from the snapshot directory holding
 /// `manifest.json`; write it to `out` and the report to `<out>.json`.
 pub fn build(chain: Chain, snapshot: &Path, out: &Path, options: &Options) -> io::Result<Report> {
+    if chain == PUSSY_RC && options.time.is_none() {
+        return Err(io::Error::other("pussy-rc has no blessed genesis time; pass --time"));
+    }
     let manifest_path = snapshot.join("manifest.json");
     let sources = fetch::materialize(&chain, &manifest_path, &options.cache)?;
     let snap = source::Snapshot::read(&chain, &manifest_path, &sources)?;

@@ -141,7 +141,12 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
          conformance/chain-genesis.toml (a mismatch is red, nothing is built),
          then the train builds the file into <output>/genesis/pussy.tade with
          `soft3 genesis build` (IPFS fetches cached in ~/.cache/cyber/snapshots/pussy,
-         never in the checkout) and checks it, all under this one gate;
+         never in the checkout) and checks it, all under this one gate. The same
+         sequence then builds the rehearsal file <output>/genesis/pussy-rc.tade
+         (`--chain pussy-rc`, same snapshot and cache, `--time` = [pussy-rc].time
+         of conformance/chain-genesis.toml) and runs `genesis verify` on it. If
+         [pussy-rc].time is missing or unreadable the rc steps are skipped and
+         pussy's gate is unaffected;
       c. else blocked, never green."""
     gate = "stack-chain-genesis"
     cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
@@ -167,7 +172,17 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
     build = cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(pussy / "snapshot"),
                      "--cache", str(cache), "--out", str(genesis)]
     check = cargo + ["conformance", "check", "chain", "--genesis", str(genesis)]
-    return gates.run_sequence(gate, [(build, 900), (check, 900)], soft3)
+    steps = [(build, 900), (check, 900)]
+    try:
+        rc_time = int(tomllib.loads((soft3 / "conformance/chain-genesis.toml").read_text())["pussy-rc"]["time"])
+    except (OSError, KeyError, ValueError, TypeError, tomllib.TOMLDecodeError):
+        rc_time = None
+    if rc_time is not None:
+        rc = gates.output / "genesis/pussy-rc.tade"
+        steps.append((cargo + ["genesis", "build", "--chain", "pussy-rc", "--snapshot", str(pussy / "snapshot"),
+                               "--cache", str(cache), "--time", str(rc_time), "--out", str(rc)], 900))
+        steps.append((cargo + ["genesis", "verify", str(rc)], 900))
+    return gates.run_sequence(gate, steps, soft3)
 
 
 SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
