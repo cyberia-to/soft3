@@ -267,7 +267,7 @@ fn cmd_node(args: &[String]) {
         println!("             [--corpus DIR]   # record every block given, with its verdict and state root (blocks.jsonl)");
         println!("             (mining is `soft3 mine --node http://BIND --address NEURON`: /template + /submit)");
         println!("  soft3 node id --home DIR      # radio endpoint id (64 hex) for peers.toml");
-    println!("  soft3 genesis build --chain pussy|bostrom|pussy-rc --snapshot DIR --out FILE [--time UNIX]");
+    println!("  soft3 genesis build --chain pussy|bostrom|pussy-rc --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
     println!("  soft3 conformance bless|check chain [--genesis FILE]");
@@ -656,7 +656,7 @@ fn print_help() {
     println!("  soft3 node --chain <pussy|bostrom|dev> --home DIR --bind HOST:PORT --radio HOST:UDP --peers FILE --moniker NAME");
     println!("  soft3 node id --home DIR");
     println!("  soft3 chain genesis-dev|key|tx …   # dev helpers");
-    println!("  soft3 genesis build --chain pussy|bostrom|pussy-rc --snapshot DIR --out FILE [--time UNIX]");
+    println!("  soft3 genesis build --chain pussy|bostrom|pussy-rc --snapshot DIR --out FILE");
     println!("                      [--cache DIR] [--export DIR] [--no-root] [--time UNIX]");
     println!("  soft3 genesis verify FILE [--root]");
     println!("  soft3 manifesto");
