@@ -15,7 +15,8 @@ pull_receipts() { local rid=$1 tmp rc=0 want have d
   for d in "$tmp"/*/; do [ -d "$d" ] || continue; [ -e "$STATE/run-$rid/$(basename "$d")" ] || mv "$d" "$STATE/run-$rid/" || true; done
   rm -rf "$tmp"
   want=$(gh api "repos/$ORG/soft3/actions/runs/$rid/artifacts" --paginate -q '[.artifacts[] | select(.name|startswith("candidate-")) | select(.expired|not)] | length' 2>/dev/null | awk '{s+=$1} END {print s+0}') || want=0
-  have=$(ls -1 "$STATE"/run-$rid/candidate-*/receipt/release-validation.json 2>/dev/null | wc -l) || have=0
+  # legs are counted by artifact, not by receipt file: a leg that uploaded no receipt must not make every tick re-download the run
+  have=$(ls -1d "$STATE"/run-$rid/candidate-*/ 2>/dev/null | wc -l) || have=0
   if [ "$rc" = 0 ] && [ "$want" -gt 0 ] && [ "$have" = "$want" ]; then
     jq -s '[.[] | {result, red: [.gates[]? | select(.result!="green") | {name, detail: (.detail // .error // .reason // .command // "")}]}]' "$STATE"/run-$rid/*/receipt/release-validation.json > "$STATE/red-$rid.json" 2>/dev/null || true
     log "receipts: run $rid → $(jq -r '[.[].result] | unique | join(",")' "$STATE/red-$rid.json" 2>/dev/null || true)"
