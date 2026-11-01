@@ -59,7 +59,7 @@ impl Snapshot {
             }
             positions.push(Position { card, axon: c.particle, p, q, owner: c.owner, valence: c.valence, stake });
         }
-        let marks = state
+        let marks: BTreeMap<Id, (Id, Id, Mark)> = state
             .marks()
             .into_iter()
             .map(|(axon, m)| {
