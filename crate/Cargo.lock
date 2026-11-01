@@ -1351,6 +1351,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "cybernode"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "bbg 0.3.0",
+ "bech32",
+ "bytes",
+ "cyber-hemera 0.4.0",
+ "cyber-lens-gpu",
+ "cyber-mudra",
+ "cyber-radio",
+ "cyber-tru 0.1.1",
+ "cybergraph 0.1.1",
+ "fjall",
+ "flate2",
+ "foculus 0.1.3",
+ "iroh-gossip",
+ "n0-future",
+ "rand 0.9.5",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tade",
+ "tokio",
+ "toml",
+ "ureq",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4650,31 +4679,13 @@ dependencies = [
 
 [[package]]
 name = "soft3"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
- "base64 0.22.1",
- "bbg 0.3.0",
- "bech32",
- "bytes",
  "cyb",
- "cyber-hemera 0.4.0",
- "cyber-lens-gpu",
  "cyber-mudra",
- "cyber-radio",
- "cyber-tru 0.1.1",
- "cybergraph 0.1.1",
- "fjall",
- "flate2",
- "foculus 0.1.3",
- "iroh-gossip",
- "n0-future",
- "rand 0.9.5",
+ "cybernode",
  "serde",
  "serde_json",
- "sha2 0.10.9",
- "tade",
- "tokio",
- "toml",
  "ureq",
 ]
 
