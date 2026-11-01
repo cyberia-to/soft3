@@ -2,7 +2,6 @@
 //! blessed genesis file (particle and block 0 pinned in `chain::params`,
 //! values from `conformance/chain-genesis.toml`).
 
-use soft3::chain::net::chain_view::ChainView;
 use soft3::chain::net::codec::hex;
 use soft3::chain::params::embedded;
 use soft3::genesis::file::{Balance, GenesisFile, Params};
