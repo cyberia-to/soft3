@@ -199,7 +199,7 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
     detail = {}
     if gates.rows and gates.rows[-1]["name"] == gate:
         detail = gates.rows.pop()
-        detail.pop("name"), detail.pop("result")
+        del detail["name"], detail["result"]
     what = f"built {rc.name} sha256 {built}" if built else f"{rc} was not built"
     return gates.record(gate, "red", **detail, error=f"{what} != pinned "
                         f"conformance/chain-genesis.toml [pussy-rc].file_sha256 {rc_pin}")

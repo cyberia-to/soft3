@@ -45,7 +45,7 @@ l_frames = 2997569
 # (candidate-stack/receipt/genesis/pussy-rc.tade.json). Two hosts install this file and must load the
 # same bytes: stack-chain-genesis is red when the built file's sha256 differs from file_sha256.
 [pussy-rc]
-time = 1793523600  # 2026-11-01T09:00:00Z, the rehearsal stand's genesis (P3b); change it by PR to restart the rehearsal
+time = 1793523600  # 2026-11-01T09:00:00Z, the rehearsal stand's genesis (P3b); change it by PR to restart the rehearsal, with the four values below from that PR's train run
 particle = "5614749e444e72606a2ed8f8a72fb9c225ac0857fb9901ba6a072d275bc3b713"
 file_sha256 = "d20bab4bd94d5b08f05479fd320da1d8fc8375746b9d3e591ecc664f47ef76f5"
 file_bytes = 3249660
