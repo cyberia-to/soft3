@@ -17,6 +17,7 @@ per `release/director/README.md` § the measurement. Sessions append. Each numbe
 - session 439: idle. Tick `20261101T002401Z` is identical to 438's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
 - session 440: idle. Tick `20261101T004114Z` is identical to 439's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
 - session 441: the loop handed sessions a stale red file (`red-41097270082.json`, not the last run 41201610001). Repaired in state: the four missing legs were downloaded and `red-41201610001.json` written; it equals session 408's reading. The fix is [soft3#535](https://github.com/cyberia-to/soft3/pull/535), stacked on #384 and waiting for the owner; gate `test` green (run 41259397268).
+- session 442: idle. The tick changed only by soft3#535, which the director opened itself. No new train run, owner event or review, and the doctrine heads are unchanged. The session was handed the right red file (`red-41201610001.json`) because of session 441's state repair; #535 is not installed.
 
 ## PRs merged
 
