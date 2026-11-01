@@ -248,3 +248,56 @@ fn wallet_signed_transactions_pass_the_kernel_validator() {
     assert!(wallet::verify(&chain, &kernel_signed).is_ok());
     assert!(c.status().conserved);
 }
+
+/// A body that does not match the header's `tx_root` proves nothing about
+/// the header (§5.5 step 6a): the honest body must still be accepted later.
+#[test]
+fn body_malleation_never_invalidates_the_honest_header() {
+    let net = Net::new(3);
+    let mut c = net.open("malleation");
+    let miner = net.neurons[2];
+    let coinbase = |raw: &[u8], f: &dyn Fn(u64, u64) -> (u64, u64)| -> Vec<u8> {
+        match tx::Tx::decode(raw).unwrap().body {
+            Body::Coinbase { height, to, amount, extra } => {
+                let (height, amount) = f(height, amount);
+                Tx { body: Body::Coinbase { height, to, amount, extra }, sig: vec![] }.encode()
+            }
+            other => panic!("not a coinbase: {other:?}"),
+        }
+    };
+    for case in 0..3 {
+        let tpl = template(&mut c, miner, 0, &[net.transfer(0, case, net.neurons[1], 5, 224)]);
+        let valid = block_of(&tpl);
+        let raws = tx::split_body(&valid.body).unwrap();
+        let bad_body = match case {
+            // does not split
+            0 => valid.body[..valid.body.len() - 1].to_vec(),
+            // no transactions at all
+            1 => tx::join_body(&[]),
+            // well-formed, but not the body the header commits to
+            _ => {
+                let mut r = raws.clone();
+                r[0] = coinbase(&raws[0], &|h, a| (h, a + 1));
+                tx::join_body(&r)
+            }
+        };
+        let tip = c.tip();
+        let forged = Block { header: valid.header, body: bad_body };
+        assert!(matches!(c.accept_block(&forged, NOW), Err(ChainError::Block(_))), "case {case}");
+        assert_eq!(c.tip(), tip, "case {case} moved the tip");
+        assert_eq!(c.accept_block(&valid, NOW), Ok(BlockVerdict::Extended), "case {case}: the honest block was refused");
+        assert_eq!(c.tip().id, valid.id());
+    }
+
+    // a body that matches its header and is invalid proves the header bad
+    let tpl = template(&mut c, miner, 0, &[]);
+    let valid = block_of(&tpl);
+    let mut r = tx::split_body(&valid.body).unwrap();
+    r[0] = coinbase(&r[0], &|h, a| (h + 1, a));
+    let header = solve(Header { tx_root: crate::chain::tree::tx_root(&r), ..valid.header });
+    let bad = Block { header, body: tx::join_body(&r) };
+    let tip = c.tip();
+    assert!(matches!(c.accept_block(&bad, NOW), Err(ChainError::Block(BlockError::CoinbaseHeight { .. }))));
+    assert_eq!(c.accept_block(&bad, NOW), Err(ChainError::Rejected(bad.id())));
+    assert_eq!(c.tip(), tip);
+}
