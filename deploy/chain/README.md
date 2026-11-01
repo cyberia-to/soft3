@@ -124,6 +124,12 @@ cyberproxy as below. agent-a: see the variant after step 8.
      `soft3-chain-check pussy-rc` OK on both; with a miner address set on
      agent-a, height advances. Then kill cyberproxy's node: agent-a must keep
      retrying and reconnect after the restart.
+   - genesis file: `candidate-stack/receipt/genesis/pussy-rc.tade` of the
+     train run (pussy's burial state named `pussy-rc`, time pinned in
+     `conformance/chain-genesis.toml` `[pussy-rc]`), its sha256 in
+     `pussy-rc.tade.json`. Both hosts install the same artifact and compare
+     `sha256sum` before start; or rebuild locally with
+     `soft3 genesis build --chain pussy-rc --time T …` for byte-identical output.
    - tear down: `sudo systemctl disable --now soft3-chain@pussy-rc` +
      `sudo ./ufw-chain.sh close pussy-rc`; `agent-a/stop.sh pussy-rc`.
 

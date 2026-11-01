@@ -39,3 +39,9 @@ state_root = "fa0c2c9404a6eff04737ed7dfe11c63c1992b4820fdf039a55c6d2f103d7508d"
 block0_id = "a13f0f627dae47a00fe50f7f9c538148345f52ab6200518e2360798c504fc3d5"
 b_frames = 93472
 l_frames = 2997569
+
+# P3b rehearsal: pussy's burial state under the name "pussy-rc" at a pinned time. The train builds it
+# beside pussy's file; particle and file_sha256 are recorded here from the first train run that builds
+# it (candidate-stack/receipt/genesis/pussy-rc.tade.json).
+[pussy-rc]
+time = 1793523600  # 2026-11-01T09:00:00Z, the rehearsal stand's genesis (P3b); change it by PR to restart the rehearsal

@@ -69,7 +69,7 @@ pub fn read_manifest(path: &Path) -> io::Result<SourceManifest> {
 fn candidates(chain: &Chain, cid: &str, name: &str) -> Vec<String> {
     let mut out = Vec::new();
     for gw in GATEWAYS {
-        match chain.name {
+        match chain.snapshot_name() {
             "pussy" => out.push(format!("{gw}/{cid}/pussy-snapshot/{name}")),
             _ => out.push(format!("{gw}/{cid}/{name}")),
         }
@@ -78,7 +78,7 @@ fn candidates(chain: &Chain, cid: &str, name: &str) -> Vec<String> {
         out.push(format!("{gw}/{cid}/{name}"));
         out.push(format!("{gw}/{cid}"));
     }
-    let site = match chain.name {
+    let site = match chain.snapshot_name() {
         "pussy" => "https://pussy.bostrom.network",
         _ => "https://snapshot.bostrom.network",
     };
