@@ -17,7 +17,9 @@ permissions:
   contents: read
 
 env:
-  SIM: 218f063d2b29eb33693f56fd47a67a358e51eb28
+  SIM: c312ab9e8eb7fea5dd1687f247c744e47b26c8eb
+  # simulation#2's refreshed head: its committed lock must resolve as is
+  STRICT: '1'
 
 jobs:
   measure:
@@ -73,6 +75,7 @@ jobs:
             echo "committed lock already resolves --locked" | tee "$RUNNER_TEMP/out/lock-verdict.txt"
           else
             cat "$RUNNER_TEMP/out/locked-before.txt"
+            if [ "$STRICT" = 1 ]; then echo "STRICT: committed lock does not resolve --locked" | tee "$RUNNER_TEMP/out/lock-verdict.txt"; exit 1; fi
             cargo metadata --format-version 1 >/dev/null
             echo "lock re-resolved" | tee "$RUNNER_TEMP/out/lock-verdict.txt"
           fi
