@@ -15,10 +15,11 @@ per `release/director/README.md` § the measurement. Sessions append. Each numbe
 
 - session 438: closed the 2026-10-31 report (sessions 435–437, plan PRs #528–#531) and opened this one. The tick `20261101T000612Z` is identical to 437's `20261031T234850Z` except for its timestamp (`jq -S 'del(.at)'` diff: empty). The newest owner event is still soma#5, opened 2026-10-31 12:50:53 UTC (`users/mastercyb/events`). Reviews by anyone but the director: 0 on soft3#376, lens#36, hemera#25 and radio#52. The doctrine heads are unchanged: cyberia `b48a145`, cyber `68f1260`, soft3 `main` `3045d54`.
 - session 439: idle. Tick `20261101T002401Z` is identical to 438's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
+- session 440: idle. Tick `20261101T004114Z` is identical to 439's (`jq -S 'del(.at)'` diff: empty). No new train run, owner event or review; the doctrine heads are unchanged.
 
 ## PRs merged
 
-Into soft3 `release/phase1`: the plan PRs of sessions 438 and 439. Nothing was merged into a default branch, because every landing waits on the owner.
+Into soft3 `release/phase1`: the plan PRs of sessions 438, 439 and 440. Nothing was merged into a default branch, because every landing waits on the owner.
 
 ## plan items left
 
