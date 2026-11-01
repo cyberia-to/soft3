@@ -171,5 +171,99 @@ item of its own: write the circuit, then measure it.
 - Options 4.2 and 4.3, and 5 (a): unmeasured, as stated in their rows.
 - The 518,720-flip exhaustive scan the baseline ran. This run does 64
   spread flips per leg.
-- The §2.7 amendment itself. It is drafted as its own `decision` PR, with
-  this page as its receipt (plan row P5).
+- ~~The §2.7 amendment itself.~~ Drafted as
+  [soft3#572](https://github.com/cyberia-to/soft3/pull/572) (§2.9 AUTH1,
+  `decision`). Its relation was re-measured as written in §7.
+
+## 7. AUTH1 as written — the re-measurement, 2026-11-01 (session 471)
+
+§1–§5 measured `hemera(k0, k1, k2, k3, 0⁴)` over four raw Goldilocks limbs
+with no domain tag. The §2.9 draft (#572 `962e439`) asked for
+`auth_key(s) = hemera("soft3/chain/auth-key/v1\0" ‖ s)` over a 32-byte
+secret, and said to re-measure before a verifying key is fixed.
+
+**What can be proven.** nox has one hash pattern, 15. It takes the input
+noun's structural digest (`hash_leaf` of each atom's 8 LE bytes,
+`hash_node` with `FLAG_PARENT` for each pair; nox `41ba24f`
+`rs/data/hash.rs`) and then runs one plain permutation
+(`rs/patterns/hash.rs`). nox has no pattern for hemera's byte sponge over
+an arbitrary string. So `hemera(tag ‖ s)` as drafted cannot be proven
+without a VM change. zheng's relation compiler constrains every
+permutation of the structural digest as wires. It hashes only constant
+subtrees natively (zheng `166a14e` `rs/src/execution/hash.rs:1-6, 151-190`),
+so a constant tag costs no witness.
+
+**Decision** (fable #1 of 2026-11-01 recommended it; the director agrees,
+and the owner decides on #572): option (A). `auth_key(s)` is pattern 15
+of the fixed noun
+
+```
+[[t0 [t1 [t2 t3]]] [s0 [s1 [s2 [s3 s4]]]]]
+t_i = LE(tag[7i .. 7i+7]),  tag = "soft3/chain/auth-key/v1\0" (24 bytes, 4 limbs)
+s_i = LE(s[7i .. 7i+7]),    s   = 32 secret bytes (5 limbs, the last 4 bytes)
+```
+
+Every limb is below 2^56, so the encoding is canonical and needs no
+rejection. The rejected options: (B) a byte-sponge pattern in nox would be
+a VM change one day before the 2026-11-02 freeze, with new conformance
+work. (C) a hand-built sponge relation outside nox would have no
+conformance coverage. Fable's three conditions are met. The shape is
+fixed by the program, the tag is constant and the five atoms are secrets.
+The proof is bound to `auth_statement` through the envelope context. And
+`from` is the particle id of the key noun, so publishing that noun
+publishes the key. That last point goes into §2.9.
+
+**The run.** zheng `diag/p5-proof-auth` `b866673` (from `a2f6641`; never
+merged, never in `release/pussy-stand.toml`, D16 (3)). A sonnet subagent
+wrote it and the director reviewed it. `rs/tests/proof_auth.rs`
+`auth1_tagged_key_binds_the_statement_and_is_measured` checks the key
+three ways: the secret program's public output, `certify_execution` over
+public limbs, and a native structural digest plus one `StepSponge`
+permutation. The context is `hemera("soft3/chain/auth/v1\0" ‖ chain ‖
+tx_core)` with `chain = hemera("pussy")`. Run
+[41291667421](https://github.com/cyberia-to/zheng/actions/runs/41291667421):
+**5/5 legs `success`, 2 passed 0 failed on each**, every binding assert
+held (another `tx_core` fails cold and cached, each forged key limb
+fails), flips accepted **0/64** on every leg, and no secret limb or
+7-byte window of `s` appears in the statement or the envelope. Logs are
+in agent-a `~/director/state/zheng-run-41291667421/`.
+
+| leg (job) | log sha256 | proof B med (min, max) | envelope B | prove ms | verify ms cold / cached | the §2 relation, same run: proof B / prove ms |
+|---|---|---|---|---|---|---|
+| linux x86_64 (124804011019) | `0b696026…` | 129,693 (128,389, 130,333) | 129,971 | 564.1 | 71.0 / 20.8 | 98,381 / 395.0 |
+| linux aarch64 (124804011039) | `ba404d58…` | 129,949 (129,261, 130,973) | 130,227 | 328.1 | 54.6 / 15.9 | 98,477 / 226.3 |
+| macOS aarch64 CPU (124804010936) | `29a47646…` | 130,301 (129,589, 130,685) | 130,579 | 524.0 | 82.4 / 19.6 | 98,373 / 373.8 |
+| macOS aarch64 Metal, 1 thread (124804010981) | `c8b0773c…` | 129,941 (129,133, 130,589) | 130,219 | 246.1 | 67.2 / 15.4 | 98,173 / 197.1 |
+| macOS aarch64 Metal, all threads (124804010781) | `46744b4c…` | 130,397 (129,789, 130,877) | 130,675 | 339.5 | 98.0 / 20.0 | 97,965 / 229.5 |
+
+The Metal device is `Apple Paravirtual device` again (§2), so the Metal
+rows show that the path runs and binds, not how fast Metal is.
+
+**Why it grew 32 %.** `veil::report` (linux x86_64): AUTH1 has
+`rows 66, log_m 13, entries 16,861`, against `rows 34, log_m 12,
+entries 8,633` for the §2 relation. `k 256`, `log_n 14`, 123 queries and
+opening 128.2 bits are the same for both. Each secret atom costs a
+64-bit decomposition and two permutations, and each pair one more. The
+opening carries twice the rows, which costs 31,312–32,432 B depending on the leg.
+
+**What it does to §2.9's numbers.** A version-2 transfer is 2 + 120 + 4 +
+envelope bytes. The envelope is the proof plus 278 B on every leg.
+
+| | the draft (`962e439`, §2 relation) | AUTH1 as written |
+|---|---|---|
+| envelope, largest median / largest seen | 99,044 / 99,940 (99,693 + 247) | 130,675 / **131,251** (130,973 + 278) |
+| against `MAX_AUTH_BYTES` 131,072 | fits | **an honest proof can exceed it** (131,251) |
+| transfers per block (261,890 B of body) | 2 | **1 guaranteed; 2 only when both envelopes are ≤ 130,819 B** |
+
+So the draft's `MAX_AUTH_BYTES` must rise. The director proposes 196,608
+on #572 (50 % over the largest envelope seen, which is room for
+randomness and for a later relation of the same order). Throughput at
+T = 30 s is 0.033–0.067 tx/s. That makes the owner's §10 row 13 (block
+bytes) sharper, and leaves P8's block relation as the way out.
+
+**Still not done.** The verifying key is not fixed (it is fixed when an
+activation entry is written). Conformance vectors for version 2 come after
+the owner's verdict on #572. A range check `s_i < 2^56` inside the
+circuit is not added. It is not needed for soundness, because a noun with
+any other limb is a different noun with a different digest. It only makes
+the wallet's encoding canonical, and that is enforced off-chain.
