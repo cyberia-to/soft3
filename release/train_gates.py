@@ -262,7 +262,11 @@ def glibc_floor_gate(gates, binary, target):
     if not binary.is_file():
         return gates.blocked("linux-glibc-floor", "no executable")
     needed = glibc_requirements(binary)
-    highest = max(needed, default=(0, 0))
+    if not needed:
+        # fail closed: a dynamic linux-gnu Rust executable always needs GLIBC_ symbols,
+        # so reading none means the parse failed, not that the floor holds
+        return gates.record("linux-glibc-floor", "red", required="unreadable", floor="%d.%d" % GLIBC_FLOOR)
+    highest = max(needed)
     return gates.record("linux-glibc-floor", "red" if highest > GLIBC_FLOOR else "green",
                         required="%d.%d" % highest, floor="%d.%d" % GLIBC_FLOOR)
 

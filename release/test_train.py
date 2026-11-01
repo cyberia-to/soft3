@@ -551,6 +551,12 @@ class GlibcFloorTests(unittest.TestCase):
         row, = self.gate(None).rows
         self.assertEqual((row["result"], row["reason"]), ("blocked", "no executable"))
 
+    def test_unreadable_executable_fails_closed(self):
+        row, = self.gate(synthetic_elf(["GLIBC_2.38"])[:100]).rows
+        self.assertEqual((row["result"], row["required"]), ("red", "unreadable"))
+        row, = self.gate(synthetic_elf(["GCC_3.0"])).rows
+        self.assertEqual(row["result"], "red")
+
     def test_other_targets_record_nothing(self):
         self.assertEqual(self.gate(synthetic_elf(["GLIBC_2.38"]), "aarch64-apple-darwin").rows, [])
         self.assertEqual(self.gate(None, "aarch64-linux-android").rows, [])
