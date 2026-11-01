@@ -1,0 +1,86 @@
+name: Diagnostic P8 census
+
+# Measurement only, never merged, never a release gate (director plan row P8).
+# Counts, per accepted block and per transaction kind, every primitive a block-validity
+# relation for rule set 1 would have to prove: hemera permutations by purpose, NSIG1
+# verifications, ASERT/target evaluations, trie operations per bbg dimension, and the
+# economy boundary (snapshot at 240, settlement at 360 on the spec's epoch clock).
+# The stand is pussy's pinned stand (release/pussy-stand.toml); soft3 is this branch's
+# commit, behind the cargo feature `opcount` (off by default). Push-triggered on
+# `diag/p8-*` only: it does not take the release-train concurrency group.
+on:
+  push:
+    branches: ['diag/p8-*']
+
+permissions:
+  contents: read
+
+jobs:
+  census:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot pussy's stand with soft3 at this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args=()
+          for o in $(python3 release/pussy_stand.py); do
+            case "$o" in soft3=*) ;; *) args+=(--override "$o") ;; esac
+          done
+          args+=(--override "soft3=${{ github.sha }}")
+          printf '%s\n' "${args[@]}"
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.1 --output "$RUNNER_TEMP/snapshot" "${args[@]}"
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] == "soft3":
+                  print(row["name"], row.get("revision"), row.get("override"), row.get("available"), row.get("error"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+          test "$(git -C "$RUNNER_TEMP/sources/soft3" rev-parse HEAD)" = "${{ github.sha }}"
+      - name: P8 census (cargo test --locked --release --features opcount)
+        id: census
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          timeout 6000 cargo test --locked --release --features opcount -p soft3 --lib census -- --nocapture --test-threads=2 2>&1 | tee "$RUNNER_TEMP/out/census.log"
+      - name: Log digest and the P8 lines
+        if: always()
+        run: |
+          sha256sum "$RUNNER_TEMP/out/census.log" | tee "$RUNNER_TEMP/out/census.log.sha256"
+          wc -l "$RUNNER_TEMP/out/census.log"
+          grep -h "^P8-META\|^P8-MAX\|^P8-OUTCOME\|^P8-JOB" "$RUNNER_TEMP/out/census.log" | cut -c1-600 || true
+          grep -h "^test result\|panicked\|^error" "$RUNNER_TEMP/out/census.log" | head -50 || true
+          grep -c "^P8 " "$RUNNER_TEMP/out/census.log" || true
+          grep -h "^P8-SUMMARY" "$RUNNER_TEMP/out/census.log" | wc -c || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: p8-census-log
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.census.outcome == 'failure'
+        run: exit 1
