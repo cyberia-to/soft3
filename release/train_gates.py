@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import signal
 import socket
+import struct
 import subprocess
 import tempfile
 import time
@@ -193,6 +194,79 @@ def simulation_gate(gates, directory):
                       "--budget", "1500"], sim, timeout=3600)
 
 
+# The genesis host cyberproxy is Ubuntu 22.04, glibc 2.35 (soft3#493 comment 6555389474, 2026-11-01).
+GLIBC_FLOOR = (2, 35)
+SHT_GNU_VERNEED = 0x6ffffffe
+
+
+def glibc_requirements(path):
+    """Every (major, minor) GLIBC_ version the ELF at `path` needs, read from its
+    .gnu.version_r section in pure Python; empty for non-ELF files or no such section."""
+    try:
+        data = Path(path).read_bytes()
+    except OSError:
+        return set()
+    if data[:4] != b"\x7fELF" or len(data) < 64 or data[4] not in (1, 2) or data[5] not in (1, 2):
+        return set()
+    wide, order = data[4] == 2, "<" if data[5] == 1 else ">"
+    try:
+        if wide:
+            shoff, = struct.unpack_from(order + "Q", data, 0x28)
+            shentsize, shnum = struct.unpack_from(order + "HH", data, 0x3A)
+        else:
+            shoff, = struct.unpack_from(order + "I", data, 0x20)
+            shentsize, shnum = struct.unpack_from(order + "HH", data, 0x2E)
+
+        def section(index):
+            base = shoff + index * shentsize
+            if wide:
+                kind, = struct.unpack_from(order + "I", data, base + 4)
+                offset, size, link = struct.unpack_from(order + "QQI", data, base + 0x18)
+            else:
+                kind, = struct.unpack_from(order + "I", data, base + 4)
+                offset, size, link = struct.unpack_from(order + "III", data, base + 0x10)
+            return kind, offset, size, link
+
+        found = set()
+        for index in range(shnum):
+            kind, offset, size, link = section(index)
+            if kind != SHT_GNU_VERNEED:
+                continue
+            _, strings, strings_size, _ = section(link)
+            table = data[strings:strings + strings_size]
+            entry = offset
+            while True:
+                _, count, _, aux, following = struct.unpack_from(order + "HHIII", data, entry)
+                name_at = entry + aux
+                for _ in range(count):
+                    _, _, _, name, next_aux = struct.unpack_from(order + "IHHII", data, name_at)
+                    text = table[name:table.index(b"\0", name)].decode("ascii", "replace")
+                    match = re.fullmatch(r"GLIBC_(\d+)\.(\d+)(?:\.(\d+))?", text)
+                    if match:
+                        found.add((int(match.group(1)), int(match.group(2))))
+                    if not next_aux:
+                        break
+                    name_at += next_aux
+                if not following:
+                    break
+                entry += following
+        return found
+    except (struct.error, ValueError):
+        return set()
+
+
+def glibc_floor_gate(gates, binary, target):
+    """Linux gnu executables must not need a newer glibc than the genesis host has."""
+    if not target.endswith("-linux-gnu"):
+        return None
+    if not binary.is_file():
+        return gates.blocked("linux-glibc-floor", "no executable")
+    needed = glibc_requirements(binary)
+    highest = max(needed, default=(0, 0))
+    return gates.record("linux-glibc-floor", "red" if highest > GLIBC_FLOOR else "green",
+                        required="%d.%d" % highest, floor="%d.%d" % GLIBC_FLOOR)
+
+
 def boot_status(binary, gates):
     if not binary.is_file():
         return gates.blocked("node-status", "release executable was not built")
@@ -305,6 +379,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = crate / "target/release/soft3"
         boot_status(binary, gates)
+        glibc_floor_gate(gates, binary, target)
         if binary.is_file():
             artifacts.append(binary)
     elif component == "cyber":

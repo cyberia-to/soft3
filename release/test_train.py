@@ -4,6 +4,7 @@ import io
 import json
 from pathlib import Path
 import re
+import struct
 import subprocess
 import tarfile
 import tempfile
@@ -12,7 +13,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, resolve, write_json
-from train_gates import Gates, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
+from train_gates import Gates, glibc_floor_gate, glibc_requirements, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -468,6 +469,108 @@ class QualifyCapTests(unittest.TestCase):
         self.assertIn(f"timeout={sim_timeout}", (root / "release/train_gates.py").read_text())
         self.assertGreaterEqual(stack * 60, measured + setup + sim_timeout)
         self.assertLessEqual(stack, 360)
+
+
+def synthetic_elf(versions, wide=True, order="<"):
+    """Minimal ELF with section headers: null, .dynstr, .gnu.version_r, .shstrtab."""
+    strings = b"\0" + b"libc.so.6\0" + b"".join(v.encode() + b"\0" for v in versions)
+    names, at = {}, len(b"\0libc.so.6\0")
+    for v in versions:
+        names[v] = at
+        at += len(v) + 1
+    shstr = b"\0.dynstr\0.gnu.version_r\0.shstrtab\0"
+    verneed = b""
+    for i, v in enumerate(versions):
+        last = i == len(versions) - 1
+        verneed += struct.pack(order + "IHHII", 0, 0, 0, names[v], 0 if last else 16)
+    header = struct.pack(order + "HHIII", 1, len(versions), 1, 16, 0)
+    verneed = header + verneed
+    ehsize, shentsize = (64, 64) if wide else (52, 40)
+    dynstr_at = ehsize
+    vneed_at = dynstr_at + len(strings)
+    shstr_at = vneed_at + len(verneed)
+    shoff = shstr_at + len(shstr)
+
+    def sh(kind, offset, size, link=0):
+        if wide:
+            return struct.pack(order + "IIQQQQIIQQ", 0, kind, 0, 0, offset, size, link, 0, 1, 0)
+        return struct.pack(order + "IIIIIIIIII", 0, kind, 0, 0, offset, size, link, 0, 1, 0)
+
+    sections = (sh(0, 0, 0) + sh(3, dynstr_at, len(strings)) + sh(0x6ffffffe, vneed_at, len(verneed), 1) +
+                sh(3, shstr_at, len(shstr)))
+    ident = b"\x7fELF" + bytes([2 if wide else 1, 1 if order == "<" else 2, 1]) + bytes(9)
+    if wide:
+        head = ident + struct.pack(order + "HHIQQQIHHHHHH", 3, 62, 1, 0, 0, shoff, 0, 64, 56, 0, 64, 4, 3)
+    else:
+        head = ident + struct.pack(order + "HHIIIIIHHHHHH", 3, 3, 1, 0, 0, shoff, 0, 52, 32, 0, 40, 4, 3)
+    return head + strings + verneed + shstr + sections
+
+
+class GlibcFloorTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.sources = {"manager_revision": "a" * 40, "repositories": []}
+
+    def gate(self, blob, target="x86_64-unknown-linux-gnu"):
+        binary = self.root / "soft3"
+        if blob is not None:
+            binary.write_bytes(blob)
+        gates = Gates(self.root / "out", self.sources, target)
+        glibc_floor_gate(gates, binary, target)
+        return gates
+
+    def test_parses_versions_in_every_elf_flavour(self):
+        for wide, order in ((True, "<"), (False, "<"), (True, ">"), (False, ">")):
+            path = self.root / "elf"
+            path.write_bytes(synthetic_elf(["GLIBC_2.34", "GLIBC_2.2.5", "GCC_3.0"], wide, order))
+            self.assertEqual(glibc_requirements(path), {(2, 34), (2, 2)}, (wide, order))
+
+    def test_non_elf_and_missing_are_empty(self):
+        path = self.root / "junk"
+        path.write_bytes(b"not an elf at all" * 10)
+        self.assertEqual(glibc_requirements(path), set())
+        self.assertEqual(glibc_requirements(self.root / "absent"), set())
+        path.write_bytes(synthetic_elf(["GLIBC_2.38"])[:100])
+        self.assertEqual(glibc_requirements(path), set())
+
+    def test_green_at_or_below_floor(self):
+        gates = self.gate(synthetic_elf(["GLIBC_2.34", "GLIBC_2.2.5"]))
+        row, = gates.rows
+        self.assertEqual((row["name"], row["result"], row["required"], row["floor"]),
+                         ("linux-glibc-floor", "green", "2.34", "2.35"))
+
+    def test_red_above_floor_makes_result_red(self):
+        gates = self.gate(synthetic_elf(["GLIBC_2.38", "GLIBC_2.2.5"]))
+        row, = gates.rows
+        self.assertEqual((row["result"], row["required"]), ("red", "2.38"))
+        self.assertEqual(json.loads((self.root / "out/release-validation.json").read_text())["result"], "red")
+
+    def test_missing_binary_is_blocked(self):
+        row, = self.gate(None).rows
+        self.assertEqual((row["result"], row["reason"]), ("blocked", "no executable"))
+
+    def test_other_targets_record_nothing(self):
+        self.assertEqual(self.gate(synthetic_elf(["GLIBC_2.38"]), "aarch64-apple-darwin").rows, [])
+        self.assertEqual(self.gate(None, "aarch64-linux-android").rows, [])
+
+    def test_run_gates_calls_floor_for_soft3(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch.object(Gates, "run", return_value=True), \
+                patch("train_gates.boot_status"), patch("train_gates.glibc_floor_gate") as floor:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "x86_64-unknown-linux-gnu")
+        self.assertEqual(floor.call_args.args[2], "x86_64-unknown-linux-gnu")
+
+    def test_workflow_builds_linux_on_glibc_235(self):
+        root = Path(__file__).resolve().parent.parent
+        text = (root / ".github/workflows/candidate.yml").read_text()
+        rows = dict((t, r) for r, t in re.findall(r"\{runner: ([\w.-]+), target: ([\w-]+)\}", text))
+        self.assertEqual(rows["x86_64-unknown-linux-gnu"], "ubuntu-22.04")
+        self.assertEqual(rows["aarch64-unknown-linux-gnu"], "ubuntu-22.04-arm")
+        qualify = text[text.index("\n  qualify:"):text.index("\n  collect:")]
+        self.assertRegex(qualify, r"uses: actions/setup-python@[0-9a-f]{40}")
+        self.assertIn("python-version: '3.12'", qualify)
 
 
 if __name__ == "__main__":
