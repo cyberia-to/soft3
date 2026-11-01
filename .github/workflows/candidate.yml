@@ -58,14 +58,17 @@ jobs:
           # host cyberproxy is Ubuntu 22.04; the gate linux-glibc-floor checks it on the ELF.
           # macos-14 retires 2026-11-02 (actions/runner-images#13518); its brownout cancelled
           # rehearsal 41315563611's aarch64-apple-darwin leg, so that leg runs on macos-15.
+          # the Linux x86_64 legs run on the build service (build-a on Akash, servers/build-a in apparatus): warm sccache,
+          # warm cargo registry, 16 cores; arm64 Linux and macOS stay on GitHub-hosted runners (the cloud page §2)
+          let build = [self-hosted linux x64 build]
           let rows = [
-            {runner: ubuntu-24.04, target: stack}
-            {runner: ubuntu-22.04, target: x86_64-unknown-linux-gnu}
-            {runner: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu}
-            {runner: macos-15, target: aarch64-apple-darwin}
-            {runner: macos-15-intel, target: x86_64-apple-darwin}
+            {runner: $build, target: stack, os: linux}
+            {runner: $build, target: x86_64-unknown-linux-gnu, os: linux}
+            {runner: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu, os: linux}
+            {runner: macos-15, target: aarch64-apple-darwin, os: macos}
+            {runner: macos-15-intel, target: x86_64-apple-darwin, os: macos}
           ]
-          let rows = if $env.COMPONENT == cyb { $rows | append {runner: ubuntu-24.04, target: aarch64-linux-android} } else { $rows }
+          let rows = if $env.COMPONENT == cyb { $rows | append {runner: $build, target: aarch64-linux-android, os: linux} } else { $rows }
           $"candidate=($name)\n" | save --append $env.GITHUB_OUTPUT
           $"matrix=({include: $rows} | to json --raw)\n" | save --append $env.GITHUB_OUTPUT
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -110,7 +113,7 @@ jobs:
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "Rust installation failed"} }
           rustup default 1.95.0
       - name: Desktop Linux libraries
-        if: inputs.component == 'cyb' && startsWith(matrix.runner, 'ubuntu') && matrix.target != 'stack'
+        if: inputs.component == 'cyb' && matrix.os == 'linux' && matrix.target != 'stack'
         run: |
           sudo apt-get update
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "apt update failed"} }
@@ -125,7 +128,8 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
           RUSTUP_TOOLCHAIN: '1.95.0'
-          CARGO_BUILD_JOBS: '2'
+          # four cores on GitHub-hosted runners, sixteen on the build service shared by up to six runners
+          CARGO_BUILD_JOBS: ${{ contains(matrix.runner, 'build') && '6' || '2' }}
           PYTHONUNBUFFERED: '1'
         run: |
           let args = if $env.TARGET == stack { [--stack] } else { [] }
