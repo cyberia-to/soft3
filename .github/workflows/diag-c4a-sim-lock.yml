@@ -1,0 +1,112 @@
+name: Diagnostic c4a simulation lock
+
+# Measurement only, never merged, never a release gate (plan C4a).
+# Rehearsal 41354213746 (soft3=6edafa6, #615's head; simulation=218f063, simulation#3's head)
+# turned simulation-gate red: `cannot update the lock file .../simulation/Cargo.lock because
+# --locked was passed`. soft3 on release/phase1 is 0.11.0 and takes the node from cybernode by
+# path (#407, lock by #615 95c3790), while simulation's lock at 218f063 records soft3 0.10.0
+# with the node inline. The host has no cargo; the lock is resolved here, by the build service.
+# This job lays 41354213746's stand by SHA (soft3 = this branch = release/phase1 9ffeb76, which
+# contains 95c3790, + this workflow; cybernode 2f4c5ee; simulation 218f063), re-resolves
+# simulation's lock from the committed one (only what the resolver must change), checks that
+# the hickory 0.26 of simulation#3 is kept, and runs simulation-gate's own command --locked.
+# The lock and its diff are uploaded to refresh simulation#2 (simulation is read-only to us).
+on:
+  push:
+    branches: ['diag/c4a-sim-lock*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.94 --output "$RUNNER_TEMP/snapshot" \
+            --override soft3=diag/c4a-sim-lock \
+            --override cybernode=2f4c5eedf5dfd58c90f76c78d0387b202f250048 --override simulation=218f063d2b29eb33693f56fd47a67a358e51eb28 \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
+            --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=5579d3162505af5aabe479c991d36c8093322096 \
+            --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=d6dcc3f2ad2186466d639518f71cecf6fb928d96 \
+            --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec \
+            --override radio=b74133ce67a67e4495c824d829b571b564ab0c11 --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 \
+            --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 \
+            --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "cybernode", "radio", "simulation"):
+                  print(row["name"], row.get("revision"), row.get("override"), row.get("available"), row.get("error"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+          for r in simulation soft3 cybernode radio; do echo "$r $(git -C "$RUNNER_TEMP/sources/$r" rev-parse HEAD)"; done | tee "$RUNNER_TEMP/out/revs.txt"
+      - name: Resolve simulation's lock against soft3 0.11 + cybernode (from the committed lock)
+        working-directory: ${{ runner.temp }}/sources/simulation
+        run: |
+          set -o pipefail
+          cp Cargo.lock "$RUNNER_TEMP/out/Cargo.lock.before"
+          sha256sum Cargo.lock | tee "$RUNNER_TEMP/out/simulation-lock-before.sha256"
+          if cargo metadata --locked --format-version 1 >/dev/null 2>"$RUNNER_TEMP/out/locked-before.txt"; then echo "committed lock already resolves"; fi
+          cat "$RUNNER_TEMP/out/locked-before.txt"
+          # without --locked cargo keeps every entry it can and changes only what the manifests force
+          cargo metadata --format-version 1 >/dev/null
+          cp Cargo.lock "$RUNNER_TEMP/out/Cargo.lock"
+          sha256sum Cargo.lock | tee "$RUNNER_TEMP/out/simulation-lock.sha256"
+          diff -u "$RUNNER_TEMP/out/Cargo.lock.before" Cargo.lock > "$RUNNER_TEMP/out/simulation-lock.diff" || true
+          echo "lines: +$(grep -c '^+[^+]' "$RUNNER_TEMP/out/simulation-lock.diff" || true) -$(grep -c '^-[^-]' "$RUNNER_TEMP/out/simulation-lock.diff" || true)"
+          grep -E '^[-+](name|version|source) ' "$RUNNER_TEMP/out/simulation-lock.diff" | head -120 || true
+          cargo metadata --locked --format-version 1 >/dev/null && echo "simulation: new lock resolves --locked"
+          {
+            echo "== soft3, cybernode and hickory packages in simulation/Cargo.lock =="
+            grep -A1 -E '^name = "(soft3|cybernode|hickory[a-z-]*)"$' Cargo.lock || true
+            echo "== cargo tree -i hickory-proto@0.25.2 (expect none) =="
+            cargo tree --locked -i hickory-proto@0.25.2 2>&1 || true
+          } 2>&1 | tee "$RUNNER_TEMP/out/packages.txt"
+      - name: simulation-gate (the train's command)
+        id: sim
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/simulation
+        run: |
+          set -o pipefail
+          timeout 3600 cargo run --locked --quiet --profile sim -p simulation-chain -- gate \
+            --out "$RUNNER_TEMP/out/simulation" --md "$RUNNER_TEMP/out/simulation-gate.md" --budget 1500 \
+            2>&1 | tee "$RUNNER_TEMP/out/simulation-gate.log"
+      - name: Summary
+        if: always()
+        run: |
+          echo "simulation-gate: ${{ steps.sim.outcome }}"
+          tail -40 "$RUNNER_TEMP/out/simulation-gate.log" || true
+          echo "warnings:"; grep -h "^warning" "$RUNNER_TEMP"/out/*.log | sort | uniq -c || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: c4a-sim-lock
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.sim.outcome == 'failure'
+        run: exit 1
