@@ -54,10 +54,12 @@ jobs:
           let extra = if $env.CUT == 'true' { $extra | append '--cut' } else { $extra }
           python3 release/train.py snapshot --manager . --component $env.COMPONENT --candidate $name --output snapshot ...$extra
           if $env.LAST_EXIT_CODE != 0 { error make {msg: "source snapshot failed"} }
+          # The Linux executables are built on glibc 2.35 (Ubuntu 22.04) because the genesis
+          # host cyberproxy is Ubuntu 22.04; the gate linux-glibc-floor checks it on the ELF.
           let rows = [
             {runner: ubuntu-24.04, target: stack}
-            {runner: ubuntu-24.04, target: x86_64-unknown-linux-gnu}
-            {runner: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu}
+            {runner: ubuntu-22.04, target: x86_64-unknown-linux-gnu}
+            {runner: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu}
             {runner: macos-14, target: aarch64-apple-darwin}
             {runner: macos-15-intel, target: x86_64-apple-darwin}
           ]
@@ -90,6 +92,9 @@ jobs:
           repository: cyberia-to/soft3
           ref: ${{ inputs.manager_ref }}
           persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
       - uses: hustcer/setup-nu@9215c80adb545a85c419d5085b76eb6d082f49e7
         with:
           version: '0.112.2'
