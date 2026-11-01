@@ -36,3 +36,33 @@ stack = ["dep:cyb"]
 cybernode = { version = "0.1", path = "../../cybernode/rs", default-features = false }
 # optional facade
 cyb = { version = "0.2.1", optional = true }
+# probe + http client for sync
+ureq = { version = "2", default-features = false, features = ["tls"] }
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+# the known-answer key of chain-conformance §6 is BIP-39 derived
+mudra = { package = "cyber-mudra", version = "0.1.0", path = "../../mudra", features = ["bridge"] }
+
+# hemera is the proof of work: tests and the local harness mine real blocks
+# (chain-conformance §9) on a debug build, which an unoptimized permutation
+# makes minutes slower. Release builds are unaffected.
+[profile.dev.package.cyber-hemera]
+opt-level = 3
+
+# release builds panic on integer overflow, as debug builds do, so a debug
+# node and a release node cannot disagree on an overflowing value
+# (plan P2a, decision D14). Scope: the node and the epoch engine it runs at
+# settlement; measured green with the flag proven on rustc, diagnostic
+# 41192950342. `bench` inherits from `release`. Since 0.11 the node's code is
+# the crate cybernode, and cargo reads profiles from this root manifest only,
+# so the flag names cybernode here too.
+[profile.release.package.soft3]
+overflow-checks = true
+
+[profile.release.package.cybernode]
+overflow-checks = true
+
+[profile.release.package.cyber-tru]
+overflow-checks = true

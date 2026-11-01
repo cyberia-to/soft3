@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import signal
 import socket
+import struct
 import subprocess
 import tempfile
 import time
@@ -140,7 +141,14 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
          conformance/chain-genesis.toml (a mismatch is red, nothing is built),
          then the train builds the file into <output>/genesis/pussy.tade with
          `soft3 genesis build` (IPFS fetches cached in ~/.cache/cyber/snapshots/pussy,
-         never in the checkout) and checks it, all under this one gate;
+         never in the checkout) and checks it, all under this one gate. The same
+         sequence then builds the rehearsal file <output>/genesis/pussy-rc.tade
+         (`--chain pussy-rc`, same snapshot and cache, `--time` = [pussy-rc].time
+         of conformance/chain-genesis.toml) and runs `genesis verify` on it. If
+         [pussy-rc].time is missing or unreadable the rc steps are skipped and
+         pussy's gate is unaffected. If [pussy-rc].file_sha256 is pinned and the
+         rc steps ran green, the built pussy-rc.tade's sha256 must equal it, else
+         the gate is red (two hosts must load the same bytes);
       c. else blocked, never green."""
     gate = "stack-chain-genesis"
     cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
@@ -166,7 +174,35 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
     build = cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(pussy / "snapshot"),
                      "--cache", str(cache), "--out", str(genesis)]
     check = cargo + ["conformance", "check", "chain", "--genesis", str(genesis)]
-    return gates.run_sequence(gate, [(build, 900), (check, 900)], soft3)
+    steps = [(build, 900), (check, 900)]
+    rc_pin = None
+    try:
+        rc_spec = tomllib.loads((soft3 / "conformance/chain-genesis.toml").read_text())["pussy-rc"]
+        rc_time = int(rc_spec["time"])
+        rc_pin = rc_spec.get("file_sha256")
+    except (OSError, KeyError, ValueError, TypeError, tomllib.TOMLDecodeError):
+        rc_time = None
+    if rc_time is not None:
+        rc = gates.output / "genesis/pussy-rc.tade"
+        steps.append((cargo + ["genesis", "build", "--chain", "pussy-rc", "--snapshot", str(pussy / "snapshot"),
+                               "--cache", str(cache), "--time", str(rc_time), "--out", str(rc)], 900))
+        steps.append((cargo + ["genesis", "verify", str(rc)], 900))
+    green = gates.run_sequence(gate, steps, soft3)
+    if not (green and rc_time is not None and rc_pin):
+        return green
+    try:
+        built = digest(rc)
+    except OSError:
+        built = None
+    if built == rc_pin:
+        return True
+    detail = {}
+    if gates.rows and gates.rows[-1]["name"] == gate:
+        detail = gates.rows.pop()
+        del detail["name"], detail["result"]
+    what = f"built {rc.name} sha256 {built}" if built else f"{rc} was not built"
+    return gates.record(gate, "red", **detail, error=f"{what} != pinned "
+                        f"conformance/chain-genesis.toml [pussy-rc].file_sha256 {rc_pin}")
 
 
 SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
@@ -191,6 +227,83 @@ def simulation_gate(gates, directory):
                      ["cargo", "run", "--locked", "--quiet", "--profile", "sim", "-p", "simulation-chain", "--", suite,
                       "--out", str(gates.output / "simulation"), "--md", str(gates.output / "simulation-gate.md"),
                       "--budget", "1500"], sim, timeout=3600)
+
+
+# The genesis host cyberproxy is Ubuntu 22.04, glibc 2.35 (soft3#493 comment 6555389474, 2026-11-01).
+GLIBC_FLOOR = (2, 35)
+SHT_GNU_VERNEED = 0x6ffffffe
+
+
+def glibc_requirements(path):
+    """Every (major, minor) GLIBC_ version the ELF at `path` needs, read from its
+    .gnu.version_r section in pure Python; empty for non-ELF files or no such section."""
+    try:
+        data = Path(path).read_bytes()
+    except OSError:
+        return set()
+    if data[:4] != b"\x7fELF" or len(data) < 64 or data[4] not in (1, 2) or data[5] not in (1, 2):
+        return set()
+    wide, order = data[4] == 2, "<" if data[5] == 1 else ">"
+    try:
+        if wide:
+            shoff, = struct.unpack_from(order + "Q", data, 0x28)
+            shentsize, shnum = struct.unpack_from(order + "HH", data, 0x3A)
+        else:
+            shoff, = struct.unpack_from(order + "I", data, 0x20)
+            shentsize, shnum = struct.unpack_from(order + "HH", data, 0x2E)
+
+        def section(index):
+            base = shoff + index * shentsize
+            if wide:
+                kind, = struct.unpack_from(order + "I", data, base + 4)
+                offset, size, link = struct.unpack_from(order + "QQI", data, base + 0x18)
+            else:
+                kind, = struct.unpack_from(order + "I", data, base + 4)
+                offset, size, link = struct.unpack_from(order + "III", data, base + 0x10)
+            return kind, offset, size, link
+
+        found = set()
+        for index in range(shnum):
+            kind, offset, size, link = section(index)
+            if kind != SHT_GNU_VERNEED:
+                continue
+            _, strings, strings_size, _ = section(link)
+            table = data[strings:strings + strings_size]
+            entry = offset
+            while True:
+                _, count, _, aux, following = struct.unpack_from(order + "HHIII", data, entry)
+                name_at = entry + aux
+                for _ in range(count):
+                    _, _, _, name, next_aux = struct.unpack_from(order + "IHHII", data, name_at)
+                    text = table[name:table.index(b"\0", name)].decode("ascii", "replace")
+                    match = re.fullmatch(r"GLIBC_(\d+)\.(\d+)(?:\.(\d+))?", text)
+                    if match:
+                        found.add((int(match.group(1)), int(match.group(2))))
+                    if not next_aux:
+                        break
+                    name_at += next_aux
+                if not following:
+                    break
+                entry += following
+        return found
+    except (struct.error, ValueError):
+        return set()
+
+
+def glibc_floor_gate(gates, binary, target):
+    """Linux gnu executables must not need a newer glibc than the genesis host has."""
+    if not target.endswith("-linux-gnu"):
+        return None
+    if not binary.is_file():
+        return gates.blocked("linux-glibc-floor", "no executable")
+    needed = glibc_requirements(binary)
+    if not needed:
+        # fail closed: a dynamic linux-gnu Rust executable always needs GLIBC_ symbols,
+        # so reading none means the parse failed, not that the floor holds
+        return gates.record("linux-glibc-floor", "red", required="unreadable", floor="%d.%d" % GLIBC_FLOOR)
+    highest = max(needed)
+    return gates.record("linux-glibc-floor", "red" if highest > GLIBC_FLOOR else "green",
+                        required="%d.%d" % highest, floor="%d.%d" % GLIBC_FLOOR)
 
 
 def boot_status(binary, gates):
@@ -315,6 +428,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = crate / "target/release/soft3"
         boot_status(binary, gates)
+        glibc_floor_gate(gates, binary, target)
         if binary.is_file():
             artifacts.append(binary)
     elif component == "cyber":
