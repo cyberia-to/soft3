@@ -1,5 +1,6 @@
 """Release-integrity tests; synthetic receipts never masquerade as platform builds."""
 import argparse
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -134,7 +135,7 @@ class ReleaseTests(unittest.TestCase):
                                                 pussy=self.root / "pussy"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
 
-    def pussy_fixture(self, matching=True, rc_time=1793523600):
+    def pussy_fixture(self, matching=True, rc_time=1793523600, rc_sha256=None):
         manifest = self.root / "pussy/snapshot/manifest.json"
         manifest.parent.mkdir(parents=True)
         manifest.write_text('{"fixture": true}\n')
@@ -142,6 +143,8 @@ class ReleaseTests(unittest.TestCase):
         spec = self.root / "soft3/conformance/chain-genesis.toml"
         spec.parent.mkdir(parents=True)
         rc = f"[pussy-rc]\ntime = {rc_time}\n" if rc_time is not None else ""
+        if rc_time is not None and rc_sha256:
+            rc += f'file_sha256 = "{rc_sha256}"\n'
         spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n{rc}')
 
     def test_chain_genesis_env_file_is_checked_without_a_build(self):
@@ -179,6 +182,45 @@ class ReleaseTests(unittest.TestCase):
                       "--cache", str(Path.home() / ".cache/cyber/snapshots/pussy"), "--time", "1793523600",
                       "--out", str(self.root / "out/genesis/pussy-rc.tade")], 900),
             (cargo + ["genesis", "verify", str(self.root / "out/genesis/pussy-rc.tade")], 900)])
+
+    def rc_pin_run(self, pinned):
+        built = b"rehearsal bytes"
+        self.pussy_fixture(rc_sha256=pinned if pinned is None or pinned else hashlib.sha256(built).hexdigest())
+        rc = self.root / "out/genesis/pussy-rc.tade"
+        rc.parent.mkdir(parents=True)
+        rc.write_bytes(built)
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence", return_value=True):
+            env.pop("SOFT3_GENESIS_DIR", None)
+            result = chain_genesis_gate(gates, self.root / "soft3", pussy=self.root / "pussy")
+        return result, gates, hashlib.sha256(built).hexdigest()
+
+    def test_chain_genesis_pinned_rc_sha256_matching_is_green(self):
+        result, gates, _ = self.rc_pin_run("")
+        self.assertTrue(result)
+        self.assertEqual(gates.rows, [])
+
+    def test_chain_genesis_pinned_rc_sha256_mismatch_is_red(self):
+        result, gates, built = self.rc_pin_run("1" * 64)
+        self.assertFalse(result)
+        row = gates.rows[-1]
+        self.assertEqual((row["name"], row["result"]), ("stack-chain-genesis", "red"))
+        self.assertIn(built, row["error"])
+        self.assertIn("1" * 64, row["error"])
+
+    def test_chain_genesis_unpinned_rc_is_green_without_hashing(self):
+        result, gates, _ = self.rc_pin_run(None)
+        self.assertTrue(result)
+
+    def test_chain_genesis_pinned_rc_file_missing_is_red(self):
+        self.pussy_fixture(rc_sha256="2" * 64)
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.dict("os.environ", {}, clear=False) as env, \
+                patch.object(Gates, "run_sequence", return_value=True):
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", pussy=self.root / "pussy"))
+        self.assertIn("2" * 64, gates.rows[-1]["error"])
 
     def test_chain_genesis_skips_the_rehearsal_steps_without_a_pussy_rc_time(self):
         self.pussy_fixture(rc_time=None)
