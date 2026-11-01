@@ -1,0 +1,142 @@
+name: Diagnostic c4 cybernode lock
+
+# Measurement only, never merged, never a release gate.
+# Plan C4: soft3#407 (merge 8a3090b on release/phase1) moved the node into the crate
+# cybernode, which soft3's crate/Cargo.toml takes by path ../../cybernode/rs; cybernode
+# is pinned in release/phase1.toml at branch release/phase1 rev
+# 5a2f4a26b468d351e173f35bb309824e113e7446. soft3's crate/Cargo.lock has no `cybernode`
+# package, so every `--locked` gate fails before compiling. This job resolves both locks
+# on the build service (the director's host compiles nothing) against the pussy stand's
+# sibling revisions (rehearsal 41344227676's overrides by SHA) with soft3 = this branch
+# and cybernode = 5a2f4a2, then runs the train's gate commands with the resolved locks.
+on:
+  push:
+    branches: ['diag/c4-cybernode-lock*']
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_TARGET_DIR: ${{ runner.temp }}/target
+      CARGO_INCREMENTAL: '0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          rustup default 1.95.0
+      - name: Snapshot the stand and lay out the checkouts like the train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 release/train.py snapshot --manager . --component soft3 --candidate candidate-20261101.97 --output "$RUNNER_TEMP/snapshot" \
+            --override soft3=diag/c4-cybernode-lock \
+            --override cybernode=5a2f4a26b468d351e173f35bb309824e113e7446 \
+            --override bbg=2d7873c739bb799f6c9a48c566c941df39de79d8 --override cybergraph=fe115b331c2fa9c83ccf00cc540814721a6d9470 \
+            --override file=4957848ac4124107b8349811a71b53d4c52479fa --override foculus=5579d3162505af5aabe479c991d36c8093322096 \
+            --override hemera=8559b52f480ebb6fdd0a25dec16ba27747da9cab --override lens=d6dcc3f2ad2186466d639518f71cecf6fb928d96 \
+            --override mudra=33f8029d4dd9cdbe56c54737a1d3a6b453407d53 --override nox=41ba24f275950c22c46206c5fa73fcdb82dc44ec \
+            --override radio=b74133ce67a67e4495c824d829b571b564ab0c11 --override rune=3b031ff0d90ee17538718093c38846707bf70ef9 \
+            --override simulation=218f063d2b29eb33693f56fd47a67a358e51eb28 --override tok=2b3bdceebe6e06d718280c03fe48f92707fecac2 \
+            --override tru=464104cf69ccce2ef8cae13c4b1911fba54ff7d3 --override vault=503d8c806f74dcafd4a174214080dcd09e6bde35 \
+            --override zheng=166a14e62166218161afa555efa166afacc7a120
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "release")
+          from train_sources import materialize
+          temp = Path(os.environ["RUNNER_TEMP"])
+          sources = json.loads((temp / "snapshot/sources.json").read_text())
+          for row in sources["repositories"]:
+              if row.get("override") or row["name"] in ("soft3", "cybernode"):
+                  print(row["name"], row.get("revision"), row.get("override"), row.get("available"), row.get("error"))
+          result = materialize(sources, temp / "sources")
+          print("materialized", len(result), "red:", [r for r in result if r["result"] != "green"])
+          PY
+          mkdir -p "$RUNNER_TEMP/out"
+      - name: Resolve the soft3 and cybernode locks (resolution only)
+        working-directory: ${{ runner.temp }}/sources
+        run: |
+          git -C soft3 rev-parse HEAD
+          git -C cybernode rev-parse HEAD
+          OUT="$RUNNER_TEMP/out"
+          resolve() {
+            # args: label manifest lock git-dir path-in-repo
+            local L=$1 M=$2 LOCK=$3 G=$4 P=$5
+            sha256sum "$LOCK" | tee "$OUT/$L-lock-before.sha256"
+            cargo metadata --locked --format-version 1 --manifest-path "$M" >/dev/null 2>"$OUT/$L-locked-before.txt" && echo "$L: lock already matches" || { echo "$L: lock stale, resolving"; tail -5 "$OUT/$L-locked-before.txt"; }
+            cargo metadata --format-version 1 --manifest-path "$M" >/dev/null 2>"$OUT/$L-resolve.txt" || { echo "$L: does not resolve"; cat "$OUT/$L-resolve.txt"; exit 1; }
+            cargo metadata --locked --format-version 1 --manifest-path "$M" >/dev/null && echo "$L: resolved"
+            cp "$LOCK" "$OUT/$L.Cargo.lock"
+            sha256sum "$LOCK" | tee "$OUT/$L-lock-after.sha256"
+            git -C "$G" diff -- "$P" > "$OUT/$L-Cargo.lock.diff"
+            git -C "$G" diff --stat -- "$P" | tail -1
+            grep -E '^[-+]name = ' "$OUT/$L-Cargo.lock.diff" | sort | uniq -c || true
+          }
+          resolve soft3 soft3/crate/Cargo.toml soft3/crate/Cargo.lock soft3 crate/Cargo.lock
+          resolve cybernode cybernode/rs/Cargo.toml cybernode/rs/Cargo.lock cybernode rs/Cargo.lock
+          cargo tree --locked --manifest-path soft3/crate/Cargo.toml -i cybernode --depth 1 2>&1 | tee "$OUT/cybernode-tree.txt" || true
+      - name: soft3-tests (cargo test --locked)
+        id: test
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          rc=0
+          timeout 3600 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/soft3-tests.log" || rc=$?
+          df -h /
+          exit $rc
+      - name: cybernode-tests (cargo test --locked)
+        id: cntest
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/cybernode/rs
+        run: |
+          set -o pipefail
+          rc=0
+          timeout 3600 cargo test --locked --no-fail-fast 2>&1 | tee "$RUNNER_TEMP/out/cybernode-tests.log" || rc=$?
+          df -h /
+          exit $rc
+      - name: soft3-release (cargo build --release --locked)
+        id: release
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/sources/soft3/crate
+        run: |
+          set -o pipefail
+          rc=0
+          timeout 3600 cargo build --release --locked 2>&1 | tee "$RUNNER_TEMP/out/soft3-release.log" || rc=$?
+          "$CARGO_TARGET_DIR/release/soft3" --version 2>&1 | tee -a "$RUNNER_TEMP/out/soft3-release.log" || true
+          df -h /
+          exit $rc
+      - name: Summary
+        if: always()
+        run: |
+          echo "test: ${{ steps.test.outcome }}  cntest: ${{ steps.cntest.outcome }}  release: ${{ steps.release.outcome }}"
+          grep -h "^error\|^test result\|FAILED\|panicked\|^ *--> " "$RUNNER_TEMP/out/soft3-tests.log" "$RUNNER_TEMP/out/cybernode-tests.log" "$RUNNER_TEMP/out/soft3-release.log" | head -150 || true
+          for f in soft3-tests cybernode-tests soft3-release; do
+            echo "warnings in $f:"
+            grep -h "^warning" "$RUNNER_TEMP/out/$f.log" | sort | uniq -c || true
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: c4-cybernode-lock
+          path: |
+            ${{ runner.temp }}/out/
+            ${{ runner.temp }}/snapshot/sources.json
+          if-no-files-found: warn
+      - name: Fail when red
+        if: steps.test.outcome == 'failure' || steps.cntest.outcome == 'failure' || steps.release.outcome == 'failure'
+        run: exit 1
