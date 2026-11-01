@@ -635,6 +635,13 @@ class GlibcFloorTests(unittest.TestCase):
         qualify = text[text.index("\n  qualify:"):text.index("\n  collect:")]
         self.assertRegex(qualify, r"uses: actions/setup-python@[0-9a-f]{40}")
         self.assertIn("python-version: '3.12'", qualify)
+        setup = qualify[qualify.index("uses: actions/setup-python@"):]
+        setup = setup[:setup.index("\n      - ", 1)]
+        self.assertIn("!contains(matrix.runner, 'build')", setup)
+        host = qualify[qualify.index("name: Host Python (build service)"):]
+        host = host[:host.index("\n      - ", 1)]
+        self.assertIn("if: ${{ contains(matrix.runner, 'build') }}", host)
+        self.assertIn("sys.version_info >= (3, 12)", host)
 
 
 if __name__ == "__main__":
