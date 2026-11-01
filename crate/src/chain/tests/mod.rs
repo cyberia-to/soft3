@@ -1,6 +1,8 @@
 //! Engine tests on a private test genesis with a simulated miner
 //! (chain-conformance §8–§9). The harness here; scenarios in the siblings.
 
+#[cfg(feature = "opcount")]
+mod census;
 mod corpus;
 mod economy;
 mod forks;
