@@ -6,6 +6,26 @@ OWNER=${OWNER:-mastercyb}
 DIR=${DIR:-$HOME/director}; STATE=$DIR/state; mkdir -p "$STATE" "$DIR/mirrors"; cd "$DIR"
 ORG=cyberia-to; NOW=$(date -u +%Y%m%dT%H%M%SZ); TODAY=$(date -u +%Y-%m-%d)
 log() { echo "$(date -u +%H:%M:%S) $*" | tee -a "$STATE/tick.log"; }
+# pull a run's receipts: keep the legs already in run-$rid/, add the missing ones, write red-$rid.json only when all are there (else the next tick retries)
+pull_receipts() { local rid=$1 tmp rc=0 want have d
+  { [ ! -s "$STATE/red-$rid.json" ]; } || return 0
+  tmp=$STATE/run-$rid.tmp.$$; rm -rf "$tmp"
+  gh run download -R $ORG/soft3 "$rid" -D "$tmp" -p 'candidate-*' 2>/dev/null || rc=$?
+  mkdir -p "$STATE/run-$rid"
+  for d in "$tmp"/*/; do [ -d "$d" ] || continue; [ -e "$STATE/run-$rid/$(basename "$d")" ] || mv "$d" "$STATE/run-$rid/" || true; done
+  rm -rf "$tmp"
+  want=$(gh api "repos/$ORG/soft3/actions/runs/$rid/artifacts" --paginate -q '[.artifacts[] | select(.name|startswith("candidate-")) | select(.expired|not)] | length' 2>/dev/null | awk '{s+=$1} END {print s+0}') || want=0
+  # legs are counted by artifact, not by receipt file: a leg that uploaded no receipt must not make every tick re-download the run
+  have=$(ls -1d "$STATE"/run-$rid/candidate-*/ 2>/dev/null | wc -l) || have=0
+  if [ "$rc" = 0 ] && [ "$want" -gt 0 ] && [ "$have" = "$want" ]; then
+    jq -s '[.[] | {result, red: [.gates[]? | select(.result!="green") | {name, detail: (.detail // .error // .reason // .command // "")}]}]' "$STATE"/run-$rid/*/receipt/release-validation.json > "$STATE/red-$rid.json" 2>/dev/null || true
+    log "receipts: run $rid → $(jq -r '[.[].result] | unique | join(",")' "$STATE/red-$rid.json" 2>/dev/null || true)"
+  else
+    rm -f "$STATE/red-$rid.json"
+    log "receipts: run $rid incomplete ($have/$want legs), retry next tick"
+  fi
+}
+[ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 gh auth status >/dev/null 2>&1 || { log "gh is not signed in (the cyberia-apparatus token is missing) — sense only, no qualify, no think"; NOGH=1; }
 
 # 1 sense: component HEADs from the registry, open PRs, last train run
@@ -40,12 +60,9 @@ if [ "$changed" = 1 ] && [ "$(jq -r '.last_run.status' "$STATE/tick-$NOW.json")"
     gh workflow run release-train.yml -R $ORG/soft3 -f cut=false && jq -S .heads "$STATE/tick-$NOW.json" > "$STATE/qualified-heads" && log "qualify: dispatched the gates (cut=false)"
   fi
 fi
-# receipts of the last completed run
-rid=$(jq -r '.last_run.databaseId' "$STATE/tick-$NOW.json"); if [ -n "$rid" ] && [ ! -d "$STATE/run-$rid" ] && [ "$(jq -r '.last_run.status' "$STATE/tick-$NOW.json")" = completed ]; then
-  gh run download -R $ORG/soft3 "$rid" -D "$STATE/run-$rid" -p 'candidate-*' 2>/dev/null || true
-  jq -s '[.[] | {result, red: [.gates[]? | select(.result!="green") | {name, detail: (.detail // .error // .reason // .command // "")}]}]' "$STATE"/run-$rid/*/receipt/release-validation.json > "$STATE/red-$rid.json" 2>/dev/null || true
-  log "receipts: run $rid → $(jq -r '[.[].result] | unique | join(",")' "$STATE/red-$rid.json" 2>/dev/null)"
-fi
+# receipts of the last completed run: red-$rid.json is written only once every candidate leg's receipt is in run-$rid/
+rid=$(jq -r '.last_run.databaseId' "$STATE/tick-$NOW.json")
+if [ -n "$rid" ] && [ "$rid" != null ] && [ "$(jq -r '.last_run.status' "$STATE/tick-$NOW.json")" = completed ]; then pull_receipts "$rid"; fi
 
 # 3 think: the sessions are loop.sh's — the tick only senses, qualifies and pulls receipts
 # 4 report: the first tick after the noon cut writes the day's report (the body does it, in the think above, when red-*.json for today's cut exists)
