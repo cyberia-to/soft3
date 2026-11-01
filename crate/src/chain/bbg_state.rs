@@ -30,6 +30,9 @@ pub struct BbgBacked {
     scalars: Scalars,
     journal: Vec<UndoEntry>,
     open: bool,
+    /// P8 census: the committed records touched since the last `root()`
+    #[cfg(feature = "opcount")]
+    touched: census::Touched,
 }
 
 impl Default for BbgBacked {
@@ -63,6 +66,8 @@ impl BbgBacked {
             scalars: Scalars::default(),
             journal: Vec::new(),
             open: false,
+            #[cfg(feature = "opcount")]
+            touched: Default::default(),
         }
     }
 
@@ -83,6 +88,17 @@ impl BbgBacked {
     }
 
     fn write_card(&mut self, id: Id, card: Option<Card>) {
+        #[cfg(feature = "opcount")]
+        {
+            self.touched.cards.insert(id);
+            census::op(if card.is_some() { "state.cards.write" } else { "state.cards.remove" });
+            // bbg's `Cards::insert` derives `stake_key(card)` (53 bytes in) for a new card or one moved to another axon
+            if let Some(c) = &card {
+                if self.bbg.cards.get(&id).is_none_or(|old| old.particle != c.particle) {
+                    super::opcount::derived("bbg_card_stake_key", super::opcount::perms(53));
+                }
+            }
+        }
         match card {
             None => {
                 self.bbg.cards.remove(&id);
@@ -94,6 +110,11 @@ impl BbgBacked {
     }
 
     fn write_time(&mut self, height: u64, value: Option<Id>) {
+        #[cfg(feature = "opcount")]
+        {
+            self.touched.time.insert(height);
+            census::op(if value.is_some() { "state.time.write" } else { "state.time.remove" });
+        }
         match value {
             None => {
                 self.bbg.time.remove(&height);
@@ -148,6 +169,11 @@ impl BbgBacked {
     }
 
     fn write_neuron(&mut self, id: Id, img: Option<[u64; 4]>) {
+        #[cfg(feature = "opcount")]
+        {
+            self.touched.neurons.insert(id);
+            census::op(if img.is_some() { "state.neurons.write" } else { "state.neurons.remove" });
+        }
         match img {
             None => {
                 self.bbg.neurons.remove(&id);
@@ -159,6 +185,11 @@ impl BbgBacked {
     }
 
     fn set_balance(&mut self, key: Id, value: Option<u64>) {
+        #[cfg(feature = "opcount")]
+        {
+            self.touched.balances.insert(key);
+            census::op(if value.is_some() { "state.balances.write" } else { "state.balances.remove" });
+        }
         match value {
             None => self.bbg.balances.remove(&key),
             Some(v) => self.bbg.balances.insert(key, v),
@@ -177,26 +208,44 @@ impl StateBackend for BbgBacked {
     }
 
     fn balance(&self, owner: &Id, token: &Id) -> u64 {
+        #[cfg(feature = "opcount")]
+        {
+            census::op("state.balances.read");
+            super::opcount::hash(super::opcount::Purpose::Key, &[owner, token]);
+        }
         self.bbg.balances.get(&balance_key(owner, token)).copied().unwrap_or(0)
     }
 
     fn nonce(&self, id: &Id) -> u64 {
+        #[cfg(feature = "opcount")]
+        census::op("state.neurons.read");
         self.full_neuron(id).map_or(0, |i| i[3])
     }
 
     fn has_neuron(&self, id: &Id) -> bool {
+        #[cfg(feature = "opcount")]
+        census::op("state.neurons.read");
         self.bbg.neurons.contains_key(id)
     }
 
     fn supply(&self, token: &Id) -> u64 {
+        #[cfg(feature = "opcount")]
+        census::op("state.coins.read");
         self.bbg.coins.get(token).map_or(0, |c| c.total_supply)
     }
 
     fn tokens(&self) -> Vec<Id> {
+        #[cfg(feature = "opcount")]
+        {
+            census::op("state.coins.scan");
+            super::opcount::bump("state.coins.scan_entries", self.bbg.coins.len() as u64);
+        }
         self.bbg.coins.keys().copied().collect()
     }
 
     fn token_sum(&self, token: &Id) -> u64 {
+        #[cfg(feature = "opcount")]
+        census::op("kernel.sums.read");
         self.sums.get(token).copied().unwrap_or(0)
     }
 
@@ -213,6 +262,9 @@ impl StateBackend for BbgBacked {
     }
 
     fn root(&mut self) -> Id {
+        #[cfg(feature = "opcount")]
+        return census::root(self);
+        #[cfg(not(feature = "opcount"))]
         self.bbg.refresh_root()
     }
 
@@ -223,6 +275,8 @@ impl StateBackend for BbgBacked {
     }
 
     fn credit(&mut self, owner: &Id, token: &Id, amount: u64) -> Result<(), StateError> {
+        #[cfg(feature = "opcount")]
+        super::opcount::hash(super::opcount::Purpose::Key, &[owner, token]);
         let key = balance_key(owner, token);
         let have = self.bbg.balances.get(&key).copied().unwrap_or(0);
         let next = have.checked_add(amount).ok_or(StateError::Overflow)?;
@@ -237,6 +291,8 @@ impl StateBackend for BbgBacked {
     }
 
     fn debit(&mut self, owner: &Id, token: &Id, amount: u64) -> Result<(), StateError> {
+        #[cfg(feature = "opcount")]
+        super::opcount::hash(super::opcount::Purpose::Key, &[owner, token]);
         let key = balance_key(owner, token);
         let have = self.bbg.balances.get(&key).copied().unwrap_or(0);
         if have < amount {
@@ -271,6 +327,11 @@ impl StateBackend for BbgBacked {
     }
 
     fn mint(&mut self, token: &Id, amount: u64) -> Result<(), StateError> {
+        #[cfg(feature = "opcount")]
+        {
+            self.touched.coins.insert(*token);
+            census::op("state.coins.write");
+        }
         let before = self.bbg.coins.get(token).map(|c| c.total_supply);
         let next = before.unwrap_or(0).checked_add(amount).ok_or(StateError::Overflow)?;
         self.note(UndoEntry::Coin { token: *token, before });
@@ -281,6 +342,8 @@ impl StateBackend for BbgBacked {
 
     fn link(&mut self, from: &Id, p: &Id, q: &Id, token: &Id, amount: u64, valence: i8, height: u64) -> Result<(), StateError> {
         assert_eq!(amount, 0, "rule set 1 carries no boxes (chain.md §10 item 2)");
+        #[cfg(feature = "opcount")]
+        census::link(self, p, q, token);
         let axon = axon_id(p, q);
         // before-images of everything bbg's insert touches for one link
         self.note_particle(axon);
@@ -305,6 +368,8 @@ impl StateBackend for BbgBacked {
     }
 
     fn raw_balance(&self, key: &Id) -> u64 {
+        #[cfg(feature = "opcount")]
+        census::op("state.balances.read_raw");
         self.bbg.balances.get(key).copied().unwrap_or(0)
     }
 
@@ -339,6 +404,8 @@ impl StateBackend for BbgBacked {
     }
 
     fn card(&self, id: &Id) -> Option<Card> {
+        #[cfg(feature = "opcount")]
+        census::op("state.cards.read");
         self.bbg.cards.get(id).map(Self::card_from)
     }
 
@@ -349,14 +416,26 @@ impl StateBackend for BbgBacked {
     }
 
     fn cards(&self) -> Vec<(Id, Card)> {
+        #[cfg(feature = "opcount")]
+        {
+            census::op("state.cards.scan");
+            super::opcount::bump("state.cards.scan_entries", self.bbg.cards.len() as u64);
+        }
         self.bbg.cards.iter().map(|(id, r)| (*id, Self::card_from(r))).collect()
     }
 
     fn axon_edge(&self, axon: &Id) -> Option<(Id, Id)> {
+        #[cfg(feature = "opcount")]
+        census::op("kernel.axon_edges.read");
         self.bbg.axon_edges.get(axon).copied()
     }
 
     fn marks(&self) -> Vec<(Id, Mark)> {
+        #[cfg(feature = "opcount")]
+        {
+            census::op("kernel.marks.scan");
+            super::opcount::bump("kernel.marks.scan_entries", self.marks.len() as u64);
+        }
         self.marks.iter().map(|(a, m)| (*a, *m)).collect()
     }
 
@@ -366,6 +445,8 @@ impl StateBackend for BbgBacked {
             return;
         }
         self.note(UndoEntry::Mark { axon: *axon, before });
+        #[cfg(feature = "opcount")]
+        census::op("kernel.marks.write");
         match mark {
             None => self.marks.remove(axon),
             Some(m) => self.marks.insert(*axon, m),
@@ -385,6 +466,8 @@ impl StateBackend for BbgBacked {
     }
 
     fn time(&self, height: u64) -> Option<Id> {
+        #[cfg(feature = "opcount")]
+        census::op("state.time.read");
         self.bbg.time.get(&height).copied()
     }
 
@@ -464,6 +547,9 @@ impl StateBackend for BbgBacked {
         // current without a refresh
     }
 }
+
+#[cfg(feature = "opcount")]
+mod census;
 
 #[cfg(test)]
 mod tests {

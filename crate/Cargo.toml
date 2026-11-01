@@ -36,6 +36,10 @@ chain-conformance = []
 # out-of-tree simulators (cyberia-to/simulation): `params::sim_pow`, a
 # process-wide relaxed POW_LIMIT for private test genesis files. Never in a node.
 sim = []
+# P8 diagnostic census (director plan row P8): per-block operation counters
+# behind `#[cfg(feature = "opcount")]` hooks. Off by default; with it off the
+# code is exactly the release code. Never in a node.
+opcount = []
 
 [dependencies]
 # real node engine

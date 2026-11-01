@@ -17,16 +17,22 @@ pub fn valid_pow(header: &Header) -> bool {
 
 /// The comparison alone, for a miner that already has the id.
 pub fn id_meets_target(id: &BlockId, target: U256) -> bool {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.pow_compare", 1);
     U256::from_le_bytes(id) < target
 }
 
 /// `work(header) = floor(2^256 / (target + 1))` (§5.1).
 pub fn work(header: &Header) -> U256 {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.work", 1);
     header.target().work()
 }
 
 /// `chainwork(B) = chainwork(prev) + work(B)` (§5.1).
 pub fn chainwork(prev: U256, header: &Header) -> U256 {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.chainwork", 1);
     prev.saturating_add(work(header))
 }
 

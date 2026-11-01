@@ -346,22 +346,30 @@ fn h(parts: &[&[u8]]) -> [u8; 32] {
 
 /// `statement = hemera("soft3/chain/sign/v1\0" ‖ chain ‖ tx_bytes_without_sig)`.
 pub fn statement(chain: &[u8; 32], unsigned: &[u8]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash_k(crate::chain::opcount::Purpose::SigStatement, unsigned.get(1).copied(), &[SIGN_TAG, chain, unsigned]);
     h(&[SIGN_TAG, chain, unsigned])
 }
 
 /// `txid = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_bytes)` over the full
 /// wire bytes, signature included.
 pub fn txid(chain: &[u8; 32], tx_bytes: &[u8]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash_k(crate::chain::opcount::Purpose::Txid, tx_bytes.get(1).copied(), &[TXID_TAG, chain, tx_bytes]);
     h(&[TXID_TAG, chain, tx_bytes])
 }
 
 /// Merkle leaf of a transaction (chain.md §1.7).
 pub fn leaf(tx_bytes: &[u8]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash_k(crate::chain::opcount::Purpose::TxRoot, tx_bytes.get(1).copied(), &[LEAF_TAG, tx_bytes]);
     h(&[LEAF_TAG, tx_bytes])
 }
 
 /// Merkle inner node (chain.md §1.7).
 pub fn node(left: &[u8; 32], right: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash_k(crate::chain::opcount::Purpose::TxRoot, Some(crate::chain::opcount::BLOCK), &[NODE_TAG, left, right]);
     h(&[NODE_TAG, left, right])
 }
 
@@ -393,12 +401,16 @@ pub fn token(denom: &str) -> [u8; 32] {
 
 /// `neuron_of(pubkey) = hemera(compressed pubkey)` — mudra's native id.
 pub fn neuron_of(pubkey: &[u8; 33]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[pubkey]);
     mudra::claim::neuron_of(pubkey)
 }
 
 /// The dormant owner genesis parks an address-only account under
 /// (chain.md §2.8): `hemera("soft3/chain/legacy/v1\0" ‖ hrp ‖ account_id)`.
 pub fn legacy_owner(hrp: &str, account_id: &[u8; 20]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[LEGACY_TAG, hrp.as_bytes(), account_id]);
     h(&[LEGACY_TAG, hrp.as_bytes(), account_id])
 }
 
@@ -409,28 +421,38 @@ pub fn topic(chain: &[u8; 32], name: &str) -> [u8; 32] {
 
 /// `axon(p, q) = hemera(p ‖ q)` — the particle a cyberlink's box binds to.
 pub fn axon(p: &[u8; 32], q: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[p, q]);
     h(&[p, q])
 }
 
 /// `card(author, p, q) = hemera("soft3/chain/card/v1\0" ‖ author ‖ p ‖ q)` —
 /// the position id of a staked cyberlink (chain-economy §3.1).
 pub fn card_id(author: &[u8; 32], p: &[u8; 32], q: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[CARD_TAG, author, p, q]);
     h(&[CARD_TAG, author, p, q])
 }
 
 /// `stake_key(card) = hemera("soft3/chain/stake/v1\0" ‖ card)`: the raw
 /// balances key holding a position's stake (chain-economy §3.1).
 pub fn stake_key(card: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[STAKE_TAG, card]);
     h(&[STAKE_TAG, card])
 }
 
 /// `focus_key(token) = hemera("soft3/chain/focus/v1\0" ‖ token)`: the raw
 /// balances key of the focus pool (chain-economy §3.1).
 pub fn focus_key(token: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[FOCUS_TAG, token]);
     h(&[FOCUS_TAG, token])
 }
 
 /// `balance_key(owner, token) = hemera(owner ‖ token)`.
 pub fn balance_key(owner: &[u8; 32], token: &[u8; 32]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    crate::chain::opcount::hash(crate::chain::opcount::Purpose::Key, &[owner, token]);
     h(&[owner, token])
 }

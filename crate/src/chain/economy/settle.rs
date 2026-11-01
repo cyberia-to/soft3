@@ -67,6 +67,12 @@ impl Snapshot {
                 (axon, (p, q, m))
             })
             .collect();
+        #[cfg(feature = "opcount")]
+        {
+            super::super::opcount::bump("snapshot.captured", 1);
+            super::super::opcount::bump("snapshot.positions", positions.len() as u64);
+            super::super::opcount::bump("snapshot.marks", marks.len() as u64);
+        }
         Snapshot { epoch, height: state.height(), block_id, state_root, positions, marks, active, supply }
     }
 
@@ -149,6 +155,21 @@ pub fn compute_with(
     prev_syntropy: Option<i128>,
     quadrature: usize,
 ) -> SettleResult {
+    #[cfg(feature = "opcount")]
+    let counting = super::super::opcount::Counting::new(engine, cur.epoch);
+    #[cfg(feature = "opcount")]
+    let engine: &dyn FocusEngine = &counting;
+    #[cfg(feature = "opcount")]
+    super::super::opcount::job_note(format!(
+        "{{\"tag\":{:?},\"epoch\":{},\"call\":\"inputs\",\"prev_positions\":{},\"cur_positions\":{},\"prev_marks\":{},\"cur_marks\":{},\"quadrature\":{}}}",
+        super::super::opcount::tag(),
+        cur.epoch,
+        prev.positions.len(),
+        cur.positions.len(),
+        prev.marks.len(),
+        cur.marks.len(),
+        quadrature
+    ));
     let a_prev = prev.adjacency(weights);
     let a_cur = cur.adjacency(weights);
     let a_mid = midpoint(&a_prev, &a_cur);
@@ -355,6 +376,8 @@ impl Record {
     pub fn digest(&self) -> Id {
         let mut buf = DOMAIN_EPOCH.to_vec();
         buf.extend_from_slice(&self.encode());
+        #[cfg(feature = "opcount")]
+        super::super::opcount::hash(super::super::opcount::Purpose::Economy, &[&buf]);
         *hemera::hash(&buf).as_bytes()
     }
 }
@@ -426,6 +449,12 @@ pub fn apply<S: StateBackend>(state: &mut S, native: &Id, height: u64, r: &Settl
         state.set_mark(axon, Some(*m));
     }
 
+    #[cfg(feature = "opcount")]
+    {
+        super::super::opcount::bump("settle.earners", r.earners.len() as u64);
+        super::super::opcount::bump("settle.payouts", payouts.len() as u64);
+        super::super::opcount::bump("settle.marks_written", r.marks.len() as u64);
+    }
     let leaves: Vec<Id> = payouts.iter().map(|(c, o, a)| payout_leaf(c, o, *a)).collect();
     let record = Record {
         epoch: r.epoch,

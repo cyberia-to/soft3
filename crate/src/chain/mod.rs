@@ -23,6 +23,8 @@ pub mod genesis;
 pub mod header;
 pub mod mine;
 pub mod net;
+#[cfg(feature = "opcount")]
+pub mod opcount;
 pub mod params;
 pub mod pool;
 pub mod pow;

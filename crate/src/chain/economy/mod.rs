@@ -108,6 +108,12 @@ impl Scalars {
 }
 
 fn tagged(tag: &[u8], parts: &[&[u8]]) -> Id {
+    #[cfg(feature = "opcount")]
+    {
+        let mut all: Vec<&[u8]> = vec![tag];
+        all.extend_from_slice(parts);
+        super::opcount::hash(super::opcount::Purpose::Economy, &all);
+    }
     let mut buf = Vec::with_capacity(tag.len() + parts.iter().map(|p| p.len()).sum::<usize>());
     buf.extend_from_slice(tag);
     for p in parts {
@@ -155,6 +161,8 @@ pub fn phi_digest(phi: &[u64]) -> Id {
     for v in phi {
         buf.extend_from_slice(&v.to_le_bytes());
     }
+    #[cfg(feature = "opcount")]
+    super::opcount::hash(super::opcount::Purpose::Economy, &[&buf]);
     *hemera::hash(&buf).as_bytes()
 }
 

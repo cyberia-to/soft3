@@ -129,7 +129,11 @@ impl Economy {
         let epoch = b.epoch;
         let settle_height = self.clock.settle(epoch);
         let quadrature = self.quadrature;
+        #[cfg(feature = "opcount")]
+        let tag = self.dir.as_ref().map(|d| d.display().to_string()).unwrap_or_default();
         let job = move || {
+            #[cfg(feature = "opcount")]
+            let saved = super::super::opcount::job_begin(tag);
             let t0 = Instant::now();
             // The compute runs outside every lock guard, so a panic in the
             // engine poisons nothing; it is re-raised naming the epoch and
@@ -157,6 +161,8 @@ impl Economy {
                 }
             };
             let millis = t0.elapsed().as_millis() as u64;
+            #[cfg(feature = "opcount")]
+            super::super::opcount::job_end(saved, r.epoch, millis);
             syntropy.lock().expect("syntropy map").insert(b.block_id, r.syntropy);
             timings.lock().expect("timings").push(Timing { epoch: r.epoch, millis, particles: r.particles, axons: r.axons });
             if let Some(p) = path {

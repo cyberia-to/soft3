@@ -107,6 +107,8 @@ impl Header {
 
     /// `block_id = hemera(header_bytes)`, flat sponge, no domain prefix (§1.1).
     pub fn id(&self) -> BlockId {
+        #[cfg(feature = "opcount")]
+        let _purpose = super::opcount::purpose(super::opcount::Purpose::Header);
         hash32(&self.encode())
     }
 
@@ -118,6 +120,8 @@ impl Header {
 
 /// hemera over bytes, 32 bytes out.
 pub fn hash32(bytes: &[u8]) -> [u8; 32] {
+    #[cfg(feature = "opcount")]
+    super::opcount::hash(super::opcount::Purpose::Other, &[bytes]);
     let digest = hemera::hash(bytes);
     let mut out = [0u8; 32];
     out.copy_from_slice(&digest.as_bytes()[..32]);
@@ -155,6 +159,8 @@ pub fn decode_bits_raw(bits: u32) -> Result<U256, BitsError> {
 
 /// Canonical encode of a target (§1.3).
 pub fn encode_bits(target: U256) -> u32 {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.target_encode", 1);
     let mut size = target.byte_length();
     let mut mant = if size <= 3 {
         (target << (8 * (3 - size))).low_u64() as u32
@@ -171,6 +177,8 @@ pub fn encode_bits(target: U256) -> u32 {
 /// Compact → target, rejecting sign, zero, non-canonical and above-limit
 /// encodings (§1.3): the only decoder consensus code may use.
 pub fn decode_bits(bits: u32) -> Result<U256, BitsError> {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.target_decode", 1);
     let target = decode_bits_raw(bits)?;
     if target.is_zero() {
         return Err(BitsError::Zero);

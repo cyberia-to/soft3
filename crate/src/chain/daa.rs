@@ -48,6 +48,8 @@ pub fn factor(frac: u64) -> u64 {
 
 /// ASERT for the block after `parent` (§1.5), with every intermediate.
 pub fn asert(anchor: Anchor, parent_height: u64, parent_time: u64) -> Asert {
+    #[cfg(feature = "opcount")]
+    super::opcount::bump("u256.asert", 1);
     // i128 so no realistic or hostile height/time can overflow; `e` itself
     // is saturated into i64, far beyond where the clamp already binds.
     let dt = parent_time as i128 - anchor.time as i128;

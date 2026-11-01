@@ -175,6 +175,8 @@ impl Chain {
             let epoch = clock.epoch(header.height);
             let prev = self.store.main_at(clock.boundary(epoch - 1));
             let supply = self.rules.supply_at(header.height);
+            #[cfg(feature = "opcount")]
+            let _kind = super::opcount::kind(super::opcount::BOUNDARY);
             self.economy.on_boundary(&self.state, epoch, id, header.state_root, supply, prev);
         }
         Ok(applied.undo)

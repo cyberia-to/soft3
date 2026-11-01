@@ -53,11 +53,21 @@ pub fn verify(chain: &[u8; 32], tx: &Tx) -> bool {
     // hit skips the hemera statement as well as the secp256k1 check
     let key = verified::key(chain, &tx.encode());
     if verified::contains(&key) {
+        #[cfg(feature = "opcount")]
+        super::opcount::bump("sig.cache_hit", 1);
         return true;
     }
     let st = statement(chain, &tx.encode_unsigned());
-    #[cfg(test)]
+    #[cfg(any(test, feature = "opcount"))]
     VERIFICATIONS.with(|c| c.set(c.get() + 1));
+    #[cfg(feature = "opcount")]
+    {
+        // one secp256k1 ECDSA verification (sha256 of the message inside mudra),
+        // and mudra's `neuron_of(pubkey) == subject` check: one 33-byte hemera
+        // hash inside `verify_statement`, which soft3 cannot instrument
+        super::opcount::bump("sig.verify", 1);
+        super::opcount::hash(super::opcount::Purpose::SigAux, &[tx.sig.get(5..38).unwrap_or(&[0u8; 33])]);
+    }
     let ok = mudra::neuron::verify_statement(subject, st, &tx.sig);
     if ok {
         verified::insert(key);
@@ -99,6 +109,14 @@ mod verified {
         h.finalize().into()
     }
 
+    /// Forget every verified signature (the census validates on a cold cache).
+    #[cfg(feature = "opcount")]
+    pub fn clear() {
+        if let Ok(mut s) = set().lock() {
+            *s = Set::default();
+        }
+    }
+
     pub fn contains(key: &[u8; 32]) -> bool {
         set().lock().map(|s| s.keys.contains(key)).unwrap_or(false)
     }
@@ -117,15 +135,22 @@ mod verified {
     }
 }
 
-#[cfg(test)]
+#[cfg(any(test, feature = "opcount"))]
 thread_local! {
     static VERIFICATIONS: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
 }
 
 /// secp256k1 verifications run on this thread (tests count them).
-#[cfg(test)]
+#[cfg(any(test, feature = "opcount"))]
 pub fn verifications() -> u64 {
     VERIFICATIONS.with(|c| c.get())
+}
+
+/// Empty the verified-signature set: the census validates each block on a
+/// cold cache, which is what a validator that never saw the transactions has.
+#[cfg(feature = "opcount")]
+pub fn clear_verified_cache() {
+    verified::clear();
 }
 
 /// Sign a kind-1/2/3/6/7 transaction with `key`; the subject is derived from the

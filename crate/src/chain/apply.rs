@@ -458,15 +458,25 @@ pub fn transition<S: StateBackend>(
     let mut settled = None;
     let result = (|| {
         // 1. coinbase: the miner's share and the pool's cut (§5.7, §6.2)
+        #[cfg(feature = "opcount")]
+        let _kind = super::opcount::kind(0);
         state.credit(cb_to, &rules.native, *cb_amount).map_err(|_| BlockError::Overflow)?;
         state.credit_raw(&focus_key(&rules.native), &rules.native, cut).map_err(|_| BlockError::Overflow)?;
         state.mint(&rules.native, rules.subsidy).map_err(|_| BlockError::Overflow)?;
+        #[cfg(feature = "opcount")]
+        drop(_kind);
         // 2. the settlement of the epoch due at this height
+        #[cfg(feature = "opcount")]
+        let _kind = super::opcount::kind(super::opcount::SETTLE);
         if let (Some(_), Some(r)) = (due, settle) {
             settled = Some(econ_settle::apply(state, &rules.native, height, r).map_err(|_| BlockError::Overflow)?);
         }
+        #[cfg(feature = "opcount")]
+        drop(_kind);
         // 3. the transactions in body order
         for (i, d) in txs.iter().enumerate().skip(1) {
+            #[cfg(feature = "opcount")]
+            let _kind = super::opcount::kind(d.raw[1]);
             execute_tx(rules, &d.tx, d.raw.len(), state, locked, height).map_err(|error| BlockError::Tx { index: i, error })?;
         }
         state.set_height(height);
@@ -477,8 +487,12 @@ pub fn transition<S: StateBackend>(
             state.set_scalars(sc);
         }
         // 4. conservation and the root
+        #[cfg(feature = "opcount")]
+        let _kind = super::opcount::kind(super::opcount::BLOCK);
         check_conservation(rules, state, height)?;
         if due.is_some() {
+            #[cfg(feature = "opcount")]
+            let _kind = super::opcount::kind(super::opcount::SETTLE);
             check_stake_total(state)?;
         }
         Ok(state.root())
