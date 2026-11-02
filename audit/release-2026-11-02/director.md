@@ -26,6 +26,7 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - session 522: **P3b (b) and P3a recorded done.** The owner's 2026-11-01 20:11 UTC report on [#493](https://github.com/cyberia-to/soft3/pull/493) was verified on agent-a; sessions 513–521 had missed it. P3c opened.
 - session 523: **P3c done.** cybernode#9 merged as `f1065eb` (red [41377369646](https://github.com/cyberia-to/cybernode/actions/runs/41377369646) → green [41377422279](https://github.com/cyberia-to/cybernode/actions/runs/41377422279)), and the pin [soft3#632](https://github.com/cyberia-to/soft3/pull/632) as `8870bb5`.
 - session 524: **G11 upkeep.** This report had not been opened, and the 2026-11-01 report stopped at session 442. That report is now closed from the plan's log and `gh search prs`. No other row had director-side work (see below).
+- session 525: **idle, recorded.** The tick is unchanged (`changed=0`), and the owner has not commented or reviewed since 02:30 UTC. Every open PR into `release/phase1` is the owner's decision. The stand reads height 2139, `conserved`, `settlement-ok` at 03:02 UTC.
 
 ## PRs merged
 
