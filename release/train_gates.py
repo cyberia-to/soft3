@@ -128,6 +128,27 @@ def conformance_gate(gates, soft3):
 GENESIS_ENV = "SOFT3_GENESIS_DIR"
 
 
+def stack_genesis_dir(gates):
+    """Where the stack leg's pussy.tade lives: SOFT3_GENESIS_DIR if it holds one
+    (chain_genesis_gate's branch a), else <output>/genesis where branch b builds it."""
+    explicit = os.environ.get(GENESIS_ENV)
+    if explicit and (Path(explicit) / "pussy.tade").is_file():
+        return Path(explicit)
+    return gates.output / "genesis"
+
+
+def pussy_identity_gate(gates, cybernode, genesis_dir, conformance):
+    """Plan P4a: boot the pussy genesis file the stack leg checked. The test lives in
+    cybernode/rs since soft3#615; it runs pussy_identity::the_blessed_file_boots_when_cached
+    with SOFT3_GENESIS_DIR at that file and SOFT3_GENESIS_REQUIRED=1, so a missing file
+    fails instead of skipping; --nocapture puts the booted file and ids in the gate log."""
+    return gates.run("stack-pussy-identity",
+                     ["cargo", "test", "--locked", "--test", "pussy_identity", "the_blessed_file_boots_when_cached",
+                      "--", "--exact", "--nocapture"],
+                     cybernode, env={"SOFT3_CONFORMANCE_DIR": str(conformance), GENESIS_ENV: str(genesis_dir),
+                                     "SOFT3_GENESIS_REQUIRED": "1"}, timeout=900)
+
+
 def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
     """chain-conformance.md §10 in the release train: the pussy genesis file
     (pinned snapshot inputs, `soft3 genesis build`) must reproduce the blessed
@@ -423,8 +444,12 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         if cybernode.is_dir():
             gates.run("cybernode-tests", ["cargo", "test", "--locked"], cybernode,
                       env={"SOFT3_CONFORMANCE_DIR": str(root / "conformance")}, timeout=1800)
+            if stack:
+                pussy_identity_gate(gates, cybernode, stack_genesis_dir(gates), root / "conformance")
         else:
             gates.blocked("cybernode-tests", "cybernode checkout unavailable")
+            if stack:
+                gates.blocked("stack-pussy-identity", "cybernode checkout unavailable")
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = crate / "target/release/soft3"
         boot_status(binary, gates)

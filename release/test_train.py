@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 import train
 from train_sources import TARGETS, digest, parse_overrides, resolve, write_json
-from train_gates import Gates, glibc_floor_gate, glibc_requirements, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
+from train_gates import Gates, glibc_floor_gate, glibc_requirements, run_gates, chain_genesis_gate, pussy_identity_gate, stack_genesis_dir, conformance_gate, simulation_gate, source_gates
 
 
 class ReleaseTests(unittest.TestCase):
@@ -277,10 +277,62 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(cwd, self.root / "simulation")
         self.assertIn(str(self.root / "out" / "simulation-gate.md"), argv)
 
+    def test_pussy_identity_gate_runs_the_cached_boot_against_the_built_file(self):
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.object(Gates, "run", return_value=True) as run:
+            self.assertTrue(pussy_identity_gate(gates, self.root / "cybernode/rs", self.root / "genesis",
+                                                self.root / "soft3/conformance"))
+        name, argv, cwd = run.call_args.args[:3]
+        self.assertEqual(name, "stack-pussy-identity")
+        self.assertEqual(argv, ["cargo", "test", "--locked", "--test", "pussy_identity",
+                                "the_blessed_file_boots_when_cached", "--", "--exact", "--nocapture"])
+        self.assertEqual(cwd, self.root / "cybernode/rs")
+        self.assertEqual(run.call_args.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3/conformance"),
+                                                       "SOFT3_GENESIS_DIR": str(self.root / "genesis"),
+                                                       "SOFT3_GENESIS_REQUIRED": "1"})
+
+    def test_stack_genesis_dir_prefers_the_env_dir_holding_the_file(self):
+        gates = Gates(self.root / "out", self.sources, "stack")
+        held = self.root / "held"
+        held.mkdir()
+        with patch.dict("os.environ", {"SOFT3_GENESIS_DIR": str(held)}):
+            self.assertEqual(stack_genesis_dir(gates), self.root / "out/genesis")
+            (held / "pussy.tade").write_bytes(b"x")
+            self.assertEqual(stack_genesis_dir(gates), held)
+        with patch.dict("os.environ", {}) as env:
+            env.pop("SOFT3_GENESIS_DIR", None)
+            self.assertEqual(stack_genesis_dir(gates), self.root / "out/genesis")
+
+    def run_soft3_leg(self, stack, cybernode=True):
+        (self.root / "soft3").mkdir()
+        if cybernode:
+            (self.root / "cybernode/rs").mkdir(parents=True)
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch("train_gates.boot_status"), patch("train_gates.glibc_floor_gate"), \
+                patch.object(Gates, "run", return_value=True) as run:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=stack)
+        return [c.args[0] for c in run.call_args_list]
+
+    def test_stack_leg_runs_the_pussy_identity_gate_right_after_cybernode_tests(self):
+        names = self.run_soft3_leg(True)
+        self.assertEqual(names.index("stack-pussy-identity"), names.index("cybernode-tests") + 1)
+        self.assertEqual(names.index("soft3-release"), names.index("stack-pussy-identity") + 1)
+
+    def test_platform_leg_does_not_run_the_pussy_identity_gate(self):
+        self.assertNotIn("stack-pussy-identity", self.run_soft3_leg(False))
+
+    def test_stack_leg_without_the_cybernode_checkout_blocks_the_pussy_identity_gate(self):
+        with patch.object(Gates, "blocked") as blocked:
+            names = self.run_soft3_leg(True, cybernode=False)
+        self.assertNotIn("stack-pussy-identity", names)
+        blocked.assert_any_call("stack-pussy-identity", "cybernode checkout unavailable")
+
     def test_stack_gates_have_their_measured_budgets(self):
         (self.root / "soft3").mkdir()
         with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
                 patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch("train_gates.pussy_identity_gate"), \
                 patch.object(Gates, "run", return_value=True) as run:
             run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=True)
         budgets = {c.args[0]: c.kwargs["timeout"] for c in run.call_args_list if c.args[0].startswith("stack-")}
@@ -345,6 +397,7 @@ class ReleaseTests(unittest.TestCase):
         out = self.root / "out"
         with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
                 patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
+                patch("train_gates.pussy_identity_gate"), \
                 patch.object(Gates, "run", autospec=True, side_effect=fake):
             run_gates(self.root, out, self.sources, {}, "soft3", "stack", stack=True)
         rows = {r["name"]: r for r in json.loads((out / "release-validation.json").read_text())["gates"]}
