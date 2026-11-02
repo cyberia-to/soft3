@@ -53,6 +53,8 @@ Every open row now waits on the owner (`plan.md` § what only the owner does):
 - **The landings**: soft3#376, lens#36, hemera#25, nox#43, radio#52. Also the asks that lapsed on 2026-10-29 (L3b, L3c, L3d, L4, C2a, G10b). Under D10 their silence cuts nothing, and none of them is a freeze-eligible fix the director can take.
 - **R1** follows the landings. **G8** and **G9** turn green with them.
 
+Session 537 found both of the director's owner-facing PRs into soft3 `release/phase1`, #350 (C2a) and #572 (P5), `dirty`: C4 moved the chain code and `specs/chain.md` to cybernode. C2a is carried as [cybernode#10](https://github.com/cyberia-to/cybernode/pull/10) with its blobs identical to #350, and gated by rehearsal [41400293113](https://github.com/cyberia-to/soft3/actions/runs/41400293113). #572 is next.
+
 ## fable and windows
 
 Fable questions asked: 0 (no `state/fable-2026-11-02`). Sessions: 18 logs so far (`state/session-20261102T*.log`). Subscription windows hit: none.
