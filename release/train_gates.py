@@ -125,6 +125,8 @@ def conformance_gate(gates, soft3):
                       CONFORMANCE_RUNNER, "--", "conformance", "--check"], soft3, timeout=900)
 
 
+# SOFT3_GENESIS_DIR, SOFT3_GENESIS_REQUIRED and SOFT3_CONFORMANCE_DIR are kept names, like the
+# home directories: cybernode's tests read them; renaming them is a cybernode decision.
 GENESIS_ENV = "SOFT3_GENESIS_DIR"
 
 
@@ -149,10 +151,14 @@ def pussy_identity_gate(gates, cybernode, genesis_dir, conformance):
                                      "SOFT3_GENESIS_REQUIRED": "1"}, timeout=900)
 
 
-def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
+def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None, cybernode=None):
     """chain-conformance.md §10 in the release train: the pussy genesis file
-    (pinned snapshot inputs, `soft3 genesis build`) must reproduce the blessed
-    particle, state root and block-0 id in soft3/conformance/chain.snap.
+    (pinned snapshot inputs, `cybernode genesis build`) must reproduce the blessed
+    particle, state root and block-0 id in soft3/conformance/chain.snap. The node's
+    verbs run from the `cybernode` sibling checkout (cybernode/rs, the crate that
+    owns genesis and conformance since proposals/cybernode.md); soft3 keeps the
+    snapshot and conformance/chain-genesis.toml, named to the node by
+    SOFT3_CONFORMANCE_DIR. Without the cybernode checkout the gate is blocked.
     Where the file comes from, in order:
       a. `pussy.tade` in an explicit genesis_dir or SOFT3_GENESIS_DIR (local runs):
          checked as it is;
@@ -161,7 +167,7 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
          sha256 must equal [pussy].source_manifest_sha256 in
          conformance/chain-genesis.toml (a mismatch is red, nothing is built),
          then the train builds the file into <output>/genesis/pussy.tade with
-         `soft3 genesis build` (IPFS fetches cached in ~/.cache/cyber/snapshots/pussy,
+         `cybernode genesis build` (IPFS fetches cached in ~/.cache/cyber/snapshots/pussy,
          never in the checkout) and checks it, all under this one gate. The same
          sequence then builds the rehearsal file <output>/genesis/pussy-rc.tade
          (`--chain pussy-rc`, same snapshot and cache, `--time` = [pussy-rc].time
@@ -172,11 +178,15 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
          the gate is red (two hosts must load the same bytes);
       c. else blocked, never green."""
     gate = "stack-chain-genesis"
-    cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
+    cybernode = cybernode or soft3.parent / "cybernode/rs"
+    if not (cybernode / "Cargo.toml").is_file():
+        return gates.blocked(gate, "cybernode checkout unavailable: the node's verbs build from the cybernode sibling of release/phase1.toml")
+    cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(cybernode / "Cargo.toml"), "--"]
+    env = {"SOFT3_CONFORMANCE_DIR": str(soft3 / "conformance")}
     explicit = genesis_dir or os.environ.get(GENESIS_ENV)
     if explicit and (Path(explicit) / "pussy.tade").is_file():
         genesis = Path(explicit) / "pussy.tade"
-        return gates.run(gate, cargo + ["conformance", "check", "chain", "--genesis", str(genesis)], soft3, timeout=900)
+        return gates.run(gate, cargo + ["conformance", "check", "chain", "--genesis", str(genesis)], cybernode, env=env, timeout=900)
     manifest = pussy / "snapshot/manifest.json" if pussy else None
     if manifest is None or not manifest.is_file():
         return gates.blocked(gate, "no pussy genesis file: pin cyberia-to/space-pussy in release/phase1.toml "
@@ -208,7 +218,7 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
         steps.append((cargo + ["genesis", "build", "--chain", "pussy-rc", "--snapshot", str(pussy / "snapshot"),
                                "--cache", str(cache), "--time", str(rc_time), "--out", str(rc)], 900))
         steps.append((cargo + ["genesis", "verify", str(rc)], 900))
-    green = gates.run_sequence(gate, steps, soft3)
+    green = gates.run_sequence(gate, steps, cybernode, env=env)
     if not (green and rc_time is not None and rc_pin):
         return green
     try:
@@ -231,7 +241,8 @@ SIMULATION_SUITE_ENV = "SOFT3_SIMULATION_SUITE"
 
 def simulation_gate(gates, directory):
     """The chain simulator (cyberia-to/simulation, pinned in release/phase1.toml):
-    N in-process nodes on this soft3 revision's kernel behind the wire's port,
+    N in-process nodes on cybernode's kernel (reached through the soft3 facade
+    crate the simulator depends on) behind the wire's port,
     a simulated network, miners at simulated hashrate shares grinding real
     headers, adversaries and the economy's strategies, with liveness, safety,
     conservation, determinism, resource and economy-bound invariants. The
@@ -328,9 +339,11 @@ def glibc_floor_gate(gates, binary, target):
 
 
 def boot_status(binary, gates):
+    """Fresh-home boot of the cybernode binary (proposals/cybernode.md §3.9): `cybernode node`
+    on a free port must answer /status with a chain and a height within twenty seconds."""
     if not binary.is_file():
-        return gates.blocked("node-status", "release executable was not built")
-    with tempfile.TemporaryDirectory(prefix="soft3-release-") as home, socket.socket() as listener:
+        return gates.blocked("node-status", "cybernode executable was not built")
+    with tempfile.TemporaryDirectory(prefix="cybernode-release-") as home, socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
         address = f"127.0.0.1:{listener.getsockname()[1]}"
         listener.close()
@@ -431,7 +444,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             revision = next((r.get("revision") for r in sources["repositories"] if r["name"] == owner), None)
             restore_stack_checkout(gates, f"stack-{owner}", directory / owner, revision)
         conformance_gate(gates, directory / "soft3")
-        chain_genesis_gate(gates, directory / "soft3", pussy=directory / "pussy")
+        chain_genesis_gate(gates, directory / "soft3", pussy=directory / "pussy", cybernode=directory / "cybernode/rs")
         simulation_gate(gates, directory)
     if component == "soft3":
         crate = root / "crate"
@@ -450,8 +463,16 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             gates.blocked("cybernode-tests", "cybernode checkout unavailable")
             if stack:
                 gates.blocked("stack-pussy-identity", "cybernode checkout unavailable")
+        # The facade crate must build, but its binary is a forwarding shim for one release and is
+        # not shipped: the soft3 candidate ships the cybernode binary (proposals/cybernode.md §3.9),
+        # built from the sibling checkout; node-status and linux-glibc-floor check that binary.
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
-        binary = crate / "target/release/soft3"
+        binary = cybernode / "target/release/cybernode"
+        if cybernode.is_dir():
+            gates.run("cybernode-release",
+                      ["cargo", "build", "--release", "--locked", "--manifest-path", str(cybernode / "Cargo.toml")], cybernode)
+        else:
+            gates.blocked("cybernode-release", "cybernode checkout unavailable")
         boot_status(binary, gates)
         glibc_floor_gate(gates, binary, target)
         if binary.is_file():
