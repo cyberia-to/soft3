@@ -13,7 +13,7 @@ import unittest
 from unittest.mock import patch
 
 import train
-from train_sources import TARGETS, digest, resolve, write_json
+from train_sources import TARGETS, digest, parse_overrides, resolve, write_json
 from train_gates import Gates, glibc_floor_gate, glibc_requirements, run_gates, chain_genesis_gate, conformance_gate, simulation_gate, source_gates
 
 
@@ -665,6 +665,38 @@ class GlibcFloorTests(unittest.TestCase):
         host = host[:host.index("\n      - ", 1)]
         self.assertIn("if: ${{ contains(matrix.runner, 'build') }}", host)
         self.assertIn("sys.version_info >= (3, 12)", host)
+
+
+class ParseOverridesTests(unittest.TestCase):
+    NAMES = {"simulation"}
+
+    def parse(self, ref):
+        return parse_overrides([f"simulation={ref}"], self.NAMES)
+
+    def test_abbreviated_sha_is_refused_with_accepted_forms(self):
+        with self.assertRaises(ValueError) as caught:
+            parse_overrides(["simulation=c312ab9"], {"simulation"})
+        self.assertIn("40-hex", str(caught.exception))
+        self.assertIn("pull/N/head", str(caught.exception))
+
+    def test_39_hex_is_refused(self):
+        with self.assertRaises(ValueError):
+            self.parse("c312ab9" + "a" * 32)
+
+    def test_full_sha_is_accepted_unchanged(self):
+        ref = "c312ab9" + "0123456789abcdef0123456789abcdef0"
+        self.assertEqual(len(ref), 40)
+        self.assertEqual(self.parse(ref), {"simulation": ref})
+
+    def test_pull_ref_is_accepted(self):
+        self.assertEqual(self.parse("pull/2/head"), {"simulation": "pull/2/head"})
+
+    def test_ordinary_branches_are_accepted(self):
+        for ref in ("release/phase1", "feat/p4a-cached-boot"):
+            self.assertEqual(self.parse(ref), {"simulation": ref})
+
+    def test_six_hex_is_still_a_possible_branch(self):
+        self.assertEqual(self.parse("abcdef"), {"simulation": "abcdef"})
 
 
 if __name__ == "__main__":
