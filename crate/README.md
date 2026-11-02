@@ -5,7 +5,7 @@
 Developer surface for the soft3 stack. Default network: **spacepussy-test**.
 
 ```bash
-cargo install cybernode       # the node (rung 7): chain, mining, genesis, wallet
+cargo install --git https://github.com/cyberia-to/cybernode cybernode   # the node (rung 7); the crates.io name is not published yet
 cargo install soft3           # this crate: the stack facade over cybernode; forwards the node verbs for one release
 cybernode sync
 ```
