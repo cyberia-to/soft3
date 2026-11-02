@@ -150,9 +150,16 @@ def collect(args):
                "source_snapshot_sha256": digest(args.snapshot)})
     write_json(output / "candidate.json", {"name": name, "component": component, "versions": versions,
                "result": verdict, "source_revisions": source_revisions, "available_binaries": binaries,
-               "manager_revision": sources["manager_revision"], "promotion": "owner only"})
+               "manager_revision": sources["manager_revision"], "promotion": "owner only",
+               "overrides": sources.get("overrides", {})})
     (output / "soft3-dependencies.md").write_text("\n".join(details or ["Source capture is in sources.json; no platform resolved a package inventory."]) + "\n")
-    body = [f"# {component} {name} — {verdict.upper()}", "",
+    overrides = sources.get("overrides", {})
+    title = f"# {component} {name} — REHEARSAL {verdict.upper()} (not a candidate)" if overrides else f"# {component} {name} — {verdict.upper()}"
+    body = [title, ""]
+    if overrides:
+        revisions = {r["name"]: r.get("revision") for r in sources["repositories"]}
+        body += ["Overrides: " + ", ".join(f"{k}={v} → {revisions.get(k)}" for k, v in sorted(overrides.items())), ""]
+    body += [
             "Draft candidate. The owner records the verdict and selects promotion.", "",
             "Input updates at the captured product revisions:", ""]
     for index, change in enumerate(sources.get("changes", []), start=1):
@@ -180,6 +187,8 @@ def collect(args):
 def draft(args):
     output = args.output.resolve()
     candidate = json.loads((output / "candidate.json").read_text())
+    if candidate.get("overrides"):
+        raise ValueError("a rehearsal with overrides cannot be drafted")
     name = candidate_name(candidate["name"])
     component = candidate["component"]
     repo = PRODUCTS[component][0]
@@ -200,6 +209,8 @@ def main():
     prepare.add_argument("--component", choices=PRODUCTS, required=True)
     prepare.add_argument("--candidate", type=candidate_name, required=True)
     prepare.add_argument("--output", type=Path, required=True)
+    prepare.add_argument("--override", action="append", default=[], metavar="NAME=REF")
+    prepare.add_argument("--cut", action="store_true")
     build_parser = sub.add_parser("build")
     build_parser.add_argument("--snapshot", type=Path, required=True)
     build_parser.add_argument("--checkout", type=Path, required=True)
@@ -214,7 +225,8 @@ def main():
     publish.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.action == "snapshot":
-        snapshot(args.manager.resolve(), args.output.resolve(), args.component, args.candidate)
+        snapshot(args.manager.resolve(), args.output.resolve(), args.component, args.candidate,
+                 overrides=args.override, cut=args.cut)
     else:
         {"build": build, "collect": collect, "draft": draft}[args.action](args)
 

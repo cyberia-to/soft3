@@ -55,7 +55,46 @@ def resolve(entry):
     return row
 
 
-def snapshot(manager, output, component, candidate):
+def resolve_override(row, ref):
+    if not row["available"]:
+        return row
+    try:
+        if re.fullmatch(r"[0-9a-f]{40}", ref):
+            revision = ref
+        else:
+            full = f"refs/pull/{ref.split('/')[1]}/head" if re.fullmatch(r"pull/\d+/head", ref) else f"refs/heads/{ref}"
+            remote = command(["git", "ls-remote", row["url"], full], timeout=45)
+            found = re.search(rf"^([0-9a-f]{{40}})\s+{re.escape(full)}$", remote, re.M)
+            if not found:
+                raise ValueError(f"override ref {ref} not found on origin")
+            revision = found[1]
+        row["override"] = {"ref": ref, "revision": revision, "default_branch": row["branch"],
+                           "default_revision": row["revision"]}
+        row["revision"] = revision
+        row["pin_matches"] = row.get("rev") == revision if "rev" in row else None
+    except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+        row.update(available=False, error=str(error), pin_matches=False)
+    return row
+
+
+def parse_overrides(overrides, names):
+    parsed = {}
+    for item in overrides:
+        name, separator, ref = item.partition("=")
+        if not separator or "=" in ref or name not in names or name in parsed:
+            raise ValueError(f"invalid override {item!r}")
+        if not re.fullmatch(r"[A-Za-z0-9._/-]+", ref) or ".." in ref or ref[0] in "-/":
+            raise ValueError(f"invalid override ref {ref!r}")
+        if re.fullmatch(r"[0-9a-f]{7,39}", ref):
+            raise ValueError(f"override ref {ref!r} looks like an abbreviated commit: "
+                             "give the full 40-hex SHA, a branch on origin, or pull/N/head")
+        parsed[name] = ref
+    return parsed
+
+
+def snapshot(manager, output, component, candidate, overrides=(), cut=False):
+    if cut and overrides:
+        raise ValueError("an override is a rehearsal: refused with cut=true")
     if command(["git", "status", "--porcelain"], cwd=manager):
         raise ValueError("release manager must use committed clean inputs")
     manifest = manager / "release/phase1.toml"
@@ -64,13 +103,15 @@ def snapshot(manager, output, component, candidate):
     names = [entry["name"] for entry in entries]
     if len(names) != len(set(names)):
         raise ValueError("duplicate source name")
+    overrides = parse_overrides(overrides, set(names))
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         rows = list(pool.map(resolve, entries))
+    rows = [resolve_override(row, overrides[row["name"]]) if row["name"] in overrides else row for row in rows]
     rows.sort(key=lambda row: row["name"])
     result = {"component": component, "candidate": candidate,
               "manager_revision": command(["git", "rev-parse", "HEAD"], cwd=manager),
               "phase1_sha256": digest(manifest), "repositories": rows,
-              "changes": [], "change_errors": []}
+              "overrides": overrides, "rehearsal": bool(overrides), "changes": [], "change_errors": []}
     for row in rows:
         if row["name"] not in PRODUCTS or not row["available"]:
             continue

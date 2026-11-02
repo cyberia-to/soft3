@@ -1,0 +1,131 @@
+# Pussy's pinned stand: the sibling revisions pussy's genesis attempt
+# (2026-11-05 13:37:00 UTC, cyber/launch.md, cyber#154) ships from if the
+# landings of the 0.4 line on the default branches are not approved first.
+# Proposal (a) of cyber#154 is the owner's to decide; this file prepares it
+# and decides nothing (release/director/plan.md D13, row P1).
+#
+# This file is not release/phase1.toml. phase1.toml pins default branches for
+# a candidate. This file pins a rehearsal stand: every rev is a full commit
+# that a `cut=false` rehearsal takes as `override` (release-train.yml input,
+# `<name>=<rev>`, space-separated; render it with
+# `python3 release/pussy_stand.py`). A candidate (`cut=true`) refuses
+# overrides, so this file can never become a release by itself.
+#
+# Qualified by rehearsal 40688607756 (2026-10-28, stack leg job 122817510646,
+# overrides in its receipt/sources.json), and again by rehearsal 41192673416
+# (2026-10-31, all five legs, stack leg job 124512521956) with soft3 at
+# bce863b (P2, soft3#479): no red beyond phase1-pins, release-notes-source,
+# stack-zheng, stack-mudra, stack-neuron, the same set as 40688607756.
+# `from` names the ref each rev was taken from. Where a landing PR is open
+# (hemera#25, lens#36, nox#43,
+# radio#52, soft3#376) the rev is that PR's head, i.e. what reaches the
+# default branch if the owner approves. The landing heads of lens and radio
+# are ahead of the qualified commit by documentation only; soft3's rev is
+# ahead by one build profile:
+#   lens  fee68d8..d6dcc3f  AGENTS.md
+#   radio 9c498b2..b74133c  docs/explanation/cybernet.md, roadmap/soft3-radio.md
+#   soft3 bce863b..b6f22dc  crate/Cargo.toml (soft3#484, P2a: release
+#         overflow-checks for soft3 and cyber-tru), plan.md, the day's report.
+#         The profile is gated by 41194300832 and diagnostic 41192950342
+#         (release tests with the flag, Linux x86_64), not yet by all legs.
+# Every other rev is the exact qualified commit.
+
+stand = "pussy"
+qualified_by = 41192673416
+updated = "2026-10-31"
+
+[[sibling]]
+name = "hemera"
+repo = "cyberia-to/hemera"
+from = "release/0.4 (hemera#25)"
+rev = "8559b52f480ebb6fdd0a25dec16ba27747da9cab"
+
+[[sibling]]
+name = "lens"
+repo = "cyberia-to/lens"
+from = "release/0.2 (lens#36)"
+rev = "d6dcc3f2ad2186466d639518f71cecf6fb928d96"
+
+[[sibling]]
+name = "nox"
+repo = "cyberia-to/nox"
+from = "release/0.4 (nox#43)"
+rev = "41ba24f275950c22c46206c5fa73fcdb82dc44ec"
+
+[[sibling]]
+name = "zheng"
+repo = "cyberia-to/zheng"
+from = "fix/g10b-test-profile"
+rev = "166a14e62166218161afa555efa166afacc7a120"
+
+[[sibling]]
+name = "bbg"
+repo = "cyberia-to/bbg"
+from = "port/l4-bbg9-phase1"
+rev = "2d7873c739bb799f6c9a48c566c941df39de79d8"
+
+[[sibling]]
+name = "cybergraph"
+repo = "cyberia-to/cybergraph"
+from = "port/l4-cybergraph3-phase1"
+rev = "fe115b331c2fa9c83ccf00cc540814721a6d9470"
+
+[[sibling]]
+name = "foculus"
+repo = "cyberia-to/foculus"
+from = "port/l4-foculus5-phase1"
+rev = "0551e3b9c19a1c6a69c8d552ffbbfd3fa1c71c5d"
+
+[[sibling]]
+name = "mudra"
+repo = "cyberia-to/mudra"
+from = "feat/l3c-hemera-0.4"
+rev = "33f8029d4dd9cdbe56c54737a1d3a6b453407d53"
+
+[[sibling]]
+name = "vault"
+repo = "cyberia-to/vault"
+from = "port/l4-vault-spell-cli-phase1"
+rev = "503d8c806f74dcafd4a174214080dcd09e6bde35"
+
+[[sibling]]
+name = "rune"
+repo = "cyberia-to/rune"
+from = "port/l4-rune6-phase1"
+rev = "3b031ff0d90ee17538718093c38846707bf70ef9"
+
+[[sibling]]
+name = "file"
+repo = "cyberia-to/file"
+from = "release/phase1"
+rev = "4957848ac4124107b8349811a71b53d4c52479fa"
+
+[[sibling]]
+name = "tru"
+repo = "cyberia-to/tru"
+from = "release/phase1"
+rev = "464104cf69ccce2ef8cae13c4b1911fba54ff7d3"
+
+[[sibling]]
+name = "tok"
+repo = "cyberia-to/plumb"
+from = "plumb release/phase1"
+rev = "2b3bdceebe6e06d718280c03fe48f92707fecac2"
+
+[[sibling]]
+name = "radio"
+repo = "cyberia-to/radio"
+from = "release/phase1 (radio#52)"
+rev = "b74133ce67a67e4495c824d829b571b564ab0c11"
+
+[[sibling]]
+name = "simulation"
+repo = "cyberia-to/simulation"
+from = "simulation#3 head"
+rev = "218f063d2b29eb33693f56fd47a67a358e51eb28"
+
+[[sibling]]
+name = "soft3"
+repo = "cyberia-to/soft3"
+from = "release/phase1 (soft3#376)"
+rev = "b6f22dcdec8204055f1a951e10fad111b2e4d8ad"
