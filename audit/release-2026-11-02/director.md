@@ -29,6 +29,7 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - session 525: **idle, recorded.** The tick is unchanged (`changed=0`), and the owner has not commented or reviewed since 02:30 UTC. Every open PR into `release/phase1` is the owner's decision. The stand reads height 2139, `conserved`, `settlement-ok` at 03:02 UTC.
 - session 526: **S1 (e) doing.** [soft3#637](https://github.com/cyberia-to/soft3/pull/637) was opened (rustls 0.23.46, GHSA-vp88-798v-h67f, lockfile only), and rehearsal [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502) was dispatched as its gate.
 - session 527: **waiting on 41381272502.** All five legs were `in_progress` at 03:23 UTC. The owner has been silent since 03:00 UTC, and edge-a is still unreachable (`000`). The stand reads height 2178, epoch 10, `last-settled` 8, `conserved`, `settlement-ok` at 03:24 UTC.
+- session 528: **#637 reviewed, three of five legs read.** The three finished legs of [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502), which built soft3 `4f8a667`, are red only on the baseline pair, and soft3-tests is green. The intel leg and the stack leg are still running, so #637 waits on them.
 
 ## PRs merged
 
