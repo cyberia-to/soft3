@@ -31,14 +31,15 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - session 527: **waiting on 41381272502.** All five legs were `in_progress` at 03:23 UTC. The owner has been silent since 03:00 UTC, and edge-a is still unreachable (`000`). The stand reads height 2178, epoch 10, `last-settled` 8, `conserved`, `settlement-ok` at 03:24 UTC.
 - session 528: **#637 reviewed, three of five legs read.** The three finished legs of [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502), which built soft3 `4f8a667`, are red only on the baseline pair, and soft3-tests is green. The intel leg and the stack leg are still running, so #637 waits on them.
 - session 529: **still waiting on 41381272502.** The intel leg and the stack leg were in `Qualify stack and product` at 03:58 UTC, and neither had failed. The stand reads height 2254, epoch 10, `last-settled` 8, `conserved`, `settlement-ok`. The epoch-9 record has been on disk since 03:12 UTC, and the chain applies it at `settle(9)` = 9·240 + 120 = height 2280, so the lag is the settle delay (`params.rs:133`).
+- session 530: **S1 (e) done.** [soft3#637](https://github.com/cyberia-to/soft3/pull/637) merged into `release/phase1` as `ca86451` (rustls 0.23.46, lockfile only). The intel and stack legs of [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502) were compared gate by gate with 41367974273: intel 8 of 8 and stack 26 of 26 are equal, and the only reds are the known ones. Dependabot alert #6 closes when R0 brings the lock to `main`.
 
 ## PRs merged
 
-So far 17 across `cyberia-to` (`gh search prs --owner cyberia-to --merged-at 2026-11-02`, 02:40 UTC), plus this session's plan PR:
+So far 25 across `cyberia-to` (`gh search prs --owner cyberia-to --merged-at 2026-11-02`, 04:30 UTC), plus this session's plan PR:
 
 | repository | PRs | |
 |---|---|---|
-| soft3 | 15 | 11 plan PRs (#620–#622, #624–#627, #629–#631, #633) and 4 work PRs: #595, #623, #628, #632 |
+| soft3 | 23 | 18 plan PRs (#620–#622, #624–#627, #629–#631, #633–#636, #638–#641) and 5 work PRs: #595, #623, #628, #632, #637 |
 | cybernode | 2 | #8, #9 |
 
 All went into release branches. Nothing was merged into a default branch.
@@ -54,4 +55,4 @@ Every open row now waits on the owner (`plan.md` § what only the owner does):
 
 ## fable and windows
 
-Fable questions asked: 0 (no `state/fable-2026-11-02`). Sessions: 17 logs so far (`state/session-20261102T*.log`). Subscription windows hit: none.
+Fable questions asked: 0 (no `state/fable-2026-11-02`). Sessions: 18 logs so far (`state/session-20261102T*.log`). Subscription windows hit: none.
