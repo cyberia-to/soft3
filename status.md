@@ -15,7 +15,7 @@ each component has a readiness state. **live** — carries real traffic today. *
 
 | repo | verb | state | release | crates | what it does |
 |---|---|---|---|---|---|
-| [[soft3]] | compose | live | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
+| [[soft3]] | compose | live | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | 0.11.0 in tree: the stack facade over [[cybernode]], forwarding the node verbs for one release · a release is a [[soft3/conformance|conformance snapshot]] |
 | [[cybernode]] | run | live | — | — | rung 7, the node: chain, genesis, wallet, network — carved from soft3 2026-10-27 |
 | [[cybics/form|form]] |  |  |  |  |  |
 | [[honeycrisp]] | accelerate | live | [0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
