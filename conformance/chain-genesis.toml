@@ -1,8 +1,8 @@
 # chain-conformance.md §10 — the scalars beside conformance/chain.snap, written by the first pipeline run.
 # informational; the fingerprints in chain.snap are what --check compares.
 
-blessed = "2026-10-17"  # bbg dimension version 4 (positions) against hemera 0.4 (profile #15, release/0.4 7237a23); the version-3 roots of 2026-10-16 are in the comments below and audit/chain/economy-2026-10-17.md
-pipeline = "soft3 genesis build (crate/src/genesis: params end with the pool record, chain.md §11.9; bbg dimension version 4)"
+blessed = "2026-10-17"  # bbg dimension version 4 (positions) against hemera 0.4 (profile #15, release/0.4 7237a23); the version-3 roots of 2026-10-16 are in the comments below and cybernode/audit/chain/economy-2026-10-17.md
+pipeline = "cybernode genesis build (cybernode/rs/src/genesis: params end with the pool record, cybernode/specs/chain.md §11.9; bbg dimension version 4)"
 bbg = "be5c5db (master, #51: DIMENSION_VERSION 4 — CardRecord author/valence/since; the genesis files are byte-identical, only the roots move)"
 # state roots under dimension version 3 (bbg eb152fa): pussy a3607987…54b8b2, bostrom c50a6d84…bcdf13
 # state roots before dimension version 3 (bbg 1d39975): pussy f2296834…cbeb5827

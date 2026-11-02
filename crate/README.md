@@ -5,8 +5,9 @@
 Developer surface for the soft3 stack. Default network: **spacepussy-test**.
 
 ```bash
-cargo install soft3
-soft3 sync
+cargo install cybernode       # the node (rung 7): chain, mining, genesis, wallet
+cargo install soft3           # this crate: the stack facade over cybernode; forwards the node verbs for one release
+cybernode sync
 ```
 
 Product entry (recommended):
@@ -20,4 +21,4 @@ cyber sync
 - Docs: https://cyber.page/soft3/  
 - Repo: https://github.com/cyberia-to/soft3  
 
-`space-pussy` / `bostrom` on cybernode are cosmos bootloader chains, not this crate's default.
+`space-pussy` / `bostrom`, run on the apparatus hosts (the cybernode.ai instance), are cosmos bootloader chains, not this crate's default.
