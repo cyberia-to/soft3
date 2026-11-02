@@ -10,9 +10,10 @@ import subprocess
 import tarfile
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 import train
+import train_gates
 from train_sources import TARGETS, digest, parse_overrides, resolve, write_json
 from train_gates import Gates, glibc_floor_gate, glibc_requirements, run_gates, chain_genesis_gate, pussy_identity_gate, stack_genesis_dir, conformance_gate, simulation_gate, source_gates
 
@@ -127,7 +128,18 @@ class ReleaseTests(unittest.TestCase):
         gates = Gates(self.root, self.sources, "stack")
         self.assertFalse(gates.run("warning", ["python3", "-c", "print('warning: fixture')"], self.root))
 
+    def cybernode_fixture(self):
+        """The cybernode sibling the node's verbs build from (proposals/cybernode.md §3.9)."""
+        node = self.root / "cybernode/rs"
+        node.mkdir(parents=True)
+        (node / "Cargo.toml").write_text('[package]\nname = "cybernode"\n')
+        return node
+
+    def genesis_cargo(self):
+        return ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(self.root / "cybernode/rs/Cargo.toml"), "--"]
+
     def test_chain_genesis_without_the_file_is_blocked_not_green(self):
+        self.cybernode_fixture()
         gates = Gates(self.root / "out", self.sources, "aarch64-apple-darwin")
         with patch.dict("os.environ", {}, clear=False) as env:
             env.pop("SOFT3_GENESIS_DIR", None)
@@ -135,7 +147,22 @@ class ReleaseTests(unittest.TestCase):
                                                 pussy=self.root / "pussy"))
         self.assertEqual(gates.rows[-1]["result"], "blocked")
 
+    def test_chain_genesis_without_the_cybernode_checkout_is_blocked_before_anything_runs(self):
+        genesis = self.root / "genesis/pussy.tade"
+        genesis.parent.mkdir()
+        genesis.write_bytes(b"x")
+        gates = Gates(self.root / "out", self.sources, "stack")
+        with patch.object(Gates, "run") as run, patch.object(Gates, "run_sequence") as sequence:
+            self.assertFalse(chain_genesis_gate(gates, self.root / "soft3", genesis_dir=genesis.parent,
+                                                pussy=self.root / "pussy"))
+        run.assert_not_called()
+        sequence.assert_not_called()
+        row = gates.rows[-1]
+        self.assertEqual((row["name"], row["result"]), ("stack-chain-genesis", "blocked"))
+        self.assertIn("cybernode checkout unavailable", row["reason"])
+
     def pussy_fixture(self, matching=True, rc_time=1793523600, rc_sha256=None):
+        self.cybernode_fixture()
         manifest = self.root / "pussy/snapshot/manifest.json"
         manifest.parent.mkdir(parents=True)
         manifest.write_text('{"fixture": true}\n')
@@ -148,6 +175,7 @@ class ReleaseTests(unittest.TestCase):
         spec.write_text(f'[pussy]\nsource_manifest_sha256 = "{expected}"\n{rc}')
 
     def test_chain_genesis_env_file_is_checked_without_a_build(self):
+        node = self.cybernode_fixture()
         genesis = self.root / "genesis/pussy.tade"
         genesis.parent.mkdir()
         genesis.write_bytes(b"x")
@@ -159,7 +187,9 @@ class ReleaseTests(unittest.TestCase):
         sequence.assert_not_called()
         name, argv, cwd = run.call_args.args[:3]
         self.assertEqual(name, "stack-chain-genesis")
-        self.assertEqual(argv[-5:], ["conformance", "check", "chain", "--genesis", str(genesis)])
+        self.assertEqual(argv, self.genesis_cargo() + ["conformance", "check", "chain", "--genesis", str(genesis)])
+        self.assertEqual(cwd, node)
+        self.assertEqual(run.call_args.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3/conformance")})
 
     def test_chain_genesis_builds_from_the_pinned_checkout_then_checks(self):
         self.pussy_fixture()
@@ -171,8 +201,10 @@ class ReleaseTests(unittest.TestCase):
             self.assertTrue(chain_genesis_gate(gates, soft3, pussy=self.root / "pussy"))
         name, steps, cwd = sequence.call_args.args[:3]
         self.assertEqual(name, "stack-chain-genesis")
-        self.assertEqual(cwd, soft3)
-        cargo = ["cargo", "run", "--locked", "--quiet", "--manifest-path", str(soft3 / "crate/Cargo.toml"), "--"]
+        # the node's verbs run from the cybernode sibling; soft3 only lends the snapshot directory
+        self.assertEqual(cwd, self.root / "cybernode/rs")
+        self.assertEqual(sequence.call_args.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(soft3 / "conformance")})
+        cargo = self.genesis_cargo()
         genesis = str(self.root / "out/genesis/pussy.tade")
         self.assertEqual(steps, [
             (cargo + ["genesis", "build", "--chain", "pussy", "--snapshot", str(self.root / "pussy/snapshot"),
@@ -318,6 +350,16 @@ class ReleaseTests(unittest.TestCase):
         names = self.run_soft3_leg(True)
         self.assertEqual(names.index("stack-pussy-identity"), names.index("cybernode-tests") + 1)
         self.assertEqual(names.index("soft3-release"), names.index("stack-pussy-identity") + 1)
+        self.assertEqual(names.index("cybernode-release"), names.index("soft3-release") + 1)
+
+    def test_stack_leg_hands_the_cybernode_sibling_to_the_chain_genesis_gate(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
+                patch("train_gates.chain_genesis_gate") as genesis, patch("train_gates.simulation_gate"), \
+                patch("train_gates.boot_status"), patch("train_gates.glibc_floor_gate"), \
+                patch.object(Gates, "run", return_value=True), patch.object(Gates, "blocked"):
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=True)
+        self.assertEqual(genesis.call_args.kwargs["cybernode"], self.root / "cybernode/rs")
 
     def test_platform_leg_does_not_run_the_pussy_identity_gate(self):
         self.assertNotIn("stack-pussy-identity", self.run_soft3_leg(False))
@@ -356,19 +398,57 @@ class ReleaseTests(unittest.TestCase):
         return run, blocked
 
     def test_cybernode_tests_run_between_soft3_tests_and_release(self):
-        (self.root / "cybernode" / "rs").mkdir(parents=True)
+        node = self.root / "cybernode" / "rs"
+        node.mkdir(parents=True)
         run, _ = self.run_soft3_product()
         names = [c.args[0] for c in run.call_args_list]
-        self.assertEqual(names, ["soft3-tests", "cybernode-tests", "soft3-release"])
+        self.assertEqual(names, ["soft3-tests", "cybernode-tests", "soft3-release", "cybernode-release"])
         call = run.call_args_list[1]
         self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
-        self.assertEqual(call.args[2], self.root / "cybernode" / "rs")
+        self.assertEqual(call.args[2], node)
         self.assertEqual(call.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3" / "conformance")})
+        release = run.call_args_list[3]
+        self.assertEqual(release.args[1], ["cargo", "build", "--release", "--locked", "--manifest-path", str(node / "Cargo.toml")])
+        self.assertEqual(release.args[2], node)
 
     def test_cybernode_tests_without_the_checkout_are_blocked(self):
         run, blocked = self.run_soft3_product()
         self.assertEqual([c.args[0] for c in run.call_args_list], ["soft3-tests", "soft3-release"])
-        blocked.assert_called_once_with("cybernode-tests", "cybernode checkout unavailable")
+        self.assertEqual(blocked.call_args_list, [call("cybernode-tests", "cybernode checkout unavailable"),
+                                                  call("cybernode-release", "cybernode checkout unavailable")])
+
+    def test_the_candidate_ships_and_checks_the_cybernode_binary_not_the_facade(self):
+        (self.root / "soft3").mkdir()
+        node = self.root / "cybernode" / "rs"
+        for binary in (node / "target/release/cybernode", self.root / "soft3/crate/target/release/soft3"):
+            binary.parent.mkdir(parents=True)
+            binary.write_bytes(b"synthetic executable fixture")
+        with patch("train_gates.source_gates"), patch("train_gates.boot_status") as boot, \
+                patch("train_gates.glibc_floor_gate") as floor, patch.object(Gates, "run", return_value=True):
+            artifacts = run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "x86_64-unknown-linux-gnu")
+        self.assertEqual(artifacts, [node / "target/release/cybernode"])
+        self.assertEqual(boot.call_args.args[0], node / "target/release/cybernode")
+        self.assertEqual(floor.call_args.args[1], node / "target/release/cybernode")
+
+    def test_without_the_cybernode_checkout_nothing_ships_and_node_status_is_blocked(self):
+        (self.root / "soft3/crate/target/release").mkdir(parents=True)
+        (self.root / "soft3/crate/target/release/soft3").write_bytes(b"synthetic executable fixture")
+        with patch("train_gates.source_gates"), patch.object(Gates, "run", return_value=True), \
+                patch("train_gates.glibc_floor_gate"):
+            gates_seen = {}
+            original = train_gates.boot_status
+
+            def spy(binary, gates):
+                gates_seen["binary"] = binary
+                return original(binary, gates)
+            with patch("train_gates.boot_status", spy):
+                artifacts = run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "x86_64")
+        self.assertEqual(artifacts, [])
+        self.assertEqual(gates_seen["binary"], self.root / "cybernode/rs/target/release/cybernode")
+        receipt = json.loads((self.root / "out/release-validation.json").read_text())
+        by_name = {g["name"]: g for g in receipt["gates"]}
+        self.assertEqual(by_name["node-status"]["result"], "blocked")
+        self.assertEqual(by_name["node-status"]["reason"], "cybernode executable was not built")
 
     def stack_repo(self, owner="radio"):
         repo = self.root / owner

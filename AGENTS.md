@@ -53,6 +53,7 @@ tracked paths must be valid on NTFS. never use `<>:"/\|?*`, trailing `.` or spac
 | `lens` | polynomial commitment backends |
 | `radio` | P2P transport |
 | `foculus` | consensus |
+| `cybernode` | the node (rung 7): chain kernel, genesis, wallet, network; the facade's path dependency `../../cybernode/rs` |
 
 ## current blockers (do not implement past these)
 
@@ -73,6 +74,7 @@ Before changing the engine, run:
 Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `package-resolution`,
 `source-inputs-unchanged`, `stack-*`, `conformance-snapshot`, `stack-chain-genesis`,
 `simulation-gate` (the chain simulator's gate suite, cyberia-to/simulation), `soft3-tests`,
-`soft3-release`, and `node-status`. Products add `soft3-dependency` and their
+`soft3-release` (the facade crate), `cybernode-tests`, `cybernode-release` (the node, built from
+the `cybernode` sibling), `stack-pussy-identity`, `node-status` and `linux-glibc-floor`. Products add `soft3-dependency` and their
 application gates. Missing implementations and failed gates remain red evidence.
-Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`. the `node-status` gate boots the node through the facade; `cybernode` is a sibling in `release/phase1.toml`.
+Owner-only promotion, tags and bump merges follow `~/cyber/AGENTS.md`. the `node-status` gate boots the cybernode binary that `cybernode-release` builds; `cybernode` is a sibling in `release/phase1.toml`.

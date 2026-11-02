@@ -1,7 +1,13 @@
 # Every soft3 merge runs the chain simulator's gate suite against the merged
 # revision (cyberia-to/simulation .github/workflows/gate.yml listens for
-# `soft3-merged`). gh only; the simulation also runs every six hours, so a
-# missed dispatch is caught there.
+# `soft3-merged`). The kernel the simulator exercises is cybernode's since
+# 2026-10-27 (proposals/cybernode.md); the simulator still reaches it through
+# the soft3 facade crate (simulation/chain/Cargo.toml depends on soft3), so a
+# soft3 merge is still the event that can change what it builds. When the
+# simulator depends on cybernode directly, this dispatch moves to the
+# cybernode repository (`cybernode-merged`) and this workflow goes.
+# gh only; the simulation also runs every six hours, so a missed dispatch is
+# caught there.
 name: Notify simulation
 
 on:

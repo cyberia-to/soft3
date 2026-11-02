@@ -41,7 +41,7 @@ candidates with source inventories, platform binaries and gate receipts.
 ## install
 
 ```bash
-cargo install cybernode      # the node (rung 7): chain, mining, genesis, wallet
+cargo install --git https://github.com/cyberia-to/cybernode cybernode   # the node (rung 7); the crates.io name is not published yet
 cargo install soft3          # the stack facade; forwards the node verbs for one release
 cargo install true-cyber     # product face (binary: cyber)
 ```
@@ -68,6 +68,6 @@ public chaosnet: `https://cyb.ai/spacepussy-test` (cyberproxy).
 
 launch manual: [[soft3/docs/launch|launch spacepussy-test]].
 
-cosmos **space-pussy** / **bostrom** on cybernode are bootloader chains — different substrate. see [[bootloader]].
+cosmos **space-pussy** / **bostrom** run on the apparatus hosts (the cybernode.ai instance) as bootloader chains — different substrate. see [[bootloader]].
 
 [[cyber]] · [[cyb]] · [[soft3/status]] · [[install]] · [[soft3/docs/launch|launch]]
