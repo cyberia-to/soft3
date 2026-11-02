@@ -38,6 +38,9 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - sessions 539–540: **C2a**: the Linux and macOS aarch64 legs of 41400293113 were read onto cybernode#10, and it holds on all three (+1 test, `body_malleation_never_invalidates_the_honest_header`).
 - session 541: **idle**, waiting on 41400293113's last two legs.
 - session 542: **P9 spec half**: [cybernode#12](https://github.com/cyberia-to/cybernode/pull/12), revert by release (`specs/chain.md` §5.6 draft, `decision` `wide`, for the owner; D19). Recommended: (b), a revert table compiled into the release. Rejected: (a) miner signals and (c) a header era.
+- session 543: **C2a to the owner.** All five legs of [41400293113](https://github.com/cyberia-to/soft3/actions/runs/41400293113) were read onto [cybernode#10](https://github.com/cyberia-to/cybernode/pull/10): 323 / 0 against the baseline's 322 / 0, and the red sets are unchanged.
+- session 544: **P9b opened**: [cybernode#13](https://github.com/cyberia-to/cybernode/pull/13), the revert-by-release machinery with an empty table (`wide`, sonnet subagent, reviewed by the director). Rehearsal 41411831611 was dispatched.
+- session 545: **41411831611 void**: it ran with a lone `cybernode` override, so soft3 `main` and lens `master` were built and every leg died in package-resolution. It was re-dispatched with the stand's full override set as [41414017957](https://github.com/cyberia-to/soft3/actions/runs/41414017957).
 
 ## PRs merged
 
