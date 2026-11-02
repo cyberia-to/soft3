@@ -85,6 +85,9 @@ def parse_overrides(overrides, names):
             raise ValueError(f"invalid override {item!r}")
         if not re.fullmatch(r"[A-Za-z0-9._/-]+", ref) or ".." in ref or ref[0] in "-/":
             raise ValueError(f"invalid override ref {ref!r}")
+        if re.fullmatch(r"[0-9a-f]{7,39}", ref):
+            raise ValueError(f"override ref {ref!r} looks like an abbreviated commit: "
+                             "give the full 40-hex SHA, a branch on origin, or pull/N/head")
         parsed[name] = ref
     return parsed
 
