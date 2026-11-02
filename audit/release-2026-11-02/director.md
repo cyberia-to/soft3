@@ -42,6 +42,8 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - session 544: **P9b opened**: [cybernode#13](https://github.com/cyberia-to/cybernode/pull/13), the revert-by-release machinery with an empty table (`wide`, sonnet subagent, reviewed by the director). Rehearsal 41411831611 was dispatched.
 - session 545: **41411831611 void**: it ran with a lone `cybernode` override, so soft3 `main` and lens `master` were built and every leg died in package-resolution. It was re-dispatched with the stand's full override set as [41414017957](https://github.com/cyberia-to/soft3/actions/runs/41414017957).
 - session 546: **41414017957, leg 1 of 5 (Linux x86_64)**: [cybernode#13](https://github.com/cyberia-to/cybernode/pull/13) holds: 336 / 0 against the baseline's 323 / 0, the new revert tests are green, and the reds are only the baseline pair. The other four legs are still running.
+- sessions 547–557: see the plan's log. **P9b done**: cybernode#13 merged as `1d126da` (gate 41423930605). **P9c done**: cybernode#15 merged as `599cd85` (gate 41448682465).
+- session 558: **P9d doing**: [cybernode#16](https://github.com/cyberia-to/cybernode/pull/16) (the owner's key in pussy's and pussy-rc's genesis) opened, and measuring rehearsal [41464171130](https://github.com/cyberia-to/soft3/actions/runs/41464171130) dispatched.
 
 ## PRs merged
 
