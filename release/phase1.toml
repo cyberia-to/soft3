@@ -15,7 +15,7 @@ updated = "2026-11-02"
 name = "cybernode"
 repo = "cyberia-to/cybernode"
 branch = "release/phase1"
-rev = "645ac7fbde657587a675dda647ba3d3628b43f44"
+rev = "f1065ebbcedace0d1efb82e51eb4ba8b4c99b26d"
 
 [[sibling]]
 name = "strata"
