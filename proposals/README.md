@@ -11,6 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
+| [one message](one-message.md) | proposed | 2026-11-02 | the root chain carries one kind of message, a signal of cyberlinks; transfers, claims, unlocks, payouts, pool and coinbase become protocol words of a lexicon frozen at genesis, every other meaning is neural |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
