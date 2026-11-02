@@ -137,15 +137,16 @@ def stack_genesis_dir(gates):
     return gates.output / "genesis"
 
 
-def pussy_identity_gate(gates, crate, genesis_dir):
-    """Plan P4a: boot the pussy genesis file the stack leg checked. Runs
-    pussy_identity::the_blessed_file_boots_when_cached with SOFT3_GENESIS_DIR at
-    that file and SOFT3_GENESIS_REQUIRED=1, so a missing file fails instead of
-    skipping; --nocapture puts the booted file and ids in the gate log."""
+def pussy_identity_gate(gates, cybernode, genesis_dir, conformance):
+    """Plan P4a: boot the pussy genesis file the stack leg checked. The test lives in
+    cybernode/rs since soft3#615; it runs pussy_identity::the_blessed_file_boots_when_cached
+    with SOFT3_GENESIS_DIR at that file and SOFT3_GENESIS_REQUIRED=1, so a missing file
+    fails instead of skipping; --nocapture puts the booted file and ids in the gate log."""
     return gates.run("stack-pussy-identity",
                      ["cargo", "test", "--locked", "--test", "pussy_identity", "the_blessed_file_boots_when_cached",
                       "--", "--exact", "--nocapture"],
-                     crate, env={GENESIS_ENV: str(genesis_dir), "SOFT3_GENESIS_REQUIRED": "1"}, timeout=900)
+                     cybernode, env={"SOFT3_CONFORMANCE_DIR": str(conformance), GENESIS_ENV: str(genesis_dir),
+                                     "SOFT3_GENESIS_REQUIRED": "1"}, timeout=900)
 
 
 def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None):
@@ -435,8 +436,20 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
     if component == "soft3":
         crate = root / "crate"
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)
-        if stack:
-            pussy_identity_gate(gates, crate, stack_genesis_dir(gates))
+        # Plan C4: soft3#406 moved the node's tests to cybernode/rs (rehearsal 40525967811: soft3-tests
+        # ran 2 tests against 314 in 40446879208). SOFT3_CONFORMANCE_DIR is explicit because chain.snap
+        # stays in soft3 (proposals/cybernode.md) and cybernode#1 reads it from there. 1800 s is the
+        # budget soft3-tests had for these tests.
+        cybernode = directory / "cybernode" / "rs"
+        if cybernode.is_dir():
+            gates.run("cybernode-tests", ["cargo", "test", "--locked"], cybernode,
+                      env={"SOFT3_CONFORMANCE_DIR": str(root / "conformance")}, timeout=1800)
+            if stack:
+                pussy_identity_gate(gates, cybernode, stack_genesis_dir(gates), root / "conformance")
+        else:
+            gates.blocked("cybernode-tests", "cybernode checkout unavailable")
+            if stack:
+                gates.blocked("stack-pussy-identity", "cybernode checkout unavailable")
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = crate / "target/release/soft3"
         boot_status(binary, gates)

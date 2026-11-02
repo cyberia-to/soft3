@@ -280,13 +280,15 @@ class ReleaseTests(unittest.TestCase):
     def test_pussy_identity_gate_runs_the_cached_boot_against_the_built_file(self):
         gates = Gates(self.root / "out", self.sources, "stack")
         with patch.object(Gates, "run", return_value=True) as run:
-            self.assertTrue(pussy_identity_gate(gates, self.root / "crate", self.root / "genesis"))
+            self.assertTrue(pussy_identity_gate(gates, self.root / "cybernode/rs", self.root / "genesis",
+                                                self.root / "soft3/conformance"))
         name, argv, cwd = run.call_args.args[:3]
         self.assertEqual(name, "stack-pussy-identity")
         self.assertEqual(argv, ["cargo", "test", "--locked", "--test", "pussy_identity",
                                 "the_blessed_file_boots_when_cached", "--", "--exact", "--nocapture"])
-        self.assertEqual(cwd, self.root / "crate")
-        self.assertEqual(run.call_args.kwargs["env"], {"SOFT3_GENESIS_DIR": str(self.root / "genesis"),
+        self.assertEqual(cwd, self.root / "cybernode/rs")
+        self.assertEqual(run.call_args.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3/conformance"),
+                                                       "SOFT3_GENESIS_DIR": str(self.root / "genesis"),
                                                        "SOFT3_GENESIS_REQUIRED": "1"})
 
     def test_stack_genesis_dir_prefers_the_env_dir_holding_the_file(self):
@@ -301,8 +303,10 @@ class ReleaseTests(unittest.TestCase):
             env.pop("SOFT3_GENESIS_DIR", None)
             self.assertEqual(stack_genesis_dir(gates), self.root / "out/genesis")
 
-    def run_soft3_leg(self, stack):
+    def run_soft3_leg(self, stack, cybernode=True):
         (self.root / "soft3").mkdir()
+        if cybernode:
+            (self.root / "cybernode/rs").mkdir(parents=True)
         with patch("train_gates.source_gates"), patch("train_gates.conformance_gate"), \
                 patch("train_gates.chain_genesis_gate"), patch("train_gates.simulation_gate"), \
                 patch("train_gates.boot_status"), patch("train_gates.glibc_floor_gate"), \
@@ -310,13 +314,19 @@ class ReleaseTests(unittest.TestCase):
             run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "stack", stack=stack)
         return [c.args[0] for c in run.call_args_list]
 
-    def test_stack_leg_runs_the_pussy_identity_gate_between_tests_and_release(self):
+    def test_stack_leg_runs_the_pussy_identity_gate_right_after_cybernode_tests(self):
         names = self.run_soft3_leg(True)
-        self.assertEqual(names.index("stack-pussy-identity"), names.index("soft3-tests") + 1)
+        self.assertEqual(names.index("stack-pussy-identity"), names.index("cybernode-tests") + 1)
         self.assertEqual(names.index("soft3-release"), names.index("stack-pussy-identity") + 1)
 
     def test_platform_leg_does_not_run_the_pussy_identity_gate(self):
         self.assertNotIn("stack-pussy-identity", self.run_soft3_leg(False))
+
+    def test_stack_leg_without_the_cybernode_checkout_blocks_the_pussy_identity_gate(self):
+        with patch.object(Gates, "blocked") as blocked:
+            names = self.run_soft3_leg(True, cybernode=False)
+        self.assertNotIn("stack-pussy-identity", names)
+        blocked.assert_any_call("stack-pussy-identity", "cybernode checkout unavailable")
 
     def test_stack_gates_have_their_measured_budgets(self):
         (self.root / "soft3").mkdir()
@@ -336,6 +346,29 @@ class ReleaseTests(unittest.TestCase):
         for call in run.call_args_list:
             if call.args[0].startswith("stack-"):
                 self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
+
+    def run_soft3_product(self):
+        (self.root / "soft3").mkdir()
+        with patch("train_gates.source_gates"), patch("train_gates.boot_status"), \
+                patch.object(Gates, "run", return_value=True) as run, \
+                patch.object(Gates, "blocked") as blocked:
+            run_gates(self.root, self.root / "out", self.sources, {}, "soft3", "x86_64")
+        return run, blocked
+
+    def test_cybernode_tests_run_between_soft3_tests_and_release(self):
+        (self.root / "cybernode" / "rs").mkdir(parents=True)
+        run, _ = self.run_soft3_product()
+        names = [c.args[0] for c in run.call_args_list]
+        self.assertEqual(names, ["soft3-tests", "cybernode-tests", "soft3-release"])
+        call = run.call_args_list[1]
+        self.assertEqual(call.args[1], ["cargo", "test", "--locked"])
+        self.assertEqual(call.args[2], self.root / "cybernode" / "rs")
+        self.assertEqual(call.kwargs["env"], {"SOFT3_CONFORMANCE_DIR": str(self.root / "soft3" / "conformance")})
+
+    def test_cybernode_tests_without_the_checkout_are_blocked(self):
+        run, blocked = self.run_soft3_product()
+        self.assertEqual([c.args[0] for c in run.call_args_list], ["soft3-tests", "soft3-release"])
+        blocked.assert_called_once_with("cybernode-tests", "cybernode checkout unavailable")
 
     def stack_repo(self, owner="radio"):
         repo = self.root / owner
@@ -678,6 +711,13 @@ class GlibcFloorTests(unittest.TestCase):
         qualify = text[text.index("\n  qualify:"):text.index("\n  collect:")]
         self.assertRegex(qualify, r"uses: actions/setup-python@[0-9a-f]{40}")
         self.assertIn("python-version: '3.12'", qualify)
+        setup = qualify[qualify.index("uses: actions/setup-python@"):]
+        setup = setup[:setup.index("\n      - ", 1)]
+        self.assertIn("!contains(matrix.runner, 'build')", setup)
+        host = qualify[qualify.index("name: Host Python (build service)"):]
+        host = host[:host.index("\n      - ", 1)]
+        self.assertIn("if: ${{ contains(matrix.runner, 'build') }}", host)
+        self.assertIn("sys.version_info >= (3, 12)", host)
 
 
 if __name__ == "__main__":

@@ -99,9 +99,18 @@ jobs:
           repository: cyberia-to/soft3
           ref: ${{ inputs.manager_ref }}
           persist-credentials: false
+      # The hosted toolcache has no Python build for the self-hosted Debian
+      # build-service runner, so setup-python fails there (G18, run
+      # 41344227676 job 124960560558). Those legs use the host python3.
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        if: ${{ !contains(matrix.runner, 'build') }}
         with:
           python-version: '3.12'
+      - name: Host Python (build service)
+        if: ${{ contains(matrix.runner, 'build') }}
+        shell: bash
+        run: |
+          python3 -c 'import sys; print(sys.version); sys.exit(0 if sys.version_info >= (3, 12) else "python3 >= 3.12 required on the build service, found " + sys.version)'
       - uses: hustcer/setup-nu@9215c80adb545a85c419d5085b76eb6d082f49e7
         with:
           version: '0.112.2'
