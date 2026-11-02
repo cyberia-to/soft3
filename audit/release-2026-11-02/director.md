@@ -32,6 +32,12 @@ Written per `release/director/README.md` § the measurement. Sessions append to 
 - session 528: **#637 reviewed, three of five legs read.** The three finished legs of [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502), which built soft3 `4f8a667`, are red only on the baseline pair, and soft3-tests is green. The intel leg and the stack leg are still running, so #637 waits on them.
 - session 529: **still waiting on 41381272502.** The intel leg and the stack leg were in `Qualify stack and product` at 03:58 UTC, and neither had failed. The stand reads height 2254, epoch 10, `last-settled` 8, `conserved`, `settlement-ok`. The epoch-9 record has been on disk since 03:12 UTC, and the chain applies it at `settle(9)` = 9·240 + 120 = height 2280, so the lag is the settle delay (`params.rs:133`).
 - session 530: **S1 (e) done.** [soft3#637](https://github.com/cyberia-to/soft3/pull/637) merged into `release/phase1` as `ca86451` (rustls 0.23.46, lockfile only). The intel and stack legs of [41381272502](https://github.com/cyberia-to/soft3/actions/runs/41381272502) were compared gate by gate with 41367974273: intel 8 of 8 and stack 26 of 26 are equal, and the only reds are the known ones. Dependabot alert #6 closes when R0 brings the lock to `main`.
+- sessions 531–536: **idle, recorded** (plan log).
+- session 537: **C2a carried to cybernode**: [cybernode#10](https://github.com/cyberia-to/cybernode/pull/10) opened, rehearsal [41400293113](https://github.com/cyberia-to/soft3/actions/runs/41400293113) dispatched as its gate.
+- session 538: **P5 carried to cybernode**: [cybernode#11](https://github.com/cyberia-to/cybernode/pull/11) opened.
+- sessions 539–540: **C2a**: the Linux and macOS aarch64 legs of 41400293113 were read onto cybernode#10, and it holds on all three (+1 test, `body_malleation_never_invalidates_the_honest_header`).
+- session 541: **idle**, waiting on 41400293113's last two legs.
+- session 542: **P9 spec half**: [cybernode#12](https://github.com/cyberia-to/cybernode/pull/12), revert by release (`specs/chain.md` §5.6 draft, `decision` `wide`, for the owner; D19). Recommended: (b), a revert table compiled into the release. Rejected: (a) miner signals and (c) a header era.
 
 ## PRs merged
 
@@ -48,6 +54,8 @@ All went into release branches. Nothing was merged into a default branch.
 
 Every open row now waits on the owner (`plan.md` § what only the owner does):
 
+- **P9** (D19, revert in the protocol): the owner decides [cybernode#12](https://github.com/cyberia-to/cybernode/pull/12). The director's next unit is P9b, the machinery with an empty table, which does not wait on that decision.
+
 - **P3b (c)**, epoch records from both peers for 24 h, closing **2026-11-02 19:47 UTC**. Edge-a's half is not reachable from agent-a: `cyb.ai/pussy-rc/` serves the site, and edge-a's HTTP is bound to loopback.
 - **P5**: soft3#572, the §2.9 draft. **P2**: soft3#479, the halt sentence.
 - **The landings**: soft3#376, lens#36, hemera#25, nox#43, radio#52. Also the asks that lapsed on 2026-10-29 (L3b, L3c, L3d, L4, C2a, G10b). Under D10 their silence cuts nothing, and none of them is a freeze-eligible fix the director can take.
@@ -57,4 +65,4 @@ Session 537 found both of the director's owner-facing PRs into soft3 `release/ph
 
 ## fable and windows
 
-Fable questions asked: 0 (no `state/fable-2026-11-02`). Sessions: 18 logs so far (`state/session-20261102T*.log`). Subscription windows hit: none.
+Fable questions asked: 1 (session 542, P9: agreed with (b) and added five rules). Sessions: 18 logs so far (`state/session-20261102T*.log`). Subscription windows hit: none.
