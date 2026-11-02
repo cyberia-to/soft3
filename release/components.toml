@@ -274,9 +274,9 @@ name = "soft3"
 kind = "product"
 repo = "soft3"
 verb = "compose"
-facet = "play"
 phase = "1"
 state = "live"
+note = "the stack and its facade crate, not a rung: no layer, no facet; rung 7 is cybernode (proposals/cybernode.md)"
 
 [[component]]
 name = "cybernode"
