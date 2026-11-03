@@ -142,3 +142,11 @@ the owner said "nothing superfluous". Cut or fold: G8 and the revert row (a draf
 ### readiness
 
 not ready for the owner. R2-1, R2-3, R2-4, R2-7 and R2-9 change what the page claims; the rest narrows gaps with clauses the owner would find in one search. After round 2 no third round (deliver.md node 5): the author fixes or rejects each id with the clause, and the coordinator reads the result as a diagnosis of the cut, not another call.
+
+## diagnosis of the cut · 2026-11-03
+
+two review rounds red (round 2: R2-1 about 25 more lines across cybergraph, neural, tru, bbg, cyber, soft3 define the signal as an atomic bundle; R2-3 tok `plumb.md` defines an intent as an atomic composition; R2-4 four conflicting signal field sets — `signal.md`, neural `wire.md:19–25`, cybergraph `cli.md:21` with `box_moves`, `schema/README.md`; seven gaps answered by uncited clauses). by deliver.md a third round is a diagnosis of the cut: one page tried to do three things. re-cut into three units:
+
+1. `signal-is-an-intent` — the owner's correction of the signal's meaning applied to the whole corpus: every line that defines the signal as a bundle/atomic/one transaction (the ~35 lines of R1-1 and R2-1, plus tok plumb's intent), old → new, verbatim; one page, branch `prop/signal-intent`.
+2. `one-message` (this branch, rewritten again) — the chain carries signals: one field set reconciled from the four existing ones (cli.md:21 envelope with `box_moves` as the base), every action through existing clauses (claim needs no chain message by mudra `bridge.md:66` and chain.md:416–419; the identity binding by mudra `identity.md:36–51`; the fee/tax by `cyber/$CYB.md:424–448`; G6 is launch row 10 and privacy-frozen.md:49, :59), only the genuine gaps (G2, G3, G7, G8, G11, G13) left; a third of the page cut.
+3. the launch question is answered by the owner's own words (`launch.md:68` holes known and named, `:99` the rest by scheduled fork; the freeze withdrawn 2026-11-02, D19 / cyber#155): pussy launches on today's chain with "the chain speaks typed kinds, not signals" as a named hole and the signal rule set as the scheduled fork — a row for the holes table, not a question.
