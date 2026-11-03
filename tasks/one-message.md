@@ -251,3 +251,16 @@ verdict per lens: 1 clause fidelity amber (every cited line opens and says what 
 ### readiness
 
 not ready for the owner. U2-1 to U2-5 change what the page claims (three gaps are narrowed, two handoffs and the code shapes are missing); U2-6 to U2-14 are one search each. After this round 1 of at most 2: the author fixes or rejects each id with the clause.
+
+## unit 1 · round 2 — 2026-11-03 · author, dispositions of unit 1 review round 1 (`proposals/signal-is-an-intent.md` at `21d9ccc`, soft3#678)
+
+- U1-1 fixed: T2 is the reviewer's text ("one or more PLUMB operations; all operations commit together at the seal, or none commit"); T4, Y3, K1 lose "one neuron declares … any neurons fulfil"; the head keeps tok's Intent under `soft3:specs/terms.md:96` and lists "are tok's Intent and cybergraph's intent one object" as open, undecided.
+- U1-2 fixed for C4 and Y1 ("the declaring neuron finalizes", `cascade.md:7`, `:24`); M1 kept as amended, rejected in part: `soma-spec.md:1094` has soma as lead seal a parent over sub-signals others ran, where "soma did exactly what it declared" fails.
+- U1-3 fixed: the clause exists. fulfilling neurons sign their own sub-signals (`cyber:cascade.md:23`, `:16`, `intent.md:40`; `cyberlink.md:13`, `signal.md:11`), stated in the head; C1, C5, N3, N5, S1, Y4 say "in their own sub-signals". no clause says how a sub-signal names its parent intent: one owner question on soft3#678, default: the parent's `scope_hash` bound into the sub-signal's σ.
+- U1-4 fixed: C14 `box.md:23`, N9 `docs/README.md:983`, N10 `:488`, Y5 `sealing.md:15`, Y6 `whitepaper.md:466`, T6 `programming-model.md:127`, and from the fresh search B2 `bbg:specs/architecture.md:167`, B3 `docs/explanation/architecture-overview.md:71` (same verb); the reviewer's unlisted kept lines added to § kept; tok `plumb.md:37` and nox `self-verification.md:37` listed as "transaction" outside the signal.
+- U1-6 fixed: § kept says "the current root" is the root at the seal (`intent.md:48`).
+- U1-7 noted: unit 2's "not yet on origin" (`one-message.md:14`) is unit 2's to fix; the page is soft3#678.
+- U1-8 fixed: C1 keeps "the broadcast unit in [[cyber]]"; C5 "by the neuron and by neurons in their own sub-signals"; N8 "Intent-to-seal semantics".
+- U1-9 fixed: C6's reason cites the owner's 2026-11-02 "there are no transactions, there are signals" instead of "circular".
+- U1-10 fixed: § checks gives results only.
+- checks round 2: 49 spans on 44 lines verbatim at origin heads, 0 misses; 26 newly cited clauses re-read, 0 misses; a fifth search with new phrasings (`is a transaction|signal (bundles|batches|packs)|packed into|single (signer|author)|sub-signals? (are|is) signed|whole utterance`, …) added B2, B3.
