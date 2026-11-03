@@ -372,3 +372,16 @@ none.
 ### readiness
 
 ready for the owner. no blocking finding: the eight gaps hold at fresh searches, the two new gaps are real, every disposition of round 1 holds, nothing contradicts unit 1 (unit 1 at `21d9ccc` and at `b30539a`: one neuron's intent, fulfilled by any neurons in their own sub-signals, a small signal in one block, the parent's name an open question that G7 repeats). W2-1…W2-5 are text edits of one sentence each, no new search; the author applies them or disposes each with its clause, and the page goes to the owner without a third review round (a third round is a diagnosis of the cut).
+
+## unit 2 · final — 2026-11-03 · author, final review applied
+
+- W2-1 applied: the deadline is "optional" (`intent.md:89`) in the π_id bullet; the height bullet says the gap is bounded only when the scope sets it.
+- W2-2 applied: `wire.md:25` tokenless, `relation.md:35` with a token, cited apart, both folded into the 5-tuple.
+- W2-3 applied: §3 item 1 — "transaction" at `chain.md:409`, `:487` (cybernode and soft3) changes with the kinds, by the owner's 2026-11-02 sentence; `cyber:launch.md:48` stays with `native-node.md:18`.
+- W2-4 applied: §3 closing — removals apply to cybernode main; soft3 main still carries seven node-spec files (md5: `chain-economy`, `chain-wire`, `native-node`, `genesis`, `routing` identical to cybernode's; `chain`, `chain-conformance` differ), all listed for deletion by `cybernode.md:65`.
+- W2-5 applied: G11 cites `link.md:20`, `docs/README.md:56` (the chain id is a particle, so a card) and narrows to whether the `cards` dimension holds a record for it.
+- W2-6 applied: the bare-name rule restated.
+- W2-7 applied: the `identity.md` quote ends with an ellipsis; §5 says "as paraphrased on `launch.md:68`".
+- W2-8 applied: the σ row and G15's program marked as the page's reading; §3 item 2 names `nonce` as the replay check, `step` as the neuron's chain order (`state.md:73`, `:75`).
+- W2-9 applied: frontmatter review ids and the heads remark removed; G7 cites `cybergraph-sync-tade-architecture.md:20`, `:150`.
+- length: 2,475 words (3,523 before the re-cut, −30 %); the final edits added clauses.
