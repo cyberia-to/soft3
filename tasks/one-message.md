@@ -264,3 +264,28 @@ not ready for the owner. U2-1 to U2-5 change what the page claims (three gaps ar
 - U1-9 fixed: C6's reason cites the owner's 2026-11-02 "there are no transactions, there are signals" instead of "circular".
 - U1-10 fixed: § checks gives results only.
 - checks round 2: 49 spans on 44 lines verbatim at origin heads, 0 misses; 26 newly cited clauses re-read, 0 misses; a fifth search with new phrasings (`is a transaction|signal (bundles|batches|packs)|packed into|single (signer|author)|sub-signals? (are|is) signed|whole utterance`, …) added B2, B3.
+
+## unit 2 · round 2 — 2026-11-03 · author (design node), dispositions of unit 2 review round 1
+
+page lines are `proposals/one-message.md` after this commit; heads unchanged (cyber `68f1260a`, cyb `8957982d`, tok `c773592`, foculus `cdff8dc`, soma `1d3fe69`, cybernode `52538a6`, soft3 `3045d54`).
+
+- U2-1 fixed: `net`'s value is `H(canonical genesis bytes)` (`cyber:specs/node-product.md:101`) = the chain id, in the field table (`:23`); G11 cites `README.md:49–50, :66–68`, `cyb-node.md:79–82` and shrinks to "is the chain id a card" (`network.md:18, :22` against `bbg:state.md:34, :79`).
+- U2-2 fixed: G13 is the conflict of three shapes — (a) `address.md:9–14`, (b) `cyb:decide/wire.md:23–29`, `wire.rs:112, :377`, `chain-wire.md:187–198`, (c) `cyber:network.md:71–77` ("proposed"); (a) recommended by `relation.md:27–31` (super-node), `:12–23`, `:55`; amendments of cyb `decide/wire.md`, cyber `network.md`, `address.md`.
+- U2-3 fixed: G2 cites `tok:plumb.md:10–18`, `tsp-2.md:19`, `$CYB.md:696–732`; residue: how a cyberlink declares its operation; the payout row names both carriers (`cyberlink.md:34`, tok `update`).
+- U2-4 fixed: §1 amends `order.md:15` (tests `h₁`; `h₀` is the intent's height on record, the deadline `intent.md:89` bounds the gap); `native-node.md:18`, `:23` kept as the native node's policy with the reason.
+- U2-5 fixed: the foculus wire (`frames.rs:132–170`, `:56–58`) is the third code shape; the amendment lets it keep omitting `net` once π_id binds it (`network.md:47–50`, `signal.md:31`, `chain.rs:63`).
+- U2-6 fixed: fee row — box inputs pay the fee (`validate.md:22`); focus is the sufficiency check (`:23`). the check exposed G5 (pussy keeps `focus` at 0, `chain-economy.md:261`), added as a gap.
+- U2-7 fixed: the tax row is marked as this page's inference; CYB's claims-only first rule set (`network-repos.md:76`) makes it dormant there.
+- U2-8 fixed: the pool row says a spend carries neither `ν` nor a signature (`privacy-frozen.md:36–38`), the 4-tuple is cited to `privacy-frozen.md:38` / `chain.md:1219–1221`, row 10 only for the plaintext signal; the turnstile is a block rule (`:37`); the `ν` row points to it.
+- U2-9 fixed: §5 quotes `launch.md:99`'s list exactly and marks the signal fork and the hole as this page's proposal; the row's fix lane says "proposed".
+- U2-10 fixed: §1 maps each of the seven items of `identity.md:36–51` to a field (`intent.md:89`, `neuron-auth.md:15`, `chain.md:790–799`, `signal.md:15`).
+- U2-11 fixed: G15 — the bridge gives the signed binding (`bridge.md:16–21, :82–84`), a program would verify it, pussy declares none (`network-repos.md:74, :109`); kind 3 stays out of the removal list until then.
+- U2-12 fixed: item 2 cites `network.md:53–55`, `state.md:75`, `chain.md:681, :684–685`; item 1 drops `sigils.md:31–33`; G2 cites `chain-economy.md:278–279` for the lock's move.
+- U2-13 fixed: §1 amends `order.md:18` / `validate.md:25` (VDF) by `chain-economy.md:27–30`, `launch.md:83`.
+- U2-14 fixed: G7 cites `bbg:storage.md:150`, `soma-spec.md:1061`, `cybernode:native-node.md:18–22`; they narrow nothing.
+- U2-15 fixed: unit 1 cited as soft3#678; links are authored by the fulfilling neurons in their own sub-signals (`intent.md:38–40`, `cascade.md:23–24`), as U1-3 asked of both pages.
+- U2-16 fixed: the heads list left the page (task page carries it); the "pussy today" column dropped (§3 has the kinds); the revert row keeps two clauses, G8 the rest; claim and pool rows trimmed to their decisive clauses.
+- U2-17 fixed: wiki-links added in §2 (cyberlink, box, stake, focus, axon, bbg); the claim row opens with what carries it ("the holder's own key, off chain").
+- self-check (i), clause fidelity: every new citation re-opened at the heads above (`node-product.md:101`, `README.md:49–50, :66–68`, `cyb-node.md:79–82`, `decide/wire.md:23–29`, `wire.rs:112, :377`, `cyber:network.md:71–77`, `plumb.md:10–18`, `tsp-2.md:19, :40`, `$CYB.md:696–732`, `native-node.md:18–23` on both repos, `frames.rs:56–58, :132–170`, `storage.md:150`, `soma-spec.md:1061`, `chain.md:681, :790–799`, `intent.md:36, :89`, `neuron-auth.md:15`, `network.md:18, :22, :47–50`, `privacy-frozen.md:36–38`, `network-repos.md:74, :76`, `bridge.md:82–84`, `chain-economy.md:261, :278–279`); `frames.rs:56–58` says the decoded `delta_pi` is empty while `:161–168` serializes it — the page cites the code, not the stale comment.
+- self-check (ii), invention: the three proposals of this round are marked as amendments or proposals with their clauses (the height rule tests `h₁`; the wire omits `net` once π_id binds it; G13 recommends (a)); the tax line is labelled inference; G5 and G15 are new gaps, each from two clauses that disagree.
+- self-check (iii), padding: the intro's six-field-set listing compressed to cites, the node-policy and π_id bullets shortened; length 2,347 words against 3,523 before the re-cut (−33 %), 2,181 at round 1 (the findings added clauses).
