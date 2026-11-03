@@ -178,7 +178,7 @@ verdict per lens: 1 verbatim green · 2 fidelity red (U1-1) · 3 completeness am
 
 ### lens 1 — verbatim
 
-all 41 `-` spans (not 15) occur on the cited line at origin head: 36 lines, 0 misses; every multi-span line (C6, C7, C8, N8, M1) has both spans on the one cited line; 22 spans are the whole line, 19 are a sub-span with the rest of the line intact (so `+` leaves no doubled punctuation: C1 ends `[[cyber]].`, the `+` ends `block.`). the 67-fragment claim of § checks was not repeated in full; the kept lines read (`proof.md:9`, `:17`, `docs/README.md:107`, `impulse.md:23`, `whitepaper.md:470`, `network.md:219`, `architecture.md:167`, `storage.md:445`, `vec.md:109`, `cascade.md:29`, `plumb.md:33`, `robot.md:68`, the small-signal lines, the record-name lines) say what the page says.
+all 41 `-` spans (not 15) occur on the cited line at origin head: 36 lines, 0 misses; every multi-span line (C6, C7, C8, N8, M1) has both spans on the one cited line; 15 spans are the whole line, 26 are a sub-span with the rest of the line intact (so `+` leaves no doubled punctuation: C1 ends `[[cyber]].`, the `+` ends `block.`). the 67-fragment claim of § checks was not repeated in full; the kept lines read (`proof.md:9`, `:17`, `docs/README.md:107`, `impulse.md:23`, `whitepaper.md:470`, `network.md:219`, `architecture.md:167`, `storage.md:445`, `vec.md:109`, `cascade.md:29`, `plumb.md:33`, `robot.md:68`, the small-signal lines, the record-name lines) say what the page says.
 
 ### blocking
 
