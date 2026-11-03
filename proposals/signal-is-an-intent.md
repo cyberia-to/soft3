@@ -17,18 +17,18 @@ what changes in the meaning:
 
 - declaration: one neuron declares the intent and signs its [[scope]], the provable conditions of completion.
 - fulfilment: any neurons fulfil it, possibly in different blocks, each in a sub-signal of its own that it signs: "each subscriber self-assigns, produces their own sub-[[signal]]" (cyber `cascade.md:23`, `:16`; cybergraph `intent.md:40`), and who made a link belongs to the signal that carries it (cybergraph `cyberlink.md:13`, one signing neuron `signal.md:11`).
-- seal: the declaring neuron seals (cyber `cascade.md:7`, `:24`; cybergraph `intent.md:40`, `:96`); the signal is complete when its proof attests the scope, $\sigma(s) \vdash \text{scope\_hash}(i)$; the seal commits the whole fulfilment or nothing.
+- seal: the declaring neuron seals (cyber `cascade.md:17`, `:24`; cybergraph `intent.md:40`, `:96`); the signal is complete when its proof attests the scope, $\sigma(s) \vdash \text{scope\_hash}(i)$; the seal commits the whole fulfilment or nothing.
 - size: only a small signal fits in one block.
 
 clauses that already say it: cybergraph `specs/intent.md:56–62` (the intend/seal gate), `:36` (an unsealed intent stays on record), `:38–40` and `:94–96` (others discover the intent, fulfil it in sub-signals, the lead seals the parent); `specs/signal.md:16–21` ($h_0$, $h_1$, the span, the intent before the seal); soma `soma-spec.md:1082` ("an intent exists (mine, or one I claim)") and `:1094` (two-phase "when the action is a multi-step computation or invites coordination"); neural `specs/wire.md:36` and `specs/cli.md:97` ("one-shot for small signals"); cyber `intent.md:28` (any neuron self-assigns), `cascade.md:7–27`.
 
 what does not change: one $\sigma$ at the seal covers everything the seal commits (proof aggregation); the seal binding; the declaring neuron seals, and seals a cascade's parent (`intent.md:40`, `cyber:cascade.md:24`); tok's Intent stays a composition of PLUMB operations under the authorization of `soft3:specs/terms.md:96`; the one-shot `link(signal)` path for a small local statement; the [[cyberlink]] as the atom. the field set, the chain format and the launch are other units of the task and are not touched here.
 
-open, no clause answers: how a sub-signal names the intent it fulfils. cascade `cascade.md:23–24` and `intent.md:40` say the lead collects sub-signals and proves over them, not how a sub-signal points at its parent. question for the owner, on https://github.com/cyberia-to/soft3/pull/678: does a sub-signal name its parent by the parent intent's `scope_hash`, bound into the sub-signal's $\sigma$, so that the parent's recursive proof checks the binding? recommended default: yes; unit 2 places the field. also open: whether tok's Intent (`tok:plumb.md:24`) and cybergraph's intent (`intent.md:3`) are one object; no clause says so, and this page does not decide it.
+open, no clause answers: how a sub-signal names the intent it fulfils. cascade `cascade.md:21–24` and `intent.md:40`, `:96` say the lead collects sub-signals and proves over them, not how a sub-signal points at its parent. the nearest clauses give an intent a key of its own: `intend` prints it (cybergraph `specs/cli.md:38`), `seal --intent KEY` names it (`:41`), and the record is (ν, h₀, scope hash, signature) (bbg `specs/native-state.md:59`); `scope_hash` alone is not unique per intent, since two neurons or two heights may declare the same scope. the gate $\sigma(s) \vdash \text{scope\_hash}(i)$ is checked at the parent's seal over the whole cascade (`intent.md:58–60`, `cascade.md:24`); a sub-signal runs a part, so a name in its $\sigma$ is a binding the parent's recursive proof checks at the parent's seal, not the gate. question for the owner, on https://github.com/cyberia-to/soft3/pull/678: does a sub-signal name its parent by the parent intent's `scope_hash`, bound into the sub-signal's $\sigma$ as a binding checked at the parent's seal, or by the intent's key (ν ‖ h₀ ‖ scope_hash)? recommended default: the `scope_hash` binding, because the gate is stated on `scope_hash(i)`; unit 2 places the field. this is the page's one question to the owner. the page's own open item, not asked: whether tok's Intent (`tok:plumb.md:24`) and cybergraph's intent (`intent.md:3`) are one object; `cyber:specs/money-loop.md:42–43` lists them as two, and this page does not decide it.
 
 ## amendments
 
-origin heads read: cybergraph `0a70b6a`, neural `47b086c`, soft3 `3045d54`, bbg `2294281`, tok `c773592`, cyber `68f1260a`, cyb `8957982d`, soma `1d3fe69`; searched and unchanged: tru `e660d1e`, mudra `3969c7a`, nox `49348be`, zheng `ecf2491`, foculus `cdff8dc`, cybernode `52538a6`. `-` is the exact span of the line that changes, byte for byte; `+` replaces that span; the rest of the line stays.
+origin heads read: cybergraph `0a70b6a`, neural `47b086c`, soft3 `3045d54`, bbg `2294281`, tok `c773592`, cyber `68f1260a`, soma `1d3fe69`; searched and unchanged: cyb `8957982d`, tru `e660d1e`, mudra `3969c7a`, nox `49348be`, zheng `ecf2491`, foculus `cdff8dc`, cybernode `52538a6`. `-` is the exact span of the line that changes, byte for byte; `+` replaces that span; the rest of the line stays.
 
 ### cybergraph — 14 lines
 
@@ -187,7 +187,7 @@ N7 · `docs/README.md:130` — "a single transaction" as the utterance boundary.
 + cast in one [[signal]]. The signal boundary — intent to seal — defines the utterance. Order within the signal encodes grammar.
 ```
 
-N8 · `docs/README.md:157` — "transaction-atomic"; the cybergraph does see unsealed intents (cybergraph `intent.md:94`).
+N8 · `docs/README.md:157` — "transaction-atomic"; the cybergraph does see unsealed intents (cybergraph `intent.md:94`), and a signal's links enter the graph at its validation (`signal.md:45–48`).
 
 ```diff
 - Transaction-atomic [[semantics]]: every transaction is a linguistic act. A half-submitted [[sentence]] is no [[sentence]] at all — the [[cybergraph]] sees only complete utterances.
@@ -235,11 +235,11 @@ S3 · `specs/languages.md:235` — "one transaction", as N7.
 
 ### bbg — 3 lines
 
-B1 · `docs/explanation/signal-sync.md:25` — the unit of sync was defined as a batch; what syncs is the sealed signal.
+B1 · `docs/explanation/signal-sync.md:25` — the unit of sync was defined as a batch; the sentence "it is a signal" stays.
 
 ```diff
-- it is a signal — a batch of cyberlinks with a zheng proof.
-+ it is a sealed signal — the cyberlinks that fulfil a neuron's intent, with a zheng proof.
+- a batch of cyberlinks with a zheng proof.
++ cyberlinks with a zheng proof.
 ```
 
 B2 · `specs/architecture.md:167` — the verb defined the signal as a bundle, as cyber Y6; the proof over the entire batch is aggregation and stays.
@@ -256,44 +256,7 @@ B3 · `docs/explanation/architecture-overview.md:71` — as B2.
 + the signal carries cyberlinks, focus shifts (pi_delta), and the proof accumulator (sigma).
 ```
 
-### tok — 6 lines
-
-only the timing of the all-or-nothing moves to the seal; who may carry out an operation stays with `soft3:specs/terms.md:96` (ownership of `from` is the only authorization).
-
-T1 · `plumb.md:22` — the heading named atomicity as what an Intent is.
-
-```diff
-- ## atomic composition: Intent
-+ ## composition: Intent
-```
-
-T2 · `plumb.md:24` — the all-or-nothing holds at the seal.
-
-```diff
-- an [[Intent]] is one or more PLUMB operations composed atomically. all operations commit together, or none commit.
-+ an [[Intent]] is one or more PLUMB operations; all operations commit together at the seal, or none commit.
-```
-
-T3 · `plumb.md:68` — the law holds at the seal.
-
-```diff
-- 4. Atomicity — all ops in an Intent commit together or none do
-+ 4. Atomicity — all ops in an Intent commit together at its seal or none do
-```
-
-T4 · `README.md:41` — as T2.
-
-```diff
-- - one composition rule: operations compose into [[Intent\|Intents]] that commit atomically or roll back
-+ - one composition rule: operations compose into [[Intent\|Intents]] that commit atomically at the seal or roll back
-```
-
-T5 · `README.md:54` — as T3.
-
-```diff
-- | Atomicity | all ops in an Intent commit together or none do |
-+ | Atomicity | all ops in an Intent commit together at its seal or none do |
-```
+### tok — 1 line
 
 T6 · `programming-model.md:127` — the verb defined the signal as a batch; the second sentence (one accumulated proof) is aggregation and stays.
 
@@ -302,7 +265,7 @@ T6 · `programming-model.md:127` — the verb defined the signal as a batch; the
 + a signal carries multiple cyberlinks governed by different dialects.
 ```
 
-### cyber — 6 lines
+### cyber — 5 lines
 
 Y1 · `intent.md:24` — as C4.
 
@@ -332,27 +295,11 @@ Y2 · `whitepaper.md:790` — the glossary entry for sentence, as N7.
 + : ordered instruction set of [[cyberlinks]] cast in one [[cyber/signal]]. The signal boundary — intent to seal — defines the utterance. Order within the signal encodes grammar.
 ```
 
-Y3 · `specs/money-loop.md:42` — as T2.
-
-```diff
-- | Intent | atomic PLUMB op list | [[tok]] PLUMB |
-+ | Intent | PLUMB op list, committed atomically at the seal | [[tok]] PLUMB |
-```
-
 Y4 · `specs/money-loop.md:43` — as S1.
 
 ```diff
 - | signal | signed cyberlink batch (+ proof when sealed) | [[cybergraph]], [[foculus]] |
 + | signal | intent signed by one neuron, fulfilled in cyberlinks by any neurons in their own sub-signals (+ proof when sealed) | [[cybergraph]], [[foculus]] |
-```
-
-### cyb — 1 line
-
-K1 · `product/robot.md:105` — copies tok `plumb.md:24`; as T2.
-
-```diff
-- an Intent is one or more PLUMB operations composed atomically — they all commit or none do.
-+ an Intent is one or more PLUMB operations — at the seal they all commit or none do.
 ```
 
 ### soma — 1 line
@@ -370,7 +317,9 @@ M1 · `soma-spec.md:1092` — `:1094` has soma, as lead, seal a parent over sub-
 
 proof aggregation: "atomic" or "the entire batch" names one $\sigma$ covering everything the seal commits; the owner's sentence moves who fulfils and when, not how many proofs the seal carries (cybergraph `intent.md:40`: one recursive proof over the entire cascade). "the current root" of these lines (`signal.md:15`, `:39`, tru `impulse.md:23`) is the root at the seal, the state the scope reads when it runs (`intent.md:48`). cybergraph `specs/signal.md:35` ("covers the entire signal atomically"), `specs/proof.md:9` ("covering the whole batch atomically"), `:17` ("σ covers, atomically,"), `docs/README.md:107`; tru `specs/impulse.md:23`; cyber `whitepaper.md:470`, `network.md:219`; bbg `specs/architecture.md:167` ("covering the entire batch"), `specs/storage.md:445`; foculus `specs/vec.md:109`; bbg `specs/state.md:197`.
 
-the seal's all-or-nothing: "atomic" as a property of the seal, which N2, N4 and T3 keep. cybergraph `specs/signal.md:50` ("within one atomic signal": both effects of validation happen at the one seal), `specs/query.md:149` (state committed atomically with every accepted signal); cyber `cascade.md:29` (each sub-signal whole at its own seal); tok `plumb.md:33` (pending until the seal); cyb `product/robot.md:68` ("commits or rolls back at workflow transition"); foculus `docs/explanation/latency-targets.md:80`, `:306`.
+the seal's all-or-nothing: "atomic" as a property of the seal, which N2 and N4 keep. cybergraph `specs/signal.md:50` ("within one atomic signal": both effects of validation happen at the one seal), `specs/query.md:149` (state committed atomically with every accepted signal); cyber `cascade.md:29` (each sub-signal whole at its own seal).
+
+tok's Intent atomicity: PLUMB's workflow, not the signal's; unchanged until the open question below § the correction is answered. tok `plumb.md:24`, `:33` ("locks balances during pending, releases at success or rollback at failure"), `:68`, `README.md:41`, `:54`; cyber `specs/money-loop.md:42`; cyb `product/robot.md:68` ("commits or rolls back at workflow transition"), `:105`; foculus `docs/explanation/latency-targets.md:80`, `:306`.
 
 record names: "batch" as the stored set of a sealed signal's links. cybergraph `specs/signal.md:14`, `specs/query.md:56`, `:97`; bbg `README.md:43`, `specs/state.md:37`, `specs/storage.md:147`, `:382`, `:443–446`, `:595`, `specs/indexes.md:174`, `docs/explanation/architecture-overview.md:38`; foculus `specs/structural-sync.md:38`, `:218–220`; nox `specs/reduction.md:535`, `specs/patterns/17-look.md:126`; foculus `specs/fold-mining.md:19`; neural `specs/wire.md:21`; tru `specs/focusing.md:139`; cyber `whitepaper.md:894`, `network.md:212`, `:227`.
 
@@ -378,12 +327,12 @@ the small signal, already right: one neuron, one shot, no intent phase. cybergra
 
 the cyberlink, not the signal, is the atom: cybergraph `specs/README.md:19`, `specs/cyberlink.md:3`, `specs/query.md:50`, `docs/README.md:52`; cyber `cyberlink.md:9`; tok `plumb.md:10` (each operation).
 
-"transaction" outside the signal: tok `plumb.md:37` (a value-layer composition of the five operations) and nox `docs/explanation/self-verification.md:37` (proofs a block producer aggregates) do not define the signal; the word itself, against the owner's 2026-11-02 sentence, is unit 2's with the chain's transactions (`specs/chain.md:409`, `:487`).
+"transaction" outside the signal: tok `plumb.md:37` (a value-layer composition of the five operations) and nox `docs/explanation/self-verification.md:37` (proofs a block producer aggregates) do not define the signal; the word itself, against the owner's 2026-11-02 sentence, is unit 2's with the chain's transactions; handed over here, since unit 2's § 3 does not list them: soft3 and cybernode `specs/chain.md:409`, `:487`.
 
 left to the other units: cybergraph `specs/order.md:15` (the height rule names one $t$; which of $h_0$, $h_1$ it is belongs to the field set, unit 2); soft3 and cybernode `specs/native-node.md:18` ("One accepted signal advances one block", the node's block policy, unit 2); soft3 `specs/chain-wire.md:42` (chain format, unit 2); cyber `launch.md:48` (launch, unit 3). not specifications or doctrine: `audit/`, `roadmap/`, `research/`, `.claude/` (cyber `roadmap/a-local-node.md:85`, `:96`, `research/state model.md:27`, neural `.claude/plans/neu.md`).
 
 ## checks
 
-1. verbatim: a script parses this page and asserts each `-` span occurs on its cited line at `git show origin/HEAD:<path>` of the head named in § amendments: 49 spans on 44 lines, 0 misses. every clause cited in § the correction and every kept line was checked the same way (93 fragments, 0 misses; `intent.md:56–62` cited as a range).
+1. verbatim: a script parses this page and asserts each `-` span occurs on its cited line at `git show origin/HEAD:<path>` of the head named in § amendments: 42 spans on 37 lines, 0 misses. every clause cited in § the correction and every kept line was checked the same way (93 fragments, 0 misses; `intent.md:56–62` cited as a range).
 2. completeness: four searches over `*.md` of fourteen repositories at origin heads, outside `audit/`, `roadmap/`, `research/`, `.claude/`: `atomic|bundle|batch of|one transaction|single step|in a single|transaction-atomic|together or none|commits or aborts`; `a signal is|signal =|signals are|entire batch|link batch|signal_batch|one-shot|lands together`; `neuron (ran|runs|finalizes|did exactly)|one block|same block|half a sentence|utterance|roll back|commit together`; `indivisible|whole signal|complete signal|unit of submission|broadcast unit|one authorization|same transaction|emit a signal|in one signal`. round 2 added a fifth, `transactions? (add|is|are)|is a transaction|signal (bundles|batches|packs)|packed into|by (a single|one) (neuron|signer)|single (signer|author)|sub-?signals? (are|is) (signed|authored)|whole (sentence|utterance)|complete utterance`. every hit about the signal is in § amendments or § kept.
 3. minimality: each `+` changes only the span its reason names, and says only the owner's sentence or a clause it cites.
