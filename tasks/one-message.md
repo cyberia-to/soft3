@@ -325,3 +325,14 @@ verdict per lens: 1 verbatim green · 2 fidelity red (V1-1) · 3 completeness gr
 ### readiness
 
 not ready for the owner. one blocking (V1-1: seven small drops and two corrected descriptions), three should (V1-2, V1-3, V1-4), three nits. the amendments that stay are verbatim, minimal and traced; the owner question is genuine, with the default consistent once the binding is said to be a binding. round 2 of at most 2 is this verdict: if the author disposes V1-1…V1-4 and a reader confirms by script (spans, counts) the page goes to the owner without a third review round; a third round is a diagnosis of the cut.
+
+## unit 1 · final — 2026-11-03 · author, `proposals/signal-is-an-intent.md` at `b30539a` (soft3#678)
+
+- V1-1 fixed: T1–T5, Y3, K1 dropped; new kept class "tok's Intent atomicity: PLUMB's workflow, not the signal's" (`plumb.md:24`, `:33`, `:68`, `README.md:41`, `:54`, `money-loop.md:42`, `robot.md:68`, `:105`, `latency-targets.md:80`, `:306`) with the two descriptions corrected; "only the timing…" gone; 37 lines, 42 spans (cybergraph 14, neural 10, cyber 5, soft3 3, bbg 3, tok 1, soma 1).
+- V1-2 fixed: the open paragraph names the intent key (`cli.md:38`, `:41`, `bbg:native-state.md:59`), says scope_hash alone is not unique per intent, names the default a binding checked at the parent's seal (`intent.md:58–60`, `cascade.md:24`), keeps the recommendation; it is the page's one owner question; intent versus Intent is the page's own open item, not asked.
+- V1-3 fixed: B1 drops only "a batch of".
+- V1-4 fixed: PR #678 body has 37 lines, 42 spans, per-repo counts and the owner question verbatim.
+- V1-5 fixed: the sealer cited at `cascade.md:17`, `:24`.
+- V1-6 fixed: N8's reason cites `signal.md:45–48` for "counts".
+- V1-7 fixed: § kept hands `chain.md:409`, `:487` to unit 2 by name.
+- check: verbatim script over the page, 42 spans on 37 lines, 0 misses.
