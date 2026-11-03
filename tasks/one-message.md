@@ -74,3 +74,26 @@ nit
 question for the owner (check 8, not decided here): `chain.md:1351` makes the chain id commit to the pool record through the genesis file, so the messages stay outside it and only G6 binds genesis, as the page says. but the genesis time of `genesis.md` is 2026-11-05, and "pussy runs today's kinds" ships the typed-kind envelope that the page itself lists for removal, while the owner's direction is that the chain follows soft3. does pussy launch with today's kinds and move by a scheduled rule set, or does the launch wait for the signal rule set? R1-3 widens it: if the nonce leaves `NeuronRecord`, block 0's root moves.
 
 disposition: round 1 of at most 2; the author disposes each id (fixed, rejected with the clause, or moved to the gap table) in round 2.
+
+## round 2 — 2026-11-03 · author (design node), dispositions of review round 1
+
+page lines are `proposals/one-message.md` after this commit.
+
+- R1-1 fixed at `:14` (the page says the owner's sentence corrects the specifications) and `:84–97`, amendments A1–A10 old → new: `signal.md:3`, `:35`, `proof.md:9`, `cyberlink.md:23`, `intent.md:62` with `README.md:72`, `intent.md:23` (old G10), soft3 `terms.md:76`, neural `wire.md:16`, `:37`, `cli.md:95`, neural `README.md:37` (the last two lines found while checking `wire.md`).
+- R1-2 fixed at `:103`: G3 restated as the conflict `cyberlink.md:77` against `bbg:specs/state.md:79–96`, both cited, the choice amends one; the stake row cites `state.md:79–96` (`:53`).
+- R1-3 fixed at `:71`: "the nonce is the step" dropped; bbg keeps the nonce (`state.md:31`, `:73`) and the step (`:75`), and moving the nonce would move block 0's root (`chain.md:685`) — not proposed; `NONCE_WINDOW` left out of the removal list.
+- R1-4 fixed at `:55` and G12 `:112`: the claim stated as `mudra:specs/bridge.md:16–21, :28, :46, :73–76` define it, with `chain.md:410–422`; carrying the binding as a signal listed as G12.
+- R1-5 fixed at `:44` and `:116–127`: one question for the owner with options A and B and their measured consequences, A recommended with its reason; §2.4 now follows A.
+- R1-6 fixed at `:18`: "minimal", "in blocks of their own" and `h₀ = h₁` attributed to the owner's sentence; `wire.md:36` "small" and `soma-spec.md:1094` quoted as the test; the trace row renamed "small signal".
+- R1-7 fixed: revert row cites `chain.md:790–806` only (`:60`); NSIG1 cited at `proven-present.md:80` with π_id's type `intent.md:14` (`:44`, `:23`); address row keeps `address.md` and moves the typing to gap G13 (`:56`, `:113`); G6 cites `privacy-frozen.md:38` for the hidden author (`:106`); the `dialect.md:22` / `relation.md:47–53` divergence is G14 (`:114`).
+- R1-8 fixed: G1 now names the form (tade frames, `cybergraph:specs/cli.md:21–31`, `bbg:specs/cli.md:27–31`; `:45`, `:101`) and leaves the field set as the gap; G2 cites both landings `bbg:specs/state.md:96`, `:105` and narrows to the discriminator (`:102`); G5 cites `cyber:whitepaper.md:1198` and narrows to value and balance (`:105`).
+- R1-9 fixed at `:70` (item 1 against `terms.md:74`, `neural:specs/sigils.md:31–33`), `:73` (item 4 against `box.md:36–37`, `terms.md:74`), `:78` (item 9 follows items 1 and 4); the soft3 copies moved out of the cybernode list to `:80`.
+- R1-10 fixed: unlock and the pool rows name the signal as carrier with `validate.md:20–21` and list the missing field as G10 (`:54`, `:110`); the root chain's `net` is a row (`:61`, `signal.md:29`, `network.md:41–51`, `validate.md:43`) and gap G11 (`:111`).
+- R1-11 fixed at `:41–42`: a block carries the seals applied at its height (`state.md:75`); intents are recorded at inception height (`intent.md:34–36`, `:94–96`, `native-state.md:8–9`), and their riding the block is stated as no clause yet, in G7 (`:107`).
+- R1-12 rejected in part: the measured module sizes stay, only as the measured consequence of option B (`:124`), which the coordinator's direction for R1-5 asks for; the header no longer says "adds no number" (`:14`).
+- R1-13 fixed: "a pool link that is not a cyberlink" → "a pool link outside the 5-tuple" (`:120`); "a spend shows no neuron" → "the author of a spend stays hidden" (`:106`); "adds no format" → "its formats, fields, tags and parameters are the specifications' own" (`:14`).
+- R1-14 fixed: wiki-links added in §2–§3 (tade, token, bridge, neural, word, axon, dialect, focus).
+- question for the owner: carried as §6 (`:116–127`) on soft3#677, recommendation A.
+- self-check (i) round 2: every new clause re-opened (`state.md:31, :73, :79–96, :105`, `bridge.md:16–21, :73–84`, `whitepaper.md:1198`, `network.md:41–51`, `validate.md:43`, `chain.md:410–414, :684–685, :802–804`, the ten amendment lines quoted verbatim); no range off.
+- self-check (ii): nothing added beyond what a finding or the coordinator's direction required; the numbers left are cited clauses and option B's measured consequence.
+- self-check (iii): §1 states the owner's sentence in its order — intent by one neuron with the scope as provable condition, open fulfilment across blocks, small signals in one block — and A1–A10 carry it into every line that said "batch", "atomic" or "one transaction".
