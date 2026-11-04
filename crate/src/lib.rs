@@ -1,21 +1,14 @@
-//! soft3 — the type-2 civilization software stack.
+//! soft3 — the type-2 civilization software stack: the facade.
 //!
-//! - [[network]] — spacepussy-test product network (soft3 chaosnet)
-//! - [[node]] — real soft3-node over cybergraph + bbg
-//! - [[genesis]] — burial snapshot → genesis manifest → bbg root (specs/genesis.md)
-//! - [[wallet]] — sign and submit phase-1 root chain transactions (specs/chain.md)
-//! - [[chain]] — the phase-1 proof-of-work root chain kernel (specs/chain.md);
-//!   `chain::mine` is the reference miner with CPU, Metal and WebGPU backends
-//! - CLI: `soft3 sync`, `soft3 node`, `soft3 network`, `soft3 genesis`, `soft3 mine`
+//! since 0.11 the node is the crate `cybernode` (rung 7 of the ladder,
+//! `soft3/proposals/cybernode.md`): the chain kernel, the genesis pipeline, the
+//! node, the wallet and the network live there. these re-exports keep
+//! `soft3::chain`, `soft3::genesis`, `soft3::network`, `soft3::node` and
+//! `soft3::wallet` compiling for one release; new code depends on `cybernode`.
 //!
-//! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`
-//! (cybernode). Not the cosmos-sdk chain `space-pussy`.
+//! Default network: **spacepussy-test** at `https://cyb.ai/spacepussy-test`.
 
-pub mod chain;
-pub mod genesis;
-pub mod network;
-pub mod node;
-pub mod wallet;
+pub use cybernode::{chain, genesis, network, node, wallet};
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -28,13 +21,7 @@ pub fn default_network() -> network::Network {
 }
 
 pub fn manifesto() -> &'static [&'static str] {
-    &[
-        "one mind — shared, provable, self-improving",
-        "many languages — write, compute, mean",
-        "open world — no schema, no gatekeeper",
-        "engine: cybergraph + bbg on spacepussy-test",
-        "default network: spacepussy-test (soft3 chaosnet)",
-    ]
+    cybernode::manifesto()
 }
 
 #[cfg(feature = "stack")]
@@ -45,5 +32,11 @@ mod tests {
     #[test]
     fn default_network_spacepussy_test() {
         assert_eq!(super::default_network().chain_id(), "spacepussy-test");
+    }
+
+    #[test]
+    fn the_node_is_reachable_through_the_facade() {
+        assert_eq!(cybernode::identity(), "cybernode");
+        assert_eq!(super::identity(), "soft3");
     }
 }

@@ -13,7 +13,7 @@ architecture changes that cross repositories are written here before they are bu
 |---|---|---|---|
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
-| [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
+| [cybernode](cybernode.md) | executed | 2026-10-27 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance — the moves of § 9 made 2026-10-27, the compile proof of C2 waits on the hemera 0.4 tier |
 | [the proven present](proven-present.md) | proposed | 2026-10-17 | every block proven, its proof verifying its parents': the present proves the past |
 | [state economics — price the act, free the being](state-economics.md) | proposed | 2026-10-17 | spec-ifies [[steps-blocks-epochs]] §3e: writing state is energy (landauer) — net-new slots priced W₀×M(φ) on the 1-2-4-8 occupancy ladder, payable as burn (ephemeral) or lock (reservation, unlock on delete); holding is free forever — no rent, no dormancy, no death; expansion valve at sustained 75%; security funded by one asymptotic curve supply(h)=C(1−q^h), C ≤ field size — eternal budget, provable cap, rent as a class dies; nervos' two-layer structure + parano1d's pricing layer + the closing curve |
 | [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
@@ -28,6 +28,6 @@ architecture changes that cross repositories are written here before they are bu
 | [one component, one page](component-page-canon.md) | draft | 2026-08-12 | every component answers at one canonical address |
 | [cybergraph + sync + tade](cybergraph-sync-tade-architecture.md) | implemented | 2026-06-07 | cybergraph as the one API over sync and tade |
 
-statuses: **proposed** — agreed picture, not built · **draft** — still being argued · **implemented** — closed by its last merge · **superseded** — overtaken by a later decision, kept as the record.
+statuses: **proposed** — agreed picture, not built · **draft** — still being argued · **executed** — the moves made in every repository, the receipts in § 9 of the page; the last gate (a compile proof, a fleet) still owed · **implemented** — closed by its last merge · **superseded** — overtaken by a later decision, kept as the record.
 
 the ladder these proposals shape is the front page of [soft3.org](https://soft3.org); the boundaries they respect are [[soft3/roadmap/component-boundaries|component boundaries]].

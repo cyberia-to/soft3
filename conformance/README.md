@@ -25,7 +25,7 @@ each soft3 repo carries its own `conformance/` directory of `.snap` files. CI co
 | [specs/](specs/) | how snapshots are produced, compared, blessed |
 | [rs/](rs/) | `cyber-conformance` — trait, tiers, surfaces, the `cargo-conformance` runner |
 | [snapshots/](snapshots/) | the stack snapshot: `encoding.snap`, `mechanism.snap`, `manifest.snap`, bless provenance |
-| [fixtures/](fixtures/) | nox input programs, committed zheng proof fixtures |
+| [fixtures/](fixtures/) | nox input programs, committed zheng `ZHENGPF1` envelope fixtures |
 
 ## position in the stack
 

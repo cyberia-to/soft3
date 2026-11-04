@@ -1,10 +1,8 @@
 name: Release engine
 on:
   pull_request:
-    paths: ['release/**', '.github/workflows/candidate.yml', '.github/workflows/release-*.yml']
   push:
     branches: [main]
-    paths: ['release/**', '.github/workflows/candidate.yml', '.github/workflows/release-*.yml']
 permissions:
   contents: read
 jobs:
@@ -15,3 +13,29 @@ jobs:
         with:
           persist-credentials: false
       - run: python3 -m unittest discover -s release -p 'test_*.py' -v
+  # proposals/cybernode.md C3 (2026-10-27): the node left soft3 for cyberia-to/cybernode; moved means
+  # moved. A returning path is a regression (AGENTS.md), and rung 7 is cybernode on every surface.
+  # Every pull request, not only release/** changes: the paths this job guards are the whole tree.
+  moved-stays-moved:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: moved
+        run: |
+          status=0
+          for path in crate/src/chain crate/src/genesis crate/src/node deploy/chain; do
+            if [ -e "$path" ]; then
+              echo "::error::$path is back in soft3; it lives in cybernode (proposals/cybernode.md section 3.4)"
+              status=1
+            fi
+          done
+          exit $status
+      - name: stale
+        run: |
+          if git grep -n -i "rung 7 soft3\|rung 7 \`soft3\`\|seventh rung is soft3" -- ':!audit' ':!proposals/cybernode.md' ':!release/director/plan.md' ':!.github/workflows/release-engine.yml'; then
+            echo "::error::rung 7 is cybernode; the lines above still say soft3"
+            exit 1
+          fi
+          echo "no stale rung-7 line"

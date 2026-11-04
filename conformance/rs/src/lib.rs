@@ -282,10 +282,10 @@ mod tests {
 
     #[test]
     fn fingerprint_is_hemera() {
-        // hemera/vectors/hemera.json: hash("hello")
+        // hemera/vectors/hemera.json (0.4.0): hash.hello
         assert_eq!(
             Fingerprint::of(b"hello").to_snap_string(),
-            "he1b19b8235443e9fac8f1d6a1203de66e9a58c53e36cbbc1f71a031c3d13ce77"
+            "h85cbee6dba3217b581947e2dd7a76f7574f7603c6beb78a960deb80a3657603f"
         );
         assert_ne!(Example::snapshot_instance().fingerprint().0, [0u8; 32]);
     }

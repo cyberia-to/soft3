@@ -133,25 +133,25 @@ fn hand_edited_bytes_and_manifest_are_detected() {
 #[test]
 fn tampered_proof_fixture_is_rejected() {
     let ctx = scratch("proof");
-    let p = ctx.fixture("zheng/quote-add.proof");
+    let p = ctx.fixture("zheng/quote-add.p1.zheng");
     let mut b = std::fs::read(&p).unwrap();
     let mid = b.len() / 2;
     b[mid] ^= 1;
     std::fs::write(&p, b).unwrap();
     let r = harness::check(&ctx);
     assert!(!r.green);
-    assert!(has(&r, "rejects the committed fixture zheng/quote-add.proof"), "{:#?}", r.lines);
-    assert!(has(&r, "drift    zheng::verify@v1 :: \"quote-add\""), "{:#?}", r.lines);
+    assert!(has(&r, "rejects the committed fixture zheng/quote-add.p1.zheng"), "{:#?}", r.lines);
+    assert!(has(&r, "drift    zheng::verify/p1@v1 :: \"quote-add\""), "{:#?}", r.lines);
     cleanup(&ctx);
 }
 
 #[test]
 fn stale_fixture_is_detected() {
     let ctx = scratch("stale");
-    std::fs::write(ctx.fixture("zheng/left-over.proof"), b"x").unwrap();
+    std::fs::write(ctx.fixture("zheng/left-over.zheng"), b"x").unwrap();
     let r = harness::check(&ctx);
     assert!(!r.green);
-    assert!(has(&r, "fixture zheng/left-over.proof is not read by any surface"), "{:#?}", r.lines);
+    assert!(has(&r, "fixture zheng/left-over.zheng is not read by any surface"), "{:#?}", r.lines);
     cleanup(&ctx);
 }
 
@@ -170,13 +170,13 @@ fn beta_drift_reports_without_failing() {
 fn bless_restores_and_reports_the_diff() {
     let ctx = scratch("bless");
     let original = std::fs::read(snap_path(&ctx, "mechanism.snap")).unwrap();
-    edit(&ctx, "mechanism.snap", |s| flip_fingerprint(s, "zheng::commit@v1 :: \"hash-42\""));
-    std::fs::remove_file(ctx.fixture("zheng/pcs-eval.proof")).unwrap();
+    edit(&ctx, "mechanism.snap", |s| flip_fingerprint(s, "zheng::prove/p0@v1 :: \"hash-42\""));
+    std::fs::remove_file(ctx.fixture("zheng/hash-42.p0.zheng")).unwrap();
     let r = harness::bless(&ctx, Tier::Gamma);
     assert!(r.green, "{:#?}", r.lines);
-    assert!(has(&r, "bless  mechanism.snap: drift    zheng::commit@v1 :: \"hash-42\""), "{:#?}", r.lines);
+    assert!(has(&r, "bless  mechanism.snap: drift    zheng::prove/p0@v1 :: \"hash-42\""), "{:#?}", r.lines);
     assert_eq!(std::fs::read(snap_path(&ctx, "mechanism.snap")).unwrap(), original);
-    assert!(ctx.fixture("zheng/pcs-eval.proof").is_file());
+    assert!(ctx.fixture("zheng/hash-42.p0.zheng").is_file());
     assert!(harness::check(&ctx).green);
     cleanup(&ctx);
 }
