@@ -15,19 +15,13 @@ instances, explicit proof profiles and independently placed workers.
 | specification | scope |
 |---|---|
 | [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
+| the node — chain, chain-wire, chain-conformance, chain-economy, genesis, native-node, routing | moved to [[cybernode/specs/chain|cybernode/specs/]] on 2026-10-27 ([[soft3/proposals/cybernode|the cybernode proposal]] C3); soft3 keeps the contracts of the stack, never of the node |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
-| [native node adapter](native-node.md) | durable acceptance, request retry, HTTP bounds and legacy import |
-| [genesis pipeline](genesis.md) | burial snapshot → the chain.md §4 genesis file (tade) → block-0 state root; owners, balances, particles, links, passports and the decisions behind them; debug export |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |
 | [languages](languages.md) | language contracts |
 | [filenames](filenames.md) | portable source-tree paths |
 | [vault composition](vault.md) | first storage/sync use case; secret custody, complete replicas and device-loss recovery |
-| [routing](routing.md) | the wire obeys the graph: greedy forwarding by locus over FOLLOW links, gravity-pressure fallback; radio stays transport, tru never dials |
-| [chain](chain.md) | the phase-1 root chain: hemera proof of work, ASERT, two neuron transaction kinds plus coinbase, bbg state root, genesis from the burial, heaviest chain with a reorg limit and sunset checkpoints, staked cyberlinks, scheduled forks for later rule sets |
-| [chain-economy](chain-economy.md) | the focus economy in consensus from genesis: epochs of 240 blocks, the boundary block as beacon, positions with stake and valence (lock, unlock, payout), genesis weights, φ* over the staked graph, settlement of Δφ⁺ by one gradient solve recomputed on every node, the subsidy split between miners and the focus pool, attacks, vectors |
-| [chain-wire](chain-wire.md) | the chain's network: cyber-radio topics and request streams, header-first sync, discovery through the graph, limits, the HTTP surface cyb and true-cyber use |
-| [chain-conformance](chain-conformance.md) | acceptance vectors: hemera anchors, compact target, ASERT, header and PoW, transactions, identities, state, consensus, genesis pipeline, wire |
 | [kadek composition](kadek.md) | the media codec stack; pure-Rust video/audio decode and encode, containers, conformance |
 
 Soft3 owns composition invariants. Trident, warriors, proof systems and node

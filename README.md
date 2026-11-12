@@ -41,14 +41,15 @@ candidates with source inventories, platform binaries and gate receipts.
 ## install
 
 ```bash
-cargo install soft3          # stack CLI + real node
+cargo install --git https://github.com/cyberia-to/cybernode cybernode   # the node (rung 7); the crates.io name is not published yet
+cargo install soft3          # the stack facade; forwards the node verbs for one release
 cargo install true-cyber     # product face (binary: cyber)
 ```
 
 ## run a node
 
 ```bash
-soft3 node --home ~/.spacepussy-test --bind 127.0.0.1:7780 --moniker dev-1
+cybernode node --home ~/.spacepussy-test --bind 127.0.0.1:7780 --moniker dev-1
 ```
 
 engine: **cybergraph + bbg**. not a status stub.
@@ -59,7 +60,7 @@ curl -sS -X POST http://127.0.0.1:7780/v1/link \
   -H 'content-type: application/json' \
   -d '{"neuron":"01","from":"0a","to":"0b","amount":1}'
 
-soft3 sync                   # public edge on cybernode
+cybernode sync               # public edge on cybernode.ai
 cyber sync                   # same via true-cyber
 ```
 
@@ -67,6 +68,6 @@ public chaosnet: `https://cyb.ai/spacepussy-test` (cyberproxy).
 
 launch manual: [[soft3/docs/launch|launch spacepussy-test]].
 
-cosmos **space-pussy** / **bostrom** on cybernode are bootloader chains — different substrate. see [[bootloader]].
+cosmos **space-pussy** / **bostrom** run on the apparatus hosts (the cybernode.ai instance) as bootloader chains — different substrate. see [[bootloader]].
 
 [[cyber]] · [[cyb]] · [[soft3/status]] · [[install]] · [[soft3/docs/launch|launch]]

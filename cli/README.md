@@ -28,34 +28,30 @@ soft3 verify <proof-file>
 soft3 particle <file>
     compute the particle (hemera hash) of a file
 
-soft3 sync / soft3 network
-    product probe and presets — default spacepussy-test @ :7780
-    (shipped in soft3 0.4)
-
-soft3 node
-    start the product soft3-node for spacepussy-test
-    (planned — milestone S6; see soft3/docs/launch.md)
-
-soft3 status [--node <addr>]
-    show node status, BBG root, block height
+soft3 sync / soft3 network / soft3 node / soft3 status
+    the node's verbs — cybernode's since 2026-10-27 (rung 7, github.com/cyberia-to/cybernode):
+    `cybernode sync | network | node | mine | genesis | conformance | status`.
+    soft3 0.11 forwards them to cybernode for one release, then drops them
+    (proposals/cybernode.md §3.7); use the `cybernode` binary directly.
 ```
 
 ## launch
 
-full operator guide: [[soft3/docs/launch|launch spacepussy-test]].
+full operator guide: `cybernode/docs/launch.md` (pointer: [[soft3/docs/launch|launch spacepussy-test]]).
 
 summary:
 
-- product network is **spacepussy-test**, not cosmos space-pussy on cybernode
+- product network is **spacepussy-test**, not cosmos space-pussy on the apparatus hosts
 - today: local [[cybergraph]] + [[foculus]] components; `cyber sync` probes :7780
-- target: `soft3 node` binds rpc/lcd/index on 7780–7782 and peers over [[radio]]
+- target: `cybernode node` binds rpc/lcd/index on 7780–7782 and peers over [[radio]]
 
 ## implementation
 
 Rust binary in `crate/`. network presets and `sync` are live.
 
-remaining CLI surface (link / query / verify / node) waits on:
+remaining CLI surface (link / query / verify) waits on:
 
 - BBG proof serialisation (serde for `QueryProof`)
 - query wire protocol (`schema/`)
-- soft3-node wiring (cybergraph + bbg + radio + foculus + soma)
+
+the node wiring (cybergraph + bbg + radio + foculus + soma) is cybernode's roadmap, not this crate's.
