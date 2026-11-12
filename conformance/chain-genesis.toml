@@ -1,7 +1,7 @@
 # chain-conformance.md §10 — the scalars beside conformance/chain.snap, written by the first pipeline run.
 # informational; the fingerprints in chain.snap are what --check compares.
 
-blessed = "2026-10-17"  # bbg dimension version 4 (positions) against hemera 0.4 (profile #15, release/0.4 7237a23); the version-3 roots of 2026-10-16 are in the comments below and cybernode/audit/chain/economy-2026-10-17.md
+blessed = "2026-11-12"  # the genesis file carries the chain's GENESIS_BITS (pussy 0x20020000 = 2^249, bostrom 0x20100000 = 2^252) and block 0 is the 200-byte header with the zero sample (tru rewards.md §7, chain.md §0/§1.1 amended 2026-11-04; cybernode tasks/ticket-pow.md): particle, file_sha256 and block0_id move, the state roots do not; built on build-a from the burial snapshots by `cybernode genesis build` at cybernode feat/ticket-pow. 2026-10-17: bbg dimension version 4 (positions) against hemera 0.4 (profile #15, release/0.4 7237a23); the version-3 roots of 2026-10-16 are in the comments below and cybernode/audit/chain/economy-2026-10-17.md
 pipeline = "cybernode genesis build (cybernode/rs/src/genesis: params end with the pool record, cybernode/specs/chain.md §11.9; bbg dimension version 4)"
 bbg = "be5c5db (master, #51: DIMENSION_VERSION 4 — CardRecord author/valence/since; the genesis files are byte-identical, only the roots move)"
 # state roots under dimension version 3 (bbg eb152fa): pussy a3607987…54b8b2, bostrom c50a6d84…bcdf13
@@ -10,14 +10,14 @@ lens = "release/0.2 (the trie root has no Brakedown cap)"
 hemera = "7237a23afad38913a143da48010f3912f50d7684 (release/0.4, cyber-hemera 0.4.0, profile #15)"
 
 [pussy]
-particle = "bae85f40d9f508664b5214107551be95d3f188d9585a899178c23e80886720e5"
-file_sha256 = "ec7aee793fe3019355a5ead95652640731dc9c632b6d400d7288fee7e6ee2d72"
+particle = "a94ee10120f2d24009f091eb5f620de0e65f67ef2619073988766d50be566d7f"  # bits 0x20020000 (2026-11-12); bae85f40… was the file at bits 0x1e010000
+file_sha256 = "640cf34d19742dc74c20be2c7811ab6a1d0952f313deec34dbdf50d2a1244dbd"  # ec7aee79… at bits 0x1e010000
 file_bytes = 3249657
 time = 1793885820
 s0 = "1099389810279114036"
 subsidy = 10458426657
 state_root = "d48fee478584d248123c63e2ee6c56224f159c7dadbc625f4261f6af49130371"
-block0_id = "73208ee2d43fbb0420119ceff23eab79e9d96921050e2a2137d0705c461852d4"
+block0_id = "b5aca6a0446c3fd3080dc8cac4a03c3b0bafc41fe9847b9779f19a6faaeb6e06"  # the 200-byte header with the zero sample at bits 0x20020000 (2026-11-12); 6925a118… was the 200-byte header at 0x1e010000, 73208ee2… the 168-byte header
 b_frames = 1385
 l_frames = 29113
 tokens = 23
@@ -28,15 +28,15 @@ pool_empty_root = "3ce6bca0d485365765a1c527968a71ee75acb3dfffbd9d4c2c76a8f11655d
 previous_particle = "1bb7d6aaf85330e77ba68044b7f9b683ac8a0a5936709cffa3820ce9714826a7"  # against hemera 0.3 (2026-10-16); 2a83e54f… before the pool record (2026-10-15)
 
 [bostrom]
-status = "green: root commits under bbg dimension version 4, against hemera 0.4 (73 s wall, 91 s user, 7.9 GB max RSS on a shared M4 Max, 2026-10-17)"
-particle = "f78c60edd6aea30af0da261233334e7549e63ece912a82c8d5b9e4df3cadb425"
-file_sha256 = "ffa3d6dd89839224192f3fa268651fbb87923435f66de872b0f14c833e446443"
+status = "green: root commits under bbg dimension version 4, against hemera 0.4 (252 s root on build-a, 2026-11-12; 73 s wall, 91 s user, 7.9 GB max RSS on a shared M4 Max, 2026-10-17)"
+particle = "1f1ef0f66166bdbb3fe63f90ce8d08c51598e92a86f58201d3aaed5e9abadd05"  # bits 0x20100000, the floor (2026-11-12); f78c60ed… was the file at bits 0x1e010000
+file_sha256 = "25b8163aae54210d6391fc8f36ef6a6db1b595f80bf728524520fa080fba384a"  # ffa3d6dd… at bits 0x1e010000
 file_bytes = 330841520
 time = 1793884962
 s0 = "482287925778234"
 subsidy = 4587974
 state_root = "fa0c2c9404a6eff04737ed7dfe11c63c1992b4820fdf039a55c6d2f103d7508d"
-block0_id = "a13f0f627dae47a00fe50f7f9c538148345f52ab6200518e2360798c504fc3d5"
+block0_id = "48d5f86c9b82c11d7f0267e19b1961eff0eb3b4682eec10199deb7179f57439b"  # the 200-byte header at bits 0x20100000 (2026-11-12); a13f0f62… was the 168-byte header at 0x1e010000
 b_frames = 93472
 l_frames = 2997569
 
@@ -46,7 +46,7 @@ l_frames = 2997569
 # same bytes: stack-chain-genesis is red when the built file's sha256 differs from file_sha256.
 [pussy-rc]
 time = 1793523600  # 2026-11-01T09:00:00Z, the rehearsal stand's genesis (P3b); change it by PR to restart the rehearsal, with the four values below from that PR's train run
-particle = "5614749e444e72606a2ed8f8a72fb9c225ac0857fb9901ba6a072d275bc3b713"
-file_sha256 = "d20bab4bd94d5b08f05479fd320da1d8fc8375746b9d3e591ecc664f47ef76f5"
+particle = "c1950dee724b600bafed258c7932c0d62248b87d0d5f59f3bcef8cb4760be143"  # bits 0x20020000 (2026-11-12, built on build-a); 5614749e… was the file at bits 0x1e010000
+file_sha256 = "2923fcd3a76abcf3b1906c5830c39556dc08cde2707f017dad7854d070fc6388"  # d20bab4b… at bits 0x1e010000
 file_bytes = 3249660
-block0_id = "d4d34a707eadd8d7783ab1c5515426a96a03329d9acc4998eb314b4328c2aa92"
+block0_id = "ff4b56ea65f8b81f86c8e58b7d3c84d1fe4e48676358efe720fa21f8ebf213b3"  # the 200-byte header at bits 0x20020000 (2026-11-12); d4d34a70… was the 168-byte header at 0x1e010000
