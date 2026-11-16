@@ -276,7 +276,7 @@ repo = "soft3"
 verb = "compose"
 phase = "1"
 state = "live"
-note = "the stack and its facade crate, not a rung: no layer, no facet; rung 7 is cybernode (proposals/cybernode.md)"
+note = "the stack and its facade crate, not a rung: no layer, no facet; rung 7 is cybernode (projects/cybernode.md)"
 
 [[component]]
 name = "cybernode"
@@ -288,7 +288,7 @@ layer = 7
 role = "network"
 phase = "1"
 state = "live"
-note = "the node: chain kernel, genesis, wallet, network; carved out of soft3 2026-10-27 (soft3/proposals/cybernode.md)"
+note = "the node: chain kernel, genesis, wallet, network; carved out of soft3 2026-10-27 (soft3/projects/cybernode.md)"
 
 [[component]]
 name = "signal"
@@ -891,7 +891,7 @@ layer = 7
 part_of = "cybernode"
 phase = "1"
 state = "proposed"
-note = "the data plane of foculus — ordering, availability, local merge, history trust; soft3/proposals/network-planes"
+note = "the data plane of foculus — ordering, availability, local merge, history trust; soft3/projects/network-planes"
 
 [[component]]
 name = "solong"
@@ -903,4 +903,4 @@ layer = 7
 part_of = "cybernode"
 phase = "1"
 state = "proposed"
-note = "the incentive plane of foculus — tickets, fold-mining, Shapley settlement; named after Shapley's So Long Sucker; soft3/proposals/network-planes"
+note = "the incentive plane of foculus — tickets, fold-mining, Shapley settlement; named after Shapley's So Long Sucker; soft3/projects/network-planes"

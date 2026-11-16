@@ -29,7 +29,7 @@ navigation linked to this foundation when changing architecture.
 
 soft3 SDK depends on: hemera (particle), bbg (state + proofs), lens (verification), cybergraph (signal submission), radio (transport)
 
-do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation. the node — chain kernel, genesis, node, wallet, network, its specs and deploy units — is `cybernode` since 2026-10-27 (proposals/cybernode.md); a `crate/src/chain` reappearing here is a regression.
+do NOT implement stack logic here. call into the stack repos via FFI, WASM, or RPC. the SDK is an adapter, not a reimplementation. the node — chain kernel, genesis, node, wallet, network, its specs and deploy units — is `cybernode` since 2026-10-27 (projects/cybernode.md); a `crate/src/chain` reappearing here is a regression.
 
 ## do not touch zones
 

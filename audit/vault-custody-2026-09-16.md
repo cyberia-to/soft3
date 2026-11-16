@@ -5,10 +5,10 @@ date: 2026-09-16
 # Existing secret-custody boundary
 
 Read-only source inspection supporting the
-[Vault proposal](../proposals/vault-secret-custody.md). No real mnemonic/key file
+[Vault project](../projects/vault-secret-custody.md). No real mnemonic/key file
 was opened, no signing operation was requested, and no custody migration ran.
 The subsequent [architecture alignment review](vault-architecture-alignment-2026-09-16.md)
-records typed-secret and composition changes to the proposal, not runtime fixes.
+records typed-secret and composition changes to the project, not runtime fixes.
 
 Observed bases: Mudra `e2d1a63bccd760b96ba55f448ef338b7ab027c37`, Neuron
 `34bbff9dbf36421a45c5c283e6c1336dcafc997a`, cyb

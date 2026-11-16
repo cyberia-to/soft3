@@ -129,7 +129,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertFalse(gates.run("warning", ["python3", "-c", "print('warning: fixture')"], self.root))
 
     def cybernode_fixture(self):
-        """The cybernode sibling the node's verbs build from (proposals/cybernode.md §3.9)."""
+        """The cybernode sibling the node's verbs build from (projects/cybernode.md §3.9)."""
         node = self.root / "cybernode/rs"
         node.mkdir(parents=True)
         (node / "Cargo.toml").write_text('[package]\nname = "cybernode"\n')

@@ -1,7 +1,7 @@
 ---
 title: the metabolic oracle
-tags: cyber, soft3, tru, proposal, economy
-crystal-type: proposal
+tags: cyber, soft3, tru, project, economy
+crystal-type: project
 crystal-domain: cyber
 alias: metabolic oracle, metabolism, M(t), vital signs
 status: proposed
@@ -11,7 +11,7 @@ date: 2026-10-23
 
 **status:** proposed · **date:** 2026-10-23 · **owner's call:** "this mechanism — without the agents — belongs in the core of cyber, not in cyberia's architecture."
 
-cyberia's [[cyberia/architecture|architecture]] carried a mechanism that answers one question for a whole network: *is it alive?* It was written for cyberia's 147 agents. The mechanism does not depend on agents; it depends on three numbers the chain already has or can have. This proposal moves it into the core: the measure becomes a consensus object of the root chain, its weights the one vote the protocol cannot avoid, and its derivative the governor of every parameter the protocol is allowed to retune. The agents, where they exist, become its users.
+cyberia's [[cyberia/architecture|architecture]] carried a mechanism that answers one question for a whole network: *is it alive?* It was written for cyberia's 147 agents. The mechanism does not depend on agents; it depends on three numbers the chain already has or can have. This project moves it into the core: the measure becomes a consensus object of the root chain, its weights the one vote the protocol cannot avoid, and its derivative the governor of every parameter the protocol is allowed to retune. The agents, where they exist, become its users.
 
 ## 1. the picture
 
@@ -56,15 +56,15 @@ A sign that is `none` contributes nothing and its weight is renormalised over th
 
 ### 3.2 reports: the same regime as everything private
 
-`h_ν` and `price_ν` are reports, not transactions of value. They live as commitment cards in bbg under the privacy rule set ([[soft3/proposals/privacy-frozen|privacy, frozen]]): the individual value is never revealed, the aggregate is certified by one proof per epoch, and the report's weight is the reporter's active stake — a fresh sybil carries nothing. A report is edited whenever the reporter wants; the boundary reads the standing value.
+`h_ν` and `price_ν` are reports, not transactions of value. They live as commitment cards in bbg under the privacy rule set ([[soft3/projects/privacy-frozen|privacy, frozen]]): the individual value is never revealed, the aggregate is certified by one proof per epoch, and the report's weight is the reporter's active stake — a fresh sybil carries nothing. A report is edited whenever the reporter wants; the boundary reads the standing value.
 
-Honesty of the price report rests on the same two legs the happiness page gives: it is private (no performed price), and it is stake-weighted (a lie costs the liar's own weight in a number that governs the liar's own economy). It is not "ungameable": a stake majority can lie about the price as it can about anything. cyberia's line "cannot be gamed internally" was true of an external market read by agents; inside consensus the honest statement is *costly to game, by the same stake that secures the chain*. The proposal says so rather than inheriting the claim.
+Honesty of the price report rests on the same two legs the happiness page gives: it is private (no performed price), and it is stake-weighted (a lie costs the liar's own weight in a number that governs the liar's own economy). It is not "ungameable": a stake majority can lie about the price as it can about anything. cyberia's line "cannot be gamed internally" was true of an external market read by agents; inside consensus the honest statement is *costly to game, by the same stake that secures the chain*. The project says so rather than inheriting the claim.
 
 ### 3.3 the one vote
 
 The weights are a chain parameter changed by a vote transaction, and by nothing else:
 
-- a proposal names $(w_c, w_s, w_h)$ in basis points summing to 10,000;
+- a project names $(w_c, w_s, w_h)$ in basis points summing to 10,000;
 - the vote is weighted by active stake (positions with $v \neq 0$, chain-economy §3), open for `W_VOTE` epochs, passes at a two-thirds supermajority of participating stake and a quorum of one third of active stake;
 - a passed vote takes effect at the next epoch boundary and cannot be changed again for `W_HOLD` epochs;
 - the weights of absent signs are forced to zero whatever the vote says, so a vote cannot point the compound at a number the chain does not have.
@@ -101,4 +101,4 @@ What $\dot M$ does **not** do: it never scales an individual's reward, never min
 - "the agents set the weights through explicit consensus": the weights are a stake vote of the chain's own participants, the agents vote like any neuron with active stake;
 - "cannot be gamed internally": replaced by what is true inside consensus (§3.2).
 
-related: [[tru/specs/rewards|rewards]] · [[soft3/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/proposals/privacy-frozen|privacy, frozen]] · [[cyberia/architecture|cyberia's architecture]] (the origin)
+related: [[tru/specs/rewards|rewards]] · [[soft3/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/projects/privacy-frozen|privacy, frozen]] · [[cyberia/architecture|cyberia's architecture]] (the origin)

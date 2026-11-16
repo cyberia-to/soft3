@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, state, economics, tok, bbg, foculus, oikos, emission
+tags: cyber, soft3, project, state, economics, tok, bbg, foculus, oikos, emission
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -64,7 +64,7 @@ as important as what it does: no rent (existence is not tariffed) · no death (n
 | `W₀` | base price of a net-new slot | fraction of block reward (anchored) |
 | `M` ladder | 1-2-4-8 at 50-75-90 % | consensus constants |
 | expansion window | 10 of 18 finalized ≥75 % | consensus constants, rescaled to step cadence |
-| `q`, `C` | tail decay, cap ≤ field size | monetary policy, one proposal to change |
+| `q`, `C` | tail decay, cap ≤ field size | monetary policy, one project to change |
 | `k` | lock coefficient | one constant |
 | machine share | tail fraction to the machine | may be 0 |
 

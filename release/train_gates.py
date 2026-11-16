@@ -156,7 +156,7 @@ def chain_genesis_gate(gates, soft3, genesis_dir=None, pussy=None, cybernode=Non
     (pinned snapshot inputs, `cybernode genesis build`) must reproduce the blessed
     particle, state root and block-0 id in soft3/conformance/chain.snap. The node's
     verbs run from the `cybernode` sibling checkout (cybernode/rs, the crate that
-    owns genesis and conformance since proposals/cybernode.md); soft3 keeps the
+    owns genesis and conformance since projects/cybernode.md); soft3 keeps the
     snapshot and conformance/chain-genesis.toml, named to the node by
     SOFT3_CONFORMANCE_DIR. Without the cybernode checkout the gate is blocked.
     Where the file comes from, in order:
@@ -339,7 +339,7 @@ def glibc_floor_gate(gates, binary, target):
 
 
 def boot_status(binary, gates):
-    """Fresh-home boot of the cybernode binary (proposals/cybernode.md §3.9): `cybernode node`
+    """Fresh-home boot of the cybernode binary (projects/cybernode.md §3.9): `cybernode node`
     on a free port must answer /status with a chain and a height within twenty seconds."""
     if not binary.is_file():
         return gates.blocked("node-status", "cybernode executable was not built")
@@ -451,7 +451,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
         gates.run("soft3-tests", ["cargo", "test", "--locked"], crate)
         # Plan C4: soft3#406 moved the node's tests to cybernode/rs (rehearsal 40525967811: soft3-tests
         # ran 2 tests against 314 in 40446879208). SOFT3_CONFORMANCE_DIR is explicit because chain.snap
-        # stays in soft3 (proposals/cybernode.md) and cybernode#1 reads it from there. 1800 s is the
+        # stays in soft3 (projects/cybernode.md) and cybernode#1 reads it from there. 1800 s is the
         # budget soft3-tests had for these tests.
         cybernode = directory / "cybernode" / "rs"
         if cybernode.is_dir():
@@ -464,7 +464,7 @@ def run_gates(directory, output, sources, checkouts, component, target, stack=Fa
             if stack:
                 gates.blocked("stack-pussy-identity", "cybernode checkout unavailable")
         # The facade crate must build, but its binary is a forwarding shim for one release and is
-        # not shipped: the soft3 candidate ships the cybernode binary (proposals/cybernode.md §3.9),
+        # not shipped: the soft3 candidate ships the cybernode binary (projects/cybernode.md §3.9),
         # built from the sibling checkout; node-status and linux-glibc-floor check that binary.
         gates.run("soft3-release", ["cargo", "build", "--release", "--locked"], crate)
         binary = cybernode / "target/release/cybernode"

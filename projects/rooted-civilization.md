@@ -1,6 +1,6 @@
 ---
 title: rooted civilization
-tags: cyber, soft3, proposal, stack, civilization, lytics, vault, tok, foculus, mudra
+tags: cyber, soft3, project, stack, civilization, lytics, vault, tok, foculus, mudra
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -92,7 +92,7 @@ acceptance for this section is a shop-window change, not new crates: these ten a
 
 ## 5. forgotten — now in scope
 
-[[soft3/status]] listed seven questions no roadmap owned. this proposal owns them. they stay critical. they stop being out of scope.
+[[soft3/status]] listed seven questions no roadmap owned. this project owns them. they stay critical. they stop being out of scope.
 
 | # | question | what | where | when |
 |---|---|---|---|---|
@@ -141,7 +141,7 @@ four phases. each phase is a last-merge: the tests of every repository it names 
 
 **what.** the shop window matches the stack. the ten of §4 sit at the same rank as the thirty, or the thirty are recut to include them. `/layers/` drops the 2 KB line. every number on the site already tagged measured/target stays that way.
 
-**where.** `soft3/site/` (`index.html`, `layers/index.html`); this proposal; a pointer from [[soft3/status]] § critical.
+**where.** `soft3/site/` (`index.html`, `layers/index.html`); this project; a pointer from [[soft3/status]] § critical.
 
 **when.** this merge. no runtime.
 
@@ -215,7 +215,7 @@ the network may not take real value until a person can lose a phone and remain a
 - a second implementation verifies the same conformance snapshot
 - a graph fragment renders as a deed
 
-## 7. order against the other proposals
+## 7. order against the other projects
 
 ```text
 now     phase 0 visor
@@ -235,7 +235,7 @@ C       world: joule · iron plurality · bridges · compaction · second node �
               (needs B's fork rule and a frozen proof format)
 ```
 
-phase 0 is documentation. A is the first runtime this proposal owes. B and C are not a licence to grow new repos for their own sake: every row in §5 names a seat that already exists, except the optional `bridge` seat in C, which starts as optica + a money/identity adapter, not as a blank organisation.
+phase 0 is documentation. A is the first runtime this project owes. B and C are not a licence to grow new repos for their own sake: every row in §5 names a seat that already exists, except the optional `bridge` seat in C, which starts as optica + a money/identity adapter, not as a blank organisation.
 
 ## 8. what this page does not do
 

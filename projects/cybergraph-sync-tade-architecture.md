@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, architecture, proposal
+tags: cyber, soft3, architecture, project
 crystal-type: process
 crystal-domain: cyber
 status: implemented
@@ -7,7 +7,7 @@ date: 2026-06-07
 ---
 # Architecture upgrade: cybergraph + sync + tade
 
-> Superseded in part: the `sync` repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate. Everywhere below, "sync" (the component) is now the [[foculus]] crate. The architecture this proposal describes still holds; only the component name changed. This document is kept as the implemented record.
+> Superseded in part: the `sync` repo has since merged into [[foculus]] — the structural-sync substrate and the fork-choice that completes its merge are now one crate. Everywhere below, "sync" (the component) is now the [[foculus]] crate. The architecture this project describes still holds; only the component name changed. This document is kept as the implemented record.
 
 Reshape the network layer of the soft3 stack so that cybergraph is a unified link processor with one API, [[foculus]] owns the full structural-sync protocol, tade becomes a first-class stack member for wire framing, and intent is promoted to a first-class verb alongside signal.
 
@@ -213,10 +213,10 @@ Commit: `docs: update cybergraph interface for declare() and corrected fan-out`
 |---|---|
 | update | `README.md` stack table — add sync (#14, verb `sync`) and tade (#13, verb `frame`); renumber foculus (15), soma (16) |
 | update | `README.md` diagram showing soma → cybergraph → {bbg, sync, radio → tade} |
-| add | `proposals/cybergraph-sync-tade-architecture.md` (this file) |
+| add | `projects/cybergraph-sync-tade-architecture.md` (this file) |
 
 Commits:
-1. `docs: add cybergraph-sync-tade architecture proposal`
+1. `docs: add cybergraph-sync-tade architecture project`
 2. `docs: update stack table and diagram for sync/tade/soma`
 
 ### cyber/subgraphs.toml
@@ -233,7 +233,7 @@ No changes. inf is already the query language; no impact.
 
 ### foculus
 
-No changes in this proposal. foculus owns layer-5-global (finality), which is unaffected.
+No changes in this project. foculus owns layer-5-global (finality), which is unaffected.
 
 ## Migration sequence (dependency-ordered)
 
@@ -241,7 +241,7 @@ Each phase is independent within itself; later phases depend on earlier ones.
 
 ### Phase 1 — paperwork (no code moves)
 
-1. Commit this proposal to soft3/proposals/
+1. Commit this project to soft3/projects/
 2. Update subgraphs.toml (add tade)
 3. Update soft3/README.md (stack table + diagram)
 
@@ -295,7 +295,7 @@ Each phase is independent within itself; later phases depend on earlier ones.
 | risk | mitigation |
 |---|---|
 | Phase 3 breaks cybergraph's existing tests | Run the full `stack_*` integration suite after every phase commit |
-| `dim::INTENTS = 13` collides with existing EPHEMERAL slot in bbg backends | This proposal explicitly numbers INTENTS = 13, EPHEMERAL stays at 12, expand arrays to 14 — safe |
+| `dim::INTENTS = 13` collides with existing EPHEMERAL slot in bbg backends | This project explicitly numbers INTENTS = 13, EPHEMERAL stays at 12, expand arrays to 14 — safe |
 | sync's `on_peer_frame` introduces a new ingress path that wasn't tested | Add a smoke test where a tade frame is decoded into a Signal and ingested |
 | Cross-repo coordination (changes land in different repos at different times) | Use the migration sequence above; each phase is atomic per repo; no in-flight cross-repo breakage if order is followed |
 | README and spec drift | Phase 6 explicit documentation pass; CI lint that flags stale "structural-sync" mentions in cybergraph |
@@ -303,7 +303,7 @@ Each phase is independent within itself; later phases depend on earlier ones.
 ## Acceptance criteria
 
 1. `cargo test` passes across cybergraph, sync, bbg, radio, tade after Phase 5.
-2. soma-spec §7 diagram matches the final architecture diagram in this proposal.
+2. soma-spec §7 diagram matches the final architecture diagram in this project.
 3. `soft3/README.md` stack table contains 17 rows (0–16 + rune), with sync at #14 verb `sync`, tade at #13 verb `frame`.
 4. `subgraphs.toml` contains a `tade` entry under `soft3` parent.
 5. Cybergraph's `src/` no longer contains chain.rs or vdf.rs; sync's `src/` contains them and exposes `SignalChain`, `VdfProof`, `validate_intent`, `validate_signal`, `order_and_chain`.
