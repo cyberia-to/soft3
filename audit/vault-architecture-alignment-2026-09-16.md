@@ -4,14 +4,14 @@ date: 2026-09-16
 ---
 # Vault architecture alignment
 
-Review of the [custody proposal](../proposals/vault-secret-custody.md) against
+Review of the [custody project](../projects/vault-secret-custody.md) against
 stack ownership and the owner's requests for typed secrets and `derive_neuron`.
-The revised proposal fits the composition model. It remains a design draft,
+The revised project fits the composition model. It remains a design draft,
 not an implementation or security qualification. No secret migration ran.
 
 ## Sources and scope
 
-The proposal baseline is soft3 `842f1f4cf59eb4ce665f72833b7008101f132903`.
+The project baseline is soft3 `842f1f4cf59eb4ce665f72833b7008101f132903`.
 The [source custody audit](vault-custody-2026-09-16.md) records implementation
 bases and gaps; this review does not overwrite those findings.
 
@@ -35,7 +35,7 @@ checkout. Cyb anatomy and its part pages were inspected directly instead.
 Older implementation-status prose in those pages is not evidence of present
 runtime behavior; their ownership rules are the relevant source.
 
-## Findings incorporated into the proposal
+## Findings incorporated into the project
 
 | Contract / invariant | Issue in the first draft | Correction |
 |---|---|---|
@@ -74,6 +74,6 @@ These are engineering contracts to complete, not reasons to choose a different
 identity/signature scheme.
 
 Document checks passed: 29 local link targets, Markdown table column counts,
-`derive_neuron` naming in the active proposal, `git diff --check`, and the
+`derive_neuron` naming in the active project, `git diff --check`, and the
 repository's NTFS filename check over `~/cyber`. Runtime, fault-injection and
-security tests in the proposal are acceptance requirements, not passing results.
+security tests in the project are acceptance requirements, not passing results.

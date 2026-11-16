@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, architecture, proposal, tade
+tags: cyber, soft3, architecture, project, tade
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -7,7 +7,7 @@ date: 2026-10-07
 ---
 # tade — one exchange format, from the wire to the screen
 
-> builds on [[soft3/proposals/cybergraph-sync-tade-architecture|cybergraph + sync + tade]] (implemented 2026-06), which made tade the wire substrate under radio and foculus. this proposal finishes the thought: tade is the **one** format data takes on every boundary of the stack — wire, the payload of a link inside a signal, a CLI's machine channel, the durable log, the stream a painter reads — and the serialization libraries the stack borrowed along the way go.
+> builds on [[soft3/projects/cybergraph-sync-tade-architecture|cybergraph + sync + tade]] (implemented 2026-06), which made tade the wire substrate under radio and foculus. this project finishes the thought: tade is the **one** format data takes on every boundary of the stack — wire, the payload of a link inside a signal, a CLI's machine channel, the durable log, the stream a painter reads — and the serialization libraries the stack borrowed along the way go.
 
 ## the claim
 
@@ -31,7 +31,7 @@ one value, four roles, four components. a tade frame's structural payload **is**
 | 1 | **canon.** one value, one byte sequence: ordered keys (no `HashMap` on the read or write side), minimal LEB128, fixed child order, conformance vectors that pin every rule | tade spec + crate | one spec page, ~50 lines, vectors |
 | 2 | **payload = noun.** the structural payload of a frame is the canonical nox noun encoding; tade frames of structured data and nox data are the same bytes under a 2-byte annotation | tade spec (one page on the binding), nox reference cross-link | one page |
 | 3 | **catalog → spark.** the `(sigil, render)` vocabulary staged in `tade/spec/7-catalog.md` and `molecule.rs` is spark's: spark is the catalog of the render byte. prysm reads spark; it does not hold a vocabulary of its own | tade, spark, prysm | move + links |
-| 4 | **proofs own their bytes.** zheng and lens stop encoding proofs and commitments with postcard — the bytes a verifier hashes must be defined by zheng's spec, not by a crates.io version. a proof on any boundary is a tade frame whose payload is zheng's own layout | zheng (12 postcard call sites), lens (6) | the real work of this proposal |
+| 4 | **proofs own their bytes.** zheng and lens stop encoding proofs and commitments with postcard — the bytes a verifier hashes must be defined by zheng's spec, not by a crates.io version. a proof on any boundary is a tade frame whose payload is zheng's own layout | zheng (12 postcard call sites), lens (6) | the real work of this project |
 | 5 | **CLI: tty → ANSI, pipe → tade.** every CLI follows zheng's `tade_out`: styled text on a terminal, a tade chunk stream when piped, ending in a `STATUS` chunk. serde_json leaves the machine channel (≈130 call sites across bbg, foculus, neuron, cybergraph, soft3, cyb, lens, zheng, hemera); serde derives (≈60) go with it | all CLIs | mechanical, repo by repo |
 | 6 | **ladder.** tade's chip moves from rung 7 (network) to rung 4 (cybergraph), beside `file` and `signal`: it is the bytes of a file and the payload of a link on any boundary. **done 2026-10-07** — the page already reads so | soft3.org (the ladder, front page) | — |
 
@@ -45,12 +45,12 @@ radio's upstream iroh messages (QUIC session chatter) stay postcard: that is tra
 
 ## acceptance
 
-this proposal closes only when all of the following hold — not when the pages are written:
+this project closes only when all of the following hold — not when the pages are written:
 
 1. tade conformance vectors exist and pass in every crate that encodes or decodes frames (tade, foculus, cyb, prysm, rune, zheng cli, bbg cli);
 2. `rg postcard` in zheng and lens returns nothing outside the vendored transport;
 3. no CLI in the stack writes serde_json to a pipe; each has the tty / pipe split;
-4. `cargo test` is green in **every** repository touched, and every PR is merged — the proposal is closed by the last merge, not by the first.
+4. `cargo test` is green in **every** repository touched, and every PR is merged — the project is closed by the last merge, not by the first.
 
 ## sequencing
 

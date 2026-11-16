@@ -1,8 +1,8 @@
 ---
-tags: cyber, soft3, proposal, privacy, zheng, mudra, bbg, post-quantum, launch
+tags: cyber, soft3, project, privacy, zheng, mudra, bbg, post-quantum, launch
 crystal-type: process
 crystal-domain: cyber
-alias: frozen privacy, the shielded pool, privacy proposal, P1 P2 P3 frozen, privacy research, anonymous machine
+alias: frozen privacy, the shielded pool, privacy project, P1 P2 P3 frozen, privacy research, anonymous machine
 status: proposed
 date: 2026-10-16
 reconciled: 2026-10-16 with the second draft of the same day (soft3 PR #190), §9
@@ -49,7 +49,7 @@ each is final for this design; the alternatives are named once and not reopened.
 9. transparent only at the edges. genesis balances, coinbase and legacy-key claims (secp256k1 through the mudra bridge, not quantum-safe) exist on the transparent side to enter the pool. a transparent balance that never enters is not quantum-safe, and the wallets say so. the post-quantum claim covers the pool and nothing else; no proof wrapper makes an exposed classical key quantum-safe. the transparent side is not frozen: before rule set 2 activates, the owner decides whether it narrows transparent-to-transparent transfers (every transparent move thins the anonymity set) and when classical authorization ends for anything but entry into the pool (§6.8). a later rule set may narrow the edge; none may widen it to minting. the cores' shadow indexers read the public outputs; nothing of the cores needs the transparent balances.
 10. what freezes at genesis. the material and the formats: hemera as pinned by hemera#15, Goldilocks, nox, the record, commitment, rho and nullifier encodings at full width, the domain tags, tree depth, anchor window, integer-limb conservation, the lifetime nullifier set, the turnstile accounting, the block-proof statement shape, the supply schedule. these are in the genesis rule set. the pool itself, with its verifying keys, is rule set 2 and switches on when the blocking gates of §5 pass. that is not changing the satellite; it is powering on an instrument that was on board at launch. a verifying key set, once in a rule set, is never changed. the formats are chosen so that no gate outcome can invalidate them (§1.13): that is why they are full width, integer, canonical and lifetime now, before the gates close. the nullifier set is lifetime and never reset: an epoch reset that keeps only a live table accepts an already spent nullifier (reproduced in the receipt); a node may prune storage only where an authenticated proof of non-membership over all history still rejects every old spend.
 11. the network layer is not frozen. who broadcasts a transaction is hidden at the relay layer (a Dandelion-style stem over [[radio]], wallets choosing their first hop); it is a wallet and node matter, versioned freely. a stem hides the origin from peers, not from a global observer; whole proof bundles must be padded and scheduled as one, since packet counts identify a transaction even when packets are fixed size. until a reviewed mix composition with cover traffic passes G7, wallets state the relay-level guarantee and never claim end-to-end anonymity; a direct, identity-bearing submission is labelled as such.
-12. consensus weight is frozen too. anything that touches consensus — a stake amplifier, private staking — is a rule set and needs a fork; so stake privacy is designed before any proof-of-stake activation, as records with a stake predicate, and never bolted on. private weighted votes need an exclusivity tag derived per conflict domain and round, never per proposal (a per-proposal tag lets one stake vote for every competitor), stake locked through the voting and slashing interval, and one rule for switching, withdrawal and reorgs; splitting a credential never creates weight. foculus's author-based conflict check (`foculus/specs/protocol.md`) loses its author under anonymous edges, and its safety and liveness argument is redone before rule set 2.
+12. consensus weight is frozen too. anything that touches consensus — a stake amplifier, private staking — is a rule set and needs a fork; so stake privacy is designed before any proof-of-stake activation, as records with a stake predicate, and never bolted on. private weighted votes need an exclusivity tag derived per conflict domain and round, never per project (a per-project tag lets one stake vote for every competitor), stake locked through the voting and slashing interval, and one rule for switching, withdrawal and reorgs; splitting a credential never creates weight. foculus's author-based conflict check (`foculus/specs/protocol.md`) loses its author under anonymous edges, and its safety and liveness argument is redone before rule set 2.
 13. immutable, and from when. three layers:
 
     | layer | immutable from | what |
@@ -158,7 +158,7 @@ the pool is switched on (rule set 2) when all hold:
 ## 7. consequences the cores must accept
 
 - rewards attach to links, not neurons. the payout key in the link receives what the link earns; Shapley over a cluster is over links. identity-weighted schemes become opt-in disclosures.
-- sybil cost is the fee. with no identity, the only rate limit on speaking is the cost of a record; the fee floor of `specs/chain.md` is a consensus parameter and therefore frozen; the economics proposals price it.
+- sybil cost is the fee. with no identity, the only rate limit on speaking is the cost of a record; the fee floor of `specs/chain.md` is a consensus parameter and therefore frozen; the economics projects price it.
 - the nullifier set grows forever. it lives in a bbg dimension (chunked commitments, launch row 43's successor); its growth is the cost of this design and is accepted.
 - anonymity is a set. at launch the pool is small and timing correlates; the relay stem (§1.11) and wallet defaults (shielded by default, delayed broadcast) are what make the set real. the protocol is not what fails here, usage is, and the page says so. every transparent transfer thins the set; a global observer is not defeated by a stem (G7).
 - aggregates leak. any exact public sum over hidden contributions reveals a contribution to whoever knows the rest or sees two releases differing by one contributor. what is public per link stays public; what is hidden is released only through a fixed function and cadence with its residual leakage stated (G4, G6).
@@ -175,7 +175,7 @@ the pool is switched on (rule set 2) when all hold:
 
 ## 9. the second draft, reconciled
 
-on 2026-10-16, within the hour of this page, another session of the same owner opened soft3 PR #190: `proposals/privacy.md`, "privacy — a frozen anonymous machine", with a research receipt. it selects the same architecture — private programmable notes, hash-based ownership and nullifiers, anonymous public assertions — and reaches the opposite launch verdict: the current public chain cannot be the genesis of a permanently private post-quantum currency, so defer the irreversible monetary freeze until its gates close. this section is the reconciliation; the PR was closed unmerged, its receipt moved to [audit/privacy-2026-10-16](../audit/privacy-2026-10-16/README.md), and nothing of it remains a second proposal. the draft has two commits: ea413d4, reconciled by soft3 #191 in the subsections up to "dropped", and b011039, pushed at 10:29 UTC while #191 was being written, reconciled in "the revision" at the end.
+on 2026-10-16, within the hour of this page, another session of the same owner opened soft3 PR #190: `projects/privacy.md`, "privacy — a frozen anonymous machine", with a research receipt. it selects the same architecture — private programmable notes, hash-based ownership and nullifiers, anonymous public assertions — and reaches the opposite launch verdict: the current public chain cannot be the genesis of a permanently private post-quantum currency, so defer the irreversible monetary freeze until its gates close. this section is the reconciliation; the PR was closed unmerged, its receipt moved to [audit/privacy-2026-10-16](../audit/privacy-2026-10-16/README.md), and nothing of it remains a second project. the draft has two commits: ea413d4, reconciled by soft3 #191 in the subsections up to "dropped", and b011039, pushed at 10:29 UTC while #191 was being written, reconciled in "the revision" at the end.
 
 ### the conflict, resolved
 
@@ -220,7 +220,7 @@ gate mapping, the second draft's numbering to this page's: its G1 (leakage) → 
 - direct transaction verification as the consensus rule: a 165–419 KB proof fills a 256 KiB block; kept as reference semantics only.
 - a mandatory mix layer as a freeze condition: the network is not consensus and is versioned freely; the guarantee it would add is gated as a claim instead.
 - "if hidden-input rewards define the currency, the whole genesis waits": the currency at genesis is the transparent root chain with a frozen supply; hidden-input functions arrive by the rule set G6 opens.
-- the second proposal page itself: one question, one page.
+- the second project page itself: one question, one page.
 
 ### the revision: encrypted collective computation
 

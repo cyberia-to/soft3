@@ -32,7 +32,7 @@ sim = ["cybernode/sim"]
 stack = ["dep:cyb"]
 
 [dependencies]
-# rung 7, the node: the chain kernel, genesis, node, wallet, network — soft3/proposals/cybernode.md
+# rung 7, the node: the chain kernel, genesis, node, wallet, network — soft3/projects/cybernode.md
 cybernode = { version = "0.1", path = "../../cybernode/rs", default-features = false }
 # optional facade
 cyb = { version = "0.2.1", optional = true }

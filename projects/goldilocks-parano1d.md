@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, foculus, zheng, nox, bbg, hemera, mining, consensus
+tags: cyber, soft3, project, foculus, zheng, nox, bbg, hemera, mining, consensus
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -23,7 +23,7 @@ parano1d workspace (v2.0.3, clone 2026-10-13, 533 files / 393,551 LOC / 2,684 te
 | consensus machinery | ASERT DAA, fork choice, fees, emission, retention, mempool, template mechanics — **field-free, ~60–80 kLOC** | foculus: sync/epoch/tickets/fold-mining implemented; **no mempool, no DAA, no block production, no chain sync anywhere** | the entire gap; parano1d is the reference design |
 | state | sparse UTXO vector, Poseidon2b sparse-Merkle root, occupancy-priced growth burn | [[bbg]]: one polynomial per public dimension | ours, plus their growth-fee rule (§3e of [[steps-blocks-epochs]]) |
 | contracts | bounded 16-instruction integer core baked into the fixed relation | [[trident]]/nox: general bounded VM, cost report per program | ours — strictly more, at the price of a general trace |
-| soundness | executable Category-1 certificate, premises named | soundness ledger planned in the repair proposal | build: a `soft3-soundness` equivalent counting hemera/zheng parameters |
+| soundness | executable Category-1 certificate, premises named | soundness ledger planned in the repair project | build: a `soft3-soundness` equivalent counting hemera/zheng parameters |
 | network | libp2p gossipsub + request/response, scoped RPC keys, GUI wallet | foculus sync planes + radio | build, their spec docs are the checklist |
 
 one honest symmetry: parano1d's own FRI soundness beyond unique decoding is *conjectural* (RS capacity conjecture, Johnson ≈ 64 bits) and their docs force every security statement to name its regime. both chains ship named premises; neither is a free lunch.
@@ -56,7 +56,7 @@ hemera-grinding PoW over a frozen template schedule (parano1d's 16-field POWHDR 
 libp2p gossipsub + request/response following their protocol string/header-first/gossipsub layout; scoped bearer keys (mining key → template+submit only) per their 986-line rpc spec; node orchestration last.
 
 ### P4 — the soundness ledger
-a `soft3-soundness` crate in the image of `noid_soundness`: an executable certificate importing production constants (hemera profile, ARC geometry, query counts, DAA parameters) and printing the resource ledger. the repair proposal's ledger becomes runnable.
+a `soft3-soundness` crate in the image of `noid_soundness`: an executable certificate importing production constants (hemera profile, ARC geometry, query counts, DAA parameters) and printing the resource ledger. the repair project's ledger becomes runnable.
 
 ## 4. effort, stated against evidence
 

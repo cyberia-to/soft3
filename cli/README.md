@@ -32,7 +32,7 @@ soft3 sync / soft3 network / soft3 node / soft3 status
     the node's verbs — cybernode's since 2026-10-27 (rung 7, github.com/cyberia-to/cybernode):
     `cybernode sync | network | node | mine | genesis | conformance | status`.
     soft3 0.11 forwards them to cybernode for one release, then drops them
-    (proposals/cybernode.md §3.7); use the `cybernode` binary directly.
+    (projects/cybernode.md §3.7); use the `cybernode` binary directly.
 ```
 
 ## launch

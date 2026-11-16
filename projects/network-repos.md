@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, cybernode, genesis, network, bostrom, pussy, cyber, plumb, tok, release
+tags: cyber, soft3, project, cybernode, genesis, network, bostrom, pussy, cyber, plumb, tok, release
 crystal-type: process
 crystal-domain: cyber
 alias: network repos, network repositories, a network is a repository, network config, launch configurator, network manifest, home network, home networks, personal network, cy home
@@ -24,7 +24,7 @@ the definition of each network is spread over four places, and the third network
 
 | piece of a network | where it lives today | problem |
 |---|---|---|
-| burial sources (snapshot pins) | `bostrom/snapshot/manifest.json`, `space-pussy/snapshot/manifest.json` | right place — the seed of this proposal |
+| burial sources (snapshot pins) | `bostrom/snapshot/manifest.json`, `space-pussy/snapshot/manifest.json` | right place — the seed of this project |
 | derivation policy (denoms carried, pools dissolved, passports, legacy owners, particles re-addressed, the u64 filter, pussy supply, TOCYB) | `soft3/specs/chain.md` §4.2, `soft3/specs/genesis.md` | per-network policy written into the stack's spec |
 | starting parameters — genesis time, bits, subsidy, checkpoint key and sunset | the `p` frame, computed by `soft3 genesis build`; times written in chain.md §4.3 and genesis.md | per-network values inside a generic pipeline and a spec |
 | consensus values — block time, half-life, finality, reorg limit, checkpoint interval, budgets | `soft3/crate/src/chain/params.rs`, global constants | one set for every network; a second network with other values needs a code change |

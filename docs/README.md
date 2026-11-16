@@ -273,7 +273,7 @@ building a new component is specializing the same substrate to a new job. it com
 | [execution model](../specs/execution-model.md) | normative execution architecture and composition invariants |
 | [[soft3/docs/launch\|launch spacepussy-test]] | pointer: the operator guide of the node moved to cybernode (`cybernode/docs/launch.md`, 2026-10-27) |
 | [[soft3/docs/chains-as-plugins\|chains as plugins]] | existing chains as adapters over the substrate — and how a transport actually gets adopted |
-| [[soft3/proposals/proof-system-repair\|proof-system repair]] | the technical companion to "one form/one proof" above — what broke in the old zheng design, the repaired design and the gates each phase must pass |
+| [[soft3/projects/proof-system-repair\|proof-system repair]] | the technical companion to "one form/one proof" above — what broke in the old zheng design, the repaired design and the gates each phase must pass |
 | [[soft3/docs/oikos\|oikos]] | one token, one chain: every neuron roots a home book, the complete ledger of its issuer's obligations; the two settlement protocols and the four foundations it still needs |
 | [[soft3/docs/polynomial-state-across-the-stack\|polynomial state across the stack]] | the March 2026 cascade of the one-polynomial decision through the three trinity pillars — quantum, privacy, AI — kept whole as an explainer, each projection marked measured, refuted as stated, or open |
 

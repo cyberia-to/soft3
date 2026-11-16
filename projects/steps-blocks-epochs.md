@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, foculus, cybergraph, bbg, zheng, tok, tru, mining, consensus
+tags: cyber, soft3, project, foculus, cybergraph, bbg, zheng, tok, tru, mining, consensus
 crystal-type: process
 crystal-domain: cyber
 status: proposed

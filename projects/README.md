@@ -1,15 +1,17 @@
 ---
-title: soft3 proposals
-tags: cyber, soft3, proposal
+title: soft3 projects
+tags: cyber, soft3, project
 crystal-type: process
 crystal-domain: cyber
-alias: proposals, soft3 proposals
+alias: projects, soft3 projects
 ---
-# proposals
+# projects
 
-architecture changes that cross repositories are written here before they are built. a proposal fixes the picture, the moves, the acceptance criteria and the order; it closes on the **last merge**, not the first — all tests green in every repository it touches. the page then changes status and stays as the record.
+there are no proposals, only projects (the owner, 2026-11-16; this folder was `proposals/` until that day). a page's `status:` says what it is: `proposed` — a draft, a decision still open, not yet a project of the state; `accepted` — a project: the apparatus collects it into [[cyberia/projects|cyberia's priority list]], and the owner orders it there; `executed` — delivered, the date beside it; `rejected` or `superseded` — history. the page is the project's declaration.
 
-| proposal | status | date | one line |
+architecture changes that cross repositories are written here before they are built. a project fixes the picture, the moves, the acceptance criteria and the order; it closes on the **last merge**, not the first — all tests green in every repository it touches. the page then changes status and stays as the record.
+
+| project | status | date | one line |
 |---|---|---|---|
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
@@ -30,4 +32,4 @@ architecture changes that cross repositories are written here before they are bu
 
 statuses: **proposed** — agreed picture, not built · **draft** — still being argued · **executed** — the moves made in every repository, the receipts in § 9 of the page; the last gate (a compile proof, a fleet) still owed · **implemented** — closed by its last merge · **superseded** — overtaken by a later decision, kept as the record.
 
-the ladder these proposals shape is the front page of [soft3.org](https://soft3.org); the boundaries they respect are [[soft3/roadmap/component-boundaries|component boundaries]].
+the ladder these projects shape is the front page of [soft3.org](https://soft3.org); the boundaries they respect are [[soft3/roadmap/component-boundaries|component boundaries]].

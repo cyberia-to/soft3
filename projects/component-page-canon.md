@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal
+tags: cyber, soft3, project
 crystal-type: process
 crystal-domain: cyber
 status: draft

@@ -15,7 +15,7 @@ instances, explicit proof profiles and independently placed workers.
 | specification | scope |
 |---|---|
 | [release train](releases.md) | origin source pins, stack/product gates, platform receipts and owner promotion |
-| the node — chain, chain-wire, chain-conformance, chain-economy, genesis, native-node, routing | moved to [[cybernode/specs/chain|cybernode/specs/]] on 2026-10-27 ([[soft3/proposals/cybernode|the cybernode proposal]] C3); soft3 keeps the contracts of the stack, never of the node |
+| the node — chain, chain-wire, chain-conformance, chain-economy, genesis, native-node, routing | moved to [[cybernode/specs/chain|cybernode/specs/]] on 2026-10-27 ([[soft3/projects/cybernode|the cybernode project]] C3); soft3 keeps the contracts of the stack, never of the node |
 | [execution model](execution-model.md) | normative architecture; implementation coverage is reported separately |
 | [terms](terms.md) | shared vocabulary |
 | [types](types.md) | data/type model |

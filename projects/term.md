@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, trident, tok, tade, foculus, oikos, trading, contracts, zheng
+tags: cyber, soft3, project, trident, tok, tade, foculus, oikos, trading, contracts, zheng
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -127,7 +127,7 @@ the §5.5 question "the shapley marginal of what" dissolves: by the uniqueness c
 
 ## 5. what the trading lens exposes — the forgotten checklist
 
-the contract-only view of the previous proposals missed these; each becomes a child spec or a module:
+the contract-only view of the previous projects missed these; each becomes a child spec or a module:
 
 1. **intent mempool admission** — term well-formedness, bond, fee floor (extends §3a of [[steps-blocks-epochs]] with an intent flavor).
 2. **commit-reveal window rules** — window lengths, bond sizes, replay protection, per-epoch round parameter (one batch per epoch, or sub-epoch rounds — a parameter, not a fork).
@@ -137,7 +137,7 @@ the contract-only view of the previous proposals missed these; each becomes a ch
 6. **standard generators** — the six parano1d templates (refund, vault, allowance, budget, recurring, vesting) plus the trading set: limit/IOC orders, funding (recurring on a price condition), vesting unlocks, collateralized derivatives via `scale(escrow, obs(condition), …)`.
 7. **portfolio evidence tiers** — every observation a wallet shows carries its τ ([[oikos]] integration row for sigma); trading UIs must display tier, not just balance.
 
-## 6. relation to the other proposals
+## 6. relation to the other projects
 
 - **[[oikos]]**: its two settlement protocols (no free option, freshness) are spec-ified here as the clearing batch and the condition object; its integration table gains this page as the typed trade-operation owner.
 - **[[steps-blocks-epochs]]**: §5's two lotteries carry the substrate — grind orders blocks, tickets price the marginals (including the solver's), the fold stitches.

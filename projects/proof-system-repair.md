@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, zheng, lens, joy, proofs, post-quantum
+tags: cyber, soft3, project, zheng, lens, joy, proofs, post-quantum
 crystal-type: process
 crystal-domain: cyber
 alias: proof system repair, one proof, zheng repair
@@ -35,7 +35,7 @@ measured 2026-10-14 (`audit/proof-latency-2026-10.md`; zheng#64, lens#25): profi
 
 measured 2026-10-10…13 (Apple M4 Max, machine shared, load 25–156; zheng `audit/prover-profile-2026-10.md`, zheng#59, lens#23, joy#40; proofs byte-identical on every backend): profile 1 hash.tri 17.7 s → 1.4 s Metal, 2.8 s WebGPU, 5.5 s CPU (`joy prove --succinct`; 0.4 s in the library on Metal); profile 5 (IVC, one 2¹⁵-row step) 9.6 s Metal against 22.6 s CPU on zheng#58's head; the wrap chain (profile 6) 115 s Metal against 239 s CPU in the same window (zheng#58 alone: 83 s on a quieter machine), CPU time 330 s against 1,771 s. what reaches seconds today is the one-relation class and, on a GPU, one IVC step; the wrap chain is about two minutes — what remains is constraint evaluation in the zerocheck (CPU in every backend), the coset NTTs of streamed words, and the chain's size.
 
-and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling proposals are [[network-planes]] and [[tade-one-exchange]].
+and the system that produces it is simple, reliable and flexible. this page records what is broken in [[zheng]] and [[lens]], the design with the fewest parts, where [[recursion|recursion]] is and is not needed, and the gates that decide each phase, and how the change rides the release train through nine repositories. it closes on the last merge. the boundaries it respects are [[soft3/roadmap/component-boundaries|component boundaries]]; the sibling projects are [[network-planes]] and [[tade-one-exchange]].
 
 ## 1. where the numbers stand
 
@@ -158,9 +158,9 @@ phases 1 and 2 are a month each; 3 is research-grade and measures before it comm
 | in-proof digest length under hemera profile v2 | decided: 32 B in trees (§B) |
 | whether [[fold mining]]'s `σ_f` stays a per-step proof or becomes an ARC step | phase 3, with foculus |
 
-## 9. release — this proposal as the first run of the train
+## 9. release — this project as the first run of the train
 
-the repair touches nine repositories and every product that verifies a proof. it is therefore the first change shipped end to end by the [[cyberia/dev|release train]]: candidates cut from origin on fridays, gates executable, bumps as pull requests, promotion by the owner only. the proposal is the test of that process as much as of the proofs.
+the repair touches nine repositories and every product that verifies a proof. it is therefore the first change shipped end to end by the [[cyberia/dev|release train]]: candidates cut from origin on fridays, gates executable, bumps as pull requests, promotion by the owner only. the project is the test of that process as much as of the proofs.
 
 propagation order — each row pins the one above it; a bump is one PR `chore: <component> <version>` touching `Cargo.toml`, `CHANGELOG.md` and the sibling pins:
 
@@ -201,7 +201,7 @@ zip ([2025/1446](https://eprint.iacr.org/2025/1446)): black-box compression of h
 
 the in-proof digest: hemera profile v2 ([hemera#15](https://github.com/cyberia-to/hemera/pull/15)) raises the identity digest to 48 or 64 bytes for post-quantum collision resistance. a Merkle node inside a proof is ephemeral — it must be forged before the verifier runs, so "harvest now, break later" does not apply — and stays 32 bytes. one permutation, two squeeze lengths; a 48-byte node would add 50 % to the dominant term for nothing.
 
-what this proposal does not claim: no 2 KB, no 100 ns, no "Merkle-free", no proof smaller than the authentication of its own queries.
+what this project does not claim: no 2 KB, no 100 ns, no "Merkle-free", no proof smaller than the authentication of its own queries.
 
 ## C. the ledger of stale claims
 
@@ -377,7 +377,7 @@ actions: delete — built on the old design, no other content · superseded — 
 | [[soft3/foculus/docs/explanation/latency-targets|foculus/docs/explanation/latency-targets.md]] | "Lens ~200 B", "O(1) fold (~30 field ops)" | number | 3 |
 | [[soft3/foculus/docs/explanation/life-of-a-signal|foculus/docs/explanation/life-of-a-signal.md]] | "roughly fifty microseconds" | number | 3 |
 | [[soft3/foculus|foculus/README.md]] | "HyperNova fold tree" | rewrite (ARC) | 3 |
-| [[soft3/foculus/proposals/view-certificates|foculus/proposals/view-certificates.md]] | "π_att HyperNova fold" | review | 3 |
+| [[soft3/foculus/projects/view-certificates|foculus/projects/view-certificates.md]] | "π_att HyperNova fold" | review | 3 |
 | [foculus/src](https://github.com/cyberia-to/foculus/tree/main/src): `tip`, `tickets`, `marginal_cert`, `pay_proof`, `ticket_proof`, `rewards`, `step`, `epoch` | "HyperNova σ / seal / fold" | code (ARC) | 3 |
 | [[soft3/tok/programming-model|tok/programming-model.md]] | "fold into one constant-size proof via HyperNova"; "~200 bytes" | rewrite / number | 3 |
 | [[neural/inf/specs/proof|inf/specs/proof.md]] | "~200 bytes"; "~5 μs" | number | 2 |
@@ -409,4 +409,4 @@ actions: delete — built on the old design, no other content · superseded — 
 generic STARK/SNARK comparison figures that are not zheng claims ([[cybics/crypto/zero-knowledge]], trident's `stark-proofs`, `verifying-proofs`, `provable-computing`, [[cyber/research/privacy trilateral|privacy trilateral]]) stay.
 
 
-the long form of every argument above is in this file's history (`git log -p proposals/proof-system-repair.md` before this revision).
+the long form of every argument above is in this file's history (`git log -p projects/proof-system-repair.md` before this revision).

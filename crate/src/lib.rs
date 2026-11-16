@@ -1,7 +1,7 @@
 //! soft3 — the type-2 civilization software stack: the facade.
 //!
 //! since 0.11 the node is the crate `cybernode` (rung 7 of the ladder,
-//! `soft3/proposals/cybernode.md`): the chain kernel, the genesis pipeline, the
+//! `soft3/projects/cybernode.md`): the chain kernel, the genesis pipeline, the
 //! node, the wallet and the network live there. these re-exports keep
 //! `soft3::chain`, `soft3::genesis`, `soft3::network`, `soft3::node` and
 //! `soft3::wallet` compiling for one release; new code depends on `cybernode`.

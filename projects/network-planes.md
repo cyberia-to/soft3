@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, architecture, proposal, network, foculus, radio
+tags: cyber, soft3, architecture, project, network, foculus, radio
 crystal-type: process
 crystal-domain: cyber
 status: proposed
@@ -7,7 +7,7 @@ date: 2026-10-07
 ---
 # the network in planes — radio · sync · foculus · solong
 
-> builds on [[soft3/proposals/cybergraph-sync-tade-architecture|cybergraph + sync + tade]] (2026-06, implemented), which merged the `sync` repo into foculus to kill two owners of one mechanism, and on [[soft3/roadmap/component-boundaries|component boundaries]] (executed 2026-10-07). this proposal cuts the result along a different line — by *plane*, not by *mechanism* — so that each mechanism still has exactly one owner, but the planes that change for different reasons and ship to different nodes stop living in one crate.
+> builds on [[soft3/projects/cybergraph-sync-tade-architecture|cybergraph + sync + tade]] (2026-06, implemented), which merged the `sync` repo into foculus to kill two owners of one mechanism, and on [[soft3/roadmap/component-boundaries|component boundaries]] (executed 2026-10-07). this project cuts the result along a different line — by *plane*, not by *mechanism* — so that each mechanism still has exactly one owner, but the planes that change for different reasons and ship to different nodes stop living in one crate.
 
 ## the picture
 
@@ -17,7 +17,7 @@ the network of the stack, read as a stack:
 |---|---|---|---|---|
 | reach | dial | QUIC, hole-punching, relay, discovery — reach a peer by key | radio: iroh, iroh-base, iroh-relay, iroh-dns-server, quinn, nettools | ~110k, ~95 % upstream |
 | carry | transmit | bytes by particle, verified streaming (hemera), pub-sub | radio: iroh-blobs, cyber-bao, iroh-gossip, iroh-car | ~40k, cyber's own code |
-| frame | frame | typed bytes on any boundary | tade ([[soft3/proposals/tade-one-exchange|one exchange format]]) | 1k |
+| frame | frame | typed bytes on any boundary | tade ([[soft3/projects/tade-one-exchange|one exchange format]]) | 1k |
 | **sync** | reconcile | how bytes and signals become agreed facts: ordering, availability, completeness, local merge, history trust | foculus (data plane) | ~4.5k |
 | **foculus** | agree | who is right when facts conflict: fork-choice over φ\*, finality, epochs, beacon | foculus (control plane) | ~2.3k |
 | **solong** | reward | who gets what for which work: tickets, fold-mining, Shapley settlement, receipts, the settle mesh | foculus (incentive plane) | ~3.8k |
@@ -30,7 +30,7 @@ foculus today is three planes in one crate (13k LOC). they change for three diff
 radio is already twelve crates; as a *repository* it is a fork tracked whole against upstream iroh. splitting it into repositories would cost the upstream tracking and buy nothing. two things change instead:
 
 1. the **reach / carry** line is made explicit in `radio/README.md`: reach is upstream code with one cyber change (the handshake); carry is cyber's code (cyber-bao, the hemera substitution in blobs, gossip over particles).
-2. the transport-independent cores of the reconciliation engines leave radio for sync: `iroh-docs/src/ranger.rs` (range-based set reconciliation) and willow's `proto/`. the QUIC sessions around them stay in radio and call sync. this row is already open in component boundaries; this proposal gives it its destination.
+2. the transport-independent cores of the reconciliation engines leave radio for sync: `iroh-docs/src/ranger.rs` (range-based set reconciliation) and willow's `proto/`. the QUIC sessions around them stay in radio and call sync. this row is already open in component boundaries; this project gives it its destination.
 
 ## foculus — three crates, one workspace, one arrow
 
@@ -68,11 +68,11 @@ the import graph today has cycles (`agree → settle` 9 edges, `sync → settle`
 - the control plane can be audited without token economics in scope; a trusted deployment runs sync + foculus with no solong at all (the ledger already promises "fork-choice is pluggable" — this makes the promise a crate boundary).
 - the mining lottery and fold-mining evolve without touching finality; the cyb miner depends on solong + sync, not on consensus internals.
 - the light client is sync + tip, nothing else.
-- the tade proposal lands in one crate (sync) instead of across a 13k-line one.
+- the tade project lands in one crate (sync) instead of across a 13k-line one.
 
 ## acceptance
 
-this proposal closes only when all of the following hold:
+this project closes only when all of the following hold:
 
 1. `foculus/Cargo.toml` is a workspace of `sync`, `foculus`, `solong`; `cargo tree` shows no edge from a lower crate to a higher one;
 2. `epoch_cert` carries no reward fields; solong's settlement is a function of the certificate and the tickets, with a test that the same certificate and tickets yield the same payout on two nodes;
@@ -84,4 +84,4 @@ this proposal closes only when all of the following hold:
 
 specification first: this page, the certificate format in `foculus/specs/epoch.md`, the module map above as `foculus/README.md`. implementation after the harness work in flight — not before, not interleaved — in the order sync → foculus → solong, since each cut only frees the next. the ladder already reads in planes ([soft3.org](https://soft3.org), rung 7).
 
-[[radio]] · [[foculus]] · [[tade]] · [[tok]] · [[tru]] · [[cybergraph]] · [[soft3/proposals/tade-one-exchange|tade — one exchange format]]
+[[radio]] · [[foculus]] · [[tade]] · [[tok]] · [[tru]] · [[cybergraph]] · [[soft3/projects/tade-one-exchange|tade — one exchange format]]

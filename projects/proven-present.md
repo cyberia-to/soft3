@@ -1,5 +1,5 @@
 ---
-tags: cyber, soft3, proposal, zheng, bbg, chain, foculus, sync, recursion, pcd, bootstrap, light client
+tags: cyber, soft3, project, zheng, bbg, chain, foculus, sync, recursion, pcd, bootstrap, light client
 crystal-type: process
 crystal-domain: cyber
 alias: proven present, the present proves the past, prove first mine second, state proof, history proof, block proof, O(1) bootstrap

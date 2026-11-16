@@ -1,7 +1,7 @@
 //! soft3 CLI — the stack facade. The operational verbs belong to the node:
 //! `soft3 node|run|mine|sync|status|genesis|chain|conformance|network` forward
 //! to `cybernode` for this release (0.11) and go away in the next
-//! (soft3/proposals/cybernode.md § 3.7). installing the `cybernode` crate (from its repository until it is published) is the
+//! (soft3/projects/cybernode.md § 3.7). installing the `cybernode` crate (from its repository until it is published) is the
 //! direct way.
 
 const FORWARDED: &[&str] = &[
