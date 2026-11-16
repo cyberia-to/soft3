@@ -658,7 +658,7 @@ repo = "cve"
 verb = "manage"
 facet = "work"
 layer = 10
-part_of = "cyberia"
+part_of = "cyber-valley"
 phase = "after"
 state = "the estate: the operational and legal home of the genesis city"
 
