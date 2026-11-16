@@ -12,7 +12,7 @@ architecture changes that cross repositories are written here before they are bu
 | proposal | status | date | one line |
 |---|---|---|---|
 | [receipt](receipt.md) | proposed | 2026-11-16 | the committed step boundary a proof attests: prev · statement · roots · effects · inclusion path; one per subject of a signal, kept by the holder, folded by the light client, verifiable after bodies are pruned |
-| [rewards at genesis](rewards-at-genesis.md) | proposed | 2026-11-16 | the annuity at genesis, and a mint budget proportional to active stake, separate from the miner subsidy (chain-economy §12 rows 1 and 5 closed by the owner, 2026-11-16) |
+| [rewards at genesis](rewards-at-genesis.md) | proposed | 2026-11-16 | the annuity at genesis, and the allocation curve of adaptive hybrid economics whole: `R_PoS = B·S^α`, the 50 % clamp of chain-economy §6.1 deleted; curve, α and floor in every network's manifest (chain-economy §12 rows 1 and 5 closed by the owner, 2026-11-16) |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
