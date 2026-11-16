@@ -274,9 +274,11 @@ name = "soft3"
 kind = "product"
 repo = "soft3"
 verb = "compose"
+role = "stack"
+aggregate = 7
 phase = "1"
 state = "live"
-note = "the stack and its facade crate, not a rung: no layer, no facet; rung 7 is cybernode (proposals/cybernode.md)"
+note = "the stack: the aggregate of rungs 1–7 and its facade crate (the owner, 2026-11-16); no rung of its own, no facet; rung 7 is cybernode (proposals/cybernode.md)"
 
 [[component]]
 name = "cybernode"
@@ -656,7 +658,7 @@ repo = "cve"
 verb = "manage"
 facet = "work"
 layer = 10
-part_of = "cyberia"
+part_of = "cyber-valley"
 phase = "after"
 state = "the estate: the operational and legal home of the genesis city"
 
