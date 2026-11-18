@@ -18,11 +18,11 @@ chmod +x "$W/bin/gh"; export PATH="$W/bin:$PATH" GH_CALLS="$W/calls"
 export DIR=$W/dir; mkdir -p "$DIR"
 . "$here/tick.sh"
 fail=0; ok() { if eval "$2"; then echo "ok   $1"; else echo "FAIL $1"; fail=1; fi; }
-fresh() { rm -rf "$STATE"/run-* "$STATE"/red-*; : > "$GH_CALLS"; export GH_LEGS="a b c d e" GH_WANT=5 GH_DL_RC=0 GH_NORECEIPT=""; }
+fresh() { rm -rf "$STATE"/run-* "$STATE"/red-*; : > "$GH_CALLS"; : > "$STATE/tick.log"; export GH_LEGS="a b c d e" GH_WANT=5 GH_DL_RC=0 GH_NORECEIPT=""; }
 leg() { mkdir -p "$STATE/run-9/candidate-$1/receipt"; echo '{"result":"green","gates":[]}' > "$STATE/run-9/candidate-$1/receipt/release-validation.json"; }
 
 fresh; leg a; pull_receipts 9 >/dev/null
-ok "(i) 5 legs after merge"  '[ "$(ls -d "$STATE"/run-9/candidate-* | wc -l)" = 5 ]'
+ok "(i) 5 legs after merge"  '[ "$(ls -d "$STATE"/run-9/candidate-* | wc -l)" -eq 5 ]'
 ok "(i) red lists 5 results" '[ "$(jq length "$STATE/red-9.json")" = 5 ]'
 ok "(i) no temp dir left"    '[ -z "$(ls -d "$STATE"/run-9.tmp.* 2>/dev/null)" ]'
 fresh; GH_DL_RC=1; pull_receipts 9 >/dev/null
@@ -36,6 +36,9 @@ fresh; echo '[{"result":"green"}]' > "$STATE/red-9.json"; pull_receipts 9 >/dev/
 ok "(iv) red present -> gh not called" '[ ! -s "$GH_CALLS" ]'
 fresh; GH_LEGS="a b c d" GH_NORECEIPT="e"; pull_receipts 9 >/dev/null
 ok "(v) a leg without a receipt -> red from the other 4, no endless retry" '[ "$(jq length "$STATE/red-9.json")" = 4 ]'
+fresh; GH_LEGS="" GH_NORECEIPT="a b c d e"; pull_receipts 9 >/dev/null
+ok "(vi) no leg carried a receipt -> no red file" '[ ! -e "$STATE/red-9.json" ]'
+ok "(vi) incomplete logged"  'grep -q "run 9 incomplete (5/5 legs), retry next tick" "$STATE/tick.log"'
 
 . "$here/loop.sh"
 cd "$W"; mkdir -p state; echo '{"last_run":{"databaseId":2}}' > state/tick-1.json; t=state/tick-1.json
@@ -43,4 +46,6 @@ echo '[]' > state/red-2.json; sleep 1; echo '[]' > state/red-1.json
 ok "pick_red prefers last run's red over newer mtime" '[ "$(pick_red)" = state/red-2.json ]'
 rm state/red-2.json
 ok "pick_red falls back to newest" '[ "$(pick_red)" = state/red-1.json ]'
+: > state/red-3.json
+ok "pick_red skips an empty red in the fallback" '[ "$(pick_red)" = state/red-1.json ]'
 exit $fail

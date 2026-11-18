@@ -15,3 +15,4 @@ jobs:
         with:
           persist-credentials: false
       - run: python3 -m unittest discover -s release -p 'test_*.py' -v
+      - run: bash release/director/test_receipts.sh

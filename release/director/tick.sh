@@ -17,8 +17,11 @@ pull_receipts() { local rid=$1 tmp rc=0 want have d
   want=$(gh api "repos/$ORG/soft3/actions/runs/$rid/artifacts" --paginate -q '[.artifacts[] | select(.name|startswith("candidate-")) | select(.expired|not)] | length' 2>/dev/null | awk '{s+=$1} END {print s+0}') || want=0
   # legs are counted by artifact, not by receipt file: a leg that uploaded no receipt must not make every tick re-download the run
   have=$(ls -1d "$STATE"/run-$rid/candidate-*/ 2>/dev/null | wc -l) || have=0
-  if [ "$rc" = 0 ] && [ "$want" -gt 0 ] && [ "$have" = "$want" ]; then
-    jq -s '[.[] | {result, red: [.gates[]? | select(.result!="green") | {name, detail: (.detail // .error // .reason // .command // "")}]}]' "$STATE"/run-$rid/*/receipt/release-validation.json > "$STATE/red-$rid.json" 2>/dev/null || true
+  have=$((have))  # wc -l pads its count on BSD; both the comparison and the log line want the bare number
+  # the jq must succeed and leave a non-empty file: when no leg carried a receipt the glob matches nothing, and a 0-byte red file would be re-downloaded every tick and handed to the session
+  if [ "$rc" = 0 ] && [ "$want" -gt 0 ] && [ "$have" -eq "$want" ] &&
+     jq -s '[.[] | {result, red: [.gates[]? | select(.result!="green") | {name, detail: (.detail // .error // .reason // .command // "")}]}]' "$STATE"/run-$rid/*/receipt/release-validation.json > "$STATE/red-$rid.json" 2>/dev/null &&
+     [ -s "$STATE/red-$rid.json" ]; then
     log "receipts: run $rid → $(jq -r '[.[].result] | unique | join(",")' "$STATE/red-$rid.json" 2>/dev/null || true)"
   else
     rm -f "$STATE/red-$rid.json"
