@@ -117,9 +117,9 @@ Three groups moved, and only one of them is the genesis identity:
    epochs: epoch 1 record" and "reorg above the boundary: epoch 1 record" are
    the same record and carry the same `h264dbc6f…`), one is new ("two epochs:
    state root at 35") and one is gone ("two epochs: state root at 25", below).
-   **The tru epoch
-   engine pin is unchanged and correct**: `tru-epoch-e660d1e` is still the
-   id cybernode's `rs/src/chain/economy/focus.rs` returns, and the alpha
+   **The tru epoch engine pin is unchanged and correct**: `tru-epoch-e660d1e`
+   is still the id cybernode's `rs/src/chain/economy/focus.rs` returns, and
+   the alpha
    receipt records `/economy` reading `tru-epoch-e660d1e` on the built
    binary. The economy entries moved for cybernode's reasons, not tru's:
    - settlement moved from `settle(E) = boundary(E) + D` to
