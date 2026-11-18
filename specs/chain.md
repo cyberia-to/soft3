@@ -63,7 +63,8 @@ reads both and sets the dots. Parents: `CHAIN-BLOCK` (§1), `CHAIN-TRANSACTIONS`
 `CHAIN-UPGRADES` (§7), `CHAIN-POOL` (§11). Invariants: `CHAIN-INV-INTEGER` —
 nothing consensus-relevant floats; `CHAIN-INV-CONSERVATION` — supply is a
 function of height alone, Σ balances per token holds at every height,
-including the pool's turnstile. §6, §8, §9 and §10 are informative.
+including the pool's turnstile. §6, §7.2, §7.4, §8, §9 and §10 are
+informative.
 
 ## 0. parameters · CHAIN-PARAMS
 
