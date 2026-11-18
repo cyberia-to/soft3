@@ -86,7 +86,7 @@ id:          B-01
 class:       B
 statement:   hemera 0.4 (t = 16, R_F 6 + 6, R_P 48, x⁷ in every round, 32-byte
              digest) admits no collision and no preimage below 2^128 classical
-consumers:   cybernode/specs/chain.md §1.2 (PoW), §3.3 (state root), §11.1
+consumers:   soft3/specs/chain.md §1.2 (PoW), §3.3 (state root), §11.1
              (pool digests); bbg/specs/state.md; particle identity; the zheng
              hash row and every row that rests on it (zheng/specs/soundness.md)
 parameter:   32-byte digest: collision 2^128 classical, 2^85.3 quantum (BHT);
@@ -146,7 +146,7 @@ The fields work together:
 1. the registry does not parse, an id is duplicated, or an id present in the previous candidate has disappeared;
 2. a `consumers` target (a file and its § heading) does not exist;
 3. regenerating `Axioms.ei` or the mirror does not reproduce the committed bytes, which includes any statement particle that differs;
-4. the class-D scan finds a hit. The scan covers every consensus specification: `cybernode/specs/chain*.md` and `genesis.md`, `soft3/specs/`, `tru/specs/`, `zheng/specs/`, `hemera/specs/`, `bbg/specs/` and `lens/specs/`. A hit is either a whole-word, case-sensitive match of `ETH`, `SETH`, `Gap-ETH`, `NSETH`, `OVC`, `UGC`, `P ≠ NP` or `P != NP`, or a match of the pattern `unless … is false`. A line that names a D id as context is exempt;
+4. the class-D scan finds a hit. The scan covers every consensus specification: `soft3/specs/` (which holds `chain*.md` and `genesis.md`), `tru/specs/`, `zheng/specs/`, `hemera/specs/`, `bbg/specs/` and `lens/specs/`. A hit is either a whole-word, case-sensitive match of `ETH`, `SETH`, `Gap-ETH`, `NSETH`, `OVC`, `UGC`, `P ≠ NP` or `P != NP`, or a match of the pattern `unless … is false`. A line that names a D id as context is exempt;
 5. a constant goes uncited: a row added since the previous candidate to a parameter table (`## 0. parameters` or its equivalent) of a consensus specification names neither a registry id nor a source;
 6. eidos fails: `eidos check soft3/proofs` (a directory) fails, a theorem uses `sorry`, or `eidos axioms` for a theorem names an axiom outside `Axioms.ei` and the stdlib bootstrap set A-10.
 
@@ -159,16 +159,16 @@ The gate has two prerequisites:
 
 ## 3. the seed entries
 
-This is the first registry, drawn from documents that exist today. Ids are provisional until `specs/assumptions.md` lands. The "measured by" column points to the evidence. Status and dates are in [[soft3/audit/assumptions/2026-10-30|the receipt]]. "chain.md" and "chain-economy" are `cybernode/specs/`.
+This is the first registry, drawn from documents that exist today. Ids are provisional until `specs/assumptions.md` lands. The "measured by" column points to the evidence. Status and dates are in [[soft3/audit/assumptions/2026-10-30|the receipt]]. "chain.md", "chain-economy" and "chain-conformance" are `soft3/specs/`.
 
 | id | class | statement | consumers | measured by | if false |
 |---|---|---|---|---|---|
 | A-01 | A | Schwartz–Zippel: a nonzero polynomial of total degree d over a field F vanishes at a uniformly random point of Fⁿ with probability ≤ d/\|F\|; zheng draws its challenges from Fp3, \|F\| = p³ | zheng ledger rows "succinct — Spartan IOP over Fp3" and "zk — masked Spartan IOP" | theorem in the literature; in eidos at E2 | — |
 | A-02 | A | sum-check over Fp3: a round of degree d + 1 errs with probability ≤ (d + 1)/p³, ≈ 2^-189 at d = 7. The IOP total is ε_IOP ≤ \|Λ\|·(log m·(d + 2) + 2(ℓ + 1) + t − 1)/p³, ≤ 2^-173.5 at m = 2^20. The masked IOP's total is (log m·(d + 2) + 2ℓ + t + 3)/p³ | zheng ledger rows "succinct — Spartan IOP over Fp3" and "zk — masked Spartan IOP" | theorem in the literature (ledger: proven); in eidos at E2 | — |
-| A-03 | A′ | Σ native balances (owners, dormant owners, stakes, the focus pool, and the turnstile from rule set 2) = S0 + h·SUBSIDY at every height; every other token's sum is its genesis supply | chain.md §3.4; chain-economy §6.3 | node check after every block; conformance over 2,000 random blocks (cybernode `rs/src/chain/economy/vectors.rs:318–364`); simulator, every block | mint or burn by a bug; the check flags the block (`/status`, alerts) |
+| A-03 | A′ | Σ native balances (owners, dormant owners, stakes, the focus pool, and the turnstile from rule set 2) = S0 + h·SUBSIDY at every height; every other token's sum is its genesis supply | chain.md §3.4; chain-economy §6.3 | node check after every block; conformance over 2,000 random blocks (soft3 `crate/src/chain/economy/vectors.rs:318–364`); simulator, every block | mint or burn by a bug; the check flags the block (`/status`, alerts) |
 | A-04 | A′ | the settlement of epoch E is a function of G_{E−1} and G_E alone, and the epoch record under `state_root` is identical on every node | chain-economy §4.4, §5.6 | simulator: equal records on every node, bit-reproducible on macOS arm64 and Linux x86_64; tru determinism suite | divergence at settle(E): the divergent node halts (chain-economy §9) |
-| A-05 | A′ | ASERT target arithmetic is exact in integers and bounded: no overflow at any height, and shifts saturate at the clamp | chain.md §1.5 | kernel tests (cybernode `rs/src/chain/daa.rs`); chain-conformance §4 rows | difficulty wraps: the chain halts or floods |
-| A-06 | A′ | genesis is a bijection of the burial snapshot; Σ per token = supply | cybernode/specs/genesis.md; chain.md §4.2 | `cybernode genesis verify` (genesis.md still names `soft3 genesis verify`) | unowned or duplicated balances |
+| A-05 | A′ | ASERT target arithmetic is exact in integers and bounded: no overflow at any height, and shifts saturate at the clamp | chain.md §1.5 | kernel tests (soft3 `crate/src/chain/daa.rs`); chain-conformance §4 rows | difficulty wraps: the chain halts or floods |
+| A-06 | A′ | genesis is a bijection of the burial snapshot; Σ per token = supply | soft3/specs/genesis.md; chain.md §4.2 | `soft3 genesis verify` (genesis.md § command) | unowned or duplicated balances |
 | A-07 | A′ | φ* after `PHI_STEPS` = 48 cold steps is within 10⁻⁷ in ℓ1 of the converged fixed point on the launch graphs | chain-economy §0, §4.4; tru/specs/epoch.md | measurement: tru audit/epoch-settlement-2026-10 §2.1, §6.3. The contraction bound κ itself is a spectral statement that no rung of §4.3 proves | payouts drift from the fixed point they are meant to price; determinism is unaffected, because the step count is fixed |
 | A-08 | A′ | attribution pays only for new height: a relock earns at most the mark's decay, and an exact +1/−1 hedge earns zero | chain-economy §5.2, §5.3, §9 | kernel tests, red: soft3#234 findings 1 and 4 | recycling and hedging drain the pool |
 | A-09 | A′ | the epoch record's `syntropy` and `delta_syntropy` fit `i64` in tru's raw fixed point | chain-economy §5.6 | simulator and kernel test, red: soft3#234 finding 3 | the record saturates at `i64::MAX`, so syntropy and its change are wrong in consensus |
@@ -187,7 +187,7 @@ This is the first registry, drawn from documents that exist today. Ids are provi
 | E-02 | E | ML-KEM-1024 (FIPS 203, module lattices) for note delivery | privacy-frozen §1.2; wallets from rule set 2 | literature; not in use before rule set 2 | past notes are disclosed and nothing is forged; wallets version the scheme without a fork |
 | F-01 | F | honest hashrate > ½ over any 120-block window | chain.md §5.1–§5.2, §8 | simulator `reorg-140`, `reorg-140-checkpoints` | reorgs up to 119 blocks; while H-01 is open, deeper released rewrites capture late joiners |
 | F-02 | F | eclipses and partitions heal within the finality window (1 h) | chain.md §5.2; chain-wire §5 | simulator `eclipse`, `partition-long` (receipt, for the owner, item 2) | stranded nodes need an operator resync; peer-diversity work |
-| F-03 | F | honest clocks agree within `MAX_FUTURE_DRIFT` (120 s) | chain.md §1.4, §1.5; cybernode `rs/src/chain/daa.rs` | simulator `clock-skew` | timestamp play moves difficulty by at most 1.149× per block |
+| F-03 | F | honest clocks agree within `MAX_FUTURE_DRIFT` (120 s) | chain.md §1.4, §1.5; soft3 `crate/src/chain/daa.rs` | simulator `clock-skew` | timestamp play moves difficulty by at most 1.149× per block |
 | F-04 | F | the settlement engine finishes without panic on every state within D = 120 blocks | chain-economy §2.5, §5; the tru epoch engine | simulator `settle-slow`, `settle-panic` (receipt, for the owner, items 3 and 4) | the chain halts at settle(E); no deterministic fallback exists |
 | F-05 | F | hashrate does not fall more than 100× inside one half-life (600 s) | chain.md §1.5, §8 | simulator `asert-100x` (receipt, for the owner, item 5): first block 6,929 s after the step (exponential, mean 3,000 s); back to 30 s ± 20 % at 8,613 s | liveness is lost for hours |
 | G-01 | G | ρ = 1 and karma = 1 at launch | chain-economy §0, §3.7, §5.4 | choice | novelty is over- or under-rewarded |
@@ -229,7 +229,7 @@ Lean proofs enter as evidence in `measured-by`, for example an attacker's certif
 
 A theorem proves a statement about an eidos model of the code, not about the Rust itself. Conformance links the two:
 
-- the model is run with `eidos eval` over vectors the Rust already passes. For A-03 that is the 2,000-block corpus in cybernode `rs/src/chain/economy/vectors.rs:318–364`;
+- the model is run with `eidos eval` over vectors the Rust already passes. For A-03 that is the 2,000-block corpus in soft3 `crate/src/chain/economy/vectors.rs:318–364`;
 - every A entry whose consumer is code states this gap;
 - running the model at the kernel's scale needs E1's binary integers, because a unary `Nat` cannot hold S0 ≈ 1.1 × 10^18.
 
@@ -314,7 +314,7 @@ The freeze is 2026-11-02 00:00 UTC (`cyber/launch.md`, decision of 2026-10-17). 
 - OpenAI, "The Exponential Time Hypothesis is False", `openai/math`, `preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf`. The paper is dated "17 October 2026, revised 25 October 2026"; it first appeared in the repository in commit `42907c9`, 2026-10-26. Its §1 lists the hypotheses it refutes. The Lean scope is `lean/docs/378.md` in the same repository. All read 2026-10-30.
 - Alman, Vassilevska Williams, "Truly Subquadratic 3SUM and Truly Subcubic APSP via Triangles in Sparse Lopsided Graphs", arXiv:2610.06783, v1 2026-10-05. In the PDF read 2026-10-30, p. 1 and § Acknowledgments and Methodology attribute the algorithm to Claude.
 - the ETH verification team, from news coverage (reported, not verified by us): xenospectrum.com/en/openai-exponential-time-hypothesis-false-claim; aiweekly.co/alerts/openai-hands-eth-kakeya-yang-mills-proofs-to-reviewers (2026-10-26).
-- [[zheng]] `specs/soundness.md` on `origin/master` (`ecf2491`); [[tru]] `audit/epoch-settlement-2026-10.md` on `origin/master`; [[cybernode/specs/chain|chain]] and [[cybernode/specs/chain-economy|chain-economy]] (moved from soft3 on 2026-10-27, section numbers unchanged).
+- [[zheng]] `specs/soundness.md` on `origin/master` (`ecf2491`); [[tru]] `audit/epoch-settlement-2026-10.md` on `origin/master`; [[soft3/specs/chain|chain]] and [[soft3/specs/chain-economy|chain-economy]], soft3's own specifications on `main` (`specs/README.md` indexes both); cybernode carries its own copies of both the chain specifications and the chain code (`rs/src/chain`); this registry cites soft3's, which is where the gate of §2.4 runs.
 - [[cyber/audit/cryptography-2026-10-08|the cryptography audit]] §2 (what the stack relies on at genesis), §6 (the 10-06 release read against the primitives)
 - [[hemera/audit/campaign|hemera campaign]]; [[simulation/audit/network-2026-10|the simulator receipt]]; [[soft3/proposals/privacy-frozen|privacy, frozen]] G1–G7; [[eidos/specs/certificate|eidos certificate]]
 - [[eidos]] at `c1e8993`: `rs/src/kernel.rs`, `rs/src/certificate.rs`, `rs/src/stdlib/{nat,le,mod}.rs`, `rs/src/surface/{check,omega}.rs`, `rs/src/tactic_ext/arith.rs`, `cli/src/main.rs`, `specs/kernel.md`, `specs/certificate.md`; `soft3/status.md` (eidos: blocked)

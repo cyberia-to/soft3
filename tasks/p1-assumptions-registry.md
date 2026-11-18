@@ -23,19 +23,9 @@ eidos is small today and its record is not yet trustworthy (a Rust kernel, the n
 
 ## review
 
-node 5 of [[deliver]]: a second body, lenses charter alignment · technical truth · consistency · completeness · vocabulary and links · feasibility. verdicts and findings are on the pull request; each finding keeps its id until disposed.
+node 5 of [[deliver]]: a second body reads this unit at one commit. the lenses it reads by, its verdicts and its findings are its own and live on the pull request, [soft3#398](https://github.com/cyberia-to/soft3/pull/398); each finding keeps its id until disposed, and this page does not restate them. round 1's disposition is on that thread; the observed results it produced moved to [[soft3/audit/assumptions/2026-10-30|the receipt of 2026-10-30]].
 
-### round 1 — disposed 2026-10-30
-
-26 findings (F1–F26) checked against the repositories and disposed in four commits on `proposal/assumptions-registry` (`0c2b370` why now and sources, `0b39256` the registry, `09f640f` eidos and the ladder, `bcc167b` watch, launch and decisions). The observed results moved to [[soft3/audit/assumptions/2026-10-30|the receipt of 2026-10-30]].
-
-- facts and dates. F1: campaign day 0 is not started; no invented dates. F2: pool digests are 64 bytes. F3: the sample entry is B-01. F4: section citations fixed. F5: A-02 follows the ledger over Fp3. F6: B-02 is the G3 criterion. F19, F20: sourced; the 3SUM paper's own text attributes the algorithm to Claude. F22: F-05 quotes the receipt; decision order fixed. F24: certificate per spec, README drift flagged.
-- registry content. F7: E-01 covers every phase-1 signature and is red. F8: C-04 to C-06 and E-02 added; the privacy-frozen §1.1 contradiction flagged. F21: A′ sub-class. F23: A-09 added. Also found during disposal: C-03 MCA is proven at the shipped regime per the ledger; A-10 lists eidos's stdlib bootstrap set; chain.md's 66-minute recovery figure contradicts the measured 8,613 s.
-- eidos. F9, F10, F11, F13, F14: stated as it is, with "checked" and "certified" separated, `sorry` as an error, the model/code gap linked to conformance, and the CLI work plus the eidos pin as gate prerequisites. F12 (blocker): E1 moved after genesis and cut to a symbolic conservation lemma, prerequisites listed.
-- mechanisms. F15: keyword scan, cited constants, staleness informs and never reds, the watch run by the crypto domain's sensor. F16: one source; `Axioms.ei` and the mirror are generated; observations go to `audit/assumptions/`. F26: axioms for B and C only, F/G/H never; "same statement" is the particle of a canonical form.
-- launch and decisions. F17: H-01 is due before 2026-11-02 00:00 UTC; what happens after the freeze is stated. F18: every decision has a link or "no link yet"; the Lean-evidence item is dropped; E5's bounty rule is an owner item. F25: `[[lean]]` is plain text; bold only on the status line; §4.1 phrased positively.
-
-disagreements, recorded here. F8: the relation compiler is a correctness claim about our own compiler, not an oracle model, and program binding reduces to B-01. Both are listed in C, as asked, with that note, and C is widened to "proof-system conjectures". F11: `Nat.min` is a definition that reduces, not an axiom; `Nat.min_le_right` is the trusted one. F21: A-04 and A-08 are tested invariants too, so they are A′ alongside A-03, A-05, A-06 and A-07.
+the `verdict` below is the owner's on this unit, in the shape every `tasks/` decision card carries; it is not the reviewing body's.
 
 ## verdict
 
