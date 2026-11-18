@@ -11,6 +11,7 @@ architecture changes that cross repositories are written here before they are bu
 
 | proposal | status | date | one line |
 |---|---|---|---|
+| [signal is an intent](signal-is-an-intent.md) | proposed | 2026-11-03 | the owner's correction applied clause by clause across seven repositories: a signal is an intent one neuron declares with provable conditions of completion, fulfilled by any neurons in their own sub-signals, possibly in different blocks, and sealed when its proof attests them — not a bundle committed atomically in one step |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |

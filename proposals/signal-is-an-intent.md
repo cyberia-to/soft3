@@ -333,6 +333,80 @@ left to the other units: cybergraph `specs/order.md:15` (the height rule names o
 
 ## checks
 
-1. verbatim: a script parses this page and asserts each `-` span occurs on its cited line at `git show origin/HEAD:<path>` of the head named in § amendments: 42 spans on 37 lines, 0 misses. every clause cited in § the correction and every kept line was checked the same way (93 fragments, 0 misses; `intent.md:56–62` cited as a range).
+1. verbatim: a script parses this page and asserts each `-` span occurs on its cited line at `git show <head>:<path>` of the head named in § amendments: 42 spans on 37 lines, 0 misses. the script and its output are in § the verbatim check, below, so any reader with the repositories can re-run it. every clause cited in § the correction and every kept line was checked the same way (93 fragments, 0 misses; `intent.md:56–62` cited as a range).
 2. completeness: four searches over `*.md` of fourteen repositories at origin heads, outside `audit/`, `roadmap/`, `research/`, `.claude/`: `atomic|bundle|batch of|one transaction|single step|in a single|transaction-atomic|together or none|commits or aborts`; `a signal is|signal =|signals are|entire batch|link batch|signal_batch|one-shot|lands together`; `neuron (ran|runs|finalizes|did exactly)|one block|same block|half a sentence|utterance|roll back|commit together`; `indivisible|whole signal|complete signal|unit of submission|broadcast unit|one authorization|same transaction|emit a signal|in one signal`. round 2 added a fifth, `transactions? (add|is|are)|is a transaction|signal (bundles|batches|packs)|packed into|by (a single|one) (neuron|signer)|single (signer|author)|sub-?signals? (are|is) (signed|authored)|whole (sentence|utterance)|complete utterance`. every hit about the signal is in § amendments or § kept.
 3. minimality: each `+` changes only the span its reason names, and says only the owner's sentence or a clause it cites.
+
+## the verbatim check
+
+the script of check 1. it reads the heads out of § amendments, pulls each cited file at its head, and asserts every `-` span occurs on the cited line; a range (`:56–62`) passes when any line in it carries the span. copied to a file it runs as it stands. eleven of the fourteen repositories are not checked out beside this page in a review of soft3 alone, so the output of a run is recorded under it.
+
+````python
+#!/usr/bin/env python3
+"""assert every `-` span of § amendments is verbatim on its cited line at the cited head.
+
+usage: CYBER=~/cyber python3 verify.py proposals/signal-is-an-intent.md
+each repository named in § amendments is read at $CYBER/<repo> with `git show <head>:<path>`.
+"""
+import os, pathlib, re, subprocess, sys
+
+page = pathlib.Path(sys.argv[1])
+root = pathlib.Path(os.environ.get("CYBER", pathlib.Path.home() / "cyber"))
+text = page.read_text(encoding="utf-8")
+
+# the heads, from the first paragraph of § amendments
+heads = dict(re.findall(r"(\w[\w-]*) `([0-9a-f]{7,40})`",
+                        text.split("origin heads read:")[1].split("\n")[0]))
+
+cache = {}
+def source(repo, path):
+    if (repo, path) not in cache:
+        r = subprocess.run(["git", "-C", str(root / repo), "show", f"{heads[repo]}:{path}"],
+                           capture_output=True, text=True)
+        cache[(repo, path)] = None if r.returncode else r.stdout.split("\n")
+    return cache[(repo, path)]
+
+lines = text.split("## amendments", 1)[1].split("\n## ", 1)[0].split("\n")
+repo, entries, ok, misses = None, 0, 0, []
+i = 0
+while i < len(lines):
+    if m := re.match(r"^### ([\w-]+) — ", lines[i]):
+        repo = m.group(1)
+    if m := re.match(r"^([A-Z]+\d+) · `([^`:]+):([\d–\-]+)` — ", lines[i]):
+        tag, path, spec = m.groups()
+        entries += 1
+        j = i + 1
+        while not lines[j].startswith("```diff"):
+            j += 1
+        spans = []
+        j += 1
+        while not lines[j].startswith("```"):
+            if lines[j].startswith("- "):
+                spans.append(lines[j][2:])
+            j += 1
+        nums = [int(n) for n in re.split(r"[–\-]", spec) if n]
+        span_of = range(nums[0], nums[-1] + 1)
+        src = source(repo, path)
+        for want in spans:
+            if src is not None and any(0 < n <= len(src) and want in src[n - 1] for n in span_of):
+                ok += 1
+            else:
+                got = src[nums[0] - 1] if src and 0 < nums[0] <= len(src) else "<no such line>"
+                misses.append(f"{tag} {repo} {path}:{spec} at {heads[repo]}\n    want: {want}\n    read: {got}")
+        i = j
+    i += 1
+
+print(f"entries {entries} · spans {ok + len(misses)} · verbatim {ok} · misses {len(misses)}")
+for m in misses:
+    print("  MISS " + m)
+sys.exit(1 if misses else 0)
+````
+
+run of 2026-11-18, against cybergraph `0a70b6a`, neural `47b086c`, soft3 `3045d54`, bbg `2294281`, tok `c773592`, cyber `68f1260a`, soma `1d3fe69`:
+
+```
+$ CYBER=~/cyber python3 verify.py proposals/signal-is-an-intent.md
+entries 37 · spans 42 · verbatim 42 · misses 0
+$ echo $?
+0
+```
