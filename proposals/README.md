@@ -12,6 +12,7 @@ architecture changes that cross repositories are written here before they are bu
 | proposal | status | date | one line |
 |---|---|---|---|
 | [receipt](receipt.md) | proposed | 2026-11-16 | the committed step boundary a proof attests: prev · statement · roots · effects · inclusion path; one per subject of a signal, kept by the holder, folded by the light client, verifiable after bodies are pruned |
+| [the assumptions registry](assumptions-registry.md) | proposed | 2026-10-27 | one list of everything the stack assumes, classed, measured, with a response plan; the list is the axiom file of the stack's eidos corpus; eidos replaces lean, and what it lacks is built |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
 | [a network is a repository, or a home](network-repos.md) | proposed | 2026-10-17 | true-cyber, bostrom, space-pussy define the shared networks; every name's home is raised from cy; cybernode runs them all |
 | [cybernode](cybernode.md) | proposed | 2026-10-17 | rung 7 renamed: soft3 is the stack, cybernode its node and cyberia's instance |
