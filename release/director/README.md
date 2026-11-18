@@ -46,8 +46,9 @@ when the subscription answers with a usage limit, the loop backs off until the w
 `loop.sh` runs forever under tmux on agent-a as the `claude` body:
 
 1. **tick** (`tick.sh`, no tokens): sense every component's default branch, the open PRs, the last train run; dispatch the gates when a HEAD moved; pull the receipts. state in `state/`.
-2. **session** (`director.yaml`, opus): read the doctrine, `plan.md`, the tick and the receipts; take the next unit of the plan or the reddest gate; do it — delegate to sonnet subagents, ask fable when stuck, open or update PRs, review and merge the green ones; update `plan.md` and the day's report in the same PR stream. one session ends after one unit, so the state on disk is re-read between units.
-3. if the session reports more work, the next starts at once; if it reports nothing to do, the loop sleeps 15 minutes; if the subscription is out of window, it sleeps until the reset.
+2. **skip** (no tokens): no session runs at all while the newest tick equals the previous one (the comparison ignores `at` and the open PRs' `mergeable`, which GitHub flaps on every push), the last session of this process reported `NEXT: idle`, and that session started less than `HEARTBEAT` (default 10800 s, 3 h) ago; the loop logs `no session: …` to `state/tick.log`, sleeps 15 minutes and ticks again. a session runs on `NEXT: more`, on a session that printed no `NEXT:` line, on the first iteration of the process, on a tick jq cannot read, and when the heartbeat expires — `test-loop.sh` holds the cases.
+3. **session** (`director.yaml`, opus): read the doctrine, `plan.md`, the tick and the receipts; take the next unit of the plan or the reddest gate; do it — delegate to sonnet subagents, ask fable when stuck, open or update PRs, review and merge the green ones; update `plan.md` and the day's report in the same PR stream. one session ends after one unit, so the state on disk is re-read between units.
+4. if the session reports more work, the next starts at once; if it reports nothing to do, the loop sleeps 15 minutes; if the subscription is out of window, it sleeps until the reset.
 
 ## the first session
 
