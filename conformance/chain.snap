@@ -21,7 +21,6 @@ chain::economy@v1 :: "two epochs: epoch 1 record"                    tier=gamma 
 chain::economy@v1 :: "two epochs: epoch 2 budget, paid, pool after"  tier=gamma  ha58537000000000000000000000000009716de00000000000000000000000000
 chain::economy@v1 :: "two epochs: epoch 2 payouts"                   tier=gamma  h0000000000000000000000000000000000000000000000000000000000000000
 chain::economy@v1 :: "two epochs: epoch 2 record"                    tier=gamma  heb6fc7d4f49b3263c60a553031973accfa99d1a902de7b73c6a0df476fb3f890
-chain::economy@v1 :: "two epochs: state root at 25"                  tier=gamma  he3a037e54831c7df39a766305b0cef4e3fd23701b0f3f5523d267c649ddcf2a6
 chain::economy@v1 :: "two epochs: state root at 35"                  tier=gamma  h95a3a3f57082a64f510ddc1c60934ffa0f7006ee3f7938347447c43412dfe25f
 chain::genesis@v1 :: "pussy block0_id"                               tier=gamma  hb5aca6a0446c3fd3080dc8cac4a03c3b0bafc41fe9847b9779f19a6faaeb6e06
 chain::genesis@v1 :: "pussy genesis weights digest"                  tier=gamma  h218a87754a2191bc12b151d29d24b252e1cad545aebb24de04ff55643be0f246

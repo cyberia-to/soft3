@@ -113,7 +113,11 @@ Three groups moved, and only one of them is the genesis identity:
    (cybernode `rs/src/chain/economy/vectors.rs`, the `genesis()` params), so
    its bytes move with the constant and its block 0 with the 200-byte header.
    "conformance genesis state_root" did not move, as expected.
-3. `chain::economy@v1` — ten entries moved and one is new. **The tru epoch
+3. `chain::economy@v1` — eleven entries moved (ten distinct digests: "two
+   epochs: epoch 1 record" and "reorg above the boundary: epoch 1 record" are
+   the same record and carry the same `h264dbc6f…`), one is new ("two epochs:
+   state root at 35") and one is gone ("two epochs: state root at 25", below).
+   **The tru epoch
    engine pin is unchanged and correct**: `tru-epoch-e660d1e` is still the
    id cybernode's `rs/src/chain/economy/focus.rs` returns, and the alpha
    receipt records `/economy` reading `tru-epoch-e660d1e` on the built
@@ -122,11 +126,40 @@ Three groups moved, and only one of them is the genesis identity:
      `settle(E) = boundary(E + 1) + D` — an epoch's game is sampled over the
      *next* epoch's blocks (rewards.md §7). The scenarios' settlements
      therefore sit at heights 25 and 35 where they sat at 15 and 25, which
-     is why "two epochs: state root at 25" becomes "state root at 35" and
-     every epoch record and reorganization vector is taken at a new height;
+     is why "two epochs: state root at 25" is replaced by "state root at 35"
+     and every epoch record and reorganization vector is taken at a new
+     height;
    - the scenarios' `MIN_LOCK` moved 15 → 25 (≥ 2L + D) to stay consistent
      with that;
    - settlement now takes the window's lottery as an input.
+
+### the one line removed by hand: "two epochs: state root at 25"
+
+The bless run does not delete a vector the engine stopped producing. `bless`
+writes `merged(committed, current)`, and `merged` only *replaces* committed
+entries of the same `(key, scenario)` and **keeps the rest** (cybernode
+`rs/src/chain/conformance.rs:220-226`); `drift`, and with it `check` and the
+`committed_chain_snap_matches_this_build` test, ranges over `current` alone
+(same file, 229-239), so a committed row no current entry regenerates is
+never compared and never reported. "two epochs: state root at 25" is such a
+row: at cybernode `ad13862` the economy vector set pushes
+`("two epochs: state root at 35", d.roots[35])` and nothing else named
+"state root at" in that scenario (`rs/src/chain/economy/vectors.rs:279`), so
+the height-25 row survived the 2026-11-12 run untouched, at the digest the
+pre-ticket engine gave it. Under the ticket, height 25 is where epoch 1
+settles and the scenario's locks moved with `MIN_LOCK`, so that digest is a
+state this engine does not produce. The line is deleted here and nothing
+re-adds it.
+
+The listing this leaves is exact: the vector set of `ad13862` emits twenty
+`chain::economy@v1` entries — the three signed transactions, the four
+conformance genesis weights and φ*_0 rows, the six "two epochs" epoch rows,
+"two epochs: state root at 35", the two reorganization records, the two
+"new high" rows and the two "random 2,000 blocks" rows — and the file now
+carries exactly those twenty. The other sections are unchanged in shape:
+two `chain::tx@v1`, four `chain::state@v1`, twenty-one `chain::pool@v1`,
+seven `chain::genesis@v1` (pussy, from the pinned file). Re-blessing on this
+file is therefore a no-op apart from the date in line 1.
 
 ## why the payout digests are empty
 
