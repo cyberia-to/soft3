@@ -65,13 +65,22 @@ an existing candidate is never overwritten.
 The matrix is macOS ARM64/x64 and Linux ARM64/x64. Cyb adds Android ARM64 APK.
 Red candidates retain available binaries and failure receipts, including missing
 platforms. Binaries are attached inside platform archives. The owner promotes a
-candidate, pushes version tags, merges version bumps and publishes packages.
-Automation only creates drafts.
+candidate, pushes version tags, merges into the default branches — version bumps
+included — and publishes packages. Automation only creates drafts.
+
+One role merges below the default branches: the director of soft3
+(`release/director/`, the owner, 2026-10-25) merges any pull request whose gates
+are green, pin and version bumps included, into a release branch
+(`release/phase1`, or a repository's existing `release/<x>`), without asking. A
+default branch takes only a `release/<x> → <default>` pull request the owner
+approves; branch protection on the default branch of every stack repository
+enforces it.
 
 From the cut until the owner's verdict, the three default branches are frozen.
 Fixes and audit receipts go on `release/<date>`; receipts belong in
 `audit/release-<date>/`, and Cyber's launch log records each candidate. Version or
-pin changes follow the coordinated bump PR rule in [[cyberia/dev]].
+pin changes follow the coordinated bump PR rule in [[cyberia/dev]]; on a
+release branch the director merges such a pull request once its gates are green.
 
 ## operation
 

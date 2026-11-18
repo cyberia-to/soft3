@@ -27,7 +27,7 @@ the owner, 2026-10-24 and 2026-10-25: a cron is not a daemon, and a director who
 
 ## the doctrine it reads first, every session
 
-`~/cyber/AGENTS.md` and `CLAUDE.md` — on agent-a `$HOME/doctrine/`, copied by `install.sh` (worktrees, git, release train, no Node, the home) — `cyberia/dev.md` (clone cyberia-to/cyberia) (objects, laws of evidence, requirements, conduct), `cyberia/processes/deliver.md` (the graph of a delivery, lanes, the failure modes), soft3's own `CLAUDE.md`, `status.md`, `specs/releases.md`, `release/phase1.toml`, `release/components.toml`, `proposals/README.md` and every proposal it names. the director configures its own work from these — the recipes, the order, the gates — and changes them by PR like anything else.
+`~/cyber/AGENTS.md` — the home's one instruction file, there is no `CLAUDE.md` under `~/cyber` (the owner, 2026-10-27); on agent-a `$HOME/doctrine/AGENTS.md`, copied by `install.sh` (worktrees, git, release train, no Node, the home) — `cyberia/dev.md` (clone cyberia-to/cyberia) (objects, laws of evidence, requirements, conduct), `cyberia/processes/deliver.md` (the graph of a delivery, lanes, the failure modes), soft3's own `CLAUDE.md`, `status.md`, `specs/releases.md`, `release/phase1.toml`, `release/components.toml`, `proposals/README.md` and every proposal it names. the director configures its own work from these — the recipes, the order, the gates — and changes them by PR like anything else.
 
 ## models
 
@@ -59,11 +59,11 @@ on the day's report, `audit/release-<date>/director.md`: the candidate green or 
 
 ## what it needs
 
-| need | state 2026-10-25 |
+| need | state (each row dated) |
 |---|---|
 | the claude body signed in on agent-a | done — `claude setup-token` (1 year), goose provider `claude-code` |
-| the machine user `cyberia-apparatus` with write on the stack | done — team `apparatus`, 31 repositories; no branch protection on soft3 `main` or lens `master` |
-| the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md`, `~/cyber/CLAUDE.md` § release train (2026-10-25): release branches free, default branches by the owner's approval |
-| branch protection on the default branches | done 2026-10-25 — 30 public stack repositories; a `release/* → default` PR waiting for the owner's approval is the rule working, not a blocker to escalate |
+| the machine user `cyberia-apparatus` with write on the stack | done — team `apparatus`, 31 repositories |
+| the doctrine allowing the director to merge | done — `~/cyber/AGENTS.md` § release train (the owner, 2026-10-25): "The director integrates on **release branches** (`release/phase1`, or a repository's existing `release/<x>`): it merges any PR into them whose gates are green, bumps and pins included, without asking. Into a **default branch** it goes only by a pull request the owner approves — enforced by branch protection (one approving review, the owner exempt) on the default branch of every stack repository." the same authority is written into this repository's contract, `specs/releases.md` § cadence and authority |
+| branch protection on the default branches | done 2026-10-25 — 30 public stack repositories, soft3 `main` and lens `master` among them. measured 2026-11-18: `gh api repos/cyberia-to/soft3/branches/main/protection --jq '{reviews: .required_pull_request_reviews.required_approving_review_count, enforce_admins: .enforce_admins.enabled, force_push: .allow_force_pushes.enabled}'` → `{"enforce_admins":false,"force_push":false,"reviews":1}`, the same reply for `repos/cyberia-to/lens/branches/master/protection`. a `release/* → default` PR waiting for the owner's approval is the rule working, not a blocker to escalate |
 | gates over the release branches | the first session's work — the candidate workflow snapshots default branches only |
 | a PR gate in each repository | the first session's work |

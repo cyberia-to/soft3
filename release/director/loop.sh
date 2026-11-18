@@ -5,14 +5,18 @@ export PATH="$HOME/director:$HOME/.local/bin:$PATH" DIR="$HOME/director"
 [ -f "$HOME/.config/cyber/claude.env" ] && . "$HOME/.config/cyber/claude.env"
 cd "$DIR"; mkdir -p state
 while true; do
-  bash tick.sh || echo "$(date -u +%H:%M:%S) tick failed rc=$?" >> state/tick.log
-  t=$(ls -t state/tick-*.json 2>/dev/null | head -1); r=$(ls -t state/red-*.json 2>/dev/null | head -1)
+  if bash tick.sh; then sensed=1; else echo "$(date -u +%H:%M:%S) tick failed rc=$?" >> state/tick.log; sensed=0; fi
+  # a failed tick has no fresh state: the session is given empty parameters rather than yesterday's files
+  t=""; r=""
+  [ "$sensed" = 1 ] && t=$(ls -t state/tick-*.json 2>/dev/null | head -1) && r=$(ls -t state/red-*.json 2>/dev/null | head -1)
   log=state/session-$(date -u +%Y%m%dT%H%M%SZ).log
   echo "$(date -u +%H:%M:%S) session start" >> state/tick.log
-  goose run --recipe director.yaml --no-session --params tick="$t" --params red="${r:-}" > "$log" 2>&1
+  goose run --recipe director.yaml --no-session --params tick="$t" --params red="$r" > "$log" 2>&1
   rc=$?; next=$(grep -o 'NEXT: [a-z]*' "$log" | tail -1)
   echo "$(date -u +%H:%M:%S) session end rc=$rc ${next:-NEXT: ?}" >> state/tick.log
-  if grep -qiE "usage limit|rate limit|limit reached|resets at" "$log"; then echo "$(date -u +%H:%M:%S) subscription window hit; sleeping 30 min" >> state/tick.log; sleep 1800
+  # only the provider refusing stalls the loop: the session itself writes about the fable cap and the windows, and exits 0
+  if [ "$rc" -ne 0 ] && tail -20 "$log" | grep -qiE "usage limit|rate limit|limit reached|resets at"; then
+    echo "$(date -u +%H:%M:%S) subscription window hit; sleeping 30 min" >> state/tick.log; sleep 1800
   elif [ "$next" = "NEXT: more" ]; then sleep 30
   else sleep 900; fi
   find state -name 'session-*.log' -mtime +14 -delete

@@ -72,4 +72,4 @@ Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `
 `simulation-gate` (the chain simulator's gate suite, cyberia-to/simulation), `soft3-tests`,
 `soft3-release`, and `node-status`. Products add `soft3-dependency` and their
 application gates. Missing implementations and failed gates remain red evidence.
-Owner-only promotion and tags follow `~/cyber/AGENTS.md`; the director of soft3 (`release/director/`, the owner, 2026-10-25) merges green PRs into release branches; a default branch takes only a PR the owner approves (branch protection).
+Who merges what is `specs/releases.md` § cadence and authority, which this file defers to: the owner promotes, tags and merges into the default branches; the director of soft3 (`release/director/`) merges green PRs into release branches; a default branch takes only a PR the owner approves (branch protection). The doctrine behind it is `~/cyber/AGENTS.md` § release train (the owner, 2026-10-25).
