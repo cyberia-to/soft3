@@ -73,8 +73,12 @@ One role merges below the default branches: the director of soft3
 are green, pin and version bumps included, into a release branch
 (`release/phase1`, or a repository's existing `release/<x>`), without asking. A
 default branch takes only a `release/<x> → <default>` pull request the owner
-approves; branch protection on the default branch of every stack repository
-enforces it.
+approves. Branch protection on the default branch of every stack repository
+enforces the half of that a mechanism can hold: a pull request, and one
+approving review (`required_approving_review_count: 1`, measured 2026-11-18).
+Any account with write access satisfies that review, and this repository has no
+CODEOWNERS; that the approving review is the owner's is the rule, not yet the
+mechanism. CODEOWNERS plus required code-owner review would make it one.
 
 From the cut until the owner's verdict, the three default branches are frozen.
 Fixes and audit receipts go on `release/<date>`; receipts belong in

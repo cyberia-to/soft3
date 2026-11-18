@@ -16,11 +16,15 @@ DEF=$(git -C "$DIR/mirrors/soft3" remote show origin | awk '/HEAD branch/ {print
 TICKPY=$DIR/mirrors/soft3/release/director_tick.py; SIBLINGS=$STATE/siblings.txt
 python3 "$TICKPY" siblings "$MANIFEST" > "$SIBLINGS" 2> "$STATE/siblings.err"
 if [ -s "$STATE/siblings.err" ]; then log "sense: $(cat "$STATE/siblings.err")"; fi
-heads="{}"
+heads="{}"; unreadable=""
 while read -r repo branch pin; do
+  # ls-remote exits 0 and prints nothing when the branch is renamed or deleted: that is a sibling
+  # that could not be sensed, never a sibling that moved — it is named in the log, and drift is false
   head=$(git ls-remote -q "https://github.com/$repo" "refs/heads/$branch" | cut -f1)
-  heads=$(jq -c --arg r "$repo" --arg h "$head" --arg p "$pin" '. + {($r): {head:$h, pin:$p, drift: ($h != $p)}}' <<<"$heads")
+  [ -z "$head" ] && unreadable="$unreadable $repo#$branch"
+  heads=$(jq -c --arg r "$repo" --arg h "$head" --arg p "$pin" '. + {($r): {head:$h, pin:$p, drift: ($h != "" and $h != $p), unreadable: ($h == "")}}' <<<"$heads")
 done < "$SIBLINGS"
+if [ -n "$unreadable" ]; then log "sense: no ref answered, the branch is renamed or deleted —$unreadable"; fi
 prs="[]"; run="null"
 [ -z "${NOGH:-}" ] && prs=$(gh pr list -R $ORG/soft3 --state open --json number,title,labels,mergeable,headRefName,updatedAt -q '[.[] | {n:.number,t:.title,labels:[.labels[].name],mergeable:.mergeable,branch:.headRefName}]')
 [ -z "${NOGH:-}" ] && run=$(gh run list -R $ORG/soft3 --workflow "Release train" -L 1 --json databaseId,status,conclusion,createdAt -q '.[0]')

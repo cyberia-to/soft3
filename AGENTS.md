@@ -1,4 +1,8 @@
-# soft3 — stack contracts and developer interfaces
+# AGENTS.md — soft3: stack contracts and developer interfaces
+
+This is the repository's one instruction file, the house's name for it
+(`~/cyber/AGENTS.md`: there is no `CLAUDE.md` under `~/cyber`, the owner,
+2026-10-27). It was `CLAUDE.md` until 2026-11-18.
 
 ## what this repo is
 
@@ -72,4 +76,4 @@ Candidate gates are `origin-checkouts`, `phase1-pins`, `release-notes-source`, `
 `simulation-gate` (the chain simulator's gate suite, cyberia-to/simulation), `soft3-tests`,
 `soft3-release`, and `node-status`. Products add `soft3-dependency` and their
 application gates. Missing implementations and failed gates remain red evidence.
-Who merges what is `specs/releases.md` § cadence and authority, which this file defers to: the owner promotes, tags and merges into the default branches; the director of soft3 (`release/director/`) merges green PRs into release branches; a default branch takes only a PR the owner approves (branch protection). The doctrine behind it is `~/cyber/AGENTS.md` § release train (the owner, 2026-10-25).
+Who merges what is `specs/releases.md` § cadence and authority, which this file defers to: the owner promotes, tags and merges into the default branches; the director of soft3 (`release/director/`) merges green PRs into release branches; a default branch takes only a PR the owner approves — branch protection enforces the pull request and one approving review, not whose review it is, so that part is the rule and not yet the mechanism. The doctrine behind it is `~/cyber/AGENTS.md` § release train (the owner, 2026-10-25).
