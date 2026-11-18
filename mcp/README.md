@@ -22,7 +22,7 @@ MCP server exposing the cybergraph to AI assistants (Claude, GPT, etc.).
 
 ## transport
 
-stdio (standard MCP transport). connects to a running soft3 node or directly to a public RPC.
+stdio (standard MCP transport). connects to a running cybernode (the node, rung 7) or directly to a public RPC.
 
 ## configuration
 

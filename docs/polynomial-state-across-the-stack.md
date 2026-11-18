@@ -11,7 +11,7 @@ alias: trinity meets polynomial state, how polynomial state transforms trinity, 
 
 an explainer, not a spec. written on 2026-03-23 to argue the decision to commit the whole graph to one polynomial ([[bbg]]) opened through [[lens]], and to follow that decision through the three pillars of the [[trinity]] thesis. the decision was taken and shipped; the projections below are kept whole because a projection with a named assumption is worth more than its absence, and each is marked by what the code has done with it since.
 
-status of the projections, 2026-10-17 (sources: [[soft3/proposals/proof-system-repair]], [[soft3/proposals/privacy-frozen]], the [[cyber/launch|launch]] rows 3, 5, 10, 12):
+status of the projections, 2026-10-17 (sources: [[soft3/projects/proof-system-repair]], [[soft3/projects/privacy-frozen]], the [[cyber/launch|launch]] rows 3, 5, 10, 12):
 
 - measured and confirmed: tri-kernel convergence fits a zheng circuit because graph reads are field operations; the commitment stays hash-based over [[hemera]] (lens Reed–Solomon + WHIR on `release/0.2`), so the post-quantum floor is unchanged.
 - measured and refuted as stated: proof size 1–2 KB (and the ~200-byte accumulator) came from the retired, unsound zheng design; the repaired constant-size block proof is 64,213 B worst case (profile 6). per-ticket decide/verify in tens of microseconds: sound per-ticket certificates measure 0.26–24.6 ms. the constant-size recursive step exists now as IVC over the nox machine on zheng `release/0.4` (zheng#53), not yet on zheng's default branch.

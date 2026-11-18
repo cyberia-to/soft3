@@ -1,6 +1,6 @@
 # proof-system repair — the release, turnkey
 
-owner instruction 2026-10-09: implement the whole proposal (`proposals/proof-system-repair.md`) and deliver a release prepared end to end. one soft3 release carries all phases.
+owner instruction 2026-10-09: implement the whole project (`projects/proof-system-repair.md`) and deliver a release prepared end to end. one soft3 release carries all phases.
 
 ## integration base — the stand
 
@@ -23,7 +23,7 @@ zheng, joy, foculus, cybergraph, soft3, tok, tru build together on it. trisha ne
 | H | all docs repos | close §C ledger | B–G | `scripts/stale-proof-claims.nu` → 0 |
 | R | soft3, cyber | versions, changelogs, `release/phase1.toml` pins, gates, candidate, receipts in `audit/release-<date>/` | all | the train's gates green |
 
-parallelism is bounded by disk (35 GB free): at most three stands build at once. waves: {A, B, C} → {D, E} → {F, G} → {R1} → {H, R}. phase 3 = accumulation (F) + IVC (R1): constant size comes from R1, not from F (proposal §4).
+parallelism is bounded by disk (35 GB free): at most three stands build at once. waves: {A, B, C} → {D, E} → {F, G} → {R1} → {H, R}. phase 3 = accumulation (F) + IVC (R1): constant size comes from R1, not from F (project §4).
 
 ## rules held throughout
 

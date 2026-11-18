@@ -60,10 +60,10 @@ one line per type. one fingerprint per line. tier inline. `@vN` suffix permits p
 # mechanism.snap — mechanism outputs on fixed scenarios
 nox::reduce@v1 :: "spec-add"         tier=gamma    h…
 nox::trace@v1 :: "spec-add"          tier=gamma    h…
-zheng::verify@v1 :: "quote-add"      tier=gamma    h…
+zheng::verify/p1@v1 :: "quote-add"   tier=gamma    h…
 ```
 
-scenario name is the lookup key. the fingerprint binds the mechanism's canonical output bytes for the named scenario — for nox, the reduction outcome and the trace; for zheng, the proof bytes and the verifier's verdicts.
+scenario name is the lookup key. the fingerprint binds the mechanism's canonical output bytes for the named scenario — for nox, the reduction outcome and the trace; for zheng, the envelope's proof bytes and the verifier's verdicts.
 
 ## tiers
 
@@ -108,7 +108,7 @@ layout. `--stack <dir>` and `--conformance <dir>` override the locations.
 | `conformance/snapshots/manifest.snap` | bless | yes, byte for byte — counts and `root` |
 | `conformance/snapshots/provenance.toml` | bless | no — the sibling revisions and date of the last bless |
 | `conformance/fixtures/nox/*.nox` | hand | input programs |
-| `conformance/fixtures/zheng/*.proof` | bless | committed proof wire bytes, verified by the current verifier |
+| `conformance/fixtures/zheng/*.zheng` | bless | committed `ZHENGPF1` envelope wire bytes, verified by the current verifier |
 
 each `.snap` file is a pure function of its entries: two comment lines, then
 one line per entry sorted by key, the key column padded to the longest key.
@@ -155,13 +155,18 @@ that moved them.
 | [[hemera]] | `params` | `hash` (published vectors, sponge rate boundaries 55/56/57/112 bytes, 1000-byte ramp), `hash_secret` (= `hash`, invariant), `keyed_hash`, `derive_key`, `tree::root_hash` (content-defined) and `tree::fixed_chunk_root` across the 4 KiB chunk boundary, the raw permutation |
 | nebu (strata) | `Goldilocks` (canonical reduction) | `add`/`sub`/`mul` over edge×edge and ramp×ramp, `neg`/`square`/`pow7`/`inv`, `exp`, `sqrt` + `legendre`, `batch_inv`, `ntt` (8, 32), `multilinear_eval`, `bytes_to_field_elements`, `Fp2`/`Fp3`/`Fp4` |
 | [[nox]] | `atom`, `pair`, `tree`, wire `push`/`request`/`response` | `reduce` (outcome: result tree + cost, halt, or error kind) and `trace` (the rows zheng proves) for every `fixtures/nox/*.nox` program — the pattern spec's test vectors and one per pattern — and every `nox/jets/*.nox` formula |
-| [[zheng]] | `ProofParams::default`, `Statement` | per scenario: `commit` (fresh proof wire bytes) and `verify` (verdict on the committed fixture plus nine single-bit tamperings). scenarios: three trace proofs without opening rows, the hash-binding proof `[15 [1 42]]`, the Brakedown PCS `open`/`verify_eval` |
+| [[zheng]] | `envelope::Header` (magic, version, profile bytes), `ExecutionStatement` (transcript bytes) | per scenario and profile: `prove/p<N>` (fresh `ZHENGPF1` envelope bytes) and `verify/p<N>` (verdict on the committed fixture plus nine single-bit tamperings), for profile 0 (public certificate) and 1 (succinct). scenarios: three programs without opening rows, the hash program `[15 [1 42]]` |
 | [[tade]] | every chunk constructor, LEB128 varints | the incremental reader in 7-byte feeds, through `Molecule` and back |
 | [[cybergraph]] | — | a file's particle, `bbg::axon_id`, `bbg::balance_key`, `private_network`, `Scope::hash`, `Signal::hash` and `content_id`, the bbg root after two signals pass the `link` verb |
 
-zheng's `ZHENGPF1` profiles (0 public, 3 state-public, and the rest) live on
-the 0.4 integration line, not on zheng's default branch; each enters this
-surface as a `commit`/`verify` scenario pair when it lands there.
+zheng's surface is its 0.4 production wire format `ZHENGPF1` (`zheng::envelope`).
+Profiles 0 (public) and 1 (succinct) are fingerprinted: their proving is
+deterministic (Fiat-Shamir only; grinding takes the least nonce). Profile 2
+(zk) is randomised, 3 (state) needs authenticated state evidence, and 4-6
+(machine, recursive, wrapped) are too slow for the gate; each enters when
+it has a deterministic, fast scenario. The 0.3 folded trace API (`commit`,
+`verify`, `open`, `verify_eval`) is not fingerprinted: zheng compiles it only
+under its `legacy` feature and documents it as unsound.
 
 ## manifest construction
 
@@ -197,6 +202,6 @@ runner; the release train's `conformance-snapshot` gate runs `--check`
 branches recorded in `snapshots/provenance.toml`; evidence in
 `audit/conformance-first-bless-2026-10-10.md`. every entry starts at tier gamma.
 
-next: per-crate `Conformant` adoption ([[mudra]] candidate), the `ZHENGPF1`
-profile scenarios when they reach zheng's default branch, and a zheng proof
+next: per-crate `Conformant` adoption ([[mudra]] candidate), the remaining `ZHENGPF1`
+profile scenarios (state, and the machine profiles once fast enough), and a zheng proof
 over the manifest root.

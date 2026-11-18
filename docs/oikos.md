@@ -3,13 +3,13 @@ title: oikos — one token, one chain
 tags: cyber, soft3, docs, explainer, cip
 crystal-type: pattern
 crystal-domain: cyber
-status: proposal
+status: project
 date: 2026-09-08
 alias: oikos, one token one chain, sovereign mints, oikos architecture, home book, personal chain, personal chains
 ---
 # oikos — one token, one chain
 
-status: proposal (2026-09-08), moved from cyber/research on 2026-09-27 as a cross-component explainer. measured: nothing yet. refuted: nothing. open: the four foundations and the two settlement protocols below; the referral and registration cuts of the birth premint are decided on [[tokens]] (2026-09-27) and the home book is core 5 of the launch ([[launch]]).
+status: project (2026-09-08), moved from cyber/research on 2026-09-27 as a cross-component explainer. measured: nothing yet. refuted: nothing. open: the four foundations and the two settlement protocols below; the referral and registration cuts of the birth premint are decided on [[tokens]] (2026-09-27) and the home book is core 5 of the launch ([[launch]]).
 
 Oikos proposes one home book for one token: the complete ledger of its issuer's
 obligations. One non-fungible name roots the book; nested sub-names form its chart
@@ -31,7 +31,7 @@ Two rules define the proposed economics:
    specifies conditional reassignment at home against evidence from the other
    book, with explicit authority, freshness, expiry and conservation rules.
 
-Applied to [[cyber]], the proposal gives [[cyber/$CYB|$CYB]] a home book rooted by
+Applied to [[cyber]], the project gives [[cyber/$CYB|$CYB]] a home book rooted by
 the root name. Routing and registration link other books' names and state roots
 into the [[cybergraph]]. These rules define a target economic profile. Existing
 foreign networks retain their actual token, address and contract rules; adapting
@@ -39,7 +39,7 @@ an interface preserves their original wire data and identifies their profiles.
 
 ## required foundations
 
-The proposal depends on four foundations:
+The project depends on four foundations:
 
 1. Affordable verification. Conditions require a supported verifier for the
    counterparty's consensus and state. Recursive [[zheng]] proofs can compress
@@ -92,7 +92,7 @@ These protocols must be specified before oikos is law:
 | [[3c]] | Typed read/write/trade operations; exact evidence, authority, delivery and settlement meanings |
 | [[network]] · [[communication]] | Authenticated book/endpoint routes and freshness economics; delivery bound to the exact message |
 | [[tokens/plumb|plumb]] | Authorized book creation with issuer policy, program and complete initial obligations |
-| [[cyber/$CYB|$CYB]] · [[litepaper]] · [[whitepaper]] | Consistent home-book economics, with the proposal's settlement assumptions explicit |
+| [[cyber/$CYB|$CYB]] · [[litepaper]] · [[whitepaper]] | Consistent home-book economics, with the project's settlement assumptions explicit |
 | [[cyb/parts/state|state]] | Evidence tier, network, root, coverage and age in every condition |
 | [[cyb/parts/sigma|sigma]] · [[cyb/parts/vault|vault]] | Portfolio observations retain their tier; spending uses the captured issuer/owner binding and scoped custody |
 | [[aos/teleport|teleport]] · [[aos/hub|hub]] | Condition composition and explicit foreign adapters with their actual trust and wire profiles |

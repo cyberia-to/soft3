@@ -20,7 +20,7 @@ value        tok (pay)
 cognition    soma (think)
 capability   ward (authorize)
 present      mir (render world)        prysm (paint UI)
-network      radio · tade · foculus
+network      cybernode (the node) · radio · tade · foculus
 dynamics     tru (converge φ*)         foculus (agree)
 graph        cybergraph · bbg · cell · fs    mudra (hide: seal ML-KEM-768 + quorum Shamir built; stealth · veil spec — beside the neuron it protects)
 proof        zheng (execution)         eidos (theorem)
