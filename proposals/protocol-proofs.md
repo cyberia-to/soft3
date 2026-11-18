@@ -25,7 +25,7 @@ zippel covers the first row by searching an ideal membership with Gröbner bases
 
 ## 2. dependency, answered
 
-We depend on zippel for nothing in the stack and for one thing in the workflow: the oracle that says "complete" in 43 ms. The protocol files are ours (`zheng/specs/proto`), the discipline — one choreography, the transcript derived from it — is ours to keep, and the verdict can be re-derived by any Gröbner engine (Singular today) or, after this proposal, checked by eidos from a certificate. So zippel is a tool like a SAT solver: replaceable, never trusted for truth once the certificate is checked at home.
+We depend on zippel for nothing in the stack and for one thing in the workflow: the oracle that says "complete" in 43 ms (`zheng_spartan_fixed` with ark-gb, 804 ms with Singular — [[zheng/audit/zippel-2026-10-24|the experiment]]). The protocol files are ours (`zheng/specs/proto`), the discipline — one choreography, the transcript derived from it — is ours to keep, and the verdict can be re-derived by any Gröbner engine (Singular today) or, after this proposal, checked by eidos from a certificate. So zippel is a tool like a SAT solver: replaceable, never trusted for truth once the certificate is checked at home.
 
 ## 3. the moves
 
