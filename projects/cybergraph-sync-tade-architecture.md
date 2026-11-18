@@ -216,7 +216,7 @@ Commit: `docs: update cybergraph interface for declare() and corrected fan-out`
 | add | `projects/cybergraph-sync-tade-architecture.md` (this file) |
 
 Commits:
-1. `docs: add cybergraph-sync-tade architecture project`
+1. `docs: add cybergraph-sync-tade architecture proposal`
 2. `docs: update stack table and diagram for sync/tade/soma`
 
 ### cyber/subgraphs.toml

@@ -98,7 +98,7 @@ seven questions no component roadmap owned. [[soft3/projects/rooted-civilization
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` stack facade [0.11.0](https://crates.io/crates/soft3) over the node `cybernode` 0.1.0 (github.com/cyberia-to/cybernode) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
+| [cli/](cli/) | `soft3` stack facade 0.11.0 in tree, [0.10.0](https://crates.io/crates/soft3) on crates.io, over the node `cybernode` 0.1.0 (github.com/cyberia-to/cybernode) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 

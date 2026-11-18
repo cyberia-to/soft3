@@ -20,7 +20,7 @@ Three vital signs, one compound, one derivative.
 | signal | measures | source in the core | exists |
 |---|---|---|---|
 | $\text{cap}(t)$ | external validation | circulating supply × price; price = the stake-weighted median of privately committed reports, aggregate public, individual private (§3) | not before a market |
-| $J(t)$ | internal order | [[syntropy]] $D_{\mathrm{KL}}(\phi^* \,\|\, u)$, emitted by [[focusing]] every epoch — already in consensus with the [[soft3/specs/chain-economy|focus economy]] | yes, genesis |
+| $J(t)$ | internal order | [[syntropy]] $D_{\mathrm{KL}}(\phi^* \,\|\, u)$, emitted by [[focusing]] every epoch — already in consensus with the [[cybernode/specs/chain-economy|focus economy]] | yes, genesis |
 | $H(t)$ | subjective wellbeing | [[happiness]]: stake-weighted aggregate of private $h_\nu \in [0,100]$, committed in [[bbg]], aggregated under a [[zheng]] proof | with the privacy rule set |
 
 $$M(t) = \text{cap}(t)^{w_c}\cdot J(t)^{w_s}\cdot H(t)^{w_h}, \qquad w_c + w_s + w_h = 1,\quad w \ge 0$$
@@ -41,7 +41,7 @@ The weights $(w_c, w_s, w_h)$ are the only normative choice the system cannot ma
 
 ### 3.1 the signs as epoch records
 
-The epoch record of [[soft3/specs/chain-economy|chain-economy]] §2 gains a `metabolic` block, computed at the boundary by every node like the focus graph:
+The epoch record of [[cybernode/specs/chain-economy|chain-economy]] §2 gains a `metabolic` block, computed at the boundary by every node like the focus graph:
 
 ```
 metabolic(E) = { J: u64 (bits, fixed-point), H: u64 | none, cap: u128 | none, M: u128, dM: i128, w: (w_c, w_s, w_h) in bps }
@@ -64,7 +64,7 @@ Honesty of the price report rests on the same two legs the happiness page gives:
 
 The weights are a chain parameter changed by a vote transaction, and by nothing else:
 
-- a project names $(w_c, w_s, w_h)$ in basis points summing to 10,000;
+- a proposal names $(w_c, w_s, w_h)$ in basis points summing to 10,000;
 - the vote is weighted by active stake (positions with $v \neq 0$, chain-economy §3), open for `W_VOTE` epochs, passes at a two-thirds supermajority of participating stake and a quorum of one third of active stake;
 - a passed vote takes effect at the next epoch boundary and cannot be changed again for `W_HOLD` epochs;
 - the weights of absent signs are forced to zero whatever the vote says, so a vote cannot point the compound at a number the chain does not have.
@@ -81,7 +81,7 @@ What $\dot M$ does **not** do: it never scales an individual's reward, never min
 
 ## 4. acceptance
 
-- conformance vectors in `soft3/specs/chain-conformance.md`: `M` over ten synthetic epochs with every sign present, with `H = none`, with `cap = none`; the genesis degenerate case `M = J`; a weights vote that passes, one that fails quorum, one that names a weight on an absent sign;
+- conformance vectors in `cybernode/specs/chain-conformance.md`: `M` over ten synthetic epochs with every sign present, with `H = none`, with `cap = none`; the genesis degenerate case `M = J`; a weights vote that passes, one that fails quorum, one that names a weight on an absent sign;
 - the monotonicity property as a test: raising one sign while lowering another by the same factor never raises $M$ beyond the weight ratio — gaming one sign costs on the others;
 - a parametrization experiment that reverts on negative $\dot M$ after `K` epochs, bit-exact on two nodes;
 - the happiness and price aggregates verify under the privacy rule set's proof, and their absence forces their weights to zero.
@@ -101,4 +101,4 @@ What $\dot M$ does **not** do: it never scales an individual's reward, never min
 - "the agents set the weights through explicit consensus": the weights are a stake vote of the chain's own participants, the agents vote like any neuron with active stake;
 - "cannot be gamed internally": replaced by what is true inside consensus (§3.2).
 
-related: [[tru/specs/rewards|rewards]] · [[soft3/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/projects/privacy-frozen|privacy, frozen]] · [[cyberia/architecture|cyberia's architecture]] (the origin)
+related: [[tru/specs/rewards|rewards]] · [[cybernode/specs/chain-economy|chain-economy]] · [[happiness]] · [[syntropy]] · [[soft3/projects/privacy-frozen|privacy, frozen]] · [[cyberia/architecture|cyberia's architecture]] (the origin)
