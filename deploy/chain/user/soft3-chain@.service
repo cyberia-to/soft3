@@ -1,0 +1,25 @@
+# soft3 root chain node (%i) as a systemd USER unit — jupiter has no sudo for cyber (Linger=yes keeps it up).
+# State: %h/soft3-chain/state is a symlink to the big disk (jupiter: /mnt/nvme4tb/soft3). Owner steps to move to the system unit: README § jupiter.
+[Unit]
+Description=soft3 root chain node (%i, user unit) — cybergraph + bbg + radio
+Documentation=https://github.com/cyberia-to/soft3/tree/main/deploy/chain
+ConditionPathExists=%h/.config/soft3/%i.env
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/soft3/%i.env
+Environment=RUST_LOG=info
+WorkingDirectory=%h/soft3-chain/state/%i
+ExecStart=%h/soft3-chain/bin/soft3 node --chain ${SOFT3_CHAIN} --home %h/soft3-chain/state/%i --bind ${SOFT3_BIND} --radio ${SOFT3_RADIO} --peers %h/.config/soft3/%i.peers.toml --moniker ${SOFT3_MONIKER} --log-net
+Restart=always
+RestartSec=5
+TimeoutStopSec=60
+KillSignal=SIGTERM
+LimitNOFILE=65536
+TasksMax=2048
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target

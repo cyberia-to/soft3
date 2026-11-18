@@ -89,7 +89,7 @@ else
   say DOWN unit "$unit is not active"
 fi
 
-if ss -uln 2>/dev/null | awk '{print $5}' | grep -qE "[:.]$radio_port$"; then
+if ss -Hlun 2>/dev/null | awk '{print $4}' | grep -qE "[:.]$radio_port$"; then
   say OK radio "udp/$radio_port bound"
 else
   say DOWN radio "nothing bound on udp/$radio_port"

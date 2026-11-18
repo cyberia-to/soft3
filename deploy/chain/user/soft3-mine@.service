@@ -1,0 +1,18 @@
+# soft3 miner (%i) as a systemd USER unit — jupiter has no sudo for cyber (Linger=yes).
+[Unit]
+Description=soft3 miner (%i, user unit) — hemera PoW against the local node
+After=soft3-chain@%i.service
+Wants=soft3-chain@%i.service
+ConditionPathExists=%h/.config/soft3/%i.mine.env
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/soft3/%i.mine.env
+ExecStart=%h/soft3-chain/bin/soft3 mine --chain %i --node ${SOFT3_MINE_NODE} --address ${SOFT3_MINE_ADDRESS} --backend ${SOFT3_MINE_BACKEND} --threads ${SOFT3_MINE_THREADS}
+Restart=always
+RestartSec=10
+Nice=19
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
