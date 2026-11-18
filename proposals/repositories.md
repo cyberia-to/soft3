@@ -50,10 +50,10 @@ a part earns its own repository only with its own audience under its own name; t
 | 7 network | **cybernode** | the node code out of `soft3/crate` ([[cybernode]]), radio, foculus | — |
 | the stack | **soft3** | tade, soft3.js (the SDK face) | — |
 | 8 robot | **cyb** | evy, kadek, kern, lytics, mir, prysm, wysm | optica — `graph render for any repo`, its own audience · **owner decides** |
-| 9 superintelligence | **cyber** | true-cyber, ctx, uhash | bostrom, space-pussy (archived) — networks |
+| 9 superintelligence | **cyber** | ctx, uhash | true-cyber, bostrom, space-pussy — the three repositories that define the networks ([[network-repos]], owner 2026-10-17) |
 | 10 state | **cyberia** | cyberia.to (as `site/`), cx, cyberia-meme | blog, cyber-valley, cyberstates — doors kept alive · **see § 4** |
 | warriors | one per target | — | all fifteen stay |
-| bootloader | — | — | go-cyber, chaingear, space-pussy and the rest: archived monuments, 442 stars kept |
+| bootloader | — | — | go-cyber, chaingear and the rest: archived monuments, 442 stars kept; of `space-pussy` only its go-cyber codebase is a monument ([[network-repos]] decision 10), the repository itself stays |
 | the lab | **lab** | arc, bt, ren, dif, sym, bel, seq, ten, sec, cloud-forest, cybervalley, cybervalley-io, simulation, li, hub, pure | — |
 | the den | **den** (private) | wav, qu, opt, cyberia-capital, cybland, superhuman, mimi, organiq, oxytocin, my | cve, midao, cybernode-ops, the family repositories — private products and the house |
 
@@ -80,7 +80,7 @@ the pages of the state (`cyberia`), its chronicle (`blog`), its genesis city (`c
 3. `lab` and `den` created; the seeds and the sketches moved in one sweep — the cheapest and most visible cleanup.
 4. `cy` ← glia, soma, seer, sigma, vault, and the organs out of cyb.
 5. `cybernode` per its own proposal, then ← radio, foculus.
-6. `cybergraph` ← file, neuron, plumb, tru; `cyber` ← true-cyber, ctx, uhash.
+6. `cybergraph` ← file, neuron, plumb, tru; `cyber` ← ctx, uhash.
 7. `cyb` ← its parts, history slimmed.
 8. the cyberia shelf, after the decision in § 4.
 
@@ -102,3 +102,6 @@ each step is one week of the train at most; a step that leaves a build red is re
 | the cyberia shelf: three doors or one repository with `sites/` | owner |
 | the names `lab` and `den` | owner |
 | whether `tade` belongs to the stack (contracts) or to the node | this page says the stack; cybernode's proposal may claim it |
+| space-pussy's go-cyber codebase: a `legacy/` folder of the network repository, or an archived `go-space-pussy` | owner — the open question of [[network-repos]] § 6.3 |
+
+**reconciled.** an earlier draft of this page folded `true-cyber` into `cyber` and archived `space-pussy` as a monument of the bootloader. [[network-repos]] (soft3, proposed, 2026-10-17) records the owner's instruction of the same day: `true-cyber`, `bostrom` and `space-pussy` stay as the three repositories that define their networks, and what such a repository already holds beside its configuration — the bostrom wiki, the pussy landing, the snapshot tooling — stays beside it (its § 0, § 2 and decisions 1, 2 and 10; the conflict with this page is its § 6.6). the rows of § 3 now say that. so `space-pussy` keeps serving the pussy burial snapshot, its landing and the snapshot tooling, which the spacepussy launch uses today; only its go-cyber codebase of the old chain is the monument, and where that code lands is the row above.
