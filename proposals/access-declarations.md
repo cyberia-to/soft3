@@ -9,7 +9,7 @@ date: 2026-10-30
 ---
 # access declarations
 
-**status:** proposed · **date:** 2026-10-30 · **owner's call:** "with a mnemonic, somewhere, in some way, give the agent itself the certainty it has access; the owner proves declarations of access rights for agents and machines with the machinery of soft3. this is the foundation of fast development." · review round 1 disposed 2026-10-30 ([soft3#475](https://github.com/cyberia-to/soft3/pull/475))
+**status:** proposed · **date:** 2026-10-30 · **owner's call:** "with a mnemonic, somewhere, in some way, give the agent itself the certainty it has access; the owner proves declarations of access rights for agents and machines with the machinery of soft3. this is the foundation of fast development." · **pull request:** [soft3#475](https://github.com/cyberia-to/soft3/pull/475)
 
 ## 0. the decision
 
@@ -73,7 +73,7 @@ A declaration with neither verbs nor `revokes` is rejected. The nonce makes a re
 
 Rules, each a removal:
 
-1. one root: the owner's spell derives the root neuron at the Cosmos path the old chains used (`Signer::from_spell`, chain.md §2.8) — the key that also claims the owner's legacy balances. No second root of trust; the cost of one key for both is a decision (§13).
+1. one root: the owner's spell derives the root neuron at the Cosmos path the old chains used (`Signer::from_spell` in cybernode `rs/src/wallet/mod.rs`; the path `m/44'/118'/0'/0/0`, [[mudra/specs/bridge|bridge]] § pipeline) — the key that also claims the owner's legacy balances. No second root of trust; the cost of one key for both is a decision (§13).
 2. delegation only attenuates ([[vault/specs/authorization|vault authorization]] § exact request): a delegate issues within its own object, verbs, interval and depth − 1, never wider; §4 gives the order.
 3. a declaration binds the action, the object with its account, the interval, the estate and a nonce ([[mudra/specs/identity|identity]] § exact authorization statement): a grant for `ssh` on `host:agent-a/user:caesar` authorizes nothing else, nowhere else, at no other time.
 4. the thing accessed enforces; the declaration is never the credential. The credential is the key, login or id the declaration pins, installed by a render (§6, §7).
@@ -299,4 +299,4 @@ Each names its section here and the apparatus side, [a1](https://github.com/cybe
 8. the person ([§10](#10-the-first-grants)): who, and which objects. no link yet; the owner names them.
 9. subject custody ([§5](#5-subjects)): Joy's key derived in custody on galapot, each agent-a body's in its own. default: yes.
 
-related: [[mudra/specs/neuron-auth|neuron-auth]] · [[mudra/specs/identity|identity]] · [[vault/specs/authorization|vault authorization]] · [[vault/specs/secrets|typed secrets]] · [[cybernode/specs/chain|chain]] · [[soft3/proposals/cybernode|cybernode]] · [apparatus a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md) (the apparatus's side)
+related: [[mudra/specs/neuron-auth|neuron-auth]] · [[mudra/specs/identity|identity]] · [[mudra/specs/bridge|bridge]] · [[vault/specs/authorization|vault authorization]] · [[vault/specs/secrets|typed secrets]] · [[cybernode/specs/chain|chain]] · [[soft3/proposals/cybernode|cybernode]] · [apparatus a1](https://github.com/cyberia-to/apparatus/blob/master/tasks/a1-access-declarations.md) (the apparatus's side)
