@@ -1,0 +1,4 @@
+command: ["cargo", "test", "--locked"]
+cwd: /Users/master/cyber/.stands/REL/_train/checkout/nox/rs
+error: cannot update the lock file /Users/master/cyber/.stands/REL/_train/checkout/nox/Cargo.lock because --locked was passed to prevent this
+help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.

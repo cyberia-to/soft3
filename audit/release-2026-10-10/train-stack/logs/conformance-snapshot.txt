@@ -1,0 +1,6 @@
+command: ["cargo", "conformance", "--check"]
+cwd: /Users/master/cyber/.stands/REL/_train/checkout/soft3
+error: no such command: `conformance`
+
+help: view all installed commands with `cargo --list`
+help: find a package to install `conformance` with `cargo search cargo-conformance`
