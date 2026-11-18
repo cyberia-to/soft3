@@ -107,7 +107,7 @@ a note on sources: the zheng specs on `master` describe the retired Brakedown li
 
 | component | owes the proven present | phase |
 |---|---|---|
-| [[soft3]] chain (`crate/src/chain`) | the reference validator and the conformance corpus; the template lifecycle "prove, freeze, mine"; the proof field in the block; the activation rule set; the newcomer mode | S0, S2, S4, S5 |
+| [[cybernode]] chain (`cybernode/rs/src/chain`) | the reference validator and the conformance corpus; the template lifecycle "prove, freeze, mine"; the proof field in the block; the activation rule set; the newcomer mode | S0, S2, S4, S5 |
 | [[foculus]] | the DAG with `k` parents, the block-attempt state machine around the proof (never re-parent a proof, [[steps-blocks-epochs]] §3a), the DAA pricing the whole attempt including proving (§3b) | S2–S4 |
 | [[bbg]] | trie insert/update/delete and the 14-leaf fold as relations; snapshots of every dimension authenticated by `R`; the filled `Checkpoint` slot | S1, S5 |
 | [[zheng]] | the step relation, the merge of `k` parent proofs with folded steps, the distributed aggregation tree; verify ≤ 1 ms; a verifying key a phone can hold | S1–S3, S6 |

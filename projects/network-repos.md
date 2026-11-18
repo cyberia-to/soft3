@@ -25,10 +25,10 @@ the definition of each network is spread over four places, and the third network
 | piece of a network | where it lives today | problem |
 |---|---|---|
 | burial sources (snapshot pins) | `bostrom/snapshot/manifest.json`, `space-pussy/snapshot/manifest.json` | right place — the seed of this project |
-| derivation policy (denoms carried, pools dissolved, passports, legacy owners, particles re-addressed, the u64 filter, pussy supply, TOCYB) | `soft3/specs/chain.md` §4.2, `soft3/specs/genesis.md` | per-network policy written into the stack's spec |
+| derivation policy (denoms carried, pools dissolved, passports, legacy owners, particles re-addressed, the u64 filter, pussy supply, TOCYB) | `cybernode/specs/chain.md` §4.2, `cybernode/specs/genesis.md` | per-network policy written into the stack's spec |
 | starting parameters — genesis time, bits, subsidy, checkpoint key and sunset | the `p` frame, computed by `soft3 genesis build`; times written in chain.md §4.3 and genesis.md | per-network values inside a generic pipeline and a spec |
-| consensus values — block time, half-life, finality, reorg limit, checkpoint interval, budgets | `soft3/crate/src/chain/params.rs`, global constants | one set for every network; a second network with other values needs a code change |
-| defaults per network — ports, endpoints | `match chain { "pussy" => …, "bostrom" => … }` in `crate/src/bin/soft3.rs` | the binary knows networks by name |
+| consensus values — block time, half-life, finality, reorg limit, checkpoint interval, budgets | `cybernode/rs/src/chain/params.rs`, global constants | one set for every network; a second network with other values needs a code change |
+| defaults per network — ports, endpoints | `match chain { "pussy" => …, "bostrom" => … }` in `cybernode/rs/src/cli.rs` | the binary knows networks by name |
 | contracts | none: phase-1 chains have native transfers only; plumb (Coin, Card, pay · lock · update · mint · burn) is not declared by any network | the CYB claim and the later move of PUSSY and BOOT into contracts have nowhere to be declared |
 | the cyber network | nowhere. `true-cyber` is a CLI client (`cyber`, crate 0.8); "TOCYB × 666 → CYB belongs to $CYB genesis" (chain.md §4.2) points at a genesis that has no home | the network that matters most is the one without a definition |
 
@@ -157,7 +157,8 @@ timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identi
 
 ## 7. sources
 
-- soft3: `specs/chain.md` §0, §4, §7.1; `specs/genesis.md`; `crate/src/chain/params.rs`; `crate/src/bin/soft3.rs`; `specs/execution-model.md` §1–2; [[cybernode]]; [[proven-present]] §2.9.
+- cybernode (the node, carved out of soft3 on 2026-10-27, [[cybernode]] §3.4 and §3.6): `specs/chain.md` §0, §4, §7.1; `specs/genesis.md`; `rs/src/chain/params.rs`; `rs/src/cli.rs`.
+- soft3: `specs/execution-model.md` §1–2; [[cybernode]]; [[proven-present]] §2.9.
 - `bostrom/snapshot/manifest.json`, `space-pussy/snapshot/manifest.json`; the repositories' trees, read 2026-10-17.
 - true-cyber `README.md` (the `cyber` client, 0.8); plumb `README.md` (tok: Coin, Card, PLUMB).
 - cy `README.md` (sixteen organs), `specs/state.md`, `chroma/name.md`; soft3 `docs/oikos.md` (one name roots one home book).

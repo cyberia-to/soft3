@@ -22,7 +22,11 @@ path = "src/bin/soft3.rs"
 [workspace]
 
 [features]
-# the facade carries the node's features through, so `cargo install soft3` still mines on the GPU
+# the facade carries the node's features through to cybernode, so a build of soft3 with the
+# defaults still mines on the GPU. it is a build from a checkout, not from crates.io: 0.11.0
+# is not published and cannot be while cybernode is a path dependency (see below and
+# projects/cybernode.md §7.6), so `cargo install soft3` still installs 0.10.0, which carries
+# the node itself.
 default = ["metal", "webgpu"]
 metal = ["cybernode/metal"]
 webgpu = ["cybernode/webgpu"]
@@ -32,7 +36,10 @@ sim = ["cybernode/sim"]
 stack = ["dep:cyb"]
 
 [dependencies]
-# rung 7, the node: the chain kernel, genesis, node, wallet, network — soft3/projects/cybernode.md
+# rung 7, the node: the chain kernel, genesis, node, wallet, network — soft3/projects/cybernode.md.
+# mandatory and by path: cybernode 0.1 is not on crates.io, so this crate builds only with the
+# cybernode repository checked out beside the soft3 one, as the release train arranges
+# (release/train_gates.py builds cybernode/rs from the sibling checkout).
 cybernode = { version = "0.1", path = "../../cybernode/rs", default-features = false }
 # optional facade
 cyb = { version = "0.2.1", optional = true }

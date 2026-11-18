@@ -127,6 +127,7 @@ timing against genesis (2026-11-05): C0–C3 are a rename and a move with zero b
 3. **before or after genesis** for C2 (§6). owner.
 4. **the explorer's face.** the index is a node role; whether its pages are served by the node, rendered in cyb, or both. cybernode with cyb.
 5. **the label of the rung** — "network" kept, or "node". owner.
+6. **publishing cybernode, and with it soft3 0.11.** `cybernode` 0.1 is not on crates.io ("crate does not exist", §8) and `soft3/crate/Cargo.toml` names it as a mandatory path dependency on `../../cybernode/rs`, not under a feature. two consequences hold in the tree as it stands: `soft3` 0.11.0 cannot be published while cybernode is unpublished, so crates.io keeps serving 0.10.0 — the version that still carries the node — and `cargo install soft3` installs that; and a clone of soft3 alone does not build or test its crate, because the cybernode repository must sit beside it, as the release train arranges (`release/train_gates.py` builds `cybernode/rs` from the sibling checkout). §3.7's "depends on cybernode under the `stack` feature" describes the cyb facade, not the node: `stack = ["dep:cyb"]`, and the node dependency is unconditional. which way out — publish cybernode 0.1 and move soft3 to a version dependency, or leave the facade unpublished until the forwarding shims go away in 0.12 (§3.7) — is the owner's.
 
 ## 8. sources
 
