@@ -472,3 +472,93 @@ fn the_node_surface_reads_epochs_focus_and_cards() {
     assert_eq!(st["settlement_ok"], true);
     assert_eq!(st["total_stake"], RICH / 20);
 }
+
+// ── the open findings (audit/chain/economy-2026-10-17.md § findings) ──
+//
+// Reproduced by the chain simulator (cyberia-to/simulation, scenarios
+// `economy` and `launch-bostrom`; receipt simulation/audit/network-2026-10.md)
+// and written here as tests that fail until the spec decisions land. Not
+// fixed here: attribution belongs to the economy work.
+
+fn paid_to(o: &crate::chain::economy::settle::Outcome, card: &Id) -> u64 {
+    o.payouts.iter().filter(|(c, _, _)| c == card).map(|x| x.2).sum()
+}
+
+/// Finding 1. §9 bounds stake recycling by "the mark's decay"; but
+/// `pay = min(cap, ⌊B · x / X⌋)` normalises by X, so a relock that is the
+/// only earner of its epoch takes `min(cap, B)` however small its x.
+/// Simulation `economy`: first lock 43,704, quiet-epoch relock 1,093,584.
+#[test]
+fn finding_1_a_quiet_epoch_relock_earns_at_most_the_marks_decay() {
+    let net = econ_net(5);
+    let mut c = net.open("finding-recycle");
+    let miner = net.neurons[4];
+    let (g1, g2) = (p(1), p(2));
+    let big = RICH / 50;
+    let card = card_id(&net.neurons[1], &g1, &g2);
+    // a passive position gives the graph a second edge (on one edge φ cannot move)
+    mine(&mut c, miner, 0, &[net.link(3, 0, p(42), p(40), big, 0, FEE), net.link(1, 0, g1, g2, big, 1, FEE)]);
+    mine_to(&mut c, miner, CLOCK.settle(1));
+    let first = paid_to(&outcome_at(&c, CLOCK.settle(1)), &card);
+    let since = c.state().card(&card).unwrap().since;
+    mine_to(&mut c, miner, since + CLOCK.min_lock - 1);
+    mine(&mut c, miner, 0, &[net.unlock(1, 1, g1, g2, big, 224)]);
+    let e = CLOCK.epoch(c.tip().height);
+    mine_to(&mut c, miner, CLOCK.boundary(e));
+    // the relock, alone in its epoch
+    mine(&mut c, miner, 0, &[net.link(1, 2, g1, g2, big, 1, FEE)]);
+    mine_to(&mut c, miner, CLOCK.settle(e + 1));
+    let again = paid_to(&outcome_at(&c, CLOCK.settle(e + 1)), &card);
+    assert!(first > 0, "the first lock earns");
+    assert_economy_conserved(&c);
+    assert!(again <= first / 20, "chain-economy §9: recycling earns at most the mark's decay — first lock {first}, quiet-epoch relock {again}");
+}
+
+/// Finding 4. §9: "+1 and −1 on the same axon (two keys): attributions
+/// cancel exactly". Equal stakes leave A unchanged, yet the +1 side is
+/// paid as if it had added weight. Simulation `economy`: +1 side 71,569,
+/// −1 side 0.
+#[test]
+fn finding_4_an_equal_hedge_earns_nothing() {
+    let net = econ_net(5);
+    let mut c = net.open("finding-hedge");
+    let miner = net.neurons[4];
+    let (g1, g2) = (p(1), p(2));
+    let big = RICH / 50;
+    // a passive position gives the graph a second edge (on one edge φ cannot move)
+    mine(&mut c, miner, 0, &[net.link(3, 0, p(42), p(40), big, 0, FEE), net.link(1, 0, g1, g2, big, 1, FEE), net.link(2, 0, g1, g2, big, -1, FEE)]);
+    mine_to(&mut c, miner, CLOCK.settle(1));
+    let o = outcome_at(&c, CLOCK.settle(1));
+    let (plus, minus) = (paid_to(&o, &card_id(&net.neurons[1], &g1, &g2)), paid_to(&o, &card_id(&net.neurons[2], &g1, &g2)));
+    assert_eq!(plus + minus, 0, "chain-economy §9: an equal hedge changes no weight and earns nothing — +1 paid {plus}, −1 paid {minus}");
+}
+
+/// Finding 3. The record's `syntropy: i64` (§5.6) cannot hold J(φ*_0) of
+/// bostrom, 9,886,742,015,786,730,065 at 2^60 (8.58 nats); the kernel
+/// saturates it, so the committed record says i64::MAX. Simulation
+/// `launch-bostrom` reads the saturated value from the epoch records.
+#[test]
+fn finding_3_the_record_carries_bostrom_scale_syntropy() {
+    use crate::chain::economy::settle::{apply, FocusOut, SettleResult};
+    let j: i128 = 9_886_742_015_786_730_065;
+    let net = econ_net(2);
+    let mut state = net.genesis.state();
+    let r = SettleResult {
+        epoch: 1,
+        prev_block: [0; 32],
+        boundary: CLOCK.boundary(1),
+        beacon: [1; 32],
+        boundary_root: [2; 32],
+        particles: 0,
+        axons: 0,
+        phi: [3; 32],
+        syntropy: j,
+        prev_syntropy: j - 1_000,
+        focus_bps: 0,
+        earners: vec![],
+        marks: vec![],
+        focus: Arc::new(FocusOut { particles: vec![], phi: vec![], syntropy: j, digest: [3; 32] }),
+    };
+    let o = apply(&mut state, &net.native, CLOCK.settle(1), &r).unwrap();
+    assert_eq!(o.record.syntropy as i128, j, "chain-economy §5.6: the record's syntropy saturates at i64::MAX on bostrom");
+}
