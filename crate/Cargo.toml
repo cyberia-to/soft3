@@ -22,10 +22,9 @@ path = "src/bin/soft3.rs"
 [workspace]
 
 [features]
-# the facade carries the node's features through, so `cargo install soft3` still mines on the GPU
-default = ["metal", "webgpu"]
-metal = ["cybernode/metal"]
-webgpu = ["cybernode/webgpu"]
+# the facade carries the node's features through; the miner has no GPU
+# backend since the ticket became the work (rewards.md §7)
+default = []
 chain-conformance = ["cybernode/chain-conformance"]
 sim = ["cybernode/sim"]
 # full stack re-exports (heavy)
