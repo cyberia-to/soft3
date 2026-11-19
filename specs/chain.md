@@ -259,8 +259,9 @@ body = count: u32 LE ‖ tx[0] ‖ tx[1] ‖ … ‖ tx[count−1]
 - `168 + len(body) ≤ MAX_BLOCK_BYTES`;
 - each `tx` is self-delimiting (fixed size per kind, §2) and
   `len(tx) ≤ MAX_TX_BYTES`; a version-2 transaction (rule set `A`, §2.9)
-  is self-delimiting by its `auth_len` and bounded by `MAX_AUTH_BYTES`
-  instead;
+  is self-delimiting by its `auth_len`, and it is `auth_len` that
+  `MAX_AUTH_BYTES` bounds — `auth_len ≤ MAX_AUTH_BYTES`, with
+  `MAX_TX_BYTES` not applied to it;
 - the same txid never appears twice in a block.
 
 Rationale, two halves. **Throughput:** 256 KiB and 1,024 txs is ~34 tx/s
@@ -321,8 +322,8 @@ Kinds 6 and 7 are the economy's (chain-economy §3.4–§3.5). Any other
 version 1: a decoder knows the length from the second byte; trailing or
 missing bytes are a decode error. `version = 2`, the proof-authorized
 envelope, is valid only from rule set `A` (§2.9); under rule set 1 it is
-invalid like any other unknown version. It is not fixed-size: its length is known only after the
-body, from `auth_len`.
+invalid like any other unknown version. It is not fixed-size: its length
+is known only after the body, from `auth_len`.
 
 ```
 txid       = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_bytes)
@@ -464,8 +465,9 @@ signature is involved and no public key is published.
 tx_v2          = version: u8 (= 2) ‖ kind: u8 ‖ body ‖ auth_len: u32 LE ‖ auth[auth_len]
 tx_core        = version ‖ kind ‖ body                         // tx_v2 without auth_len and auth
 auth_key(s)    = nox15([[t0 [t1 [t2 t3]]] [s0 [s1 [s2 [s3 s4]]]]])   // s: 32 secret bytes, 256 bits of entropy
-  t_i          = LE(tag[7i .. 7i+7]),  tag = "soft3/chain/auth-key/v1\0" (24 bytes, 4 limbs)
-  s_i          = LE(s[7i .. 7i+7])     (5 limbs, the last of 4 bytes; every limb < 2^56)
+  t_i          = LE(tag[7i .. 7i+w_i]),  w = (7, 7, 7, 3)      // tag = "soft3/chain/auth-key/v1\0", 24 bytes in 4 limbs
+  s_i          = LE(s[7i .. 7i+w_i]),    w = (7, 7, 7, 7, 4)   // s: 32 bytes in 5 limbs; every limb < 2^56
+  nox15(·)     = k0 ‖ k1 ‖ k2 ‖ k3,      k_i = LE8(lane i)    // the four lanes as 8-byte LE limbs: the 32 bytes of from
 auth_statement = hemera("soft3/chain/auth/v1\0" ‖ chain ‖ tx_core)
 txid_v2        = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_core)
 ```
@@ -485,7 +487,8 @@ txid_v2        = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_core)
   rule set, is never changed; a new one is a new rule set.
 - **Validity.** A version-2 transaction is valid when, in this order
   (§5.5 step 7 names the same checks):
-  - it decodes, with `auth_len ≤ MAX_AUTH_BYTES` and a canonical envelope;
+  - it decodes, with `auth_len ≤ MAX_AUTH_BYTES`, every 8-byte limb of
+    `from` canonical (below), and a canonical envelope;
   - the nonce (§2.5), the fee (§2.6), the balances of `from` — every debit
     ≥ 0 after, §3.4 — and the kind rules hold;
   - the envelope verifies under the rule set's AUTH1 key, with public
@@ -517,20 +520,30 @@ txid_v2        = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_core)
   transaction root (§1.7) hashes the full `tx_v2` bytes, so a block commits
   to the proof its miner checked.
 - **Fees and limits.** `fee ≥ len(tx_v2) · MIN_FEE_PER_BYTE` (§2.6),
-  counting the proof's bytes. A version-2 transaction is bounded by
-  `MAX_AUTH_BYTES` for its `auth`, not by `MAX_TX_BYTES`. `MAX_BLOCK_BYTES`
-  is unchanged. AUTH1 as written measures envelope medians of
-  129,971–130,675 B; the envelope is the proof plus 278 B on every leg, so
-  the largest envelope implied by the largest proof seen is 131,251 B
-  (receipt §7.1–§7.2). A version-2 transfer is 2 + 120 + 4 + envelope bytes,
-  ~130,800 B. That is **1 per block guaranteed, 2 when both envelopes are
-  ≤ 130,819 B**, or 0.033–0.067 tx/s at T = 30 s, against ~34 tx/s for
-  version 1. `MAX_AUTH_BYTES` is 196,608, 49.8 % over that 131,251-byte
-  bound, because veil proofs are randomized and an honest one must never be
+  counting the proof's bytes. The fee is fixed before the proof it must
+  pay for: `fee` sits in `body`, hence in `tx_core`, which
+  `auth_statement` binds, and two honest proofs of one statement differ
+  in length (128,389–130,973 B, receipt §7.1). So a wallet prices the
+  transaction against a bound `b` on `auth_len` of its own choosing —
+  `fee ≥ (6 + len(body) + b) · MIN_FEE_PER_BYTE` — and re-proves
+  (246–564 ms) when the envelope it gets is longer than `b`. The
+  consensus rule is the one above and does not change: a transaction
+  whose fee does not cover its own realized bytes is invalid. A
+  version-2 transaction is bounded by `MAX_AUTH_BYTES` for its `auth`,
+  not by `MAX_TX_BYTES`. `MAX_BLOCK_BYTES` is unchanged. AUTH1 as
+  written measures envelope medians of 129,971–130,675 B; the envelope
+  is the proof plus 278 B on every leg, so the largest envelope implied
+  by the largest proof seen is 131,251 B (receipt §7.1–§7.2). A
+  version-2 transfer is 2 + 120 + 4 + envelope bytes, ~130,800 B. That
+  is **1 per block guaranteed, 2 when both envelopes are ≤ 130,819 B**,
+  or 0.033–0.067 tx/s at T = 30 s, against ~34 tx/s for version 1.
+  `MAX_AUTH_BYTES` is 196,608, 49.8 % over that 131,251-byte bound,
+  because veil proofs are randomized and an honest one must never be
   refused. This is the known cost of the interim. The way out is one
-  recursive proof per block over every authorization, where the proofs leave the block as kind
-  5's already do (§11.7). That is the block relation (proven-present S1,
-  plan row P8), a later rule set, and not measured yet.
+  recursive proof per block over every authorization, where the proofs
+  leave the block as kind 5's already do (§11.7). That is the block
+  relation (proven-present S1, plan row P8), a later rule set, and not
+  measured yet.
 - **The wire.** [chain-wire.md](chain-wire.md) is written for rule set 1 and
   forbids a version-2 transaction at three places: the `txs` topic's payload
   maximum is 512 B and the iroh-gossip `max_message_size` is 4,096 B on
@@ -549,10 +562,20 @@ txid_v2        = hemera("soft3/chain/txid/v1\0" ‖ chain ‖ tx_core)
   zheng proof of a nox program can contain. It is the noun's structural
   digest (each atom `hash_leaf` of its 8 LE bytes, each pair `hash_node`
   with `FLAG_PARENT`), then one plain permutation, with the first four
-  lanes squeezed (nox `rs/data/hash.rs`, `rs/patterns/hash.rs`). It is
-  not hemera's byte sponge, and nox has no pattern for the byte sponge
-  over a string. So `auth_key` departs from the byte convention of the
-  other ids on this page. That is receipt §7's option (A): fable #1 of
+  lanes squeezed (nox `rs/data/hash.rs`, `rs/patterns/hash.rs`). Those
+  four lanes are the 32 bytes of the id: lane `i` is the 8-byte
+  little-endian limb at offset `8i`, in lane order, as the block above
+  writes it. Each lane is a Goldilocks element, so every limb of an
+  `auth_key` output is `< p = 2^64 − 2^32 + 1`, and §11.1's canonical-limb
+  rule is adopted here for one field: a decoder refuses a version-2
+  transaction whose `from` has a limb `≥ p`. No `auth_key` output has one,
+  so the refusal costs an honest wallet nothing and removes the second
+  byte form of an id. It binds `from` only — `to`, a particle id and a
+  legacy id are byte-sponge outputs and take any 32 bytes (§11.1's rule
+  is otherwise scoped to the pool's encodings). `nox15` is not hemera's
+  byte sponge, and nox has no pattern for the byte sponge over a
+  string. So `auth_key` departs from the byte convention of the other ids
+  on this page. That is receipt §7's option (A): fable #1 of
   2026-11-01 recommended it and the director agreed; the owner decides it
   with this section. The tag subtree is constant and is hashed natively at
   compile time. The five atoms are secrets, and the
@@ -651,7 +674,8 @@ S' = S
 apply coinbase: balances[H(to ‖ τ)] += amount ; balances[focus_key(τ)] += cut(h) ; coins[τ].total_supply += SUBSIDY
 if h == settle(E): settle epoch E (chain-economy §5)
 for tx in body[1..]:
-    check nonce, signature, balances (every debit ≥ 0 after), kind rules
+    check nonce, authorization (v1: signature §2.7; v2: AUTH1 proof §2.9),
+          balances (every debit ≥ 0 after), kind rules
     apply; neurons[from].nonce += 1
 assert state_root(B) == root(S')
 ```

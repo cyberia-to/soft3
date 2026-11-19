@@ -187,7 +187,7 @@ options were:
 
 | option | the key | what it costs |
 |---|---|---|
-| **(A)** a tagged noun under pattern 15 | `auth_key(s) = nox15([[t0 [t1 [t2 t3]]] [s0 [s1 [s2 [s3 s4]]]]])`: the 24-byte tag as four constant 7-byte little-endian limbs, the 32-byte secret as five limbs of 7, 7, 7, 7 and 4 bytes | 256 bits of secret and domain separation by the constant tag subtree; the relation doubles (66 data rows against 34) and the proof grows 32 %, measured below. It departs from the byte convention of every other id on the page, and §2.9 says so |
+| **(A)** a tagged noun under pattern 15 | `auth_key(s) = nox15([[t0 [t1 [t2 t3]]] [s0 [s1 [s2 [s3 s4]]]]])`: the 24-byte tag as four constant little-endian limbs of 7, 7, 7 and 3 bytes, the 32-byte secret as five limbs of 7, 7, 7, 7 and 4 bytes | 256 bits of secret and domain separation by the constant tag subtree; the relation doubles (66 data rows against 34) and the proof grows 32 %, measured below. It departs from the byte convention of every other id on the page, and §2.9 says so |
 | (B) §1's relation unchanged | `hemera(k0, k1, k2, k3, 0⁴)`, four raw limbs, no tag | the §2 figures, already measured; but a wallet carrying a secret in four canonical 7-byte limbs holds 224 bits where mudra `specs/identity.md` asks for 256, and the key has no domain tag separating it from `neuron_of(pubkey)` |
 | (C) the byte sponge, `hemera(tag ‖ s)` | the convention of the other chain ids, unchanged | a new pattern in nox and a new relation in zheng before anything can be measured. Not costed |
 
