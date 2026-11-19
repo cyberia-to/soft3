@@ -12,6 +12,7 @@ architecture changes that cross repositories are written here before they are bu
 | proposal | status | date | one line |
 |---|---|---|---|
 | [receipt](receipt.md) | proposed | 2026-11-16 | the committed step boundary a proof attests: prev · statement · roots · effects · inclusion path; one per subject of a signal, kept by the holder, folded by the light client, verifiable after bodies are pruned |
+| [signal is an intent](signal-is-an-intent.md) | proposed | 2026-11-03 | the owner's correction applied clause by clause across seven repositories: a signal is an intent one neuron declares with provable conditions of completion, fulfilled by any neurons in their own sub-signals, possibly in different blocks, and sealed when its proof attests them — not a bundle committed atomically in one step |
 | [the assumptions registry](assumptions-registry.md) | proposed | 2026-10-27 | one list of everything the stack assumes, classed, measured, with a response plan; the list is the axiom file of the stack's eidos corpus; eidos replaces lean, and what it lacks is built |
 | [proofs of protocols](protocol-proofs.md) | draft | 2026-10-24 | completeness by `ring` in eidos, IOP soundness as a counting theorem, the argument's assumptions named; zippel as a search engine, never a dependency |
 | [the metabolic oracle](metabolic-oracle.md) | proposed | 2026-10-23 | cap · syntropy · happiness as one compound in consensus; its derivative governs every parameter, its weights are the one vote; moved from cyberia's architecture, the agents cut |
