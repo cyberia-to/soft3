@@ -29,6 +29,7 @@ Translated from the owner's messages (no link exists), in the order they were sa
 - "maybe the valence will simply have more values? a matrix of four decisions."
 - "so you propose, in place of the valence, a field activation, a signed hundred? in our field theory a hundred is not a round number."
 - "I think this is a project in soft3, and it is a blocker for the launch of pussy — formulate the project as the solution of the problem of the incorrect valence. In the project consider the idea of the split into two links — there is sense in it too. I am not ready to decide now."
+- later the same night, after the explainer was rewritten on candidate A and the size of the field was settled at one byte: "we really did find a neat way out — it comes out verbose enough; now there is certainly enough information and the construction of the protocol is not dirty — I like it." This is the owner's leaning toward candidate A; the choice is still his to sign after V1.
 
 ## the problem
 
