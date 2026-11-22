@@ -11,7 +11,7 @@ alias: rooted civilization, civilizational software, stack upgrade, what where w
 
 > soft3.org sells a machine: collective, private, provable computing, thirty features, seven verbs. the market it actually enters is **rooted civilizational software** — the institutions a civilization can stand on when the cloud, the state and the vendor are gone. that market does not buy sumcheck. it buys identity that survives a death, a unit of account, a record a phone can check, a clock everyone shares, an upgrade that does not split the tribe, and boring operations. this page fixes the picture, names what the stack already holds at the same weight as the wall, brings the seven "critical and out of scope" questions of [[soft3/status]] into scope, and schedules the upgrade: **what, where, when.** it closes on the last merge, not the first.
 
-the ladder these moves respect is the front of [soft3.org](https://soft3.org). the seats they land in are [[soft3/status|the registry]] and [[stack-completeness]]. they do not reopen [[proof-system-repair]], [[term]], [[goldilocks-parano1d]], or [[steps-blocks-epochs]] — those are the machine. this is the constitution the machine still lacks.
+the ladder these moves respect is the front of [soft3.org](https://soft3.org). the seats they land in are [[soft3/status|the registry]] and [[stack-completeness]]. they do not reopen [[proof-system-repair]], [[term]], [[present proves the past]], or [[steps-blocks-epochs]] — those are the machine. this is the constitution the machine still lacks.
 
 ## 1. the picture
 
@@ -223,7 +223,7 @@ now     phase 0 visor
         ├─[[proof-system-repair]] ──────────── (machine: the proof)
         ├─[[steps-blocks-epochs]] ──────────── (machine: the clock)
         ├─[[term]] ─────────────────────────── (machine: rights)
-        ├─[[goldilocks-parano1d]] ──────────── (machine: the chain port)
+        ├─[[present proves the past]] ──────────── (machine: the chain port)
         │
 A       person: vault · tok · storage market · health · cyb entrance
         │         (shares tok with term; does not wait for 64 KB)

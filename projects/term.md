@@ -141,7 +141,7 @@ the contract-only view of the previous projects missed these; each becomes a chi
 
 - **[[oikos]]**: its two settlement protocols (no free option, freshness) are spec-ified here as the clearing batch and the condition object; its integration table gains this page as the typed trade-operation owner.
 - **[[steps-blocks-epochs]]**: §5's two lotteries carry the substrate — grind orders blocks, tickets price the marginals (including the solver's), the fold stitches.
-- **[[goldilocks-parano1d]]**: P1's chain machine delivers the steps these intents ride; this page is the demand side that makes P1's mempool spec concrete.
+- **[[present proves the past]]**: P1's chain machine delivers the steps these intents ride; this page is the demand side that makes P1's mempool spec concrete.
 - **[[proof-system-repair]]**: the fast path assumes the universal CCS + accumulator land (P0); until then everything here is specified against the public profile.
 
 ## 7. acceptance

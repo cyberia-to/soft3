@@ -24,7 +24,7 @@ architecture changes that cross repositories are written here before they are bu
 | [privacy, frozen](privacy-frozen.md) | proposed | 2026-10-16 | one shielded pool, one proof per block, hemera the only material |
 | [rooted civilization](rooted-civilization.md) | proposed | 2026-10-13 | the properties the stack still owes, in four phases |
 | [term](term.md) | proposed | 2026-10-13 | programmable rights and provable clearing |
-| [proof-gated chain on goldilocks](goldilocks-parano1d.md) | proposed | 2026-10-13 | what to port from parano1d, and what to skip |
+| [present proves the past](present-proves-the-past.md) | proposed | 2026-10-13 | what to port from parano1d, and what to skip |
 | [steps, blocks, epochs](steps-blocks-epochs.md) | proposed | 2026-10-12 | the consensus clock and the five specs before chain code |
 | [one proof](proof-system-repair.md) | proposed | 2026-10-09 | the repair of zheng: ≤ 64 KB, post-quantum, constant size |
 | [the network in planes](network-planes.md) | proposed | 2026-10-07 | foculus splits into sync, foculus and solong |

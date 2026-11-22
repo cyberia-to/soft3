@@ -1,13 +1,13 @@
 ---
 tags: cyber, soft3, project, foculus, zheng, nox, bbg, hemera, mining, consensus
-alias: present proves the past, proof gated chain, parano1d on zheng
+alias: present proves the past, proof gated chain, goldilocks-parano1d, proof-gated chain on goldilocks
 crystal-type: process
 crystal-domain: cyber
 status: proposed
 part of: launch spacepussy
 date: 2026-10-13
 ---
-# proof-gated chain on goldilocks — what parano1d proves is possible, ported to zheng
+# present proves the past
 
 > parano1d is a production proof-native chain: 393 kLOC, 20 crates, mainnet live since 2026-08-21, every block carrying a recursive validity proof, PoW ordering only. soft3 wants the same *shape* — the present proves the past — on the goldilocks stack ([[zheng]], [[nox]], [[hemera]], [[bbg]]). this page is the comparison and the plan: what to port as design, what to port as code, what to build new, and why the goldilocks version is *smaller* than the binary one, not bigger. it depends on [[steps-blocks-epochs]] for the consensus clock and on [[proof-system-repair]] for the accumulator.
 
@@ -43,7 +43,7 @@ the zheng design never pays that tax: each step proves only its own `apply`; the
 ### P0 — the accumulator (hard blocker, already scheduled)
 land ARC (or WARP) in zheng per [[proof-system-repair]]; hemera to audited parameters (2h). nothing else starts before this — it replaces HistoryStep.
 
-### P1 — the chain machine (foculus; new crates, design ported from parano1d)
+### P1 — the chain machine (foculus; new crates, the design ported)
 1. **block-attempt state machine** — §3a of [[steps-blocks-epochs]]; parano1d's `noid_miner/src/miner.rs` phase-ordered loop and refresh triggers (new tip, payout change, invalidation, heartbeat) are the reference.
 2. **mempool** — parano1d's `noid_mempool` design: proof-verified admission, cached authorization reuse, fee floor; against cybergraph intents instead of UTXO spends.
 3. **DAA** — port `noid_chain/src/consensus/difficulty.rs` (ASERT, 1,021 LOC, integer-only, field-free; Apache-2.0, attribution header) with the proving-latency pricing of §3b.
