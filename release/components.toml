@@ -449,19 +449,31 @@ state = "live"
 [[component]]
 name = "cyber"
 kind = "network"
-repo = "true-cyber"
+repo = "cyber"
 verb = "root"
 facet = "play"
 layer = 9
 role = "superintelligence"
-note = "true-cyber is the product's own repo (the `cyber` binary); the cyber repo holds the protocol pages and the launch tracker"
+note = "the cyber repo is the protocol pages, the launch tracker and the package true-cyber (the `cyber` binary, cyberia-to/cyber#162); the repository true-cyber was a historical misunderstanding (the owner, 2026-11-22)"
 phase = "3"
 state = "spec — the protocol pages and the tracker; $CYB after the canary"
 
 [[component]]
+name = "$CYB"
+kind = "network"
+repo = ".CYB"
+verb = "root"
+facet = "play"
+layer = 9
+part_of = "cyber"
+note = "the repository of a token carries its name with a dot for the sigil: .CYB, .BOOT, .PUSSY (the owner, 2026-11-22)"
+phase = "3"
+state = "a draft: the network's definition, a genesis by claims, the site cyb.money"
+
+[[component]]
 name = "bostrom"
 kind = "network"
-repo = "bostrom"
+repo = ".BOOT"
 verb = "root"
 facet = "play"
 layer = 9
@@ -472,7 +484,7 @@ state = "reborn 2026-11-05"
 [[component]]
 name = "pussy"
 kind = "network"
-repo = "space-pussy"
+repo = ".PUSSY"
 verb = "root"
 facet = "play"
 layer = 9
