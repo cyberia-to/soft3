@@ -150,8 +150,8 @@ the data half is written and waits for the owner; the node reads none of it yet.
 | phase | what exists | where |
 |---|---|---|
 | N0 | the standard, `specs/network.md`: layout, schema, vocabulary of rules, the lock, the two acts — raise and join — and the table of what the node still carries as constants | cyberia-to/cybernode#19 |
-| N1, the data | `PUSSY` (was `space-pussy`) rebuilt as a network repository and given the uniform documents; `BOOT` (was `bostrom`) rebuilt the same way, its seventy pages of the old chain folded into one page of history. both merged and renamed after their tokens on 2026-11-22 | cyberia-to/PUSSY#24, cyberia-to/PUSSY#25, cyberia-to/BOOT#35 |
-| N4, the data | CYB has a repository of its own, `cyb.money`: a draft `network.toml`, a genesis by claims, the site cyb.money. GitHub reads `CYB` and `cyb` as one name and `cyb` is the browser, so the repository carries the site's name | https://github.com/cyberia-to/cyb.money |
+| N1, the data | `.PUSSY` (was `space-pussy`) rebuilt as a network repository and given the uniform documents; `.BOOT` (was `bostrom`) rebuilt the same way, its seventy pages of the old chain folded into one page of history. both merged and renamed after their tokens on 2026-11-22 | cyberia-to/.PUSSY#24, cyberia-to/.PUSSY#25, cyberia-to/.BOOT#35 |
+| N4, the data | CYB has a repository of its own, `.CYB`: a draft `network.toml`, a genesis by claims, the site cyb.money. the dot stands for the sigil: the product is $CYB, and `CYB` alone is the name of the browser `cyb` to GitHub | https://github.com/cyberia-to/.CYB |
 | the package | the client `cyber`, crate `true-cyber`, moves into the repository `cyber` with its history; unbuilt, `wip:` | cyberia-to/cyber#162 |
 
 this replaces decision 2 above (the owner, 2026-11-22): `true-cyber` was a historical misunderstanding — the repository `cyber` is the package `true-cyber`; cyber is the network of networks, and CYB is a product of its own with a site of its own. two attempts were closed for that reason: cyberia-to/true-cyber#6 and cyberia-to/cyber#163. the key of the native token in `network.toml` is `token`.
