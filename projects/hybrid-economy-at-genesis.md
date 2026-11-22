@@ -41,6 +41,22 @@ Where the mark of about 40 % comes from, by this page's own arithmetic, to be co
 
 One consequence the short page does not state, and a warning with it. With the floor in the budget the cost of capital cancels: `S* = (k · TVL / M)^(1/(1−α))`. When the value at risk is given from outside, as the law assumes, that is again a stable point. When the value at risk is taken to be the stake itself, `TVL = S · M`, the point `S* = 1 / k²` exists — 44 % at `k = 1.5` — and it is unstable: more stake raises the floor, the floor raises the yield, the yield draws more stake, and the share runs to a bound; less stake runs the other way. So what the chain counts as value at risk decides whether the system settles or runs away, which is why it is the first line the contract settles. An earlier revision of this page named `1 / k²` as the mark; that was wrong.
 
+## what the law implies for the staking budget
+
+Arithmetic on theorem 3.1 at `α = ½`, with `g = G / M` the gross reward rate a year and `r` what capital demands; to be confirmed by H2.
+
+| | formula | at `r = 5 %` |
+|---|---|---|
+| the staked share | `(g / r)²` | 4 % at `g = 1 %`, 16 % at 2 %, 36 % at 3 %, 64 % at 4 %, all of it at 5 % |
+| the staking budget, a year, of the supply | `g² / r` | 0.2 %, 0.8 %, 1.8 %, 3.2 %, 5 % |
+| the work's budget, a year, of the supply | `g · (1 − g / r)` | 0.8 %, 1.2 %, 1.2 %, 0.8 %, nothing |
+
+1. Nobody sets the staking budget. It is the square of the gross rate over the cost of capital: double the rate and stake takes four times as much.
+2. The work's budget is a hill. It is highest at `g = r / 2`, a quarter of `r`, and it is nothing at `g = r`. A floor raised past half the cost of capital pays the miners less, and at `g = r` the chain has no paid work at all. The starting floor of 3 % with capital at 5 % stands just past the top.
+3. The staked share follows `1 / r²`: capital that demands twice as much stakes a quarter as much. `r` is what the least informed staker demands, risk of losing to the count included, and no observable of the chain gives it.
+4. Fees enter the same `g`. When they push it toward `r` the floor has to fall or the burn has to rise, or the work is starved: this is what the loops on `φ` and `β` are for, and the reason they cannot be left for later.
+5. The chain's constant of 1 % with its cap sits at the bottom of the first column: a staked share of 4 %.
+
 ## what the chain runs
 
 soft3 `specs/chain-economy.md` §6.1, in consensus on the rehearsal network:
