@@ -150,10 +150,13 @@ the data half is written and waits for the owner; the node reads none of it yet.
 | phase | what exists | where |
 |---|---|---|
 | N0 | the standard, `specs/network.md`: layout, schema, vocabulary of rules, the lock, the two acts — raise and join — and the table of what the node still carries as constants | cyberia-to/cybernode#19 |
-| N1, the data | `space-pussy` rebuilt as a network repository (merged, cyberia-to/space-pussy#24) and given the uniform documents (cyberia-to/space-pussy#25); `bostrom` rebuilt the same way, its seventy pages of the old chain folded into one page of history | cyberia-to/bostrom#35 |
-| N4, the data | `true-cyber` takes the layout for cyber: a draft `network.toml`, a genesis by claims, the site cyb.money; the client's code is untouched | cyberia-to/true-cyber#6 |
+| N1, the data | `PUSSY` (was `space-pussy`) rebuilt as a network repository and given the uniform documents; `BOOT` (was `bostrom`) rebuilt the same way, its seventy pages of the old chain folded into one page of history. both merged and renamed after their tokens on 2026-11-22 | cyberia-to/PUSSY#24, cyberia-to/PUSSY#25, cyberia-to/BOOT#35 |
+| N4, the data | CYB has a repository of its own, `cyb.money`: a draft `network.toml`, a genesis by claims, the site cyb.money. GitHub reads `CYB` and `cyb` as one name and `cyb` is the browser, so the repository carries the site's name | https://github.com/cyberia-to/cyb.money |
+| the package | the client `cyber`, crate `true-cyber`, moves into the repository `cyber` with its history; unbuilt, `wip:` | cyberia-to/cyber#162 |
 
-each of the three carries `docs/history.md`, `docs/economics.md` — the running, the proposed and the open kept apart — and `docs/run-a-node.md`. not done: the builder reading the files (N1's acceptance), `network check`, the locks' build receipts (N3), the client's move (N4). open with the owner: whether the three repositories are renamed after their coins.
+this replaces decision 2 above (the owner, 2026-11-22): `true-cyber` was a historical misunderstanding — the repository `cyber` is the package `true-cyber`; cyber is the network of networks, and CYB is a product of its own with a site of its own. two attempts were closed for that reason: cyberia-to/true-cyber#6 and cyberia-to/cyber#163. the key of the native token in `network.toml` is `token`.
+
+each of the three carries `docs/history.md`, `docs/economics.md` — the running, the proposed and the open kept apart — and `docs/run-a-node.md`. not done: the builder reading the files (N1's acceptance), `network check`, the locks' build receipts (N3), the client's build against today's stack.
 
 timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identity with today's genesis, so they change no outcome; the target is the candidate of 2026-10-30. if they are not green by then, the genesis ships from today's pipeline and N1–N3 record the same particle in the repositories right after; the owner chooses.
 
