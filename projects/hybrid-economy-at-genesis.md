@@ -43,13 +43,28 @@ One consequence the short page does not state, and a warning with it. With the f
 
 ## what the law implies for the staking budget
 
-Arithmetic on theorem 3.1 at `α = ½`, with `g = G / M` the gross reward rate a year and `r` what capital demands; to be confirmed by H2.
+Arithmetic on theorem 3.1 at `α = ½`, with `g = G / M` the gross reward rate a year and `r` the yield a staker demands; to be confirmed by H2.
 
-| | formula | at `r = 5 %` |
+In tokens, for a supply of 1,000,000 and a gross rate of 3 % a year, so 30,000 tokens minted a year. The stakers' part of the mint is the square root of the staked share; their yield is that part divided by what is staked.
+
+| staked | of the supply | stakers' part of the mint | stakers get a year | the yield of a stake | miners get a year |
+|---|---|---|---|---|---|
+| 10,000 | 1 % | 10 % | 3,000 | 30 % | 27,000 |
+| 40,000 | 4 % | 20 % | 6,000 | 15 % | 24,000 |
+| 90,000 | 9 % | 30 % | 9,000 | 10 % | 21,000 |
+| 250,000 | 25 % | 50 % | 15,000 | 6 % | 15,000 |
+| 360,000 | 36 % | 60 % | 18,000 | 5 % | 12,000 |
+| 640,000 | 64 % | 80 % | 24,000 | 3.75 % | 6,000 |
+| 1,000,000 | 100 % | 100 % | 30,000 | 3 % | 0 |
+
+Stake enters while the yield is above what a staker demands and stops where they meet. Where it stops, with the staked share `(g / r)²`, the stakers' tokens `g² / r` of the supply and the miners' `g · (1 − g / r)`:
+
+| the gross rate a year | stakers demand 5 % | stakers demand 10 % |
 |---|---|---|
-| the staked share | `(g / r)²` | 4 % at `g = 1 %`, 16 % at 2 %, 36 % at 3 %, 64 % at 4 %, all of it at 5 % |
-| the staking budget, a year, of the supply | `g² / r` | 0.2 %, 0.8 %, 1.8 %, 3.2 %, 5 % |
-| the work's budget, a year, of the supply | `g · (1 − g / r)` | 0.8 %, 1.2 %, 1.2 %, 0.8 %, nothing |
+| 1 %, 10,000 minted | 4 % staked: stakers 2,000, miners 8,000 | 1 % staked: stakers 1,000, miners 9,000 |
+| 2 %, 20,000 minted | 16 % staked: stakers 8,000, miners 12,000 | 4 % staked: stakers 4,000, miners 16,000 |
+| 3 %, 30,000 minted | 36 % staked: stakers 18,000, miners 12,000 | 9 % staked: stakers 9,000, miners 21,000 |
+| 5 %, 50,000 minted | all staked: stakers 50,000, miners 0 | 25 % staked: stakers 25,000, miners 25,000 |
 
 1. Nobody sets the staking budget. It is the square of the gross rate over the cost of capital: double the rate and stake takes four times as much.
 2. The work's budget is a hill. It is highest at `g = r / 2`, a quarter of `r`, and it is nothing at `g = r`. A floor raised past half the cost of capital pays the miners less, and at `g = r` the chain has no paid work at all. The starting floor of 3 % with capital at 5 % stands just past the top.
