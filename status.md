@@ -15,7 +15,8 @@ each component has a readiness state. **live** — carries real traffic today. *
 
 | repo | verb | state | release | crates | what it does |
 |---|---|---|---|---|---|
-| [[soft3]] | compose | live | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | the stack CLI · `soft3 node` · a release is a [[soft3/conformance|conformance snapshot]] |
+| [[soft3]] | compose | live | [0.10.0](https://github.com/cyberia-to/soft3/releases/tag/v0.10.0) | [0.10.0](https://crates.io/crates/soft3) | 0.11.0 in tree: the stack facade over [[cybernode]], forwarding the node verbs for one release · a release is a [[soft3/conformance|conformance snapshot]] |
+| [[cybernode]] | run | live | — | — | rung 7, the node: chain, genesis, wallet, network — carved from soft3 2026-10-27 |
 | [[cybics/form|form]] |  |  |  |  |  |
 | [[honeycrisp]] | accelerate | live | [0.2.0](https://github.com/cyberia-to/honeycrisp/releases/tag/v0.2.0) | [0.2.0](https://crates.io/crates/honeycrisp) | NEON/AMX/SME · Metal GPU · ANE · zero-copy unimem |
 | [[strata]] | math | live | [0.1.1](https://github.com/cyberia-to/strata/releases/tag/v0.1.1) | [0.1.1](https://crates.io/crates/cyber-strata) | nebu 𝔽_p · genies 𝔽_q · jali R_q |
@@ -81,7 +82,7 @@ the four runtimes in work — [[soft3/nox|nox]] · [[glia]] · [[wysm]] · [[ker
 
 ## critical, and out of scope
 
-seven questions no component roadmap owned. [[soft3/proposals/rooted-civilization]] takes them as its phase A and B — they stay critical; they are no longer unowned. each one is ignorable today and existential at the first real scale.
+seven questions no component roadmap owned. [[soft3/projects/rooted-civilization]] takes them as its phase A and B — they stay critical; they are no longer unowned. each one is ignorable today and existential at the first real scale.
 
 1. **the economics of writing.** φ* ranks particles, but who may write, and at what cost? lytics prices a signal at 0.042 s of PoW — one app's local answer. an open cybergraph with free writes drowns in spam on day one. [[tok]] is published; a live economy, and the bridge from the [[bostrom]] snapshot to it, is nowhere.
 2. **key lifecycle.** [[mudra]] derives and claims; nothing recovers, rotates, or revokes. a lost seed is a lost neuron forever, and one person on two devices is formally two neurons. for a state whose citizens are keys, identity loss is not a bug — it is a constitutional crisis without a constitution.
@@ -97,7 +98,7 @@ seven questions no component roadmap owned. [[soft3/proposals/rooted-civilizatio
 |-----|------|--------|
 | [js/](js/) | JavaScript/TypeScript SDK (current Bostrom chain) | active |
 | [schema/](schema/) | canonical wire format definitions | draft |
-| [cli/](cli/) | `soft3` stack CLI + node [0.10.0](https://crates.io/crates/soft3) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
+| [cli/](cli/) | `soft3` stack facade 0.11.0 in tree, [0.10.0](https://crates.io/crates/soft3) on crates.io, over the node `cybernode` 0.1.0 (github.com/cyberia-to/cybernode) · `cyber` product face — true-cyber [0.7.0](https://crates.io/crates/true-cyber) | published |
 | [mcp/](mcp/) | MCP server — cybergraph tools for AI assistants | scaffold |
 | [py/](py/) | Python SDK | scaffold |
 

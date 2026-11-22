@@ -11,9 +11,9 @@ status: findings
 
 superseded by hemera 0.4 (2026-10-16): the hemera figures below (x⁻¹ partial rounds, 8 + 16 rounds, 144 constants, ~736 constraints) describe the 0.3 record; the frozen profile is x⁷ in every round, 6 + 6 + 48 rounds, 240 constants, ~1,440 constraints — `hemera/audit/profile-0.4-2026-10.md`.
 
-Evidence for [privacy, frozen](../../proposals/privacy-frozen.md) (§1–§5, §9).
+Evidence for [privacy, frozen](../../projects/privacy-frozen.md) (§1–§5, §9).
 Written by a second session as the receipt of a competing draft (soft3 PR #190,
-`proposals/privacy.md`, branch `research/privacy-freeze-20261016`). The draft
+`projects/privacy.md`, branch `research/privacy-freeze-20261016`). The draft
 has two commits: ea413d4, reconciled by soft3 #191, and b011039, pushed at
 10:29 UTC while #191 was being written, which makes encrypted collective
 computation a genesis requirement; it is reconciled by the follow-up in
@@ -45,7 +45,7 @@ the stack's Markdown files, followed by direct reads. The core comparisons
 use exact Git objects; local research branches are labeled as such. The work
 does not claim to have read every file below `~/cyber`.
 
-## observations that decide the proposal
+## observations that decide the project
 
 ### the accepted chain and the requested freeze differ
 
@@ -189,7 +189,7 @@ economic claims, estimates, or consistency with all accepted component specs.
 The original research commit `ea413d43e5f3e4b52e11c589e41d2600f8c2ee25`
 placed private collective computation behind a conditional lane while its
 recommendation foregrounded owner-only proving and public assertions. That
-scope was too narrow for the owner's requested machine. The revised proposal
+scope was too narrow for the owner's requested machine. The revised project
 makes encrypted aggregation and protected joint settlement mandatory genesis
 requirements, and separates additive preprocessing from general hidden-input
 evaluation. ZK input validity alone supplies neither computation nor disclosure
@@ -293,7 +293,7 @@ How each counterexample lands in privacy-frozen.md:
 ## validation of this change
 
 Run on soft3 base `8525b174fa227f7def0e368d6ea64e135fdf063a` plus the
-proposal/receipt changes, with release-engine source unchanged:
+project/receipt changes, with release-engine source unchanged:
 
 ```text
 python3 -m unittest discover -s release -p 'test_*.py' -v
@@ -309,7 +309,7 @@ python3 audit/privacy-2026-10-16/counterexamples.py
 ```
 
 All exited successfully. Local Markdown destinations, balanced code fences,
-proposal indexing, JSON source identifiers and the script/output checksum were
+project indexing, JSON source identifiers and the script/output checksum were
 also checked. This validates the research artifacts and existing release-engine
 tests; it does not exercise or qualify the proposed cryptographic implementation.
 
@@ -343,5 +343,5 @@ automatically certify our complete protocol in the QROM.
 
 No native source, accepted contract, cryptographic parameter, release pin,
 working-tree change belonging to another task, or default branch was modified.
-The reconciled proposal and this receipt preserve the distinction between a selected
+The reconciled project and this receipt preserve the distinction between a selected
 research direction and an implemented, independently reviewed production system.

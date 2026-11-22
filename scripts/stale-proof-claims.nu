@@ -1,5 +1,5 @@
 #!/usr/bin/env nu
-# stale-proof-claims.nu — the phase-5 gate of proposals/proof-system-repair.md
+# stale-proof-claims.nu — the phase-5 gate of projects/proof-system-repair.md
 #
 # greps the whole stack for statements that present the old, unsound zheng/lens
 # design as current. exits 1 if any hit remains outside the allow-list.
@@ -7,7 +7,7 @@
 # usage:  nu scripts/stale-proof-claims.nu            # from ~/cyber/soft3
 #         nu scripts/stale-proof-claims.nu --root ~/cyber --json
 #
-# the ledger of every hit as of 2026-10-09 is proposals/proof-system-repair.md §C.
+# the ledger of every hit as of 2026-10-09 is projects/proof-system-repair.md §C.
 
 def main [
     --root: string = "~/cyber"   # the workspace that holds every repo
@@ -50,7 +50,7 @@ def main [
     # directories that are archives, vendored trees, build output, or the ledger itself
     let exclude_dirs = [target build dist node_modules .git .node-builds .worktrees .stands .rel04 zheng-022 cyb-014 .vendor refs]
     let allow_files = [
-        'soft3/proposals/proof-system-repair.md'
+        'soft3/projects/proof-system-repair.md'
         'soft3/scripts/stale-proof-claims.nu'
         'zheng/CHANGELOG.md'
         'joy/CHANGELOG.md'

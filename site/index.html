@@ -101,7 +101,7 @@
                             <code id="cmd">cargo install soft3</code>
                             <button type="button" id="copy">copy</button>
                         </div>
-                        <p class="hint">install · <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github</a> · <a href="/layers/">the ten products</a> · early experimental build: every number says whether it is measured or a target</p>
+                        <p class="hint">install · the node: <code>cargo install --git https://github.com/cyberia-to/cybernode cybernode</code> · <a href="https://cyber.page/soft3/" target="_blank" rel="noopener">docs</a> · <a href="https://github.com/cyberia-to/soft3" target="_blank" rel="noopener">github</a> · <a href="/layers/">the ten products</a> · early experimental build: every number says whether it is measured or a target</p>
                     </div>
                 </section>
                 <section class="wall glass" aria-label="features">
@@ -127,7 +127,7 @@
                 remember: { c: "#8000ff", t: "#fff8f0", h: 270, who: "cybergraph" },
                 learn:    { c: "#ff0000", t: "#fff8f0", h: 0,   who: "neural" },
                 link:     { c: "#ff8000", t: "#0a120e", h: 30,  who: "cy" },
-                focus:    { c: "#ffff00", t: "#0a120e", h: 60,  who: "soft3" },
+                focus:    { c: "#ffff00", t: "#0a120e", h: 60,  who: "cybernode" },
             };
             const GH = "https://github.com/cyberia-to/";
             const n = (v) => `<td class="n">${v}</td>`, d = (v) => `<td class="dim">${v}</td>`, t = (v) => `<td class="t">${v}</td>`;
@@ -147,7 +147,7 @@
                       [`<td>trident</td>`, `<td>language surface, bundle format</td>`, d("cooling")],
                       [`<td>joy · zheng</td>`, `<td>proof formats</td>`, d("warm")],
                       [`<td>cybergraph · foculus</td>`, `<td>link, signal, epoch</td>`, d("warm")],
-                  ], "kelvin versioning: lower layers freeze first; a frozen layer takes no proposals.") },
+                  ], "kelvin versioning: lower layers freeze first; a frozen layer takes no projects.") },
                 { id: "quantum", verb: "compute", name: "post-quantum", line: "value and privacy both: hash-only proofs, lattice seals — nothing rests on a curve a quantum computer breaks.", status: "proofs live · seals building · hash parameters experimental",
                   claim: "what is sealed today stays sealed",
                   why: "the proofs are hash-only — SuperSpartan, Brakedown, HyperNova, no pairings, no trusted setup. keys seal with ML-KEM, the lattice standard. private state encrypts under RLWE. most chains protect value against a quantum computer and leave privacy to curves it breaks; here both sides of the ledger survive it.",
@@ -218,13 +218,13 @@
                 { id: "proofs", verb: "prove", name: "succinct proofs", line: "at most 64 KB for any computation, post-quantum, checked in a millisecond", status: "goal · today measured",
                   claim: "at most 64 KB, post-quantum, verified in a millisecond — however long the computation",
                   why: "the proof is a sumcheck over the program's constraints plus an opening of the committed witness; the opening is hash-only (Reed–Solomon with WHIR over hemera, Johnson-bound parameters at 128 bits), so the only assumption is the hash. steps accumulate (ARC) into one accumulator and one decider closes it: a million steps cost the bytes of one. no post-quantum proof below ~50 KB exists anywhere today, and production chains ship 150 KB to 1 MB; 64 KB is what one honest assumption costs. the shipped build still discloses the full witness — the table shows both.",
-                  parts: ["zheng", "lens", "joy"], source: ["soft3/proposals/proof-system-repair.md", GH + "soft3/blob/main/proposals/proof-system-repair.md"],
+                  parts: ["zheng", "lens", "joy"], source: ["soft3/projects/proof-system-repair.md", GH + "soft3/blob/main/projects/proof-system-repair.md"],
                   fig: () => table(["statement", "today · measured", "goal"], [
                       [`<td>(a+b)·a</td>`, n("2.2 KB · prove 2 ms · verify 3 ms"), t("≤ 40 KB · ≤ 1 ms")],
                       [`<td>one hash, a signature</td>`, n("15.6 KB · prove 36 ms · verify 30 ms"), t("≤ 40 KB · ≤ 1 ms")],
                       [`<td>any length — a million steps</td>`, d("not yet: one relation, 29 hashes at most"), t("≤ 64 KB · ≤ 1 ms · constant")],
                       [`<td>others, post-quantum, in production</td>`, d("Quantus 151 KB · RISC Zero 200 KB · Starknet 617 KB · Neptune 1 MB"), d("")],
-                  ], "today: joy 0.5.0 with zheng#45, M4 Max, 2026-10-09 — a public certificate, full witness, not succinct. goal and the design behind it: soft3/proposals/proof-system-repair.md.") },
+                  ], "today: joy 0.5.0 with zheng#45, M4 Max, 2026-10-09 — a public certificate, full witness, not succinct. goal and the design behind it: soft3/projects/proof-system-repair.md.") },
                 { id: "incremental", verb: "prove", name: "incremental proving", line: "every step folds into one accumulator as it runs — proving costs a few percent, not 10–100×.", status: "specified",
                   claim: "proving is not a separate job",
                   why: "a fold is about thirty field operations per step, and the accumulator stays two hundred bytes however long the run. proving rides along with execution instead of replaying it afterwards; a single decider closes the proof. one program, one run, one proof — and a change to the program re-proves only what changed.",
@@ -404,7 +404,7 @@
                 { id: "space", verb: "focus", name: "interplanetary", line: "leaderless agreement that survives light-minutes and a two-week blackout.", status: "specified",
                   claim: "no proposer, no clock, no committee: facts commute",
                   why: "agreement is convergence, not voting. signals commute, so they can be stored and forwarded across any delay; there is no round that a far world could miss. Earth to Mars is four to twenty-four minutes one way; each world is its own pond, safe through the conjunction when no signal gets through at all.",
-                  parts: ["foculus", "tru", "soft3"], source: ["foculus/docs/interplanetary", GH + "foculus/blob/main/docs/explanation/interplanetary.md"],
+                  parts: ["foculus", "tru", "cybernode"], source: ["foculus/docs/interplanetary", GH + "foculus/blob/main/docs/explanation/interplanetary.md"],
                   fig: () => mars() },
             ];
 
