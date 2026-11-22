@@ -37,7 +37,9 @@ The long form is back in the tree as cyber `specs/adaptive hybrid consensus econ
 | the start | `α₀ = 0.5`, `β₀ = 0`, `φ₀ = 0.03`, a warm-up with wider bounds and no integral term, then full control |
 | the measures | the security margin held at `k = 1.5` or above; alerts below 1.2, on a staked share under 0.1 or over 0.9, on net inflation over 5 % |
 
-One consequence the short page does not state: with the floor in the budget, the cost of capital cancels out of the equilibrium, `S* = (k · TVL / M)^(1/(1−α))`. Where the value an attack can take is the stake itself, `TVL = S · M`, the fixed point is `S* = 1 / k²` at `α = ½`: 44 % at `k = 1.5` and 43 % at the simulated baseline's margin of 1.52. That is the mark of about 40 % the owner remembers; the derivation of the fixed point is this page's, to be confirmed in H2.
+Where the mark of about 40 % comes from, by this page's own arithmetic, to be confirmed in H2. At the starting floor the law gives `S* = (φ₀ / r)²` at `α = ½`: 36 % when capital costs 5 % a year, 40 % at 4.7 %. This equilibrium is the stable one of theorem 3.1 and proposition 6.2: below it a stake earns more than capital costs and stake enters, above it stake leaves.
+
+One consequence the short page does not state, and a warning with it. With the floor in the budget the cost of capital cancels: `S* = (k · TVL / M)^(1/(1−α))`. When the value at risk is given from outside, as the law assumes, that is again a stable point. When the value at risk is taken to be the stake itself, `TVL = S · M`, the point `S* = 1 / k²` exists — 44 % at `k = 1.5` — and it is unstable: more stake raises the floor, the floor raises the yield, the yield draws more stake, and the share runs to a bound; less stake runs the other way. So what the chain counts as value at risk decides whether the system settles or runs away, which is why it is the first line the contract settles. An earlier revision of this page named `1 / k²` as the mark; that was wrong.
 
 ## what the chain runs
 
