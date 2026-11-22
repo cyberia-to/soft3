@@ -9,7 +9,7 @@ serves: launch spacepussy ($PUSSY)
 part of: complete rewards
 lane: wide
 date: 2026-11-22
-alias: the hybrid economy, hybrid economy at genesis, the hybrid economy at genesis, dynamic inflation, correct inflation, adaptive emission at genesis
+alias: the hybrid economy, hybrid economy, hybrid economy at genesis, the hybrid economy at genesis, dynamic inflation, correct inflation, adaptive emission at genesis
 ---
 # the hybrid economy
 
