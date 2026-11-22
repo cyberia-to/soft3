@@ -4,6 +4,7 @@ crystal-type: process
 crystal-domain: cyber
 alias: network repos, network repositories, a network is a repository, network config, launch configurator, network manifest, home network, home networks, personal network, cy home
 status: proposed
+part of: launch spacepussy
 date: 2026-10-17
 ---
 # a network is a repository, or a home — cybernode takes it as input

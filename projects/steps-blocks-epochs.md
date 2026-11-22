@@ -3,6 +3,7 @@ tags: cyber, soft3, project, foculus, cybergraph, bbg, zheng, tok, tru, mining, 
 crystal-type: process
 crystal-domain: cyber
 status: proposed
+part of: launch spacepussy
 date: 2026-10-12
 ---
 # steps, blocks, epochs — the consensus clock of soft3

@@ -4,6 +4,7 @@ crystal-type: process
 crystal-domain: cyber
 alias: proof system repair, one proof, zheng repair
 status: proposed
+part of: launch spacepussy
 date: 2026-10-09
 ---
 # one proof — the repair of zheng

@@ -5,6 +5,7 @@ crystal-type: project
 crystal-domain: cyber
 alias: assumptions registry, registry of assumptions, Axioms.ei, native proofs
 status: proposed
+part of: launch spacepussy
 date: 2026-10-27
 ---
 # the assumptions registry

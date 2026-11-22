@@ -4,6 +4,7 @@ crystal-type: process
 crystal-domain: cyber
 alias: proven present, the present proves the past, prove first mine second, state proof, history proof, block proof, O(1) bootstrap
 status: proposed
+part of: launch spacepussy
 date: 2026-10-17
 revised: 2026-10-17 — every block, not every checkpoint interval; no shadow stage; no "when it fits"; ECDSA only on pussy and bostrom until claimed, CYB without it from genesis (owner)
 ---
