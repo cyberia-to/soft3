@@ -143,6 +143,18 @@ each phase closes on its last merge with a receipt in `audit/`.
 | **N6 — cyber genesis** | when the proving and the encryption are stable: the cyber genesis built from its repository, locked, shipped | the lock published; two independent builds identical |
 | **N7 — the home** | `cy/home/`: the template in the network layout, the `home` organ's page in cy's anatomy, `cy home init`, `cy home run`, `cy join`; the home's lock linked from the name in a shared network | a home raised from a name on a test network, its blocks proven, its tip verified from the shared network by proof; a second agent joins it |
 
+### where the plan stands, 2026-11-22
+
+the data half is written and waits for the owner; the node reads none of it yet.
+
+| phase | what exists | where |
+|---|---|---|
+| N0 | the standard, `specs/network.md`: layout, schema, vocabulary of rules, the lock, the two acts — raise and join — and the table of what the node still carries as constants | cyberia-to/cybernode#19 |
+| N1, the data | `space-pussy` rebuilt as a network repository (merged, cyberia-to/space-pussy#24) and given the uniform documents (cyberia-to/space-pussy#25); `bostrom` rebuilt the same way, its seventy pages of the old chain folded into one page of history | cyberia-to/bostrom#35 |
+| N4, the data | `true-cyber` takes the layout for cyber: a draft `network.toml`, a genesis by claims, the site cyb.money; the client's code is untouched | cyberia-to/true-cyber#6 |
+
+each of the three carries `docs/history.md`, `docs/economics.md` — the running, the proposed and the open kept apart — and `docs/run-a-node.md`. not done: the builder reading the files (N1's acceptance), `network check`, the locks' build receipts (N3), the client's move (N4). open with the owner: whether the three repositories are renamed after their coins.
+
 timing: N1–N3 touch the genesis of 2026-11-05. their acceptance is byte-identity with today's genesis, so they change no outcome; the target is the candidate of 2026-10-30. if they are not green by then, the genesis ships from today's pipeline and N1–N3 record the same particle in the repositories right after; the owner chooses.
 
 ## 6. open, and who decides
