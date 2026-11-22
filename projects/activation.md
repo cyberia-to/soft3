@@ -6,7 +6,7 @@ kind: project
 status: proposed
 owner: master
 serves: launch spacepussy ($PUSSY)
-part of: launch spacepussy
+part of: complete rewards
 lane: wide
 date: 2026-11-21
 alias: activation, repair the valence, the valence repair, signed activation, incorrect valence

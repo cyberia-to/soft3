@@ -6,12 +6,12 @@ kind: project
 status: proposed
 owner: master
 serves: launch spacepussy ($PUSSY)
-part of: launch spacepussy
+part of: complete rewards
 lane: wide
 date: 2026-11-22
-alias: hybrid economy at genesis, the hybrid economy at genesis, dynamic inflation, correct inflation, adaptive emission at genesis
+alias: the hybrid economy, hybrid economy at genesis, the hybrid economy at genesis, dynamic inflation, correct inflation, adaptive emission at genesis
 ---
-# the hybrid economy at genesis
+# the hybrid economy
 
 Pussy's chain mints by the law of [[adaptive hybrid consensus economics]]: the budget of an epoch is a security floor derived from what an attack costs plus the fees, it is split between work and active stake by the allocation curve, and the floor, the exponent and the burn share move by feedback on what the chain observes — in place of a fixed subsidy with a hard cap.
 
