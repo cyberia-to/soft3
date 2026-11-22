@@ -1,8 +1,10 @@
 ---
 tags: cyber, soft3, project, foculus, zheng, nox, bbg, hemera, mining, consensus
+alias: present proves the past, proof gated chain, parano1d on zheng
 crystal-type: process
 crystal-domain: cyber
 status: proposed
+part of: launch spacepussy
 date: 2026-10-13
 ---
 # proof-gated chain on goldilocks — what parano1d proves is possible, ported to zheng
